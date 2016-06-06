@@ -1,0 +1,33 @@
+<div class="side-nav col-sm-3 col-md-2" [class.open]="isSidenavOpened" (click)="sidenavToggle()">
+  <div class="logo">
+    <a [routerLink]="['Home']">
+      <img src="./content/img/logo.png">
+      <h4>Material Design 2</h4>
+    </a>
+  </div>
+  <ul class="menu">
+    <li [class.active]="isActive('/Accordion')"><a [routerLink]="['Accordion']">Accordion</a></li>
+    <li [class.active]="isActive('/Autocomplete')"><a [routerLink]="['Autocomplete']">Autocomplete</a></li>
+    <li [class.active]="isActive('/Collapse')"><a [routerLink]="['Collapse']">Collapse</a></li>
+    <li [class.active]="isActive('/Colorpicker')"><a [routerLink]="['Colorpicker']">Colorpicker</a></li>
+    <li [class.active]="isActive('/Dialog')"><a [routerLink]="['Dialog']">Dialog</a></li>
+    <li [class.active]="isActive('/Menu')"><a [routerLink]="['Menu']">Menu</a></li>
+    <li [class.active]="isActive('/Multiselect')"><a [routerLink]="['Multiselect']">Multiselect</a></li>
+    <li [class.active]="isActive('/Select')"><a [routerLink]="['Select']">Select</a></li>
+    <li [class.active]="isActive('/Switch')"><a [routerLink]="['Switch']">Switch</a></li>
+    <li [class.active]="isActive('/Tabs')"><a [routerLink]="['Tabs']">Tabs</a></li>
+    <li [class.active]="isActive('/Toast')"><a [routerLink]="['Toast']">Toast</a></li>
+    <li [class.active]="isActive('/Tooltip')"><a [routerLink]="['Tooltip']">Tooltip</a></li>
+  </ul>
+</div>
+<div class="side-nav-backdrop sm-visible" *ngIf="isSidenavOpened" (click)="sidenavToggle()"></div>
+<div class="content col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2">
+  <header class="header">
+    <button type="button" (click)="sidenavToggle()" class="nav-toggle"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+    <h2>Material Design 2</h2>
+  </header>
+  <router-outlet></router-outlet>
+  <footer class="footer">
+    <span><a href="https://github.com/promact/md2">Md2</a> is maintained by <a href="https://github.com/promact">Promact</a>.</span>
+  </footer>
+</div>

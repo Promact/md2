@@ -26,6 +26,6 @@ __export(require('../switch/switch'));
 __export(require('../tabs/tabs'));
 __export(require('../toast/toast'));
 __export(require('../tooltip/tooltip'));
-exports.MD2_ALL_DIRECTIVES = [accordion_1.ACCORDION_DIRECTIVES, autocomplete_1.Md2Autocomplete, collapse_1.Md2Collapse, colorpicker_1.Md2Colorpicker, colorpicker_1.Md2ColorpickerService, dialog_1.Md2Dialog, menu_1.MENU_DIRECTIVES, multiselect_1.Md2Multiselect, select_1.Md2Select, switch_1.Md2Switch, tabs_1.TABS_DIRECTIVES, toast_1.Md2Toast, tooltip_1.TOOLTIP_DIRECTIVES];
+exports.MD2_ALL_DIRECTIVES = [accordion_1.ACCORDION_DIRECTIVES, autocomplete_1.Md2Autocomplete, collapse_1.Md2Collapse, colorpicker_1.Md2Colorpicker, colorpicker_1.Md2ColorpickerService, dialog_1.Md2Dialog, menu_1.MENU_DIRECTIVES, multiselect_1.Md2Multiselect, select_1.SELECT_DIRECTIVES, switch_1.Md2Switch, tabs_1.TABS_DIRECTIVES, toast_1.Md2Toast, tooltip_1.TOOLTIP_DIRECTIVES];
 
 //# sourceMappingURL=all.js.map

@@ -7,66 +7,56 @@ Native Angular2 Material Select component
 Example:
  
  ```html
-<md2-select [items]="items"
-            [item-text]="'name'"
-            [(ngModel)]="item"
-            (change)="selected($event)"
-            placeholder="Placeholder Text">
+<md2-select [(ngModel)]="item" (change)="change($event)" [disabled]="disabled">
+  <md2-option *ngFor="let i of items" [value]="i.value" [disabled]="i.disabled">{{i.name}}</md2-option>
 </md2-select>
  ```
  ```ts
 
 ...
 
-import {Md2Select} from 'md2/select';
+import { SELECT_DIRECTIVES, Md2SelectDispatcher } from 'md2/select';
 
 @Component({
-    selector: "...",
-    directives: [Md2Select]
+  selector: "...",
+  directives: [SELECT_DIRECTIVES],
+  providers: [Md2SelectDispatcher]
 })
 
 export class ... {
     
-    ...
+  ...
     
-    private items: Array<any> =
-        [
-            { name: 'Amsterdam', value: '1' },
-            { name: 'Birmingham', value: '2' },
-            { name: 'Dortmund', value: '3' },
-            { name: 'Gothenburg', value: '4' },
-            { name: 'London', value: '5' },
-            { name: 'Seville', value: '6' }
-        ];
+  private disabled: boolean = false;
 
-    private item: Array<any> = [{ name: 'Dortmund', value: '3' }];
+  private items: Array<any> =
+    [
+      { name: 'Amsterdam', value: '1', disabled: false },
+      { name: 'Birmingham', value: '2', disabled: false },
+      { name: 'Dortmund', value: '3', disabled: false },
+      { name: 'Gothenburg', value: '4', disabled: true },
+      { name: 'London', value: '5', disabled: false },
+      { name: 'Seville', value: '6', disabled: false }
+    ];
 
-    private selected(value: any) {
-        console.log('Selected value is: ', value);
-    }
+  private item: string = '3';
 
-    ...
+  private change(value: any) {
+    console.log('Selected value is: ', value);
+  }
+
+  ...
 
 }
  ```
 
 ### Properties
 
-  - `items` - (`Array<any>`) - Array of items from which to select. Should be an array of objects with `value` and `text` properties.
-  As convenience, you may also pass an array of strings, in which case the same string is used for both the VALUE and the text.
-  Items may be nested by adding a `children` property to any item, whose value should be another array of items. Items that have children may omit having an ID.
-  If `items` are specified, all items are expected to be available locally and all selection operations operate on this local array only.
-  If omitted, items are not available locally, and the `query` option should be provided to fetch data.
-  - `ngModel` (`?Array<any>`) - two way data binding. This should be an array with single string or object of `value` and `text` properties in the case of input type 'Single',
-  or an array of such objects otherwise. This option is mutually exclusive with value.
-  - `placeholder` (`?string=''`) - Placeholder text to display when the element has no focus and selected items.
-  - `disabled` (`?boolean=false`) - When `true`, it specifies that the component should be disabled.
-  - `item-text` (`?string='text'`) - When items array is different with object properties then map 'text' property with the array.
+  - `ngModel` (`any`) - two way data binding. This should be a value of selected option. This option is mutually exclusive with value.
+  - `placeholder` (`?string=''`) - Placeholder text to display when the element has no selected item.
+  - `disabled` (`?boolean=false`) - When `true`, it specifies that the component should be disabled or if apply on option then the specific option should be disabled.
+  - `value` - (`any`) - Items that have children of select element it pass any object or string over there, while select the specific option emit value of it.
 
 ### Events
 
-  - `change` - it fires after a new option selected; returns object with `value` and `text` properties that describes a new option.
-
-
-### Referenced From
-ng2-select (see the repo [https://github.com/valor-software/ng2-select](https://github.com/valor-software/ng2-select) repository for the angular2 based select component)
+  - `change` - it fires after a new option selected; returns `value` of selected option.

@@ -14,29 +14,53 @@ let Select = class Select {
     constructor() {
         this.disabled = false;
         this.items = [
-            { name: 'Amsterdam', value: '1' },
-            { name: 'Birmingham', value: '2' },
-            { name: 'Dortmund', value: '3' },
-            { name: 'Gothenburg', value: '4' },
-            { name: 'London', value: '5' },
-            { name: 'Seville', value: '6' }
+            { name: 'Amsterdam', value: '1', disabled: true },
+            { name: 'Birmingham', value: '2', disabled: false },
+            { name: 'Dortmund', value: '3', disabled: false },
+            { name: 'Gothenburg', value: '4', disabled: true },
+            { name: 'London', value: '5', disabled: false },
+            { name: 'Seville', value: '6', disabled: true }
         ];
         this.items1 = ['Amsterdam', 'Birmingham', 'Dortmund', 'Gothenburg', 'London', 'Seville'];
         this.item2 = 'Gothenburg';
-        this.item = [{ name: 'Dortmund', value: '3' }];
+        //private item: Array<any> = [{ name: 'Dortmund', value: '3' }];
         //private item: any = { name: 'Dortmund', value: '3' };
-        //private item: string = 'Dortmund';
+        this.item = '';
         this.item1 = { name: 'Dortmund', value: '3' };
+        this.xyz = 1;
+        this.obj1 = { id: 1, name: 'ssss' };
+        this.obj2 = { id: 2, name: 'dff' };
+        this.serverList = [this.obj1, this.obj2];
+        this.copyList = [this.obj1, this.obj2];
+        setTimeout(() => {
+            this.items.push({ name: 'Abc', value: '7', disabled: false });
+            this.items.push({ name: 'Def', value: '8', disabled: false });
+            this.items.push({ name: 'Ghi', value: '9', disabled: false });
+            this.items.push({ name: 'Jkl', value: '10', disabled: false });
+            this.items.push({ name: 'Mno', value: '11', disabled: false });
+            this.items.push({ name: 'Pqr', value: '12', disabled: false });
+            this.items.push({ name: 'Stu', value: '13', disabled: false });
+            this.items.push({ name: 'Vwx', value: '14', disabled: false });
+            this.items.push({ name: 'Xyz', value: '15', disabled: false });
+            //this.item = '10';
+        }, 5000);
     }
     change(value) {
         console.log('Changed data: ', value);
+    }
+    update(i, e) {
+        console.log(i);
+        console.log(e);
+        let s = this.serverList.find(x => x.id === parseInt(e));
+        this.copyList[i] = s;
     }
 };
 Select = __decorate([
     core_1.Component({
         selector: 'selectcomp',
         templateUrl: './app/components/select/select.html',
-        directives: [select_1.Md2Select]
+        directives: [select_1.SELECT_DIRECTIVES],
+        providers: [select_1.Md2SelectDispatcher]
     }), 
     __metadata('design:paramtypes', [])
 ], Select);

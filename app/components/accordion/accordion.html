@@ -1,0 +1,84 @@
+<h1 class="page-header">Accordion<small>(<a target="_blank" href="https://github.com/promact/md2/tree/master/src/components/accordion">Md2Accordion</a>)</small></h1>
+<section id="accordion">
+  <div class="row">
+    <div class="col-sm-6">
+      <md2-accordion [multiple]="multiple">
+        <md2-accordion-tab *ngFor="let tab of accordions" [header]="tab.title" [active]="tab.active" [disabled]="tab.disabled">
+          {{tab.content}}
+        </md2-accordion-tab>
+      </md2-accordion>
+    </div>
+    <div class="col-sm-6">
+      <p>The <strong>accordion component</strong> builds on top of the collapse directive to provide a list of items, with collapsible bodies that are collapsed or expanded by clicking on the item's header.</p>
+      <p>The body of each accordion group is transcluded into the body of the collapsible element.</p>
+      <h3>md2-accordion settings</h3>
+      <ul>
+        <li>
+          <p>
+            <code>multiple</code>
+            <em>(Default: <code>false</code>)</em> -
+            Control whether expanding an item will cause the other items to close.
+          </p>
+        </li>
+        <li>
+          <p>
+            <code>md-class</code>
+            <em>(Default: <code>none</code>)</em> -
+            Add ability to set classes your own. This must be a string.
+          </p>
+        </li>
+        <li>
+          <p>
+            <code>open</code>
+            <em>Event</em> -
+            It fires after a open tab.
+          </p>
+        </li>
+        <li>
+          <p>
+            <code>close</code>
+            <em>Event</em> -
+            It fires after a close tab.
+          </p>
+        </li>
+      </ul>
+      <h3>md2-accordion-tab settings</h3>
+      <ul>
+        <li>
+          <p>
+            <code>header</code>
+            <em>(Default: <code>none</code>)</em> -
+            The clickable text on the tab's header. You need one to be able to click on the header for toggling.
+          </p>
+        </li>
+        <li>
+          <p>
+            <code>disabled</code>
+            <em>(Default: <code>false</code>)</em> -
+            Whether the accordion tab is disabled or not.
+          </p>
+        </li>
+        <li>
+          <p>
+            <code>active</code>
+            <em>(Default: <code>false</code>)</em> -
+            Whether accordion tab is open or closed.
+          </p>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <hr />
+  <!--<code-prettify>
+    <b>Lorum</b> Ipsum
+  </code-prettify>-->
+  <!--<div>
+    <code class="prettyprint lang-html">
+      <md2-accordion [multiple]="multiple">
+        <md2-accordion-tab *ngFor="let tab of accordions" [header]="tab.title" [active]="tab.active" [disabled]="tab.disabled">
+          {{tab.content}}
+        </md2-accordion-tab>
+      </md2-accordion>
+    </code>
+  </div>-->
+</section>

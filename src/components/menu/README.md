@@ -71,7 +71,7 @@ Add Css in your code
 [md2-menu] .md2-menu-item:hover { background-color: rgba(158,158,158,0.2); }
 ```
 
-### Properties
+### Directives
 
   - `md2-menu` - Main directive.
   - `md2-menu-open` - On click to open menu using this directive.

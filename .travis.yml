@@ -1,0 +1,64 @@
+language: node_js
+sudo: false
+
+node_js:
+  - '5.6.0'
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - libstdc++6
+
+branches:
+  only:
+  - master
+
+env:
+  global:
+  - LOGS_DIR=/tmp/angular-material2-build/logs
+  - SAUCE_USERNAME=angular-ci
+  - SAUCE_ACCESS_KEY=9b988f434ff8-fbca-8aa4-4ae3-35442987
+  - BROWSER_STACK_USERNAME=angularteam1
+  - BROWSER_STACK_ACCESS_KEY=BWCd4SynLzdDcv8xtzsB
+  - ARCH=linux-x64
+  - BROWSER_PROVIDER_READY_FILE=/tmp/angular-material2-build/readyfile
+  # Token for tsd to increase github rate limit
+  # See https://github.com/DefinitelyTyped/tsd#tsdrc
+  # This does not use http://docs.travis-ci.com/user/environment-variables/#Secure-Variables
+  # because those are not visible for pull requests, and those should also be reliable.
+  # This SSO token belongs to github account angular-github-ratelimit-token which has no access
+  # (password is in Valentine)
+  - TSDRC='{"token":"ef474500309daea53d5991b3079159a29520a40b"}'
+  # GITHUB_TOKEN_ANGULAR
+  - secure: "fq/U7VDMWO8O8SnAQkdbkoSe2X92PVqg4d044HmRYVmcf6YbO48+xeGJ8yOk0pCBwl3ISO4Q2ot0x546kxfiYBuHkZetlngZxZCtQiFT9kyId8ZKcYdXaIW9OVdw3Gh3tQyUwDucfkVhqcs52D6NZjyE2aWZ4/d1V4kWRO/LMgo="
+  matrix:
+    # Order: a slower build first, so that we don't occupy an idle travis worker waiting for others to complete.
+    - MODE=lint
+    - MODE=circular_deps
+    - MODE=e2e
+    - MODE=saucelabs_required
+    - MODE=browserstack_required
+    - MODE=saucelabs_optional
+    - MODE=browserstack_optional
+
+matrix:
+  allow_failures:
+  - env: "MODE=saucelabs_optional"
+  - env: "MODE=browserstack_optional"
+
+install:
+  - npm install
+  - npm run typings
+
+before_script:
+  - mkdir -p $LOGS_DIR
+
+script:
+- ./scripts/ci/build-and-test.sh
+
+cache:
+  directories:
+    - node_modules
+    - $HOME/.pub-cache

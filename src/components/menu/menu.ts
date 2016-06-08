@@ -1,4 +1,4 @@
-import { ContentChild, Directive, ElementRef, EventEmitter, Host, HostListener, OnDestroy, Output } from "@angular/core";
+import { ContentChild, Directive, ElementRef, Host, HostListener, OnDestroy } from "@angular/core";
 
 @Directive({ selector: "[md2-menu-not-closable]" })
 export class Md2MenuNotClosable {

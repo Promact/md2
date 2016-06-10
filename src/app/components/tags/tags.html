@@ -1,26 +1,19 @@
-<h2> Component</h2>
-
-<h1 class="page-header">Multiselect<small>(<a target="_blank" href="https://github.com/promact/md2/tree/master/src/multiselect/multiselect">Md2Multiselect</a>)</small></h1>
-<section id="multiselect">
+<h1 class="page-header">Tags<small>(<a target="_blank" href="https://github.com/promact/md2/tree/master/src/tags/tags">Md2Tags</a>)</small></h1>
+<section id="tags">
   <div class="row">
     <div class="col-sm-6">
-      <select [(ngModel)]="item" (change)="change($event)" placeholder="placeholder" multiple>
-        <option [value]="i.value" *ngFor="let i of items">{{i.name}}</option>
-      </select>
+      <md2-tags [md-tags]="tags"
+                md-tag-text="name"
+                [(ngModel)]="tag"
+                (change)="change($event)"
+                placeholder="+Tag">
+      </md2-tags>
       <hr />
-      <pre>{{item | json}}</pre>
-      <hr />
-      <md2-multiselect [(ngModel)]="item" (change)="change($event)" [disabled]="disabled">
-        <md2-option *ngFor="let i of items" [value]="i.value" [disabled]="i.disabled">{{i.name}}</md2-option>
-      </md2-multiselect>
-      <hr />
-      <md2-multiselect [(ngModel)]="item" (change)="change($event)" [disabled]="disabled">
-        <md2-option *ngFor="let i of items" [value]="i.value" [disabled]="i.disabled">{{i.name}}</md2-option>
-      </md2-multiselect>
+      <pre>{{tag | json}}</pre>
     </div>
     <div class="col-sm-6">
-      <p>The <strong>multiselect component</strong> is to provide a multi select functionality.</p>
-      <h3>md2-multiselect settings</h3>
+      <p>The <strong>chips component</strong> is to provide an add multiple items.</p>
+      <h3>md2-chips settings</h3>
       <ul>
         <li>
           <code>items</code> - (<code>Array&lt;any&gt;</code>) - Array of items from which to select. Should be an array of objects with <code>value</code> and <code>text</code> properties.
@@ -36,10 +29,6 @@
         <li><code>placeholder</code> (<code>?string=''</code>) - Placeholder text to display when the element has no focus and selected items.</li>
         <li><code>disabled</code> (<code>?boolean=false</code>) - When <code>true</code>, it specifies that the component should be disabled.</li>
         <li><code>item-text</code> (<code>?string='text'</code>) - When items array is different with object properties then map 'text' property with the array.</li>
-      </ul>
-      <h3>Events</h3>
-      <ul>
-        <li><code>change</code> - it fires after a new option selected; returns object with <code>value</code> and <code>text</code> properties that describes a new option.</li>
       </ul>
     </div>
   </div>

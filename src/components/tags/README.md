@@ -1,16 +1,19 @@
-# md2-tabs
+# md2-tags
 
-Native Angular2 Material Tabs component
+Native Angular2 Material Tags component
 
 ## API
 
 Example:
  
  ```html
-<md2-tabs>
-  <md2-tab header="title1">Test content 1</md2-tab>
-  <md2-tab header="title2">Test content 2</md2-tab>
-</md2-tabs>
+<md2-tags [md-tags]="tags"
+          md-tag-text="name"
+          md-tag-value="value"
+          [(ngModel)]="tag"
+          (change)="change($event)"
+          placeholder="+Tag">
+</md2-tags>
  ```
  ```ts
 

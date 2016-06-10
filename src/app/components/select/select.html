@@ -19,11 +19,11 @@
       <hr />
       <pre>{{item | json}}</pre>
       <hr />
-      <md2-select [(ngModel)]="item" (change)="change($event)" [disabled]="disabled">
+      <md2-select [(ngModel)]="item" (change)="change($event)" [disabled]="disabled" placeholder="Hint text">
         <md2-option *ngFor="let i of items" [value]="i.value" [disabled]="i.disabled">{{i.name}}</md2-option>
       </md2-select>
       <hr />
-      <md2-select [(ngModel)]="item" (change)="change($event)" [disabled]="disabled">
+      <md2-select [(ngModel)]="item" (change)="change($event)" [disabled]="disabled" placeholder="Hint text">
         <md2-option *ngFor="let i of items" [value]="i.value" [disabled]="i.disabled">{{i.name}}</md2-option>
       </md2-select>
     </div>

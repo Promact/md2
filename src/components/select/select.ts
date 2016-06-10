@@ -34,7 +34,7 @@ export class Md2OptionChange {
   selector: 'md2-select',
   template: `
     <div class="md2-select-container">
-      <span *ngIf="selectedValue.length < 1" class="md2-select-placeholder">Placeholder</span>
+      <span *ngIf="selectedValue.length < 1" class="md2-select-placeholder">{{placeholder}}</span>
       <span *ngIf="selectedValue.length > 0" class="md2-select-value" [innerHtml]="selectedValue"></span>
       <i class="md2-select-icon"></i>
     </div>
@@ -58,7 +58,6 @@ export class Md2OptionChange {
   `],
   host: {
     'role': 'select',
-    '[id]': 'id',
     '[tabindex]': 'disabled ? -1 : tabindex',
     '[attr.aria-disabled]': 'disabled'
   },
@@ -93,7 +92,7 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   }
 
   @Input() tabindex: number = 0;
-
+  @Input() placeholder: string = '';
 
   @HostBinding('class.md2-select-disabled')
   @Input() get disabled(): boolean { return this._disabled; }
@@ -105,7 +104,7 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   set value(newValue: any) {
     if (this._value != newValue) {
       this._value = newValue;
-      this._updateSelecteOptionValue();
+      this._updateSelectedOptionValue();
       if (this._isInitialized) {
         this._emitChangeEvent();
       }
@@ -240,7 +239,7 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
     });
   }
 
-  private _updateSelecteOptionValue(): void {
+  private _updateSelectedOptionValue(): void {
     let isAlreadySelected = this._selected != null && this._selected.value == this._value;
 
     if (this._options != null && !isAlreadySelected) {

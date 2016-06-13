@@ -17,22 +17,17 @@ const MD2_TAGS_CONTROL_VALUE_ACCESSOR = new Provider(NG_VALUE_ACCESSOR, {
   template: `
     <div class="md2-tags-layout">
       <div class="md2-tags-container">
-        <span *ngFor="let t of selectedValue; #i = index;" class="md2-tag" [class.active]="selectedTag === i" (click)="selectTag(i)">
+        <span *ngFor="let t of selectedValue" class="md2-tag" [class.active]="isActive(t)" (click)="onClickTag($event,t)">
           <span class="md2-tag-text">{{t.text}}</span>
-          <span class="md2-remove-icon" (click)="removeTagAndFocusInput(i)"></span>
+          <span class="md2-remove-icon" (click)="removeTag(t)"></span>
         </span>
-        <span class="md2-tag-add">
-          <input [(ngModel)]="tagBuffer" type="text" tabs="false" tabindex="-1" [disabled]="disabled" class="md2-tags-input" [placeholder]="placeholder"
-            (focus)="onInputFocus()"
-            (blur)="onInputBlur()"
-            (keydown)="inputKeydown($event)">
-          <ul *ngIf="isMenuOpened && list && list.length > 0" class="md2-tags-menu">
-            <li class="md2-option" *ngFor="let l of list" [class.focused]="isFocus(l)" (click)="selectItemOnMatch(l, $event)">
-              <div class="md2-option-text" [innerHtml]="l.text | hightlight:tagBuffer"></div>
-            </li>
-          </ul>
-        </span>
+        <input [(ngModel)]="inputValue" type="text" tabs="false" tabindex="-1" (click)="onClick()" (keydown)="inputKeydown($event)" [disabled]="disabled" class="md2-tags-input" [placeholder]="placeholder">
       </div>
+      <ul *ngIf="isMenuOpened && list && list.length > 0" class="md2-tags-menu">
+        <li class="md2-option" *ngFor="let l of list" [class.focused]="isFocus(l)" (click)="selectItemOnMatch(l, $event)">
+          <div class="md2-option-text" [innerHtml]="l.text | hightlight:inputValue"></div>
+        </li>
+      </ul>
     </div>
   `,
   styles: [`
@@ -54,7 +49,6 @@ const MD2_TAGS_CONTROL_VALUE_ACCESSOR = new Provider(NG_VALUE_ACCESSOR, {
     .md2-tags .md2-tag.active .md2-remove-icon::after { background: rgba(255,255,255,0.87); }
     .md2-tags .md2-tag .md2-remove-icon::before { -webkit-transform: rotate(45deg); -moz-transform: rotate(45deg); -ms-transform: rotate(45deg); -o-transform: rotate(45deg); transform: rotate(45deg); }
     .md2-tags .md2-tag .md2-remove-icon::after { -webkit-transform: rotate(-45deg); -moz-transform: rotate(-45deg); -ms-transform: rotate(-45deg); -o-transform: rotate(-45deg); transform: rotate(-45deg); }
-    .md2-tags .md2-tag-add { position: relative; display: inline-block; }
     .md2-tags input { border: 0; outline: 0; margin-top: 8px; height: 32px; line-height: 32px; padding: 0; color: rgba(0,0,0,0.87); background: 0 0; }
     .md2-tags .md2-tags-container .md2-tags-placeholder { color: rgba(0, 0, 0, 0.38); }
     .md2-tags .md2-tags-menu { position: absolute; left: 0; top: 100%; display: block; z-index: 10; -ms-flex-direction: column; -webkit-flex-direction: column; flex-direction: column; width: 100%; margin: 0; padding: 8px 0; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12); max-height: 256px; min-height: 48px; overflow-y: auto; -moz-transform: scale(1); -ms-transform: scale(1); -o-transform: scale(1); -webkit-transform: scale(1); transform: scale(1); background: #fff; }
@@ -67,7 +61,7 @@ const MD2_TAGS_CONTROL_VALUE_ACCESSOR = new Provider(NG_VALUE_ACCESSOR, {
     'role': 'tags',
     '[id]': 'id',
     '[class.md2-tags]': 'true',
-    '[class.focus]': 'inputFocused || selectedTag >= 0',
+    '[class.focus]': 'focused',
     '[class.md2-tags-disabled]': 'disabled',
     '[tabindex]': 'disabled ? -1 : tabindex',
     '[attr.aria-disabled]': 'disabled'
@@ -80,16 +74,16 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
 
   constructor(public element: ElementRef) { }
 
-  //ngOnInit() {
-  //  this.behavior = new GenericBehavior(this);
-  //  this.offSideClickHandler = this.getOffSideClickHandler(this);
-  //  document.addEventListener('click', this.offSideClickHandler);
-  //}
+  ngOnInit() {
+    this.behavior = new GenericBehavior(this);
+    this.offSideClickHandler = this.getOffSideClickHandler(this);
+    document.addEventListener('click', this.offSideClickHandler);
+  }
 
-  //ngOnDestroy() {
-  //  document.removeEventListener('click', this.offSideClickHandler);
-  //  this.offSideClickHandler = null;
-  //}
+  ngOnDestroy() {
+    document.removeEventListener('click', this.offSideClickHandler);
+    this.offSideClickHandler = null;
+  }
 
   ngAfterContentInit() {
     this._isInitialized = true;
@@ -113,6 +107,7 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
   public list: Array<Tag> = [];
   public tempList: Array<Tag> = [];
   public focusedTag: Tag;
+  public selectedTag: number = -1;
 
   @Input() id: string = 'md2-tags-' + (++nextId);
   @Input() disabled: boolean = false;
@@ -166,11 +161,165 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
     this.element.nativeElement.querySelector('input').focus();
   }
 
-  //@HostListener('focus')
-  //private onFocus() { this.focused = true; this.element.nativeElement.querySelector('input').focus(); }
+  private onClickTag(e, tag: Tag) {
+    e.stopPropagation();
+    e.preventDefault();
+    if (this.disabled) {
+      return;
+    }
+    this.selectedTag = tag;
+  }
 
-  //@HostListener('blur')
-  //private onBlur() { this.isMenuOpened = false; }
+  //@HostListener('keydown', ['$event'])
+  private onKeyDown = function (e: KeyboardEvent) {
+    // check enabled
+    if (this.disabled === true) { return; }
+
+    // Backspace / Del Key
+    else if (e.keyCode === 8 || e.keyCode === 46) {
+      if (this.selectedTag < 0) return;
+      e.preventDefault();
+      this.removeTag(this.selectedTag);
+    }
+
+    // Left Arrow
+    else if (e.keyCode === 37 && !this.inputValue.length) {
+      e.preventDefault();
+      if (this.selectedTag < 0) this.selectedTag = this.selectedValue.length;
+      if (this.selectedValue.length) this.selectAndFocusTag(this.selectedTag - 1);
+    }
+
+    // Right Arrow
+    else if (e.keyCode === 39 && !this.inputValue.length) {
+      e.preventDefault();
+      this.selectAndFocusTag(this.selectedTag + 1);
+    }
+
+    // Escape / Tab Key
+    else if (e.keyCode === 27 || e.keyCode === 9) {
+      if (this.selectedTag < 0) return;
+      e.preventDefault();
+      this.onFocus();
+    }
+  };
+  private inputKeydown(e: any) {
+    // check enabled
+    if (this.disabled === true) { return; }
+
+    if (this.inputValue.length && this.selectedTag) { this.selectedTag = null; }
+
+    // Tab Key
+    if (e.keyCode === 9) {
+      if (this.isMenuOpened) {
+        this.onBlur();
+        e.preventDefault();
+      }
+      return;
+    }
+
+    // Escape Key
+    if (e.keyCode === 27) {
+      this.onBlur();
+      e.stopPropagation();
+      e.preventDefault();
+      return;
+    }
+
+    // Del Arrow
+    if (e.keyCode === 46 && !this.inputValue.length) {
+      if (this.selectedTag) {
+        this.removeTag(this.selectedTag);
+      }
+      e.stopPropagation();
+      e.preventDefault();
+      return;
+    }
+
+    // Back space Arrow
+    if (e.keyCode === 8 && !this.inputValue.length) {
+      if (this.selectedTag) {
+        this.removeTag(this.selectedTag);
+      } else { this.selectedTag = this.selectedValue[this.selectedValue.length - 1]; }
+      e.stopPropagation();
+      e.preventDefault();
+      return;
+    }
+
+    // Left Arrow
+    if (e.keyCode === 37 && !this.inputValue.length) {
+      if (this.selectedTag) {
+        let index = this.selectedValue.findIndex(tag => tag.text === this.selectedTag.text);
+        if (index === 0) { index = this.selectedValue.length; }
+        this.selectedTag = this.selectedValue[index - 1];
+      } else {
+        this.selectedTag = this.selectedValue[this.selectedValue.length - 1];
+      }
+      e.stopPropagation();
+      e.preventDefault();
+      return;
+    }
+
+    // Right Arrow
+    if (e.keyCode === 39 && !this.inputValue.length) {
+      if (this.selectedTag) {
+        let index = this.selectedValue.findIndex(tag => tag.text === this.selectedTag.text);
+        if (index + 1 === this.selectedValue.length) { index = -1; }
+        this.selectedTag = this.selectedValue[index + 1];
+      } else {
+        this.selectedTag = this.selectedValue[0];
+      }
+      e.stopPropagation();
+      e.preventDefault();
+      return;
+    }
+
+    // Up Arrow
+    if (e.keyCode === 38) {
+      this.behavior.prev();
+      if (!this.isMenuOpened) {
+        this.onClick(e);
+      }
+      e.stopPropagation();
+      e.preventDefault();
+      return;
+    }
+
+    // Down Arrow
+    if (e.keyCode === 40) {
+      this.behavior.next();
+      if (!this.isMenuOpened) {
+        this.onClick(e);
+      }
+      e.stopPropagation();
+      e.preventDefault();
+      return;
+    }
+
+    // Enter / Space
+    if (e.keyCode === 13 || e.keyCode === 32) {
+      if (this.isMenuOpened) {
+        this.selectItemOnMatch(this.focusedTag, e);
+      } else {
+        this.onClick(e);
+      }
+      e.preventDefault();
+      return;
+    }
+
+    //filter
+    if (e.srcElement) {
+      setTimeout(() => {
+        if (!this.isMenuOpened) { this.onClick(e); }
+        this.behavior.filter(new RegExp(this.inputValue, 'ig'));
+      }, 100);
+    }
+  }
+
+  @HostListener('focus')
+  private onFocus() { this.focused = true; this.element.nativeElement.querySelector('input').focus(); }
+
+  @HostListener('blur')
+  private onBlur() { this.isMenuOpened = false; }
 
   private selectItemOnMatch(value: Tag, e: Event = null) {
     if (e) { e.preventDefault(); e.stopPropagation(); }
@@ -187,7 +336,7 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
 
     this._onChangeCallback(this._value);
     this.change.emit(this._value);
-    //this.onBlur();
+    this.onBlur();
     this.focusedTag = null;
     this.element.nativeElement.querySelector('input').focus();
   }
@@ -212,6 +361,62 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
     return false;
   }
 
+  private removeTag(tag) {
+    let index = this.selectedValue.findIndex(t => t.text === tag.text);
+    if (this.selectedTag) {
+      let ind = this.selectedValue.findIndex(t => t.text === this.selectedTag.text);
+      if (ind === index && this.selectedValue.length > 1) {
+        if (ind === this.selectedValue.length - 1) {
+          ind = this.selectedValue.length - 3;
+        }
+        this.selectedTag = this.selectedValue[ind + 1];
+      } else { this.selectedTag = null; }
+    }
+    this.selectedValue.splice(index, 1);
+    this._value = new Array<any>();
+    for (let i = 0; i < this.selectedValue.length; i++) {
+      this._value.push(this.selectedValue[i].value);
+    }
+    this._onChangeCallback(this._value);
+    this.change.emit(this._value);
+  }
+
+  private removeAndSelectTag(index: number) {
+    var selIndex = this.getAdjacentTagIndex(index);
+    this.removeTag(index);
+    this.$timeout(angular.bind(this, function () {
+      this.selectAndFocusTagSafe(selIndex);
+    }));
+  };
+
+  private getAdjacentTagIndex(index: number) {
+    var len = this.selectedValue.length - 1;
+    return (len == 0) ? -1 : (index === len) ? index - 1 : index;
+  };
+
+  private selectAndFocusTag(index: number) {
+    if (!this.selectedValue.length) {
+      //this.selectTag(-1);
+      //this.onFocus();
+      //return;
+    }
+    //if (index === this.selectedValue.length) return this.onFocus();
+    index = Math.max(index, 0);
+    index = Math.min(index, this.selectedValue.length - 1);
+    //this.selectTag(index);
+    //this.focusTag(index);
+  };
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -220,61 +425,91 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
 
   //=====================================================================================================================================================
   private items: Array<any> = [];
+
   private selectedTag: number = -1;
+
   private tagBuffer: string = '';
-  private inputFocused: boolean = false;
 
   private inputKeydown(event: KeyboardEvent) {
-    if (event.keyCode === 8) {
-      if (this.tagBuffer) return;
+    var tagBuffer = this.gettagBuffer();
+
+    // If we have an autocomplete, and it handled the event, we have nothing to do
+    if (this.hasAutocomplete && event.isDefaultPrevented && event.isDefaultPrevented()) {
+      return;
+    }
+
+    if (event.keyCode === this.$mdConstant.KEY_CODE.BACKSPACE) {
+      if (tagBuffer) return;
       event.preventDefault();
       event.stopPropagation();
       if (this.items.length) this.selectAndFocusTagSafe(this.items.length - 1);
       return;
     }
-    if (event.keyCode === 13 || event.keyCode === 32) {
-      if (!this.tagBuffer) return;
+
+    // By default <enter> appends the buffer to the tag list.
+    if (!this.separatorKeys || this.separatorKeys.length < 1) {
+      this.separatorKeys = [this.$mdConstant.KEY_CODE.ENTER];
+    }
+
+    // Support additional separator key codes in an array of `md-separator-keys`.
+    if (this.separatorKeys.indexOf(event.keyCode) !== -1) {
+      if ((this.hasAutocomplete && this.requireMatch) || !tagBuffer) return;
       event.preventDefault();
-      //this.items.push('');
-      this.tagBuffer = '';
+
+      this.appendTag(tagBuffer.trim());
+      this.resettagBuffer();
     }
   }
 
+
+  /**
+   * Updates the content of the tag at given index
+   * @param tagIndex
+   * @param tagContents
+   */
+  private updateTagContents = function (tagIndex, tagContents) {
+    if (tagIndex >= 0 && tagIndex < this.items.length) {
+      this.items[tagIndex] = tagContents;
+      this.ngModelCtrl.$setDirty();
+    }
+  };
+
+
   private onKeydown(event: KeyboardEvent) {
-    if (this.tagBuffer || this.disabled) return;
+    if (this.gettagBuffer()) return;
+    if (this.isEditingTag()) return;
 
-    // Backspace / Del Key
-    else if (event.keyCode === 8 || event.keyCode === 46) {
-      if (this.selectedTag < 0) return;
-      event.preventDefault();
-      this.removeAndSelectAdjacentTag(this.selectedTag);
-    }
-
-    // Left Arrow
-    else if (event.keyCode === 37) {
-      event.preventDefault();
-      if (this.selectedTag < 0) this.selectedTag = this.items.length;
-      if (this.items.length) this.selectAndFocusTagSafe(this.selectedTag - 1);
-    }
-
-    // Right Arrow
-    else if (event.keyCode === 39) {
-      event.preventDefault();
-      this.selectAndFocusTagSafe(this.selectedTag + 1);
-    }
-
-    // Escape / Tab Key
-    else if (event.keyCode === 27 || event.keyCode === 9) {
-      if (this.selectedTag < 0) return;
-      event.preventDefault();
-      this.onFocus();
+    switch (event.keyCode) {
+      case this.$mdConstant.KEY_CODE.BACKSPACE:
+      case this.$mdConstant.KEY_CODE.DELETE:
+        if (this.selectedTag < 0) return;
+        event.preventDefault();
+        this.removeAndSelectAdjacentTag(this.selectedTag);
+        break;
+      case this.$mdConstant.KEY_CODE.LEFT_ARROW:
+        event.preventDefault();
+        if (this.selectedTag < 0) this.selectedTag = this.items.length;
+        if (this.items.length) this.selectAndFocusTagSafe(this.selectedTag - 1);
+        break;
+      case this.$mdConstant.KEY_CODE.RIGHT_ARROW:
+        event.preventDefault();
+        this.selectAndFocusTagSafe(this.selectedTag + 1);
+        break;
+      case this.$mdConstant.KEY_CODE.ESCAPE:
+      case this.$mdConstant.KEY_CODE.TAB:
+        if (this.selectedTag < 0) return;
+        event.preventDefault();
+        this.onFocus();
+        break;
     }
   }
 
   private removeAndSelectAdjacentTag(index: number) {
     var selIndex = this.getAdjacentTagIndex(index);
     this.removeTag(index);
-    this.selectAndFocusTagSafe(selIndex);
+    this.$timeout(angular.bind(this, function () {
+      this.selectAndFocusTagSafe(selIndex);
+    }));
   }
 
   private resetselectedTag() {
@@ -287,20 +522,62 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
       (index == len) ? index - 1 : index;
   }
 
-  
+  private appendTag(newTag) {
+
+    // If items contains an identical object to newTag, do not append
+    if (angular.isObject(newTag)) {
+      var identical = this.items.some(function (item) {
+        return angular.equals(newTag, item);
+      });
+      if (identical) return;
+    }
+
+    // Check for a null (but not undefined), or existing tag and cancel appending
+    if (newTag == null || this.items.indexOf(newTag) + 1) return;
+
+    // Append the new tag onto our list
+    var index = this.items.push(newTag);
+
+    // Update model validation
+    this.ngModelCtrl.$setDirty();
+    this.validateModel();
+
+    // If they provide the md-on-add attribute, notify them of the tag addition
+    if (this.useOnAdd && this.onAdd) {
+      this.onAdd({ '$tag': newTag, '$index': index });
+    }
+  }
+
+  private resettagBuffer = function () {
+    if (this.userInputElement) {
+      if (this.userInputNgModelCtrl) {
+        this.userInputNgModelCtrl.$setViewValue('');
+        this.userInputNgModelCtrl.$render();
+      } else {
+        this.userInputElement[0].value = '';
+      }
+    } else {
+      this.tagBuffer = '';
+    }
+  }
+
+
   /**
    * Removes the tag at the given index.
    * @param index
    */
-  private removeTagAndFocusInput(index: number) {
+  private removeTag = function (index) {
+    var removed = this.items.splice(index, 1);
+  };
+
+  private removeTagAndFocusInput = function (index) {
     this.removeTag(index);
     this.onFocus();
   };
-
-  private removeTag(index: number) {
-    this.items.splice(index, 1);
-  }
-
+  /**
+   * Selects the tag at `index`,
+   * @param index
+   */
   private selectAndFocusTagSafe = function (index) {
     if (!this.items.length) {
       this.selectTag(-1);
@@ -320,29 +597,30 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
     }
   }
 
-  //private selectAndFocusTag(index) {
-  //  this.selectTag(index);
-  //  if (index != -1) {
-  //    this.focusTag(index);
-  //  }
-  //}
+  private selectAndFocusTag(index) {
+    this.selectTag(index);
+    if (index != -1) {
+      this.focusTag(index);
+    }
+  }
 
   private focusTag(index) {
-    //this.$element[0].querySelector('md-tag[index="' + index + '"] ._md-tag-content').focus();
+    this.$element[0].querySelector('md-tag[index="' + index + '"] ._md-tag-content').focus();
   }
 
   private onFocus() {
-    this.element.nativeElement.querySelector('input').focus();
+    var input = this.$element[0].querySelector('input');
+    input && input.focus();
     this.resetselectedTag();
   }
 
   private onInputFocus() {
-    this.inputFocused = true;
+    this.inputHasFocus = true;
     this.resetselectedTag();
   }
 
   private onInputBlur() {
-    this.inputFocused = false;
+    this.inputHasFocus = false;
   }
 
 
@@ -372,7 +650,22 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
   //    .on('blur', function (event) { scopeApplyFn(event, ctrl.onInputBlur) })
   //}
 
- 
+  private configureAutocomplete(ctrl) {
+    if (ctrl) {
+      this.hasAutocomplete = true;
+
+      ctrl.registerSelectedItemWatcher(angular.bind(this, function (item) {
+        if (item) {
+          this.appendTag(item);
+          this.resettagBuffer();
+        }
+      }));
+
+      this.$element.find('input')
+        .on('focus', angular.bind(this, this.onInputFocus))
+        .on('blur', angular.bind(this, this.onInputBlur));
+    }
+  }
 
   //=============================================================================================================================================
 

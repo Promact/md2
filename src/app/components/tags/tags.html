@@ -10,6 +10,12 @@
       </md2-tags>
       <hr />
       <pre>{{tag | json}}</pre>
+      <md2-tags [md-tags]="tags"
+                md-tag-text="name"
+                [(ngModel)]="tag"
+                (change)="change($event)"
+                placeholder="+Tag">
+      </md2-tags>
     </div>
     <div class="col-sm-6">
       <p>The <strong>chips component</strong> is to provide an add multiple items.</p>

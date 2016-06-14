@@ -23,7 +23,7 @@ const MD2_TAGS_CONTROL_VALUE_ACCESSOR = new Provider(NG_VALUE_ACCESSOR, {
         </span>
         <span class="md2-tag-add">
           <input [(ngModel)]="tagBuffer" type="text" tabs="false" autocomplete="off" tabindex="-1" [disabled]="disabled" class="md2-tags-input" [placeholder]="placeholder" (focus)="onInputFocus()" (blur)="onInputBlur()" (keydown)="inputKeydown($event)" />
-          <ul *ngIf="isMenuVisible" class="md2-tags-menu">
+          <ul *ngIf="isMenuVisible" class="md2-tags-menu" (mouseenter)="listEnter()" (mouseleave)="listLeave()">
             <li class="md2-option" *ngFor="let l of list; #i = index;" [class.focused]="focusedTag === i" (click)="addTag($event, i)">
               <div class="md2-option-text" [innerHtml]="l.text | hightlight:tagBuffer"></div>
             </li>
@@ -96,6 +96,7 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
   private selectedTag: number = -1;
   private tagBuffer: string = '';
   private inputFocused: boolean = false;
+  private noBlur: boolean = true;
 
   @Input() id: string = 'md2-tags-' + (++nextId);
   @Input() disabled: boolean = false;
@@ -142,7 +143,7 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
   //  //
   //}
   get isMenuVisible(): boolean {
-    return this.inputFocused || (this.tagBuffer && this.list && this.list.length > 0) ? true : false;
+    return ((this.inputFocused || this.noBlur) && this.tagBuffer && this.list && this.list.length) ? true : false;
   }
 
   private updateScroll() {
@@ -323,7 +324,6 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
 
   @HostListener('focus')
   private onFocus() {
-    this.updateMatches();
     this.element.nativeElement.querySelector('input').focus();
     this.resetselectedTag();
   }
@@ -337,11 +337,9 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
     this.inputFocused = false;
   }
 
-  private updateMatches() {
-    //this.tempList = this._tags.map((tag: any) => new Tag(tag, this.textKey, this.valueKey));
-    //this.list = this.tempList.filter((option: Tag) => (!this.items.find((o: Tag) => option.text === o.text)));
-    //this.tempList = this.list;
-  }
+  private listEnter() { this.noBlur = true; }
+
+  private listLeave() { this.noBlur = false; }
 
   private filterMatches(query: RegExp) {
     let tempList = this._tags.map((tag: any) => new Tag(tag, this.textKey, this.valueKey));

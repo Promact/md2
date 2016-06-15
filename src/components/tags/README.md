@@ -60,7 +60,7 @@ export class ... {
   - `placeholder` (`?string=''`) - Placeholder text to display hint text.
   - `disabled` (`?boolean=false`) - When `true`, it specifies that the component should be disabled.
   - `md-tag-text` (`?string=''`) - Map items array with object to display 'text' property with the array.
-  - `md-tag-value` (`?string=''`) - Map items array with object to return 'value' and update 'ngModel' object with the value property, if `md-tag-value` is null then it return 'value' as whole object of selected item from list.
+  - `md-tag-value` (`?string=''`) - Map items array with object to return 'value' and update 'ngModel' object with the value property, if `md-tag-value` is `null` then it return 'value' as whole object of selected item from list.
 
 ### Events
 

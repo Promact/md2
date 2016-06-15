@@ -1,6 +1,6 @@
 # md2-tabs
 
-Native Angular2 Material Tabs directive
+Native Angular2 Material Tabs component
 
 ## API
 

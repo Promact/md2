@@ -8,10 +8,23 @@ Example:
  
  ```html
 //HTML
+
+<input [(colorpicker)]="color"
+       position="right"
+       offset="0"
+       format="hex"
+       [style.background]="color"
+       [value]="color"
+       (change)="change($event)" />
+
+//--- or ---
+
 <div [(colorpicker)]="color"
      position="right"
      offset="0"
-     format="hex">
+     format="hex"
+     [style.background]="color"
+     (change)="change($event)">
 </div>
  ```
  ```ts
@@ -31,6 +44,10 @@ export class ... {
     ...
     
     private color: string = "#123456";
+
+    private change(value) { 
+      ...
+    }
 
     ...
 

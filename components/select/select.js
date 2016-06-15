@@ -52,6 +52,7 @@ let Md2Select = class Md2Select {
         this.change = new core_1.EventEmitter();
         this._options = null;
         this.tabindex = 0;
+        this.placeholder = '';
     }
     get name() { return this._name; }
     set name(value) {
@@ -66,7 +67,7 @@ let Md2Select = class Md2Select {
     set value(newValue) {
         if (this._value != newValue) {
             this._value = newValue;
-            this._updateSelecteOptionValue();
+            this._updateSelectedOptionValue();
             if (this._isInitialized) {
                 this._emitChangeEvent();
             }
@@ -90,10 +91,33 @@ let Md2Select = class Md2Select {
         this._isInitialized = true;
     }
     ngAfterContentChecked() {
-        let opt = this._options.filter(o => o.value === this.value)[0];
+        let opt = this._options.filter(o => this.equals(o.value, this.value))[0];
         if (opt) {
             this.selectedValue = document.getElementById(opt.id).innerHTML;
         }
+    }
+    equals(o1, o2) {
+        if (o1 === o2)
+            return true;
+        if (o1 === null || o2 === null)
+            return false;
+        if (o1 !== o1 && o2 !== o2)
+            return true;
+        let t1 = typeof o1, t2 = typeof o2, length, key, keySet;
+        if (t1 === t2 && t1 === 'object') {
+            keySet = Object.create(null);
+            for (key in o1) {
+                if (!this.equals(o1[key], o2[key]))
+                    return false;
+                keySet[key] = true;
+            }
+            for (key in o2) {
+                if (!(key in keySet) && key.charAt(0) !== '$' && o2[key])
+                    return false;
+            }
+            return true;
+        }
+        return false;
     }
     onClick(e) {
         if (this.disabled) {
@@ -118,7 +142,7 @@ let Md2Select = class Md2Select {
         this.isOpenable = true;
     }
     onKeyDown(e) {
-        if (this.disabled === true) {
+        if (this.disabled) {
             return;
         }
         // Tab Key
@@ -190,7 +214,7 @@ let Md2Select = class Md2Select {
             option.name = this.name;
         });
     }
-    _updateSelecteOptionValue() {
+    _updateSelectedOptionValue() {
         let isAlreadySelected = this._selected != null && this._selected.value == this._value;
         if (this._options != null && !isAlreadySelected) {
             let matchingOption = this._options.filter(option => option.value == this._value)[0];
@@ -231,6 +255,10 @@ __decorate([
     __metadata('design:type', Number)
 ], Md2Select.prototype, "tabindex", void 0);
 __decorate([
+    core_1.Input(), 
+    __metadata('design:type', String)
+], Md2Select.prototype, "placeholder", void 0);
+__decorate([
     core_1.HostBinding('class.md2-select-disabled'),
     core_1.Input(), 
     __metadata('design:type', Boolean)
@@ -266,7 +294,7 @@ Md2Select = __decorate([
         selector: 'md2-select',
         template: `
     <div class="md2-select-container">
-      <span *ngIf="selectedValue.length < 1" class="md2-select-placeholder">Placeholder</span>
+      <span *ngIf="selectedValue.length < 1" class="md2-select-placeholder">{{placeholder}}</span>
       <span *ngIf="selectedValue.length > 0" class="md2-select-value" [innerHtml]="selectedValue"></span>
       <i class="md2-select-icon"></i>
     </div>
@@ -290,7 +318,6 @@ Md2Select = __decorate([
   `],
         host: {
             'role': 'select',
-            '[id]': 'id',
             '[tabindex]': 'disabled ? -1 : tabindex',
             '[attr.aria-disabled]': 'disabled'
         },
@@ -341,7 +368,7 @@ let Md2Option = class Md2Option {
         this._disabled = (value != null && value !== false) ? true : null;
     }
     ngOnInit() {
-        this.selected = this.select.value === this._value;
+        this.selected = this.select.value == this._value;
         this.name = this.select.name;
     }
     onClick(event) {

@@ -23,9 +23,8 @@ let Select = class Select {
         ];
         this.items1 = ['Amsterdam', 'Birmingham', 'Dortmund', 'Gothenburg', 'London', 'Seville'];
         this.item2 = 'Gothenburg';
-        //private item: Array<any> = [{ name: 'Dortmund', value: '3' }];
-        //private item: any = { name: 'Dortmund', value: '3' };
-        this.item = '';
+        this.item = { value: '3', name: 'Dortmund', disabled: false };
+        //private item: string = '3';
         this.item1 = { name: 'Dortmund', value: '3' };
         this.xyz = 1;
         this.obj1 = { id: 1, name: 'ssss' };

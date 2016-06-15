@@ -22,6 +22,7 @@ const multiselect_1 = require('./components/multiselect/multiselect');
 const select_1 = require('./components/select/select');
 const switch_1 = require('./components/switch/switch');
 const tabs_1 = require('./components/tabs/tabs');
+const tags_1 = require('./components/tags/tags');
 const toast_1 = require('./components/toast/toast');
 const tooltip_1 = require('./components/tooltip/tooltip');
 let AppComponent = class AppComponent {
@@ -43,7 +44,7 @@ AppComponent = __decorate([
     core_1.Component({
         selector: "md2-app",
         templateUrl: "./app/app.html",
-        directives: [home_1.Home, accordion_1.Accordion, autocomplete_1.Autocomplete, collapse_1.Collapse, colorpicker_1.Colorpicker, dialog_1.DialogComponent, menu_1.Menu, multiselect_1.Multiselect, select_1.Select, switch_1.Switch, tabs_1.Tabs, toast_1.Toast, tooltip_1.Tooltip, router_deprecated_1.RouterLink, router_deprecated_1.ROUTER_DIRECTIVES]
+        directives: [home_1.Home, accordion_1.Accordion, autocomplete_1.Autocomplete, collapse_1.Collapse, colorpicker_1.Colorpicker, dialog_1.DialogComponent, menu_1.Menu, multiselect_1.Multiselect, select_1.Select, switch_1.Switch, tabs_1.Tabs, tags_1.Tags, toast_1.Toast, tooltip_1.Tooltip, router_deprecated_1.RouterLink, router_deprecated_1.ROUTER_DIRECTIVES]
     }),
     router_deprecated_1.RouteConfig([
         { path: '/', name: 'Home', component: home_1.Home },
@@ -57,6 +58,7 @@ AppComponent = __decorate([
         { path: '/Select', name: 'Select', component: select_1.Select },
         { path: '/Switch', name: 'Switch', component: switch_1.Switch },
         { path: '/Tabs', name: 'Tabs', component: tabs_1.Tabs },
+        { path: '/Tags', name: 'Tags', component: tags_1.Tags },
         { path: '/Toast', name: 'Toast', component: toast_1.Toast },
         { path: '/Tooltip', name: 'Tooltip', component: tooltip_1.Tooltip }
     ]), 

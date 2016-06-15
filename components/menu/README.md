@@ -11,7 +11,7 @@ HTML sample code
 //simple menu
 <div md2-menu>
   <button class="btn btn-primary" md2-menu-open>Default Menu <span class="caret"></span></button>
-  // add directional class to open menu on specific direction i.e. class="md2-menu-content right top"
+  //add directional class to open menu from specific direction i.e. class="md2-menu-content right top"
   <ul class="md2-menu-content">
     <li><a class="md2-menu-item">Badman</a></li>
     <li><a class="md2-menu-item">Sadman</a></li>

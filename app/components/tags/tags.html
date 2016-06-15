@@ -1,0 +1,33 @@
+<h1 class="page-header">Tags<small>(<a target="_blank" href="https://github.com/promact/md2/tree/master/src/tags/tags">Md2Tags</a>)</small></h1>
+<section id="tags">
+  <div class="row">
+    <div class="col-sm-6">
+      <md2-tags [md-tags]="tags"
+                md-tag-text="name"
+                [(ngModel)]="tag"
+                (change)="change($event)"
+                placeholder="+Tag">
+      </md2-tags>
+      <hr />
+      <pre>{{tag | json}}</pre>
+      <md2-tags [md-tags]="tags"
+                md-tag-text="name"
+                [(ngModel)]="tag"
+                (change)="change($event)"
+                placeholder="+Tag">
+      </md2-tags>
+    </div>
+    <div class="col-sm-6">
+      <p>The <strong>Tags component</strong> is to provide to select multiple items.</p>
+      <h3>md2-tags settings</h3>
+      <ul>
+        <li><code>md-tags</code> - (<code>Array&lt;any&gt;</code>) - Array of items for suggestion list.</li>
+        <li><code>ngModel</code> (<code>?Array&lt;any&gt;</code>) - two way data binding. This should be an array with single string or object.</li>
+        <li><code>placeholder</code> (<code>?string=''</code>) - Placeholder text to display hint text.</li>
+        <li><code>disabled</code> (<code>?boolean=false</code>) - When <code>true</code>, it specifies that the component should be disabled.</li>
+        <li><code>md-tag-text</code> (<code>?string=''</code>) - Map items array with object to display 'text' property with the array.</li>
+        <li><code>md-tag-value</code> (<code>?string=''</code>) - Map items array with object to return 'value' and update 'ngModel' object with the value property, if <code>md-tag-value</code> is <code>null</code> then it return 'value' as whole object of selected item from list.</li>
+      </ul>
+    </div>
+  </div>
+</section>

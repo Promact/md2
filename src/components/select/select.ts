@@ -132,7 +132,7 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   }
 
   ngAfterContentChecked() {
-    let opt = this._options.filter(o => o.value === this.value)[0];
+    let opt = this._options.filter(o => o.value == this.value)[0];
     if (opt) {
       this.selectedValue = document.getElementById(opt.id).innerHTML;
     }
@@ -162,7 +162,7 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
 
   @HostListener('keydown', ['$event'])
   public onKeyDown(e: any) {
-    if (this.disabled === true) { return; }
+    if (this.disabled) { return; }
 
     // Tab Key
     if (e.keyCode === 9) {
@@ -345,7 +345,7 @@ export class Md2Option implements OnInit {
   }
 
   ngOnInit() {
-    this.selected = this.select.value === this._value;
+    this.selected = this.select.value == this._value;
     this.name = this.select.name;
   }
 

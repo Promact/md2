@@ -37,9 +37,8 @@ export class Select {
   ];
   private items1: Array<string> = ['Amsterdam', 'Birmingham', 'Dortmund', 'Gothenburg', 'London', 'Seville'];
   private item2: string = 'Gothenburg';
-  //private item: Array<any> = [{ name: 'Dortmund', value: '3' }];
-  //private item: any = { name: 'Dortmund', value: '3' };
-  private item: string = '';
+  private item: any = { name: 'Dortmund', value: '3', disabled: false };
+  //private item: string = '3';
   private item1: any = { name: 'Dortmund', value: '3' };
   private change(value: any) {
     console.log('Changed data: ', value);

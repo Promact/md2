@@ -1,6 +1,6 @@
 # md2
 
-Angular2 based Material Design components, directives and services are Accordion, Autocomplete, Collapse, Colorpicker, Datepicker, Dialog(Modal), Menu, Multiselect, Select, Switch, Tabs, Toast and Tooltip.
+Angular2 based Material Design components, directives and services are Accordion, Autocomplete, Collapse, Colorpicker, Datepicker, Dialog(Modal), Menu, Multiselect, Select, Switch, Tabs, Tags(Chips), Toast and Tooltip.
 
 
 ## Quick start
@@ -57,5 +57,6 @@ system.config.js
 - [md2-select](https://github.com/promact/md2/tree/master/src/components/select)
 - [md2-switch](https://github.com/promact/md2/tree/master/src/components/switch)
 - [md2-tabs](https://github.com/promact/md2/tree/master/src/components/tabs)
+- [md2-tags](https://github.com/promact/md2/tree/master/src/components/tags)
 - [md2-toast](https://github.com/promact/md2/tree/master/src/components/toast)
 - [md2-tooltip](https://github.com/promact/md2/tree/master/src/components/tooltip)

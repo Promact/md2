@@ -15,36 +15,33 @@ const MD2_TAGS_CONTROL_VALUE_ACCESSOR = new Provider(NG_VALUE_ACCESSOR, {
   selector: 'md2-tags',
   pipes: [HightlightPipe],
   template: `
-    <div class="md2-tags-layout">
-      <div class="md2-tags-container">
-        <span *ngFor="let t of items; let i = index;" class="md2-tag" [class.active]="selectedTag === i" (click)="selectTag(i)">
-          <span class="md2-tag-text">{{t.text}}</span>
-          <span class="md2-remove-icon" (click)="removeTagAndFocusInput(i)"></span>
-        </span>
-        <span class="md2-tag-add">
-          <input [(ngModel)]="tagBuffer" type="text" tabs="false" autocomplete="off" tabindex="-1" [disabled]="disabled" class="md2-tags-input" [placeholder]="placeholder" (focus)="onInputFocus()" (blur)="onInputBlur()" (keydown)="inputKeydown($event)" (change)="$event.stopPropagation()" />
-          <ul *ngIf="isMenuVisible" class="md2-tags-menu" (mouseenter)="listEnter()" (mouseleave)="listLeave()">
-            <li class="md2-option" *ngFor="let l of list; let i = index;" [class.focused]="focusedTag === i" (click)="addTag($event, i)">
-              <div class="md2-option-text" [innerHtml]="l.text | hightlight:tagBuffer"></div>
-            </li>
-          </ul>
-        </span>
-      </div>
+    <div class="md2-tags-container">
+      <span *ngFor="let t of items; let i = index;" class="md2-tag" [class.active]="selectedTag === i" (click)="selectTag(i)">
+        <span class="md2-tag-text">{{t.text}}</span>
+        <span class="md2-remove-icon" (click)="removeTagAndFocusInput(i)"></span>
+      </span>
+      <span class="md2-tag-add">
+        <input [(ngModel)]="tagBuffer" type="text" tabs="false" autocomplete="off" tabindex="-1" [disabled]="disabled" class="md2-tags-input" [placeholder]="placeholder" (focus)="onInputFocus()" (blur)="onInputBlur()" (keydown)="inputKeydown($event)" (change)="$event.stopPropagation()" />
+        <ul *ngIf="isMenuVisible" class="md2-tags-menu" (mouseenter)="listEnter()" (mouseleave)="listLeave()">
+          <li class="md2-option" *ngFor="let l of list; let i = index;" [class.focused]="focusedTag === i" (click)="addTag($event, i)">
+            <span class="md2-option-text" [innerHtml]="l.text | hightlight:tagBuffer"></span>
+          </li>
+        </ul>
+      </span>
     </div>
   `,
   styles: [`
     .md2-tags { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
     .md2-tags:focus { outline: none; }
-    .md2-tags .md2-tags-layout { position: relative; display: block; }
-    .md2-tags .md2-tags-container { display: block; width: 100%; align-items: center; padding: 2px 3px 8px; border-bottom: 1px solid rgba(0, 0, 0, 0.38); position: relative; -moz-box-sizing: content-box; -webkit-box-sizing: content-box; box-sizing: content-box; min-width: 64px; min-height: 26px; flex-grow: 1; cursor: text; }
+    .md2-tags .md2-tags-container { position: relative; display: block; max-width: 100%; padding: 2px 3px 8px; border-bottom: 1px solid rgba(0, 0, 0, 0.38); -moz-box-sizing: content-box; -webkit-box-sizing: content-box; box-sizing: content-box; min-width: 64px; min-height: 26px; cursor: text; }
     .md2-tags .md2-tags-container:before, .md2-tags .md2-tags-container:after { display: table; content: " "; }
     .md2-tags .md2-tags-container:after { clear: both; }
     .md2-tags.focus .md2-tags-container { padding-bottom: 7px; border-bottom: 2px solid #106cc8; }
-    .md2-tags.md2-tags-disabled .md2-tags-container { color: rgba(0,0,0,0.38); }
+    .md2-tags.md2-tags-disabled .md2-tags-container { color: rgba(0,0,0,0.38); cursor: default; }
     .md2-tags.md2-tags-disabled.focus .md2-tags-container { padding-bottom: 1px; border-bottom: 1px solid rgba(0, 0, 0, 0.38); }
-    .md2-tags .md2-tags-container .md2-tag { cursor: default; border-radius: 16px; display: block; height: 32px; line-height: 32px; margin: 8px 8px 0 0; padding: 0 26px 0 12px; float: left; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; max-width: 100%; position: relative; background: rgb(224,224,224); color: rgb(66,66,66); white-space: nowrap; overflow: hidden; -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; }
+    .md2-tags .md2-tags-container .md2-tag { position: relative; cursor: default; border-radius: 16px; display: block; height: 32px; line-height: 32px; margin: 8px 8px 0 0; padding: 0 26px 0 12px; float: left; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; max-width: 100%; background: rgb(224,224,224); color: rgb(66,66,66); white-space: nowrap; overflow: hidden; -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; }
     .md2-tags .md2-tags-container .md2-tag.active { background: #106cc8; color: rgba(255,255,255,0.87); }
-    .md2-tags .md2-tags-container .md2-tag .md2-remove-icon { position: absolute; top: 7px; right: 0; cursor: pointer; display: inline-block; width: 18px; height: 18px; margin: 0 4px; overflow: hidden; }
+    .md2-tags .md2-tags-container .md2-tag .md2-remove-icon { position: absolute; top: 8px; right: 1px; cursor: pointer; display: inline-block; width: 16px; height: 16px; margin: 0 4px; overflow: hidden; }
     .md2-tags .md2-tag .md2-remove-icon::before,
     .md2-tags .md2-tag .md2-remove-icon::after { content: ''; position: absolute; height: 2px; width: 100%; top: 50%; left: 0; margin-top: -1px; background: #888; border-radius: 2px; }
     .md2-tags .md2-tag.active .md2-remove-icon::before,
@@ -170,7 +167,7 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
     if ((event.keyCode === 37 || event.keyCode === 39) && !this.tagBuffer) { return; }
     // Down Arrow
     if (event.keyCode === 40) {
-      if (!this.tagBuffer) return;
+      if (!this.isMenuVisible) return;
       event.stopPropagation();
       event.preventDefault();
       this.focusedTag = (this.focusedTag === this.list.length - 1) ? 0 : Math.min(this.focusedTag + 1, this.list.length - 1);
@@ -179,7 +176,7 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
     }
     // Up Arrow
     if (event.keyCode === 38) {
-      if (!this.tagBuffer) return;
+      if (!this.isMenuVisible) return;
       event.stopPropagation();
       event.preventDefault();
       this.focusedTag = (this.focusedTag === 0) ? this.list.length - 1 : Math.max(0, this.focusedTag - 1);
@@ -200,6 +197,7 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
       event.stopPropagation();
       event.preventDefault();
       if (this.tagBuffer) this.tagBuffer = '';
+      if (this.selectedTag >= 0) this.onFocus();
       return;
     }
     //reset selected tag

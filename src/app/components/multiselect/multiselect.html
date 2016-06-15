@@ -4,18 +4,21 @@
 <section id="multiselect">
   <div class="row">
     <div class="col-sm-6">
-      <select [(ngModel)]="item" (change)="change($event)" placeholder="placeholder" multiple>
-        <option [value]="i.value" *ngFor="let i of items">{{i.name}}</option>
-      </select>
-      <hr />
-      <pre>{{item | json}}</pre>
-      <hr />
-      <md2-multiselect [(ngModel)]="item" (change)="change($event)" [disabled]="disabled">
-        <md2-option *ngFor="let i of items" [value]="i.value" [disabled]="i.disabled">{{i.name}}</md2-option>
+      <md2-multiselect [items]="items"
+                       [item-text]="'name'"
+                       [(ngModel)]="item"
+                       [disabled]="disabled"
+                       (change)="change($event)"
+                       placeholder="No city selected">
       </md2-multiselect>
       <hr />
-      <md2-multiselect [(ngModel)]="item" (change)="change($event)" [disabled]="disabled">
-        <md2-option *ngFor="let i of items" [value]="i.value" [disabled]="i.disabled">{{i.name}}</md2-option>
+      <pre>{{item | json}}</pre>
+      <md2-multiselect [items]="items"
+                       [item-text]="'name'"
+                       [(ngModel)]="item"
+                       [disabled]="disabled"
+                       (change)="change($event)"
+                       placeholder="No city selected">
       </md2-multiselect>
     </div>
     <div class="col-sm-6">

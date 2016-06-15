@@ -1,12 +1,11 @@
 import {Component} from '@angular/core';
 
-import {MULTISELECT_DIRECTIVES, Md2MultiselectDispatcher} from '../../../components/multiselect/multiselect';
+import {Md2Multiselect} from '../../../components/multiselect/multiselect';
 
 @Component({
   selector: 'multiselect',
   templateUrl: './app/components/multiselect/multiselect.html',
-  directives: [MULTISELECT_DIRECTIVES],
-  providers: [Md2MultiselectDispatcher]
+  directives: [Md2Multiselect]
 })
 export class Multiselect {
   private disabled: boolean = false;
@@ -18,8 +17,10 @@ export class Multiselect {
     { name: 'Gothenburg', value: '4' },
     { name: 'London', value: '5' },
     { name: 'Seville', value: '6' }
+    //'Amsterdam', 'Birmingham', 'Dortmund', 'Gothenburg', 'London', 'Seville'
   ];
-  private item: Array<any> = ['2', '3'];
+  private item: Array<any> = [{ name: 'Birmingham', value: '2' }, { name: 'Dortmund', value: '3' }];
+  //private item: Array<any> = ['Birmingham', 'Dortmund'];
   private change(value: any) {
     console.log('Changed data: ', value);
   }

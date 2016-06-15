@@ -38,6 +38,7 @@ build
 *.js
 *.js.map
 *.d.ts
+!gulpfile.js
 src/**/*.js
 src/**/*.js.map
 src/**/*.d.ts

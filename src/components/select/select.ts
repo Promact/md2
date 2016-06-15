@@ -132,10 +132,41 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   }
 
   ngAfterContentChecked() {
-    let opt = this._options.filter(o => o.value == this.value)[0];
+    let opt = this._options.filter((o) => {
+      //let o1 = o.value, o2 = this.value;
+      //if (o.value == this.value) return true;
+      //if (o1 === null || o2 === null) return false;
+      //if (o1 !== o1 && o2 !== o2) return true;
+      //let t1 = typeof o1, t2 = typeof o2;
+      //if (t1 === t2 && t1 === 'object') {
+      //  if (JSON.stringify(o1) === JSON.stringify(o2)) return true;
+      //  else return false;
+      //}
+      //return false;
+      return this.equals(o.value, this.value);
+    })[0];
     if (opt) {
       this.selectedValue = document.getElementById(opt.id).innerHTML;
     }
+  }
+
+  private equals(o1, o2) {
+    if (o1 === o2) return true;
+    if (o1 === null || o2 === null) return false;
+    if (o1 !== o1 && o2 !== o2) return true;
+    let t1 = typeof o1, t2 = typeof o2, length, key, keySet;
+    if (t1 === t2 && t1 === 'object') {
+      keySet = Object.create(null);
+      for (key in o1) {
+        if (!this.equals(o1[key], o2[key])) return false;
+        keySet[key] = true;
+      }
+      for (key in o2) {
+        if (!(key in keySet) && key.charAt(0) !== '$' && o2[key]) return false;
+      }
+      return true;
+    }
+    return false;
   }
 
   @HostListener('click', ['$event'])

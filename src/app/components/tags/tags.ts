@@ -18,7 +18,10 @@ export class Tags {
     { name: 'London', value: '5' },
     { name: 'Seville', value: '6' }
   ];
-  private tag: Array<any> = [];
+  private tag: Array<any> = [
+    { name: 'Dortmund', value: '3' },
+    { name: 'Gothenburg', value: '4' }
+  ];
   private change(value: any) {
     console.log('Changed data: ', value);
   }

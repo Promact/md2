@@ -22,7 +22,7 @@ export * from '../multiselect/multiselect';
 export * from '../select/select';
 export * from '../switch/switch';
 export * from '../tabs/tabs';
-export * from '../tabs/tags';
+export * from '../tags/tags';
 export * from '../toast/toast';
 export * from '../tooltip/tooltip';
 

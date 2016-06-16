@@ -18,7 +18,7 @@ const MD2_AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR = new Provider(NG_VALUE_ACCESSOR, 
     <div class="md2-autocomplete-container">
       <div class="md2-autocomplete-value">
         <input [(ngModel)]="inputValue" type="text" autocomplete="false" tabindex="0" (click)="onClick()" (keydown)="onKeyDown($event)" [disabled]="disabled" class="md2-autocomplete-input" [placeholder]="placeholder">
-        <i *ngIf="inputValue.length" (click)="clear(currentItem)" class="md2-autocomplete-icon-clear"></i>
+        <em *ngIf="inputValue.length" (click)="clear(currentItem)" class="md2-autocomplete-icon-clear"></em>
       </div>
       <ul *ngIf="isMenuOpened && list && list.length > 0" class="md2-autocomplete-suggestions">
         <li class="md2-item" *ngFor="let l of list" [class.active]="isActive(l)" [class.focus]="isFocus(l)" (click)="selectItemOnMatch(l, $event)">
@@ -28,7 +28,7 @@ const MD2_AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR = new Provider(NG_VALUE_ACCESSOR, 
     </div>
   `,
   styles: [`
-    .md2-autocomplete-container { position: relative; display: block; outline: none; }
+    .md2-autocomplete-container { position: relative; display: block; outline: none; -moz-backface-visibility: hidden; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
     .md2-autocomplete-container .md2-autocomplete-value { display: flex; width: 100%; outline: none; align-items: center; padding: 2px 0 1px; border-bottom: 1px solid rgba(0, 0, 0, 0.38); position: relative; -moz-box-sizing: content-box; -webkit-box-sizing: content-box; box-sizing: content-box; min-width: 64px; min-height: 26px; flex-grow: 1; cursor: pointer; }
     .md2-autocomplete-container:focus .md2-autocomplete-value { padding-bottom: 0; border-bottom: 2px solid #106cc8; }
     .md2-autocomplete-container.disabled .md2-autocomplete-value { color: rgba(0,0,0,0.38); }
@@ -227,10 +227,10 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
     if (typeof this._value === 'object') {
       if (Array.isArray(this._value)) {
         this._value = new Array<any>();
-        this._value.push(this._items.find((item: any) => item[this.itemText] == value.text));
+        this._value.push(this._items.find((item: any) => item[this.itemText] === value.text));
       } else {
         this._value = new Object();
-        let itm = this._items.find((item: any) => item[this.itemText] == value.text);
+        let itm = this._items.find((item: any) => item[this.itemText] === value.text);
         for (let i in itm) {
           this._value[i] = itm[i];
         }

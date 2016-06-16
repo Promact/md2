@@ -36,14 +36,14 @@ export class Md2OptionChange {
     <div class="md2-select-container">
       <span *ngIf="selectedValue.length < 1" class="md2-select-placeholder">{{placeholder}}</span>
       <span *ngIf="selectedValue.length > 0" class="md2-select-value" [innerHtml]="selectedValue"></span>
-      <i class="md2-select-icon"></i>
+      <em class="md2-select-icon"></em>
     </div>
     <div class="md2-select-menu" [class.open]="isMenuOpened">
       <ng-content></ng-content>    
     </div>
   `,
   styles: [`
-    md2-select { position: relative; display: block; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+    md2-select { position: relative; display: block; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -moz-backface-visibility: hidden; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
     md2-select:focus { outline: none; }
     md2-select .md2-select-container { display: flex; width: 100%; align-items: center; padding: 2px 0 1px; border-bottom: 1px solid rgba(0, 0, 0, 0.38); position: relative; -moz-box-sizing: content-box; -webkit-box-sizing: content-box; box-sizing: content-box; min-width: 64px; min-height: 26px; flex-grow: 1; cursor: pointer; }
     md2-select:focus .md2-select-container { padding-bottom: 0; border-bottom: 2px solid #106cc8; }
@@ -97,12 +97,12 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   @HostBinding('class.md2-select-disabled')
   @Input() get disabled(): boolean { return this._disabled; }
   set disabled(value) {
-    this._disabled = (value != null && value !== false) ? true : null;
+    this._disabled = (value !== null && value !== false) ? true : null;
   }
 
   @Input() get value(): any { return this._value; }
   set value(newValue: any) {
-    if (this._value != newValue) {
+    if (this._value !== newValue) {
       this._value = newValue;
       this._updateSelectedOptionValue();
       if (this._isInitialized) {
@@ -259,14 +259,14 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   }
 
   private _updateSelectedOptionValue(): void {
-    let isAlreadySelected = this._selected != null && this._selected.value == this._value;
+    let isAlreadySelected = this._selected !== null && this._selected.value === this._value;
 
-    if (this._options != null && !isAlreadySelected) {
-      let matchingOption = this._options.filter(option => option.value == this._value)[0];
+    if (this._options !== null && !isAlreadySelected) {
+      let matchingOption = this._options.filter(option => option.value === this._value)[0];
 
       if (matchingOption) {
         this.selected = matchingOption;
-      } else if (this.value == null) {
+      } else if (this.value === null) {
         this.selected = null;
         this._options.forEach(option => { option.selected = false; });
       }
@@ -325,7 +325,7 @@ export class Md2Option implements OnInit {
   constructor(select: Md2Select, public selectDispatcher: Md2SelectDispatcher) {
     this.select = select;
     selectDispatcher.listen((id: string, name: string) => {
-      if (id != this.id && name == this.name) {
+      if (id !== this.id && name === this.name) {
         this.selected = false;
       }
     });
@@ -339,14 +339,14 @@ export class Md2Option implements OnInit {
 
     this._selected = newSelectedState;
 
-    if (newSelectedState && this.select.value != this.value) {
+    if (newSelectedState && this.select.value !== this.value) {
       this.select.selected = this;
     }
   }
 
   @Input() get value(): any { return this._value; }
   set value(value: any) {
-    if (this._value != value) {
+    if (this._value !== value) {
       if (this.selected) {
         this.select.value = value;
       }
@@ -360,11 +360,11 @@ export class Md2Option implements OnInit {
   }
 
   set disabled(value: boolean) {
-    this._disabled = (value != null && value !== false) ? true : null;
+    this._disabled = (value !== null && value !== false) ? true : null;
   }
 
   ngOnInit() {
-    this.selected = this.select.value == this._value;
+    this.selected = this.select.value === this._value;
     this.name = this.select.name;
   }
 

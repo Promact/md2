@@ -227,7 +227,7 @@ export class ColorpickerComponent implements OnInit {
 
   onMouseDown(event: any) {
     if (!this.isDescendant(this.el.nativeElement, event.target)
-      && event.target != this.directiveElementRef.nativeElement) {
+      && event.target !== this.directiveElementRef.nativeElement) {
       this.closeColorpicker();
     }
 

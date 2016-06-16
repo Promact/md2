@@ -31,7 +31,7 @@ const MD2_TAGS_CONTROL_VALUE_ACCESSOR = new Provider(NG_VALUE_ACCESSOR, {
     </div>
   `,
   styles: [`
-    .md2-tags { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+    .md2-tags { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -moz-backface-visibility: hidden; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
     .md2-tags:focus { outline: none; }
     .md2-tags .md2-tags-container { position: relative; display: block; max-width: 100%; padding: 2px 3px 8px; border-bottom: 1px solid rgba(0, 0, 0, 0.38); -moz-box-sizing: content-box; -webkit-box-sizing: content-box; box-sizing: content-box; min-width: 64px; min-height: 26px; cursor: text; }
     .md2-tags .md2-tags-container:before, .md2-tags .md2-tags-container:after { display: table; content: " "; }
@@ -253,8 +253,8 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
 
   private getAdjacentTagIndex(index: number) {
     var len = this.items.length - 1;
-    return (len == 0) ? -1 :
-      (index == len) ? index - 1 : index;
+    return (len === 0) ? -1 :
+      (index === len) ? index - 1 : index;
   }
 
   private addTag(event, index) {

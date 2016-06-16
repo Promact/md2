@@ -81,7 +81,7 @@ export class Md2Switch implements AfterContentInit, ControlValueAccessor {
 
   @Input() get checked() { return this._checked; }
   set checked(checked: boolean) {
-    if (checked != this._checked) {
+    if (checked !== this._checked) {
       this._checked = checked;
       if (this._isInitialized) {
         this.change.emit(this._checked);

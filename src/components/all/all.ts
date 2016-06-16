@@ -8,6 +8,7 @@ import { Md2Multiselect } from '../multiselect/multiselect';
 import { SELECT_DIRECTIVES } from '../select/select';
 import { Md2Switch } from '../switch/switch';
 import { TABS_DIRECTIVES } from '../tabs/tabs';
+import { Md2Tags } from '../tags/tags';
 import { Md2Toast } from '../toast/toast';
 import { TOOLTIP_DIRECTIVES } from '../tooltip/tooltip';
 
@@ -21,7 +22,8 @@ export * from '../multiselect/multiselect';
 export * from '../select/select';
 export * from '../switch/switch';
 export * from '../tabs/tabs';
+export * from '../tabs/tags';
 export * from '../toast/toast';
 export * from '../tooltip/tooltip';
 
-export const MD2_ALL_DIRECTIVES: Array<any> = [ACCORDION_DIRECTIVES, Md2Autocomplete, Md2Collapse, Md2Colorpicker, Md2ColorpickerService, Md2Dialog, MENU_DIRECTIVES, Md2Multiselect, SELECT_DIRECTIVES, Md2Switch, TABS_DIRECTIVES, Md2Toast, TOOLTIP_DIRECTIVES];
+export const MD2_ALL_DIRECTIVES: Array<any> = [ACCORDION_DIRECTIVES, Md2Autocomplete, Md2Collapse, Md2Colorpicker, Md2ColorpickerService, Md2Dialog, MENU_DIRECTIVES, Md2Multiselect, SELECT_DIRECTIVES, Md2Switch, TABS_DIRECTIVES, Md2Tags, Md2Toast, TOOLTIP_DIRECTIVES];

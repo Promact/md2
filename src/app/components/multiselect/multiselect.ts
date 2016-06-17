@@ -1,12 +1,12 @@
 import {Component} from '@angular/core';
 
-import {MULTISELECT_DIRECTIVES, Md2MultiselectDispatcher} from '../../../components/multiselect/multiselect1';
+import {SELECT_DIRECTIVES, Md2SelectDispatcher} from '../../../components/multiselect/multiselect';
 
 @Component({
   selector: 'multiselect',
   templateUrl: './app/components/multiselect/multiselect.html',
-  directives: [MULTISELECT_DIRECTIVES],
-  providers: [Md2MultiselectDispatcher]
+  directives: [SELECT_DIRECTIVES],
+  providers: [Md2SelectDispatcher]
 })
 export class Multiselect {
   private disabled: boolean = false;

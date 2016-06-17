@@ -7,6 +7,12 @@
           {{tab.content}}
         </md2-accordion-tab>
       </md2-accordion>
+      <br />
+      <md2-accordion [multiple]="multiple">
+        <md2-accordion-tab *ngFor="let tab of accordions" [header]="tab.title" [active]="tab.active" [disabled]="tab.disabled">
+          {{tab.content}}
+        </md2-accordion-tab>
+      </md2-accordion>
     </div>
     <div class="col-sm-6">
       <p>The <strong>accordion component</strong> builds on top of the collapse directive to provide a list of items, with collapsible bodies that are collapsed or expanded by clicking on the item's header.</p>

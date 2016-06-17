@@ -2,7 +2,7 @@
 <section id="multiselect">
   <div class="row">
     <div class="col-sm-6">
-      <md2-select [(ngModel)]="item" (change)="change($event)" [disabled]="disabled">
+      <md2-select [(ngModel)]="item" (change)="change($event)" [disabled]="disabled" placeholder="Hint Text">
         <md2-option *ngFor="let i of items" [value]="i.value" [disabled]="i.disabled">{{i.name}}</md2-option>
       </md2-select>
       <hr />
@@ -12,13 +12,13 @@
       <hr />
       <pre>{{item | json}}</pre>
       <hr />
-      <md2-multiselect [(ngModel)]="item" (change)="change($event)" [disabled]="disabled">
+      <md2-select [(ngModel)]="item" (change)="change($event)" [disabled]="disabled" multiple="true" placeholder="Hint Text">
         <md2-option *ngFor="let i of items" [value]="i.value" [disabled]="i.disabled">{{i.name}}</md2-option>
-      </md2-multiselect>
+      </md2-select>
       <hr />
-      <md2-multiselect [(ngModel)]="item" (change)="change($event)" [disabled]="disabled">
+      <md2-select [(ngModel)]="item" (change)="change($event)" [disabled]="disabled" placeholder="Hint Text">
         <md2-option *ngFor="let i of items" [value]="i.value" [disabled]="i.disabled">{{i.name}}</md2-option>
-      </md2-multiselect>
+      </md2-select>
     </div>
     <div class="col-sm-6">
       <p>The <strong>multiselect component</strong> is to provide a multi select functionality.</p>

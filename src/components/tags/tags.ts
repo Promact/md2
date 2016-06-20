@@ -187,7 +187,7 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
     if (event.keyCode === 9) { return; }
     // Enter / Space
     if (event.keyCode === 13 || event.keyCode === 32) {
-      if (!this.tagBuffer) return;
+      if (!this.tagBuffer || !this.isMenuVisible) return;
       event.preventDefault();
       this.addTag(event, this.focusedTag);
       return;

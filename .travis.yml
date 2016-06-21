@@ -10,12 +10,13 @@ branches:
 
 before_script:
   - npm install -g gulp
+	- npm install -g typescript
 
 script:
 	- gulp clean
 	- gulp build
 	- gulp clean
-	- c:\Users\dharmesh\AppData\Roaming\npm\tsc
+	- tsc
 
 install:
   - npm install

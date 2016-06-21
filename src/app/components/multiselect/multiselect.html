@@ -2,23 +2,22 @@
 <section id="multiselect">
   <div class="row">
     <div class="col-sm-6">
-      <md2-select [(ngModel)]="item" (change)="change($event)" [disabled]="disabled" placeholder="Hint Text">
-        <md2-option *ngFor="let i of items" [value]="i.value" [disabled]="i.disabled">{{i.name}}</md2-option>
-      </md2-select>
-      <hr />
-      <select [(ngModel)]="item" (change)="change($event)" placeholder="placeholder" multiple>
-        <option [value]="i.value" *ngFor="let i of items">{{i.name}}</option>
-      </select>
+      <md2-multiselect [items]="items"
+                       [item-text]="'name'"
+                       [(ngModel)]="item"
+                       [disabled]="disabled"
+                       (change)="change($event)"
+                       placeholder="No city selected">
+      </md2-multiselect>
       <hr />
       <pre>{{item | json}}</pre>
-      <hr />
-      <md2-select [(ngModel)]="item" (change)="change($event)" [disabled]="disabled" multiple="true" placeholder="Hint Text">
-        <md2-option *ngFor="let i of items" [value]="i.value" [disabled]="i.disabled">{{i.name}}</md2-option>
-      </md2-select>
-      <hr />
-      <md2-select [(ngModel)]="item" (change)="change($event)" [disabled]="disabled" placeholder="Hint Text">
-        <md2-option *ngFor="let i of items" [value]="i.value" [disabled]="i.disabled">{{i.name}}</md2-option>
-      </md2-select>
+      <md2-multiselect [items]="items"
+                       [item-text]="'name'"
+                       [(ngModel)]="item"
+                       [disabled]="disabled"
+                       (change)="change($event)"
+                       placeholder="No city selected">
+      </md2-multiselect>
     </div>
     <div class="col-sm-6">
       <p>The <strong>multiselect component</strong> is to provide a multi select functionality.</p>

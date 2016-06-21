@@ -1,6 +1,7 @@
-import {Directive, Input, HostListener, DynamicComponentLoader, ComponentRef, Provider, ReflectiveInjector, ViewContainerRef} from '@angular/core';
-import {Md2TooltipComponent} from './tooltip.component';
-import {Md2TooltipOptions} from './tooltip.options';
+import { ApplicationRef, ComponentRef, Directive, DynamicComponentLoader, HostListener, Input, Provider, ReflectiveInjector, ViewContainerRef } from '@angular/core';
+import { ViewContainerRef_ } from '@angular/core/src/linker/view_container_ref';
+import { Md2TooltipComponent } from './tooltip.component';
+import { Md2TooltipOptions } from './tooltip.options';
 
 @Directive({
   selector: '[tooltip]'
@@ -19,7 +20,7 @@ export class Md2Tooltip {
 
   private tooltip: Promise<ComponentRef<any>>;
 
-  public constructor(viewContainerRef: ViewContainerRef, loader: DynamicComponentLoader) {
+  public constructor(viewContainerRef: ViewContainerRef, loader: DynamicComponentLoader, private appRef: ApplicationRef) {
     this.viewContainerRef = viewContainerRef;
     this.loader = loader;
   }
@@ -43,8 +44,9 @@ export class Md2Tooltip {
     clearTimeout(this.timer);
     this.timer = setTimeout(() => {
       this.timer = 0;
+      let appElement: ViewContainerRef = new ViewContainerRef_(this.appRef['_rootComponents'][0]._hostElement);
       this.tooltip = this.loader
-        .loadNextToLocation(Md2TooltipComponent, this.viewContainerRef, binding)
+        .loadNextToLocation(Md2TooltipComponent, appElement, binding)
         .then((componentRef: ComponentRef<any>) => {
           return componentRef;
         });

@@ -300,7 +300,7 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
     md2-option .md2-option-text { width: auto; white-space: nowrap; overflow: hidden; -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; font-size: 16px; }
   `],
   host: {
-    'role': 'select-option',
+    'role': 'option',
     '(click)': 'onClick($event)'
   },
   encapsulation: ViewEncapsulation.None
@@ -320,8 +320,6 @@ export class Md2Option implements OnInit {
 
   select: Md2Select;
 
-  @Output() change: EventEmitter<Md2OptionChange> = new EventEmitter<Md2OptionChange>();
-
   constructor(select: Md2Select, public selectDispatcher: Md2SelectDispatcher) {
     this.select = select;
     selectDispatcher.listen((id: string, name: string) => {
@@ -332,14 +330,12 @@ export class Md2Option implements OnInit {
   }
 
   @HostBinding('class.md2-option-selected') @Input() get selected(): boolean { return this._selected; }
-  set selected(newSelectedState: boolean) {
-    if (newSelectedState) {
-      this.selectDispatcher.notify(this.id, this.name);
-    }
+  set selected(selected: boolean) {
+    if (selected) { this.selectDispatcher.notify(this.id, this.name); }
 
-    this._selected = newSelectedState;
+    this._selected = selected;
 
-    if (newSelectedState && this.select.value !== this.value) {
+    if (selected && this.select.value !== this.value) {
       this.select.selected = this;
     }
   }
@@ -359,8 +355,8 @@ export class Md2Option implements OnInit {
     return this._disabled || (this.select.disabled);
   }
 
-  set disabled(value: boolean) {
-    this._disabled = (value !== null && value !== false) ? true : null;
+  set disabled(disabled: boolean) {
+    this._disabled = disabled;
   }
 
   ngOnInit() {

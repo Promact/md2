@@ -15,12 +15,12 @@ export class Md2Tooltip {
   @Input('tooltip-direction') direction: string = 'bottom';
   @Input('tooltip-delay') delay: number = 0;
 
-  public viewContainerRef: ViewContainerRef;
-  public loader: DynamicComponentLoader;
+  private viewContainerRef: ViewContainerRef;
+  private loader: DynamicComponentLoader;
 
   private tooltip: Promise<ComponentRef<any>>;
 
-  public constructor(viewContainerRef: ViewContainerRef, loader: DynamicComponentLoader, private appRef: ApplicationRef) {
+  constructor(viewContainerRef: ViewContainerRef, loader: DynamicComponentLoader, private appRef: ApplicationRef) {
     this.viewContainerRef = viewContainerRef;
     this.loader = loader;
   }

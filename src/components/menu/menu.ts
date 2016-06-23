@@ -50,7 +50,7 @@ export class Md2MenuOpen implements OnDestroy {
     }
   };
 
-  constructor( @Host() public menu: Md2Menu, private elementRef: ElementRef) { }
+  constructor( @Host() private menu: Md2Menu, private elementRef: ElementRef) { }
 
   @HostListener('click') open() {
     this.menu.open();

@@ -117,7 +117,7 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
     this.value = selected ? selected.value : null;
     if (selected) {
       if (!selected.selected) { selected.selected = true; }
-      this.selectedValue = document.getElementById(selected.id).innerHTML;
+      this.selectedValue = selected.content;
     }
   }
 
@@ -134,7 +134,7 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   ngAfterContentChecked() {
     let opt = this._options.filter(o => this.equals(o.value, this.value))[0];
     if (opt) {
-      this.selectedValue = document.getElementById(opt.id).innerHTML;
+      this.selectedValue = opt.content;
     }
   }
 
@@ -158,7 +158,7 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   }
 
   @HostListener('click', ['$event'])
-  public onClick(e: any) {
+  private onClick(e: any) {
     if (this.disabled) {
       e.stopPropagation();
       e.preventDefault();
@@ -180,7 +180,7 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   }
 
   @HostListener('keydown', ['$event'])
-  public onKeyDown(e: any) {
+  private onKeyDown(e: any) {
     if (this.disabled) { return; }
 
     // Tab Key
@@ -318,9 +318,11 @@ export class Md2Option implements OnInit {
   private _disabled: boolean;
   private _value: any = null;
 
+  public content: any = null;
+
   select: Md2Select;
 
-  constructor(select: Md2Select, public selectDispatcher: Md2SelectDispatcher) {
+  constructor(select: Md2Select, private selectDispatcher: Md2SelectDispatcher, private element: ElementRef) {
     this.select = select;
     selectDispatcher.listen((id: string, name: string) => {
       if (id !== this.id && name === this.name) {
@@ -362,6 +364,10 @@ export class Md2Option implements OnInit {
   ngOnInit() {
     this.selected = this.select.value === this._value;
     this.name = this.select.name;
+  }
+
+  ngAfterViewInit() {
+    this.content = this.element.nativeElement.innerHTML;
   }
 
   public onClick(event: Event) {

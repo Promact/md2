@@ -7,7 +7,7 @@ import {TOOLTIP_DIRECTIVES} from '../../../components/tooltip/tooltip';
   directives: [TOOLTIP_DIRECTIVES]
 })
 export class Tooltip {
-  public dynamicTooltip: string = 'Hello, World!';
-  public dynamicTooltipText: string = 'dynamic';
-  public htmlTooltip: string = 'I\'ve been made <b>bold</b>!';
+  private dynamicTooltip: string = 'Hello, World!';
+  private dynamicTooltipText: string = 'dynamic';
+  private htmlTooltip: string = 'I\'ve been made <b>bold</b>!';
 }

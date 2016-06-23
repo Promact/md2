@@ -33,14 +33,14 @@ export class Md2TooltipComponent implements AfterViewInit {
   private element: ElementRef;
   private cdr: ChangeDetectorRef;
 
-  public constructor(element: ElementRef, cdr: ChangeDetectorRef, options: Md2TooltipOptions) {
+  constructor(element: ElementRef, cdr: ChangeDetectorRef, options: Md2TooltipOptions) {
     this.element = element;
     this.cdr = cdr;
     Object.assign(this, options);
     this.show = false;
   }
 
-  public ngAfterViewInit(): void {
+  ngAfterViewInit() {
     let p = this.positionElements(
       this.hostEl.nativeElement,
       this.element.nativeElement.children[0],
@@ -51,7 +51,7 @@ export class Md2TooltipComponent implements AfterViewInit {
     this.cdr.detectChanges();
   }
 
-  public positionElements(hostEl: HTMLElement, targetEl: HTMLElement, direction: string): { top: number, left: number } {
+  private positionElements(hostEl: HTMLElement, targetEl: HTMLElement, direction: string): { top: number, left: number } {
     let positionStrParts = direction.split('-');
     let pos0 = positionStrParts[0];
     let pos1 = positionStrParts[1] || 'center';
@@ -100,7 +100,7 @@ export class Md2TooltipComponent implements AfterViewInit {
     return targetElPos;
   }
 
-  public offset(nativeEl: any): { width: number, height: number, top: number, left: number } {
+  private offset(nativeEl: any): { width: number, height: number, top: number, left: number } {
     let boundingClientRect = nativeEl.getBoundingClientRect();
     return {
       width: boundingClientRect.width || nativeEl.offsetWidth,

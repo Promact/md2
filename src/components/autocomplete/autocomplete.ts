@@ -104,7 +104,7 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
     this.setValue(value);
   }
 
-  public setValue(value: any) {
+  private setValue(value: any) {
     if (value !== this._value) {
       this._value = value;
       this.selectedValue = '';
@@ -127,7 +127,7 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
     }
   }
 
-  public onClick(e: any) {
+  private onClick(e: any) {
     if (this.disabled) {
       e.stopPropagation();
       e.preventDefault();
@@ -142,7 +142,7 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
     this.behavior.filter(new RegExp(this.inputValue, 'ig'));
   }
 
-  public onKeyDown(e: any) {
+  private onKeyDown(e: any) {
     // check enabled
     if (this.disabled === true) { return; }
 

@@ -29,7 +29,7 @@ export class ... {
     
     ...
     
-    public isCollapsed: boolean = false;
+    private isCollapsed: boolean = false;
 
     ...
 

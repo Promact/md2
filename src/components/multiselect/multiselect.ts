@@ -76,7 +76,7 @@ const MD2_MULTISELECT_CONTROL_VALUE_ACCESSOR = new Provider(NG_VALUE_ACCESSOR, {
 
 export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
 
-  constructor(public element: ElementRef) { }
+  constructor(private element: ElementRef) { }
 
   ngAfterContentInit() {
     this._isInitialized = true;
@@ -113,7 +113,7 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
     this.setValue(value);
   }
 
-  public setValue(value: any) {
+  private setValue(value: any) {
     if (value !== this._value) {
       this._value = value;
       this.items = [];

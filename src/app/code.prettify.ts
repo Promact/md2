@@ -1,13 +1,13 @@
-import {Component, ElementRef, OnInit ,AfterViewInit} from '@angular/core';
+import {Component, ElementRef, OnInit, AfterViewInit} from '@angular/core';
 
 @Component({
   selector: 'code-prettify',
   template: `{{code}}`
 })
-export class CodePrettify implements OnInit  {
+export class CodePrettify implements OnInit {
   private code: string;
   private element: ElementRef;
-  public constructor(element: ElementRef) {
+  constructor(element: ElementRef) {
     this.element = element;
   }
 
@@ -18,7 +18,7 @@ export class CodePrettify implements OnInit  {
 
   //ngAfterContentInit
 
-  public ngAfterViewInit(): void {
+  private ngAfterViewInit(): void {
     console.log(this.element);
   }
 

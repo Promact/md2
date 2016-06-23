@@ -14,6 +14,6 @@ import {Md2Collapse} from '../../../components/collapse/collapse';
   encapsulation: ViewEncapsulation.None
 })
 export class Collapse {
-  public isCollapsedContent: boolean = false;
-  public isCollapsedImage: boolean = true;
+  private isCollapsedContent: boolean = false;
+  private isCollapsedImage: boolean = true;
 }

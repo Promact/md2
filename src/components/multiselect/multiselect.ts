@@ -90,7 +90,8 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
   @Input() disabled: boolean = false;
   @Input() tabindex: number = 0;
   @Input() placeholder: string = '';
-  @Input('item-text') itemText: string = 'text';
+  @Input('item-text') textKey: string = 'text';
+  @Input('item-value') valueKey: string = null;
 
   @Input() set items(value: Array<any>) {
     this._items = value;
@@ -109,7 +110,8 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
       this.selectedValue = [];
       if (value && value.length && typeof value === 'object' && Array.isArray(value)) {
         for (let i = 0; i < value.length; i++) {
-          this.selectedValue.push({ text: value[i][this.itemText] });
+          let selItm = this._items.find(itm=> this.equals(this.valueKey ? itm[this.valueKey] : itm, value[i]));
+          if (selItm) { this.selectedValue.push(new Item(selItm, this.textKey, this.valueKey)); }
         }
       }
       if (this._isInitialized) {
@@ -119,6 +121,25 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
     }
   }
 
+  private equals(o1, o2) {
+    if (o1 === o2) return true;
+    if (o1 === null || o2 === null) return false;
+    if (o1 !== o1 && o2 !== o2) return true;
+    let t1 = typeof o1, t2 = typeof o2, length, key, keySet;
+    if (t1 === t2 && t1 === 'object') {
+      keySet = Object.create(null);
+      for (key in o1) {
+        if (!this.equals(o1[key], o2[key])) return false;
+        keySet[key] = true;
+      }
+      for (key in o2) {
+        if (!(key in keySet) && key.charAt(0) !== '$' && o2[key]) return false;
+      }
+      return true;
+    }
+    return false;
+  }
+
   @HostListener('click', ['$event'])
   public onClick(e: any) {
     if (this.disabled) {
@@ -126,7 +147,7 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
       e.preventDefault();
       return;
     }
-    this.list = this._items.map((item: any) => new Item(item, this.itemText));
+    this.list = this._items.map((item: any) => new Item(item, this.textKey, this.valueKey));
     if (this.list.length > 0) {
       this.isMenuOpened = true;
       this.behavior.first();
@@ -207,7 +228,7 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
 
     this._value = new Array<any>();
     for (let i = 0; i < this.selectedValue.length; i++) {
-      this._value.push(this._items.find((item: any) => item[this.itemText] === this.selectedValue[i].text));
+      this._value.push(this.list.find((item: any) => item.text === this.selectedValue[i].text).value);
     }
 
     this._onChangeCallback(this._value);
@@ -233,13 +254,15 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
 
 export class Item {
   public text: string;
+  public value: any;
 
-  constructor(source: any, itemText: string) {
+  constructor(source: any, textKey: string, valueKey: string) {
     if (typeof source === 'string') {
-      this.text = source;
+      this.text = this.value = source;
     }
     if (typeof source === 'object') {
-      this.text = source[itemText];
+      this.text = source[textKey];
+      this.value = valueKey ? source[valueKey] : source;
     }
   }
 }

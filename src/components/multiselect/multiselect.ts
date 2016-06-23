@@ -1,150 +1,133 @@
-import { Injectable, AfterContentInit, AfterContentChecked, Component, ContentChildren, EventEmitter, HostBinding, HostListener, Input, OnInit, Optional, Output, Provider, QueryList, ViewEncapsulation, forwardRef, ElementRef } from '@angular/core';
+import { Component, EventEmitter, Input, Output, HostListener, Provider, ViewEncapsulation, forwardRef, ElementRef, AfterContentInit } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/common';
 
-const MD2_SELECT_CONTROL_VALUE_ACCESSOR = new Provider(NG_VALUE_ACCESSOR, {
-  useExisting: forwardRef(() => Md2Select),
+class Option {
+  public text: string;
+  public value: string;
+
+  constructor(source: any, textKey: string, valueKey: string) {
+    if (typeof source === 'string') {
+      this.text = this.value = source;
+    }
+    if (typeof source === 'object') {
+      this.text = source[textKey];
+      this.value = valueKey ? source[valueKey] : source;
+    }
+  }
+}
+
+const noop = () => { };
+
+let nextId = 0;
+
+const MD2_MULTISELECT_CONTROL_VALUE_ACCESSOR = new Provider(NG_VALUE_ACCESSOR, {
+  useExisting: forwardRef(() => Md2Multiselect),
   multi: true
 });
 
-var _uniqueIdCounter = 0;
-
-export type Md2SelectDispatcherListener = (id: string, name: string) => void;
-
-@Injectable()
-export class Md2SelectDispatcher {
-  private _listeners: Md2SelectDispatcherListener[] = [];
-
-  notify(id: string, name: string) {
-    for (let listener of this._listeners) {
-      listener(id, name);
-    }
-  }
-
-  listen(listener: Md2SelectDispatcherListener) {
-    this._listeners.push(listener);
-  }
-}
-
-export class Md2OptionChange {
-  source: Array<Md2Option>;
-  value: any;
-}
-
 @Component({
-  selector: 'md2-select',
+  selector: 'md2-multiselect',
   template: `
-    <div class="md2-select-container">
-      <span *ngIf="selectedValue.length < 1" class="md2-select-placeholder">{{placeholder}}</span>
-      <span *ngIf="selectedValue.length > 0" class="md2-select-value" [innerHtml]="selectedValue"></span>
-      <em class="md2-select-icon"></em>
+    <div class="md2-multiselect-container">
+      <span *ngIf="items.length < 1" class="md2-multiselect-placeholder">{{placeholder}}</span>
+      <div class="md2-multiselect-value">
+        <div *ngFor="let v of items; let last = last" class="md2-multiselect-value-item">
+          <span class="md2-multiselect-text">{{v.text}}</span><span *ngIf="!last">,&nbsp;</span>
+        </div>
+      </div>
+      <em class="md2-multiselect-icon"></em>
     </div>
-    <div class="md2-select-menu" [class.open]="isMenuOpened">
-      <ng-content></ng-content>    
-    </div>
+    <ul *ngIf="isMenuVisible" class="md2-multiselect-menu">
+      <li class="md2-option" *ngFor="let l of list; let i = index;" [class.active]="isActive(i)" [class.focus]="focusedOption === i" (click)="toggleOption($event, i)">
+        <div class="md2-option-icon"></div>
+        <div class="md2-option-text" [innerHtml]="l.text"></div>
+      </li>
+    </ul>
   `,
   styles: [`
-    md2-select { position: relative; display: block; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -moz-backface-visibility: hidden; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
-    md2-select:focus { outline: none; }
-    md2-select .md2-select-container { display: flex; width: 100%; align-items: center; padding: 2px 0 1px; border-bottom: 1px solid rgba(0, 0, 0, 0.38); position: relative; -moz-box-sizing: content-box; -webkit-box-sizing: content-box; box-sizing: content-box; min-width: 64px; min-height: 26px; flex-grow: 1; cursor: pointer; }
-    md2-select:focus .md2-select-container { padding-bottom: 0; border-bottom: 2px solid #106cc8; }
-    md2-select.md2-select-disabled .md2-select-container { color: rgba(0,0,0,0.38); }
-    md2-select.md2-select-disabled:focus .md2-select-container { padding-bottom: 1px; border-bottom: 1px solid rgba(0, 0, 0, 0.38); }
-    md2-select .md2-select-container > span:not(.md2-select-icon) { max-width: 100%; -ms-flex: 1 1 auto; -webkit-flex: 1 1 auto; flex: 1 1 auto; -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; overflow: hidden; }
-    md2-select .md2-select-container .md2-select-icon { display: block; -webkit-align-items: flex-end; -ms-flex-align: end; align-items: flex-end; text-align: end; width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 6px solid rgba(0, 0, 0, 0.60); margin: 0 4px; }
-    md2-select .md2-select-container .md2-select-placeholder { color: rgba(0, 0, 0, 0.38); }
-    md2-select .md2-select-container .md2-select-value { white-space: nowrap; }
-    md2-select .md2-select-menu { position: absolute; left: 0; top: 100%; display: none; z-index: 10; -ms-flex-direction: column; -webkit-flex-direction: column; flex-direction: column; width: 100%; margin: 0; padding: 8px 0; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12); max-height: 256px; min-height: 48px; overflow-y: auto; -moz-transform: scale(1); -ms-transform: scale(1); -o-transform: scale(1); -webkit-transform: scale(1); transform: scale(1); background: #fff; }
-    md2-select .md2-select-menu.open { display: block; }
+    .md2-multiselect { position: relative; display: block; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+    .md2-multiselect:focus { outline: none; }
+    .md2-multiselect .md2-multiselect-container { position: relative; display: block; width: 100%; padding: 2px 20px 1px 0; border-bottom: 1px solid rgba(0, 0, 0, 0.38); -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; min-width: 64px; min-height: 26px; max-height: 90px; overflow-y: auto; cursor: pointer; }
+    .md2-multiselect:focus .md2-multiselect-container { padding-bottom: 0; border-bottom: 2px solid #106cc8; }
+    .md2-multiselect.md2-multiselect-disabled .md2-multiselect-container { color: rgba(0,0,0,0.38); }
+    .md2-multiselect.md2-multiselect-disabled:focus .md2-multiselect-container { padding-bottom: 1px; border-bottom: 1px solid rgba(0, 0, 0, 0.38); }
+    .md2-multiselect .md2-multiselect-container > span:not(.md2-multiselect-icon) { display: block; max-width: 100%; -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; overflow: hidden; }
+    .md2-multiselect .md2-multiselect-container .md2-multiselect-icon { position: absolute; top: 50%; right: 0; display: block; width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 6px solid rgba(0, 0, 0, 0.60); margin: -3px 4px 0; }
+    .md2-multiselect .md2-multiselect-container .md2-multiselect-placeholder { color: rgba(0, 0, 0, 0.38); }
+    .md2-multiselect .md2-multiselect-menu { position: absolute; left: 0; top: 0; display: block; z-index: 10; width: 100%; margin: 0; padding: 8px 0; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12); max-height: 256px; min-height: 48px; overflow-y: auto; -moz-transform: scale(1); -ms-transform: scale(1); -o-transform: scale(1); -webkit-transform: scale(1); transform: scale(1); background: #fff; }
+    .md2-multiselect .md2-multiselect-menu .md2-option { position: relative; display: block; cursor: pointer; width: auto; -moz-transition: background 0.15s linear; -o-transition: background 0.15s linear; -webkit-transition: background 0.15s linear; transition: background 0.15s linear; padding: 0 16px 0 40px; height: 48px; line-height: 48px; }
+    .md2-multiselect .md2-multiselect-menu .md2-option.active { color: #106cc8; }
+    .md2-multiselect .md2-multiselect-menu .md2-option:hover, .md2-multiselect .md2-multiselect-menu .md2-option.focus { background: #eeeeee; }
+    .md2-multiselect .md2-multiselect-menu .md2-option .md2-option-text { width: auto; white-space: nowrap; overflow: hidden; -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; font-size: 16px; }
+    .md2-multiselect .md2-option .md2-option-icon { position: absolute; top: 14px; left: 12px; width: 16px; height: 16px; border: 2px solid rgba(0,0,0,0.54); border-radius: 2px; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; -moz-transition: 240ms; -o-transition: 240ms; -webkit-transition: 240ms; transition: 240ms; }
+    .md2-multiselect .md2-option.active .md2-option-icon { -moz-transform: rotate(-45deg); -ms-transform: rotate(-45deg); -o-transform: rotate(-45deg); -webkit-transform: rotate(-45deg); transform: rotate(-45deg); height: 8px; top: 17px; border-color: #106cc8; border-top-style: none; border-right-style: none; }
   `],
   host: {
     'role': 'select',
+    '[id]': 'id',
+    '[class.md2-multiselect]': 'true',
+    '[class.md2-multiselect-disabled]': 'disabled',
     '[tabindex]': 'disabled ? -1 : tabindex',
     '[attr.aria-disabled]': 'disabled'
   },
-  providers: [MD2_SELECT_CONTROL_VALUE_ACCESSOR],
+  providers: [MD2_MULTISELECT_CONTROL_VALUE_ACCESSOR],
   encapsulation: ViewEncapsulation.None
 })
-export class Md2Select implements AfterContentInit, AfterContentChecked, ControlValueAccessor {
 
-  private _value: Array<any> = null;
-  private _name: string = 'md2-select-' + _uniqueIdCounter++;
-  private _disabled: boolean = false;
-  private _selected: Array<Md2Option> = [];
-  private _isInitialized: boolean = false;
-
-  private isOpenable: boolean = true;
-  private isMenuOpened: boolean = false;
-  private selectedValue: string = '';
-  private menu: IListsMenu;
-
-  private _controlValueAccessorChangeFn: (value: any) => void = (value) => { };
-  onTouched: () => any = () => { };
-
-  @Output() change: EventEmitter<Md2OptionChange> = new EventEmitter<Md2OptionChange>();
-
-  @ContentChildren(forwardRef(() => Md2Option))
-  public _options: QueryList<Md2Option> = null;
-
-  @Input() get name(): string { return this._name; }
-  set name(name: string) {
-    this._name = name;
-    this._updateOptions();
-  }
-
-  @Input() tabindex: number = 0;
-  @Input() placeholder: string = '';
-
-  @HostBinding('class.md2-select-disabled')
-  @Input() get disabled(): boolean { return this._disabled; }
-  set disabled(disabled) { this._disabled = disabled; }
-
-  @Input() get value(): Array<any> { return this._value; }
-  set value(value: Array<any>) {
-    if (this._value !== value) {
-      this._value = value;
-      this._updateSelectedOptionValue();
-      if (this._isInitialized) {
-        this._emitChangeEvent();
-      }
-    }
-  }
-
-  @Input() get selected(): Array<Md2Option> { return this._selected; }
-  set selected(selected: Array<Md2Option>) {
-    this._selected = selected;
-    this.value = [];
-    if (selected) {
-      selected.forEach(s => {
-        this.value.push(s.value);
-      });
-    }
-    this.update();
-  }
+export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
 
   constructor(public element: ElementRef) { }
-
-  ngOnInit() {
-    this.menu = new ListsMenu(this);
-  }
 
   ngAfterContentInit() {
     this._isInitialized = true;
   }
 
-  ngAfterContentChecked() {
-    this.update();
+  @Output() change: EventEmitter<any> = new EventEmitter<any>();
+
+  private _value: any = '';
+  private _isInitialized: boolean = false;
+  private _onTouchedCallback: () => void = noop;
+  private _onChangeCallback: (_: any) => void = noop;
+
+  private _options: Array<any> = [];
+  private list: Array<Option> = [];
+  private items: Array<Option> = [];
+
+  private focusedOption: number = 0;
+  private isFocused: boolean = false;
+
+  @Input() id: string = 'md2-multiselect-' + (++nextId);
+  @Input() disabled: boolean = false;
+  @Input() tabindex: number = 0;
+  @Input() placeholder: string = '';
+  @Input('item-text') textKey: string = 'text';
+  @Input('item-value') valueKey: string = null;
+
+  @Input('items') set options(value: Array<any>) {
+    this._options = value;
+  }
+  get value(): any {
+    return this._value;
+  }
+  @Input() set value(value: any) {
+    this.setValue(value);
   }
 
-  private update() {
-    this.selectedValue = '';
-    let i = 0;
-    this._value.forEach(v => {
-      let opt = this._options.filter(o => this.equals(o.value, v))[0];
-      if (opt) {
-        this.selectedValue += i++ > 0 ? ', ' : ''
-        this.selectedValue += opt.content;
+  public setValue(value: any) {
+    if (value !== this._value) {
+      this._value = value;
+      this.items = [];
+      if (value && value.length && typeof value === 'object' && Array.isArray(value)) {
+        for (let i = 0; i < value.length; i++) {
+          let selItm = this._options.find(itm=> this.equals(this.valueKey ? itm[this.valueKey] : itm, value[i]));
+          if (selItm) { this.items.push(new Option(selItm, this.textKey, this.valueKey)); }
+        }
       }
-    });
+      if (this._isInitialized) {
+        this._onChangeCallback(value);
+        this.change.emit(this._value);
+      }
+    }
   }
 
   private equals(o1, o2) {
@@ -166,320 +149,145 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
     return false;
   }
 
+  get isMenuVisible(): boolean {
+    return (this.isFocused && this.list && this.list.length) ? true : false;
+  }
+
+  private updateScroll() {
+    if (this.focusedOption < 0) return;
+    let menuContainer = this.element.nativeElement.querySelector('.md2-multiselect-menu');
+    if (!menuContainer) return;
+
+    let choices = menuContainer.querySelectorAll('.md2-option');
+    if (choices.length < 1) return;
+
+    let highlighted: any = choices[this.focusedOption];
+    if (!highlighted) return;
+
+    let top: number = highlighted.offsetTop + highlighted.clientHeight - menuContainer.scrollTop;
+    let height: number = menuContainer.offsetHeight;
+
+    if (top > height) {
+      menuContainer.scrollTop += top - height;
+    } else if (top < highlighted.clientHeight) {
+      menuContainer.scrollTop -= highlighted.clientHeight - top;
+    }
+  }
+
   @HostListener('click', ['$event'])
-  public onClick(e: any) {
+  private onClick(event: MouseEvent) {
     if (this.disabled) {
-      e.stopPropagation();
-      e.preventDefault();
+      event.stopPropagation();
+      event.preventDefault();
       return;
     }
-    if (this.isOpenable) {
-      if (!this.isMenuOpened) {
-        this._options.forEach(o => {
-          o.focused = false;
-          if (o.selected) { o.focused = true; }
-        });
-        this.isMenuOpened = true;
-        setTimeout(() => {
-          this.menu.updateScroll();
-        }, 100);
-      }
-    }
-    this.isOpenable = true;
+    this.updateOptions();
   }
 
   @HostListener('keydown', ['$event'])
-  public onKeyDown(e: any) {
+  private onKeyDown(event: KeyboardEvent) {
+    // check enabled
     if (this.disabled) { return; }
 
     // Tab Key
-    if (e.keyCode === 9) {
-      if (this.isMenuOpened) {
+    if (event.keyCode === 9) {
+      if (this.isMenuVisible) {
         this.onBlur();
-        e.preventDefault();
+        event.preventDefault();
       }
       return;
     }
 
     // Escape Key
-    if (e.keyCode === 27) {
+    if (event.keyCode === 27) {
       this.onBlur();
-      e.stopPropagation();
-      e.preventDefault();
-      return;
-    }
-
-    // Up Arrow
-    if (e.keyCode === 38) {
-      if (this.isMenuOpened) {
-        this.menu.prev();
-      } else {
-        this.onClick(e);
-      }
-      e.stopPropagation();
-      e.preventDefault();
+      event.stopPropagation();
+      event.preventDefault();
       return;
     }
 
     // Down Arrow
-    if (e.keyCode === 40) {
-      if (this.isMenuOpened) {
-        this.menu.next();
+    if (event.keyCode === 40) {
+      if (this.isMenuVisible) {
+        this.focusedOption = (this.focusedOption === this.list.length - 1) ? 0 : Math.min(this.focusedOption + 1, this.list.length - 1);
+        this.updateScroll();
       } else {
-        this.onClick(e);
+        this.updateOptions();
       }
-      e.stopPropagation();
-      e.preventDefault();
+      event.stopPropagation();
+      event.preventDefault();
+      return;
+    }
+
+    // Up Arrow
+    if (event.keyCode === 38) {
+      if (this.isMenuVisible) {
+        this.focusedOption = (this.focusedOption === 0) ? this.list.length - 1 : Math.max(0, this.focusedOption - 1);
+        this.updateScroll();
+      } else {
+        this.updateOptions();
+      }
+      event.stopPropagation();
+      event.preventDefault();
       return;
     }
 
     // Enter / Space
-    if (e.keyCode === 13 || e.keyCode === 32) {
-      if (this.isMenuOpened) {
-        let opt = this._options.filter(o => o.focused)[0];
-        opt.onClick(e);
+    if (event.keyCode === 13 || event.keyCode === 32) {
+      if (this.isMenuVisible) {
+        this.toggleOption(event, this.focusedOption);
       } else {
-        this.onClick(e);
+        this.updateOptions();
       }
-      e.preventDefault();
+      event.preventDefault();
       return;
     }
+  }
+
+  private onFocus() {
+    this.isFocused = true;
+    this.focusedOption = 0;
   }
 
   @HostListener('blur')
-  public onBlur() {
-    this.isMenuOpened = false;
-    this.isOpenable = false;
-    setTimeout(() => {
-      this.isOpenable = true;
-    }, 200);
+  private onBlur() { this.isFocused = false; }
+
+  private isActive(index: number): boolean {
+    return this.items.map(i=> i.text).indexOf(this.list[index].text) < 0 ? false : true;
   }
 
-  touch() {
-    if (this.onTouched) {
-      this.onTouched();
-    }
-  }
+  private toggleOption(event, index) {
+    event.preventDefault();
+    event.stopPropagation();
 
-  private _updateOptions(): void {
-    (this._options || []).forEach(option => {
-      option.name = this.name;
-    });
-  }
-
-  private _updateSelectedOptionValue(): void {
-    let isAlreadySelected = false;
-    if (this._selected && this._selected.length && this._value.length) {
-      isAlreadySelected = true;
-      this._value.forEach(v=> {
-        let ind = this._selected.indexOf(v);
-        if (ind < 0) { isAlreadySelected = false; }
-      });
-    }
-
-    if (this._options !== null && !isAlreadySelected) {
-      this.selected = [];
-      this._value.forEach(v=> {
-        let matchingOption = this._options.filter(o => this.equals(o.value, v))[0];
-        if (matchingOption) { this.selected.push(matchingOption); }
-      });
-    }
-  }
-
-  private _emitChangeEvent(): void {
-    let event = new Md2OptionChange();
-    event.source = this._selected;
-    event.value = this._value;
-    this._controlValueAccessorChangeFn(event.value);
-    this.change.emit(event);
-  }
-
-  writeValue(value: any) { this.value = value; }
-
-  registerOnChange(fn: (value: any) => void) { this._controlValueAccessorChangeFn = fn; }
-
-  registerOnTouched(fn: any) { this.onTouched = fn; }
-}
-
-
-@Component({
-  selector: 'md2-option',
-  template: '<ng-content></ng-content>',
-  styles: [`
-    md2-option { cursor: pointer; position: relative; display: block; align-items: center; width: auto; -moz-transition: background 0.15s linear; -o-transition: background 0.15s linear; -webkit-transition: background 0.15s linear; transition: background 0.15s linear; padding: 0 16px; height: 48px; line-height: 48px; }
-    md2-option.md2-option-selected { color: #106cc8; }
-    md2-option:hover, md2-option.md2-option-focused { background: #eeeeee; }
-    md2-option.md2-option-disabled, md2-option.md2-option-disabled:hover { color: rgba(189,189,189,0.87); cursor: default; background: transparent; }
-    md2-option .md2-option-text { width: auto; white-space: nowrap; overflow: hidden; -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; font-size: 16px; }
-  `],
-  host: {
-    'role': 'option',
-    '(click)': 'onClick($event)'
-  },
-  encapsulation: ViewEncapsulation.None
-})
-export class Md2Option implements OnInit {
-
-  @HostBinding('class.md2-option-focused') focused: boolean = false;
-
-  private _selected: boolean = false;
-  public content: string = null;
-
-  @HostBinding('id') @Input() id: string = `md2-option-${_uniqueIdCounter++}`;
-
-  name: string;
-
-  private _disabled: boolean = false;
-  private _value: any = null;
-
-  select: Md2Select;
-
-  constructor(select: Md2Select, public selectDispatcher: Md2SelectDispatcher, private element: ElementRef) {
-    this.select = select;
-    selectDispatcher.listen((id: string, name: string) => {
-      if (id !== this.id && name === this.name) {
-        this.selected = false;
-      }
-    });
-  }
-
-  @HostBinding('class.md2-option-selected') @Input() get selected(): boolean { return this._selected; }
-  set selected(selected: boolean) {
-    //if (selected) { this.selectDispatcher.notify(this.id, this.name); }
-    this._selected = selected;
-
-    let ind = this.select.value.indexOf(this._value);
+    let ind = this.items.map(i=> i.text).indexOf(this.list[index].text);
     if (ind < 0) {
-      this.select.selected.push(this);
-    } else { this.select.selected.splice(ind, 1); }
+      this.items.push(this.list[index]);
+    } else {
+      this.items.splice(ind, 1);
+    }
+    this.updateValue();
   }
 
-  @Input() get value(): any { return this._value; }
-  set value(value: any) {
-    if (this._value !== value) {
-      //if (this.selected) {
-      //  this.select.value = value;
-      //}
-      this._value = value;
+  private updateOptions() {
+    this.list = this._options.map((item: any) => new Option(item, this.textKey, this.valueKey));
+    if (this.list.length > 0) {
+      this.onFocus();
     }
   }
 
-  @HostBinding('class.md2-option-disabled')
-  @Input() get disabled(): boolean {
-    return this._disabled || (this.select.disabled);
-  }
-  set disabled(disabled: boolean) {
-    this._disabled = disabled;
-  }
-
-  ngOnInit() {
-    this.selected = this.select.value.indexOf(this._value) < 0 ? false : true;
-    //this.selected = this.select.value === this._value;
-    this.name = this.select.name;
-  }
-
-  ngAfterViewInit() {
-    this.content = this.element.nativeElement.innerHTML;
-  }
-
-  private update() {
-    this.select.selected = new Array();
-    this.select._options.forEach(o => {
-      if (o.selected) {
-        this.select.selected.push(o);
-      }
-    });
-  }
-
-  public onClick(event: Event) {
-    if (this.disabled) {
-      event.preventDefault();
-      event.stopPropagation();
-      return;
+  private updateValue() {
+    this._value = new Array<any>();
+    for (let i = 0; i < this.items.length; i++) {
+      this._value.push(this.items[i].value);
     }
-
-    this.selected = !this.selected;
-    //this.update();
-
-    //let ind = this.select.value.indexOf(this._value);
-    //if (ind < 0) {
-    //  this.select.selected.push(this);
-    //} else { this.select.selected.splice(ind, 1); }
-
-    //this.select.selected = this;
-    this.select.touch();
-    //this.select.onBlur();
+    this._onChangeCallback(this._value);
+    this.change.emit(this._value);
   }
+
+  writeValue(value: any) { this.setValue(value); }
+
+  registerOnChange(fn: any) { this._onChangeCallback = fn; }
+
+  registerOnTouched(fn: any) { this._onTouchedCallback = fn; }
 }
-
-class Menu {
-  constructor(public list: Md2Select) { }
-
-  private getActiveIndex(): number {
-    return this.list._options.toArray().findIndex(o => o.focused);
-  }
-
-  public updateScroll() {
-    let container = this.list.element.nativeElement.querySelector('.md2-select-menu');
-
-    if (!container) { return; }
-
-    let options = container.querySelectorAll('md2-option');
-    if (options.length < 1) { return; }
-
-    let index = this.getActiveIndex();
-    if (index < 0) { return; }
-
-    let selected: any = options[index];
-    if (!selected) { return; }
-
-    let posY: number = selected.offsetTop + selected.clientHeight - container.scrollTop;
-    let height: number = container.offsetHeight;
-
-    if (posY > height) {
-      container.scrollTop += posY - height;
-    } else if (posY < selected.clientHeight) {
-      container.scrollTop -= selected.clientHeight - posY;
-    }
-  }
-
-  public focusOption(direction: string): void {
-    let options = this.list._options.toArray();
-    let index = this.getActiveIndex();
-    options.forEach(o => {
-      if (o.focused) { o.focused = false; }
-    });
-    let option;
-    do {
-      if (index === -1 || direction === 'first') {
-        index = 0;
-      } else if (direction === 'next' && index < options.length - 1) {
-        index++;
-      } else if (direction === 'next' && index > options.length - 2) {
-        index = 0;
-      } else if (direction === 'prev' && index > 0) {
-        index--;
-      } else if ((direction === 'prev' && index < 1) || direction === 'last') {
-        index = options.length - 1;
-      }
-      option = options[index];
-      if (option.disabled) { option = undefined; }
-    } while (!option);
-    if (option) { option.focused = true; }
-    this.updateScroll();
-  }
-}
-
-class ListsMenu extends Menu implements IListsMenu {
-  constructor(public list: Md2Select) { super(list); }
-
-  public prev() { super.focusOption('prev'); }
-
-  public next() { super.focusOption('next'); }
-
-  public updateScroll() { super.updateScroll(); }
-}
-
-interface IListsMenu { prev(): any; next(): any; updateScroll(): any; }
-
-export const SELECT_DIRECTIVES = [Md2Select, Md2Option];

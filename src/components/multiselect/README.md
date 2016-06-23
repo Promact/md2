@@ -68,7 +68,3 @@ export class ... {
 ### Events
 
   - `change` - it fires after a new option selected; returns object with `value` and `text` properties that describes a new option.
-
-
-### Referenced From
-ng2-select (see the repository [https://github.com/valor-software/ng2-select](https://github.com/valor-software/ng2-select) for the angular2 based select component)

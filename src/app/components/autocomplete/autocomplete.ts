@@ -18,7 +18,7 @@ export class Autocomplete {
     { name: 'London', value: '5' },
     { name: 'Seville', value: '6' }
   ];
-  private item: Array<any> = [];
+  private item;
   private change(value: any) {
     console.log('Changed data: ', value);
   }

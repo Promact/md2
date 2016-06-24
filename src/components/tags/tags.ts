@@ -118,13 +118,35 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
       this._value = value;
       this.items = [];
       if (value && value.length && typeof value === 'object' && Array.isArray(value)) {
-        this.items = this.value.map((tag: any) => new Tag(tag, this.textKey, this.valueKey));
+        for (let i = 0; i < value.length; i++) {
+          let selItm = this._tags.find(t=> this.equals(this.valueKey ? t[this.valueKey] : t, value[i]));
+          if (selItm) { this.items.push(new Tag(selItm, this.textKey, this.valueKey)); }
+        }
       }
       if (this._isInitialized) {
         this._onChangeCallback(value);
         this.change.emit(this._value);
       }
     }
+  }
+
+  private equals(o1, o2) {
+    if (o1 === o2) return true;
+    if (o1 === null || o2 === null) return false;
+    if (o1 !== o1 && o2 !== o2) return true;
+    let t1 = typeof o1, t2 = typeof o2, length, key, keySet;
+    if (t1 === t2 && t1 === 'object') {
+      keySet = Object.create(null);
+      for (key in o1) {
+        if (!this.equals(o1[key], o2[key])) return false;
+        keySet[key] = true;
+      }
+      for (key in o2) {
+        if (!(key in keySet) && key.charAt(0) !== '$' && o2[key]) return false;
+      }
+      return true;
+    }
+    return false;
   }
 
   get isMenuVisible(): boolean {

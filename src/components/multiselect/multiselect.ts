@@ -263,6 +263,7 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
     let ind = this.items.map(i=> i.text).indexOf(this.list[index].text);
     if (ind < 0) {
       this.items.push(this.list[index]);
+      this.items = this.items.sort((a, b) => { return this.list.findIndex(i=> i.text === a.text) - this.list.findIndex(i=> i.text === b.text); });
     } else {
       this.items.splice(ind, 1);
     }

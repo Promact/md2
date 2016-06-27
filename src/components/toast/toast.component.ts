@@ -21,6 +21,10 @@ export class Md2ToastComponent {
   toasts: Toast[] = [];
   maxShown = 5;
 
+  /**
+   * add toast
+   * @param toast
+   */
   add(toast: Toast) {
     this.toasts.push(toast);
     if (this.toasts.length > this.maxShown) {
@@ -28,10 +32,17 @@ export class Md2ToastComponent {
     }
   }
 
+  /**
+   * temove toast
+   * @param toastId
+   */
   remove(toastId: number) {
     this.toasts = this.toasts.filter((toast) => { return toast.id !== toastId; });
   }
 
+  /**
+   * check toast
+   */
   isToast(): boolean { return this.toasts.length > 0; }
 
 }

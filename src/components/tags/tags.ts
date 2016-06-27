@@ -113,13 +113,17 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
     this.setValue(value);
   }
 
+  /**
+   * setup value
+   * @param value
+   */
   private setValue(value: any) {
     if (value !== this._value) {
       this._value = value;
       this.items = [];
       if (value && value.length && typeof value === 'object' && Array.isArray(value)) {
         for (let i = 0; i < value.length; i++) {
-          let selItm = this._tags.find(t=> this.equals(this.valueKey ? t[this.valueKey] : t, value[i]));
+          let selItm = this._tags.find(t => this.equals(this.valueKey ? t[this.valueKey] : t, value[i]));
           if (selItm) { this.items.push(new Tag(selItm, this.textKey, this.valueKey)); }
         }
       }
@@ -130,6 +134,11 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
     }
   }
 
+  /**
+   * compare two vars or objects
+   * @param o1
+   * @param o2
+   */
   private equals(o1, o2) {
     if (o1 === o2) return true;
     if (o1 === null || o2 === null) return false;
@@ -153,6 +162,9 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
     return ((this.inputFocused || this.noBlur) && this.tagBuffer && this.list && this.list.length) ? true : false;
   }
 
+  /**
+   * update scroll of tags suggestion menu
+   */
   private updateScroll() {
     if (this.focusedTag < 0) return;
     let menuContainer = this.element.nativeElement.querySelector('.md2-tags-menu');
@@ -174,6 +186,10 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
     }
   }
 
+  /**
+   * input key listener
+   * @param event
+   */
   private inputKeydown(event: KeyboardEvent) {
     //Backspace
     if (event.keyCode === 8 && !this.tagBuffer) {
@@ -279,6 +295,11 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
       (index === len) ? index - 1 : index;
   }
 
+  /**
+   * add tag
+   * @param event
+   * @param index
+   */
   private addTag(event, index) {
     event.preventDefault();
     event.stopPropagation();
@@ -292,11 +313,18 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
     this.onFocus();
   }
 
+  /**
+   * remove tag
+   * @param index
+   */
   private removeTag(index: number) {
     this.items.splice(index, 1);
     this.updateValue();
   }
 
+  /**
+   * update value
+   */
   private updateValue() {
     this._value = new Array<any>();
     for (let i = 0; i < this.items.length; i++) {
@@ -343,6 +371,10 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
 
   private listLeave() { this.noBlur = false; }
 
+  /**
+   * update suggestion menu with filter
+   * @param query
+   */
   private filterMatches(query: RegExp) {
     let tempList = this._tags.map((tag: any) => new Tag(tag, this.textKey, this.valueKey));
     this.list = tempList.filter((t: Tag) => (query.test(t.text) && !this.items.find((i: Tag) => t.text === i.text)));

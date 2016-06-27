@@ -26,6 +26,10 @@ export class Md2Accordion {
 
   public tabs: Md2AccordionTab[] = [];
 
+  /**
+   * Add or append tab in accordion
+   * @param tab
+   */
   addTab(tab: Md2AccordionTab) {
     this.tabs.push(tab);
   }

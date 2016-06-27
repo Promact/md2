@@ -6,6 +6,11 @@ export class HightlightPipe implements PipeTransform {
     if (query.length < 1) { return value; }
     return query ? value.replace(new RegExp(this.escapeRegexp(query), 'gi'), '<span class="highlight">$&</span>') : value;
   }
+
+  /**
+   * filter pipe
+   * @param queryToEscape
+   */
   private escapeRegexp(queryToEscape: string) {
     return queryToEscape.replace(/([.?*+^$[\]\\(){}|-])/g, '\\$1');
   }

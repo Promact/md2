@@ -95,8 +95,14 @@ export class Md2Switch implements AfterContentInit, ControlValueAccessor {
 
   get labelId() { return this.id + '-label'; }
 
+  /**
+   * get checked status
+   */
   getAriaChecked() { return this.checked ? 'true' : 'false'; }
 
+  /**
+   * toggle switch
+   */
   toggle() { this.checked = !this.checked; }
 
   onInteractionEvent(event: Event) {
@@ -107,9 +113,7 @@ export class Md2Switch implements AfterContentInit, ControlValueAccessor {
     this.toggle();
   }
 
-  writeValue(value: any) {
-    this.checked = !!value;
-  }
+  writeValue(value: any) { this.checked = !!value; }
 
   registerOnChange(fn: any) {
     if (this._changeSubscription) {
@@ -118,8 +122,6 @@ export class Md2Switch implements AfterContentInit, ControlValueAccessor {
     this._changeSubscription = <{ unsubscribe: () => any }>this.change.subscribe(fn);
   }
 
-  registerOnTouched(fn: any) {
-    this.onTouched = fn;
-  }
+  registerOnTouched(fn: any) { this.onTouched = fn; }
 
 }

@@ -52,6 +52,10 @@ export class Md2Dialog {
     this._el = el.nativeElement;
   }
 
+  /**
+   * click listener
+   * @param e
+   */
   clickElement(e: any) {
     if (this.closeOnUnfocus) {
       if (e.srcElement.className === 'md2-dialog open') {
@@ -60,18 +64,31 @@ export class Md2Dialog {
     }
   }
 
+  /**
+   * get element
+   */
   getElement(): HTMLElement {
     return this._el;
   }
 
+  /**
+   * show dialog
+   */
   show(): boolean {
     return this.toggle(true);
   }
 
+  /**
+   * hide dialog
+   */
   hide(): boolean {
     return this.toggle(false);
   }
 
+  /**
+   * toggle dialog
+   * @param isVisible
+   */
   toggle(isVisible: boolean): boolean {
     var body = document.body;
     if (isVisible === undefined) {

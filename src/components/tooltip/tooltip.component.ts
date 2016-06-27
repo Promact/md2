@@ -51,6 +51,12 @@ export class Md2TooltipComponent implements AfterViewInit {
     this.cdr.detectChanges();
   }
 
+  /**
+   * calculate position of target element
+   * @param hostEl
+   * @param targetEl
+   * @param direction
+   */
   private positionElements(hostEl: HTMLElement, targetEl: HTMLElement, direction: string): { top: number, left: number } {
     let positionStrParts = direction.split('-');
     let pos0 = positionStrParts[0];
@@ -100,6 +106,10 @@ export class Md2TooltipComponent implements AfterViewInit {
     return targetElPos;
   }
 
+  /**
+   * calculate offset of target element
+   * @param nativeEl
+   */
   private offset(nativeEl: any): { width: number, height: number, top: number, left: number } {
     let boundingClientRect = nativeEl.getBoundingClientRect();
     return {

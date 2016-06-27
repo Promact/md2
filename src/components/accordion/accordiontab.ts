@@ -44,6 +44,10 @@ export class Md2AccordionTab {
     this.accordion.addTab(this);
   }
 
+  /**
+   * Toggle the accordion
+   * @param event
+   */
   toggle(event: Event) {
     if (this.disabled) {
       event.preventDefault();
@@ -71,6 +75,9 @@ export class Md2AccordionTab {
     event.preventDefault();
   }
 
+  /**
+   * Find index of specific tab of accordion
+   */
   findTabIndex() {
     let index = -1;
     for (let i = 0; i < this.accordion.tabs.length; i++) {

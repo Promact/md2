@@ -40,7 +40,7 @@ export class ... {
             { name: 'Seville', value: '6' }
         ];
 
-    private item: Array<any> = [{ name: 'Dortmund', value: '3' }];
+    private item: Array<string> = ['3', '4'];
 
     private selected(value: any) {
         console.log('Selected value is: ', value);

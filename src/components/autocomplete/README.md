@@ -43,7 +43,7 @@ export class ... {
             { name: 'Seville', value: '6' }
         ];
 
-    private item: Array<any> = [{ name: 'Dortmund', value: '3' }];
+    private item: string = '3';
 
     private selected(value: any) {
         console.log('Selected value is: ', value);

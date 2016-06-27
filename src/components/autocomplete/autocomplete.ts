@@ -31,7 +31,7 @@ const MD2_AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR = new Provider(NG_VALUE_ACCESSOR, 
   pipes: [HightlightPipe],
   template: `
     <div class="md2-autocomplete-wrap">
-      <input [(ngModel)]="inputBuffer" type="text" tabs="false" autocomplete="off" tabindex="-1" [disabled]="disabled" class="md2-autocomplete-input" [placeholder]="placeholder" (focus)="onInputFocus()" (blur)="onInputBlur()" (keydown)="inputKeydown($event)" (change)="$event.stopPropagation()" />
+      <input [(ngModel)]="inputBuffer" type="text" tabs="false" autocomplete="off" [tabindex]="disabled ? -1 : tabindex" [disabled]="disabled" class="md2-autocomplete-input" [placeholder]="placeholder" (focus)="onInputFocus()" (blur)="onInputBlur()" (keydown)="inputKeydown($event)" (change)="$event.stopPropagation()" />
       <em *ngIf="inputBuffer" (click)="onClear()" class="md2-autocomplete-clear-icon"></em>
     </div>
     <ul *ngIf="isMenuVisible" class="md2-autocomplete-menu" (mouseenter)="listEnter()" (mouseleave)="listLeave()">
@@ -42,7 +42,7 @@ const MD2_AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR = new Provider(NG_VALUE_ACCESSOR, 
   `,
   styles: [`
     .md2-autocomplete { position: relative; display: block; outline: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -moz-backface-visibility: hidden; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
-    .md2-autocomplete .md2-autocomplete-wrap { position: relative; display: block; width: 100%; padding: 2px 20px 1px 0; border-bottom: 1px solid rgba(0, 0, 0, 0.38); -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; min-width: 64px; min-height: 26px; max-height: 90px; cursor: pointer; }
+    .md2-autocomplete .md2-autocomplete-wrap { position: relative; display: block; width: 100%; padding: 2px 0 1px; border-bottom: 1px solid rgba(0, 0, 0, 0.38); -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; min-width: 64px; min-height: 26px; max-height: 90px; cursor: pointer; }
     .md2-autocomplete.disabled .md2-autocomplete-wrap { color: rgba(0,0,0,0.38); }
     .md2-autocomplete-wrap .md2-autocomplete-input { width: 100%; height: 26px; outline: none; background: transparent; border: 0; -moz-box-sizing: content-box; -webkit-box-sizing: content-box; box-sizing: content-box; }
     .md2-autocomplete-wrap .md2-autocomplete-clear-icon { position: absolute; top: 50%; right: 0; display: inline-block; width: 18px; height: 18px; margin: -9px 2px 0; overflow: hidden; }
@@ -62,7 +62,6 @@ const MD2_AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR = new Provider(NG_VALUE_ACCESSOR, 
     '[id]': 'id',
     '[class.md2-autocomplete]': 'true',
     '[class.md2-autocomplete-disabled]': 'disabled',
-    '[tabindex]': 'disabled ? -1 : tabindex',
     '[attr.aria-disabled]': 'disabled'
   },
   providers: [MD2_AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR],
@@ -109,12 +108,16 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
     this.setValue(value);
   }
 
+  /**
+   * set value
+   * @param value
+   */
   private setValue(value: any) {
     if (value !== this._value) {
       this._value = value;
       this.inputBuffer = '';
       if (value) {
-        let selItm = this._items.find(i=> this.equals(this.valueKey ? i[this.valueKey] : i, value));
+        let selItm = this._items.find(i => this.equals(this.valueKey ? i[this.valueKey] : i, value));
         this.selectedItem = new Item(selItm, this.textKey, this.valueKey);
         if (this.selectedItem) { this.inputBuffer = this.selectedItem.text; }
       }
@@ -126,6 +129,11 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
     }
   }
 
+  /**
+   * Compare two vars or objects
+   * @param o1
+   * @param o2
+   */
   private equals(o1, o2) {
     if (o1 === o2) return true;
     if (o1 === null || o2 === null) return false;
@@ -149,6 +157,9 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
     return ((this.inputFocused || this.noBlur) && this.list && this.list.length && !this.selectedItem) ? true : false;
   }
 
+  /**
+   * update scroll of suggestion menu
+   */
   private updateScroll() {
     if (this.focusedOption < 0) return;
     let menuContainer = this.element.nativeElement.querySelector('.md2-autocomplete-menu');
@@ -170,6 +181,10 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
     }
   }
 
+  /**
+   * input event listner
+   * @param event
+   */
   private inputKeydown(event: KeyboardEvent) {
     if (this.disabled) { return; }
     // Down Arrow
@@ -191,7 +206,10 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
       return;
     }
     // Tab Key
-    if (event.keyCode === 9) { return; }
+    if (event.keyCode === 9) {
+      this.listLeave();
+      return;
+    }
     // Escape Key
     if (event.keyCode === 27) {
       event.stopPropagation();
@@ -213,6 +231,11 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
     }, 10);
   }
 
+  /**
+   * select option
+   * @param event
+   * @param index
+   */
   private select(event, index) {
     event.preventDefault();
     event.stopPropagation();
@@ -221,6 +244,9 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
     this.updateValue();
   }
 
+  /**
+   * clear selected suggestion
+   */
   private onClear() {
     if (this.disabled) { return; }
     this.inputBuffer = '';
@@ -230,6 +256,9 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
     this.updateValue();
   }
 
+  /**
+   * update value
+   */
   private updateValue() {
     this._value = this.selectedItem ? this.selectedItem.value : this.selectedItem;
     this._onChangeCallback(this._value);
@@ -237,26 +266,44 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
     this.onFocus();
   }
 
-  //@HostListener('focus')
+  /**
+   * component focus listener
+   */
   private onFocus() {
     if (this.disabled) return;
     this.element.nativeElement.querySelector('input').focus();
   }
 
+  /**
+   * input focus listener
+   */
   private onInputFocus() {
     this.inputFocused = true;
     this.updateItems(new RegExp(this.inputBuffer, 'ig'));
     this.focusedOption = 0;
   }
 
+  /**
+   * input blur listener
+   */
   private onInputBlur() {
-    //this.inputFocused = false;
+    this.inputFocused = false;
   }
 
+  /**
+   * suggestion menu mouse enter listener
+   */
   private listEnter() { this.noBlur = true; }
 
+  /**
+   * suggestion menu mouse leave listener
+   */
   private listLeave() { this.noBlur = false; }
 
+  /**
+   * Update suggestion to filter the query
+   * @param query
+   */
   private updateItems(query: RegExp) {
     this.list = this._items.map((i: any) => new Item(i, this.textKey, this.valueKey)).filter(i => query.test(i.text));
     if (this.list.length && this.list[0].text !== this.inputBuffer) {

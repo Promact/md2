@@ -78,6 +78,7 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
 
   constructor(private element: ElementRef) { }
 
+  /** TODO: internal */
   ngAfterContentInit() {
     this._isInitialized = true;
   }
@@ -153,6 +154,9 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
     return (this.isFocused && this.list && this.list.length) ? true : false;
   }
 
+  /**
+   * to update scroll of options
+   */
   private updateScroll() {
     if (this.focusedOption < 0) return;
     let menuContainer = this.element.nativeElement.querySelector('.md2-multiselect-menu');
@@ -244,6 +248,9 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
     }
   }
 
+  /**
+   * on focus current component
+   */
   private onFocus() {
     this.isFocused = true;
     this.focusedOption = 0;
@@ -252,32 +259,31 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
   @HostListener('blur')
   private onBlur() { this.isFocused = false; }
 
+  /**
+   * to check current option is active or not
+   * @param index
+   */
   private isActive(index: number): boolean {
-    return this.items.map(i=> i.text).indexOf(this.list[index].text) < 0 ? false : true;
+    return this.items.map(i => i.text).indexOf(this.list[index].text) < 0 ? false : true;
   }
 
+  /**
+   * to toggle option to select/deselect option
+   * @param event
+   * @param index
+   */
   private toggleOption(event, index) {
     event.preventDefault();
     event.stopPropagation();
 
-    let ind = this.items.map(i=> i.text).indexOf(this.list[index].text);
+    let ind = this.items.map(i => i.text).indexOf(this.list[index].text);
     if (ind < 0) {
       this.items.push(this.list[index]);
-      this.items = this.items.sort((a, b) => { return this.list.findIndex(i=> i.text === a.text) - this.list.findIndex(i=> i.text === b.text); });
+      this.items = this.items.sort((a, b) => { return this.list.findIndex(i => i.text === a.text) - this.list.findIndex(i => i.text === b.text); });
     } else {
       this.items.splice(ind, 1);
     }
-    this.updateValue();
-  }
 
-  private updateOptions() {
-    this.list = this._options.map((item: any) => new Option(item, this.textKey, this.valueKey));
-    if (this.list.length > 0) {
-      this.onFocus();
-    }
-  }
-
-  private updateValue() {
     this._value = new Array<any>();
     for (let i = 0; i < this.items.length; i++) {
       this._value.push(this.items[i].value);
@@ -286,9 +292,31 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
     this.change.emit(this._value);
   }
 
+  /**
+   * update options
+   */
+  private updateOptions() {
+    this.list = this._options.map((item: any) => new Option(item, this.textKey, this.valueKey));
+    if (this.list.length > 0) {
+      this.onFocus();
+    }
+  }
+
+  /**
+   * Implemented as part of ControlValueAccessor.
+   * TODO: internal
+   */
   writeValue(value: any) { this.setValue(value); }
 
+  /**
+   * Implemented as part of ControlValueAccessor.
+   * TODO: internal
+   */
   registerOnChange(fn: any) { this._onChangeCallback = fn; }
 
+  /**
+   * Implemented as part of ControlValueAccessor.
+   * TODO: internal
+   */
   registerOnTouched(fn: any) { this._onTouchedCallback = fn; }
 }

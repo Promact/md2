@@ -2,16 +2,17 @@
 <section id="tabs">
   <div class="row">
     <div class="col-sm-6">
-      <md2-tabs (change)="change($event)">
-        <md2-tab header="Static title">Static content</md2-tab>
+      <md2-tabs class="test" (change)="change($event)">
+        <md2-tab class="test" label="Static title">Static content</md2-tab>
         <md2-tab *ngFor="let tabz of tabs"
-                 [header]="tabz.title"
+                 [label]="tabz.title"
                  [active]="tabz.active"
-                 [disabled]="tabz.disabled"
-                 [removable]="tabz.removable">
+                 [disabled]="tabz.disabled">
           {{tabz.content}}
         </md2-tab>
-        <md2-tab header="Static title2">Static content2</md2-tab>
+        <md2-tab active="true">
+          <template md2-tab-label>Static title211</template>
+          Static content2</md2-tab>
       </md2-tabs>
     </div>
     <div class="col-sm-6">

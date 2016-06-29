@@ -5,6 +5,10 @@ import {Rgba, Hsla, Hsva} from './colorpicker';
 export class Md2ColorpickerService {
   constructor() { }
 
+  /**
+   * hsla to hsva
+   * @param hsla
+   */
   hsla2hsva(hsla: Hsla) {
     let h: number = Math.min(hsla.h, 1), s = Math.min(hsla.s, 1), l = Math.min(hsla.l, 1), a = Math.min(hsla.a, 1);
     if (l === 0) {
@@ -15,6 +19,10 @@ export class Md2ColorpickerService {
     }
   }
 
+  /**
+  * hsva to hsla
+  * @param hsva
+  */
   hsva2hsla(hsva: Hsva) {
     let h = hsva.h, s = hsva.s, v = hsva.v, a = hsva.a;
     if (v === 0) {
@@ -27,6 +35,10 @@ export class Md2ColorpickerService {
     }
   }
 
+  /**
+   * rgba to hsva
+   * @param rgba
+   */
   rgbaToHsva(rgba: Rgba) {
     let r: number = Math.min(rgba.r, 1), g = Math.min(rgba.g, 1), b = Math.min(rgba.b, 1), a = Math.min(rgba.a, 1);
     let max: number = Math.max(r, g, b), min = Math.min(r, g, b);
@@ -54,6 +66,10 @@ export class Md2ColorpickerService {
     return new Hsva(h, s, v, a)
   }
 
+  /**
+   * hsva to rgba 
+   * @param hsva
+   */
   hsvaToRgba(hsva: Hsva) {
     let h: number = hsva.h, s: number = hsva.s, v: number = hsva.v, a: number = hsva.a;
     let r: number, g: number, b: number;
@@ -88,6 +104,10 @@ export class Md2ColorpickerService {
     return new Rgba(r, g, b, a)
   }
 
+  /**
+   * string to hsva
+   * @param colorString
+   */
   stringToHsva(colorString: string) {
     let stringParsers = [
       {
@@ -146,6 +166,11 @@ export class Md2ColorpickerService {
     return hsva;
   }
 
+  /**
+   * output formate of color
+   * @param hsva
+   * @param outputFormat
+   */
   outputFormat(hsva: Hsva, outputFormat: string) {
     if (hsva.a < 1) {
       switch (outputFormat) {

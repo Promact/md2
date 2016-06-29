@@ -32,6 +32,9 @@ export class Md2Colorpicker implements OnInit {
     }
   }
 
+  /**
+   * click of input,open color picker
+   */
   onClick() {
     if (!this.created) {
       this.created = true;
@@ -46,11 +49,19 @@ export class Md2Colorpicker implements OnInit {
     }
   }
 
+  /**
+   * change color
+   * @param value
+   */
   colorChanged(value: string) {
     this.colorpickerChange.emit(value);
     this.change.emit(value);
   }
 
+  /**
+   * input event listner
+   * @param event
+   */
   changeInput(event: any) {
     let value = event.target.value;
     this.colorpickerDialog.setColorFromString(value)
@@ -79,6 +90,10 @@ export class ColorpickerSliderDirective {
     this.listenerStop = () => { this.stop() };
   }
 
+  /**
+   * set cursor position
+   * @param event
+   */
   setCursor(event: any) {
     let height = this.el.nativeElement.offsetHeight;
     let width = this.el.nativeElement.offsetWidth;
@@ -94,11 +109,19 @@ export class ColorpickerSliderDirective {
     }
   }
 
+  /**
+   * input event listner
+   * @param event
+   */
   move(event: any) {
     event.preventDefault();
     this.setCursor(event);
   }
 
+  /**
+   * input event listner
+   * @param event
+   */
   start(event: any) {
     this.setCursor(event);
     document.addEventListener('mousemove', this.listenerMove);
@@ -107,6 +130,9 @@ export class ColorpickerSliderDirective {
     document.addEventListener('touchend', this.listenerStop);
   }
 
+  /**
+   * stop mouse event
+   */
   stop() {
     document.removeEventListener('mousemove', this.listenerMove);
     document.removeEventListener('touchmove', this.listenerMove);
@@ -114,9 +140,18 @@ export class ColorpickerSliderDirective {
     document.removeEventListener('touchend', this.listenerStop);
   }
 
+  /**
+   * get x
+   * @param event
+   */
   getX(event: any) {
     return (event.pageX !== undefined ? event.pageX : event.touches[0].pageX) - this.el.nativeElement.getBoundingClientRect().left - window.pageXOffset;
   }
+
+  /**
+   * get y
+   * @param event
+   */
   getY(event: any) {
     return (event.pageY !== undefined ? event.pageY : event.touches[0].pageY) - this.el.nativeElement.getBoundingClientRect().top - window.pageYOffset;
   }
@@ -191,6 +226,10 @@ export class ColorpickerComponent implements OnInit {
     this.cFormat = cFormat;
   }
 
+  /**
+  * set initial color
+  * @param color
+  */
   setInitialColor(color: any) {
     this.initialColor = color;
   }
@@ -217,6 +256,9 @@ export class ColorpickerComponent implements OnInit {
     this.openColorpicker();
   }
 
+  /**
+   * open color picker popup
+   */
   openColorpicker() {
     if (!this.show) {
       this.setColorpickerDialogPosition();
@@ -226,6 +268,10 @@ export class ColorpickerComponent implements OnInit {
     }
   }
 
+  /**
+  * mouse down event
+  * @param event
+  */
   onMouseDown(event: any) {
     if (!this.isDescendant(this.el.nativeElement, event.target)
       && event.target !== this.directiveElementRef.nativeElement) {
@@ -234,6 +280,9 @@ export class ColorpickerComponent implements OnInit {
 
   }
 
+  /**
+   * close color picker
+   */
   closeColorpicker() {
     this.show = false;
     document.removeEventListener('mouseup', this.mouseDown);
@@ -246,6 +295,9 @@ export class ColorpickerComponent implements OnInit {
     }
   }
 
+  /**
+   * set position of color picker
+   */
   setColorpickerDialogPosition() {
     var node = this.directiveElementRef.nativeElement, position = 'static';
     let parentNode: any = null;
@@ -286,6 +338,11 @@ export class ColorpickerComponent implements OnInit {
     }
   }
 
+  /**
+  * set saturation,lightness,hue,alpha,RGB value
+  * @param val
+  * @param rg
+  */
   setSaturation(val: { v: number, rg: number }) {
     let hsla = this.service.hsva2hsla(this.hsva);
     hsla.s = val.v / val.rg;
@@ -335,6 +392,10 @@ export class ColorpickerComponent implements OnInit {
     this.update();
   }
 
+  /**
+   * set color
+   * @param value
+   */
   setColorFromString(value: string) {
     let hsva = this.service.stringToHsva(value);
     if (hsva !== null) {
@@ -351,6 +412,9 @@ export class ColorpickerComponent implements OnInit {
     return this.format;
   }
 
+  /**
+   * update color
+   */
   update() {
     let hsla = this.service.hsva2hsla(this.hsva);
     let rgba = this.service.denormalizeRGBA(this.service.hsvaToRgba(this.hsva));
@@ -371,6 +435,9 @@ export class ColorpickerComponent implements OnInit {
     this.directiveInstance.colorChanged(this.outputColor);
   }
 
+  /**
+   * deselect recent color and close popup
+   */
   cancelColor() {
     this.setColorFromString(this.initialColor);
     this.closeColorpicker();
@@ -387,6 +454,11 @@ export class ColorpickerComponent implements OnInit {
     return false;
   }
 
+  /**
+   * create color box
+   * @param element
+   * @param offset
+   */
   createBox(element: any, offset: any) {
     return {
       top: element.getBoundingClientRect().top + (offset ? window.pageYOffset : 0),

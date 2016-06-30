@@ -26,6 +26,7 @@ import {Md2Accordion} from './accordionpanel';
   `],
   host: {
     'role': 'accordion-tab',
+    '[ngClass]': 'md2Class',
     '[class.md2-accordion-tab]': 'true',
     '[class.md2-accordion-tab-active]': 'active',
     '[class.md2-accordion-tab-disabled]': 'disabled'
@@ -33,6 +34,8 @@ import {Md2Accordion} from './accordionpanel';
   encapsulation: ViewEncapsulation.None
 })
 export class Md2AccordionTab {
+
+  @Input('class') md2Class: string;
 
   @Input() header: string;
 

@@ -46,13 +46,17 @@ export class ... {
 }
  ```
 
-### Properties
+### Properties of md2-accordion
 
   - `multiple` - (`?boolean=false`) - Control whether expanding an item will cause the other items to close.
-  - `md-class` - (`?string=null`) - Add ability to set classes your own. This must be a string.
+  - `class` (`?string=''`) - To set custom class on `md2-accordion` element.
+
+### Properties of md2-accordion-tab
+
   - `header` - (`?string=null`) - The clickable text on the tab's header. You need one to be able to click on the header for toggling.
   - `disabled` (`?boolean=false`) - Whether the accordion tab is disabled or not.
   - `active` (`?boolean=false`) - Whether accordion tab is open or closed.
+  - `class` (`?string=''`) - To set custom class on `md2-accordion-tab` element.
 
 ### Events
 

@@ -17,60 +17,22 @@
     <div class="col-sm-6">
       <p>The <strong>accordion component</strong> builds on top of the collapse directive to provide a list of items, with collapsible bodies that are collapsed or expanded by clicking on the item's header.</p>
       <p>The body of each accordion group is transcluded into the body of the collapsible element.</p>
-      <h3>md2-accordion settings</h3>
+      <h3>Properties of md2-accordion</h3>
       <ul>
-        <li>
-          <p>
-            <code>multiple</code>
-            <em>(Default: <code>false</code>)</em> -
-            Control whether expanding an item will cause the other items to close.
-          </p>
-        </li>
-        <li>
-          <p>
-            <code>md-class</code>
-            <em>(Default: <code>none</code>)</em> -
-            Add ability to set classes your own. This must be a string.
-          </p>
-        </li>
-        <li>
-          <p>
-            <code>open</code>
-            <em>Event</em> -
-            It fires after a open tab.
-          </p>
-        </li>
-        <li>
-          <p>
-            <code>close</code>
-            <em>Event</em> -
-            It fires after a close tab.
-          </p>
-        </li>
+        <li><code>multiple</code> - (<code>?boolean=false</code>) - Control whether expanding an item will cause the other items to close.</li>
+        <li><code>class</code> (<code>?string=''</code>) - To set custom class on <code>md2-accordion</code> element.</li>
       </ul>
-      <h3>md2-accordion-tab settings</h3>
+      <h3>Properties of md2-accordion-tab</h3>
       <ul>
-        <li>
-          <p>
-            <code>header</code>
-            <em>(Default: <code>none</code>)</em> -
-            The clickable text on the tab's header. You need one to be able to click on the header for toggling.
-          </p>
-        </li>
-        <li>
-          <p>
-            <code>disabled</code>
-            <em>(Default: <code>false</code>)</em> -
-            Whether the accordion tab is disabled or not.
-          </p>
-        </li>
-        <li>
-          <p>
-            <code>active</code>
-            <em>(Default: <code>false</code>)</em> -
-            Whether accordion tab is open or closed.
-          </p>
-        </li>
+        <li><code>header</code> - (<code>?string=null</code>) - The clickable text on the tab's header. You need one to be able to click on the header for toggling.</li>
+        <li><code>disabled</code> (<code>?boolean=false</code>) - Whether the accordion tab is disabled or not.</li>
+        <li><code>active</code> (<code>?boolean=false</code>) - Whether accordion tab is open or closed.</li>
+        <li><code>class</code> (<code>?string=''</code>) - To set custom class on <code>md2-accordion-tab</code> element.</li>
+      </ul>
+      <h3>Events</h3>
+      <ul>
+        <li><code>open</code> - It fires after a open tab.</li>
+        <li><code>close</code> - It fires after a close tab.</li>
       </ul>
     </div>
   </div>

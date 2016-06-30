@@ -1,18 +1,18 @@
-import { AfterContentInit, Component, ContentChild, ContentChildren, Directive, ElementRef, EventEmitter, Input, Output, QueryList, TemplateRef, ViewEncapsulation } from "@angular/core";
-import { Md2Transclude } from "./transclude";
+import { AfterContentInit, Component, ContentChild, ContentChildren, Directive, ElementRef, EventEmitter, Input, Output, QueryList, TemplateRef, ViewEncapsulation } from '@angular/core';
+import { Md2Transclude } from './transclude';
 
 export class Md2TabChangeEvent {
   index: number;
   tab: Md2Tab;
 }
 
-@Directive({ selector: "[md2-tab-label]" })
+@Directive({ selector: '[md2-tab-label]' })
 export class Md2TabLabel {
   constructor(public templateRef: TemplateRef<any>) { }
 }
 
 @Component({
-  selector: "md2-tab",
+  selector: 'md2-tab',
   template: `<ng-content></ng-content>`,
   host: {
     '[ngClass]': 'md2Class',
@@ -39,7 +39,7 @@ export class Md2Tab {
 }
 
 @Component({
-  selector: "md2-tabs",
+  selector: 'md2-tabs',
   template: `
     <div class="md2-tabs-header-wrapper">
       <div role="button" class="md2-prev-button" [class.disabled]="!canPageBack()" *ngIf="shouldPaginate" (click)="previousPage()">
@@ -49,7 +49,7 @@ export class Md2Tab {
         <em class="next-icon">Next</em>
       </div>
       <div class="md2-tabs-canvas" [class.md2-paginated]="shouldPaginate" role="tablist" tabindex="0" (keydown.arrowRight)="focusNextTab()" (keydown.arrowLeft)="focusPreviousTab()" (keydown.enter)="selectedIndex = focusIndex" (mousewheel)="scroll($event)">
-        <div class="md2-tabs-header" [style.marginLeft]="-offsetLeft"><!-- [style.width]="tabsWidth+'px'"-->
+        <div class="md2-tabs-header" [style.marginLeft]="-offsetLeft">
           <div class="md2-tab-label" role="tab" *ngFor="let tab of tabs; let i = index" [class.focus]="focusIndex === i" [class.active]="selectedIndex === i" [class.disabled]="tab.disabled" (click)="focusIndex = selectedIndex = i">
             <span [md2Transclude]="tab.labelTemplate">{{tab.label}}</span>
           </div>
@@ -103,7 +103,7 @@ export class Md2Tabs implements AfterContentInit {
   private _selectedIndex: number = 0;
   private shouldPaginate: boolean = false;
   private offsetLeft: number = 0;
-  private tabsWidth: number = 0;
+
   @Input('class') md2Class: string;
 
   @Input()
@@ -124,9 +124,7 @@ export class Md2Tabs implements AfterContentInit {
       }
     }
   }
-  get selectedIndex() {
-    return this._selectedIndex;
-  }
+  get selectedIndex() { return this._selectedIndex; }
 
   get focusIndex(): number { return this._focusIndex; }
   set focusIndex(value: number) {
@@ -135,13 +133,7 @@ export class Md2Tabs implements AfterContentInit {
   }
 
   get element() {
-    const elements = {
-      root: this.elementRef.nativeElement,
-      wrapper: null,
-      canvas: null,
-      paging: null,
-      tabs: null
-    };
+    const elements = { root: this.elementRef.nativeElement, wrapper: null, canvas: null, paging: null, tabs: null };
     elements.wrapper = elements.root.querySelector('.md2-tabs-header-wrapper');
     elements.canvas = elements.wrapper.querySelector('.md2-tabs-canvas');
     elements.paging = elements.canvas.querySelector('.md2-tabs-header');
@@ -153,6 +145,9 @@ export class Md2Tabs implements AfterContentInit {
 
   constructor(private elementRef: ElementRef) { }
 
+  /**
+   * After Content Init
+   */
   ngAfterContentInit() {
     setTimeout(() => {
       this.updatePagination();
@@ -175,6 +170,10 @@ export class Md2Tabs implements AfterContentInit {
     this._isInitialized = true;
   }
 
+  /**
+   * Create Change Event
+   * @param index
+   */
   private _createChangeEvent(index: number): Md2TabChangeEvent {
     const event = new Md2TabChangeEvent;
     event.index = index;
@@ -184,16 +183,29 @@ export class Md2Tabs implements AfterContentInit {
     return event;
   }
 
+  /**
+   * Focus next Tab
+   */
   focusNextTab() { this.incrementIndex(1); }
 
+  /**
+   * Focus previous Tab
+   */
   focusPreviousTab() { this.incrementIndex(-1); }
 
+  /**
+   * Mouse Wheel scroll
+   * @param event
+   */
   scroll(event) {
     if (!this.shouldPaginate) return;
     event.preventDefault();
     this.offsetLeft = this.fixOffset(this.offsetLeft - event.wheelDelta);
   }
 
+  /**
+   * Next Page
+   */
   nextPage() {
     let elements = this.element;
     let viewportWidth = elements.canvas.clientWidth,
@@ -206,6 +218,9 @@ export class Md2Tabs implements AfterContentInit {
     this.offsetLeft = this.fixOffset(tab.offsetLeft);
   }
 
+  /**
+   * Previous Page
+   */
   previousPage() {
     let i, tab, elements = this.element;
 
@@ -216,13 +231,23 @@ export class Md2Tabs implements AfterContentInit {
     this.offsetLeft = this.fixOffset(tab.offsetLeft + tab.offsetWidth - elements.canvas.clientWidth);
   }
 
+  /**
+   * On Window Resize
+   * @param event
+   */
   onWindowResize(event: Event) {
     this.offsetLeft = this.fixOffset(this.offsetLeft);
     this.updatePagination();
   }
 
+  /**
+   * Can page Back
+   */
   canPageBack() { return this.offsetLeft > 0; }
 
+  /**
+   * Can page Previous
+   */
   canPageForward() {
     let elements = this.element;
     let lastTab = elements.tabs[elements.tabs.length - 1];
@@ -230,6 +255,9 @@ export class Md2Tabs implements AfterContentInit {
       this.offsetLeft;
   }
 
+  /**
+   * Update Pagination
+   */
   updatePagination() {
     let canvasWidth = this.element.root.clientWidth;
     this.element.tabs.forEach((tab) => {
@@ -238,6 +266,10 @@ export class Md2Tabs implements AfterContentInit {
     this.shouldPaginate = canvasWidth < 0;
   }
 
+  /**
+   * Increment Focus Tab
+   * @param inc
+   */
   incrementIndex(inc) {
     var newIndex,
       index = this.focusIndex;
@@ -249,6 +281,10 @@ export class Md2Tabs implements AfterContentInit {
     }
   }
 
+  /**
+   * Adjust Offset of Tab
+   * @param index
+   */
   adjustOffset(index) {
     let elements = this.element;
     if (!elements.tabs[index]) return;
@@ -259,6 +295,10 @@ export class Md2Tabs implements AfterContentInit {
     this.offsetLeft = Math.min(this.offsetLeft, this.fixOffset(left));
   }
 
+  /**
+   * Fix Offset of Tab
+   * @param value
+   */
   fixOffset(value) {
     let elements = this.element;
     if (!elements.tabs.length || !this.shouldPaginate) return 0;

@@ -1,10 +1,8 @@
-import {Directive, TemplateRef, ViewContainerRef} from "@angular/core";
+import {Directive, TemplateRef, ViewContainerRef} from '@angular/core';
 
 @Directive({
-  selector: "[md2Transclude]",
-  properties: [
-    "md2Transclude"
-  ]
+  selector: '[md2Transclude]',
+  properties: ['md2Transclude']
 })
 export class Md2Transclude {
 
@@ -18,6 +16,7 @@ export class Md2Transclude {
       this.viewRef.createEmbeddedView(templateRef);
     }
   }
+
   private get md2Transclude() {
     return this._md2Transclude;
   }

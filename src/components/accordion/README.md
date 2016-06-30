@@ -53,7 +53,7 @@ export class ... {
 
 ### Properties of md2-accordion-tab
 
-  - `header` - (`?string=null`) - The clickable text on the tab's header. You need one to be able to click on the header for toggling.
+  - `header` - (`?string=''`) - The clickable text on the tab's header. You need one to be able to click on the header for toggling.
   - `disabled` (`?boolean=false`) - Whether the accordion tab is disabled or not.
   - `active` (`?boolean=false`) - Whether accordion tab is open or closed.
   - `class` (`?string=''`) - To set custom class on `md2-accordion-tab` element.

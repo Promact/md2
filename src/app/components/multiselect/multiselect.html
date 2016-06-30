@@ -2,20 +2,6 @@
 <section id="multiselect">
   <div class="row">
     <div class="col-sm-6">
-      <!--<div *ngFor="let item of copyList;let inx=index;">
-        <md2-multiselect [items]="serverList"
-                       item-text="name"
-                       item-value="id"
-                       [(ngModel)]="xyz"
-                       [disabled]="disabled"
-                       (ngModelChange)="update(inx,$event)"
-                       placeholder="No city selected">
-      </md2-multiselect>
-        <br />
-      </div>
-       <hr />
-      <pre>{{copyList | json}}</pre>-->
-
       <md2-multiselect [items]="items"
                        [item-text]="'name'"
                        [(ngModel)]="item"

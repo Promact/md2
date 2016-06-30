@@ -7,7 +7,7 @@ Native Angular2 Material Tabs component
 Example:
  
  ```html
-<md2-tabs selected="0">
+<md2-tabs selectedIndex="0">
   <md2-tab label="title1">Test content 1</md2-tab>
   <md2-tab label="title2">Test content 2</md2-tab>
   <md2-tab>
@@ -24,7 +24,7 @@ import {TABS_DIRECTIVES} from 'md2/tabs';
 
 @Component({
     selector: "...",
-    directives: [Md2Tabs]
+    directives: [TABS_DIRECTIVES]
 })
 
 export class ... {
@@ -36,7 +36,7 @@ export class ... {
 
 ### Properties of md2-tabs
 
-  - `selected` (`?integer=0`) - Index of the active/selected tab.
+  - `selectedIndex` (`?number=0`) - Index of the active/selected tab.
   - `class` (`?string=''`) - To set custom class on `md2-tabs` element.
 
 ### Properties of md2-tab

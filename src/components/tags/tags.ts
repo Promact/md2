@@ -6,6 +6,21 @@ const noop = () => { };
 
 let nextId = 0;
 
+class Tag {
+  public text: string;
+  public value: string;
+
+  constructor(source: any, textKey: string, valueKey: string) {
+    if (typeof source === 'string') {
+      this.text = this.value = source;
+    }
+    if (typeof source === 'object') {
+      this.text = source[textKey];
+      this.value = valueKey ? source[valueKey] : source;
+    }
+  }
+}
+
 const MD2_TAGS_CONTROL_VALUE_ACCESSOR = new Provider(NG_VALUE_ACCESSOR, {
   useExisting: forwardRef(() => Md2Tags),
   multi: true
@@ -390,19 +405,4 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
   registerOnChange(fn: any) { this._onChangeCallback = fn; }
 
   registerOnTouched(fn: any) { this._onTouchedCallback = fn; }
-}
-
-export class Tag {
-  public text: string;
-  public value: string;
-
-  constructor(source: any, textKey: string, valueKey: string) {
-    if (typeof source === 'string') {
-      this.text = this.value = source;
-    }
-    if (typeof source === 'object') {
-      this.text = source[textKey];
-      this.value = valueKey ? source[valueKey] : source;
-    }
-  }
 }

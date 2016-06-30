@@ -107,7 +107,7 @@ export class Md2Tabs implements AfterContentInit {
   @Input('class') md2Class: string;
 
   @Input()
-  set selectedIndex(value: number) {
+  set selectedIndex(value: any) {
     if (typeof value === 'string') { value = parseInt(value); }
     if (value != this._selectedIndex) {
       this._selectedIndex = value;
@@ -124,7 +124,7 @@ export class Md2Tabs implements AfterContentInit {
       }
     }
   }
-  get selectedIndex(): number {
+  get selectedIndex() {
     return this._selectedIndex;
   }
 
@@ -156,13 +156,15 @@ export class Md2Tabs implements AfterContentInit {
   ngAfterContentInit() {
     setTimeout(() => {
       this.updatePagination();
+    }, 0);
+    setTimeout(() => {
       const tabs = this.tabs.toArray();
       if (this.selectedIndex) {
         tabs.forEach(tab => tab.active = false);
         tabs[this.selectedIndex].active = true;
         this.adjustOffset(this.selectedIndex);
       } else {
-        let index = tabs.findIndex(t => t.active || t.active === 'true');
+        let index = tabs.findIndex(t => t.active);
         if (index < 0) {
           tabs[0].active = true;
         } else {

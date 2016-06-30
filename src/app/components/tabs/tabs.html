@@ -2,7 +2,7 @@
 <section id="tabs">
   <div class="row">
     <div class="col-sm-6">
-      <md2-tabs class="test" (change)="change($event)">
+      <md2-tabs class="test" selectedIndex="3" (change)="change($event)">
         <md2-tab class="test" label="Static title">Static content</md2-tab>
         <md2-tab *ngFor="let tabz of tabs"
                  [label]="tabz.title"
@@ -12,7 +12,8 @@
         </md2-tab>
         <md2-tab active="true">
           <template md2-tab-label>Static title211</template>
-          Static content2</md2-tab>
+          Static content2
+        </md2-tab>
       </md2-tabs>
     </div>
     <div class="col-sm-6">

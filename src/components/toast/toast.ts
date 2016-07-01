@@ -1,6 +1,6 @@
-import {Injectable, ComponentRef, DynamicComponentLoader, ApplicationRef, Inject, Optional, provide, ReflectiveInjector, ViewContainerRef} from '@angular/core';
-import {ViewContainerRef_} from '@angular/core/src/linker/view_container_ref';
-import {Md2ToastComponent} from './toast.component';
+import { Injectable, ComponentRef, DynamicComponentLoader, ApplicationRef, Inject, ReflectiveInjector, ViewContainerRef } from '@angular/core';
+import { ViewContainerRef_ } from '@angular/core/src/linker/view_container_ref';
+import { Md2ToastComponent } from './toast.component';
 
 @Injectable()
 export class Md2Toast {

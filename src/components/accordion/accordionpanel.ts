@@ -1,11 +1,11 @@
-import {Component, Input, Output, EventEmitter, ViewEncapsulation} from '@angular/core';
-import {Md2AccordionTab} from './accordiontab';
+import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
+import { Md2AccordionTab } from './accordiontab';
 
 @Component({
   selector: 'md2-accordion',
   template: `<ng-content></ng-content>`,
   host: {
-    '[class]': 'mdClass',
+    '[ngClass]': 'md2Class',
     '[class.md2-accordion]': 'true'
   },
   styles: [`
@@ -18,7 +18,7 @@ export class Md2Accordion {
 
   @Input() multiple: boolean;
 
-  @Input('md-class') mdClass: string;
+  @Input('class') md2Class: string;
 
   @Output() close: EventEmitter<any> = new EventEmitter<any>();
 

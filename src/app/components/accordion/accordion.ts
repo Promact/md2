@@ -1,12 +1,10 @@
 import {Component} from '@angular/core';
-
 import {ACCORDION_DIRECTIVES} from '../../../components/accordion/accordion';
-//import {CodePrettify} from '../../code.prettify';
 
 @Component({
   selector: 'accordion',
   templateUrl: './app/components/accordion/accordion.html',
-  directives: [ACCORDION_DIRECTIVES]//, CodePrettify
+  directives: [ACCORDION_DIRECTIVES]
 })
 export class Accordion {
   private accordions: Array<any> = [
@@ -15,10 +13,5 @@ export class Accordion {
     { title: 'Dynamic Title 3', content: 'Dynamic content 3', active: true }
   ];
 
-  constructor() {
-    setTimeout(() => {
-      this.accordions.push({ title: 'Dynamic Title 4', content: 'Dynamic content 4', active: true });
-    }, 5000);
-  }
   multiple: boolean = false;
 }

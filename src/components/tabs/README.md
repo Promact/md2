@@ -7,9 +7,13 @@ Native Angular2 Material Tabs component
 Example:
  
  ```html
-<md2-tabs>
-  <md2-tab header="title1">Test content 1</md2-tab>
-  <md2-tab header="title2">Test content 2</md2-tab>
+<md2-tabs selectedIndex="0">
+  <md2-tab label="title1">Test content 1</md2-tab>
+  <md2-tab label="title2">Test content 2</md2-tab>
+  <md2-tab>
+    <template md2-tab-label>Test content 3</template>
+    Test content 3
+  </md2-tab>
 </md2-tabs>
  ```
  ```ts
@@ -20,7 +24,7 @@ import {TABS_DIRECTIVES} from 'md2/tabs';
 
 @Component({
     selector: "...",
-    directives: [Md2Tabs]
+    directives: [TABS_DIRECTIVES]
 })
 
 export class ... {
@@ -30,14 +34,18 @@ export class ... {
 }
  ```
 
-### Properties
+### Properties of md2-tabs
 
-  - `header` (`?string='text'`) - To set title of a tab.
+  - `selectedIndex` (`?number=0`) - Index of the active/selected tab.
+  - `class` (`?string=''`) - To set custom class on `md2-tabs` element.
+
+### Properties of md2-tab
+
+  - `label` (`?string=''`) - Optional attribute to specify a simple string as the tab label.
   - `active` (`?boolean='false'`) - To set as an active a tab.
   - `disabled` (`?boolean='false'`) - To set as an disabled a tab.
-  - `header-class` (`?string=''`) - To set class on title of tab.
-  - `md-class` (`?string=''`) - To set class on tabset.
+  - `class` (`?string=''`) - To set custom class on `md2-tab` element.
 
 ### Events
 
-  - `change` - it fires after a tab has been changes; returns object of tab which has been selected.
+  - `change` - it fires after a tab has been changes; returns object of selected tab.

@@ -1,5 +1,5 @@
-import {Component, Optional, Inject, ViewEncapsulation} from '@angular/core';
-import {Toast} from './toast';
+import { Component, Inject, Optional, ViewEncapsulation } from '@angular/core';
+import { Toast } from './toast';
 
 @Component({
   selector: 'md2-toast',

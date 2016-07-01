@@ -1,6 +1,6 @@
-import {Component, ChangeDetectorRef, ElementRef, HostBinding, ViewEncapsulation, AfterViewInit} from '@angular/core';
-import {NgClass, NgStyle} from '@angular/common';
-import {Md2TooltipOptions} from './tooltip.options';
+import { AfterViewInit, Component, ChangeDetectorRef, ElementRef, HostBinding, ViewEncapsulation } from '@angular/core';
+import { NgClass, NgStyle } from '@angular/common';
+import { Md2TooltipOptions } from './tooltip.options';
 
 @Component({
   selector: 'md2-tooltip',

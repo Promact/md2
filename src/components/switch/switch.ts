@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, Provider, ViewEncapsulation, forwardRef, AfterContentInit } from '@angular/core';
+import { AfterContentInit, ChangeDetectionStrategy, Component, EventEmitter, forwardRef, Input, Output, Provider, ViewEncapsulation } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/common';
 
 let nextId = 0;

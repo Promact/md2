@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, Output, HostListener, Provider, ViewEncapsulation, forwardRef, ElementRef, AfterContentInit } from '@angular/core';
+import { AfterContentInit, Component, ElementRef, EventEmitter, forwardRef, HostListener, Input, Output, Provider, ViewEncapsulation } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/common';
-import {HightlightPipe} from './autocomplete.pipe';
+import { HightlightPipe } from './autocomplete.pipe';
 
 class Item {
   public text: string;

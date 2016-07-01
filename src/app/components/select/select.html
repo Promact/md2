@@ -2,29 +2,18 @@
 <section id="select">
   <div class="row">
     <div class="col-sm-6">
-      <!--<div *ngFor="let item of copyList;let inx=index;">
-        <md2-select class="md2-input-control" [(ngModel)]="xyz" (ngModelChange)="update(inx,$event)">
-          <md2-option *ngFor="let i of serverList" [value]="i.id">{{i.name}}</md2-option>
-        </md2-select>
-        <br />
-        <!--<select class="md2-input-control" [(ngModel)]="xyz" (ngModelChange)="update(inx,$event)">
-          <option *ngFor="let i of serverList" [value]="i.id">{{i.name}}</option>
-        </select>-- >
-      </div>
-       <hr />
-      <pre>{{copyList | json}}</pre>-->
       <select [(ngModel)]="item" (change)="change($event)" placeholder="placeholder">
-        <option [value]="i" *ngFor="let i of items">{{i.name}}</option>
+        <option [value]="i.value" *ngFor="let i of items">{{i.name}}</option>
       </select>
       <hr />
       <pre>{{item | json}}</pre>
       <hr />
       <md2-select [(ngModel)]="item" (change)="change($event)" [disabled]="disabled" placeholder="Hint text">
-        <md2-option *ngFor="let i of items" [value]="i" [disabled]="i.disabled">{{i.name}}</md2-option>
+        <md2-option *ngFor="let i of items" [value]="i.value" [disabled]="i.disabled">{{i.name}}</md2-option>
       </md2-select>
       <hr />
       <md2-select [(ngModel)]="item" (change)="change($event)" [disabled]="disabled" placeholder="Hint text">
-        <md2-option *ngFor="let i of items" [value]="i" [disabled]="i.disabled">{{i.name}}</md2-option>
+        <md2-option *ngFor="let i of items" [value]="i.value" [disabled]="i.disabled">{{i.name}}</md2-option>
       </md2-select>
     </div>
     <div class="col-sm-6">

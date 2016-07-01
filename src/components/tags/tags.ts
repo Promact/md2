@@ -216,6 +216,8 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
       }
       return;
     }
+    //Del Key
+    if (event.keyCode === 46 && !this.tagBuffer) { return; }
     // Left / Right Arrow
     if ((event.keyCode === 37 || event.keyCode === 39) && !this.tagBuffer) { return; }
     // Down Arrow

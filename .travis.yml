@@ -15,8 +15,6 @@ before_script:
 script:
   - gulp clean
   - gulp build
-  - gulp clean
-  - tsc
 
 install:
   - npm install

@@ -24,7 +24,7 @@ export class Md2Colorpicker implements OnInit {
   }
 
   ngOnInit() {
-    if (!this.colorpicker) { this.colorpicker = '#fff'; }
+    if (!this.colorpicker) { this.colorpicker = '#000'; }
     let hsva: any = this.service.stringToHsva(this.colorpicker);
     if (hsva !== null) {
       this.colorpickerChange.emit(this.service.outputFormat(hsva, this.format));

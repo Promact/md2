@@ -271,7 +271,7 @@ export class Md2Tabs implements AfterContentInit {
    * @param inc
    */
   incrementIndex(inc) {
-    var newIndex,
+    let newIndex,
       index = this.focusIndex;
     for (newIndex = index + inc;
       this.tabs.toArray()[newIndex] && this.tabs.toArray()[newIndex].disabled;

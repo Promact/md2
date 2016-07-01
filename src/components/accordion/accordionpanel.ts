@@ -1,5 +1,5 @@
-import {Component, Input, Output, EventEmitter, ViewEncapsulation} from '@angular/core';
-import {Md2AccordionTab} from './accordiontab';
+import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
+import { Md2AccordionTab } from './accordiontab';
 
 @Component({
   selector: 'md2-accordion',

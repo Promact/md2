@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, HostListener, Provider, ViewEncapsulation, forwardRef, ElementRef, AfterContentInit } from '@angular/core';
+import { AfterContentInit, Component, ElementRef, EventEmitter, forwardRef, HostListener, Input, Output, Provider, ViewEncapsulation } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/common';
 
 class Option {
@@ -114,6 +114,10 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
     this.setValue(value);
   }
 
+  /**
+   * set value
+   * @param value
+   */
   private setValue(value: any) {
     if (value !== this._value) {
       this._value = value;
@@ -131,6 +135,11 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
     }
   }
 
+  /**
+   * Compare two vars or objects
+   * @param o1
+   * @param o2
+   */
   private equals(o1, o2) {
     if (o1 === o2) return true;
     if (o1 === null || o2 === null) return false;

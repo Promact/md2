@@ -1,0 +1,18 @@
+<h1 class="page-header">Datepicker<small>(<a target="_blank" href="https://github.com/promact/md2/tree/master/src/datepicker/datepicker">Md2Datepicker</a>)</small></h1>
+<section id="datepicker">
+  <div class="row">
+    <div class="col-sm-6">
+      <md2-datepicker [(ngModel)]="dt" [minDate]="minDate" [maxDate]="maxDate" [showWeeks]="false"></md2-datepicker>
+    </div>
+    <div class="col-sm-6">
+      <p>The <strong>datepicker component</strong> is for date selecton functionality.</p>
+      <h3>md2-datepicker settings</h3>
+      <ul>
+        <li><code>[(ngModel)]</code> <em>- Date - (Default: <code>null</code>)</em> - binds to date.</li>
+        <li><code>[minDate]</code> <em>- Date - (Default: <code>null</code>)(Optional)</em> - oldest selectable date.</li>
+        <li><code>[maxDate]</code> <em>- Date - (Default: <code>null</code>)(Optional)</em> - latest selectable date.</li>
+        <li><code>[showWeeks]</code> <em>- boolean - (Default: <code>true</code>)(Optional)</em> - if false week numbers will be hidden.</li>
+      </ul>
+    </div>
+  </div>
+</section>

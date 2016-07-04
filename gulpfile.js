@@ -43,7 +43,8 @@ gulp.task('libs', function () {
           'reflect-metadata/Reflect.js',
           'rxjs/**',
           'zone.js/dist/**',
-          '@angular/**'
+          '@angular/**',
+          'moment/**'
   ], { cwd: 'node_modules/**' }) /* Glob required here. */
       .pipe(gulp.dest('build/lib'));
 });

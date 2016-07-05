@@ -5,13 +5,14 @@
     'app': 'app', // 'dist',
     'rxjs': 'lib/rxjs',
     '@angular': 'lib/@angular',
-    'moment' : 'lib/moment/moment.js'
+    'moment': 'lib/moment/moment.js'
   };
 
   // packages tells the System loader how to load when no filename and/or no extension
   var packages = {
     'app': { main: 'main.js', defaultExtension: 'js' },
     'components': { format: 'cjs', defaultExtension: 'js' },
+    'core': { format: 'cjs', defaultExtension: 'js' },
     'rxjs': { defaultExtension: 'js' }
   };
 

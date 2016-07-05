@@ -8,6 +8,24 @@ branches:
   - master
   - /^deploy-.*$/
 
+deploy:
+	provider: npm
+	api_key: "YOUR_API_KEY"
+	secure: "Tu6kQZjikHQnoIgHoFag+237O9oJ2SwZEljbeYXY1Vb5l89C+V8rdA5kNGv5Vpis94="
+	email: youremail@example.com'
+	on:
+    tags: true
+    all_branches: true
+    node: '0.12'
+    repo: <github username>/<repo name>
+
+before_deploy:
+	- gulp clean
+	- tsc
+
+after_deploy:
+	- gulp clean
+
 before_script:
   - npm install -g gulp
   - npm install -g typescript

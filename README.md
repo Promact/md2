@@ -2,6 +2,7 @@
 
 Angular2 based Material Design components, directives and services are Accordion, Autocomplete, Collapse, Colorpicker, Datepicker, Dialog(Modal), Menu, Multiselect, Select, Switch, Tabs, Tags(Chips), Toast and Tooltip.
 
+[![Build Status](https://travis-ci.org/Promact/md2.svg?branch=master)](https://travis-ci.org/Promact/md2)
 
 ## Quick start
 

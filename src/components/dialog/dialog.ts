@@ -1,4 +1,5 @@
-import {Component, ElementRef, Input, Output, ViewEncapsulation, EventEmitter} from '@angular/core';
+import { Component, OnDestroy, Input, Output, EventEmitter, Type, ElementRef, HostBinding, ViewEncapsulation } from '@angular/core';
+import { ModalInstance, ModalResult } from './dialog-instance';
 
 @Component({
   selector: 'md2-dialog',
@@ -36,82 +37,136 @@ import {Component, ElementRef, Input, Output, ViewEncapsulation, EventEmitter} f
     .md2-dialog-footer { padding: 16px; text-align: right; border-top: 1px solid rgba(0,0,0,0.12); }
   `],
   host: {
-    '(click)': 'clickElement($event)'
+    //'(click)': 'clickElement($event)',
+    'role': 'dialog',
+    'class.md2-dialog': 'true',
+    'tabindex': '-1'
   },
   encapsulation: ViewEncapsulation.None
 })
 
-export class Md2Dialog {
-  private _el: HTMLElement;
+//<div class="dialog-dialog" [ngClass]="{ 'dialog-sm': isSmall(), 'dialog-lg': isLarge() }">
+//        <ng-content></ng-content>
+//</div>
+export class Md2Dialog implements OnDestroy {
+
+  private overrideSize: string = null;
+
+  instance: ModalInstance;
   visible: boolean = false;
-  @Input('close-on-unfocus') closeOnUnfocus: boolean = true;
-  @Input('close-button') closeButton: boolean = true;
-  @Input('dialog-header') dialogHeader: string = '';
 
-  constructor(el: ElementRef) {
-    this._el = el.nativeElement;
+  @Input() backdrop: string | boolean = true;
+  @Input() keyboard: boolean = true;
+  @Input() size: string;
+
+  @Output() onClose: EventEmitter<any> = new EventEmitter(false);
+  @Output() onDismiss: EventEmitter<any> = new EventEmitter(false);
+  @Output() onOpen: EventEmitter<any> = new EventEmitter(false);
+
+  @HostBinding('attr.data-keyboard') get dataKeyboardAttr(): boolean { return this.keyboard; }
+  @HostBinding('attr.data-backdrop') get dataBackdropAttr(): string | boolean { return this.backdrop; }
+
+  constructor(private element: ElementRef) {
+    this.instance = new ModalInstance(this.element);
+
+    this.instance.hidden.subscribe((result) => {
+      this.visible = this.instance.visible;
+      if (result === ModalResult.Dismiss)
+        this.onDismiss.emit(undefined);
+    });
+
+    this.instance.shown.subscribe(() => {
+      this.onOpen.emit(undefined);
+    });
   }
 
-  /**
-   * click listener
-   * @param e
-   */
-  clickElement(e: any) {
-    if (this.closeOnUnfocus) {
-      if (e.srcElement.className === 'md2-dialog open') {
-        this.hide();
-      }
-    }
+  ngOnDestroy() {
+    return this.instance && this.instance.destroy();
   }
 
-  /**
-   * get element
-   */
-  getElement(): HTMLElement {
-    return this._el;
+  routerCanDeactivate(): any {
+    return this.ngOnDestroy();
   }
 
-  /**
-   * show dialog
-   */
-  show(): boolean {
-    return this.toggle(true);
+  open(size?: string): Promise<void> {
+    //if (ModalSize.validSize(size)) this.overrideSize = size;
+    return this.instance.open().then(() => {
+      this.visible = this.instance.visible;
+    });
   }
 
-  /**
-   * hide dialog
-   */
-  hide(): boolean {
-    return this.toggle(false);
+  close(): Promise<void> {
+    return this.instance.close().then(() => {
+      this.onClose.emit(undefined);
+    });
   }
 
-  /**
-   * toggle dialog
-   * @param isVisible
-   */
-  toggle(isVisible: boolean): boolean {
-    var body = document.body;
-    if (isVisible === undefined) {
-      this.visible = !this.visible;
-    } else {
-      this.visible = isVisible;
-    }
-
-    if (this.visible) {
-      body.classList.add('md2-dialog-open');
-    } else {
-      let count = document.getElementsByClassName('md2-dialog open').length;
-      if (count < 2) {
-        body.classList.remove('md2-dialog-open');
-      }
-      if (this.closeOnUnfocus) {
-        this._el.childNodes[0].removeEventListener('click', (e: Event) => {
-          if (e.srcElement.className === 'md2-dialog open') {
-            this.hide();
-          }
-        });
-      }
-    }
-    return false;
+  dismiss(): Promise<void> {
+    return this.instance.dismiss();
   }
+
+  //private isSmall() {
+  //  return this.overrideSize !== ModalSize.Large
+  //    && this.size === ModalSize.Small
+  //    || this.overrideSize === ModalSize.Small;
+  //}
+
+  //private isLarge() {
+  //  return this.overrideSize !== ModalSize.Small
+  //    && this.size === ModalSize.Large
+  //    || this.overrideSize === ModalSize.Large;
+  //}
 }
+
+//export class ModalSize {
+//  static Small = 'sm';
+//  static Large = 'lg';
+
+//  static validSize(size: string) {
+//    return size && (size === ModalSize.Small || size === ModalSize.Large);
+//  }
+//}
+
+
+//@Component({
+//  selector: 'modal-header',
+//  template: `
+//        <div class="modal-header">
+//            <button *ngIf="showClose" type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.dismiss()">
+//                <span aria-hidden="true">&times;</span>
+//            </button>
+//            <ng-content></ng-content>
+//        </div>
+//    `
+//})
+//export class ModalHeaderComponent {
+//  @Input('show-close') showClose: boolean = false;
+//  constructor(private modal: ModalComponent) { }
+//}
+
+//@Component({
+//  selector: 'modal-body',
+//  template: `
+//        <div class="modal-body">
+//            <ng-content></ng-content>
+//        </div>
+//    `
+//})
+//export class ModalBodyComponent {
+//  constructor(private modal: ModalComponent) { }
+//}
+
+//@Component({
+//  selector: 'modal-footer',
+//  template: `
+//        <div class="modal-footer">
+//            <ng-content></ng-content>
+//            <button *ngIf="showDefaultButtons" type="button" class="btn btn-default" data-dismiss="modal" (click)="modal.dismiss()">Close</button>
+//            <button *ngIf="showDefaultButtons" type="button" class="btn btn-primary" (click)="modal.close()">Save</button>
+//        </div>
+//    `
+//})
+//export class ModalFooterComponent {
+//  @Input('show-default-buttons') showDefaultButtons: boolean = false;
+//  constructor(private modal: ModalComponent) { }
+//}

@@ -2,8 +2,13 @@
 <section id="dialog">
   <div class="row">
     <div class="col-sm-6">
-      <button class="btn btn-primary" type="button" (click)="launchDialog(dialog)">Launch Dialog</button>
-      <button class="btn btn-primary" type="button" (click)="launchDialog(dialog1)">Launch Dialog1</button>
+      <button class="btn btn-primary" (click)="showAlert($event)">Alert Dialog</button>
+      <button class="btn btn-primary" (click)="showConfirm($event)">Confirm Dialog</button>
+      <button class="btn btn-primary" (click)="showPrompt($event)">Prompt Dialog</button>
+      <button class="btn btn-primary" (click)="showAdvanced($event)">Custom Dialog</button>
+      <button class="btn btn-primary" (click)="showTabDialog($event)">Tab Dialog</button>
+      <!--<button class="btn btn-primary" type="button" (click)="launchDialog(dialog)">Launch Dialog</button>
+      <button class="btn btn-primary" type="button" (click)="launchDialog(dialog1)">Launch Dialog1</button>-->
     </div>
     <div class="col-sm-6">
       <p>The <strong>dialog component</strong> is to provide a Modal Popup functionality.</p>

@@ -6,6 +6,6 @@ import {Md2Dialog} from './dialog';
   template: `<h2 *ngIf="title">{{title}}</h2><ng-content></ng-content>`,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MdDialogTitle {
+export class Md2DialogTitle {
   @Input() title: string;
 }

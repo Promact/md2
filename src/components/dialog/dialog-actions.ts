@@ -13,7 +13,7 @@ import {Md2Dialog} from './dialog';
   <ng-content></ng-content>`,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MdDialogActions {
+export class Md2DialogActions {
   @Input() cancel: string;
   @Input() ok: string;
   @Input() dialog: Md2Dialog;

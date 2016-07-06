@@ -1,78 +1,100 @@
-# md2-dialog
+# MdDialog
+Dialogs allow prompting the user to make a decision or take action that must be completed before normal operation may continue.
 
-Native Angular2 Material Dialog component
-
-### Selector
-
-```html
-<md2-dialog></md2-dialog>
-```
-
-## API
-
-Example:
- 
- ```html
-<button type="button" (click)="launchDialog(dialog)">Launch Dialog</button>
-
-<button type="button" (click)="launchDialog(dialog2)">Launch Dialog 2</button>
-
-<md2-dialog #dialog [dialog-header]="dialogHeader">
-    <div class="md2-dialog-body">
-        <p>Body of Dialog...</p>
-    </div>
-    <div class="md2-dialog-footer">
-        <button type="button" class="btn btn-primary" (click)="dialog.hide()">Close</button>
-    </div>
-</md2-dialog>
-
-...
-
-<md2-dialog #dialog2>
-    <dialog-header>
-      <strong>Lorum</strong> Ipsum Dialog Header
-    </dialog-header>
-    <div class="md2-dialog-body">
-      <p>Lorum Ipsum Dummy body content for modal dialog of Material design with Angular2 made by Dharmesh Pipariya.</p>
-    </div>
-    <div class="md2-dialog-footer">
-      <button type="button" class="btn btn-primary" (click)="dialog2.hide()">Close</button>
-    </div>
-  </md2-dialog>
- ```
- ```ts
-
-...
-
-import {Md2Dialog} from 'md2/dialog';
-
-@Component({
-    selector: "...",
-    directives: [Md2Dialog]
-})
-
-export class ... {
-    
-    ...
-    
-    private dialogHeader: string = 'Lorum Ipsum';
-    
-    private launchDialog(dialog: any) {
-        dialog.show();
-    }
-
-    ...
-
-}
- ```
-
-
+## `<md-dialog>`
 ### Properties
 
-  - `[close-button]` _- boolean - (Default: `true`)(Optional)_ Takes a boolean that causes the close button to be displayed in the top right corner
-  - `[close-on-unfocus]` _- boolean - (Default: `true`)(Optional)_- Takes a boolean that causes the dialog to close when a user clicks outside of the dialog
-  - `[dialog-header]` _- string - (Default: `null`)(Optional)_ - The heading of the dialog
+| Name | Type | Description |
+| --- | --- | --- |
+| `config` | `OverlayConfig` | Used to override dialog positioning |
 
 
-### Open/Close Dialog
-Use the component's `show()`, `hide()` and `toggle(visible: boolean)` method to properly trigger the dialog's display. Reference the dialog using in your view to have access to the method to use.
+### Events
+
+| Name | Value Type | Description |
+| --- | --- | --- | 
+| `onClose` | `any` | Emitted when the dialog closes with a user specified value |
+| `onCancel` | `any` | Emitted when the dialog closes because of an escape action |
+| `onShow` | `MdDialog` | Emitted when the dialog has been presented to the user |
+
+
+### Examples
+
+#### Basic dialog with one action
+
+```html
+<md-dialog #alert>
+  Clicking the button will close this dialog
+  <md-dialog-actions ok="Got It"></md-dialog-actions>
+</md-dialog>
+
+<button md-button (click)="alert.show()">Open Dialog</button>
+```
+
+## `<md-dialog-title>`
+### Properties
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `title` | `string` | Specify dialog title with a binding |
+
+### Examples
+
+#### Dialog with title and body
+
+```html
+<md-dialog #rentMovie>
+  <md-dialog-title text="Confirm Rental"></md-dialog-title>
+  Your account will be charged $4.99.
+  <md-dialog-actions ok="Purchase" cancel="Cancel"></md-dialog-actions>
+</md-dialog>
+
+<button md-button (click)="rentMovie.show()">Rent Movie</button>
+```
+
+## `<md-dialog-actions>`
+### Properties
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `ok` | `string` | The label to use for an acceptance action button |
+| `cancel` | `string` | The label to use for a cancel action button |
+| `dialog` | `MdDialog` | The dialog to take action on. Set by the owning dialog, but could be overridden for custom behavior. |
+
+
+### Examples
+
+#### Confirmation dialog with a yes/no decision
+
+```html
+<md-dialog #confirm (onClose)="confirmClose($event)">
+  <md-dialog-title>Are you sure?</md-dialog-title>
+  This decision will change your life.
+  <md-dialog-actions ok="Yep" cancel="Nope"></md-dialog-actions>
+</md-dialog>
+
+<button md-button (click)="confirm.show()">Confirm</button>
+```
+
+#### Dialog with custom action buttons
+
+```html
+<md-dialog #custom>
+  <md-dialog-title>Did you like it?</md-dialog-title>
+  Scott Pilgrim vs. the World
+  <md-dialog-actions>
+    <a md-button href="https://en.wikipedia.org/wiki/Scott_Pilgrim_vs._the_World">
+      <span>What's that?</span>
+    </a>
+    <span flex></span>
+    <button md-button (click)="custom.close(false)">
+      <span>It was awesome!</span>
+    </button>
+    <button md-button class="md-primary" (click)="custom.close(true)">
+      <span>It was trying too hard...</span>
+    </button>
+  </md-dialog-actions>
+</md-dialog>
+
+<button md-button (click)="custom.show()">Feedback</button>
+```

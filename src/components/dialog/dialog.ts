@@ -1,11 +1,21 @@
-import { Component, Output, Input, AfterContentInit, ContentChild, EventEmitter, ViewChild, ViewEncapsulation, OnDestroy } from '@angular/core';
-import {Overlay, OVERLAY_PROVIDERS} from '../../core/overlay/overlay';
+import {
+    Component,
+    Output,
+    Input,
+    AfterContentInit,
+    ContentChild,
+    EventEmitter,
+    ViewChild,
+    ViewEncapsulation,
+    OnDestroy
+} from '@angular/core';
+import {Overlay, OVERLAY_CONTAINER_TOKEN, OVERLAY_PROVIDERS} from '../../core/overlay/overlay';
 import {OverlayState} from '../../core/overlay/overlay-state';
 import {OverlayRef} from '../../core/overlay/overlay-ref';
 import {Animate} from '../../core/util/animate';
-import {MdDialogPortal} from './dialog-portal';
-//import {MdDialogActions} from './dialog-actions';
-//import {MdDialogTitle} from './dialog-title';
+import {Md2DialogPortal} from './dialog-portal';
+import {Md2DialogActions} from './dialog-actions';
+import {Md2DialogTitle} from './dialog-title';
 import {KeyCodes} from '../../core/key_codes';
 
 // TODO(jd): behavioral tests
@@ -13,8 +23,8 @@ import {KeyCodes} from '../../core/key_codes';
 
 @Component( {
     selector: 'md2-dialog',
-    //directives: [MdDialogTitle, MdDialogActions],
-    providers: [Overlay, OVERLAY_PROVIDERS],
+    directives: [Md2DialogTitle, Md2DialogActions, Md2DialogPortal],
+    providers: [Overlay, OVERLAY_CONTAINER_TOKEN, OVERLAY_PROVIDERS],
     encapsulation: ViewEncapsulation.None,
     template: `
 <template mdDialogPortal>
@@ -43,10 +53,10 @@ export class Md2Dialog implements AfterContentInit, OnDestroy {
     @Output() onCancel: EventEmitter<any> = new EventEmitter<any>();
 
     /** The portal to send the dialog content through */
-    @ViewChild( MdDialogPortal ) private portal: MdDialogPortal;
+    @ViewChild( Md2DialogPortal ) private portal: Md2DialogPortal;
 
     /** Dialog actions */
-    //@ContentChild( MdDialogActions ) private actions: MdDialogActions;
+    @ContentChild( Md2DialogActions ) private actions: Md2DialogActions;
 
     /** Is the dialog active? */
     private active: boolean = false;
@@ -58,9 +68,9 @@ export class Md2Dialog implements AfterContentInit, OnDestroy {
     private overlayRef: OverlayRef = null;
 
     ngAfterContentInit(): any {
-        //if ( this.actions ) {
-        //    this.actions.dialog = this;
-        //}
+        if ( this.actions ) {
+            this.actions.dialog = this;
+        }
     }
 
     ngOnDestroy(): any {
@@ -112,8 +122,4 @@ export class Md2Dialog implements AfterContentInit, OnDestroy {
     }
 }
 
-
-
-//export * from './dialog-actions';
-export * from './dialog-portal';
-//export * from './dialog-title';
+export const DIALOG_DIRECTIVES = [Md2Dialog, Md2DialogActions, Md2DialogPortal, Md2DialogTitle];

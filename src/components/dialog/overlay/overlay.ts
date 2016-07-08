@@ -63,8 +63,8 @@ export class Overlay {
      */
     private _createPaneElement(): Promise<HTMLElement> {
         var pane = document.createElement( 'div' );
-        pane.id = `md-overlay-${nextUniqueId++}`;
-        pane.classList.add( 'md-overlay-pane' );
+        pane.id = 'md2-overlay-' + ( nextUniqueId++ );
+        pane.classList.add( 'md2-overlay-pane' );
 
         this._overlayContainerElement.appendChild( pane );
 

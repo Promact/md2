@@ -5,8 +5,8 @@
  * with the 'md-overlay-container' class on the document body.
  */
 export function createOverlayContainer(): Element {
-  let container = document.createElement('div');
-  container.classList.add('md-overlay-container');
-  document.body.appendChild(container);
-  return container;
+    let container = document.createElement( 'div' );
+    container.classList.add( 'md2-overlay' );
+    document.body.appendChild( container );
+    return container;
 }

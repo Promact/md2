@@ -1,15 +1,15 @@
 import {
-  Component,
-  Output,
-  Input,
-  ContentChild,
-  EventEmitter,
-  ViewChild,
-  ViewEncapsulation,
-  OnDestroy,
-  ChangeDetectionStrategy
+    Component,
+    Output,
+    Input,
+    ContentChild,
+    EventEmitter,
+    ViewChild,
+    ViewEncapsulation,
+    OnDestroy,
+    ChangeDetectionStrategy
 } from '@angular/core';
-import {Overlay, OVERLAY_PROVIDERS} from '../../core/overlay/overlay';
+import {Overlay} from '../../core/overlay/overlay';
 import {OverlayState} from '../../core/overlay/overlay-state';
 import {OverlayRef} from '../../core/overlay/overlay-ref';
 import {Animate} from '../../core/util/animate';
@@ -20,20 +20,20 @@ import {TemplatePortalDirective} from '../../core/core';
 
 @Directive( { selector: '[mdDialogPortal]' })
 export class Md2DialogPortal extends TemplatePortalDirective {
-  constructor( templateRef: TemplateRef<any>, viewContainerRef: ViewContainerRef ) {
-    super( templateRef, viewContainerRef );
-  }
+    constructor( templateRef: TemplateRef<any>, viewContainerRef: ViewContainerRef ) {
+        super( templateRef, viewContainerRef );
+    }
 }
 
 // TODO(jd): behavioral tests
 // TODO(jd): backdrop and clickToClose options
 
 @Component( {
-  selector: 'md2-dialog',
-  directives: [Md2DialogPortal],
-  providers: [Overlay, OVERLAY_PROVIDERS],
-  encapsulation: ViewEncapsulation.None,
-  template: `
+    selector: 'md2-dialog',
+    directives: [Md2DialogPortal],
+    providers: [Overlay],
+    encapsulation: ViewEncapsulation.None,
+    template: `
 <template mdDialogPortal>
   <div class="md2-dialog" [class.open]="isOpened">
     <div class="md2-dialog-container">
@@ -48,7 +48,7 @@ export class Md2DialogPortal extends TemplatePortalDirective {
   </div>
 </template>
 `,
-  styles: [`
+    styles: [`
     .md2-dialog-open { overflow-y: hidden; }
     .md2-dialog { position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 1050; background-color: rgba(33, 33, 33, 0.48); display: none; overflow-x: hidden; overflow-y: scroll; -webkit-overflow-scrolling: touch; outline: 0; }
     .md2-dialog.open { display: block; }
@@ -69,84 +69,80 @@ export class Md2DialogPortal extends TemplatePortalDirective {
     .md2-dialog-body { position: relative; padding: 16px; }
     .md2-dialog-footer, md2-dialog-footer { padding: 16px; text-align: right; border-top: 1px solid rgba(0,0,0,0.12); }
   `],
-  host: {
-    'tabindex': '0',
-    '(body:keydown)': 'onDocumentKeypress($event)'
-  }
+    host: {
+        'tabindex': '0',
+        '(body:keydown)': 'onDocumentKeypress($event)'
+    }
 })
 export class Md2Dialog implements OnDestroy {
-  constructor( private overlay: Overlay ) {
-    this.config.positionStrategy = this.overlay.position()
-      .global()
-      .centerHorizontally()
-      .centerVertically();
-  }
-
-  @Output() onShow: EventEmitter<Md2Dialog> = new EventEmitter<Md2Dialog>();
-  @Output() onClose: EventEmitter<any> = new EventEmitter<any>();
-  @Output() onCancel: EventEmitter<any> = new EventEmitter<any>();
-
-  /** The portal to send the dialog content through */
-  @ViewChild( Md2DialogPortal ) private portal: Md2DialogPortal;
-
-  /** Is the dialog active? */
-  private isOpened: boolean = false;
-
-  @Input( 'title' ) dialogTitle: string;
-
-  /** Overlay configuration for positioning the dialog */
-  @Input() config = new OverlayState();
-
-  /** @internal */
-  private overlayRef: OverlayRef = null;
-
-  ngOnDestroy(): any {
-    return this.close();
-  }
-
-  /** Show the dialog */
-  show(): Promise<Md2Dialog> {
-    return this.close()
-      .then(() => this.overlay.create( this.config ) )
-      .then(( ref: OverlayRef ) => {
-        this.overlayRef = ref;
-        return ref.attach( this.portal );
-      })
-      .then(() => Animate.wait() )
-      .then(() => {
-        this.isOpened = true;
-        this.onShow.emit( this );
-        return this;
-      });
-  }
-
-  /** Close the dialog */
-  close( result: any = true, cancel: boolean = false ): Promise<Md2Dialog> {
-    if ( !this.overlayRef ) {
-      return Promise.resolve<Md2Dialog>( this );
+    constructor( private overlay: Overlay ) {
     }
-    this.isOpened = false;
-    // TODO(jd): this is terrible, use animate states
-    return Animate.wait( 100 )
-      .then(() => this.overlayRef.detach() )
-      .then(() => {
-        this.overlayRef.dispose();
-        this.overlayRef = null;
-        if ( cancel ) {
-          this.onCancel.emit( result );
-        }
-        else {
-          this.onClose.emit( result );
-        }
-        return this;
-      });
-  }
 
-  private onDocumentKeypress( event: KeyboardEvent ) {
-    if ( event.keyCode == 27 ) {
-      this.close();
+    @Output() onShow: EventEmitter<Md2Dialog> = new EventEmitter<Md2Dialog>();
+    @Output() onClose: EventEmitter<any> = new EventEmitter<any>();
+    @Output() onCancel: EventEmitter<any> = new EventEmitter<any>();
+
+    /** The portal to send the dialog content through */
+    @ViewChild( Md2DialogPortal ) private portal: Md2DialogPortal;
+
+    /** Is the dialog active? */
+    private isOpened: boolean = false;
+
+    @Input( 'title' ) dialogTitle: string;
+
+    /** Overlay configuration for positioning the dialog */
+    @Input() config = new OverlayState();
+
+    /** @internal */
+    private overlayRef: OverlayRef = null;
+
+    ngOnDestroy(): any {
+        return this.close();
     }
-  }
+
+    /** Show the dialog */
+    show(): Promise<Md2Dialog> {
+        return this.close()
+            .then(() => this.overlay.create( this.config ) )
+            .then(( ref: OverlayRef ) => {
+                this.overlayRef = ref;
+                return ref.attach( this.portal );
+            })
+            .then(() => Animate.wait() )
+            .then(() => {
+                this.isOpened = true;
+                this.onShow.emit( this );
+                return this;
+            });
+    }
+
+    /** Close the dialog */
+    close( result: any = true, cancel: boolean = false ): Promise<Md2Dialog> {
+        if ( !this.overlayRef ) {
+            return Promise.resolve<Md2Dialog>( this );
+        }
+        this.isOpened = false;
+        // TODO(jd): this is terrible, use animate states
+        return Animate.wait( 100 )
+            .then(() => this.overlayRef.detach() )
+            .then(() => {
+                this.overlayRef.dispose();
+                this.overlayRef = null;
+                if ( cancel ) {
+                    this.onCancel.emit( result );
+                }
+                else {
+                    this.onClose.emit( result );
+                }
+                return this;
+            });
+    }
+
+    private onDocumentKeypress( event: KeyboardEvent ) {
+        if ( event.keyCode == 27 ) {
+            this.close();
+        }
+    }
 }
 
 

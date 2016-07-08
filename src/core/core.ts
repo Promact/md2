@@ -26,14 +26,23 @@ OverlayOrigin,
 OVERLAY_DIRECTIVES
 } from './overlay/overlay-directives';
 
-// a11y
-export {
-AriaLivePoliteness,
-MdLiveAnnouncer,
-LIVE_ANNOUNCER_ELEMENT_TOKEN
-} from './a11y/live-announcer';
-
 export {
 MdUniqueSelectionDispatcher,
 MdUniqueSelectionDispatcherListener
 } from './coordination/unique-selection-dispatcher';
+
+
+//============================================
+
+
+import {provide} from "@angular/core";
+import {ViewportHelper, BrowserViewportHelper, NodeViewportHelper} from "./util/viewport";
+import {OVERLAY_CONTAINER_TOKEN} from "./overlay/overlay";
+import {createOverlayContainer} from "./overlay/overlay-container";
+
+export const MATERIAL_BROWSER_PROVIDERS: any[] = [
+  provide( ViewportHelper, { useClass: BrowserViewportHelper }),
+  provide( OVERLAY_CONTAINER_TOKEN, { useValue: createOverlayContainer() }),
+];
+
+export const MATERIAL_PROVIDERS = MATERIAL_BROWSER_PROVIDERS;

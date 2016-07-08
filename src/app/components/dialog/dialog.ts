@@ -1,12 +1,12 @@
 import {Component} from '@angular/core';
 import {DIALOG_DIRECTIVES} from '../../../components/dialog/dialog';
-import {Overlay, OVERLAY_CONTAINER_TOKEN, OVERLAY_PROVIDERS} from '../../../core/overlay/overlay';
+import { OVERLAY_PROVIDERS} from '../../../core/overlay/overlay';
 
 @Component( {
     selector: 'dialog-demo',
     templateUrl: './app/components/dialog/dialog.html',
     directives: [DIALOG_DIRECTIVES],
-    providers: [Overlay, OVERLAY_CONTAINER_TOKEN, OVERLAY_PROVIDERS]
+    providers: [OVERLAY_PROVIDERS]
 })
 export class DialogComponent {
     private dialogHeader: string = 'Lorum Ipsum';

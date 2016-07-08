@@ -110,8 +110,6 @@ export interface PortalHost {
     detach(): Promise<any>;
 
     dispose(): void;
-
-    hasAttached(): boolean;
 }
 
 

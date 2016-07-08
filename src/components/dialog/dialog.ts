@@ -9,17 +9,17 @@ import {
     OnDestroy,
     ChangeDetectionStrategy
 } from '@angular/core';
-import {Overlay} from '../../core/overlay/overlay';
-import {OverlayState} from '../../core/overlay/overlay-state';
-import {OverlayRef} from '../../core/overlay/overlay-ref';
-import {Animate} from '../../core/util/animate';
+import {Overlay} from './overlay/overlay';
+import {OverlayState} from './overlay/overlay-state';
+import {OverlayRef} from './overlay/overlay-ref';
+import {Animate} from './animate';
 
 
 import {Directive, ViewContainerRef, TemplateRef} from '@angular/core';
-import {TemplatePortalDirective} from '../../core/core';
+import {TemplatePortal} from './portal/portal';
 
 @Directive( { selector: '[mdDialogPortal]' })
-export class Md2DialogPortal extends TemplatePortalDirective {
+export class Md2DialogPortal extends TemplatePortal {
     constructor( templateRef: TemplateRef<any>, viewContainerRef: ViewContainerRef ) {
         super( templateRef, viewContainerRef );
     }

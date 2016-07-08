@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {DIALOG_DIRECTIVES} from '../../../components/dialog/dialog';
-import { Overlay} from '../../../core/overlay/overlay';
+import { Overlay} from '../../../components/dialog/overlay/overlay';
 
 @Component( {
     selector: 'dialog-demo',

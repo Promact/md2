@@ -10,8 +10,8 @@ branches:
 
 deploy:
   provider: npm
-  api_key: ZGhhcm1lc2hwaXBhcml5YTpEIHBhdGVsIDMwNg==
-  email: pipariyadharmesh@gmail.com
+  api_key: "ZGhhcm1lc2hwaXBhcml5YTpEIHBhdGVsIDMwNg=="
+  email: "pipariyadharmesh@gmail.com"
 
 before_deploy:
   - gulp clean

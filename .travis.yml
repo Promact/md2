@@ -10,14 +10,8 @@ branches:
 
 deploy:
   provider: npm
-  api_key: "YOUR_API_KEY"
-  secure: "Tu6kQZjikHQnoIgHoFag+237O9oJ2SwZEljbeYXY1Vb5l89C+V8rdA5kNGv5Vpis94="
-  email: pipariyadharmesh@gmail.com'
-  on:
-    tags: true
-    all_branches: false
-    node: '0.12'
-    repo: promact/md2
+  api_key: "ZGhhcm1lc2hwaXBhcml5YTpEIHBhdGVsIDMwNg=="
+  email: "pipariyadharmesh@gmail.com"
 
 before_deploy:
   - gulp clean

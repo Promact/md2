@@ -7,15 +7,16 @@ import {
     ViewChild,
     ViewEncapsulation,
     OnDestroy,
-    ChangeDetectionStrategy
+    ChangeDetectionStrategy,
+    provide,
+    Directive, ViewContainerRef, TemplateRef
 } from '@angular/core';
-import {Overlay} from './overlay/overlay';
+import {Overlay, OVERLAY_CONTAINER_TOKEN} from './overlay/overlay';
+import {createOverlayContainer} from "./overlay/overlay-container";
 import {OverlayState} from './overlay/overlay-state';
 import {OverlayRef} from './overlay/overlay-ref';
 import {Animate} from './animate';
 
-
-import {Directive, ViewContainerRef, TemplateRef} from '@angular/core';
 import {TemplatePortal} from './portal/portal';
 
 @Directive( { selector: '[mdDialogPortal]' })
@@ -145,7 +146,9 @@ export class Md2Dialog implements OnDestroy {
     }
 }
 
-
-
-
 export const DIALOG_DIRECTIVES = [Md2Dialog, Md2DialogPortal];
+
+export const DIALOG_PROVIDERS: any[] = [
+    Overlay,
+    provide( OVERLAY_CONTAINER_TOKEN, { useValue: createOverlayContainer() }),
+];

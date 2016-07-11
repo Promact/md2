@@ -2,6 +2,7 @@ import { ACCORDION_DIRECTIVES } from '../accordion/accordion';
 import { Md2Autocomplete } from '../autocomplete/autocomplete';
 import { Md2Collapse } from '../collapse/collapse';
 import { Md2Colorpicker, Md2ColorpickerService } from '../colorpicker/colorpicker';
+import { Md2Datepicker } from '../datepicker/datepicker';
 import { DIALOG_DIRECTIVES, DIALOG_PROVIDERS } from '../dialog/dialog';
 import { MENU_DIRECTIVES } from '../menu/menu';
 import { Md2Multiselect } from '../multiselect/multiselect';
@@ -26,4 +27,4 @@ export * from '../tags/tags';
 export * from '../toast/toast';
 export * from '../tooltip/tooltip';
 
-export const MD2_ALL_DIRECTIVES: Array<any> = [ACCORDION_DIRECTIVES, Md2Autocomplete, Md2Collapse, Md2Colorpicker, Md2ColorpickerService, DIALOG_DIRECTIVES, DIALOG_PROVIDERS, MENU_DIRECTIVES, Md2Multiselect, SELECT_DIRECTIVES, Md2Switch, TABS_DIRECTIVES, Md2Tags, Md2Toast, TOOLTIP_DIRECTIVES];
+export const MD2_ALL_DIRECTIVES: Array<any> = [ACCORDION_DIRECTIVES, Md2Autocomplete, Md2Collapse, Md2Colorpicker, Md2ColorpickerService, Md2Datepicker, DIALOG_DIRECTIVES, DIALOG_PROVIDERS, MENU_DIRECTIVES, Md2Multiselect, SELECT_DIRECTIVES, Md2Switch, TABS_DIRECTIVES, Md2Tags, Md2Toast, TOOLTIP_DIRECTIVES];

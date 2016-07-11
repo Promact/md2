@@ -11,6 +11,7 @@ deploy:
   api_key:
     secure: KaiZsmcsfnWuW2PmkoKwb/WCDvguhI+CY/0AMx2R6BIqlPWxc+xiBJk51V3DakZHOZX81yJSRC4FzogwDymqxxVXFYV8rjnw6zJFRBliCguIglk2U8p85AlJBVh/LiFLtQ1+Km+oxuuka1oZmki4QiYrSV3EpwFrPZL/fVMmUkseZndR84GCxt/huyggBJMYoLd67T85LtO7zDWm/t5qS3kpXBwuHT0UT/tCIIU5R88EPaI4YEOeq3M2DdVGXBzYvpEa/oL2q+SE2ShOa9T+lGhfsgAXZPVtqik149h0By9ynKQFXPpEOhJRlxyiEjZBeF65ylrk6QBDarYGIlOHIy+ONdCwJ3To4Tz3mMSZJGCyiuE0oczd8734FpXBgqWCZZtp6ahz00yVYcCRfXfUKswIBxodYGGAS0vZz2BveV6er0A+FNAL0XArjuwpZX+46I72T7OTPW8kskyO1YtOpnjsvi3CxoWbgDf80D/44GlHx8WCb+F/0lli1/nwk1ns5w9xisNSKHWavrN/liMlPqPUOgZgZgaHTPH97EDHw+Ct346OUhAVUppha2y3YIVFuXPOnufCt6yAPhpTwP+rhWFZ5I+A3VhjI1NUg9uCUTkHee+wMCDT2Dw+XfGnUbOWibbLKissy1Wyr+FSTnM1z/fVizvigMMBQVAunj7b44U=
   on:
+    branch: master
     repo: Promact/md2
 before_deploy:
 - gulp clean

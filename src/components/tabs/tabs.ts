@@ -79,11 +79,11 @@ export class Md2Tab {
     .md2-tabs-header { position: relative; display: inline-block; white-space: nowrap; -moz-transition: 0.5s cubic-bezier(0.35,0,0.25,1); -o-transition: 0.5s cubic-bezier(0.35,0,0.25,1); -webkit-transition: 0.5s cubic-bezier(0.35,0,0.25,1); transition: 0.5s cubic-bezier(0.35,0,0.25,1); }
     .md2-tab-label { position: relative; color: rgba(0,0,0,0.54); font-size: 14px; text-align: center; line-height: 24px; padding: 12px 24px; -moz-transition: background-color .35s cubic-bezier(.35,0,.25,1); -o-transition: background-color .35s cubic-bezier(.35,0,.25,1); -webkit-transition: background-color .35s cubic-bezier(.35,0,.25,1); transition: background-color .35s cubic-bezier(.35,0,.25,1); cursor: pointer; white-space: nowrap; text-transform: uppercase; display: inline-block; font-weight: 500; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; overflow: hidden; -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; }
     .md2-tab-label.active { color: rgb(16,108,200); }
-    .md2-tab-label:after { background-color: rgb(255,82,82); bottom: 0; content: ''; height: 2px; left: 45%; position: absolute; transition: .2s cubic-bezier(.4,0,.2,1); visibility: hidden; width: 10px; }
-    .md2-tab-label.active:after { left: 0; visibility: visible; width: 100%; }
+    /*.md2-tab-label:after { background-color: rgb(255,82,82); bottom: 0; content: ''; height: 2px; left: 45%; position: absolute; transition: .2s cubic-bezier(.4,0,.2,1); visibility: hidden; width: 10px; }
+    .md2-tab-label.active:after { left: 0; visibility: visible; width: 100%; }*/
     .md2-tabs-canvas:focus .md2-tab-label.focus { background: rgba(0,0,0,0.05); }
     .md2-tab-label.disabled { color: rgba(0,0,0,0.26); pointer-events: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-user-drag: none; opacity: 0.5; cursor: default; }
-    .md2-tab-ink-bar { position: absolute; bottom: 0; height: 2px; background: rgb(255,82,82); }
+    .md2-tab-ink-bar { position: absolute; bottom: 0; height: 2px; background: rgb(255,82,82); transition: .25s cubic-bezier(.35,0,.25,1); }
     .md2-tabs-body-wrapper { position: relative; min-height: 0; display: block; clear: both; }
     .md2-tab { padding: 16px; display: none; position: relative; }
     .md2-tab.active { display: block; position: relative; }
@@ -163,6 +163,7 @@ export class Md2Tabs implements AfterContentInit {
         tabs.forEach( tab => tab.active = false );
         tabs[this.selectedIndex].active = true;
         this.adjustOffset( this.selectedIndex );
+        this._updateInkBar();
       } else {
         let index = tabs.findIndex( t => t.active );
         if ( index < 0 ) {

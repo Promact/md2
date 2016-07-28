@@ -51,7 +51,7 @@ system.config.js
 - [md2-autocomplete](https://github.com/promact/md2/tree/master/src/components/autocomplete)
 - [md2-collapse](https://github.com/promact/md2/tree/master/src/components/collapse)
 - [md2-colorpicker](https://github.com/promact/md2/tree/master/src/components/colorpicker)
-- md2-datepicker(Comming soon!)
+- md2-datepicker(Coming soon!)
 - [md2-dialog](https://github.com/promact/md2/tree/master/src/components/dialog)
 - [md2-menu](https://github.com/promact/md2/tree/master/src/components/menu)
 - [md2-multiselect](https://github.com/promact/md2/tree/master/src/components/multiselect)

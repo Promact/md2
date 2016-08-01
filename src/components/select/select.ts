@@ -1,5 +1,5 @@
 import { Injectable, AfterContentInit, AfterContentChecked, Component, ContentChildren, EventEmitter, HostBinding, HostListener, Input, OnInit, Output, Provider, QueryList, ViewEncapsulation, forwardRef, ElementRef } from '@angular/core';
-import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/common';
+import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 const MD2_SELECT_CONTROL_VALUE_ACCESSOR = new Provider( NG_VALUE_ACCESSOR, {
   useExisting: forwardRef(() => Md2Select ),
@@ -39,7 +39,7 @@ export class Md2OptionChange {
       <em class="md2-select-icon"></em>
     </div>
     <div class="md2-select-menu" [class.open]="isMenuVisible">
-      <ng-content></ng-content>    
+      <ng-content></ng-content>
     </div>
   `,
   styles: [`

@@ -10,7 +10,7 @@ import {DayPickerComponent} from './daypicker.component';
     <div class="md2-datepicker-container">
       <div class="md2-datepicker-btn"></div>
       <div class="md2-datepicker-input">
-        <span class="md2-datepicker-value">{{ activeDate | date:'Date'}}</span>
+        <span class="md2-datepicker-value">{{ activeDate | date:'shortDate'}}</span>
         <span class="md2-datepicker-triangle-btn"></span>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import { AfterContentInit, Component, ElementRef, EventEmitter, forwardRef, HostListener, Input, Output, Provider, ViewEncapsulation } from '@angular/core';
-import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/common';
+import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { HightlightPipe } from './autocomplete.pipe';
 
 class Item {

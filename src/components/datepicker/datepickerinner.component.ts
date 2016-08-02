@@ -1,5 +1,6 @@
 import {Component, OnInit, EventEmitter, Input} from '@angular/core';
-import {CORE_DIRECTIVES, FORM_DIRECTIVES, NgClass, NgModel} from '@angular/common';
+import {CORE_DIRECTIVES, NgClass} from '@angular/common';
+import {FORM_DIRECTIVES, NgModel} from '@angular/forms';
 import {DateFormatter} from './date.formatter';
 
 const FORMAT_DAY = 'DD';
@@ -46,7 +47,7 @@ export class DatePickerInnerComponent implements OnInit {
   @Input() public onlyCurrentMonth:boolean;
   @Input() public shortcutPropagation:boolean;
   @Input() public customClass:Array<{date:Date, mode:string, clazz:string}>;
-  
+
   @Input() public dateDisabled:any;
   @Input() public initDate:Date;
 
@@ -56,7 +57,7 @@ export class DatePickerInnerComponent implements OnInit {
 
   private modes:Array<string> = ['day', 'month', 'year'];
   private dateFormatter:DateFormatter = new DateFormatter();
-  
+
   private uniqueId:string;
   private _activeDate:Date;
   private selectedDate:Date;
@@ -68,7 +69,7 @@ export class DatePickerInnerComponent implements OnInit {
   private compareHandlerMonth:Function;
   private refreshViewHandlerYear:Function;
   private compareHandlerYear:Function;
-  private update:EventEmitter<Date> = new EventEmitter(false);
+  private update:EventEmitter<Date> = new EventEmitter<Date>(false);
 
   @Input()
   public get activeDate():Date {
@@ -214,7 +215,7 @@ export class DatePickerInnerComponent implements OnInit {
   }
 
   public select(date:Date):void {
-    
+
     if (this.datepickerMode === this.minMode) {
       if (!this.activeDate) {
         this.activeDate = new Date(0, 0, 0, 0, 0, 0, 0);
@@ -271,7 +272,7 @@ export class DatePickerInnerComponent implements OnInit {
     if (!this.customClass) {
       return '';
     }
-    
+
     const customClassObject:{date:Date, mode:string, clazz:string} = this.customClass
       .find((customClass:any) => {
         return customClass.date.valueOf() === date.valueOf() &&
@@ -281,7 +282,7 @@ export class DatePickerInnerComponent implements OnInit {
   }
 
   private isDisabled(date:Date):boolean {
-    
+
     return ((this.minDate && this.compare(date, this.minDate) < 0) ||
     (this.maxDate && this.compare(date, this.maxDate) > 0));
   }

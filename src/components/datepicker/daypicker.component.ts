@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {CORE_DIRECTIVES, FORM_DIRECTIVES, NgClass} from '@angular/common';
+import {CORE_DIRECTIVES, NgClass} from '@angular/common';
+import {FORM_DIRECTIVES} from '@angular/forms';
 import {DatepickerConfig, DatepickerTheme} from './datepicker.config';
 import {DatePickerInnerComponent} from './datepickerinner.component';
 
@@ -175,13 +176,13 @@ export class DayPickerComponent implements OnInit {
 
   private getISO8601WeekNumber(date:Date):number {
     let checkDate = new Date(date.getTime());
-    
+
     checkDate.setDate(checkDate.getDate() + 4 - (checkDate.getDay() || 7));
     let time = checkDate.getTime();
-    
+
     checkDate.setMonth(0);
     checkDate.setDate(1);
     return Math.floor(Math.round((time - checkDate.getTime()) / 86400000) / 7) + 1;
   }
-  
+
 }

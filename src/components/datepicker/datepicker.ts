@@ -1,12 +1,12 @@
 import {Component, Self, Input, ViewEncapsulation} from '@angular/core';
-import {CORE_DIRECTIVES, FORM_DIRECTIVES, ControlValueAccessor, NgModel} from '@angular/common';
+import {FORM_DIRECTIVES, ControlValueAccessor, NgModel} from '@angular/forms';
 import {DatePickerInnerComponent} from './datepickerinner.component';
 import {DayPickerComponent} from './daypicker.component';
 
 @Component({
   selector: 'md2-datepicker[ngModel]',
   template: `
-  <div class="md2-datepicker-block" (click)="onFieldFocus()" (blur)="onFieldBlur()" (keydown)="inputKeydown($event)" tabindex="0"> 
+  <div class="md2-datepicker-block" (click)="onFieldFocus()" (blur)="onFieldBlur()" (keydown)="inputKeydown($event)" tabindex="0">
     <div class="md2-datepicker-container">
       <div class="md2-datepicker-btn"></div>
       <div class="md2-datepicker-input">
@@ -58,7 +58,7 @@ import {DayPickerComponent} from './daypicker.component';
               .md2-datepicker .well .md2-dp-header th .btn { border: 0; border-radius: 50%; padding: 10px; box-shadow: none; }
               .md2-datepicker .well .md2-dp-header th:nth-child(2) .btn { border-radius: 0; background: none; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; cursor: inherit; }
   `],
-  directives: [DatePickerInnerComponent, DayPickerComponent, FORM_DIRECTIVES, CORE_DIRECTIVES],
+  directives: [DatePickerInnerComponent, DayPickerComponent, FORM_DIRECTIVES],
   encapsulation: ViewEncapsulation.None
 })
 
@@ -117,7 +117,7 @@ export class Md2Datepicker implements ControlValueAccessor {
   }
 
   public writeValue(value:any):void {
-    
+
     if (value === this._activeDate) {
       return;
     }

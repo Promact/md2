@@ -1,5 +1,5 @@
 import { AfterContentInit, ChangeDetectionStrategy, Component, EventEmitter, forwardRef, Input, Output, Provider, ViewEncapsulation } from '@angular/core';
-import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/common';
+import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 let nextId = 0;
 

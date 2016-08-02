@@ -1,7 +1,5 @@
-import {Component, OnInit} from "@angular/core";
-import {RouterLink, ROUTER_DIRECTIVES} from "@angular/router";
-import {Location} from "@angular/common";
 
+import {RouterConfig} from '@angular/router';
 import { Home } from './home';
 import { Accordion } from './components/accordion/accordion';
 import { Autocomplete } from './components/autocomplete/autocomplete';
@@ -18,26 +16,20 @@ import { Tags } from './components/tags/tags';
 import { Toast } from './components/toast/toast';
 import { Tooltip } from './components/tooltip/tooltip';
 
-@Component({
-  selector: "md2-app",
-  templateUrl: "./app/app.html",
-  directives: [Home, Accordion, Autocomplete, Collapse, Colorpicker, Datepicker, DialogComponent, Menu, Multiselect, Select, Switch, Tabs, Tags, Toast, Tooltip, RouterLink, ROUTER_DIRECTIVES]
-})
-
-export class AppComponent implements OnInit {
-  private isSidenavOpened: boolean = false;
-
-  constructor(private location: Location) { }
-
-  ngOnInit() {
-    console.log("Application component initialized ...");
-  }
-
-  sidenavToggle() {
-    this.isSidenavOpened = !this.isSidenavOpened;
-  }
-
-  isActive(path: string) {
-    return this.location.path().startsWith(path);
-  }
-}
+export const routes: RouterConfig = [
+  { path: '', pathMatch: 'full', component: Home },
+  { path: 'accordion', component: Accordion },
+  { path: 'autocomplete', component: Autocomplete },
+  { path: 'collapse', component: Collapse },
+  { path: 'colorpicker', component: Colorpicker },
+  { path: 'datepicker', component: Datepicker },
+  { path: 'dialog', component: DialogComponent },
+  { path: 'menu', component: Menu },
+  { path: 'multiselect', component: Multiselect },
+  { path: 'select', component: Select },
+  { path: 'switch', component: Switch },
+  { path: 'tabs', component: Tabs },
+  { path: 'tags', component: Tags },
+  { path: 'toast', component: Toast },
+  { path: 'tooltip', component: Tooltip }
+];

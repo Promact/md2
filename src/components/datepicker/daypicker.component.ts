@@ -12,7 +12,7 @@ const TEMPLATE_OPTIONS:any = {
     WEEK_ROW: `
         <td *ngIf="datePicker.showWeeks" class="text-xs-center h6"><em>{{ weekNumbers[index] }}</em></td>
         <td *ngFor="let dtz of rowz" class="text-xs-center" role="gridcell" [id]="dtz.uid">
-          <button type="button" style="min-width:100%;" class="btn btn-sm {{dtz.customClass}}"
+          <button type="button" style="min-width:100%;" class="dp-btn {{dtz.customClass}}"
                   *ngIf="!(datePicker.onlyCurrentMonth && dtz.secondary)"
                   [ngClass]="{'btn-secondary': !dtz.selected && !datePicker.isActive(dtz), 'btn-info': dtz.selected, disabled: dtz.disabled}"
                   [disabled]="dtz.disabled"
@@ -31,7 +31,7 @@ const TEMPLATE_OPTIONS:any = {
     WEEK_ROW: `
         <td *ngIf="datePicker.showWeeks" class="text-center h6"><em>{{ weekNumbers[index] }}</em></td>
         <td *ngFor="let dtz of rowz" class="text-center" role="gridcell" [id]="dtz.uid">
-          <button type="button" style="min-width:100%;" class="btn btn-default btn-sm {{dtz.customClass}}"
+          <button type="button" style="min-width:100%;" class="dp-btn {{dtz.customClass}}"
                   *ngIf="!(datePicker.onlyCurrentMonth && dtz.secondary)"
                   [ngClass]="{'btn-info': dtz.selected, active: datePicker.isActive(dtz), disabled: dtz.disabled}"
                   [disabled]="dtz.disabled"
@@ -41,10 +41,10 @@ const TEMPLATE_OPTIONS:any = {
         </td>
     `,
     ARROW_LEFT: `
-    <i class="glyphicon glyphicon-chevron-left"></i>
+    <i class="arrow-icon left"></i>
     `,
     ARROW_RIGHT: `
-    <i class="glyphicon glyphicon-chevron-right"></i>
+    <i class="arrow-icon right"></i>
     `
   }
 };
@@ -58,19 +58,19 @@ const CURRENT_THEME_TEMPLATE:any = TEMPLATE_OPTIONS[DatepickerConfig.theme || Da
   <thead>
     <tr class="md2-dp-header">
       <th>
-        <div type="button" class="btn btn-default btn-secondary btn-sm pull-left" (click)="datePicker.move(-1)">
+        <div type="button" class="dp-btn left-arrow" (click)="datePicker.move(-1)">
         ${CURRENT_THEME_TEMPLATE.ARROW_LEFT}
         </div>
       </th>
       <th [attr.colspan]="5 + datePicker.showWeeks">
         <div [id]="datePicker.uniqueId + '-title'"
-                type="button" class="btn btn-default btn-secondary btn-sm"
+                type="button" class="dp-btn"
                 style="width:100%;">
           <strong>{{title}}</strong>
         </div>
       </th>
       <th>
-        <div type="button" class="btn btn-default btn-secondary btn-sm pull-right" (click)="datePicker.move(1)">
+        <div type="button" class="dp-btn right-arrow" (click)="datePicker.move(1)">
         ${CURRENT_THEME_TEMPLATE.ARROW_RIGHT}
         </div>
       </th>

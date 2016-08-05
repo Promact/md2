@@ -10,6 +10,5 @@ export class Toast {
   constructor(private toast: Md2Toast) { }
   toastMe() {
     this.toast.show('test message...');
-    //this.toast.show({ message: 'test object message...', hideDelay: 1000 });
   }
 }

@@ -9,7 +9,7 @@ import { Md2TooltipOptions } from './tooltip.options';
 
 export class Md2Tooltip {
   private visible: boolean = false;
-  private timer: number;
+  private timer: any;
 
   @Input('tooltip') content: string;
   @Input('tooltip-direction') direction: string = 'bottom';

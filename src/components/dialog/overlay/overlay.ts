@@ -1,15 +1,15 @@
 import {
-    ComponentResolver,
-    OpaqueToken,
-    Inject,
-    Injectable,
+  ComponentResolver,
+  OpaqueToken,
+  Inject,
+  Injectable,
 } from '@angular/core';
 import {OverlayState} from './overlay-state';
 import {DomPortalHost} from '../portal/dom-portal-host';
 import {OverlayRef} from './overlay-ref';
 
 /** Token used to inject the DOM element that serves as the overlay container. */
-export const OVERLAY_CONTAINER_TOKEN = new OpaqueToken( 'overlayContainer' );
+export const OVERLAY_CONTAINER_TOKEN = new OpaqueToken('overlayContainer');
 
 /** Next overlay unique ID. */
 let nextUniqueId = 0;
@@ -28,67 +28,56 @@ let defaultState = new OverlayState();
  */
 @Injectable()
 export class Overlay {
-    private _overlayContainerElement: HTMLElement;
+  private _overlayContainerElement: HTMLElement;
 
-    constructor(
-        @Inject( OVERLAY_CONTAINER_TOKEN ) overlayContainerElement: any,
-        private _componentResolver: ComponentResolver ) {
+  constructor(
+    @Inject(OVERLAY_CONTAINER_TOKEN) overlayContainerElement: any,
+    private _componentResolver: ComponentResolver) {
 
-        // We inject the container as `any` because the constructor signature cannot reference
-        // browser globals (HTMLElement) on non-browser environments, since having a class decorator
-        // causes TypeScript to preserve the constructor signature types.
-        this._overlayContainerElement = overlayContainerElement;
-    }
+    this._overlayContainerElement = overlayContainerElement;
+  }
 
-    /**
-     * Creates an overlay.
-     * @param state State to apply to the overlay.
-     * @returns A reference to the created overlay.
-     */
-    create( state: OverlayState = defaultState ): Promise<OverlayRef> {
-        return this._createPaneElement().then( pane => this._createOverlayRef( pane, state ) );
-    }
+  /**
+   * Creates an overlay.
+   * @param state State to apply to the overlay.
+   * @returns A reference to the created overlay.
+   */
+  create(state: OverlayState = defaultState): Promise<OverlayRef> {
+    return this._createPaneElement().then(pane => this._createOverlayRef(pane, state));
+  }
 
-    /**
-     * Returns a position builder that can be used, via fluent API,
-     * to construct and configure a position strategy.
-     */
-    //position() {
-    //    return this._positionBuilder;
-    //}
+  /**
+   * Creates the DOM element for an overlay and appends it to the overlay container.
+   * @returns Promise resolving to the created element.
+   */
+  private _createPaneElement(): Promise<HTMLElement> {
+    var pane = document.createElement('div');
+    pane.id = 'md2-overlay-' + (nextUniqueId++);
+    pane.classList.add('md2-overlay-pane');
 
-    /**
-     * Creates the DOM element for an overlay and appends it to the overlay container.
-     * @returns Promise resolving to the created element.
-     */
-    private _createPaneElement(): Promise<HTMLElement> {
-        var pane = document.createElement( 'div' );
-        pane.id = 'md2-overlay-' + ( nextUniqueId++ );
-        pane.classList.add( 'md2-overlay-pane' );
+    this._overlayContainerElement.appendChild(pane);
 
-        this._overlayContainerElement.appendChild( pane );
+    return Promise.resolve(pane);
+  }
 
-        return Promise.resolve( pane );
-    }
+  /**
+   * Create a DomPortalHost into which the overlay content can be loaded.
+   * @param pane The DOM element to turn into a portal host.
+   * @returns A portal host for the given DOM element.
+   */
+  private _createPortalHost(pane: HTMLElement): DomPortalHost {
+    return new DomPortalHost(
+      pane,
+      this._componentResolver);
+  }
 
-    /**
-     * Create a DomPortalHost into which the overlay content can be loaded.
-     * @param pane The DOM element to turn into a portal host.
-     * @returns A portal host for the given DOM element.
-     */
-    private _createPortalHost( pane: HTMLElement ): DomPortalHost {
-        return new DomPortalHost(
-            pane,
-            this._componentResolver );
-    }
-
-    /**
-     * Creates an OverlayRef for an overlay in the given DOM element.
-     * @param pane DOM element for the overlay
-     * @param state
-     * @returns {OverlayRef}
-     */
-    private _createOverlayRef( pane: HTMLElement, state: OverlayState ): OverlayRef {
-        return new OverlayRef( this._createPortalHost( pane ), pane, state );
-    }
+  /**
+   * Creates an OverlayRef for an overlay in the given DOM element.
+   * @param pane DOM element for the overlay
+   * @param state
+   * @returns {OverlayRef}
+   */
+  private _createOverlayRef(pane: HTMLElement, state: OverlayState): OverlayRef {
+    return new OverlayRef(this._createPortalHost(pane), pane, state);
+  }
 }

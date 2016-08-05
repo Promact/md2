@@ -53,9 +53,10 @@ export class Md2TooltipComponent implements AfterViewInit {
 
   /**
    * calculate position of target element
-   * @param hostEl
-   * @param targetEl
-   * @param direction
+   * @param hostEl host element
+   * @param targetEl targer element
+   * @param direction direction
+   * @return {top: number, left: number} object of top, left properties
    */
   private positionElements(hostEl: HTMLElement, targetEl: HTMLElement, direction: string): { top: number, left: number } {
     let positionStrParts = direction.split('-');
@@ -108,7 +109,8 @@ export class Md2TooltipComponent implements AfterViewInit {
 
   /**
    * calculate offset of target element
-   * @param nativeEl
+   * @param nativeEl element
+   * @return {width: number, height: number,top: number, left: number} object of with, height, top, left properties
    */
   private offset(nativeEl: any): { width: number, height: number, top: number, left: number } {
     let boundingClientRect = nativeEl.getBoundingClientRect();

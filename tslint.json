@@ -1,7 +1,7 @@
 {
   "rules": {
     "max-line-length": [ true, 1000 ],
-    "no-inferrable-types": true,
+    "no-inferrable-types": false,
     "class-name": true,
     "comment-format": [ true, "check-space" ],
     "indent": [ false, "spaces" ],

@@ -155,18 +155,18 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
    * @param o2
    */
   private equals(o1, o2) {
-    if (o1 === o2) return true;
-    if (o1 === null || o2 === null) return false;
-    if (o1 !== o1 && o2 !== o2) return true;
+    if (o1 === o2) { return true; }
+    if (o1 === null || o2 === null) { return false; }
+    if (o1 !== o1 && o2 !== o2) { return true; }
     let t1 = typeof o1, t2 = typeof o2, length, key, keySet;
     if (t1 === t2 && t1 === 'object') {
       keySet = Object.create(null);
       for (key in o1) {
-        if (!this.equals(o1[key], o2[key])) return false;
+        if (!this.equals(o1[key], o2[key])) { return false; }
         keySet[key] = true;
       }
       for (key in o2) {
-        if (!(key in keySet) && key.charAt(0) !== '$' && o2[key]) return false;
+        if (!(key in keySet) && key.charAt(0) !== '$' && o2[key]) { return false; }
       }
       return true;
     }
@@ -181,15 +181,15 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
    * update scroll of tags suggestion menu
    */
   private updateScroll() {
-    if (this.focusedTag < 0) return;
+    if (this.focusedTag < 0) { return; }
     let menuContainer = this.element.nativeElement.querySelector('.md2-tags-menu');
-    if (!menuContainer) return;
+    if (!menuContainer) { return; }
 
     let choices = menuContainer.querySelectorAll('.md2-option');
-    if (choices.length < 1) return;
+    if (choices.length < 1) { return; }
 
     let highlighted: any = choices[this.focusedTag];
-    if (!highlighted) return;
+    if (!highlighted) { return; }
 
     let top: number = highlighted.offsetTop + highlighted.clientHeight - menuContainer.scrollTop;
     let height: number = menuContainer.offsetHeight;
@@ -206,23 +206,21 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
    * @param event
    */
   private inputKeydown(event: KeyboardEvent) {
-    //Backspace
+    // Backspace
     if (event.keyCode === 8 && !this.tagBuffer) {
       event.preventDefault();
       event.stopPropagation();
       if (this.items.length && this.selectedTag < 0) { this.selectAndFocusTagSafe(this.items.length - 1); }
-      else if (this.items.length) {
-        this.removeAndSelectAdjacentTag(this.selectedTag);
-      }
+      if (this.items.length && this.selectedTag > -1) { this.removeAndSelectAdjacentTag(this.selectedTag); }
       return;
     }
-    //Del Key
+    // Del Key
     if (event.keyCode === 46 && !this.tagBuffer) { return; }
     // Left / Right Arrow
     if ((event.keyCode === 37 || event.keyCode === 39) && !this.tagBuffer) { return; }
     // Down Arrow
     if (event.keyCode === 40) {
-      if (!this.isMenuVisible) return;
+      if (!this.isMenuVisible) { return; }
       event.stopPropagation();
       event.preventDefault();
       this.focusedTag = (this.focusedTag === this.list.length - 1) ? 0 : Math.min(this.focusedTag + 1, this.list.length - 1);
@@ -231,7 +229,7 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
     }
     // Up Arrow
     if (event.keyCode === 38) {
-      if (!this.isMenuVisible) return;
+      if (!this.isMenuVisible) { return; }
       event.stopPropagation();
       event.preventDefault();
       this.focusedTag = (this.focusedTag === 0) ? this.list.length - 1 : Math.max(0, this.focusedTag - 1);
@@ -251,13 +249,13 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
     if (event.keyCode === 27) {
       event.stopPropagation();
       event.preventDefault();
-      if (this.tagBuffer) this.tagBuffer = '';
-      if (this.selectedTag >= 0) this.onFocus();
+      if (this.tagBuffer) { this.tagBuffer = ''; }
+      if (this.selectedTag >= 0) { this.onFocus(); }
       return;
     }
-    //reset selected tag
-    if (this.selectedTag >= 0) this.resetselectedTag();
-    //filter
+    // reset selected tag
+    if (this.selectedTag >= 0) { this.resetselectedTag(); }
+    // filter
     setTimeout(() => {
       this.filterMatches(new RegExp(this.tagBuffer, 'ig'));
     }, 10);
@@ -265,32 +263,32 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
 
   @HostListener('keydown', ['$event'])
   private onKeydown(event: KeyboardEvent) {
-    if (this.tagBuffer || this.disabled) return;
+    if (this.tagBuffer || this.disabled) { return; }
 
     // Backspace / Del Key
-    else if (event.keyCode === 8 || event.keyCode === 46) {
-      if (this.selectedTag < 0) return;
+    if (event.keyCode === 8 || event.keyCode === 46) {
+      if (this.selectedTag < 0) { return; }
       event.preventDefault();
       this.removeAndSelectAdjacentTag(this.selectedTag);
     }
 
     // Left Arrow
-    else if (event.keyCode === 37) {
+    if (event.keyCode === 37) {
       event.preventDefault();
-      if (this.selectedTag < 0) this.selectedTag = this.items.length;
-      if (this.items.length) this.selectAndFocusTagSafe(this.selectedTag - 1);
+      if (this.selectedTag < 0) { this.selectedTag = this.items.length; }
+      if (this.items.length) { this.selectAndFocusTagSafe(this.selectedTag - 1); }
     }
 
     // Right Arrow
-    else if (event.keyCode === 39) {
+    if (event.keyCode === 39) {
       event.preventDefault();
-      if (this.selectedTag >= this.items.length) this.selectedTag = -1;
+      if (this.selectedTag >= this.items.length) { this.selectedTag = -1; }
       this.selectAndFocusTagSafe(this.selectedTag + 1);
     }
 
     // Escape / Tab Key
-    else if (event.keyCode === 27 || event.keyCode === 9) {
-      if (this.selectedTag < 0) return;
+    if (event.keyCode === 27 || event.keyCode === 9) {
+      if (this.selectedTag < 0) { return; }
       event.preventDefault();
       this.onFocus();
     }
@@ -357,7 +355,7 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
       this.onFocus();
       return;
     }
-    if (index === this.items.length) return this.onFocus();
+    if (index === this.items.length) { return this.onFocus(); }
     index = Math.max(index, 0);
     index = Math.min(index, this.items.length - 1);
     this.selectTag(index);

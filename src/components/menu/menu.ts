@@ -56,7 +56,8 @@ export class Md2Menu {
 export class Md2MenuOpen implements OnDestroy {
 
   private close = (event: MouseEvent) => {
-    if (!this.menu.isInClosableZone(<HTMLElement>event.target) && event.target !== this.elementRef.nativeElement) {
+    if (!this.menu.isInClosableZone(<HTMLElement>event.target) &&
+      event.target !== this.elementRef.nativeElement) {
       this.menu.close();
       document.removeEventListener('click', this.close);
     }

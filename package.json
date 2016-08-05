@@ -6,7 +6,12 @@
     "clean": "gulp clean",
     "compile": "gulp compile",
     "build": "gulp build",
-    "start": "concurrent --kill-others \"gulp watch\" \"lite-server\""
+    "start": "concurrent --kill-others \"gulp watch\" \"npm run lite\"",
+    "lite": "lite-server",
+    "postinstall": "typings install",
+    "tsc": "tsc",
+    "tsc:w": "tsc -w",
+    "typings": "typings"
   },
   "main": "gulpfile.js",
   "keywords": [

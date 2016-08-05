@@ -6,26 +6,20 @@ import {OverlayState} from './overlay-state';
  * Used to manipulate or dispose of said overlay.
  */
 export class OverlayRef implements PortalHost {
-    constructor(
-        private _portalHost: PortalHost,
-        private _pane: HTMLElement,
-        private _state: OverlayState ) { }
+  constructor(
+    private _portalHost: PortalHost,
+    private _pane: HTMLElement,
+    private _state: OverlayState) { }
 
-    attach( portal: Portal<any> ): Promise<any> {
-        return this._portalHost.attach( portal );
-    }
+  attach(portal: Portal<any>): Promise<any> {
+    return this._portalHost.attach(portal);
+  }
 
-    detach(): Promise<any> {
-        return this._portalHost.detach();
-    }
+  detach(): Promise<any> {
+    return this._portalHost.detach();
+  }
 
-    dispose(): void {
-        this._portalHost.dispose();
-    }
-
-    //private _updatePosition() {
-    //    if ( this._state.positionStrategy ) {
-    //        this._state.positionStrategy.apply( this._pane );
-    //    }
-    //}
+  dispose(): void {
+    this._portalHost.dispose();
+  }
 }

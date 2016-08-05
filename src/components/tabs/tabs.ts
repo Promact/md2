@@ -6,12 +6,12 @@ export class Md2TabChangeEvent {
   tab: Md2Tab;
 }
 
-@Directive( { selector: '[md2-tab-label]' })
+@Directive({ selector: '[md2-tab-label]' })
 export class Md2TabLabel {
-  constructor( public templateRef: TemplateRef<any> ) { }
+  constructor(public templateRef: TemplateRef<any>) { }
 }
 
-@Component( {
+@Component({
   selector: 'md2-tab',
   template: `<ng-content></ng-content>`,
   host: {
@@ -22,7 +22,7 @@ export class Md2TabLabel {
 })
 export class Md2Tab {
 
-  @ContentChild( Md2TabLabel ) tabLabel: Md2TabLabel;
+  @ContentChild(Md2TabLabel) tabLabel: Md2TabLabel;
 
   @Input() label: string;
 
@@ -30,7 +30,7 @@ export class Md2Tab {
 
   @Input() disabled: boolean;
 
-  @Input( 'class' ) md2Class: string;
+  @Input('class') md2Class: string;
 
   get labelTemplate(): TemplateRef<any> {
     return this.tabLabel ? this.tabLabel.templateRef : null;
@@ -38,7 +38,7 @@ export class Md2Tab {
 
 }
 
-@Component( {
+@Component({
   selector: 'md2-tabs',
   template: `
     <div class="md2-tabs-header-wrapper">
@@ -98,7 +98,7 @@ export class Md2Tab {
 })
 export class Md2Tabs implements AfterContentInit {
 
-  @ContentChildren( Md2Tab ) tabs: QueryList<Md2Tab>;
+  @ContentChildren(Md2Tab) tabs: QueryList<Md2Tab>;
 
   private _isInitialized: boolean = false;
   private _focusIndex: number = 0;
@@ -108,47 +108,47 @@ export class Md2Tabs implements AfterContentInit {
   private inkBarLeft: string = '0';
   private inkBarWidth: string = '0';
 
-  @Input( 'class' ) md2Class: string;
+  @Input('class') md2Class: string;
 
   @Input()
-  set selectedIndex( value: any ) {
-    if ( typeof value === 'string' ) { value = parseInt( value ); }
-    if ( value != this._selectedIndex ) {
+  set selectedIndex(value: any) {
+    if (typeof value === 'string') { value = parseInt(value); }
+    if (value != this._selectedIndex) {
       this._selectedIndex = value;
-      this.adjustOffset( value );
+      this.adjustOffset(value);
       this._updateInkBar();
-      if ( this.tabs ) {
+      if (this.tabs) {
         const tabs = this.tabs.toArray();
-        if ( !tabs[value].disabled ) {
-          tabs.forEach( tab => tab.active = false );
+        if (!tabs[value].disabled) {
+          tabs.forEach(tab => tab.active = false);
           tabs[value].active = true;
         }
       }
-      if ( this._isInitialized ) {
-        this.change.emit( this._createChangeEvent( value ) );
+      if (this._isInitialized) {
+        this.change.emit(this._createChangeEvent(value));
       }
     }
   }
   get selectedIndex() { return this._selectedIndex; }
 
   get focusIndex(): number { return this._focusIndex; }
-  set focusIndex( value: number ) {
+  set focusIndex(value: number) {
     this._focusIndex = value;
-    this.adjustOffset( value );
+    this.adjustOffset(value);
   }
 
   get element() {
     const elements = { root: this.elementRef.nativeElement, wrapper: null, canvas: null, paging: null, tabs: null };
-    elements.wrapper = elements.root.querySelector( '.md2-tabs-header-wrapper' );
-    elements.canvas = elements.wrapper.querySelector( '.md2-tabs-canvas' );
-    elements.paging = elements.canvas.querySelector( '.md2-tabs-header' );
-    elements.tabs = elements.paging.querySelectorAll( '.md2-tab-label' );
+    elements.wrapper = elements.root.querySelector('.md2-tabs-header-wrapper');
+    elements.canvas = elements.wrapper.querySelector('.md2-tabs-canvas');
+    elements.paging = elements.canvas.querySelector('.md2-tabs-header');
+    elements.tabs = elements.paging.querySelectorAll('.md2-tab-label');
     return elements;
   }
 
   @Output() change: EventEmitter<Md2TabChangeEvent> = new EventEmitter<Md2TabChangeEvent>();
 
-  constructor( private elementRef: ElementRef ) { }
+  constructor(private elementRef: ElementRef) { }
 
   /**
    * After Content Init
@@ -156,23 +156,23 @@ export class Md2Tabs implements AfterContentInit {
   ngAfterContentInit() {
     setTimeout(() => {
       this.updatePagination();
-    }, 0 );
+    }, 0);
     setTimeout(() => {
       const tabs = this.tabs.toArray();
-      if ( this.selectedIndex ) {
-        tabs.forEach( tab => tab.active = false );
+      if (this.selectedIndex) {
+        tabs.forEach(tab => tab.active = false);
         tabs[this.selectedIndex].active = true;
-        this.adjustOffset( this.selectedIndex );
+        this.adjustOffset(this.selectedIndex);
       } else {
-        let index = tabs.findIndex( t => t.active );
-        if ( index < 0 ) {
+        let index = tabs.findIndex(t => t.active);
+        if (index < 0) {
           tabs[0].active = true;
         } else {
           this.selectedIndex = index;
         }
       }
       this._updateInkBar();
-    }, 0 );
+    }, 0);
     this._isInitialized = true;
   }
 
@@ -181,7 +181,7 @@ export class Md2Tabs implements AfterContentInit {
    */
   private _updateInkBar(): void {
     let elements = this.element;
-    if ( !elements.tabs[this.selectedIndex] ) return;
+    if (!elements.tabs[this.selectedIndex]) { return; }
     let tab = elements.tabs[this.selectedIndex];
     this.inkBarLeft = tab.offsetLeft + 'px';
     this.inkBarWidth = tab.offsetWidth + 'px';
@@ -191,10 +191,10 @@ export class Md2Tabs implements AfterContentInit {
    * Create Change Event
    * @param index
    */
-  private _createChangeEvent( index: number ): Md2TabChangeEvent {
+  private _createChangeEvent(index: number): Md2TabChangeEvent {
     const event = new Md2TabChangeEvent;
     event.index = index;
-    if ( this.tabs && this.tabs.length ) {
+    if (this.tabs && this.tabs.length) {
       event.tab = this.tabs.toArray()[index];
     }
     return event;
@@ -203,21 +203,21 @@ export class Md2Tabs implements AfterContentInit {
   /**
    * Focus next Tab
    */
-  focusNextTab() { this.incrementIndex( 1 ); }
+  focusNextTab() { this.incrementIndex(1); }
 
   /**
    * Focus previous Tab
    */
-  focusPreviousTab() { this.incrementIndex( -1 ); }
+  focusPreviousTab() { this.incrementIndex(-1); }
 
   /**
    * Mouse Wheel scroll
    * @param event
    */
-  scroll( event ) {
-    if ( !this.shouldPaginate ) return;
+  scroll(event) {
+    if (!this.shouldPaginate) { return; }
     event.preventDefault();
-    this.offsetLeft = this.fixOffset( this.offsetLeft - event.wheelDelta );
+    this.offsetLeft = this.fixOffset(this.offsetLeft - event.wheelDelta);
   }
 
   /**
@@ -228,11 +228,11 @@ export class Md2Tabs implements AfterContentInit {
     let viewportWidth = elements.canvas.clientWidth,
       totalWidth = viewportWidth + this.offsetLeft,
       i, tab;
-    for ( i = 0; i < elements.tabs.length; i++ ) {
+    for (i = 0; i < elements.tabs.length; i++) {
       tab = elements.tabs[i];
-      if ( tab.offsetLeft + tab.offsetWidth > totalWidth ) break;
+      if (tab.offsetLeft + tab.offsetWidth > totalWidth) { break; }
     }
-    this.offsetLeft = this.fixOffset( tab.offsetLeft );
+    this.offsetLeft = this.fixOffset(tab.offsetLeft);
   }
 
   /**
@@ -241,19 +241,19 @@ export class Md2Tabs implements AfterContentInit {
   previousPage() {
     let i, tab, elements = this.element;
 
-    for ( i = 0; i < elements.tabs.length; i++ ) {
+    for (i = 0; i < elements.tabs.length; i++) {
       tab = elements.tabs[i];
-      if ( tab.offsetLeft + tab.offsetWidth >= this.offsetLeft ) break;
+      if (tab.offsetLeft + tab.offsetWidth >= this.offsetLeft) { break; }
     }
-    this.offsetLeft = this.fixOffset( tab.offsetLeft + tab.offsetWidth - elements.canvas.clientWidth );
+    this.offsetLeft = this.fixOffset(tab.offsetLeft + tab.offsetWidth - elements.canvas.clientWidth);
   }
 
   /**
    * On Window Resize
    * @param event
    */
-  onWindowResize( event: Event ) {
-    this.offsetLeft = this.fixOffset( this.offsetLeft );
+  onWindowResize(event: Event) {
+    this.offsetLeft = this.fixOffset(this.offsetLeft);
     this.updatePagination();
   }
 
@@ -277,7 +277,7 @@ export class Md2Tabs implements AfterContentInit {
    */
   updatePagination() {
     let canvasWidth = this.element.root.clientWidth;
-    this.element.tabs.forEach(( tab ) => {
+    this.element.tabs.forEach((tab) => {
       canvasWidth -= tab.offsetWidth;
     });
     this.shouldPaginate = canvasWidth < 0;
@@ -287,13 +287,13 @@ export class Md2Tabs implements AfterContentInit {
    * Increment Focus Tab
    * @param inc
    */
-  incrementIndex( inc ) {
+  incrementIndex(inc) {
     let newIndex,
       index = this.focusIndex;
-    for ( newIndex = index + inc;
+    for (newIndex = index + inc;
       this.tabs.toArray()[newIndex] && this.tabs.toArray()[newIndex].disabled;
-      newIndex += inc ) { }
-    if ( this.tabs.toArray()[newIndex] ) {
+      newIndex += inc) { }
+    if (this.tabs.toArray()[newIndex]) {
       this.focusIndex = newIndex;
     }
   }
@@ -302,27 +302,27 @@ export class Md2Tabs implements AfterContentInit {
    * Adjust Offset of Tab
    * @param index
    */
-  adjustOffset( index ) {
+  adjustOffset(index) {
     let elements = this.element;
-    if ( !elements.tabs[index] ) return;
+    if (!elements.tabs[index]) { return; }
     let tab = elements.tabs[index],
       left = tab.offsetLeft,
       right = tab.offsetWidth + left;
-    this.offsetLeft = Math.max( this.offsetLeft, this.fixOffset( right - elements.canvas.clientWidth + 32 * 2 ) );
-    this.offsetLeft = Math.min( this.offsetLeft, this.fixOffset( left ) );
+    this.offsetLeft = Math.max(this.offsetLeft, this.fixOffset(right - elements.canvas.clientWidth + 32 * 2));
+    this.offsetLeft = Math.min(this.offsetLeft, this.fixOffset(left));
   }
 
   /**
    * Fix Offset of Tab
    * @param value
    */
-  fixOffset( value ) {
+  fixOffset(value) {
     let elements = this.element;
-    if ( !elements.tabs.length || !this.shouldPaginate ) return 0;
+    if (!elements.tabs.length || !this.shouldPaginate) { return 0; }
     let lastTab = elements.tabs[elements.tabs.length - 1],
       totalWidth = lastTab.offsetLeft + lastTab.offsetWidth;
-    value = Math.max( 0, value );
-    value = Math.min( totalWidth - elements.canvas.clientWidth, value );
+    value = Math.max(0, value);
+    value = Math.min(totalWidth - elements.canvas.clientWidth, value);
     return value;
   }
 

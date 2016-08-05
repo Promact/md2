@@ -1,27 +1,43 @@
-import { Injectable, AfterContentInit, AfterContentChecked, Component, ContentChildren, EventEmitter, HostBinding, HostListener, Input, OnInit, Output, Provider, QueryList, ViewEncapsulation, forwardRef, ElementRef } from '@angular/core';
+import {
+  Injectable,
+  AfterContentInit,
+  AfterContentChecked,
+  Component,
+  ContentChildren,
+  EventEmitter,
+  HostBinding,
+  HostListener,
+  Input,
+  OnInit,
+  Output,
+  Provider,
+  QueryList,
+  ViewEncapsulation,
+  forwardRef,
+  ElementRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
-const MD2_SELECT_CONTROL_VALUE_ACCESSOR = new Provider( NG_VALUE_ACCESSOR, {
-  useExisting: forwardRef(() => Md2Select ),
+const MD2_SELECT_CONTROL_VALUE_ACCESSOR = new Provider(NG_VALUE_ACCESSOR, {
+  useExisting: forwardRef(() => Md2Select),
   multi: true
 });
 
 var _uniqueIdCounter = 0;
 
-export type Md2SelectDispatcherListener = ( id: string, name: string ) => void;
+export type Md2SelectDispatcherListener = (id: string, name: string) => void;
 
 @Injectable()
 export class Md2SelectDispatcher {
   private _listeners: Md2SelectDispatcherListener[] = [];
 
-  notify( id: string, name: string ) {
-    for ( let listener of this._listeners ) {
-      listener( id, name );
+  notify(id: string, name: string) {
+    for (let listener of this._listeners) {
+      listener(id, name);
     }
   }
 
-  listen( listener: Md2SelectDispatcherListener ) {
-    this._listeners.push( listener );
+  listen(listener: Md2SelectDispatcherListener) {
+    this._listeners.push(listener);
   }
 }
 
@@ -30,7 +46,7 @@ export class Md2OptionChange {
   value: any;
 }
 
-@Component( {
+@Component({
   selector: 'md2-select',
   template: `
     <div class="md2-select-container">
@@ -78,16 +94,16 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
 
   private focusIndex: number = 0;
 
-  private _controlValueAccessorChangeFn: ( value: any ) => void = ( value ) => { };
+  private _controlValueAccessorChangeFn: (value: any) => void = (value) => { };
   onTouched: () => any = () => { };
 
   @Output() change: EventEmitter<Md2OptionChange> = new EventEmitter<Md2OptionChange>();
 
-  @ContentChildren( forwardRef(() => Md2Option ) )
+  @ContentChildren(forwardRef(() => Md2Option))
   public _options: QueryList<Md2Option> = null;
 
   @Input() get name(): string { return this._name; }
-  set name( value: string ) {
+  set name(value: string) {
     this._name = value;
     this._updateOptions();
   }
@@ -95,42 +111,42 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   @Input() tabindex: number = 0;
   @Input() placeholder: string = '';
 
-  @HostBinding( 'class.md2-select-disabled' )
+  @HostBinding('class.md2-select-disabled')
   @Input() get disabled(): boolean { return this._disabled; }
-  set disabled( value ) {
-    this._disabled = ( value !== null && value !== false ) ? true : null;
+  set disabled(value) {
+    this._disabled = (value !== null && value !== false) ? true : null;
   }
 
   @Input() get value(): any { return this._value; }
-  set value( newValue: any ) {
-    if ( this._value !== newValue ) {
+  set value(newValue: any) {
+    if (this._value !== newValue) {
       this._value = newValue;
       this._updateSelectedOptionValue();
-      if ( this._isInitialized ) {
+      if (this._isInitialized) {
         this._emitChangeEvent();
       }
     }
   }
 
   @Input() get selected() { return this._selected; }
-  set selected( selected: Md2Option ) {
+  set selected(selected: Md2Option) {
     this._selected = selected;
     this.value = selected ? selected.value : null;
-    if ( selected ) {
-      if ( !selected.selected ) { selected.selected = true; }
+    if (selected) {
+      if (!selected.selected) { selected.selected = true; }
       this.selectedValue = selected.content;
     } else { this.selectedValue = ''; }
   }
 
-  constructor( public element: ElementRef ) { }
+  constructor(public element: ElementRef) { }
 
   ngAfterContentInit() {
     this._isInitialized = true;
   }
 
   ngAfterContentChecked() {
-    let opt = this._options.filter( o => this.equals( o.value, this.value ) )[0];
-    if ( opt ) {
+    let opt = this._options.filter(o => this.equals(o.value, this.value))[0];
+    if (opt) {
       this.selectedValue = opt.content;
     }
   }
@@ -140,19 +156,19 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
    * @param o1
    * @param o2
    */
-  private equals( o1, o2 ) {
-    if ( o1 === o2 ) return true;
-    if ( o1 === null || o2 === null ) return false;
-    if ( o1 !== o1 && o2 !== o2 ) return true;
+  private equals(o1: any, o2: any) {
+    if (o1 === o2) { return true; }
+    if (o1 === null || o2 === null) { return false; }
+    if (o1 !== o1 && o2 !== o2) { return true; }
     let t1 = typeof o1, t2 = typeof o2, length, key, keySet;
-    if ( t1 === t2 && t1 === 'object' ) {
-      keySet = Object.create( null );
-      for ( key in o1 ) {
-        if ( !this.equals( o1[key], o2[key] ) ) return false;
+    if (t1 === t2 && t1 === 'object') {
+      keySet = Object.create(null);
+      for (key in o1) {
+        if (!this.equals(o1[key], o2[key])) { return false; }
         keySet[key] = true;
       }
-      for ( key in o2 ) {
-        if ( !( key in keySet ) && key.charAt( 0 ) !== '$' && o2[key] ) return false;
+      for (key in o2) {
+        if (!(key in keySet) && key.charAt(0) !== '$' && o2[key]) { return false; }
       }
       return true;
     }
@@ -163,22 +179,22 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
    * To update scroll to position of focused option
    */
   private updateScroll() {
-    if ( this.focusIndex < 0 ) return;
-    let menuContainer = this.element.nativeElement.querySelector( '.md2-select-menu' );
-    if ( !menuContainer ) return;
+    if (this.focusIndex < 0) { return; }
+    let menuContainer = this.element.nativeElement.querySelector('.md2-select-menu');
+    if (!menuContainer) { return; }
 
-    let choices = menuContainer.querySelectorAll( 'md2-option' );
-    if ( choices.length < 1 ) return;
+    let choices = menuContainer.querySelectorAll('md2-option');
+    if (choices.length < 1) { return; }
 
     let highlighted: any = choices[this.focusIndex];
-    if ( !highlighted ) return;
+    if (!highlighted) { return; }
 
     let top: number = highlighted.offsetTop + highlighted.clientHeight - menuContainer.scrollTop;
     let height: number = menuContainer.offsetHeight;
 
-    if ( top > height ) {
+    if (top > height) {
       menuContainer.scrollTop += top - height;
-    } else if ( top < highlighted.clientHeight ) {
+    } else if (top < highlighted.clientHeight) {
       menuContainer.scrollTop -= highlighted.clientHeight - top;
     }
   }
@@ -186,59 +202,59 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   /**
    * get index of focused option
    */
-  private getFocusIndex(): number { return this._options.toArray().findIndex( o => o.focused ); }
+  private getFocusIndex(): number { return this._options.toArray().findIndex(o => o.focused); }
 
   /**
    * update focused option
    * @param inc
    */
-  private updateFocus( inc ) {
+  private updateFocus(inc) {
     let options = this._options.toArray();
     let index = this.focusIndex;
-    options.forEach( o => { if ( o.focused ) { o.focused = false; } });
+    options.forEach(o => { if (o.focused) { o.focused = false; } });
     let option;
     do {
       index += inc;
-      if ( index < 0 ) { index = options.length - 1; }
-      else if ( index > options.length - 1 ) { index = 0; }
+      if (index < 0) { index = options.length - 1; }
+      if (index > options.length - 1) { index = 0; }
       option = options[index];
       this.focusIndex = index;
-      if ( option.disabled ) { option = undefined; }
-    } while ( !option );
-    if ( option ) { option.focused = true; }
+      if (option.disabled) { option = undefined; }
+    } while (!option);
+    if (option) { option.focused = true; }
     this.updateScroll();
   }
 
-  @HostListener( 'click', ['$event'] )
-  private onClick( e: any ) {
-    if ( this.disabled ) {
+  @HostListener('click', ['$event'])
+  private onClick(e: any) {
+    if (this.disabled) {
       e.stopPropagation();
       e.preventDefault();
       return;
     }
-    if ( this.isOpenable ) {
-      if ( !this.isMenuVisible ) {
-        this._options.forEach( o => {
+    if (this.isOpenable) {
+      if (!this.isMenuVisible) {
+        this._options.forEach(o => {
           o.focused = false;
-          if ( o.selected ) { o.focused = true; }
+          if (o.selected) { o.focused = true; }
         });
         this.focusIndex = this.getFocusIndex();
         this.isMenuVisible = true;
         setTimeout(() => {
           this.updateScroll();
-        }, 0 );
+        }, 0);
       }
     }
     this.isOpenable = true;
   }
 
-  @HostListener( 'keydown', ['$event'] )
-  private onKeyDown( e: any ) {
-    if ( this.disabled ) { return; }
+  @HostListener('keydown', ['$event'])
+  private onKeyDown(e: any) {
+    if (this.disabled) { return; }
 
     // Tab Key
-    if ( e.keyCode === 9 ) {
-      if ( this.isMenuVisible ) {
+    if (e.keyCode === 9) {
+      if (this.isMenuVisible) {
         this.onBlur();
         e.preventDefault();
       }
@@ -246,7 +262,7 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
     }
 
     // Escape Key
-    if ( e.keyCode === 27 ) {
+    if (e.keyCode === 27) {
       this.onBlur();
       e.stopPropagation();
       e.preventDefault();
@@ -254,11 +270,11 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
     }
 
     // Up Arrow
-    if ( e.keyCode === 38 ) {
-      if ( this.isMenuVisible ) {
-        this.updateFocus( -1 );
+    if (e.keyCode === 38) {
+      if (this.isMenuVisible) {
+        this.updateFocus(-1);
       } else {
-        this.onClick( e );
+        this.onClick(e);
       }
       e.stopPropagation();
       e.preventDefault();
@@ -266,11 +282,11 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
     }
 
     // Down Arrow
-    if ( e.keyCode === 40 ) {
-      if ( this.isMenuVisible ) {
-        this.updateFocus( 1 );
+    if (e.keyCode === 40) {
+      if (this.isMenuVisible) {
+        this.updateFocus(1);
       } else {
-        this.onClick( e );
+        this.onClick(e);
       }
       e.stopPropagation();
       e.preventDefault();
@@ -278,34 +294,34 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
     }
 
     // Enter / Space
-    if ( e.keyCode === 13 || e.keyCode === 32 ) {
-      if ( this.isMenuVisible ) {
-        this._options.toArray()[this.focusIndex].onClick( e );
+    if (e.keyCode === 13 || e.keyCode === 32) {
+      if (this.isMenuVisible) {
+        this._options.toArray()[this.focusIndex].onClick(e);
       } else {
-        this.onClick( e );
+        this.onClick(e);
       }
       e.preventDefault();
       return;
     }
   }
 
-  @HostListener( 'blur' )
+  @HostListener('blur')
   public onBlur() {
     this.isMenuVisible = false;
     this.isOpenable = false;
     setTimeout(() => {
       this.isOpenable = true;
-    }, 200 );
+    }, 200);
   }
 
   touch() {
-    if ( this.onTouched ) {
+    if (this.onTouched) {
       this.onTouched();
     }
   }
 
   private _updateOptions(): void {
-    ( this._options || [] ).forEach( option => {
+    (this._options || []).forEach(option => {
       option.name = this.name;
     });
   }
@@ -313,14 +329,14 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   private _updateSelectedOptionValue(): void {
     let isAlreadySelected = this._selected !== null && this._selected.value === this._value;
 
-    if ( this._options !== null && !isAlreadySelected ) {
-      let matchingOption = this._options.filter( option => option.value === this._value )[0];
+    if (this._options !== null && !isAlreadySelected) {
+      let matchingOption = this._options.filter(option => option.value === this._value)[0];
 
-      if ( matchingOption ) {
+      if (matchingOption) {
         this.selected = matchingOption;
-      } else if ( this.value === null ) {
+      } else if (this.value === null) {
         this.selected = null;
-        this._options.forEach( option => { option.selected = false; });
+        this._options.forEach(option => { option.selected = false; });
       }
     }
   }
@@ -329,18 +345,18 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
     let event = new Md2OptionChange();
     event.source = this._selected;
     event.value = this._value;
-    this._controlValueAccessorChangeFn( event.value );
-    this.change.emit( event );
+    this._controlValueAccessorChangeFn(event.value);
+    this.change.emit(event);
   }
 
-  writeValue( value: any ) { this.value = value; }
+  writeValue(value: any) { this.value = value; }
 
-  registerOnChange( fn: ( value: any ) => void ) { this._controlValueAccessorChangeFn = fn; }
+  registerOnChange(fn: (value: any) => void) { this._controlValueAccessorChangeFn = fn; }
 
-  registerOnTouched( fn: any ) { this.onTouched = fn; }
+  registerOnTouched(fn: any) { this.onTouched = fn; }
 }
 
-@Component( {
+@Component({
   selector: 'md2-option',
   template: '<div class="md2-option-text"><ng-content></ng-content></div>',
   styles: [`
@@ -358,11 +374,11 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
 })
 export class Md2Option implements OnInit {
 
-  @HostBinding( 'class.md2-option-focused' ) focused: boolean = false;
+  @HostBinding('class.md2-option-focused') focused: boolean = false;
 
   private _selected: boolean = false;
 
-  @HostBinding( 'id' ) @Input() id: string = `md2-option-${_uniqueIdCounter++}`;
+  @HostBinding('id') @Input() id: string = `md2-option-${_uniqueIdCounter++}`;
 
   name: string;
 
@@ -373,42 +389,42 @@ export class Md2Option implements OnInit {
 
   select: Md2Select;
 
-  constructor( select: Md2Select, private selectDispatcher: Md2SelectDispatcher, private element: ElementRef ) {
+  constructor(select: Md2Select, private selectDispatcher: Md2SelectDispatcher, private element: ElementRef) {
     this.select = select;
-    selectDispatcher.listen(( id: string, name: string ) => {
-      if ( id !== this.id && name === this.name ) {
+    selectDispatcher.listen((id: string, name: string) => {
+      if (id !== this.id && name === this.name) {
         this.selected = false;
       }
     });
   }
 
-  @HostBinding( 'class.md2-option-selected' ) @Input() get selected(): boolean { return this._selected; }
-  set selected( selected: boolean ) {
-    if ( selected ) { this.selectDispatcher.notify( this.id, this.name ); }
+  @HostBinding('class.md2-option-selected') @Input() get selected(): boolean { return this._selected; }
+  set selected(selected: boolean) {
+    if (selected) { this.selectDispatcher.notify(this.id, this.name); }
 
     this._selected = selected;
 
-    if ( selected && this.select.value !== this.value ) {
+    if (selected && this.select.value !== this.value) {
       this.select.selected = this;
     }
   }
 
   @Input() get value(): any { return this._value; }
-  set value( value: any ) {
-    if ( this._value !== value ) {
-      if ( this.selected ) {
+  set value(value: any) {
+    if (this._value !== value) {
+      if (this.selected) {
         this.select.value = value;
       }
       this._value = value;
     }
   }
 
-  @HostBinding( 'class.md2-option-disabled' )
+  @HostBinding('class.md2-option-disabled')
   @Input() get disabled(): boolean {
-    return this._disabled || ( this.select.disabled );
+    return this._disabled || (this.select.disabled);
   }
 
-  set disabled( disabled: boolean ) {
+  set disabled(disabled: boolean) {
     this._disabled = disabled;
   }
 
@@ -425,8 +441,8 @@ export class Md2Option implements OnInit {
    * on click to select option
    * @param event
    */
-  public onClick( event: Event ) {
-    if ( this.disabled ) {
+  public onClick(event: Event) {
+    if (this.disabled) {
       event.preventDefault();
       event.stopPropagation();
       return;

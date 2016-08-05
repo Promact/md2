@@ -1,11 +1,11 @@
-<div class="side-nav col-sm-3 col-md-2" [class.open]="isSidenavOpened" (click)="sidenavToggle()">
-  <div class="logo">
+<aside class="sidenav">
+  <header>
     <a [routerLink]="['Home']">
       <img src="./content/img/logo.png">
-      <h4>Material Design 2</h4>
+      <h3>Material Design 2</h3>
     </a>
-  </div>
-  <ul class="menu">
+  </header>
+  <ul>
     <li [class.active]="isActive('/accordion')"><a [routerLink]="['accordion']">Accordion</a></li>
     <li [class.active]="isActive('/autocomplete')"><a [routerLink]="['autocomplete']">Autocomplete</a></li>
     <li [class.active]="isActive('/collapse')"><a [routerLink]="['collapse']">Collapse</a></li>
@@ -21,15 +21,14 @@
     <li [class.active]="isActive('/toast')"><a [routerLink]="['toast']">Toast</a></li>
     <li [class.active]="isActive('/tooltip')"><a [routerLink]="['tooltip']">Tooltip</a></li>
   </ul>
-</div>
-<div class="side-nav-backdrop sm-visible" *ngIf="isSidenavOpened" (click)="sidenavToggle()"></div>
-<div class="content col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2">
-  <header class="header">
-    <button type="button" (click)="sidenavToggle()" class="nav-toggle"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
-    <h2>Material Design 2</h2>
+</aside>
+<main class="main">
+  <header class="toolbar">
+    <button type="button" (click)="sidenavToggle()" class="sidenav-toggle"><em class="fa fa-bars"></em></button>
+    <h3>Material Design 2</h3>
   </header>
   <router-outlet></router-outlet>
   <footer class="footer">
     <span><a href="https://github.com/promact/md2">Md2</a> is maintained by <a href="https://github.com/promact">Promact</a>.</span>
   </footer>
-</div>
+</main>

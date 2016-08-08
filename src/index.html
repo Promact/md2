@@ -1,4 +1,5 @@
-﻿<html>
+﻿<!DOCTYPE html>
+<html lang="en">
 <head>
   <base href=".">
   <meta charset="utf-8">
@@ -21,12 +22,6 @@
   <script src="lib/zone.js/dist/zone.js"></script>
   <script src="lib/reflect-metadata/Reflect.js"></script>
   <script src="lib/systemjs/dist/system.src.js"></script>
-
-  <script src="system.config.js"></script>
-  <script>
-    System.import('app')
-            .then(null, console.error.bind(console));
-  </script>
 </head>
 <body>
   <md2-app>
@@ -35,5 +30,10 @@
       <h4>Loading...</h4>
     </div>
   </md2-app>
+  <script src="system.config.js"></script>
+  <script>
+    System.import('app').then(null, console.error.bind(console));
+  </script>
+  <!--<script src="./bundle.min.js"></script>-->
 </body>
 </html>

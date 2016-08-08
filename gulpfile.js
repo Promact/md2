@@ -2,6 +2,7 @@
 
 var gulp = require('gulp');
 var sysBuilder = require('systemjs-builder');
+var uglify = require('gulp-uglify');
 var del = require('del');
 var tslint = require('gulp-tslint');
 var tsc = require('gulp-typescript');
@@ -63,25 +64,27 @@ gulp.task('build', ['compile', 'resources', 'libs'], function () {
   console.log('Building the project ...');
 });
 
-gulp.task('prod', ['build'], function () {
-  var builder = new sysBuilder('./build', './build/systemjs.config.js');
+gulp.task('bundle:demo', ['build'], function (done) {
+  var builder = new sysBuilder('./build', './build/system.config.js');
 
-  builder.buildStatic('app', './build/bundle.js', {
-    runtime: false
-  })
+  return builder.buildStatic('app', './build/bundle.min.js', { runtime: false })
     .then(function () {
-      console.log('Production is ready ...');
+      return del(['build/**/*.js', '!build/lib/**/*.js', '!build/bundle.min.js']);
+      done();
+    }).catch(function (err) {
+      console.error('systemjs-builder Bundling failed');
     });
 });
 
-gulp.task('publish', function () {
-  var tsResult = gulp.src('src/**/*.ts')
-      .pipe(sourcemaps.init())
-      .pipe(tsc(tsProject));
+gulp.task('bundle:demo:min', ['bundle:demo'], function () {
+  return gulp
+    .src('build/bundle.min.js')
+    .pipe(uglify())
+    .pipe(gulp.dest('build'));
+});
 
-  return tsResult.js
-      .pipe(sourcemaps.write('.'))
-      .pipe(gulp.dest('test'));
+gulp.task('production', ['bundle:demo:min'], function () {
+  console.log('Building the project ...');
 });
 
 //gulp.task('deploy', ['build'], function () {

@@ -1,5 +1,5 @@
 import { LocationStrategy } from './location_strategy';
-import { UrlChangeListener, PlatformLocation } from './platform_location';
+import { PlatformLocation, UrlChangeListener } from './platform_location';
 /**
  * `HashLocationStrategy` is a {@link LocationStrategy} used to configure the
  * {@link Location} service to represent its state in the
@@ -36,9 +36,11 @@ import { UrlChangeListener, PlatformLocation } from './platform_location';
  *
  * bootstrap(AppCmp, [
  *   ROUTER_PROVIDERS,
- *   provide(LocationStrategy, {useClass: HashLocationStrategy})
+ *   {provide: LocationStrategy, useClass: HashLocationStrategy}
  * ]);
  * ```
+ *
+ * @stable
  */
 export declare class HashLocationStrategy extends LocationStrategy {
     private _platformLocation;
@@ -46,7 +48,7 @@ export declare class HashLocationStrategy extends LocationStrategy {
     constructor(_platformLocation: PlatformLocation, _baseHref?: string);
     onPopState(fn: UrlChangeListener): void;
     getBaseHref(): string;
-    path(): string;
+    path(includeHash?: boolean): string;
     prepareExternalUrl(internal: string): string;
     pushState(state: any, title: string, path: string, queryParams: string): void;
     replaceState(state: any, title: string, path: string, queryParams: string): void;

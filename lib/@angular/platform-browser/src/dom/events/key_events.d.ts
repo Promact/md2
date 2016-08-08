@@ -1,5 +1,15 @@
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
 import { NgZone } from '@angular/core';
 import { EventManagerPlugin } from './event_manager';
+/**
+ * @experimental
+ */
 export declare class KeyEventsPlugin extends EventManagerPlugin {
     constructor();
     supports(eventName: string): boolean;
@@ -9,6 +19,4 @@ export declare class KeyEventsPlugin extends EventManagerPlugin {
     };
     static getEventFullKey(event: KeyboardEvent): string;
     static eventCallback(element: HTMLElement, fullKey: any, handler: Function, zone: NgZone): Function;
-    /** @internal */
-    static _normalizeKey(keyName: string): string;
 }

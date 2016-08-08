@@ -1,11 +1,13 @@
+import { RenderComponentType, RenderDebugInfo, Renderer } from '../render/api';
 import { AppElement } from './element';
-import { Renderer, RenderComponentType, RenderDebugInfo } from '../render/api';
 import { ViewRef_ } from './view_ref';
 import { ViewType } from './view_type';
 import { ViewUtils } from './view_utils';
-import { ChangeDetectorRef, ChangeDetectionStrategy, ChangeDetectorState } from '../change_detection/change_detection';
+import { ChangeDetectorRef, ChangeDetectorStatus } from '../change_detection/change_detection';
 import { StaticNodeDebugInfo, DebugContext } from './debug_context';
 import { Injector } from '../di/injector';
+import { AnimationPlayer } from '../animation/animation_player';
+import { ActiveAnimationPlayersMap } from '../animation/active_animation_players_map';
 /**
  * Cost of making objects: http://jsperf.com/instantiate-size-of-object
  *
@@ -17,7 +19,7 @@ export declare abstract class AppView<T> {
     viewUtils: ViewUtils;
     parentInjector: Injector;
     declarationAppElement: AppElement;
-    cdMode: ChangeDetectionStrategy;
+    cdMode: ChangeDetectorStatus;
     ref: ViewRef_<T>;
     rootNodesOrAppElements: any[];
     allNodes: any[];
@@ -26,13 +28,16 @@ export declare abstract class AppView<T> {
     contentChildren: AppView<any>[];
     viewChildren: AppView<any>[];
     viewContainerElement: AppElement;
-    cdState: ChangeDetectorState;
+    numberOfChecks: number;
     projectableNodes: Array<any | any[]>;
-    destroyed: boolean;
     renderer: Renderer;
     private _hasExternalHostElement;
+    activeAnimationPlayers: ActiveAnimationPlayersMap;
     context: T;
-    constructor(clazz: any, componentType: RenderComponentType, type: ViewType, viewUtils: ViewUtils, parentInjector: Injector, declarationAppElement: AppElement, cdMode: ChangeDetectionStrategy);
+    constructor(clazz: any, componentType: RenderComponentType, type: ViewType, viewUtils: ViewUtils, parentInjector: Injector, declarationAppElement: AppElement, cdMode: ChangeDetectorStatus);
+    destroyed: boolean;
+    cancelActiveAnimation(element: any, animationName: string, removeAllAnimations?: boolean): void;
+    registerAndStartAnimation(element: any, animationName: string, player: AnimationPlayer): void;
     create(context: T, givenProjectableNodes: Array<any | any[]>, rootSelectorOrNode: string | any): AppElement;
     /**
      * Overwritten by implementations.
@@ -54,6 +59,11 @@ export declare abstract class AppView<T> {
      * Overwritten by implementations
      */
     destroyInternal(): void;
+    /**
+     * Overwritten by implementations
+     */
+    detachInternal(): void;
+    detach(): void;
     changeDetectorRef: ChangeDetectorRef;
     parent: AppView<any>;
     flatRootNodes: any[];
@@ -79,9 +89,10 @@ export declare abstract class AppView<T> {
 export declare class DebugAppView<T> extends AppView<T> {
     staticNodeDebugInfos: StaticNodeDebugInfo[];
     private _currentDebugContext;
-    constructor(clazz: any, componentType: RenderComponentType, type: ViewType, viewUtils: ViewUtils, parentInjector: Injector, declarationAppElement: AppElement, cdMode: ChangeDetectionStrategy, staticNodeDebugInfos: StaticNodeDebugInfo[]);
+    constructor(clazz: any, componentType: RenderComponentType, type: ViewType, viewUtils: ViewUtils, parentInjector: Injector, declarationAppElement: AppElement, cdMode: ChangeDetectorStatus, staticNodeDebugInfos: StaticNodeDebugInfo[]);
     create(context: T, givenProjectableNodes: Array<any | any[]>, rootSelectorOrNode: string | any): AppElement;
     injectorGet(token: any, nodeIndex: number, notFoundResult: any): any;
+    detach(): void;
     destroyLocal(): void;
     detectChanges(throwOnChange: boolean): void;
     private _resetDebug();

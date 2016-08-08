@@ -1,3 +1,10 @@
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
 import { PipeTransform } from '@angular/core';
 /**
  * Creates a new String with some or all of the matches of a pattern replaced by
@@ -23,6 +30,10 @@ import { PipeTransform } from '@angular/core';
  * --Note--: The 'pattern' parameter will be converted to a RegExp instance. Make sure to escape the
  * string properly if you are matching for regular expression special characters like parenthesis,
  * brackets etc.
+ *
+ * @deprecated The current pipe has limited functionality. The pipe api is not meant to be able
+ * express complex yet generic value transformations. We recommend that these transformations happen
+ * in the component logic instead.
  */
 export declare class ReplacePipe implements PipeTransform {
     transform(value: any, pattern: string | RegExp, replacement: Function | string): any;

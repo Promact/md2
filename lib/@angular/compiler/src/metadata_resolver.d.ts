@@ -1,7 +1,15 @@
-import { Provider, QueryMetadata } from '@angular/core';
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+import { AnimationEntryMetadata, AnimationMetadata, AnimationStateMetadata, AnimationStyleMetadata, Provider, QueryMetadata } from '@angular/core';
 import { ReflectorReader } from '../core_private';
 import { Type } from '../src/facade/lang';
 import * as cpl from './compile_metadata';
+import { CompilerConfig } from './config';
 import { DirectiveResolver } from './directive_resolver';
 import { PipeResolver } from './pipe_resolver';
 import { ViewResolver } from './view_resolver';
@@ -9,23 +17,28 @@ export declare class CompileMetadataResolver {
     private _directiveResolver;
     private _pipeResolver;
     private _viewResolver;
-    private _platformDirectives;
-    private _platformPipes;
+    private _config;
+    private _reflector;
     private _directiveCache;
     private _pipeCache;
     private _anonymousTypes;
     private _anonymousTypeIndex;
-    private _reflector;
-    constructor(_directiveResolver: DirectiveResolver, _pipeResolver: PipeResolver, _viewResolver: ViewResolver, _platformDirectives: Type[], _platformPipes: Type[], _reflector?: ReflectorReader);
+    constructor(_directiveResolver: DirectiveResolver, _pipeResolver: PipeResolver, _viewResolver: ViewResolver, _config: CompilerConfig, _reflector?: ReflectorReader);
     private sanitizeTokenName(token);
+    clearCacheFor(compType: Type): void;
+    clearCache(): void;
+    getAnimationEntryMetadata(entry: AnimationEntryMetadata): cpl.CompileAnimationEntryMetadata;
+    getAnimationStateMetadata(value: AnimationStateMetadata): cpl.CompileAnimationStateMetadata;
+    getAnimationStyleMetadata(value: AnimationStyleMetadata): cpl.CompileAnimationStyleMetadata;
+    getAnimationMetadata(value: AnimationMetadata): cpl.CompileAnimationMetadata;
     getDirectiveMetadata(directiveType: Type): cpl.CompileDirectiveMetadata;
     /**
      * @param someType a symbol which may or may not be a directive type
      * @returns {cpl.CompileDirectiveMetadata} if possible, otherwise null.
      */
     maybeGetDirectiveMetadata(someType: Type): cpl.CompileDirectiveMetadata;
-    getTypeMetadata(type: Type, moduleUrl: string): cpl.CompileTypeMetadata;
-    getFactoryMetadata(factory: Function, moduleUrl: string): cpl.CompileFactoryMetadata;
+    getTypeMetadata(type: Type, moduleUrl: string, dependencies?: any[]): cpl.CompileTypeMetadata;
+    getFactoryMetadata(factory: Function, moduleUrl: string, dependencies?: any[]): cpl.CompileFactoryMetadata;
     getPipeMetadata(pipeType: Type): cpl.CompilePipeMetadata;
     getViewDirectivesMetadata(component: Type): cpl.CompileDirectiveMetadata[];
     getViewPipesMetadata(component: Type): cpl.CompilePipeMetadata[];
@@ -35,6 +48,6 @@ export declare class CompileMetadataResolver {
     getProviderMetadata(provider: Provider): cpl.CompileProviderMetadata;
     getQueriesMetadata(queries: {
         [key: string]: QueryMetadata;
-    }, isViewQuery: boolean): cpl.CompileQueryMetadata[];
-    getQueryMetadata(q: QueryMetadata, propertyName: string): cpl.CompileQueryMetadata;
+    }, isViewQuery: boolean, directiveType: Type): cpl.CompileQueryMetadata[];
+    getQueryMetadata(q: QueryMetadata, propertyName: string, typeOrFunc: Type | Function): cpl.CompileQueryMetadata;
 }

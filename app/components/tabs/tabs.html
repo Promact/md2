@@ -2,34 +2,37 @@
 <section id="tabs">
   <div class="row">
     <div class="col-sm-6">
-      <md2-tabs (change)="change($event)">
-        <md2-tab header="Static title">Static content</md2-tab>
+      <md2-tabs class="test" selectedIndex="3" (change)="change($event)">
+        <md2-tab class="test" label="Static title">Static content</md2-tab>
         <md2-tab *ngFor="let tabz of tabs"
-                 [header]="tabz.title"
+                 [label]="tabz.title"
                  [active]="tabz.active"
-                 [disabled]="tabz.disabled"
-                 [removable]="tabz.removable">
+                 [disabled]="tabz.disabled">
           {{tabz.content}}
         </md2-tab>
-        <md2-tab header="Static title2">Static content2</md2-tab>
+        <md2-tab active="true">
+          <template md2-tab-label>Static title211</template>
+          Static content2
+        </md2-tab>
       </md2-tabs>
     </div>
     <div class="col-sm-6">
       <p>The <strong>tabs component</strong> is to provide a tabs functionality.</p>
-      <h3>md2-tabs settings</h3>
+      <h3>Properties of md2-tabs</h3>
       <ul>
-        <li><code>md-class</code> (<code>?string=''</code>) - To set class on tabset.</li>
+        <li><code>selectedIndex</code> (<code>?number=0</code>) - Index of the active/selected tab.</li>
+        <li><code>class</code> (<code>?string=''</code>) - To set custom class on <code>md2-tabs</code> element.</li>
       </ul>
-      <h3>md2-tab settings</h3>
+      <h3>Properties of md2-tab</h3>
       <ul>
-        <li><code>header</code> (<code>?string='text'</code>) - To set title of a tab.</li>
+        <li><code>label</code> (<code>?string=''</code>) - Optional attribute to specify a simple string as the tab label.</li>
         <li><code>active</code> (<code>?boolean='false'</code>) - To set as an active a tab.</li>
         <li><code>disabled</code> (<code>?boolean='false'</code>) - To set as an disabled a tab.</li>
-        <li><code>header-class</code> (<code>?string=''</code>) - To set class on title of tab.</li>
+        <li><code>class</code> (<code>?string=''</code>) - To set custom class on <code>md2-tab</code> element.</li>
       </ul>
       <h3>Events</h3>
       <ul>
-        <li><code>change</code> it fires after a tab has been changes; returns object of tab which has been selected.</li>
+        <li><code>change</code> - it fires after a tab has been changes; returns object of selected tab.</li>
       </ul>
     </div>
   </div>

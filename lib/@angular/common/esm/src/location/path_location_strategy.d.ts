@@ -1,5 +1,5 @@
-import { PlatformLocation, UrlChangeListener } from './platform_location';
 import { LocationStrategy } from './location_strategy';
+import { PlatformLocation, UrlChangeListener } from './platform_location';
 /**
  * `PathLocationStrategy` is a {@link LocationStrategy} used to configure the
  * {@link Location} service to represent its state in the
@@ -20,7 +20,7 @@ import { LocationStrategy } from './location_strategy';
  * ### Example
  *
  * ```
- * import {Component, provide} from '@angular/core';
+ * import {Component} from '@angular/core';
  * import {bootstrap} from '@angular/platform-browser/browser';
  * import {
  *   Location,
@@ -44,9 +44,11 @@ import { LocationStrategy } from './location_strategy';
  *
  * bootstrap(AppCmp, [
  *   ROUTER_PROVIDERS, // includes binding to PathLocationStrategy
- *   provide(APP_BASE_HREF, {useValue: '/my/app'})
+ *   {provide: APP_BASE_HREF, useValue: '/my/app'}
  * ]);
  * ```
+ *
+ * @stable
  */
 export declare class PathLocationStrategy extends LocationStrategy {
     private _platformLocation;
@@ -55,7 +57,7 @@ export declare class PathLocationStrategy extends LocationStrategy {
     onPopState(fn: UrlChangeListener): void;
     getBaseHref(): string;
     prepareExternalUrl(internal: string): string;
-    path(): string;
+    path(includeHash?: boolean): string;
     pushState(state: any, title: string, url: string, queryParams: string): void;
     replaceState(state: any, title: string, url: string, queryParams: string): void;
     forward(): void;

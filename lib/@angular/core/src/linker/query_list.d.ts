@@ -1,4 +1,11 @@
-import { Observable } from '../../src/facade/async';
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+import { Observable } from '../facade/async';
 /**
  * An unmodifiable list of items that Angular keeps up to date when the state
  * of the application changes.
@@ -17,11 +24,10 @@ import { Observable } from '../../src/facade/async';
  * ```typescript
  * @Component({...})
  * class Container {
- *   constructor(@Query(Item) items: QueryList<Item>) {
- *     items.changes.subscribe(_ => console.log(items.length));
- *   }
+ *   @ViewChildren(Item) items:QueryList<Item>;
  * }
  * ```
+ * @stable
  */
 export declare class QueryList<T> {
     private _dirty;
@@ -32,31 +38,33 @@ export declare class QueryList<T> {
     first: T;
     last: T;
     /**
-     * returns a new array with the passed in function applied to each element.
+     * See
+     * [Array.map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map)
      */
-    map<U>(fn: (item: T) => U): U[];
+    map<U>(fn: (item: T, index: number, array: T[]) => U): U[];
     /**
-     * returns a filtered array.
+     * See
+     * [Array.filter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter)
      */
-    filter(fn: (item: T) => boolean): T[];
+    filter(fn: (item: T, index: number, array: T[]) => boolean): T[];
     /**
-     * returns a reduced value.
+     * See
+     * [Array.reduce](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)
      */
-    reduce<U>(fn: (acc: U, item: T) => U, init: U): U;
+    reduce<U>(fn: (prevValue: U, curValue: T, curIndex: number, array: T[]) => U, init: U): U;
     /**
-     * executes function for each element in a query.
+     * See
+     * [Array.forEach](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach)
      */
-    forEach(fn: (item: T) => void): void;
+    forEach(fn: (item: T, index: number, array: T[]) => void): void;
     /**
-     * converts QueryList into an array
+     * See
+     * [Array.some](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some)
      */
+    some(fn: (value: T, index: number, array: T[]) => boolean): boolean;
     toArray(): T[];
     toString(): string;
-    /**
-     * @internal
-     */
     reset(res: Array<T | any[]>): void;
-    /** @internal */
     notifyOnChanges(): void;
     /** internal */
     setDirty(): void;

@@ -6,25 +6,30 @@
  * If you need to avoid randomly generated value to be used as an application id, you can provide
  * a custom value via a DI provider <!-- TODO: provider --> configuring the root {@link Injector}
  * using this token.
+ * @experimental
  */
 export declare const APP_ID: any;
 /**
  * Providers that will generate a random APP_ID_TOKEN.
+ * @experimental
  */
 export declare const APP_ID_RANDOM_PROVIDER: {
     provide: any;
     useFactory: () => string;
-    deps: any[];
+    deps: any;
 };
 /**
  * A function that will be executed when a platform is initialized.
+ * @experimental
  */
 export declare const PLATFORM_INITIALIZER: any;
 /**
  * A function that will be executed when an application is initialized.
+ * @experimental
  */
 export declare const APP_INITIALIZER: any;
 /**
  * A token which indicates the root directory of the application
+ * @experimental
  */
 export declare const PACKAGE_ROOT_URL: any;

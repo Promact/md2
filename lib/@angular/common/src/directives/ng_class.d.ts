@@ -1,4 +1,11 @@
-import { DoCheck, OnDestroy, ElementRef, IterableDiffers, KeyValueDiffers, Renderer } from '@angular/core';
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+import { DoCheck, ElementRef, IterableDiffers, KeyValueDiffers, OnDestroy, Renderer } from '@angular/core';
 /**
  * The `NgClass` directive conditionally adds and removes CSS classes on an HTML element based on
  * an expression's evaluation result.
@@ -43,7 +50,7 @@ import { DoCheck, OnDestroy, ElementRef, IterableDiffers, KeyValueDiffers, Rende
  *       color: gray;
  *       border: medium solid gray;
  *     }
- *   `]
+ *   `],
  *   directives: [NgClass]
  * })
  * class ToggleButton {
@@ -57,6 +64,8 @@ import { DoCheck, OnDestroy, ElementRef, IterableDiffers, KeyValueDiffers, Rende
  *   }
  * }
  * ```
+ *
+ * @stable
  */
 export declare class NgClass implements DoCheck, OnDestroy {
     private _iterableDiffers;

@@ -1,15 +1,15 @@
-import { PipeTransform } from '@angular/core';
-import { NumberFormatStyle } from '../../src/facade/intl';
 /**
- * Internal base class for numeric pipes.
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
  */
-export declare class NumberPipe {
-    /** @internal */
-    static _format(value: number, style: NumberFormatStyle, digits: string, currency?: string, currencyAsSymbol?: boolean): string;
-}
+import { PipeTransform } from '@angular/core';
 /**
  * WARNING: this pipe uses the Internationalization API.
- * Therefore it is only reliable in Chrome and Opera browsers.
+ * Therefore it is only reliable in Chrome and Opera browsers. For other browsers please use an
+ * polyfill, for example: [https://github.com/andyearnshaw/Intl.js/].
  *
  * Formats a number as local text. i.e. group sizing and separator and other locale-specific
  * configurations are based on the active locale.
@@ -32,13 +32,16 @@ export declare class NumberPipe {
  * ### Example
  *
  * {@example core/pipes/ts/number_pipe/number_pipe_example.ts region='NumberPipe'}
+ *
+ * @experimental
  */
-export declare class DecimalPipe extends NumberPipe implements PipeTransform {
+export declare class DecimalPipe implements PipeTransform {
     transform(value: any, digits?: string): string;
 }
 /**
  * WARNING: this pipe uses the Internationalization API.
- * Therefore it is only reliable in Chrome and Opera browsers.
+ * Therefore it is only reliable in Chrome and Opera browsers. For other browsers please use an
+ * polyfill, for example: [https://github.com/andyearnshaw/Intl.js/].
  *
  * Formats a number as local percent.
  *
@@ -51,13 +54,17 @@ export declare class DecimalPipe extends NumberPipe implements PipeTransform {
  * ### Example
  *
  * {@example core/pipes/ts/number_pipe/number_pipe_example.ts region='PercentPipe'}
+ *
+ * @experimental
  */
-export declare class PercentPipe extends NumberPipe implements PipeTransform {
+export declare class PercentPipe implements PipeTransform {
     transform(value: any, digits?: string): string;
 }
 /**
  * WARNING: this pipe uses the Internationalization API.
- * Therefore it is only reliable in Chrome and Opera browsers.
+ * Therefore it is only reliable in Chrome and Opera browsers. For other browsers please use an
+ * polyfill, for example: [https://github.com/andyearnshaw/Intl.js/].
+ *
  *
  * Formats a number as local currency.
  *
@@ -74,7 +81,9 @@ export declare class PercentPipe extends NumberPipe implements PipeTransform {
  * ### Example
  *
  * {@example core/pipes/ts/number_pipe/number_pipe_example.ts region='CurrencyPipe'}
+ *
+ * @experimental
  */
-export declare class CurrencyPipe extends NumberPipe implements PipeTransform {
+export declare class CurrencyPipe implements PipeTransform {
     transform(value: any, currencyCode?: string, symbolDisplay?: boolean, digits?: string): string;
 }

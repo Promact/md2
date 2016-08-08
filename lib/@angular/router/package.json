@@ -1,71 +1,96 @@
 {
   "_args": [
     [
-      "@angular/router@2.0.0-rc.1",
-      "D:\\Dharmesh\\DemoProjects\\md2\\md2\\md2"
+      {
+        "raw": "@angular/router@3.0.0-beta.2",
+        "scope": "@angular",
+        "escapedName": "@angular%2frouter",
+        "name": "@angular/router",
+        "rawSpec": "3.0.0-beta.2",
+        "spec": "3.0.0-beta.2",
+        "type": "version"
+      },
+      "D:\\Promact\\Git\\md2"
     ]
   ],
-  "_from": "@angular/router@2.0.0-rc.1",
-  "_id": "@angular/router@2.0.0-rc.1",
+  "_from": "@angular/router@3.0.0-beta.2",
+  "_id": "@angular/router@3.0.0-beta.2",
   "_inCache": true,
   "_installable": true,
   "_location": "/@angular/router",
-  "_nodeVersion": "5.4.1",
+  "_nodeVersion": "6.2.2",
   "_npmOperationalInternal": {
     "host": "packages-16-east.internal.npmjs.com",
-    "tmp": "tmp/router-2.0.0-rc.1.tgz_1462310744425_0.4073680811561644"
+    "tmp": "tmp/router-3.0.0-beta.2.tgz_1467323895728_0.9900497584603727"
   },
   "_npmUser": {
-    "email": "angular-core+npm@google.com",
-    "name": "angular"
+    "name": "angular",
+    "email": "angular-core+npm@google.com"
   },
-  "_npmVersion": "3.8.7",
+  "_npmVersion": "3.9.5",
   "_phantomChildren": {},
   "_requested": {
-    "name": "@angular/router",
-    "raw": "@angular/router@2.0.0-rc.1",
-    "rawSpec": "2.0.0-rc.1",
+    "raw": "@angular/router@3.0.0-beta.2",
     "scope": "@angular",
-    "spec": "2.0.0-rc.1",
+    "escapedName": "@angular%2frouter",
+    "name": "@angular/router",
+    "rawSpec": "3.0.0-beta.2",
+    "spec": "3.0.0-beta.2",
     "type": "version"
   },
   "_requiredBy": [
     "#DEV:/"
   ],
-  "_resolved": "https://registry.npmjs.org/@angular/router/-/router-2.0.0-rc.1.tgz",
-  "_shasum": "96f3868884e151fe8bac07ac7e1b4ec0ad07db77",
+  "_resolved": "https://registry.npmjs.org/@angular/router/-/router-3.0.0-beta.2.tgz",
+  "_shasum": "99a42b8aba7cb4e2be4cde508d5f7d53f0715025",
   "_shrinkwrap": null,
-  "_spec": "@angular/router@2.0.0-rc.1",
-  "_where": "D:\\Dharmesh\\DemoProjects\\md2\\md2\\md2",
+  "_spec": "@angular/router@3.0.0-beta.2",
+  "_where": "D:\\Promact\\Git\\md2",
   "author": {
     "name": "angular"
+  },
+  "bugs": {
+    "url": "https://github.com/angular/angular/issues"
   },
   "dependencies": {},
   "description": "",
   "devDependencies": {},
   "directories": {},
   "dist": {
-    "shasum": "96f3868884e151fe8bac07ac7e1b4ec0ad07db77",
-    "tarball": "https://registry.npmjs.org/@angular/router/-/router-2.0.0-rc.1.tgz"
+    "shasum": "99a42b8aba7cb4e2be4cde508d5f7d53f0715025",
+    "tarball": "https://registry.npmjs.org/@angular/router/-/router-3.0.0-beta.2.tgz"
   },
+  "homepage": "https://github.com/angular/angular#readme",
   "jsnext:main": "esm/index.js",
+  "keywords": [
+    "angular2",
+    "angular",
+    "router"
+  ],
   "license": "MIT",
   "main": "index.js",
   "maintainers": [
     {
-      "email": "angular-core+npm@google.com",
-      "name": "angular"
+      "name": "angular",
+      "email": "angular-core+npm@google.com"
     }
   ],
   "name": "@angular/router",
   "optionalDependencies": {},
   "peerDependencies": {
-    "@angular/common": "2.0.0-rc.1",
-    "@angular/core": "2.0.0-rc.1",
-    "@angular/platform-browser": "2.0.0-rc.1"
+    "@angular/core": "^2.0.0-rc.4",
+    "@angular/compiler": "^2.0.0-rc.4",
+    "@angular/common": "^2.0.0-rc.4",
+    "@angular/platform-browser": "^2.0.0-rc.4",
+    "@angular/platform-browser-dynamic": "^2.0.0-rc.4",
+    "rxjs": "5.0.0-beta.6"
   },
   "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/angular/angular.git"
+  },
   "scripts": {},
-  "typins": "index.d.ts",
-  "version": "2.0.0-rc.1"
+  "typings": "index.d.ts",
+  "version": "3.0.0-beta.2"
 }

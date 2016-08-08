@@ -1,8 +1,15 @@
-export { PromiseWrapper, PromiseCompleter } from './promise';
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 export { Observable } from 'rxjs/Observable';
 export { Subject } from 'rxjs/Subject';
+export { PromiseCompleter, PromiseWrapper } from './promise';
 export declare class TimerWrapper {
     static setTimeout(fn: (...args: any[]) => void, millis: number): number;
     static clearTimeout(id: number): void;
@@ -61,14 +68,21 @@ export declare class ObservableWrapper {
  * }
  * ```
  *
- * Use Rx.Observable but provides an adapter to make it work as specified here:
+ * The events payload can be accessed by the parameter `$event` on the components output event
+ * handler:
+ *
+ * ```
+ * <zippy (open)="onOpen($event)" (close)="onClose($event)"></zippy>
+ * ```
+ *
+ * Uses Rx.Observable but provides an adapter to make it work as specified here:
  * https://github.com/jhusain/observable-spec
  *
  * Once a reference implementation of the spec is available, switch to it.
+ * @stable
  */
 export declare class EventEmitter<T> extends Subject<T> {
-    /** @internal */
-    _isAsync: boolean;
+    __isAsync: boolean;
     /**
      * Creates an instance of [EventEmitter], which depending on [isAsync],
      * delivers events synchronously or asynchronously.

@@ -1,6 +1,6 @@
+import { ResponseOptions } from './base_response_options';
 import { ResponseType } from './enums';
 import { Headers } from './headers';
-import { ResponseOptions } from './base_response_options';
 /**
  * Creates `Response` instances from provided values.
  *
@@ -18,6 +18,8 @@ import { ResponseOptions } from './base_response_options';
  * Spec](https://fetch.spec.whatwg.org/#response-class), but is considered a static value whose body
  * can be accessed many times. There are other differences in the implementation, but this is the
  * most significant.
+ *
+ * @experimental
  */
 export declare class Response {
     /**
@@ -85,4 +87,5 @@ export declare class Response {
      * Not yet implemented
      */
     arrayBuffer(): any;
+    toString(): string;
 }

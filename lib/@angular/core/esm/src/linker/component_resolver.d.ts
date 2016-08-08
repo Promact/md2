@@ -1,14 +1,15 @@
-import { Type } from '../../src/facade/lang';
+import { Type } from '../facade/lang';
 import { ComponentFactory } from './component_factory';
 /**
  * Low-level service for loading {@link ComponentFactory}s, which
  * can later be used to create and render a Component instance.
+ * @experimental
  */
 export declare abstract class ComponentResolver {
-    abstract resolveComponent(componentType: Type): Promise<ComponentFactory<any>>;
-    abstract clearCache(): any;
+    abstract resolveComponent(component: Type | string): Promise<ComponentFactory<any>>;
+    abstract clearCache(): void;
 }
 export declare class ReflectorComponentResolver extends ComponentResolver {
-    resolveComponent(componentType: Type): Promise<ComponentFactory<any>>;
+    resolveComponent(component: Type | string): Promise<ComponentFactory<any>>;
     clearCache(): void;
 }

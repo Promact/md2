@@ -1,22 +1,35 @@
-import { ChangeDetectorRef } from '../change_detector_ref';
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
 import { Provider } from '../../di';
+import { ChangeDetectorRef } from '../change_detector_ref';
 /**
  * A strategy for tracking changes over time to an iterable. Used for {@link NgFor} to
  * respond to changes in an iterable by effecting equivalent changes in the DOM.
+ *
+ * @stable
  */
 export interface IterableDiffer {
     diff(object: any): any;
     onDestroy(): any;
 }
 /**
-  * An optional function passed into {@link NgFor} that defines how to track
-  * items in an iterable (e.g. by index or id)
+ * An optional function passed into {@link NgFor} that defines how to track
+ * items in an iterable (e.g. by index or id)
+ *
+ * @stable
  */
 export interface TrackByFn {
     (index: number, item: any): any;
 }
 /**
  * Provides a factory for {@link IterableDiffer}.
+ *
+ * @stable
  */
 export interface IterableDifferFactory {
     supports(objects: any): boolean;
@@ -25,6 +38,7 @@ export interface IterableDifferFactory {
 /**
  * A repository of different iterable diffing strategies used by NgFor, NgClass, and others.
  * @ts2dart_const
+ * @stable
  */
 export declare class IterableDiffers {
     factories: IterableDifferFactory[];

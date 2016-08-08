@@ -1,71 +1,88 @@
 {
   "_args": [
     [
-      "@angular/platform-browser@2.0.0-rc.1",
-      "D:\\Dharmesh\\DemoProjects\\md2\\md2\\md2"
+      {
+        "raw": "@angular/platform-browser@2.0.0-rc.4",
+        "scope": "@angular",
+        "escapedName": "@angular%2fplatform-browser",
+        "name": "@angular/platform-browser",
+        "rawSpec": "2.0.0-rc.4",
+        "spec": "2.0.0-rc.4",
+        "type": "version"
+      },
+      "D:\\Promact\\Git\\md2"
     ]
   ],
-  "_from": "@angular/platform-browser@2.0.0-rc.1",
-  "_id": "@angular/platform-browser@2.0.0-rc.1",
+  "_from": "@angular/platform-browser@2.0.0-rc.4",
+  "_id": "@angular/platform-browser@2.0.0-rc.4",
   "_inCache": true,
   "_installable": true,
   "_location": "/@angular/platform-browser",
   "_nodeVersion": "5.4.1",
   "_npmOperationalInternal": {
     "host": "packages-12-west.internal.npmjs.com",
-    "tmp": "tmp/platform-browser-2.0.0-rc.1.tgz_1462310727721_0.6210263969842345"
+    "tmp": "tmp/platform-browser-2.0.0-rc.4.tgz_1467308878452_0.6667994738090783"
   },
   "_npmUser": {
-    "email": "angular-core+npm@google.com",
-    "name": "angular"
+    "name": "angular",
+    "email": "angular-core+npm@google.com"
   },
-  "_npmVersion": "3.8.7",
+  "_npmVersion": "3.9.2",
   "_phantomChildren": {},
   "_requested": {
-    "name": "@angular/platform-browser",
-    "raw": "@angular/platform-browser@2.0.0-rc.1",
-    "rawSpec": "2.0.0-rc.1",
+    "raw": "@angular/platform-browser@2.0.0-rc.4",
     "scope": "@angular",
-    "spec": "2.0.0-rc.1",
+    "escapedName": "@angular%2fplatform-browser",
+    "name": "@angular/platform-browser",
+    "rawSpec": "2.0.0-rc.4",
+    "spec": "2.0.0-rc.4",
     "type": "version"
   },
   "_requiredBy": [
     "#DEV:/"
   ],
-  "_resolved": "https://registry.npmjs.org/@angular/platform-browser/-/platform-browser-2.0.0-rc.1.tgz",
-  "_shasum": "df97549f72f042d1c1180ebd451eb676416e40f8",
+  "_resolved": "https://registry.npmjs.org/@angular/platform-browser/-/platform-browser-2.0.0-rc.4.tgz",
+  "_shasum": "519e9057b5cc73f0f615c54d45a1c185956df7d1",
   "_shrinkwrap": null,
-  "_spec": "@angular/platform-browser@2.0.0-rc.1",
-  "_where": "D:\\Dharmesh\\DemoProjects\\md2\\md2\\md2",
+  "_spec": "@angular/platform-browser@2.0.0-rc.4",
+  "_where": "D:\\Promact\\Git\\md2",
   "author": {
     "name": "angular"
+  },
+  "bugs": {
+    "url": "https://github.com/angular/angular/issues"
   },
   "dependencies": {},
   "description": "",
   "devDependencies": {},
   "directories": {},
   "dist": {
-    "shasum": "df97549f72f042d1c1180ebd451eb676416e40f8",
-    "tarball": "https://registry.npmjs.org/@angular/platform-browser/-/platform-browser-2.0.0-rc.1.tgz"
+    "shasum": "519e9057b5cc73f0f615c54d45a1c185956df7d1",
+    "tarball": "https://registry.npmjs.org/@angular/platform-browser/-/platform-browser-2.0.0-rc.4.tgz"
   },
+  "homepage": "https://github.com/angular/angular#readme",
   "jsnext:main": "esm/index.js",
   "license": "MIT",
   "main": "index.js",
   "maintainers": [
     {
-      "email": "angular-core+npm@google.com",
-      "name": "angular"
+      "name": "angular",
+      "email": "angular-core+npm@google.com"
     }
   ],
   "name": "@angular/platform-browser",
   "optionalDependencies": {},
   "peerDependencies": {
-    "@angular/common": "2.0.0-rc.1",
-    "@angular/compiler": "2.0.0-rc.1",
-    "@angular/core": "2.0.0-rc.1"
+    "@angular/core": "^2.0.0-rc.4",
+    "@angular/common": "^2.0.0-rc.4",
+    "@angular/compiler": "^2.0.0-rc.4"
   },
   "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/angular/angular.git"
+  },
   "scripts": {},
   "typings": "index.d.ts",
-  "version": "2.0.0-rc.1"
+  "version": "2.0.0-rc.4"
 }

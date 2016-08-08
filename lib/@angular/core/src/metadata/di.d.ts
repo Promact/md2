@@ -1,5 +1,5 @@
-import { Type } from '../../src/facade/lang';
 import { DependencyMetadata } from '../di/metadata';
+import { Type } from '../facade/lang';
 /**
  * Specifies that a constant attribute value should be injected.
  *
@@ -17,6 +17,7 @@ import { DependencyMetadata } from '../di/metadata';
  *
  * {@example core/ts/metadata/metadata.ts region='attributeMetadata'}
  * @ts2dart_const
+ * @stable
  */
 export declare class AttributeMetadata extends DependencyMetadata {
     attributeName: string;
@@ -131,6 +132,7 @@ export declare class AttributeMetadata extends DependencyMetadata {
  * The injected object is an unmodifiable live list.
  * See {@link QueryList} for more details.
  * @ts2dart_const
+ * @deprecated
  */
 export declare class QueryMetadata extends DependencyMetadata {
     private _selector;
@@ -188,6 +190,7 @@ export declare class QueryMetadata extends DependencyMetadata {
  * }
  * ```
  * @ts2dart_const
+ * @stable
  */
 export declare class ContentChildrenMetadata extends QueryMetadata {
     constructor(_selector: Type | string, {descendants, read}?: {
@@ -215,6 +218,7 @@ export declare class ContentChildrenMetadata extends QueryMetadata {
  * }
  * ```
  * @ts2dart_const
+ * @stable
  */
 export declare class ContentChildMetadata extends QueryMetadata {
     constructor(_selector: Type | string, {read}?: {
@@ -256,6 +260,7 @@ export declare class ContentChildMetadata extends QueryMetadata {
  * The injected object is an iterable and observable live list.
  * See {@link QueryList} for more details.
  * @ts2dart_const
+ * @deprecated
  */
 export declare class ViewQueryMetadata extends QueryMetadata {
     constructor(_selector: Type | string, {descendants, first, read}?: {
@@ -346,6 +351,7 @@ export declare class ViewQueryMetadata extends QueryMetadata {
  * }
  * ```
  * @ts2dart_const
+ * @stable
  */
 export declare class ViewChildrenMetadata extends ViewQueryMetadata {
     constructor(_selector: Type | string, {read}?: {
@@ -422,6 +428,7 @@ export declare class ViewChildrenMetadata extends ViewQueryMetadata {
  * }
  * ```
  * @ts2dart_const
+ * @stable
  */
 export declare class ViewChildMetadata extends ViewQueryMetadata {
     constructor(_selector: Type | string, {read}?: {

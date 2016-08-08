@@ -1,18 +1,12 @@
-import { BaseException, WrappedException } from '../../src/facade/exceptions';
-import { ReflectiveKey } from './reflective_key';
+import { BaseException, WrappedException } from '../facade/exceptions';
+import { Type } from '../facade/lang';
 import { ReflectiveInjector } from './reflective_injector';
+import { ReflectiveKey } from './reflective_key';
 /**
  * Base class for all errors arising from misconfigured providers.
+ * @stable
  */
 export declare class AbstractProviderError extends BaseException {
-    /** @internal */
-    message: string;
-    /** @internal */
-    keys: ReflectiveKey[];
-    /** @internal */
-    injectors: ReflectiveInjector[];
-    /** @internal */
-    constructResolvingMessage: Function;
     constructor(injector: ReflectiveInjector, key: ReflectiveKey, constructResolvingMessage: Function);
     addKey(injector: ReflectiveInjector, key: ReflectiveKey): void;
     context: any;
@@ -30,6 +24,7 @@ export declare class AbstractProviderError extends BaseException {
  *
  * expect(() => Injector.resolveAndCreate([A])).toThrowError();
  * ```
+ * @stable
  */
 export declare class NoProviderError extends AbstractProviderError {
     constructor(injector: ReflectiveInjector, key: ReflectiveKey);
@@ -41,14 +36,15 @@ export declare class NoProviderError extends AbstractProviderError {
  *
  * ```typescript
  * var injector = Injector.resolveAndCreate([
- *   provide("one", {useFactory: (two) => "two", deps: [[new Inject("two")]]}),
- *   provide("two", {useFactory: (one) => "one", deps: [[new Inject("one")]]})
+ *   {provide: "one", useFactory: (two) => "two", deps: [[new Inject("two")]]},
+ *   {provide: "two", useFactory: (one) => "one", deps: [[new Inject("one")]]}
  * ]);
  *
  * expect(() => injector.get("one")).toThrowError();
  * ```
  *
  * Retrieving `A` or `B` throws a `CyclicDependencyError` as the graph above cannot be constructed.
+ * @stable
  */
 export declare class CyclicDependencyError extends AbstractProviderError {
     constructor(injector: ReflectiveInjector, key: ReflectiveKey);
@@ -78,12 +74,9 @@ export declare class CyclicDependencyError extends AbstractProviderError {
  *   expect(e.originalStack).toBeDefined();
  * }
  * ```
+ * @stable
  */
 export declare class InstantiationError extends WrappedException {
-    /** @internal */
-    keys: ReflectiveKey[];
-    /** @internal */
-    injectors: ReflectiveInjector[];
     constructor(injector: ReflectiveInjector, originalException: any, originalStack: any, key: ReflectiveKey);
     addKey(injector: ReflectiveInjector, key: ReflectiveKey): void;
     wrapperMessage: string;
@@ -99,6 +92,7 @@ export declare class InstantiationError extends WrappedException {
  * ```typescript
  * expect(() => Injector.resolveAndCreate(["not a type"])).toThrowError();
  * ```
+ * @stable
  */
 export declare class InvalidProviderError extends BaseException {
     constructor(provider: any);
@@ -130,9 +124,10 @@ export declare class InvalidProviderError extends BaseException {
  *
  * expect(() => Injector.resolveAndCreate([A,B])).toThrowError();
  * ```
+ * @stable
  */
 export declare class NoAnnotationError extends BaseException {
-    constructor(typeOrFunc: any, params: any[][]);
+    constructor(typeOrFunc: Type | Function, params: any[][]);
     private static _genMessage(typeOrFunc, params);
 }
 /**
@@ -147,9 +142,10 @@ export declare class NoAnnotationError extends BaseException {
  *
  * expect(() => injector.getAt(100)).toThrowError();
  * ```
+ * @stable
  */
 export declare class OutOfBoundsError extends BaseException {
-    constructor(index: any);
+    constructor(index: number);
 }
 /**
  * Thrown when a multi provider and a regular provider are bound to the same token.

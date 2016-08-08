@@ -11,6 +11,8 @@ export declare class Identifiers {
     static QueryList: CompileIdentifierMetadata;
     static TemplateRef: CompileIdentifierMetadata;
     static TemplateRef_: CompileIdentifierMetadata;
+    static CodegenComponentFactoryResolver: CompileIdentifierMetadata;
+    static ComponentFactoryResolver: CompileIdentifierMetadata;
     static ValueUnwrapper: CompileIdentifierMetadata;
     static Injector: CompileIdentifierMetadata;
     static ViewEncapsulation: CompileIdentifierMetadata;
@@ -21,7 +23,7 @@ export declare class Identifiers {
     static Renderer: CompileIdentifierMetadata;
     static SimpleChange: CompileIdentifierMetadata;
     static uninitialized: CompileIdentifierMetadata;
-    static ChangeDetectorState: CompileIdentifierMetadata;
+    static ChangeDetectorStatus: CompileIdentifierMetadata;
     static checkBinding: CompileIdentifierMetadata;
     static flattenNestedViewRenderNodes: CompileIdentifierMetadata;
     static devModeEqual: CompileIdentifierMetadata;
@@ -31,5 +33,15 @@ export declare class Identifiers {
     static EMPTY_MAP: CompileIdentifierMetadata;
     static pureProxies: CompileIdentifierMetadata[];
     static SecurityContext: CompileIdentifierMetadata;
+    static AnimationKeyframe: CompileIdentifierMetadata;
+    static AnimationStyles: CompileIdentifierMetadata;
+    static NoOpAnimationPlayer: CompileIdentifierMetadata;
+    static AnimationGroupPlayer: CompileIdentifierMetadata;
+    static AnimationSequencePlayer: CompileIdentifierMetadata;
+    static prepareFinalAnimationStyles: CompileIdentifierMetadata;
+    static balanceAnimationKeyframes: CompileIdentifierMetadata;
+    static clearStyles: CompileIdentifierMetadata;
+    static renderStyles: CompileIdentifierMetadata;
+    static collectAndResolveStyles: CompileIdentifierMetadata;
 }
 export declare function identifierToken(identifier: CompileIdentifierMetadata): CompileTokenMetadata;

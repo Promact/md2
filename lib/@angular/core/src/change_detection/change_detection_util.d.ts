@@ -1,4 +1,4 @@
-export { looseIdentical } from '../../src/facade/lang';
+export { looseIdentical } from '../facade/lang';
 export declare var uninitialized: Object;
 export declare function devModeEqual(a: any, b: any): boolean;
 /**
@@ -18,6 +18,7 @@ export declare function devModeEqual(a: any, b: any): boolean;
  *    return WrappedValue.wrap(this._latestValue); // this will force update
  *  }
  * ```
+ * @stable
  */
 export declare class WrappedValue {
     wrapped: any;
@@ -34,6 +35,7 @@ export declare class ValueUnwrapper {
 }
 /**
  * Represents a basic change from a previous to a new value.
+ * @stable
  */
 export declare class SimpleChange {
     previousValue: any;

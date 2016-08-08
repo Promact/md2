@@ -1,4 +1,11 @@
-import { BaseException, WrappedException } from '../../src/facade/exceptions';
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+import { BaseException, WrappedException } from '../facade/exceptions';
 /**
  * An error thrown if application changes model breaking the top-down data flow.
  *
@@ -31,6 +38,7 @@ import { BaseException, WrappedException } from '../../src/facade/exceptions';
  *   }
  * }
  * ```
+ * @stable
  */
 export declare class ExpressionChangedAfterItHasBeenCheckedException extends BaseException {
     constructor(oldValue: any, currValue: any, context: any);
@@ -40,6 +48,7 @@ export declare class ExpressionChangedAfterItHasBeenCheckedException extends Bas
  *
  * This error wraps the original exception to attach additional contextual information that can
  * be useful for debugging.
+ * @stable
  */
 export declare class ViewWrappedException extends WrappedException {
     constructor(originalException: any, originalStack: any, context: any);
@@ -50,6 +59,7 @@ export declare class ViewWrappedException extends WrappedException {
  * This error indicates a bug in the framework.
  *
  * This is an internal Angular error.
+ * @stable
  */
 export declare class ViewDestroyedException extends BaseException {
     constructor(details: string);

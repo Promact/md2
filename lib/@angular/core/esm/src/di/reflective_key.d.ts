@@ -12,6 +12,7 @@
  * `Key` should not be created directly. {@link ReflectiveInjector} creates keys automatically when
  * resolving
  * providers.
+ * @experimental
  */
 export declare class ReflectiveKey {
     token: Object;
@@ -32,12 +33,4 @@ export declare class ReflectiveKey {
      * @returns the number of keys registered in the system.
      */
     static readonly numberOfKeys: number;
-}
-/**
- * @internal
- */
-export declare class KeyRegistry {
-    private _allKeys;
-    get(token: Object): ReflectiveKey;
-    readonly numberOfKeys: number;
 }

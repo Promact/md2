@@ -1,7 +1,14 @@
-import * as o from '../output/output_ast';
-import { CompileElement } from './compile_element';
-import { BoundEventAst, DirectiveAst } from '../template_ast';
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
 import { CompileDirectiveMetadata } from '../compile_metadata';
+import * as o from '../output/output_ast';
+import { BoundEventAst, DirectiveAst } from '../template_ast';
+import { CompileElement } from './compile_element';
 export declare class CompileEventListener {
     compileElement: CompileElement;
     eventTarget: string;

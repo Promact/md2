@@ -1,5 +1,18 @@
-import { ViewEncapsulation } from '../metadata/view';
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+import { AnimationKeyframe } from '../../src/animation/animation_keyframe';
+import { AnimationPlayer } from '../../src/animation/animation_player';
+import { AnimationStyles } from '../../src/animation/animation_styles';
 import { Injector } from '../di/injector';
+import { ViewEncapsulation } from '../metadata/view';
+/**
+ * @experimental
+ */
 export declare class RenderComponentType {
     id: string;
     templateUrl: string;
@@ -18,12 +31,15 @@ export declare abstract class RenderDebugInfo {
     context: any;
     source: string;
 }
+/**
+ * @experimental
+ */
 export declare abstract class Renderer {
-    abstract selectRootElement(selectorOrNode: string | any, debugInfo: RenderDebugInfo): any;
-    abstract createElement(parentElement: any, name: string, debugInfo: RenderDebugInfo): any;
+    abstract selectRootElement(selectorOrNode: string | any, debugInfo?: RenderDebugInfo): any;
+    abstract createElement(parentElement: any, name: string, debugInfo?: RenderDebugInfo): any;
     abstract createViewRoot(hostElement: any): any;
-    abstract createTemplateAnchor(parentElement: any, debugInfo: RenderDebugInfo): any;
-    abstract createText(parentElement: any, value: string, debugInfo: RenderDebugInfo): any;
+    abstract createTemplateAnchor(parentElement: any, debugInfo?: RenderDebugInfo): any;
+    abstract createText(parentElement: any, value: string, debugInfo?: RenderDebugInfo): any;
     abstract projectNodes(parentElement: any, nodes: any[]): void;
     abstract attachViewAfter(node: any, viewRootNodes: any[]): void;
     abstract detachView(viewRootNodes: any[]): void;
@@ -38,8 +54,9 @@ export declare abstract class Renderer {
     abstract setBindingDebugInfo(renderElement: any, propertyName: string, propertyValue: string): void;
     abstract setElementClass(renderElement: any, className: string, isAdd: boolean): any;
     abstract setElementStyle(renderElement: any, styleName: string, styleValue: string): any;
-    abstract invokeElementMethod(renderElement: any, methodName: string, args: any[]): any;
+    abstract invokeElementMethod(renderElement: any, methodName: string, args?: any[]): any;
     abstract setText(renderNode: any, text: string): any;
+    abstract animate(element: any, startingStyles: AnimationStyles, keyframes: AnimationKeyframe[], duration: number, delay: number, easing: string): AnimationPlayer;
 }
 /**
  * Injectable service that provides a low-level interface for modifying the UI.
@@ -52,6 +69,7 @@ export declare abstract class Renderer {
  * If you are implementing a custom renderer, you must implement this interface.
  *
  * The default Renderer implementation is `DomRenderer`. Also available is `WebWorkerRenderer`.
+ * @experimental
  */
 export declare abstract class RootRenderer {
     abstract renderComponent(componentType: RenderComponentType): Renderer;

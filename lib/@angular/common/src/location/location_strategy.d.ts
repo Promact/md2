@@ -1,3 +1,10 @@
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
 import { OpaqueToken } from '@angular/core';
 import { UrlChangeListener } from './platform_location';
 /**
@@ -15,9 +22,11 @@ import { UrlChangeListener } from './platform_location';
  * `http://example.com/foo` as an equivalent URL.
  *
  * See these two classes for more.
+ *
+ * @stable
  */
 export declare abstract class LocationStrategy {
-    abstract path(): string;
+    abstract path(includeHash?: boolean): string;
     abstract prepareExternalUrl(internal: string): string;
     abstract pushState(state: any, title: string, url: string, queryParams: string): void;
     abstract replaceState(state: any, title: string, url: string, queryParams: string): void;
@@ -51,8 +60,9 @@ export declare abstract class LocationStrategy {
  *
  * bootstrap(AppCmp, [
  *   ROUTER_PROVIDERS,
- *   provide(APP_BASE_HREF, {useValue: '/my/app'})
+ *   {provide: APP_BASE_HREF, useValue: '/my/app'}
  * ]);
  * ```
+ * @stable
  */
 export declare const APP_BASE_HREF: OpaqueToken;

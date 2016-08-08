@@ -1,5 +1,5 @@
-import { Headers } from './headers';
 import { RequestMethod } from './enums';
+import { Headers } from './headers';
 import { RequestOptionsArgs } from './interfaces';
 import { URLSearchParams } from './url_search_params';
 /**
@@ -25,6 +25,8 @@ import { URLSearchParams } from './url_search_params';
  * console.log('req.method:', RequestMethod[req.method]); // Post
  * console.log('options.url:', options.url); // https://google.com
  * ```
+ *
+ * @experimental
  */
 export declare class RequestOptions {
     /**
@@ -39,7 +41,7 @@ export declare class RequestOptions {
     /**
      * Body to be used when creating a {@link Request}.
      */
-    body: string;
+    body: any;
     /**
      * Url with which to perform a {@link Request}.
      */
@@ -48,7 +50,11 @@ export declare class RequestOptions {
      * Search parameters to be included in a {@link Request}.
      */
     search: URLSearchParams;
-    constructor({method, headers, body, url, search}?: RequestOptionsArgs);
+    /**
+     * Enable use credentials for a {@link Request}.
+     */
+    withCredentials: boolean;
+    constructor({method, headers, body, url, search, withCredentials}?: RequestOptionsArgs);
     /**
      * Creates a copy of the `RequestOptions` instance, using the optional input as values to override
      * existing values. This method will not change the values of the instance on which it is being
@@ -99,7 +105,7 @@ export declare class RequestOptions {
  *   search: string = 'coreTeam=true';
  * }
  *
- * bootstrap(App, [HTTP_PROVIDERS, provide(RequestOptions, {useClass: MyOptions})]);
+ * bootstrap(App, [HTTP_PROVIDERS, {provide: RequestOptions, useClass: MyOptions}]);
  * ```
  *
  * The options could also be extended when manually creating a {@link Request}
@@ -119,6 +125,8 @@ export declare class RequestOptions {
  * console.log('options.url:', options.url); // null
  * console.log('req.url:', req.url); // https://google.com
  * ```
+ *
+ * @experimental
  */
 export declare class BaseRequestOptions extends RequestOptions {
     constructor();

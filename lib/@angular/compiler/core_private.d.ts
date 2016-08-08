@@ -1,7 +1,14 @@
-import { __core_private_types__ as t } from '@angular/core';
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+import { __core_private__ as r, __core_private_types__ as t } from '@angular/core';
 export declare var isDefaultChangeDetectionStrategy: typeof t.isDefaultChangeDetectionStrategy;
-export declare type ChangeDetectorState = t.ChangeDetectorState;
-export declare var ChangeDetectorState: typeof t.ChangeDetectorState;
+export declare type ChangeDetectorStatus = t.ChangeDetectorStatus;
+export declare var ChangeDetectorStatus: typeof t.ChangeDetectorStatus;
 export declare var CHANGE_DETECTION_STRATEGY_VALUES: typeof t.CHANGE_DETECTION_STRATEGY_VALUES;
 export declare var constructDependencies: typeof t.constructDependencies;
 export declare type LifecycleHooks = t.LifecycleHooks;
@@ -12,6 +19,7 @@ export declare var ReflectorReader: typeof t.ReflectorReader;
 export declare var ReflectorComponentResolver: typeof t.ReflectorComponentResolver;
 export declare type AppElement = t.AppElement;
 export declare var AppElement: typeof t.AppElement;
+export declare var CodegenComponentFactoryResolver: typeof t.CodegenComponentFactoryResolver;
 export declare var AppView: typeof t.AppView;
 export declare type DebugAppView<T> = t.DebugAppView<T>;
 export declare var DebugAppView: typeof t.DebugAppView;
@@ -52,3 +60,31 @@ export declare var pureProxy10: typeof t.pureProxy10;
 export declare var castByValue: typeof t.castByValue;
 export declare type Console = t.Console;
 export declare var Console: typeof t.Console;
+export declare var reflector: t.Reflector;
+export declare type Reflector = t.Reflector;
+export declare type NoOpAnimationPlayer = t.NoOpAnimationPlayer;
+export declare var NoOpAnimationPlayer: typeof t.NoOpAnimationPlayer;
+export declare type AnimationPlayer = t.AnimationPlayer;
+export declare var AnimationPlayer: typeof t.AnimationPlayer;
+export declare type NoOpAnimationDriver = t.NoOpAnimationDriver;
+export declare var NoOpAnimationDriver: typeof t.NoOpAnimationDriver;
+export declare type AnimationDriver = t.AnimationDriver;
+export declare var AnimationDriver: typeof t.AnimationDriver;
+export declare type AnimationSequencePlayer = t.AnimationSequencePlayer;
+export declare var AnimationSequencePlayer: typeof t.AnimationSequencePlayer;
+export declare type AnimationGroupPlayer = t.AnimationGroupPlayer;
+export declare var AnimationGroupPlayer: typeof t.AnimationGroupPlayer;
+export declare type AnimationKeyframe = t.AnimationKeyframe;
+export declare var AnimationKeyframe: typeof t.AnimationKeyframe;
+export declare type AnimationStyles = t.AnimationStyles;
+export declare var AnimationStyles: typeof t.AnimationStyles;
+export declare var ANY_STATE: string;
+export declare var DEFAULT_STATE: string;
+export declare var EMPTY_STATE: string;
+export declare var FILL_STYLE_FLAG: string;
+export declare var prepareFinalAnimationStyles: typeof t.prepareFinalAnimationStyles;
+export declare var balanceAnimationKeyframes: typeof t.balanceAnimationKeyframes;
+export declare var flattenStyles: typeof t.flattenStyles;
+export declare var clearStyles: typeof t.clearStyles;
+export declare var collectAndResolveStyles: typeof r.collectAndResolveStyles;
+export declare var renderStyles: typeof t.renderStyles;

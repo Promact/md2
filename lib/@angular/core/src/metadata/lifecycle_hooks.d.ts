@@ -1,4 +1,14 @@
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
 import { SimpleChange } from '../change_detection/change_detection_util';
+/**
+ * @stable
+ */
 export declare enum LifecycleHooks {
     OnInit = 0,
     OnDestroy = 1,
@@ -10,8 +20,13 @@ export declare enum LifecycleHooks {
     AfterViewChecked = 7,
 }
 /**
- * @internal
+ * A `changes` object whose keys are property names and
+ * values are instances of {@link SimpleChange}. See {@link OnChanges}
+ * @stable
  */
+export interface SimpleChanges {
+    [propName: string]: SimpleChange;
+}
 export declare var LIFECYCLE_HOOKS_VALUES: LifecycleHooks[];
 /**
  * Lifecycle hooks are guaranteed to be called in the following order:
@@ -43,7 +58,7 @@ export declare var LIFECYCLE_HOOKS_VALUES: LifecycleHooks[];
  * class MyComponent implements OnChanges {
  *   @Input() myProp: any;
  *
- *   ngOnChanges(changes: {[propName: string]: SimpleChange}) {
+ *   ngOnChanges(changes: SimpleChanges) {
  *     console.log('ngOnChanges - myProp = ' + changes['myProp'].currentValue);
  *   }
  * }
@@ -61,11 +76,10 @@ export declare var LIFECYCLE_HOOKS_VALUES: LifecycleHooks[];
  *
  * bootstrap(App).catch(err => console.error(err));
  * ```
+ * @stable
  */
-export interface OnChanges {
-    ngOnChanges(changes: {
-        [key: string]: SimpleChange;
-    }): any;
+export declare abstract class OnChanges {
+    abstract ngOnChanges(changes: SimpleChanges): any;
 }
 /**
  * Implement this interface to execute custom initialization logic after your directive's
@@ -107,27 +121,29 @@ export interface OnChanges {
  *
  * bootstrap(App).catch(err => console.error(err));
  *  ```
+ * @stable
  */
-export interface OnInit {
-    ngOnInit(): any;
+export declare abstract class OnInit {
+    abstract ngOnInit(): any;
 }
 /**
- * Implement this interface to override the default change detection algorithm for your directive.
+ * Implement this interface to supplement the default change detection algorithm in your directive.
  *
- * `ngDoCheck` gets called to check the changes in the directives instead of the default algorithm.
+ * `ngDoCheck` gets called to check the changes in the directives in addition to the default
+ * algorithm.
  *
  * The default change detection algorithm looks for differences by comparing bound-property values
- * by reference across change detection runs. When `DoCheck` is implemented, the default algorithm
- * is disabled and `ngDoCheck` is responsible for checking for changes.
+ * by reference across change detection runs.
  *
- * Implementing this interface allows improving performance by using insights about the component,
- * its implementation and data types of its properties.
+ * Note that a directive typically should not use both `DoCheck` and {@link OnChanges} to respond to
+ * changes on the same input. `ngOnChanges` will continue to be called when the default change
+ * detector
+ * detects changes, so it is usually unnecessary to respond to changes on the same input in both
+ * hooks.
+ * Reaction to the changes have to be handled from within the `ngDoCheck` callback.
  *
- * Note that a directive should not implement both `DoCheck` and {@link OnChanges} at the same time.
- * `ngOnChanges` would not be called when a directive implements `DoCheck`. Reaction to the changes
- * have to be handled from within the `ngDoCheck` callback.
- *
- * Use {@link KeyValueDiffers} and {@link IterableDiffers} to add your custom check mechanisms.
+ * You can use {@link KeyValueDiffers} and {@link IterableDiffers} to help add your custom check
+ * mechanisms.
  *
  * ### Example ([live demo](http://plnkr.co/edit/QpnIlF0CR2i5bcYbHEUJ?p=preview))
  *
@@ -175,9 +191,10 @@ export interface OnInit {
  *   list = [];
  * }
  * ```
+ * @stable
  */
-export interface DoCheck {
-    ngDoCheck(): any;
+export declare abstract class DoCheck {
+    abstract ngDoCheck(): any;
 }
 /**
  * Implement this interface to get notified when your directive is destroyed.
@@ -267,9 +284,10 @@ export interface DoCheck {
  * Invoking `{{ 10000 | countdown }}` would cause the value to be decremented by 50,
  * every 50ms, until it reaches 0.
  *
+ * @stable
  */
-export interface OnDestroy {
-    ngOnDestroy(): any;
+export declare abstract class OnDestroy {
+    abstract ngOnDestroy(): any;
 }
 /**
  * Implement this interface to get notified when your directive's content has been fully
@@ -321,9 +339,10 @@ export interface OnDestroy {
  *
  * bootstrap(App).catch(err => console.error(err));
  * ```
+ * @stable
  */
-export interface AfterContentInit {
-    ngAfterContentInit(): any;
+export declare abstract class AfterContentInit {
+    abstract ngAfterContentInit(): any;
 }
 /**
  * Implement this interface to get notified after every check of your directive's content.
@@ -370,9 +389,10 @@ export interface AfterContentInit {
  *
  * bootstrap(App).catch(err => console.error(err));
  * ```
+ * @stable
  */
-export interface AfterContentChecked {
-    ngAfterContentChecked(): any;
+export declare abstract class AfterContentChecked {
+    abstract ngAfterContentChecked(): any;
 }
 /**
  * Implement this interface to get notified when your component's view has been fully initialized.
@@ -418,9 +438,10 @@ export interface AfterContentChecked {
  *
  * bootstrap(App).catch(err => console.error(err));
  * ```
+ * @stable
  */
-export interface AfterViewInit {
-    ngAfterViewInit(): any;
+export declare abstract class AfterViewInit {
+    abstract ngAfterViewInit(): any;
 }
 /**
  * Implement this interface to get notified after every check of your component's view.
@@ -469,7 +490,8 @@ export interface AfterViewInit {
  *
  * bootstrap(App).catch(err => console.error(err));
  * ```
+ * @stable
  */
-export interface AfterViewChecked {
-    ngAfterViewChecked(): any;
+export declare abstract class AfterViewChecked {
+    abstract ngAfterViewChecked(): any;
 }

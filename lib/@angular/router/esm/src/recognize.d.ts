@@ -1,4 +1,13 @@
-import { UrlTree, RouteTree } from './segments';
-import { Type } from './facade/lang';
-import { ComponentResolver } from '@angular/core';
-export declare function recognize(componentResolver: ComponentResolver, type: Type, url: UrlTree): Promise<RouteTree>;
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+import { Type } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { RouterConfig } from './config';
+import { RouterStateSnapshot } from './router_state';
+import { UrlTree } from './url_tree';
+export declare function recognize(rootComponentType: Type, config: RouterConfig, urlTree: UrlTree, url: string): Observable<RouterStateSnapshot>;

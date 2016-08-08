@@ -1,5 +1,15 @@
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
 import { ChangeDetectorRef } from '../change_detection/change_detector_ref';
 import { AppView } from './view';
+/**
+ * @stable
+ */
 export declare abstract class ViewRef {
     readonly destroyed: boolean;
     abstract onDestroy(callback: Function): any;
@@ -27,7 +37,7 @@ export declare abstract class ViewRef {
  * </ul>
  * ```
  *
- * ... we have two {@link TemplateRef}s:
+ * We have two {@link TemplateRef}s:
  *
  * Outer {@link TemplateRef}:
  * ```
@@ -56,6 +66,7 @@ export declare abstract class ViewRef {
  * </ul>
  * <!-- /ViewRef: outer-0 -->
  * ```
+ * @experimental
  */
 export declare abstract class EmbeddedViewRef<C> extends ViewRef {
     readonly context: C;

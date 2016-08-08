@@ -1,4 +1,11 @@
-import { ViewContainerRef, TemplateRef } from '@angular/core';
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+import { TemplateRef, ViewContainerRef } from '@angular/core';
 /**
  * Removes or recreates a portion of the DOM tree based on an {expression}.
  *
@@ -20,6 +27,8 @@ import { ViewContainerRef, TemplateRef } from '@angular/core';
  * - `<div *ngIf="condition">...</div>`
  * - `<div template="ngIf condition">...</div>`
  * - `<template [ngIf]="condition"><div>...</div></template>`
+ *
+ * @stable
  */
 export declare class NgIf {
     private _viewContainer;

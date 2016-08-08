@@ -1,1 +1,1 @@
-{"__symbolic":"module","metadata":{"COMMON_DIRECTIVES":[{"__symbolic":"reference","name":"CORE_DIRECTIVES","module":"./directives"},{"__symbolic":"reference","name":"FORM_DIRECTIVES","module":"./forms"}]}}
+{"__symbolic":"module","version":1,"metadata":{"COMMON_DIRECTIVES":[{"__symbolic":"reference","module":"./directives","name":"CORE_DIRECTIVES"},{"__symbolic":"reference","module":"./forms-deprecated","name":"FORM_DIRECTIVES"}]}}

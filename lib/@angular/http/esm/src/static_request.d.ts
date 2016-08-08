@@ -1,6 +1,6 @@
-import { RequestMethod } from './enums';
-import { RequestArgs } from './interfaces';
+import { ContentType, RequestMethod } from './enums';
 import { Headers } from './headers';
+import { RequestArgs } from './interfaces';
 /**
  * Creates `Request` instances from provided values.
  *
@@ -37,6 +37,8 @@ import { Headers } from './headers';
  *   console.log('people', res.json());
  * });
  * ```
+ *
+ * @experimental
  */
 export declare class Request {
     /**
@@ -49,12 +51,44 @@ export declare class Request {
     headers: Headers;
     /** Url of the remote resource */
     url: string;
+    /** Body of the request **/
     private _body;
+    /** Type of the request body **/
+    private contentType;
+    /** Enable use credentials */
+    withCredentials: boolean;
     constructor(requestOptions: RequestArgs);
     /**
      * Returns the request's body as string, assuming that body exists. If body is undefined, return
      * empty
      * string.
      */
-    text(): String;
+    text(): string;
+    /**
+     * Returns the request's body as JSON string, assuming that body exists. If body is undefined,
+     * return
+     * empty
+     * string.
+     */
+    json(): string;
+    /**
+     * Returns the request's body as array buffer, assuming that body exists. If body is undefined,
+     * return
+     * null.
+     */
+    arrayBuffer(): ArrayBuffer;
+    /**
+     * Returns the request's body as blob, assuming that body exists. If body is undefined, return
+     * null.
+     */
+    blob(): Blob;
+    /**
+     * Returns the content type of request's body based on its type.
+     */
+    detectContentType(): ContentType;
+    /**
+     * Returns the request's body according to its type. If body is undefined, return
+     * null.
+     */
+    getBody(): any;
 }

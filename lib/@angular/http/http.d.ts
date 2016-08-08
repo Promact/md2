@@ -1,15 +1,18 @@
-export { Request } from './src/static_request';
-export { Response } from './src/static_response';
-export { RequestOptionsArgs, ResponseOptionsArgs, Connection, ConnectionBackend } from './src/interfaces';
+import { XHRBackend } from './src/backends/xhr_backend';
+import { RequestOptions } from './src/base_request_options';
+import { Http } from './src/http';
 export { BrowserXhr } from './src/backends/browser_xhr';
+export { JSONPBackend, JSONPConnection } from './src/backends/jsonp_backend';
+export { CookieXSRFStrategy, XHRBackend, XHRConnection } from './src/backends/xhr_backend';
 export { BaseRequestOptions, RequestOptions } from './src/base_request_options';
 export { BaseResponseOptions, ResponseOptions } from './src/base_response_options';
-export { XHRBackend, XHRConnection } from './src/backends/xhr_backend';
-export { JSONPBackend, JSONPConnection } from './src/backends/jsonp_backend';
-export { Http, Jsonp } from './src/http';
+export { ReadyState, RequestMethod, ResponseType } from './src/enums';
 export { Headers } from './src/headers';
-export { ResponseType, ReadyState, RequestMethod } from './src/enums';
-export { URLSearchParams } from './src/url_search_params';
+export { Http, Jsonp } from './src/http';
+export { Connection, ConnectionBackend, RequestOptionsArgs, ResponseOptionsArgs, XSRFStrategy } from './src/interfaces';
+export { Request } from './src/static_request';
+export { Response } from './src/static_response';
+export { QueryEncoder, URLSearchParams } from './src/url_search_params';
 /**
  * Provides a basic set of injectables to use the {@link Http} service in any application.
  *
@@ -63,6 +66,7 @@ export { URLSearchParams } from './src/url_search_params';
  * The providers included in `HTTP_PROVIDERS` include:
  *  * {@link Http}
  *  * {@link XHRBackend}
+ *  * {@link XSRFStrategy} - Bound to {@link CookieXSRFStrategy} class (see below)
  *  * `BrowserXHR` - Private factory to create `XMLHttpRequest` instances
  *  * {@link RequestOptions} - Bound to {@link BaseRequestOptions} class
  *  * {@link ResponseOptions} - Bound to {@link BaseResponseOptions} class
@@ -83,7 +87,7 @@ export { URLSearchParams } from './src/url_search_params';
  *   search: string = 'coreTeam=true';
  * }
  *
- * bootstrap(App, [HTTP_PROVIDERS, provide(RequestOptions, {useClass: MyOptions})])
+ * bootstrap(App, [HTTP_PROVIDERS, {provide: RequestOptions, useClass: MyOptions}])
  *   .catch(err => console.error(err));
  * ```
  *
@@ -103,7 +107,7 @@ export { URLSearchParams } from './src/url_search_params';
  * var injector = Injector.resolveAndCreate([
  *   HTTP_PROVIDERS,
  *   MockBackend,
- *   provide(XHRBackend, {useExisting: MockBackend})
+ *   {provide: XHRBackend, useExisting: MockBackend}
  * ]);
  * var http = injector.get(Http);
  * var backend = injector.get(MockBackend);
@@ -126,8 +130,39 @@ export { URLSearchParams } from './src/url_search_params';
  *   }
  * });
  * ```
+ *
+ * `XSRFStrategy` allows customizing how the application protects itself against Cross Site Request
+ * Forgery (XSRF) attacks. By default, Angular will look for a cookie called `'XSRF-TOKEN'`, and set
+ * an HTTP request header called `'X-XSRF-TOKEN'` with the value of the cookie on each request,
+ * allowing the server side to validate that the request comes from its own front end.
+ *
+ * Applications can override the names used by configuring a different `XSRFStrategy` instance. Most
+ * commonly, applications will configure a `CookieXSRFStrategy` with different cookie or header
+ * names, but if needed, they can supply a completely custom implementation.
+ *
+ * See the security documentation for more information.
+ *
+ * ### Example
+ *
+ * ```
+ * import {provide} from '@angular/core';
+ * import {bootstrap} from '@angular/platform-browser/browser';
+ * import {HTTP_PROVIDERS, XSRFStrategy, CookieXSRFStrategy} from '@angular/http';
+ *
+ * bootstrap(
+ *     App,
+ *     [HTTP_PROVIDERS, {provide: XSRFStrategy,
+ *         useValue: new CookieXSRFStrategy('MY-XSRF-COOKIE-NAME', 'X-MY-XSRF-HEADER-NAME')}])
+ *   .catch(err => console.error(err));
+ * ```
+ *
+ * @experimental
  */
 export declare const HTTP_PROVIDERS: any[];
+/**
+ * @experimental
+ */
+export declare function httpFactory(xhrBackend: XHRBackend, requestOptions: RequestOptions): Http;
 /**
  * See {@link HTTP_PROVIDERS} instead.
  *
@@ -199,7 +234,7 @@ export declare const HTTP_BINDINGS: any[];
  *   search: string = 'coreTeam=true';
  * }
  *
- * bootstrap(App, [JSONP_PROVIDERS, provide(RequestOptions, {useClass: MyOptions})])
+ * bootstrap(App, [JSONP_PROVIDERS, {provide: RequestOptions, useClass: MyOptions}])
  *   .catch(err => console.error(err));
  * ```
  *
@@ -217,7 +252,7 @@ export declare const HTTP_BINDINGS: any[];
  * var injector = Injector.resolveAndCreate([
  *   JSONP_PROVIDERS,
  *   MockBackend,
- *   provide(JSONPBackend, {useExisting: MockBackend})
+ *   {provide: JSONPBackend, useExisting: MockBackend}
  * ]);
  * var jsonp = injector.get(Jsonp);
  * var backend = injector.get(MockBackend);
@@ -240,6 +275,8 @@ export declare const HTTP_BINDINGS: any[];
  *   }
  * });
  * ```
+ *
+ * @experimental
  */
 export declare const JSONP_PROVIDERS: any[];
 /**

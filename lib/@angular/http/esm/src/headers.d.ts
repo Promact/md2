@@ -23,10 +23,10 @@
  * var thirdHeaders = new Headers(secondHeaders);
  * console.log(thirdHeaders.get('X-My-Custom-Header')); //'Angular'
  * ```
+ *
+ * @experimental
  */
 export declare class Headers {
-    /** @internal */
-    _headersMap: Map<string, string[]>;
     constructor(headers?: Headers | {
         [key: string]: any;
     });

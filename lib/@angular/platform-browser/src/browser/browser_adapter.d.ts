@@ -25,6 +25,7 @@ export declare class BrowserDomAdapter extends GenericBrowserDomAdapter {
     preventDefault(evt: Event): void;
     isPrevented(evt: Event): boolean;
     getInnerHTML(el: any): string;
+    getTemplateContent(el: any): Node;
     getOuterHTML(el: any): string;
     nodeName(node: Node): string;
     nodeValue(node: Node): string;
@@ -110,5 +111,10 @@ export declare class BrowserDomAdapter extends GenericBrowserDomAdapter {
     setGlobalVar(path: string, value: any): void;
     requestAnimationFrame(callback: any): number;
     cancelAnimationFrame(id: number): void;
+    supportsWebAnimation(): boolean;
     performanceNow(): number;
+    supportsCookies(): boolean;
+    getCookie(name: string): string;
+    setCookie(name: string, value: string): void;
 }
+export declare function parseCookieValue(cookie: string, name: string): string;

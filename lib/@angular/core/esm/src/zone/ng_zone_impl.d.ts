@@ -1,5 +1,13 @@
 /**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+/**
  * Stores error information; delivered via [NgZone.onError] stream.
+ * @deprecated
  */
 export declare class NgZoneError {
     error: any;
@@ -8,10 +16,6 @@ export declare class NgZoneError {
 }
 export declare class NgZoneImpl {
     static isInAngularZone(): boolean;
-    /** @internal */
-    private outer;
-    /** @internal */
-    private inner;
     private onEnter;
     private onLeave;
     private setMicrotask;

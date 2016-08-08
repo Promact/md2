@@ -1,5 +1,13 @@
-import { ResolvedReflectiveProvider, ViewContainerRef, ComponentRef, ComponentFactory } from '@angular/core';
-import { RouterOutletMap } from '../router';
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+import { ResolvedReflectiveProvider } from '@angular/core';
+import { RouterOutletMap } from '../router_outlet_map';
+import { ActivatedRoute } from '../router_state';
 /**
  * A router outlet is a placeholder that Angular dynamically fills based on the application's route.
  *
@@ -7,30 +15,21 @@ import { RouterOutletMap } from '../router';
  *
  * ```
  * <router-outlet></router-outlet>
- * ```
- *
- * Outlets can be named.
- *
- * ```
+ * <router-outlet name="left"></router-outlet>
  * <router-outlet name="right"></router-outlet>
  * ```
+ *
+ * @stable
  */
 export declare class RouterOutlet {
-    private _location;
-    private _loaded;
+    private location;
+    private componentFactoryResolver;
+    private activated;
+    private _activatedRoute;
     outletMap: RouterOutletMap;
-    constructor(parentOutletMap: RouterOutletMap, _location: ViewContainerRef, name: string);
-    unload(): void;
-    /**
-     * Returns the loaded component.
-     */
-    readonly loadedComponent: Object;
-    /**
-     * Returns true is the outlet is not empty.
-     */
-    readonly isLoaded: boolean;
-    /**
-     * Called by the Router to instantiate a new component.
-     */
-    load(factory: ComponentFactory<any>, providers: ResolvedReflectiveProvider[], outletMap: RouterOutletMap): ComponentRef<any>;
+    readonly isActivated: boolean;
+    readonly component: Object;
+    readonly activatedRoute: ActivatedRoute;
+    deactivate(): void;
+    activate(activatedRoute: ActivatedRoute, providers: ResolvedReflectiveProvider[], outletMap: RouterOutletMap): void;
 }

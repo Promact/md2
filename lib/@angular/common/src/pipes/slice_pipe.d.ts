@@ -1,3 +1,10 @@
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
 import { PipeTransform } from '@angular/core';
 /**
  * Creates a new List or String containing only a subset (slice) of the
@@ -35,6 +42,8 @@ import { PipeTransform } from '@angular/core';
  * When operating on a [List], the returned list is always a copy even when all
  * the elements are being returned.
  *
+ * When operating on a blank value, returns it.
+ *
  * ## List Example
  *
  * This `ngFor` example:
@@ -49,6 +58,8 @@ import { PipeTransform } from '@angular/core';
  * ## String Examples
  *
  * {@example core/pipes/ts/slice_pipe/slice_pipe_example.ts region='SlicePipe_string'}
+ *
+ * @stable
  */
 export declare class SlicePipe implements PipeTransform {
     transform(value: any, start: number, end?: number): any;

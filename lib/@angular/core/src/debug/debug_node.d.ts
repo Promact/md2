@@ -1,11 +1,21 @@
-import { Predicate } from '../../src/facade/collection';
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
 import { Injector } from '../di';
+import { Predicate } from '../facade/collection';
 import { RenderDebugInfo } from '../render/api';
 export declare class EventListener {
     name: string;
     callback: Function;
     constructor(name: string, callback: Function);
 }
+/**
+ * @experimental All debugging apis are currently experimental.
+ */
 export declare class DebugNode {
     private _debugInfo;
     nativeNode: any;
@@ -27,12 +37,21 @@ export declare class DebugNode {
      */
     inject(token: any): any;
 }
+/**
+ * @experimental All debugging apis are currently experimental.
+ */
 export declare class DebugElement extends DebugNode {
     name: string;
     properties: {
-        [key: string]: string;
+        [key: string]: any;
     };
     attributes: {
+        [key: string]: string;
+    };
+    classes: {
+        [key: string]: boolean;
+    };
+    styles: {
         [key: string]: string;
     };
     childNodes: DebugNode[];
@@ -47,7 +66,13 @@ export declare class DebugElement extends DebugNode {
     children: DebugElement[];
     triggerEventHandler(eventName: string, eventObj: any): void;
 }
+/**
+ * @experimental
+ */
 export declare function asNativeElements(debugEls: DebugElement[]): any;
+/**
+ * @experimental
+ */
 export declare function getDebugNode(nativeNode: any): DebugNode;
 export declare function getAllDebugNodes(): DebugNode[];
 export declare function indexDebugNode(node: DebugNode): void;

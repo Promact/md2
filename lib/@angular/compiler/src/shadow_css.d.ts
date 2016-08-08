@@ -29,7 +29,6 @@ export declare class ShadowCss {
     private _makeScopeMatcher(scopeSelector);
     private _applySelectorScope(selector, scopeSelector, hostSelector);
     private _applySimpleSelectorScope(selector, scopeSelector, hostSelector);
-    private _applyStrictSelectorScope(selector, scopeSelector);
     private _insertPolyfillHostInCssText(selector);
 }
 export declare class CssRule {

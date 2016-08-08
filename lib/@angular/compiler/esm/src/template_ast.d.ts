@@ -198,6 +198,10 @@ export declare enum PropertyBindingType {
      * A binding to a style rule (e.g. `[style.rule]="expression"`).
      */
     Style = 3,
+    /**
+     * A binding to an animation reference (e.g. `[animate.key]="expression"`).
+     */
+    Animation = 4,
 }
 /**
  * A visitor for {@link TemplateAst} trees that will process each node.

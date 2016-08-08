@@ -47,10 +47,6 @@ export declare class SelectorMatcher {
      * @return boolean true if a match was found
     */
     match(cssSelector: CssSelector, matchedCallback: (c: CssSelector, a: any) => void): boolean;
-    /** @internal */
-    _matchTerminal(map: Map<string, SelectorContext[]>, name: any, cssSelector: CssSelector, matchedCallback: (c: CssSelector, a: any) => void): boolean;
-    /** @internal */
-    _matchPartial(map: Map<string, SelectorMatcher>, name: any, cssSelector: CssSelector, matchedCallback: any): boolean;
 }
 export declare class SelectorListContext {
     selectors: CssSelector[];

@@ -1,9 +1,9 @@
-import { ComponentResolver } from './component_resolver';
-import { Type } from '../../src/facade/lang';
-import { ComponentRef } from './component_factory';
-import { ViewContainerRef } from './view_container_ref';
-import { ResolvedReflectiveProvider } from '../di/reflective_provider';
 import { Injector } from '../di/injector';
+import { ResolvedReflectiveProvider } from '../di/reflective_provider';
+import { Type } from '../facade/lang';
+import { ComponentRef } from './component_factory';
+import { ComponentResolver } from './component_resolver';
+import { ViewContainerRef } from './view_container_ref';
 /**
  * Use ComponentResolver and ViewContainerRef directly.
  *
@@ -18,8 +18,7 @@ export declare abstract class DynamicComponentLoader {
      *
      * If needed, the component's selector can be overridden via `overrideSelector`.
      *
-     * You can optionally provide `injector` and this {@link Injector} will be used to instantiate the
-     * Component.
+     * A provided {@link Injector} will be used to instantiate the Component.
      *
      * To be notified when this Component instance is destroyed, you can also optionally provide
      * `onDispose` callback.

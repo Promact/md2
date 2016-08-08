@@ -1,3 +1,10 @@
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
 import { PipeTransform } from '@angular/core';
 /**
  * Formats a date value to a string based on the requested format.
@@ -14,8 +21,9 @@ import { PipeTransform } from '@angular/core';
  *
  *     expression | date[:format]
  *
- * where `expression` is a date object or a number (milliseconds since UTC epoch) and
- * `format` indicates which date/time components to include:
+ * where `expression` is a date object or a number (milliseconds since UTC epoch) or an ISO string
+ * (https://www.w3.org/TR/NOTE-datetime) and `format` indicates which date/time components to
+ * include:
  *
  *  | Component | Symbol | Short Form   | Long Form         | Numeric   | 2-digit   |
  *  |-----------|:------:|--------------|-------------------|-----------|-----------|
@@ -36,7 +44,7 @@ import { PipeTransform } from '@angular/core';
  * punctuations, ...) and details of the formatting will be dependent on the locale.
  * On the other hand in Dart version, you can also include quoted text as well as some extra
  * date/time components such as quarter. For more information see:
- * https://api.dartlang.org/apidocs/channels/stable/dartdoc-viewer/intl/intl.DateFormat.
+ * https://www.dartdocs.org/documentation/intl/0.13.0/intl/DateFormat-class.html
  *
  * `format` can also be one of the following predefined formats:
  *
@@ -64,12 +72,10 @@ import { PipeTransform } from '@angular/core';
  * ```
  *
  * {@example core/pipes/ts/date_pipe/date_pipe_example.ts region='DatePipe'}
+ *
+ * @experimental
  */
 export declare class DatePipe implements PipeTransform {
-    /** @internal */
-    static _ALIASES: {
-        [key: string]: String;
-    };
     transform(value: any, pattern?: string): string;
-    supports(obj: any): boolean;
+    private supports(obj);
 }

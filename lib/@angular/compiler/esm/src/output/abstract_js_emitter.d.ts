@@ -1,5 +1,5 @@
+import { AbstractEmitterVisitor, EmitterVisitorContext } from './abstract_emitter';
 import * as o from './output_ast';
-import { EmitterVisitorContext, AbstractEmitterVisitor } from './abstract_emitter';
 export declare abstract class AbstractJsEmitterVisitor extends AbstractEmitterVisitor {
     constructor();
     visitDeclareClassStmt(stmt: o.ClassStmt, ctx: EmitterVisitorContext): any;

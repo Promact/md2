@@ -20,6 +20,11 @@ export declare var DEFAULT_PACKAGE_URL_PROVIDER: {
  * ## Example
  *
  * {@example compiler/ts/url_resolver/url_resolver.ts region='url_resolver'}
+ *
+ * @security  When compiling templates at runtime, you must
+ * ensure that the entire template comes from a trusted source.
+ * Attacker-controlled data introduced by a template could expose your
+ * application to XSS risks. For more detail, see the [Security Guide](http://g.co/ng/security).
  */
 export declare class UrlResolver {
     private _packagePrefix;
@@ -31,10 +36,6 @@ export declare class UrlResolver {
      * `baseUrl` and `url`,
      * - if `url` is absolute (it has a scheme: 'http://', 'https://' or start with '/'), the `url` is
      * returned as is (ignoring the `baseUrl`)
-     *
-     * @param {string} baseUrl
-     * @param {string} url
-     * @returns {string} the resolved URL
      */
     resolve(baseUrl: string, url: string): string;
 }

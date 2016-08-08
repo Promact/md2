@@ -1,42 +1,82 @@
-import { NgZone } from './zone/ng_zone';
 import { Type } from '../src/facade/lang';
-import { Injector } from './di';
-import { ComponentRef, ComponentFactory } from './linker/component_factory';
-import { WtfScopeFn } from './profile/profile';
 import { ChangeDetectorRef } from './change_detection/change_detector_ref';
+import { Injector } from './di';
+import { ComponentFactory, ComponentRef } from './linker/component_factory';
+import { NgZone } from './zone/ng_zone';
 /**
  * Create an Angular zone.
+ * @experimental
  */
 export declare function createNgZone(): NgZone;
 /**
+ * Disable Angular's development mode, which turns off assertions and other
+ * checks within the framework.
+ *
+ * One important assertion this disables verifies that a change detection pass
+ * does not result in additional changes to any bindings (also known as
+ * unidirectional data flow).
+ *
+ * @experimental APIs related to application bootstrap are currently under review.
+ */
+export declare function enableProdMode(): void;
+/**
+ * Returns whether Angular is in development mode.
+ * This can only be read after `lockRunMode` has been called.
+ *
+ * By default, this is true, unless a user calls `enableProdMode`.
+ *
+ * @experimental APIs related to application bootstrap are currently under review.
+ */
+export declare function isDevMode(): boolean;
+/**
+ * Locks the run mode of Angular. After this has been called,
+ * it can't be changed any more. I.e. `isDevMode()` will always
+ * return the same value.
+ *
+ * @experimental APIs related to application bootstrap are currently under review.
+ */
+export declare function lockRunMode(): void;
+/**
  * Creates a platform.
  * Platforms have to be eagerly created via this function.
+ *
+ * @experimental APIs related to application bootstrap are currently under review.
  */
 export declare function createPlatform(injector: Injector): PlatformRef;
 /**
  * Checks that there currently is a platform
  * which contains the given token as a provider.
+ *
+ * @experimental APIs related to application bootstrap are currently under review.
  */
 export declare function assertPlatform(requiredToken: any): PlatformRef;
 /**
  * Dispose the existing platform.
+ *
+ * @experimental APIs related to application bootstrap are currently under review.
  */
 export declare function disposePlatform(): void;
 /**
  * Returns the current platform.
+ *
+ * @experimental APIs related to application bootstrap are currently under review.
  */
 export declare function getPlatform(): PlatformRef;
 /**
  * Shortcut for ApplicationRef.bootstrap.
- * Requires a platform the be created first.
+ * Requires a platform to be created first.
+ *
+ * @experimental APIs related to application bootstrap are currently under review.
  */
-export declare function coreBootstrap<C>(injector: Injector, componentFactory: ComponentFactory<C>): ComponentRef<C>;
+export declare function coreBootstrap<C>(componentFactory: ComponentFactory<C>, injector: Injector): ComponentRef<C>;
 /**
  * Resolves the componentFactory for the given component,
  * waits for asynchronous initializers and bootstraps the component.
- * Requires a platform the be created first.
+ * Requires a platform to be created first.
+ *
+ * @experimental APIs related to application bootstrap are currently under review.
  */
-export declare function coreLoadAndBootstrap(injector: Injector, componentType: Type): Promise<ComponentRef<any>>;
+export declare function coreLoadAndBootstrap(componentType: Type, injector: Injector): Promise<ComponentRef<any>>;
 /**
  * The Angular platform is the entry point for Angular on a web page. Each page
  * has exactly one platform, and services (such as reflection) which are common
@@ -44,6 +84,8 @@ export declare function coreLoadAndBootstrap(injector: Injector, componentType: 
  *
  * A page's platform is initialized implicitly when {@link bootstrap}() is called, or
  * explicitly by calling {@link createPlatform}().
+ *
+ * @experimental APIs related to application bootstrap are currently under review.
  */
 export declare abstract class PlatformRef {
     /**
@@ -63,10 +105,6 @@ export declare abstract class PlatformRef {
 }
 export declare class PlatformRef_ extends PlatformRef {
     private _injector;
-    /** @internal */
-    _applications: ApplicationRef[];
-    /** @internal */
-    _disposeListeners: Function[];
     private _disposed;
     constructor(_injector: Injector);
     registerDisposeListener(dispose: () => void): void;
@@ -74,13 +112,13 @@ export declare class PlatformRef_ extends PlatformRef {
     readonly disposed: boolean;
     addApplication(appRef: ApplicationRef): void;
     dispose(): void;
-    /** @internal */
-    _applicationDisposed(app: ApplicationRef): void;
 }
 /**
  * A reference to an Angular application running on a page.
  *
  * For more about Angular applications, see the documentation for {@link bootstrap}.
+ *
+ * @experimental APIs related to application bootstrap are currently under review.
  */
 export declare abstract class ApplicationRef {
     /**
@@ -147,22 +185,6 @@ export declare class ApplicationRef_ extends ApplicationRef {
     private _platform;
     private _zone;
     private _injector;
-    /** @internal */
-    static _tickScope: WtfScopeFn;
-    /** @internal */
-    private _bootstrapListeners;
-    /** @internal */
-    private _disposeListeners;
-    /** @internal */
-    private _rootComponents;
-    /** @internal */
-    private _rootComponentTypes;
-    /** @internal */
-    private _changeDetectorRefs;
-    /** @internal */
-    private _runningTick;
-    /** @internal */
-    private _enforceNoNewChanges;
     private _exceptionHandler;
     private _asyncInitDonePromise;
     private _asyncInitDone;
@@ -174,30 +196,20 @@ export declare class ApplicationRef_ extends ApplicationRef {
     waitForAsyncInitializers(): Promise<any>;
     run(callback: Function): any;
     bootstrap<C>(componentFactory: ComponentFactory<C>): ComponentRef<C>;
-    /** @internal */
-    _loadComponent(componentRef: ComponentRef<any>): void;
-    /** @internal */
-    _unloadComponent(componentRef: ComponentRef<any>): void;
     readonly injector: Injector;
     readonly zone: NgZone;
     tick(): void;
     dispose(): void;
     readonly componentTypes: Type[];
 }
-/**
- * @internal
- */
 export declare const PLATFORM_CORE_PROVIDERS: (typeof PlatformRef_ | {
     provide: typeof PlatformRef;
     useExisting: typeof PlatformRef_;
 })[];
-/**
- * @internal
- */
 export declare const APPLICATION_CORE_PROVIDERS: ({
     provide: typeof NgZone;
     useFactory: () => NgZone;
-    deps: any[];
+    deps: any;
 } | typeof ApplicationRef_ | {
     provide: typeof ApplicationRef;
     useExisting: typeof ApplicationRef_;

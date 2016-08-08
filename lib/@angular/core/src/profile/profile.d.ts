@@ -1,5 +1,12 @@
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+import { WtfScopeFn } from './wtf_impl';
 export { WtfScopeFn } from './wtf_impl';
-import * as impl from './wtf_impl';
 /**
  * True if WTF is enabled.
  */
@@ -32,8 +39,9 @@ export declare var wtfEnabled: boolean;
  * needs to be fixed before the app should be profiled. Add try-finally only when you expect that
  * an exception is expected during normal execution while profiling.
  *
+ * @experimental
  */
-export declare var wtfCreateScope: (signature: string, flags?: any) => impl.WtfScopeFn;
+export declare var wtfCreateScope: (signature: string, flags?: any) => WtfScopeFn;
 /**
  * Used to mark end of Scope.
  *
@@ -41,6 +49,7 @@ export declare var wtfCreateScope: (signature: string, flags?: any) => impl.WtfS
  * - `returnValue` (optional) to be passed to the WTF.
  *
  * Returns the `returnValue for easy chaining.
+ * @experimental
  */
 export declare var wtfLeave: <T>(scope: any, returnValue?: T) => T;
 /**
@@ -54,11 +63,13 @@ export declare var wtfLeave: <T>(scope: any, returnValue?: T) => T;
  *          wtfEndTimeRange(s);
  *        });
  *     }
+ * @experimental
  */
 export declare var wtfStartTimeRange: (rangeType: string, action: string) => any;
 /**
  * Ends a async time range operation.
  * [range] is the return value from [wtfStartTimeRange] Async ranges only work if WTF has been
  * enabled.
+ * @experimental
  */
 export declare var wtfEndTimeRange: (range: any) => void;

@@ -1,7 +1,7 @@
 import {AppComponent} from './app';
 import {bootstrap} from '@angular/platform-browser-dynamic';
 import {provide} from '@angular/core';
-import {LocationStrategy, HashLocationStrategy} from '@angular/common';
+import {LocationStrategy, PathLocationStrategy } from '@angular/common';
 import {provideRouter} from '@angular/router';
 import {disableDeprecatedForms, provideForms} from '@angular/forms';
 import {DIALOG_PROVIDERS} from '../components/dialog/dialog';
@@ -12,5 +12,5 @@ bootstrap(AppComponent, [
   disableDeprecatedForms(),
   provideForms(),
   provideRouter(routes),
-  provide(LocationStrategy, { useClass: HashLocationStrategy })
+  provide(LocationStrategy, { useClass: PathLocationStrategy })
 ]);

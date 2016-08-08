@@ -10,7 +10,7 @@ var sourcemaps = require('gulp-sourcemaps');
 var tsProject = tsc.createProject('tsconfig.json');
 
 gulp.task('clean', function (cb) {
-  return del(['build', 'src/**/*.js', '!src/systemjs.config.js', 'src/**/*.js.map', 'src/**/*.d.ts', '*.js', '!gulpfile.js', '!gulp.config.js', '*.js.map', '*.d.ts'], cb);
+  return del(['build', 'src/**/*.js', '!src/system.config.js', 'src/**/*.js.map', 'src/**/*.d.ts', '!src/typings.d.ts', '*.js', '!gulpfile.js', '!gulp.config.js', '*.js.map', '*.d.ts'], cb);
 });
 
 gulp.task('tslint', function (done) {

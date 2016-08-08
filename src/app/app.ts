@@ -37,7 +37,16 @@ export class AppComponent implements OnInit {
     this.isSidenavOpened = !this.isSidenavOpened;
   }
 
+  sidenav(state: boolean) {
+    this.isSidenavOpened = state;
+    if (this.isSidenavOpened && this.window.innerWidth > 767) {
+      this.isSidenavOpened = false;
+    }
+  }
+
   isActive(path: string) {
     return this.location.path().startsWith(path);
   }
+
+  private get window(): Window { return window; }
 }

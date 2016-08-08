@@ -63,6 +63,7 @@
     "core-js": "^2.4.0",
     "del": "^2.2.0",
     "gulp": "^3.9.1",
+    "gulp-gh-pages": "^0.5.4",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-tslint": "^4.3.3",
     "gulp-typescript": "^2.12.0",

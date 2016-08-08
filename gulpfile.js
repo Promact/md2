@@ -7,7 +7,7 @@ var del = require('del');
 var tslint = require('gulp-tslint');
 var tsc = require('gulp-typescript');
 var sourcemaps = require('gulp-sourcemaps');
-//var deploy = require('gulp-gh-pages');
+var ghPages = require('gulp-gh-pages');
 var tsProject = tsc.createProject('tsconfig.json');
 
 gulp.task('clean', function (cb) {
@@ -84,10 +84,10 @@ gulp.task('bundle:demo:min', ['bundle:demo'], function () {
 });
 
 gulp.task('production', ['bundle:demo:min'], function () {
-  console.log('Building the project ...');
+  console.log('Demo Production is ready...');
 });
 
-//gulp.task('deploy', ['build'], function () {
-//  return gulp.src("./build/**/*")
-//		 .pipe(deploy())
-//});
+gulp.task('publish', ['production'], function () {
+  return gulp.src("./build/**/*")
+		 .pipe(ghPages());
+});

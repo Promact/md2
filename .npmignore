@@ -11,7 +11,7 @@ src/app
 src/content
 src/index.html
 src/favicon.ico
-src/systemjs.config.js
+src/system.config.js
 bs-config.json
 gulpfile.js
 

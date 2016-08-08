@@ -4,8 +4,8 @@ import {DatePickerInnerComponent} from './datepickerinner.component';
 import {DayPickerComponent} from './daypicker.component';
 
 @Component({
-  selector: 'md2-datepicker[ngModel]',
-  template: `
+    selector: 'md2-datepicker[ngModel]',
+    template: `
   <div class="md2-datepicker-block" (click)="onFieldFocus()" (blur)="onFieldBlur()" (keydown)="inputKeydown($event)" tabindex="0">
     <div class="md2-datepicker-container">
       <div class="md2-datepicker-btn"></div>
@@ -28,7 +28,7 @@ import {DayPickerComponent} from './daypicker.component';
     </div>
   </div>
   `,
-  styles: [`
+    styles: [`
               .md2-datepicker-block { display: inline-block; position: relative; }
               .md2-datepicker-block:focus, .md2-datepicker .dp-well .md2-dp-body td .dp-btn:focus, .md2-datepicker .dp-well .md2-dp-header th .dp-btn:focus { outline: none; }
               .md2-datepicker-container { cursor: pointer; }
@@ -63,118 +63,118 @@ import {DayPickerComponent} from './daypicker.component';
               .md2-datepicker .dp-well .md2-dp-header th .dp-btn .arrow-icon.left:before, .md2-datepicker .dp-well .md2-dp-header th .dp-btn .arrow-icon.right:before { content: ""; }
               .md2-datepicker .dp-well .md2-dp-header th:nth-child(2) .dp-btn { border-radius: 0; background: none; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; cursor: inherit; text-align: center; }
   `],
-  directives: [DatePickerInnerComponent, DayPickerComponent, FORM_DIRECTIVES],
-  encapsulation: ViewEncapsulation.None
+    directives: [DatePickerInnerComponent, DayPickerComponent, FORM_DIRECTIVES],
+    encapsulation: ViewEncapsulation.None
 })
 
 export class Md2Datepicker implements ControlValueAccessor {
-  @Input() public datepickerMode:string;
-  @Input() public initDate:Date;
-  @Input() public minDate:Date;
-  @Input() public maxDate:Date;
-  @Input() public minMode:string;
-  @Input() public maxMode:string;
-  @Input() public showWeeks:boolean;
-  @Input() public formatDay:string;
-  @Input() public formatMonth:string;
-  @Input() public formatYear:string;
-  @Input() public formatDayHeader:string;
-  @Input() public formatDayTitle:string;
-  @Input() public formatMonthTitle:string;
-  @Input() public startingDay:number;
-  @Input() public yearRange:number;
-  @Input() public onlyCurrentMonth:boolean;
-  @Input() public shortcutPropagation:boolean;
-  @Input() public customClass:Array<{date:Date, mode:string, clazz:string}>;
+    @Input() public datepickerMode: string;
+    @Input() public initDate: Date;
+    @Input() public minDate: Date;
+    @Input() public maxDate: Date;
+    @Input() public minMode: string;
+    @Input() public maxMode: string;
+    @Input() public showWeeks: boolean;
+    @Input() public formatDay: string;
+    @Input() public formatMonth: string;
+    @Input() public formatYear: string;
+    @Input() public formatDayHeader: string;
+    @Input() public formatDayTitle: string;
+    @Input() public formatMonthTitle: string;
+    @Input() public startingDay: number;
+    @Input() public yearRange: number;
+    @Input() public onlyCurrentMonth: boolean;
+    @Input() public shortcutPropagation: boolean;
+    @Input() public customClass: Array<{ date: Date, mode: string, clazz: string }>;
 
-  @Input() public dateDisabled:any;
+    @Input() public dateDisabled: any;
 
-  public onChange:any = Function.prototype;
-  public onTouched:any = Function.prototype;
+    public onChange: any = Function.prototype;
+    public onTouched: any = Function.prototype;
 
-  public cd:NgModel;
-  private _now:Date = new Date();
-  private _activeDate:Date;
+    public cd: NgModel;
+    private _now: Date = new Date();
+    private _activeDate: Date;
 
-  @Input()
-  /**
-   * Active Date
-   */
-  public get activeDate():Date {
-    return this._activeDate || this._now;
-  }
-
-  public constructor(@Self() cd:NgModel) {
-    this.cd = cd;
-    cd.valueAccessor = this;
-  }
-
-  public set activeDate(value:Date) {
-    this._activeDate = value;
-  }
-
-  /**
-   * Update Date
-   */
-  public onUpdate(event:any):void {
-    this.writeValue(event);
-    this.cd.viewToModelUpdate(event);
-  }
-
-  public writeValue(value:any):void {
-
-    if (value === this._activeDate) {
-      return;
-    }
-    if (value && value instanceof Date) {
-      this.activeDate = value;
-      return;
+    @Input()
+    /**
+     * Active Date
+     */
+    public get activeDate(): Date {
+        return this._activeDate || this._now;
     }
 
-    this.activeDate = value ? new Date(value) : void 0;
-  }
-
-  public registerOnChange(fn:(_:any) => {}):void { this.onChange = fn; }
-
-  public registerOnTouched(fn:() => {}):void { this.onTouched = fn; }
-
-  /**
-   * Datepicker show/hide
-   */
-  get isDatepickerVisible(): boolean {
-    return (this.fieldFocused) ? true : false;
-  }
-
-  private fieldFocused: boolean;
-
-  private onFieldFocus() {
-    this.fieldFocused = true;
-  }
-
-  private onFieldBlur() {
-  	setTimeout(()=>{
-  		this.fieldFocused = false;
-  	},200)
-  }
-
-  /**
-   * Key events
-   */
-  private inputKeydown(event: KeyboardEvent) {
-  	// Escape Key
-    if (event.keyCode === 27) {
-      event.stopPropagation();
-      event.preventDefault();
-      this.fieldFocused = false;
-      return;
+    public constructor( @Self() cd: NgModel) {
+        this.cd = cd;
+        cd.valueAccessor = this;
     }
-    // Enter Key & Space Key
-    if (event.keyCode === 13 || event.keyCode === 32) {
-      event.stopPropagation();
-      event.preventDefault();
-      this.fieldFocused = true;
-      return;
+
+    public set activeDate(value: Date) {
+        this._activeDate = value;
     }
-  }
+
+    /**
+     * Update Date
+     */
+    public onUpdate(event: any): void {
+        this.writeValue(event);
+        this.cd.viewToModelUpdate(event);
+    }
+
+    public writeValue(value: any): void {
+
+        if (value === this._activeDate) {
+            return;
+        }
+        if (value && value instanceof Date) {
+            this.activeDate = value;
+            return;
+        }
+
+        this.activeDate = value ? new Date(value) : void 0;
+    }
+
+    public registerOnChange(fn: (_: any) => {}): void { this.onChange = fn; }
+
+    public registerOnTouched(fn: () => {}): void { this.onTouched = fn; }
+
+    /**
+     * Datepicker show/hide
+     */
+    get isDatepickerVisible(): boolean {
+        return (this.fieldFocused) ? true : false;
+    }
+
+    private fieldFocused: boolean;
+
+    private onFieldFocus() {
+        this.fieldFocused = true;
+    }
+
+    private onFieldBlur() {
+        setTimeout(() => {
+            this.fieldFocused = false;
+        }, 200);
+    }
+
+    /**
+     * Key events
+     */
+    private inputKeydown(event: KeyboardEvent) {
+        // Escape Key
+        if (event.keyCode === 27) {
+            event.stopPropagation();
+            event.preventDefault();
+            this.fieldFocused = false;
+            return;
+        }
+        // Enter Key & Space Key
+        if (event.keyCode === 13 || event.keyCode === 32) {
+            event.stopPropagation();
+            event.preventDefault();
+            this.fieldFocused = true;
+            return;
+        }
+    }
 
 }

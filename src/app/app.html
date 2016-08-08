@@ -1,26 +1,28 @@
 <aside class="sidenav">
-  <header>
-    <a [routerLink]="['Home']">
-      <img src="./content/img/logo.png">
-      <h3>Material Design 2</h3>
-    </a>
-  </header>
-  <ul>
-    <li [class.active]="isActive('/accordion')"><a [routerLink]="['accordion']">Accordion</a></li>
-    <li [class.active]="isActive('/autocomplete')"><a [routerLink]="['autocomplete']">Autocomplete</a></li>
-    <li [class.active]="isActive('/collapse')"><a [routerLink]="['collapse']">Collapse</a></li>
-    <li [class.active]="isActive('/colorpicker')"><a [routerLink]="['colorpicker']">Colorpicker</a></li>
-    <li [class.active]="isActive('/datepicker')"><a [routerLink]="['datepicker']">Datepicker</a></li>
-    <li [class.active]="isActive('/dialog')"><a [routerLink]="['dialog']">Dialog</a></li>
-    <li [class.active]="isActive('/menu')"><a [routerLink]="['menu']">Menu</a></li>
-    <li [class.active]="isActive('/multiselect')"><a [routerLink]="['multiselect']">Multiselect</a></li>
-    <li [class.active]="isActive('/select')"><a [routerLink]="['select']">Select</a></li>
-    <li [class.active]="isActive('/switch')"><a [routerLink]="['switch']">Switch</a></li>
-    <li [class.active]="isActive('/tabs')"><a [routerLink]="['tabs']">Tabs</a></li>
-    <li [class.active]="isActive('/tags')"><a [routerLink]="['tags']">Tags</a></li>
-    <li [class.active]="isActive('/toast')"><a [routerLink]="['toast']">Toast</a></li>
-    <li [class.active]="isActive('/tooltip')"><a [routerLink]="['tooltip']">Tooltip</a></li>
-  </ul>
+  <div class="sidenav-container">
+    <header>
+      <a [routerLink]="['Home']">
+        <img src="./content/img/logo.png">
+        <h3>Material Design 2</h3>
+      </a>
+    </header>
+    <ul>
+      <li [class.active]="isActive('/accordion')"><a [routerLink]="['accordion']">Accordion</a></li>
+      <li [class.active]="isActive('/autocomplete')"><a [routerLink]="['autocomplete']">Autocomplete</a></li>
+      <li [class.active]="isActive('/collapse')"><a [routerLink]="['collapse']">Collapse</a></li>
+      <li [class.active]="isActive('/colorpicker')"><a [routerLink]="['colorpicker']">Colorpicker</a></li>
+      <li [class.active]="isActive('/datepicker')"><a [routerLink]="['datepicker']">Datepicker</a></li>
+      <li [class.active]="isActive('/dialog')"><a [routerLink]="['dialog']">Dialog</a></li>
+      <li [class.active]="isActive('/menu')"><a [routerLink]="['menu']">Menu</a></li>
+      <li [class.active]="isActive('/multiselect')"><a [routerLink]="['multiselect']">Multiselect</a></li>
+      <li [class.active]="isActive('/select')"><a [routerLink]="['select']">Select</a></li>
+      <li [class.active]="isActive('/switch')"><a [routerLink]="['switch']">Switch</a></li>
+      <li [class.active]="isActive('/tabs')"><a [routerLink]="['tabs']">Tabs</a></li>
+      <li [class.active]="isActive('/tags')"><a [routerLink]="['tags']">Tags</a></li>
+      <li [class.active]="isActive('/toast')"><a [routerLink]="['toast']">Toast</a></li>
+      <li [class.active]="isActive('/tooltip')"><a [routerLink]="['tooltip']">Tooltip</a></li>
+    </ul>
+  </div>
 </aside>
 <main class="main">
   <header class="toolbar">

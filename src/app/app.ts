@@ -1,6 +1,6 @@
-import {Component, OnInit} from "@angular/core";
-import {RouterLink, ROUTER_DIRECTIVES} from "@angular/router";
-import {Location} from "@angular/common";
+import {Component, OnInit} from '@angular/core';
+import {RouterLink, ROUTER_DIRECTIVES} from '@angular/router';
+import {Location} from '@angular/common';
 
 import { Home } from './home';
 import { Accordion } from './components/accordion/accordion';
@@ -19,8 +19,8 @@ import { Toast } from './components/toast/toast';
 import { Tooltip } from './components/tooltip/tooltip';
 
 @Component({
-  selector: "md2-app",
-  templateUrl: "./app/app.html",
+  selector: 'md2-app',
+  templateUrl: './app/app.html',
   directives: [Home, Accordion, Autocomplete, Collapse, Colorpicker, Datepicker, DialogComponent, Menu, Multiselect, Select, Switch, Tabs, Tags, Toast, Tooltip, RouterLink, ROUTER_DIRECTIVES]
 })
 
@@ -30,7 +30,7 @@ export class AppComponent implements OnInit {
   constructor(private location: Location) { }
 
   ngOnInit() {
-    console.log("Application component initialized ...");
+    console.log('Application component initialized ...');
   }
 
   sidenavToggle() {

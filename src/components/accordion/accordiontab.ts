@@ -50,6 +50,7 @@ export class Md2AccordionTab {
   /**
    * Toggle the accordion
    * @param event
+   * @return if it is disabled
    */
   toggle(event: Event) {
     if (this.disabled) {
@@ -62,16 +63,14 @@ export class Md2AccordionTab {
     if (this.active) {
       this.active = !this.active;
       this.accordion.close.emit({ originalEvent: event, index: index });
-    }
-    else {
-      if (!this.accordion.multiple) {
-        for (let i = 0; i < this.accordion.tabs.length; i++) {
-          this.accordion.tabs[i].active = false;
-        }
+    } else if (!this.accordion.multiple) {
+      for (let i = 0; i < this.accordion.tabs.length; i++) {
+        this.accordion.tabs[i].active = false;
       }
-
       this.active = true;
-
+      this.accordion.open.emit({ originalEvent: event, index: index });
+    } else {
+      this.active = true;
       this.accordion.open.emit({ originalEvent: event, index: index });
     }
 
@@ -80,6 +79,7 @@ export class Md2AccordionTab {
 
   /**
    * Find index of specific tab of accordion
+   * @return index number of this tab
    */
   findTabIndex() {
     let index = -1;

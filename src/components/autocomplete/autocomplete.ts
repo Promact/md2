@@ -110,7 +110,7 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
 
   /**
    * set value
-   * @param value
+   * @param value of ngModel
    */
   private setValue(value: any) {
     if (value !== this._value) {
@@ -131,22 +131,23 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
 
   /**
    * Compare two vars or objects
-   * @param o1
-   * @param o2
+   * @param o1 compare first object
+   * @param o2 compare second object
+   * @return boolean comparation result
    */
-  private equals(o1, o2) {
-    if (o1 === o2) return true;
-    if (o1 === null || o2 === null) return false;
-    if (o1 !== o1 && o2 !== o2) return true;
+  private equals(o1: any, o2: any) {
+    if (o1 === o2) { return true; }
+    if (o1 === null || o2 === null) { return false; }
+    if (o1 !== o1 && o2 !== o2) { return true; }
     let t1 = typeof o1, t2 = typeof o2, length, key, keySet;
     if (t1 === t2 && t1 === 'object') {
       keySet = Object.create(null);
       for (key in o1) {
-        if (!this.equals(o1[key], o2[key])) return false;
+        if (!this.equals(o1[key], o2[key])) { return false; }
         keySet[key] = true;
       }
       for (key in o2) {
-        if (!(key in keySet) && key.charAt(0) !== '$' && o2[key]) return false;
+        if (!(key in keySet) && key.charAt(0) !== '$' && o2[key]) { return false; }
       }
       return true;
     }
@@ -161,15 +162,15 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
    * update scroll of suggestion menu
    */
   private updateScroll() {
-    if (this.focusedOption < 0) return;
+    if (this.focusedOption < 0) { return; }
     let menuContainer = this.element.nativeElement.querySelector('.md2-autocomplete-menu');
-    if (!menuContainer) return;
+    if (!menuContainer) { return; }
 
     let choices = menuContainer.querySelectorAll('.md2-option');
-    if (choices.length < 1) return;
+    if (choices.length < 1) { return; }
 
     let highlighted: any = choices[this.focusedOption];
-    if (!highlighted) return;
+    if (!highlighted) { return; }
 
     let top: number = highlighted.offsetTop + highlighted.clientHeight - menuContainer.scrollTop;
     let height: number = menuContainer.offsetHeight;
@@ -189,7 +190,7 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
     if (this.disabled) { return; }
     // Down Arrow
     if (event.keyCode === 40) {
-      if (!this.isMenuVisible) return;
+      if (!this.isMenuVisible) { return; }
       event.stopPropagation();
       event.preventDefault();
       this.focusedOption = (this.focusedOption === this.list.length - 1) ? 0 : Math.min(this.focusedOption + 1, this.list.length - 1);
@@ -198,7 +199,7 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
     }
     // Up Arrow
     if (event.keyCode === 38) {
-      if (!this.isMenuVisible) return;
+      if (!this.isMenuVisible) { return; }
       event.stopPropagation();
       event.preventDefault();
       this.focusedOption = (this.focusedOption === 0) ? this.list.length - 1 : Math.max(0, this.focusedOption - 1);
@@ -225,7 +226,7 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
       event.preventDefault();
       return;
     }
-    //filter
+    // filter
     setTimeout(() => {
       this.updateItems(new RegExp(this.inputBuffer, 'ig'));
     }, 10);
@@ -234,7 +235,7 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
   /**
    * select option
    * @param event
-   * @param index
+   * @param index of selected item
    */
   private select(event, index) {
     event.preventDefault();
@@ -270,7 +271,7 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
    * component focus listener
    */
   private onFocus() {
-    if (this.disabled) return;
+    if (this.disabled) { return; }
     this.element.nativeElement.querySelector('input').focus();
   }
 

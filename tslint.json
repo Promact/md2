@@ -1,6 +1,6 @@
 {
   "rules": {
-    "max-line-length": [ true, 1000 ],
+    "max-line-length": [ true, 10500 ],
     "no-inferrable-types": false,
     "class-name": true,
     "comment-format": [ true, "check-space" ],

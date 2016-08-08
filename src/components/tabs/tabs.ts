@@ -190,6 +190,7 @@ export class Md2Tabs implements AfterContentInit {
   /**
    * Create Change Event
    * @param index
+   * @return event of Md2TabChangeEvent
    */
   private _createChangeEvent(index: number): Md2TabChangeEvent {
     const event = new Md2TabChangeEvent;
@@ -315,6 +316,7 @@ export class Md2Tabs implements AfterContentInit {
   /**
    * Fix Offset of Tab
    * @param value
+   * @return value
    */
   fixOffset(value) {
     let elements = this.element;

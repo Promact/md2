@@ -147,8 +147,9 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
 
   /**
    * Compare two vars or objects
-   * @param o1
-   * @param o2
+   * @param o1 compare first object
+   * @param o2 compare second object
+   * @return boolean comparation result
    */
   private equals(o1: any, o2: any) {
     if (o1 === o2) { return true; }
@@ -281,6 +282,7 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
   /**
    * to check current option is active or not
    * @param index
+   * @return boolean the item is active or not
    */
   private isActive(index: number): boolean {
     return this.items.map(i => i.text).indexOf(this.list[index].text) < 0 ? false : true;

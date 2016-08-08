@@ -108,6 +108,7 @@ export class Md2Switch implements AfterContentInit, ControlValueAccessor {
 
   /**
    * get checked status
+   * @return boolean value if swith is active or not
    */
   getAriaChecked() { return this.checked ? 'true' : 'false'; }
 

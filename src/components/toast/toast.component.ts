@@ -23,7 +23,7 @@ export class Md2ToastComponent {
 
   /**
    * add toast
-   * @param toast
+   * @param toast toast object with all parameters
    */
   add(toast: Toast) {
     this.toasts.push(toast);
@@ -33,8 +33,8 @@ export class Md2ToastComponent {
   }
 
   /**
-   * temove toast
-   * @param toastId
+   * remove toast
+   * @param toastId number of toast id
    */
   remove(toastId: number) {
     this.toasts = this.toasts.filter((toast) => { return toast.id !== toastId; });

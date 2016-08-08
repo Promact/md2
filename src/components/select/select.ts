@@ -153,8 +153,9 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
 
   /**
    * Compare two vars or objects
-   * @param o1
-   * @param o2
+   * @param o1 compare first object
+   * @param o2 compare second object
+   * @return boolean comparation result
    */
   private equals(o1: any, o2: any) {
     if (o1 === o2) { return true; }

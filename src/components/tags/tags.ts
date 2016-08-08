@@ -150,9 +150,10 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
   }
 
   /**
-   * compare two vars or objects
-   * @param o1
-   * @param o2
+   * Compare two vars or objects
+   * @param o1 compare first object
+   * @param o2 compare second object
+   * @return boolean comparation result
    */
   private equals(o1, o2) {
     if (o1 === o2) { return true; }
@@ -313,7 +314,7 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
   /**
    * add tag
    * @param event
-   * @param index
+   * @param index index of the specific tag
    */
   private addTag(event, index) {
     event.preventDefault();
@@ -361,6 +362,10 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
     this.selectTag(index);
   };
 
+  /**
+   * select tag
+   * @param index of select tag
+   */
   private selectTag(index) {
     if (index >= -1 && index <= this.items.length) {
       this.selectedTag = index;

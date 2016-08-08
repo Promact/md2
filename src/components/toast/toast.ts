@@ -13,7 +13,7 @@ export class Md2Toast {
 
   /**
    * show toast
-   * @param toastObj
+   * @param toastObj string or object with message and other properties of toast
    */
   show(toastObj: string | { message: string, hideDelay: number }) {
     let toast;
@@ -70,7 +70,7 @@ export class Md2Toast {
   }
 
   /**
-   * hide toast
+   * hide all or specific toasts
    */
   hide() {
     this.container.destroy();

@@ -26,12 +26,12 @@ export class Md2ColorpickerService {
   hsva2hsla(hsva: Hsva) {
     let h = hsva.h, s = hsva.s, v = hsva.v, a = hsva.a;
     if (v === 0) {
-      return new Hsla(h, 0, 0, a)
+        return new Hsla(h, 0, 0, a);
     } else if (s === 0 && v === 1) {
-      return new Hsla(h, 1, 1, a)
+        return new Hsla(h, 1, 1, a);
     } else {
       let l: number = v * (2 - s) / 2;
-      return new Hsla(h, v * s / (1 - Math.abs(2 * l - 1)), l, a)
+      return new Hsla(h, v * s / (1 - Math.abs(2 * l - 1)), l, a);
     }
   }
 
@@ -63,7 +63,7 @@ export class Md2ColorpickerService {
       h /= 6;
     }
 
-    return new Hsva(h, s, v, a)
+    return new Hsva(h, s, v, a);
   }
 
   /**
@@ -101,7 +101,7 @@ export class Md2ColorpickerService {
         break;
     }
 
-    return new Rgba(r, g, b, a)
+    return new Rgba(r, g, b, a);
   }
 
   /**
@@ -198,7 +198,8 @@ export class Md2ColorpickerService {
   }
 
   hexText(rgba: Rgba) {
-    let hexText = '#' + ((1 << 24) | (rgba.r << 16) | (rgba.g << 8) | rgba.b).toString(16).substr(1);
+      let mainText = ((1 << 24) | (rgba.r << 16) | (rgba.g << 8) | rgba.b).toString(16);
+      let hexText = '#' + mainText.substr(1);
     if (hexText[1] === hexText[2] && hexText[3] === hexText[4] && hexText[5] === hexText[6]) {
       hexText = '#' + hexText[1] + hexText[3] + hexText[5];
     }

@@ -335,7 +335,7 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
 
       if (matchingOption) {
         this.selected = matchingOption;
-      } else if (this.value === null) {
+      } else if (!this.value) {
         this.selected = null;
         this._options.forEach(option => { option.selected = false; });
       }

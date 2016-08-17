@@ -1,10 +1,8 @@
 import {Component} from '@angular/core';
-import {Md2Switch} from '../../../components/switch/switch';
 
 @Component({
   selector: 'switch',
-  templateUrl: './app/components/switch/switch.html',
-  directives: [Md2Switch]
+  templateUrl: './app/components/switch/switch.html'
 })
 export class Switch {
   disabled: boolean;

@@ -1,10 +1,7 @@
 import {Component} from '@angular/core';
 
-import {MENU_DIRECTIVES} from '../../../components/menu/menu';
-
 @Component({
   selector: 'menu',
-  templateUrl: './app/components/menu/menu.html',
-  directives: [MENU_DIRECTIVES]
+  templateUrl: './app/components/menu/menu.html'
 })
 export class Menu { }

@@ -1,11 +1,8 @@
 import {Component} from '@angular/core';
-import {SELECT_DIRECTIVES, Md2SelectDispatcher} from '../../../components/select/select';
 
 @Component({
   selector: 'selectcomp',
-  templateUrl: './app/components/select/select.html',
-  directives: [SELECT_DIRECTIVES],
-  providers: [Md2SelectDispatcher]
+  templateUrl: './app/components/select/select.html'
 })
 export class Select {
 

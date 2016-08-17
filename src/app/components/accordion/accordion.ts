@@ -1,10 +1,8 @@
 import {Component} from '@angular/core';
-import {ACCORDION_DIRECTIVES} from '../../../components/accordion/accordion';
 
 @Component({
   selector: 'accordion',
-  templateUrl: './app/components/accordion/accordion.html',
-  directives: [ACCORDION_DIRECTIVES]
+  templateUrl: './app/components/accordion/accordion.html'
 })
 export class Accordion {
   private accordions: Array<any> = [

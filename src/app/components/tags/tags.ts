@@ -1,11 +1,8 @@
 import {Component} from '@angular/core';
 
-import {Md2Tags} from '../../../components/tags/tags';
-
 @Component({
   selector: 'tags',
-  templateUrl: './app/components/tags/tags.html',
-  directives: [Md2Tags]
+  templateUrl: './app/components/tags/tags.html'
 })
 export class Tags {
   private disabled: boolean = false;

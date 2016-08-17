@@ -1,10 +1,8 @@
 import {Component} from '@angular/core';
-import {DIALOG_DIRECTIVES} from '../../../components/dialog/dialog';
 
 @Component({
   selector: 'dialog-demo',
-  templateUrl: './app/components/dialog/dialog.html',
-  directives: [DIALOG_DIRECTIVES]
+  templateUrl: './app/components/dialog/dialog.html'
 })
 export class DialogComponent {
   private dialogHeader: string = 'Lorum Ipsum';

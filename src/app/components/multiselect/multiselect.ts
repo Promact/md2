@@ -1,8 +1,10 @@
 import {Component} from '@angular/core';
+import {Md2Multiselect} from '../../../components/multiselect/multiselect';
 
 @Component({
   selector: 'multiselect',
-  templateUrl: './app/components/multiselect/multiselect.html'
+  templateUrl: './app/components/multiselect/multiselect.html',
+  directives: [Md2Multiselect]
 })
 export class Multiselect {
   private disabled: boolean = false;

@@ -1,8 +1,10 @@
 import {Component} from '@angular/core';
+import {Md2Autocomplete} from '../../../components/autocomplete/autocomplete';
 
 @Component({
   selector: 'autocomplete',
-  templateUrl: './app/components/autocomplete/autocomplete.html'
+  templateUrl: './app/components/autocomplete/autocomplete.html',
+  directives: [Md2Autocomplete]
 })
 export class Autocomplete {
   private disabled: boolean = false;

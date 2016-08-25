@@ -21,10 +21,11 @@ class Tag {
   }
 }
 
-const MD2_TAGS_CONTROL_VALUE_ACCESSOR = new Provider(NG_VALUE_ACCESSOR, {
+export const MD2_TAGS_CONTROL_VALUE_ACCESSOR: any = {
+  provide: NG_VALUE_ACCESSOR,
   useExisting: forwardRef(() => Md2Tags),
   multi: true
-});
+};
 
 @Component({
   selector: 'md2-tags',

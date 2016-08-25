@@ -14,10 +14,11 @@ import {
 
 let nextId = 0;
 
-const MD2_SWITCH_CONTROL_VALUE_ACCESSOR = new Provider(NG_VALUE_ACCESSOR, {
+export const MD2_SWITCH_CONTROL_VALUE_ACCESSOR: any = {
+  provide: NG_VALUE_ACCESSOR,
   useExisting: forwardRef(() => Md2Switch),
   multi: true
-});
+};
 
 @Component({
   selector: 'md2-switch',

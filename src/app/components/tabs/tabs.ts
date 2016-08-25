@@ -1,8 +1,10 @@
 import {Component} from '@angular/core';
+import {TABS_DIRECTIVES} from '../../../components/tabs/tabs';
 
 @Component({
   selector: 'tabs',
-  templateUrl: './app/components/tabs/tabs.html'
+  templateUrl: './app/components/tabs/tabs.html',
+  directives: [TABS_DIRECTIVES]
 })
 export class Tabs {
   private tabs: Array<any> = [

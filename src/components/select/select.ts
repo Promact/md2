@@ -17,10 +17,11 @@ import {
   ElementRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
-const MD2_SELECT_CONTROL_VALUE_ACCESSOR = new Provider(NG_VALUE_ACCESSOR, {
+export const MD2_SELECT_CONTROL_VALUE_ACCESSOR: any = {
+  provide: NG_VALUE_ACCESSOR,
   useExisting: forwardRef(() => Md2Select),
   multi: true
-});
+};
 
 var _uniqueIdCounter = 0;
 

@@ -1,32 +1,60 @@
-import {Component, DynamicComponentLoader, Directive, Input, Output, ViewContainerRef, ElementRef, EventEmitter, OnInit} from '@angular/core';
+import {Component, DynamicComponentLoader, forwardRef, Directive, Input, Output, ViewContainerRef, ElementRef, EventEmitter, OnInit} from '@angular/core';
 import {Md2ColorpickerService} from './colorpicker.service';
+import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
-@Directive({
-  selector: '[colorpicker]',
-  host: {
-    '(input)': 'changeInput($event)',
-    '(click)': 'onClick()',
-    '(focus)': 'onClick()'
-  }
+export const MD2_COLORPICKER_CONTROL_VALUE_ACCESSOR: any = {
+  provide: NG_VALUE_ACCESSOR,
+  useExisting: forwardRef(() => Md2Colorpicker),
+  multi: true
+};
+
+@Component({
+  selector: 'md2-colorpicker',
+  template: `
+        <div class="color-picker-selector">
+            <div class="color-div" [style.background-color]="innerValue" (click)="onClick()"> </div>
+            <label class="color-text" (click)="onClick()">{{innerValue}}</label>            
+        </div>
+    `,
+  styles: [`
+    .color-picker-selector .color-div{height:30px;width:30px;display:inline-block;overflow:hidden;cursor:pointer;border-radius:50%;vertical-align: middle;    box-shadow: 0 1px 1px 0px rgba(0,0,0,.2),0 1px 1px 1px rgba(0,0,0,.14),0 1px 1px 1px rgba(0,0,0,.12);}
+    .color-picker-selector .color-text{display:inline-block;margin-left:5px;vertical-align:middle;cursor:pointer;vertical-align: middle;line-height:30px;}
+  `],
+  providers: [MD2_COLORPICKER_CONTROL_VALUE_ACCESSOR],
 })
 
 export class Md2Colorpicker implements OnInit {
-  @Input('colorpicker') colorpicker: string;
   @Input('position') cPosition: string = 'bottom';
-  @Input('offset') offset: string = '0';
   @Input('format') format: string = 'hex';
   @Output('colorpickerChange') colorpickerChange = new EventEmitter<string>();
   @Output() change = new EventEmitter<string>();
   private colorpickerDialog: any;
   private created: boolean;
 
+  private innerValue: any = '';
+  private onTouchedCallback: () => void;
+  private onChangeCallback: (_: any) => void;
+
+  get value(): any {
+    return this.innerValue;
+  };
+
+  /**
+   * set accessor including call the onchange callback
+   */
+  set value(v: any) {
+    if (v !== this.innerValue) {
+      this.innerValue = v;
+    }
+  }
+
   constructor(private dcl: DynamicComponentLoader, private vcRef: ViewContainerRef, private el: ElementRef, private service: Md2ColorpickerService) {
     this.created = false;
   }
 
   ngOnInit() {
-    if (!this.colorpicker) { this.colorpicker = '#000'; }
-    let hsva: any = this.service.stringToHsva(this.colorpicker);
+    if (!this.innerValue) { this.innerValue = '#000'; }
+    let hsva: any = this.service.stringToHsva(this.innerValue);
     if (hsva !== null) {
       this.colorpickerChange.emit(this.service.outputFormat(hsva, this.format));
       this.change.emit(this.service.outputFormat(hsva, this.format));
@@ -40,12 +68,12 @@ export class Md2Colorpicker implements OnInit {
     if (!this.created) {
       this.created = true;
       this.dcl.loadNextToLocation(ColorpickerComponent, this.vcRef)
-        .then((res) => {
-          res.instance.setColorpickerDialog(this, this.el, this.colorpicker, this.cPosition, this.offset, this.format);
+        .then((res: any) => {
+          res.instance.setColorpickerDialog(this, this.el, this.innerValue, this.cPosition, this.format);
           this.colorpickerDialog = res.instance;
         });
     } else if (this.colorpickerDialog) {
-      this.colorpickerDialog.setInitialColor(this.colorpicker);
+      this.colorpickerDialog.setInitialColor(this.innerValue);
       this.colorpickerDialog.openColorpicker();
     }
   }
@@ -57,6 +85,7 @@ export class Md2Colorpicker implements OnInit {
   colorChanged(value: string) {
     this.colorpickerChange.emit(value);
     this.change.emit(value);
+    this.innerValue = value;
   }
 
   /**
@@ -69,28 +98,44 @@ export class Md2Colorpicker implements OnInit {
     this.colorpickerChange.emit(value);
     this.change.emit(value);
   }
-}
-@Directive({
-    selector: '[text]',
-    host: {
-        '(input)': 'changeInput($event.target.value)'
+
+  writeValue(value: any) {
+    if (value !== this.innerValue && value) {
+      this.innerValue = value;
     }
+  }
+
+  registerOnChange(fn: any) {
+    this.onChangeCallback = fn;
+  }
+
+  registerOnTouched(fn: any) {
+    this.onTouchedCallback = fn;
+  }
+}
+
+
+@Directive({
+  selector: '[text]',
+  host: {
+    '(input)': 'changeInput($event.target.value)'
+  }
 })
 export class TextDirective {
-    @Output('newValue') newValue = new EventEmitter<any>();
-    @Input('text') text: any;
-    @Input('rg') rg: number;
+  @Output('newValue') newValue = new EventEmitter<any>();
+  @Input('text') text: any;
+  @Input('rg') rg: number;
 
-    changeInput(value: string) {
-        if (this.rg === undefined) {
-            this.newValue.emit(value);
-        } else {
-            let numeric = parseFloat(value);
-            if (!isNaN(numeric) && numeric >= 0 && numeric <= this.rg) {
-                this.newValue.emit({ v: numeric, rg: this.rg });
-            }
-        }
+  changeInput(value: string) {
+    if (this.rg === undefined) {
+      this.newValue.emit(value);
+    } else {
+      let numeric = parseFloat(value);
+      if (!isNaN(numeric) && numeric >= 0 && numeric <= this.rg) {
+        this.newValue.emit({ v: numeric, rg: this.rg });
+      }
     }
+  }
 }
 @Directive({
   selector: '[colorpicker-slider]',
@@ -108,8 +153,8 @@ export class ColorpickerSliderDirective {
   private listenerStop: any;
 
   constructor(private el: ElementRef) {
-      this.listenerMove = (event: any) => { this.move(event); };
-      this.listenerStop = () => { this.stop(); };
+    this.listenerMove = (event: any) => { this.move(event); };
+    this.listenerStop = () => { this.stop(); };
   }
 
   /**
@@ -387,9 +432,9 @@ export class ColorpickerComponent implements OnInit {
       this.left += this.offset / 100 * boxDirective.width;
     } else if (this.cPosition === 'right') {
       this.top += boxDirective.height * this.offset / 100;
-      this.left += boxDirective.width;
+      this.left += boxDirective.width + 32;
     } else {
-      this.top += boxDirective.height;
+      this.top += boxDirective.height + 32;
       this.left += this.offset / 100 * boxDirective.width;
     }
   }
@@ -489,7 +534,7 @@ export class ColorpickerComponent implements OnInit {
     this.outputColor = this.service.outputFormat(this.hsva, this.cFormat);
 
     this.slider = new SliderPosition((this.hsva.h) * this.sliderDim.h - 8, this.hsva.s * this.sliderDim.s - 8,
-        (1 - this.hsva.v) * this.sliderDim.v - 8, this.hsva.a * this.sliderDim.a - 8);
+      (1 - this.hsva.v) * this.sliderDim.v - 8, this.hsva.a * this.sliderDim.a - 8);
 
     this.directiveInstance.colorChanged(this.outputColor);
   }

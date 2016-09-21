@@ -28,14 +28,14 @@ a { color: $primary; text-decoration: none;
   &:focus { color: darken($primary,3); text-decoration: underline; }
 }
 hr { margin-top: 15px; margin-bottom: 15px; border: 0; border-top: 1px solid rgba($black,0.12); }
-.btn { position: relative; display: inline-block; box-sizing: border-box; background: transparent; text-align: center; overflow: hidden; cursor: pointer; outline: none; border: none; white-space: nowrap; text-decoration: none; vertical-align: middle; font-size: 14px; font-weight: 500; text-transform: uppercase; padding: 0 16px; margin: 6px 8px; min-width: 88px; line-height: 36px; border-radius: 3px; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-transition: background 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); transition: background 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: 0 2px 5px 0 rgba($black, 0.26); color: rgba($black, 0.9); background-color: #fafafa;
+button { position: relative; display: inline-block; box-sizing: border-box; background: transparent; text-align: center; overflow: hidden; cursor: pointer; outline: none; border: none; white-space: nowrap; text-decoration: none; vertical-align: middle; font-size: 14px; font-weight: 500; text-transform: uppercase; padding: 0 16px; margin: 6px 8px; min-width: 88px; line-height: 36px; border-radius: 3px; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-transition: background 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); transition: background 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: 0 2px 5px 0 rgba($black, 0.26); color: rgba($black, 0.9); background-color: #fafafa;
   &:hover,
   &:focus { text-decoration: none; }
   &:active { box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4); }
   &[disabled] { pointer-events: none; cursor: default; opacity: 0.8; box-shadow: none; }
-  &.btn-primary { color: $white; background: $primary; }
-  &.btn-block { width: 100%; }
-  &.btn-lg { font-size: 16px; padding: 0 12px; min-width: 128px; line-height: 48px; border-radius: 4px; }
+  &[color="primary"] { color: $white; background: $primary; }
+  &[class*="block"] { width: 100%; }
+  &[class*="large"] { font-size: 16px; padding: 0 12px; min-width: 128px; line-height: 48px; border-radius: 4px; }
 }
 
 // Layout
@@ -76,7 +76,7 @@ html, body { position: relative; min-height: 100%; margin: 0; padding: 0; font-f
 
 .main { position: relative; margin-left: 280px; padding: 0 30px 100px; min-height: 100%;
   .toolbar { position: relative; margin: 0 -30px; padding: 0 30px; color: $white; background: rgba($primary,0.9); box-shadow: 0 0 8px rgba($black,0.3);
-    .sidenav-toggle { position: relative; float: left; display: none; outline: none; padding: 16px; margin: 2px 0 0 -16px; background: transparent; border: 1px solid transparent; border-radius: 4px; font-size: 16px; color: $white; cursor: pointer; }
+    .sidenav-toggle { position: relative; float: left; display: none; min-width: initial; outline: none; padding: 16px; margin: 2px 0 0 -16px; background: transparent; border: 1px solid transparent; border-radius: 4px; font-size: 16px; color: $white; line-height: normal; cursor: pointer; box-shadow: none; }
     h3 { margin: 0; padding: 15px 0; }
   }
   .footer { position: absolute; border-top: 1px solid rgba($black,0.2); margin-top: 30px; padding: 15px 30px; right: 0; bottom: 0; left: 0; }

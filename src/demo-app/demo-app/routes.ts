@@ -11,7 +11,6 @@ import {MultiselectDemo} from '../multiselect/multiselect-demo';
 import {SelectDemo} from '../select/select-demo';
 import {TabsDemo} from '../tabs/tabs-demo';
 import {TagsDemo} from '../tags/tags-demo';
-import {TextareaDemo} from '../textarea/textarea-demo';
 import {ToastDemo} from '../toast/toast-demo';
 import {TooltipDemo} from '../tooltip/tooltip-demo';
 
@@ -29,7 +28,6 @@ export const DEMO_APP_ROUTES: Routes = [
   { path: 'select', component: SelectDemo },
   { path: 'tabs', component: TabsDemo },
   { path: 'tags', component: TagsDemo },
-  { path: 'textarea', component: TextareaDemo },
   { path: 'toast', component: ToastDemo },
   { path: 'tooltip', component: TooltipDemo },
 ];

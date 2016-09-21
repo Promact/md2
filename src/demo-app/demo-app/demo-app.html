@@ -1,0 +1,80 @@
+<!--<md-sidenav-layout class="demo-root" fullscreen>
+  <md-sidenav #start>
+    <md-nav-list>
+      <a md-list-item [routerLink]="['accordion']">Accordion</a>
+      <a md-list-item [routerLink]="['autocomplete']">Autocomplete</a>
+      <a md-list-item [routerLink]="['collapse']">Collapse</a>
+      <a md-list-item [routerLink]="['colorpicker']">Colorpicker</a>
+      <a md-list-item [routerLink]="['datepicker']">Datepicker</a>
+      <a md-list-item [routerLink]="['dialog']">Dialog</a>
+      <a md-list-item [routerLink]="['menu']">Menu</a>
+      <a md-list-item [routerLink]="['multiselect']">Multiselect</a>
+      <a md-list-item [routerLink]="['select']">Select</a>
+      <a md-list-item [routerLink]="['tabs']">Tabs</a>
+      <a md-list-item [routerLink]="['tags']">Tags</a>
+      <a md-list-item [routerLink]="['textarea']">Textarea</a>
+      <a md-list-item [routerLink]="['toast']">Toast</a>
+      <a md-list-item [routerLink]="['tooltip']">Tooltip</a>
+    </md-nav-list>
+    <button md-button (click)="start.close()">CLOSE</button>
+  </md-sidenav>
+  <div>
+    <md-toolbar color="primary">
+      <button md-icon-button (click)="start.open()">
+        <md-icon class="md-24">menu</md-icon>
+      </button>
+      <div class="demo-toolbar">
+        <h1>Angular Material 2 Demos</h1>
+        <button md-button (click)="root.dir = (root.dir == 'rtl' ? 'ltr' : 'rtl')" title="Toggle between RTL and LTR">
+          {{root.dir.toUpperCase()}}
+        </button>
+      </div>
+    </md-toolbar>
+    <div #root="$implicit" dir="ltr" class="demo-content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</md-sidenav-layout>-->
+
+
+
+
+<div class="sidenav-backdrop" [class.open]="isSidenavOpened" (click)="sidenav(false)"></div>
+<aside class="sidenav" [class.open]="isSidenavOpened">
+  <div class="sidenav-container">
+    <header>
+      <a (click)="sidenav(false)" [routerLink]="['']">
+        <img src="./assets/img/logo.png">
+        <h3>Material Design 2</h3>
+      </a>
+    </header>
+    <ul>
+      <li [class.active]="isActive('/accordion')" (click)="sidenav(false)"><a [routerLink]="['accordion']">Accordion</a></li>
+      <li [class.active]="isActive('/autocomplete')" (click)="sidenav(false)"><a [routerLink]="['autocomplete']">Autocomplete</a></li>
+      <li [class.active]="isActive('/collapse')" (click)="sidenav(false)"><a [routerLink]="['collapse']">Collapse</a></li>
+      <li [class.active]="isActive('/colorpicker')" (click)="sidenav(false)"><a [routerLink]="['colorpicker']">Colorpicker</a></li>
+      <li [class.active]="isActive('/datepicker')" (click)="sidenav(false)"><a [routerLink]="['datepicker']">Datepicker</a></li>
+      <li [class.active]="isActive('/dialog')" (click)="sidenav(false)"><a [routerLink]="['dialog']">Dialog</a></li>
+      <li [class.active]="isActive('/menu')" (click)="sidenav(false)"><a [routerLink]="['menu']">Menu</a></li>
+      <li [class.active]="isActive('/multiselect')" (click)="sidenav(false)"><a [routerLink]="['multiselect']">Multiselect</a></li>
+      <li [class.active]="isActive('/select')" (click)="sidenav(false)"><a [routerLink]="['select']">Select</a></li>
+      <li [class.active]="isActive('/tabs')" (click)="sidenav(false)"><a [routerLink]="['tabs']">Tabs</a></li>
+      <li [class.active]="isActive('/tags')" (click)="sidenav(false)"><a [routerLink]="['tags']">Tags</a></li>
+      <li [class.active]="isActive('/textarea')" (click)="sidenav(false)"><a [routerLink]="['textarea']">Textarea</a></li>
+      <li [class.active]="isActive('/toast')" (click)="sidenav(false)"><a [routerLink]="['toast']">Toast</a></li>
+      <li [class.active]="isActive('/tooltip')" (click)="sidenav(false)"><a [routerLink]="['tooltip']">Tooltip</a></li>
+    </ul>
+  </div>
+</aside>
+<main class="main">
+  <header class="toolbar">
+    <button type="button" (click)="sidenavToggle()" class="sidenav-toggle"><em class="fa fa-bars"></em></button>
+    <h3>Material Design 2</h3>
+  </header>
+  <section class="demo-container">
+    <router-outlet></router-outlet>
+  </section>
+  <!--<footer class="footer">
+    <span><a href="https://github.com/promact/md2">Md2</a> is maintained by <a href="https://github.com/promact">Promact</a>.</span>
+  </footer>-->
+</main>

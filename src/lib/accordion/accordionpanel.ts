@@ -6,7 +6,7 @@ import { Md2AccordionTab } from './accordiontab';
   selector: 'md2-accordion',
   template: `<ng-content></ng-content>`,
   host: {
-    '[class]': 'mdClass',
+    '[class]': 'class',
     '[class.md2-accordion]': 'true'
   },
   styles: [`
@@ -19,7 +19,7 @@ export class Md2Accordion {
 
   @Input() multiple: boolean;
 
-  @Input('class') mdClass: string = '';
+  @Input() class: string = '';
 
   @Output() close: EventEmitter<any> = new EventEmitter<any>();
 

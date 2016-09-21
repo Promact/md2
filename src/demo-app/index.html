@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="/">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="format-detection" content="telephone=no">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="description" content="">
+  <meta name="author" content="Dharmesh Pipariya">
+  <link rel="icon" href="./favicon.ico">
+  <title>Angular2 Material</title>
+
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="/assets/css/style.css" rel="stylesheet">
+
+  <!-- FontAwesome for md-icon demo. -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+</head>
+<body>
+  <demo-app>
+    <div class="loading-demo">
+      <h1>Material Design 2</h1>
+      <h4>Loading...</h4>
+    </div>
+  </demo-app>
+  <script src="vendor/core-js/client/core.js"></script>
+  <script src="vendor/systemjs/dist/system.src.js"></script>
+  <script src="vendor/zone.js/dist/zone.js"></script>
+  <script src="vendor/hammerjs/hammer.min.js"></script>
+  <script>
+    System.import('system-config.js').then(function () {
+      System.import('main');
+    }).catch(console.error.bind(console));
+  </script>
+</body>
+</html>

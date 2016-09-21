@@ -27,7 +27,7 @@ import { Md2Accordion } from './accordionpanel';
   `],
   host: {
     'role': 'accordion-tab',
-    '[class]': 'mdClass',
+    '[class]': 'class',
     '[class.md2-accordion-tab]': 'true',
     '[class.md2-accordion-tab-active]': 'active',
     '[class.md2-accordion-tab-disabled]': 'disabled'
@@ -36,7 +36,7 @@ import { Md2Accordion } from './accordionpanel';
 })
 export class Md2AccordionTab {
 
-  @Input('class') mdClass: string = '';
+  @Input() class: string = '';
 
   @Input() header: string;
 

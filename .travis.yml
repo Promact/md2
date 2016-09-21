@@ -10,3 +10,6 @@ branches:
 
 install:
   - npm install
+
+script:
+  - gulp clean

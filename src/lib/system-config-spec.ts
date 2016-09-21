@@ -15,7 +15,6 @@ const components = [
   'select',
   'tabs',
   'tags',
-  //'textarea',
   'toast',
   'tooltip',
 ];
@@ -23,13 +22,6 @@ const components = [
 
 /** User packages configuration. */
 const packages: any = {
-  'md2/core': {
-    format: 'cjs',
-    defaultExtension: 'js',
-    main: 'index'
-  },
-  // Set the default extension for the root package, because otherwise the demo-app can't
-  // be built within the production mode. Due to missing file extensions.
   '.': {
     defaultExtension: 'js'
   }

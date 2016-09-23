@@ -110,7 +110,7 @@ export class Md2Dialog implements OnDestroy {
   //private overlayRef: OverlayRef = null;
 
   ngOnDestroy(): any {
-    //  return this.close();
+    return this.close();
   }
 
   ///** Show the dialog */

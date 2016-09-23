@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 
 @Injectable()
-export class MdDateUtil {
+export class Md2DateUtil {
   /**
    * Gets the first day of the month for the given date's month.
    * @param {Date} date

@@ -1,7 +1,7 @@
-# MdDatepicker
+# Md2Datepicker
 Datepicker allow the user to select date and time.
 
-## `<md-datepicker>`
+## `<md2-datepicker>`
 ### Properties
 
 | Name | Type | Description |

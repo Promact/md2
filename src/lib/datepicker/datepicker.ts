@@ -17,7 +17,7 @@ import {
   FormsModule
 } from '@angular/forms';
 import {CommonModule} from '@angular/common';
-import {MdDateUtil} from './dateUtil';
+import {Md2DateUtil} from './dateUtil';
 
 export interface IDay {
   year: number;
@@ -72,7 +72,7 @@ export const MD2_DATEPICKER_CONTROL_VALUE_ACCESSOR: any = {
 })
 export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueAccessor {
 
-  constructor(private dateUtil: MdDateUtil) {
+  constructor(private dateUtil: Md2DateUtil) {
     this.generateClock();
     this.isCalendarVisible;
   }
@@ -694,7 +694,7 @@ export class Md2DatepickerModule {
   static forRoot(): ModuleWithProviders {
     return {
       ngModule: Md2DatepickerModule,
-      providers: [MdDateUtil]
+      providers: [Md2DateUtil]
     };
   }
 }

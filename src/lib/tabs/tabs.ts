@@ -24,7 +24,9 @@ export class Md2TabChangeEvent {
 
 @Directive({ selector: '[md2-tab-label]' })
 export class Md2TabLabel {
-  constructor(public templateRef: TemplateRef<any>) { }
+  //constructor(public templateRef: TemplateRef<any>, tab: Md2Tab) {
+  //  //tab.labelRef = templateRef;
+  //}
 }
 
 @Component({
@@ -32,14 +34,14 @@ export class Md2TabLabel {
   selector: 'md2-tab',
   template: `<ng-content></ng-content>`,
   host: {
-    '[class]': 'mdClass',
+    '[class]': 'class',
     '[class.md2-tab]': 'true',
     '[class.active]': 'active'
   }
 })
 export class Md2Tab {
 
-  @ContentChild(Md2TabLabel) tabLabel: Md2TabLabel;
+  //@ContentChild(Md2TabLabel) tabLabel: Md2TabLabel;
 
   @Input() label: string;
 
@@ -47,11 +49,12 @@ export class Md2Tab {
 
   @Input() disabled: boolean;
 
-  @Input('class') mdClass: string;
+  @Input() class: string;
 
-  get labelTemplate(): TemplateRef<any> {
-    return this.tabLabel ? this.tabLabel.templateRef : null;
-  }
+  public labelRef: TemplateRef<any>;
+  //get labelRef(): TemplateRef<any> {
+  //  return this.tabLabel ? this.tabLabel.templateRef : null;
+  //}
 
 }
 
@@ -69,7 +72,7 @@ export class Md2Tab {
       <div class="md2-tabs-canvas" [class.md2-paginated]="shouldPaginate" role="tablist" tabindex="0" (keydown.arrowRight)="focusNextTab()" (keydown.arrowLeft)="focusPreviousTab()" (keydown.enter)="selectedIndex = focusIndex" (mousewheel)="scroll($event)">
         <div class="md2-tabs-header" [style.marginLeft]="-offsetLeft + 'px'">
           <div class="md2-tab-label" role="tab" *ngFor="let tab of tabs; let i = index" [class.focus]="focusIndex === i" [class.active]="selectedIndex === i" [class.disabled]="tab.disabled" (click)="focusIndex = selectedIndex = i">
-            <span [md2Transclude]="tab.labelTemplate">{{tab.label}}</span>
+            <span [attr.transclude]="tab.labelRef">{{tab.label}}</span>
           </div>
           <div class="md2-tab-ink-bar" [style.left]="inkBarLeft" [style.width]="inkBarWidth"></div>
         </div>
@@ -105,7 +108,7 @@ export class Md2Tab {
     .md2-tab.active { display: block; position: relative; }
   `],
   host: {
-    '[class]': 'md2Class',
+    '[class]': 'class',
     '[class.md2-tabs]': 'true',
     '(window:resize)': 'onWindowResize($event)'
   },
@@ -123,7 +126,7 @@ export class Md2Tabs implements AfterContentInit {
   private inkBarLeft: string = '0';
   private inkBarWidth: string = '0';
 
-  @Input('class') md2Class: string;
+  @Input() class: string;
 
   @Input()
   set selectedIndex(value: any) {
@@ -345,9 +348,7 @@ export class Md2Tabs implements AfterContentInit {
 
 }
 
-export const TABS_DIRECTIVES = [Md2Tabs, Md2Tab, Md2TabLabel];
-
-export const MD2_TABS_DIRECTIVES: any[] = [Md2Tabs, Md2Tab, Md2TabLabel, Md2Transclude];
+export const MD2_TABS_DIRECTIVES: any[] = [Md2Transclude, Md2TabLabel, Md2Tabs, Md2Tab];
 
 @NgModule({
   declarations: MD2_TABS_DIRECTIVES,

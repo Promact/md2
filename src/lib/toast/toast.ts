@@ -1,7 +1,7 @@
 import {
   Injectable,
+  ComponentFactoryResolver,
   ComponentRef,
-  DynamicComponentLoader,
   ApplicationRef,
   Inject,
   ReflectiveInjector,
@@ -15,81 +15,81 @@ import { Md2ToastComponent } from './toast.component';
 
 @Injectable()
 export class Md2Toast {
-  private hideDelay: number = 3000;
-  private index: number = 0;
+  //private hideDelay: number = 3000;
+  //private index: number = 0;
 
-  container: ComponentRef<any>;
+  //container: ComponentRef<any>;
 
-  private appRef: any;
+  //private appRef: any;
 
-  constructor(private loader: DynamicComponentLoader, appRef: ApplicationRef) {
-    this.appRef = appRef;
-  }
+  //constructor(private loader: DynamicComponentLoader, appRef: ApplicationRef) {
+  //  this.appRef = appRef;
+  //}
 
   /**
    * show toast
    * @param toastObj string or object with message and other properties of toast
    */
   show(toastObj: string | { message: string, hideDelay: number }) {
-    let toast: Toast;
-    if (typeof toastObj === 'string') {
-      toast = new Toast(toastObj);
-    } else if (typeof toastObj === 'object') {
-      toast = new Toast(toastObj.message);
-      this.hideDelay = toastObj.hideDelay;
-    }
-    if (toast) {
-      if (!this.container) {
-        let appElement: ViewContainerRef = new ViewContainerRef_(this.appRef['_rootComponents'][0]._hostElement);
-        let bindings = ReflectiveInjector.resolve([]);
-        this.loader.loadNextToLocation(Md2ToastComponent, appElement, bindings).then((ref: any) => {
-          this.container = ref;
-          this.setupToast(toast);
-        });
-      } else {
-        this.setupToast(toast);
-      }
-    }
+    //let toast: Toast;
+    //if (typeof toastObj === 'string') {
+    //  toast = new Toast(toastObj);
+    //} else if (typeof toastObj === 'object') {
+    //  toast = new Toast(toastObj.message);
+    //  this.hideDelay = toastObj.hideDelay;
+    //}
+    //if (toast) {
+    //  if (!this.container) {
+    //    let appElement: ViewContainerRef = new ViewContainerRef_(this.appRef['_rootComponents'][0]._hostElement);
+    //    let bindings = ReflectiveInjector.resolve([]);
+    //    this.loader.loadNextToLocation(Md2ToastComponent, appElement, bindings).then((ref: any) => {
+    //      this.container = ref;
+    //      this.setupToast(toast);
+    //    });
+    //  } else {
+    //    this.setupToast(toast);
+    //  }
+    //}
   }
 
-  /**
-   * toast timeout
-   * @param toastId
-   */
-  startTimeout(toastId: number) {
-    setTimeout(() => {
-      this.clear(toastId);
-    }, this.hideDelay);
-  }
+  ///**
+  // * toast timeout
+  // * @param toastId
+  // */
+  //startTimeout(toastId: number) {
+  //  setTimeout(() => {
+  //    this.clear(toastId);
+  //  }, this.hideDelay);
+  //}
 
-  /**
-   * setup toast
-   * @param toast
-   */
-  setupToast(toast: Toast) {
-    toast.id = ++this.index;
-    this.container.instance.add(toast);
-    this.startTimeout(toast.id);
-  }
+  ///**
+  // * setup toast
+  // * @param toast
+  // */
+  //setupToast(toast: Toast) {
+  //  toast.id = ++this.index;
+  //  this.container.instance.add(toast);
+  //  this.startTimeout(toast.id);
+  //}
 
   /**
    * clear all toast
    * @param toastId
    */
   clear(toastId: number) {
-    if (this.container) {
-      let instance = this.container.instance;
-      instance.remove(toastId);
-      if (!instance.isToast()) { this.hide(); }
-    }
+    //if (this.container) {
+    //  let instance = this.container.instance;
+    //  instance.remove(toastId);
+    //  if (!instance.isToast()) { this.hide(); }
+    //}
   }
 
   /**
    * hide all or specific toasts
    */
   hide() {
-    this.container.destroy();
-    this.container = null;
+    //this.container.destroy();
+    //this.container = null;
   }
 }
 

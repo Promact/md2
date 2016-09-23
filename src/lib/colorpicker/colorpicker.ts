@@ -1,6 +1,6 @@
 import {
   Component,
-  DynamicComponentLoader,
+  //DynamicComponentLoader,
   Directive,
   Input,
   Output,
@@ -44,94 +44,100 @@ export const MD2_COLORPICKER_CONTROL_VALUE_ACCESSOR: any = {
 })
 
 export class Md2Colorpicker implements OnInit, ControlValueAccessor {
-  @Input('position') cPosition: string = 'bottom';
-  @Input('format') format: string = 'hex';
-  @Output('colorpickerChange') colorpickerChange = new EventEmitter<string>();
-  @Output() change = new EventEmitter<string>();
-  private colorpickerDialog: any;
-  private created: boolean;
+  //@Input('position') cPosition: string = 'bottom';
+  //@Input('format') format: string = 'hex';
+  //@Output('colorpickerChange') colorpickerChange = new EventEmitter<string>();
+  //@Output() change = new EventEmitter<string>();
+  //private defalutColor: string = '#000';
+  //private colorpickerDialog: any;
+  //private created: boolean;
 
   private innerValue: any = '';
-  private onTouchedCallback: () => void = noop;
-  private onChangeCallback: (_: any) => void = noop;
+  //private onTouchedCallback: () => void = noop;
+  //private onChangeCallback: (_: any) => void = noop;
 
-  get value(): any {
-    return this.innerValue;
-  };
+  //get value(): any {
+  //  return this.innerValue;
+  //};
 
-  /**
-   * set accessor including call the onchange callback
-   */
-  set value(v: any) {
-    if (v !== this.innerValue) {
-      this.innerValue = v;
-      this.onChangeCallback(v);
-    }
+  ///**
+  // * set accessor including call the onchange callback
+  // */
+  //set value(v: any) {
+  //  if (v !== this.innerValue) {
+  //    this.innerValue = v;
+  //    this.onChangeCallback(v);
+  //  }
+  //}
+
+  //constructor(private dcl: DynamicComponentLoader, private vcRef: ViewContainerRef, private el: ElementRef, private service: ColorpickerService) {
+  //  this.created = false;
+  //}
+
+  ngOnInit() {
+    //  let hsva = this.service.stringToHsva(this.innerValue);
+    //  if (hsva == null) {
+    //    hsva = this.service.stringToHsva(this.defalutColor);
+    //  }
+
+    //  if (this.created) {
+    //    this.colorpickerChange.emit(this.service.outputFormat(hsva, this.format));
+    //    this.change.emit(this.service.outputFormat(hsva, this.format));
+    //  }
   }
 
-  constructor(private dcl: DynamicComponentLoader, private vcRef: ViewContainerRef, private el: ElementRef, private service: ColorpickerService) {
-    this.created = false;
-  }
-
-  ngOnInit() {    
-    let hsva: any = this.service.stringToHsva(this.innerValue);
-    if (hsva !== null) {
-      this.colorpickerChange.emit(this.service.outputFormat(hsva, this.format));
-      this.change.emit(this.service.outputFormat(hsva, this.format));
-    }
-  }
-
-  /**
-   * click of input,open color picker
-   */
+  ///**
+  // * click of input,open color picker
+  // */
   onClick() {
-    if (!this.created) {
-      this.created = true;
-      this.dcl.loadNextToLocation(ColorpickerComponent, this.vcRef)
-        .then((res: any) => {
-          res.instance.setColorpickerDialog(this, this.el, this.innerValue, this.cPosition, this.format);
-          this.colorpickerDialog = res.instance;
-        });
-    } else if (this.colorpickerDialog) {
-      this.colorpickerDialog.setInitialColor(this.innerValue);
-      this.colorpickerDialog.openColorpicker();
-    }
+    //  if (!this.created) {
+    //    this.created = true;
+    //    this.dcl.loadNextToLocation(ColorpickerComponent, this.vcRef)
+    //      .then((res: any) => {
+    //        res.instance.setColorpickerDialog(this, this.el, this.innerValue, this.cPosition, this.format);
+    //        this.colorpickerDialog = res.instance;
+    //      });
+    //  } else if (this.colorpickerDialog) {
+    //    this.colorpickerDialog.setInitialColor(this.innerValue);
+    //    this.colorpickerDialog.openColorpicker();
+    //  }
   }
 
-  /**
-   * change color
-   * @param value
-   */
-  colorChanged(value: string) {
-    this.colorpickerChange.emit(value);
-    this.change.emit(value);
+  ///**
+  // * change color
+  // * @param value
+  // */
+  //colorChanged(value: string) {
+  //  this.colorpickerChange.emit(value);
+  //  this.change.emit(value);
+  //  this.innerValue = value;
+  //}
+
+  ///**
+  // * input event listner
+  // * @param event
+  // */
+  //changeInput(event: any) {
+  //  let value = event.target.value;
+  //  this.colorpickerDialog.setColorFromString(value);
+  //  this.colorpickerChange.emit(value);
+  //  this.change.emit(value);
+  //}
+
+  writeValue(value: any) {
+    //  if (!this.innerValue) { this.innerValue = '#000'; }
+    //  if (value !== this.innerValue && value) {
+    //    this.innerValue = value;
+    //  }
     this.innerValue = value;
   }
 
-  /**
-   * input event listner
-   * @param event
-   */
-  changeInput(event: any) {
-    let value = event.target.value;
-    this.colorpickerDialog.setColorFromString(value);
-    this.colorpickerChange.emit(value);
-    this.change.emit(value);
-  }
-
-  writeValue(value: any) {
-    if (!this.innerValue) { this.innerValue = '#000'; }
-    if (value !== this.innerValue && value) {
-      this.innerValue = value;
-    }
-  }
-
   registerOnChange(fn: any) {
-    this.onChangeCallback = fn;
+    //  this.onChangeCallback = fn;
   }
 
   registerOnTouched(fn: any) {
-    this.onTouchedCallback = fn;
+    //  this.onTouchedCallback = fn;
   }
 }
 @Directive({
@@ -305,7 +311,7 @@ export class ColorpickerSliderDirective {
     .hsla-text div:nth-child(5),.rgba-text div:nth-child(5) {clear: left;}
     .type-policy {position: absolute;top: 190px;left: 206px;background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAAgCAYAAAAffCjxAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAACewAAAnsB01CO3AAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAIASURBVEiJ7ZY9axRRFIafsxMStrLQJpAgpBFhi+C9w1YSo00I6RZ/g9vZpBf/QOr4GyRgkSKNSrAadsZqQGwCkuAWyRZJsySwvhZ7N/vhzrgbLH3Ld8597jlzz50zJokyxXH8DqDVar0qi6v8BbItqSGpEcfxdlmsFWXkvX8AfAVWg3UKPEnT9GKujMzsAFgZsVaCN1VTQd77XUnrgE1kv+6935268WRpzrnHZvYRWC7YvC3pRZZl3wozqtVqiyH9IgjAspkd1Gq1xUJQtVrdB9ZKIAOthdg/Qc65LUk7wNIMoCVJO865rYFhkqjX6/d7vV4GPJwBMqofURS5JEk6FYBer/eeYb/Mo9WwFnPOvQbeAvfuAAK4BN4sAJtAG/gJIElmNuiJyba3EGNmZiPeZuEVmVell/Y/6N+CzDn3AXhEOOo7Hv/3BeAz8IzQkMPnJbuPx1wC+yYJ7/0nYIP5S/0FHKdp+rwCEEXRS/rf5Hl1Gtb2M0iSpCOpCZzPATmX1EySpHMLAsiy7MjMDoHrGSDXZnaYZdnRwBh7J91utwmczAA6CbG3GgPleX4jqUH/a1CktqRGnuc3hSCAMB32gKspkCtgb3KCQMmkjeP4WNJThrNNZval1WptTIsv7JtQ4tmIdRa8qSoEpWl6YWZNoAN0zKxZNPehpLSBZv2t+Q0CJ9lLnARQLAAAAABJRU5ErkJggg==);background-repeat: no-repeat;background-position: center;background-size: 8px 16px;-moz-background-size: 8px 16px;-webkit-background-size: 8px 16px;-o-background-size: 8px 16px;width: 16px;height: 24px;}
   `],
-  directives: [ColorpickerSliderDirective, TextDirective]
+  //directives: [ColorpickerSliderDirective, TextDirective]
 })
 export class ColorpickerComponent implements OnInit {
   private hsva: Hsva;

@@ -1,0 +1,49 @@
+{
+  "name": "md2",
+  "version": "0.0.0-alpha.4",
+  "description": "Angular2 based Material Design components, directives and services are Accordion, Autocomplete, Collapse, Colorpicker, Datepicker, Dialog(Modal), Menu, Multiselect, Select, Tabs, Tags(Chips), Toast and Tooltip.",
+  "homepage": "https://github.com/Promact/md2",
+  "bugs": "https://github.com/Promact/md2/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Promact/md2.git"
+  },
+  "license": "MIT",
+  "keywords": [
+    "angular2",
+    "angularjs",
+    "material",
+    "component",
+    "accordion",
+    "autocomplete",
+    "collapse",
+    "colorpicker",
+    "datepicker",
+    "dialog",
+    "modal",
+    "menu",
+    "dropdown",
+    "multiselect",
+    "select",
+    "tabs",
+    "tags",
+    "chips",
+    "toast",
+    "tooltip"
+  ],
+  "dependencies": {
+    "@angular/common": "2.0.0-rc.6",
+    "@angular/compiler": "2.0.0-rc.6",
+    "@angular/core": "2.0.0-rc.6",
+    "@angular/forms": "2.0.0-rc.6",
+    "@angular/http": "2.0.0-rc.6",
+    "@angular/platform-browser": "2.0.0-rc.6",
+    "@angular/platform-browser-dynamic": "2.0.0-rc.6",
+    "@angular/router": "3.0.0-rc.2",
+    "core-js": "^2.4.1",
+    "hammerjs": "^2.0.8",
+    "rxjs": "5.0.0-beta.11",
+    "systemjs": "0.19.31",
+    "zone.js": "0.6.17"
+  }
+}

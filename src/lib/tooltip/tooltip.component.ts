@@ -1,4 +1,5 @@
-import { AfterViewInit,
+import {
+  AfterViewInit,
   Component,
   ChangeDetectorRef,
   ElementRef,

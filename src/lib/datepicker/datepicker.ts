@@ -19,6 +19,8 @@ import {
 import {CommonModule} from '@angular/common';
 import {Md2DateUtil} from './dateUtil';
 
+import {KeyCodes} from '../core/core';
+
 export interface IDay {
   year: number;
   month: string;
@@ -217,35 +219,35 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
       event.stopPropagation();
 
       switch (event.keyCode) {
-        case 9:
-        case 27: this.onBlur(); break;
+        case KeyCodes.TAB:
+        case KeyCodes.ESCAPE: this.onBlur(); break;
       }
 
       if (this.isCalendarVisible) {
         let displayDate = this.displayDate;
         switch (event.keyCode) {
-          case 13:
-          case 32: this.setDate(this.displayDate); break;
+          case KeyCodes.ENTER:
+          case KeyCodes.SPACE: this.setDate(this.displayDate); break;
 
-          case 39: this.displayDate = this.dateUtil.incrementDays(displayDate, 1); break;
-          case 37: this.displayDate = this.dateUtil.incrementDays(displayDate, -1); break;
+          case KeyCodes.RIGHT_ARROW: this.displayDate = this.dateUtil.incrementDays(displayDate, 1); break;
+          case KeyCodes.LEFT_ARROW: this.displayDate = this.dateUtil.incrementDays(displayDate, -1); break;
 
-          case 34: this.displayDate = this.dateUtil.incrementMonths(displayDate, 1); break;
-          case 33: this.displayDate = this.dateUtil.incrementMonths(displayDate, -1); break;
+          case KeyCodes.PAGE_DOWN: this.displayDate = this.dateUtil.incrementMonths(displayDate, 1); break;
+          case KeyCodes.PAGE_UP: this.displayDate = this.dateUtil.incrementMonths(displayDate, -1); break;
 
-          case 40: this.displayDate = this.dateUtil.incrementDays(displayDate, 7); break;
-          case 38: this.displayDate = this.dateUtil.incrementDays(displayDate, -7); break;
+          case KeyCodes.DOWN_ARROW: this.displayDate = this.dateUtil.incrementDays(displayDate, 7); break;
+          case KeyCodes.UP_ARROW: this.displayDate = this.dateUtil.incrementDays(displayDate, -7); break;
 
-          case 36: this.displayDate = this.dateUtil.getFirstDateOfMonth(displayDate); break;
-          case 35: this.displayDate = this.dateUtil.getLastDateOfMonth(displayDate); break;
+          case KeyCodes.HOME: this.displayDate = this.dateUtil.getFirstDateOfMonth(displayDate); break;
+          case KeyCodes.END: this.displayDate = this.dateUtil.getLastDateOfMonth(displayDate); break;
         }
         if (!this.dateUtil.isSameMonthAndYear(displayDate, this.displayDate)) {
           this.generateCalendar();
         }
       } else {
         switch (event.keyCode) {
-          case 13: break;
-          case 32: break;
+          case KeyCodes.ENTER: break;
+          case KeyCodes.SPACE: break;
 
           //case 40: this.displayDate = this.dateUtil.incrementHours(this.displayDate, 1); break;
           //case 38: this.displayDate = this.dateUtil.incrementHours(this.displayDate, -1); break;
@@ -253,8 +255,8 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
       }
     } else {
       switch (event.keyCode) {
-        case 13:
-        case 32:
+        case KeyCodes.ENTER:
+        case KeyCodes.SPACE:
           event.preventDefault();
           event.stopPropagation();
           this.showDatepicker();

@@ -9,6 +9,6 @@ import {Md2Toast} from 'md2/toast/toast';
 export class ToastDemo {
   constructor(private toast: Md2Toast) { }
   toastMe() {
-    //this.toast.show('test message...');
+    this.toast.toast('test message...');
   }
 }

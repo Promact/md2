@@ -2,7 +2,8 @@ import {
   Component,
   Inject,
   Optional,
-  ViewEncapsulation
+  ViewEncapsulation,
+  transition, state, trigger, style, animate
 } from '@angular/core';
 import { Toast } from './toast';
 
@@ -10,7 +11,7 @@ import { Toast } from './toast';
   selector: 'md2-toast',
   template: `
     <div class="md2-toast-wrapper">
-      <div *ngFor="let toast of toasts" class="md2-toast" (click)="remove(toast.id)">
+      <div *ngFor="let toast of toasts" class="md2-toast" [@inOut]="animate" (click)="remove(toast.id)">
         <div class="md2-toast-message">{{toast.message}}</div>
       </div>
     </div>
@@ -20,11 +21,31 @@ import { Toast } from './toast';
     .md2-toast { position: relative; padding: 14px 24px; margin-bottom: 5px; display: block; background-color: #323232; color: #fafafa; box-shadow: 0 2px 5px 0 rgba(0,0,0,.26); border-radius: 2px; font-size: 14px; overflow: hidden; -ms-word-wrap: break-word; word-wrap: break-word; -moz-transition: all .4s cubic-bezier(.25,.8,.25,1); -o-transition: all .4s cubic-bezier(.25,.8,.25,1); -webkit-transition: all .4s cubic-bezier(.25,.8,.25,1); transition: all .4s cubic-bezier(.25,.8,.25,1); }
     .md2-toast-message { display: block; }
   `],
+  animations: [
+    trigger('inOut', [
+      state('top', style({ opacity: 1, transform: 'translateY(0)' })),
+      transition('void => top', [
+        style({
+          opacity: 0,
+          transform: 'translateY(-100%)'
+        }),
+        animate('0.2s ease-in')
+      ]),
+      transition('top => void', [
+        animate('0.2s ease-out',
+          style({
+            opacity: 0,
+            transform: 'translateY(-100%)'
+          }))
+      ]),
+    ]),
+  ],
   encapsulation: ViewEncapsulation.None,
 })
 export class Md2ToastComponent {
   toasts: Toast[] = [];
   maxShown = 5;
+  animate: string = 'top';
 
   /**
    * add toast
@@ -46,8 +67,17 @@ export class Md2ToastComponent {
   }
 
   /**
-   * check toast
+   * remove all toasts
+   * @param toastId number of toast id
    */
-  isToast(): boolean { return this.toasts.length > 0; }
+  removeAll(toastId: number) {
+    this.toasts = [];
+  }
+
+  /**
+   * check has any toast
+   * @return boolean
+   */
+  hasToast(): boolean { return this.toasts.length > 0; }
 
 }

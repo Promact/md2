@@ -3,7 +3,11 @@ import {
   Inject,
   Optional,
   ViewEncapsulation,
-  transition, state, trigger, style, animate
+  transition,
+  state,
+  trigger,
+  style,
+  animate
 } from '@angular/core';
 import { Toast } from './toast';
 
@@ -11,31 +15,28 @@ import { Toast } from './toast';
   selector: 'md2-toast',
   template: `
     <div class="md2-toast-wrapper">
-      <div *ngFor="let toast of toasts" class="md2-toast" [@inOut]="animate" (click)="remove(toast.id)">
-        <div class="md2-toast-message">{{toast.message}}</div>
-      </div>
+      <div *ngFor="let toast of toasts" class="md2-toast" [@inOut]="animate" (click)="remove(toast.id)">{{toast.message}}</div>
     </div>
   `,
   styles: [`
-    .md2-toast-wrapper { position: fixed; top: 0; right: 0; z-index: 1060; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; cursor: default; overflow: hidden; min-width: 304px; padding: 8px; -moz-transition: all .4s cubic-bezier(.25,.8,.25,1); -o-transition: all .4s cubic-bezier(.25,.8,.25,1); -webkit-transition: all .4s cubic-bezier(.25,.8,.25,1); transition: all .4s cubic-bezier(.25,.8,.25,1); -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
-    .md2-toast { position: relative; padding: 14px 24px; margin-bottom: 5px; display: block; background-color: #323232; color: #fafafa; box-shadow: 0 2px 5px 0 rgba(0,0,0,.26); border-radius: 2px; font-size: 14px; overflow: hidden; -ms-word-wrap: break-word; word-wrap: break-word; -moz-transition: all .4s cubic-bezier(.25,.8,.25,1); -o-transition: all .4s cubic-bezier(.25,.8,.25,1); -webkit-transition: all .4s cubic-bezier(.25,.8,.25,1); transition: all .4s cubic-bezier(.25,.8,.25,1); }
-    .md2-toast-message { display: block; }
+    .md2-toast-wrapper { position: fixed; top: 0; right: 0; z-index: 1060; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; cursor: default; overflow: hidden; min-width: 304px; padding: 8px; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+    .md2-toast { position: relative; padding: 14px 24px; margin-bottom: 5px; display: block; background-color: #323232; color: #fafafa; box-shadow: 0 2px 5px 0 rgba(0,0,0,.26); border-radius: 2px; font-size: 14px; overflow: hidden; -ms-word-wrap: break-word; word-wrap: break-word; transition: all .25s linear; }
   `],
   animations: [
     trigger('inOut', [
-      state('top', style({ opacity: 1, transform: 'translateY(0)' })),
+      state('top', style({ opacity: 1, marginTop: 0 })),
       transition('void => top', [
         style({
           opacity: 0,
-          transform: 'translateY(-100%)'
+          marginTop: '-53px'
         }),
-        animate('0.2s ease-in')
+        animate('0.25s linear')
       ]),
       transition('top => void', [
-        animate('0.2s ease-out',
+        animate('0.25s linear',
           style({
             opacity: 0,
-            transform: 'translateY(-100%)'
+            marginTop: '-53px'
           }))
       ]),
     ]),

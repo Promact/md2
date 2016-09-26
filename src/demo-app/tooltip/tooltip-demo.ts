@@ -6,7 +6,6 @@ import {Component} from '@angular/core';
   templateUrl: 'tooltip-demo.html'
 })
 export class TooltipDemo {
-  private dynamicTooltip: string = 'Hello, World!';
-  private dynamicTooltipText: string = 'dynamic';
-  private htmlTooltip: string = 'I\'ve been made <b>bold</b>!';
+  position: string = 'below';
+  delay: number = 0;
 }

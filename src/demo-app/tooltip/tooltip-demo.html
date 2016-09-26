@@ -1,11 +1,36 @@
-<section class="demo-card demo-basic">
-  <h2>Tooltip</h2>
+<div class="demo-tooltip">
+  <h1>Tooltip Demo</h1>
   <hr />
-  <div>
-    <span tooltip-position="before" tooltip="On the Left!">Before</span> <br />
-    <span tooltip-position="after" tooltip="On the Right!">After</span> <br />
-    <span tooltip-position="below" tooltip="On the Bottom!">Below</span> <br />
-    <span tooltip-position="above" tooltip="On the Top!">Above</span> <br />
-    <span tooltip-delay='1000' tooltip='appears with delay'>Delayed 1 Second</span>
-  </div>
-</section>
+  <p class="text-center">
+    <button type="button"
+            color="primary"
+            tooltip="to see a tooltip"
+            [tooltip-position]="position"
+            [tooltip-delay]="delay * 1000">
+      Mouse over here
+    </button>
+  </p>
+  <p>
+    <strong>Tooltip Delay</strong><br />
+    Seconds: <input type="number" name="delay" [(ngModel)]="delay" />
+    <br />
+  </p>
+  <p>
+    <strong>Tooltip Position</strong><br />
+    <label>
+      <input type="radio" name="position" value="below" [(ngModel)]="position" /> Below
+    </label>
+    <br />
+    <label>
+      <input type="radio" name="position" value="above" [(ngModel)]="position" /> Above
+    </label>
+    <br />
+    <label>
+      <input type="radio" name="position" value="before" [(ngModel)]="position" /> Before
+    </label>
+    <br />
+    <label>
+      <input type="radio" name="position" value="after" [(ngModel)]="position" /> After
+    </label>
+  </p>
+</div>

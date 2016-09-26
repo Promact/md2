@@ -38,6 +38,8 @@ button { position: relative; display: inline-block; box-sizing: border-box; back
   &[class*="large"] { font-size: 16px; padding: 0 12px; min-width: 128px; line-height: 48px; border-radius: 4px; }
 }
 
+.text-center { text-align: center; }
+
 // Layout
 html, body { position: relative; min-height: 100%; margin: 0; padding: 0; font-family: "Roboto-Regular","Helvetica Neue",Helvetica,Arial,sans-serif; font-size: 15px; font-weight: 400; line-height: 1.42857143; color: rgba($black,0.7); background-color: $white; -webkit-tap-highlight-color: $white; -webkit-touch-callout: none; }
 

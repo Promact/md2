@@ -1,6 +1,6 @@
-# md2
+# MD2
 
-Angular2 based Material Design components, directives and services are Accordion, Autocomplete, Collapse, Colorpicker, Datepicker, Dialog(Modal), Menu, Multiselect, Select, Switch, Tabs, Tags(Chips), Toast and Tooltip.
+Angular2 based Material Design components, directives and services are Accordion, Autocomplete, Collapse, Colorpicker, Datepicker, Dialog(Modal), Menu, Multiselect, Select, Tabs, Tags(Chips), Toast and Tooltip.
 
 [![Build Status](https://travis-ci.org/Promact/md2.svg?branch=master)](https://travis-ci.org/Promact/md2)
 
@@ -18,46 +18,45 @@ system.config.js
     'md2': 'node_modules/md2'
   },
   packages: {
-    'md2/select': {
-      format: 'cjs',
-      defaultExtension: 'js',
-      main: 'select.js'
-    },
-    'md2/switch': {
-      format: 'cjs',
-      defaultExtension: 'js',
-      main: 'switch.js'
-    },
-    //...
-	   
-    //--- or ---
-	   
-    'md2/all': {
-      format: 'cjs',
-      defaultExtension: 'js',
-      main: 'all.js'
+    'md2': {
+      main: 'all.js',
+      defaultExtension: 'js'
     }
   }
 }
+
+
+// app.module.ts
+// =============
+
+import { Md2Module }  from 'md2/all';
+@NgModule({
+  imports: [
+    ...,
+    Md2Module.forRoot(),
+  ],
+  ...
+})
+export class AppModule { }
+
 ```
 
 3. More information regarding of using ***md2*** is located in
-  [demo](http://promact.github.io/md2) and [demo sources](https://github.com/promact/md2/tree/master/src).
+  [demo](http://code.promactinfo.com/md2) and [demo sources](https://github.com/Promact/md2/tree/master/src/demo-app).
 
 
-## Components
+### Components:
 
-- [md2-accordion](https://github.com/promact/md2/tree/master/src/components/accordion)
-- [md2-autocomplete](https://github.com/promact/md2/tree/master/src/components/autocomplete)
-- [md2-collapse](https://github.com/promact/md2/tree/master/src/components/collapse)
-- [md2-colorpicker](https://github.com/promact/md2/tree/master/src/components/colorpicker)
-- md2-datepicker(Coming soon!)
-- [md2-dialog](https://github.com/promact/md2/tree/master/src/components/dialog)
-- [md2-menu](https://github.com/promact/md2/tree/master/src/components/menu)
-- [md2-multiselect](https://github.com/promact/md2/tree/master/src/components/multiselect)
-- [md2-select](https://github.com/promact/md2/tree/master/src/components/select)
-- [md2-switch](https://github.com/promact/md2/tree/master/src/components/switch)
-- [md2-tabs](https://github.com/promact/md2/tree/master/src/components/tabs)
-- [md2-tags](https://github.com/promact/md2/tree/master/src/components/tags)
-- [md2-toast](https://github.com/promact/md2/tree/master/src/components/toast)
-- [md2-tooltip](https://github.com/promact/md2/tree/master/src/components/tooltip)
+- [md2-accordion](https://github.com/Promact/md2/tree/master/src/lib/accordion)
+- [md2-autocomplete](https://github.com/Promact/md2/tree/master/src/lib/autocomplete)
+- [md2-collapse](https://github.com/Promact/md2/tree/master/src/lib/collapse)
+- [md2-colorpicker](https://github.com/Promact/md2/tree/master/src/lib/colorpicker)
+- [md2-datepicker](https://github.com/Promact/md2/tree/master/src/lib/datepicker)
+- [md2-dialog](https://github.com/Promact/md2/tree/master/src/lib/dialog)
+- [md2-menu](https://github.com/Promact/md2/tree/master/src/lib/menu)
+- [md2-multiselect](https://github.com/Promact/md2/tree/master/src/lib/multiselect)
+- [md2-select](https://github.com/Promact/md2/tree/master/src/lib/select)
+- [md2-tabs](https://github.com/Promact/md2/tree/master/src/lib/tabs)
+- [md2-tags](https://github.com/Promact/md2/tree/master/src/lib/tags)
+- [md2-toast](https://github.com/Promact/md2/tree/master/src/lib/toast)
+- [md2-tooltip](https://github.com/Promact/md2/tree/master/src/lib/tooltip)

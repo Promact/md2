@@ -1,55 +1,17 @@
-# md2-collapse
+# Md2Collapse
+Collapse is a directive, it's allow the user to toggle visiblity of the section.
 
-Native Angular2 Material Collapse directive
+## `<md2-datepicker>`
+### Properties
 
-## Installation
-`npm install --save md2-collapse`
+| Name | Type | Description |
+| --- | --- | --- |
+| `collapse` | `boolean` | toggle the visiblity of the section |
 
-## API
-
-Example:
- 
-HTML sample code
- ```html
+### Examples
+A collapse would have the following markup.
+```html
 <div [collapse]="isCollapsed">
   Lorum Ipsum Content
 </div>
- ```
-
-TS sample code
- ```ts
-//app-module.ts
-
-import {Md2CollapseModule} from 'md2-collapse/collapse';
-
-@NgModule({
-  imports: [
-    Md2CollapseModule,
-  ],
-  declarations: [
-    ...
-  ]  
-})
-
-//component.ts
-
-...
-
-@Component({
-    selector: "..."
-})
-
-export class ... {
-    
-    ...
-    
-    private isCollapsed: boolean = false;
-
-    ...
-
-}
- ```
-
-### Properties
-
-  - `collapse` - (`?boolean=true`) - It show/hide the collapsible content through toggling.
+```

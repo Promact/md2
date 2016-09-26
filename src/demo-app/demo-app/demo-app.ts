@@ -7,8 +7,22 @@ import {Location} from '@angular/common';
 @Component({
   selector: 'home',
   template: `
-    <p>Welcome to the development demos for Angular Material 2!</p>
-    <p>Open the sidenav to select a demo. </p>
+    <h4>Angular2 based Material Design components, directives and services are Accordion, Autocomplete, Collapse, Colorpicker, Datepicker, Dialog(Modal), Menu, Multiselect, Select, Tabs, Toast and Tooltip.</h4>
+    <hr>
+    <div class="home-page">
+      <a class="button" href="https://github.com/Promact/md2">View on GitHub</a>
+      <a class="button" href="https://github.com/Promact/md2/zipball/master">Download .zip</a>
+      <a class="button" href="https://github.com/Promact/md2/tarball/master">Download .tar.gz</a>
+      <h1>Getting started</h1>
+      <h3>Dependencies</h3>
+      <p>This module consists of native Angular2 components, directives and services, no jQuery, Material or Bootstrap javascript is required.</p>
+      <p>Plus this module plays nice with Material Design CSS</p>
+      <h3>Installation</h3>
+      <p>Currently preferable way to install this module is <code>npm</code>:</p>
+      <pre class="language-bash"><code class="language-bash">npm <span class="token function">install</span> --save md2</code></pre>
+      <h3>Reading documentation</h3>
+      <p>Each <code>MD2</code> components has api and annotation docs, examples and working demo. Each <code>property</code> and <code>event</code> has type annotation and default value if any.</p>
+    </div>
   `
 })
 export class Home { }

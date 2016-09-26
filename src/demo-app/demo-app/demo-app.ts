@@ -10,9 +10,9 @@ import {Location} from '@angular/common';
     <h4>Angular2 based Material Design components, directives and services are Accordion, Autocomplete, Collapse, Colorpicker, Datepicker, Dialog(Modal), Menu, Multiselect, Select, Tabs, Toast and Tooltip.</h4>
     <hr>
     <div class="home-page">
-      <a class="button" href="https://github.com/Promact/md2">View on GitHub</a>
-      <a class="button" href="https://github.com/Promact/md2/zipball/master">Download .zip</a>
-      <a class="button" href="https://github.com/Promact/md2/tarball/master">Download .tar.gz</a>
+      <a button="primary" href="https://github.com/Promact/md2">View on GitHub</a>
+      <a button="primary" href="https://github.com/Promact/md2/zipball/master">Download .zip</a>
+      <a button="primary" href="https://github.com/Promact/md2/tarball/master">Download .tar.gz</a>
       <h1>Getting started</h1>
       <h3>Dependencies</h3>
       <p>This module consists of native Angular2 components, directives and services, no jQuery, Material or Bootstrap javascript is required.</p>

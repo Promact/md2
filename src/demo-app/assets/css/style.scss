@@ -28,12 +28,12 @@ a { color: $primary; text-decoration: none;
   &:focus { color: darken($primary,3); text-decoration: underline; }
 }
 hr { margin-top: 15px; margin-bottom: 15px; border: 0; border-top: 1px solid rgba($black,0.12); }
-button { position: relative; display: inline-block; box-sizing: border-box; background: transparent; text-align: center; overflow: hidden; cursor: pointer; outline: none; border: none; white-space: nowrap; text-decoration: none; vertical-align: middle; font-size: 14px; font-weight: 500; text-transform: uppercase; padding: 0 16px; margin: 6px 8px; min-width: 88px; line-height: 36px; border-radius: 3px; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-transition: background 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); transition: background 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: 0 2px 5px 0 rgba($black, 0.26); color: rgba($black, 0.9); background-color: #fafafa;
+[button] { position: relative; display: inline-block; box-sizing: border-box; background: transparent; text-align: center; overflow: hidden; cursor: pointer; outline: none; border: none; white-space: nowrap; text-decoration: none; vertical-align: middle; font-size: 14px; font-weight: 500; text-transform: uppercase; padding: 0 16px; margin: 6px 8px; min-width: 88px; line-height: 36px; border-radius: 3px; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-transition: background 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); transition: background 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: 0 2px 5px 0 rgba($black, 0.26); color: rgba($black, 0.9); background-color: #fafafa;
   &:hover,
   &:focus { text-decoration: none; }
   &:active { box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4); }
   &[disabled] { pointer-events: none; cursor: default; opacity: 0.8; box-shadow: none; }
-  &[color="primary"] { color: $white; background: $primary; }
+  &[button="primary"] { color: $white; background: $primary; }
   &[class*="block"] { width: 100%; }
   &[class*="large"] { font-size: 16px; padding: 0 12px; min-width: 128px; line-height: 48px; border-radius: 4px; }
 }

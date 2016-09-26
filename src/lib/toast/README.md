@@ -1,51 +1,36 @@
-# md2-toast
+# Md2Toast
+Toast is a service, which show notifications in the view.
 
-Native Angular2 Material Toast service
+### Methods
 
-## Installation
-`npm install --save md2-toast`
+| Name | Description |
+| --- | --- |
+| `toast(message: string)`/`show(message: string)` | Creates and show a simple toast noticiation. |
 
-## API
 
-Example:
- 
- ```ts
-//app-module.ts
+### Examples
+A Toast would have the following script.
+```ts
 
-import {Md2ToastModule} from 'md2-toast/toast';
-
-@NgModule({
-  imports: [
-    Md2ToastModule,
-  ],
-  declarations: [
-    ...
-  ]  
-})
-
-//component.ts
-
-...
-
-import {Md2Toast} from 'md2/toast';
+import {Md2Toast} from 'md2/toast/toast';
 
 @Component({
-    selector: "..."
+  selector: "..."
 })
 
 export class ... {
     
-    ...
-    constructor(private toast: Md2Toast) { }
-    toastMe() {
-      this.toast.show('Toast message...');
+  ...
+  constructor(private toast: Md2Toast) { }
+  toastMe() {
+    this.toast.show('Toast message...');
 
-      ---  or  ---
+    ---  or  ---
 
-      this.toast.show({ message: 'Toast message...', hideDelay: 1000 });
-    }
+    this.toast.show({ message: 'Toast message...', hideDelay: 1000 });
+  }
 
-    ...
+  ...
 
 }
  ```

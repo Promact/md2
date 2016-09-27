@@ -1,5 +1,5 @@
-<section class="demo-card demo-basic">
-  <h2>Select</h2>
+<div class="demo-select">
+  <h1>Select Demo</h1>
   <hr />
   <div>
     <select [(ngModel)]="item" (change)="change($event)" placeholder="placeholder">
@@ -10,4 +10,4 @@
       <md2-option *ngFor="let i of items" [value]="i.value" [disabled]="i.disabled">{{i.name}}</md2-option>
     </md2-select>
   </div>
-</section>
+</div>

@@ -10,7 +10,7 @@ Tooltip is a directive, it allows the user to show hint text while the user mous
 | `tooltip-delay` | `number` | The delay of the Tooltip |
 
 ### Examples
-A Tooltip would have the following markup.
+A tooltip would have the following markup.
 ```html
 <span tooltip-direction="left" tooltip="On the Left!">Left</span>
 <button tooltip="some message" 

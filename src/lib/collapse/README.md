@@ -1,7 +1,7 @@
 # Md2Collapse
 Collapse is a directive, it's allow the user to toggle visiblity of the section.
 
-## `<md2-datepicker>`
+## `[collapse]`
 ### Properties
 
 | Name | Type | Description |

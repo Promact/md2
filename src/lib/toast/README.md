@@ -9,7 +9,7 @@ Toast is a service, which show notifications in the view.
 
 
 ### Examples
-A Toast would have the following script.
+A toast would have the following script.
 ```ts
 
 import {Md2Toast} from 'md2/toast/toast';

@@ -10,9 +10,10 @@ Angular2 based Material Design components, directives and services are Accordion
 
   `npm install md2 --save`
 
-2. Set `md2` in your project
-system.config.js
-```js
+2. Setup `MD2` in your project
+```ts
+// system.config.js
+// ================
 {
   map: {
     'md2': 'node_modules/md2'

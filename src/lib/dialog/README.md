@@ -1,61 +1,26 @@
-# md2-dialog
+# Md2Dialog
+Dialog allow the user to display content in popup.
 
-Native Angular2 Material Dialog component
+## `<md2-dialog>`
+### Properties
 
-## Installation
-`npm install --save md2-dialog`
+| Name | Type | Description |
+| --- | --- | --- |
+| `title` | `string` | Title of Dialog |
 
-### Selector
+### Methods
 
+| Name | Description |
+| --- | --- |
+| `open()`/`show()` | Open a Dialog. |
+| `close()` | Close a Dialog. |
+
+### Examples
+A dialog would have the following markup.
 ```html
-<md2-dialog></md2-dialog>
-```
-
-## API
-
-Example:
- 
- ```html
 <md2-dialog #confirm>
 	<md2-dialog-title>Confirm Title</md2-dialog-title>
 	Body Content...
 </md2-dialog>
 <button (click)="confirm.show()">Open Confirm Dialog</button>
- ```
- ```ts
-//app-module.ts
-
-import {Md2DialogModule} from 'md2-dialog/dialog';
-
-@NgModule({
-  imports: [
-    Md2DialogModule,
-  ],
-  declarations: [
-    ...
-  ]  
-})
-
-//component.ts
-
-...
-
-@Component({
-    selector: "..."
-})
-
-export class ... {
-    
-    ...
-
-}
- ```
-
-
-### Properties
-
-  - `[title]` _- string - (Default: `null`)(Optional)_ - The title of the dialog
-
-
-### Open/Close Dialog
-Use the component's `show()` and `close()` method to properly trigger the dialog's display. Reference the dialog using in your view to have access to the method to use.
+```

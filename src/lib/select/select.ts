@@ -1,6 +1,5 @@
 import {
   Injectable,
-  AfterContentInit,
   AfterContentChecked,
   Component,
   ContentChildren,
@@ -60,43 +59,49 @@ export class Md2OptionChange {
   selector: 'md2-select',
   template: `
     <div class="md2-select-container">
-      <span *ngIf="selectedValue.length < 1" class="md2-select-placeholder">{{placeholder}}</span>
+      <span class="md2-select-placeholder" [class.has-value]="selectedValue">{{placeholder}}</span>
       <span *ngIf="selectedValue.length > 0" class="md2-select-value" [innerHtml]="selectedValue"></span>
-      <em class="md2-select-icon"></em>
+      <svg width="24" height="24" viewBox="0 0 24 24">
+        <path d="M7 10l5 5 5-5z" />
+      </svg>
     </div>
     <div class="md2-select-menu" [class.open]="isMenuVisible">
       <ng-content></ng-content>
     </div>
   `,
   styles: [`
-    md2-select { position: relative; display: block; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -moz-backface-visibility: hidden; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+    md2-select { position: relative; display: block; margin: 18px 0; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -moz-backface-visibility: hidden; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
     md2-select:focus { outline: none; }
-    md2-select .md2-select-container { display: flex; width: 100%; align-items: center; padding: 2px 0 1px; border-bottom: 1px solid rgba(0, 0, 0, 0.38); position: relative; -moz-box-sizing: content-box; -webkit-box-sizing: content-box; box-sizing: content-box; min-width: 64px; min-height: 26px; flex-grow: 1; cursor: pointer; }
+    md2-select .md2-select-container { position: relative; width: 100%; min-width: 64px; min-height: 26px; align-items: center; padding: 2px 26px 1px 2px; border-bottom: 1px solid rgba(0, 0, 0, 0.38); box-sizing: border-box; cursor: pointer; }
+    md2-select.md2-select-disabled .md2-select-container { color: rgba(0,0,0,0.38); border-color: transparent; background-image: linear-gradient(to right, rgba(0,0,0,0.38) 0%, rgba(0,0,0,0.38) 33%, transparent 0%); background-position: bottom -1px left 0; background-size: 4px 1px; background-repeat: repeat-x; }
     md2-select:focus .md2-select-container { padding-bottom: 0; border-bottom: 2px solid #106cc8; }
     md2-select.md2-select-disabled .md2-select-container { color: rgba(0,0,0,0.38); }
     md2-select.md2-select-disabled:focus .md2-select-container { padding-bottom: 1px; border-bottom: 1px solid rgba(0, 0, 0, 0.38); }
-    md2-select .md2-select-container > span:not(.md2-select-icon) { max-width: 100%; -ms-flex: 1 1 auto; -webkit-flex: 1 1 auto; flex: 1 1 auto; -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; overflow: hidden; }
-    md2-select .md2-select-container .md2-select-icon { display: block; -webkit-align-items: flex-end; -ms-flex-align: end; align-items: flex-end; text-align: end; width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 6px solid rgba(0, 0, 0, 0.60); margin: 0 4px; }
-    md2-select .md2-select-container .md2-select-placeholder { color: rgba(0, 0, 0, 0.38); }
-    md2-select .md2-select-container .md2-select-value { white-space: nowrap; }
+    md2-select .md2-select-container .md2-select-placeholder { position: absolute; right: 26px; bottom: 100%; left: 0; color: rgba(0,0,0,0.38); max-width: 100%; padding-left: 3px; padding-right: 0; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; z-index: 1; transform: translate3d(0,26px,0) scale(1); transition: transform .4s cubic-bezier(.25,.8,.25,1); transform-origin: left top; color: rgba(0, 0, 0, 0.38); }
+    md2-select:focus .md2-select-placeholder { color: #2196f3; }
+    md2-select:focus .md2-select-placeholder,
+    md2-select .md2-select-placeholder.has-value { transform: translate3d(0,6px,0) scale(.75); }
+    md2-select.md2-select-disabled:focus .md2-select-placeholder { color: rgba(0,0,0,0.38); }
+    md2-select .md2-select-container .md2-select-value { display: block; font-size: 15px; line-height: 26px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    md2-select .md2-select-container .md2-select-value * { display: inline; }
+    md2-select .md2-select-container svg { position: absolute; right: 0; top: 2px; display: block; fill: currentColor; color: rgba(0,0,0,0.54); }
     md2-select .md2-select-menu { position: absolute; left: 0; top: 100%; display: none; z-index: 10; -ms-flex-direction: column; -webkit-flex-direction: column; flex-direction: column; width: 100%; margin: 0; padding: 8px 0; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12); max-height: 256px; min-height: 48px; overflow-y: auto; -moz-transform: scale(1); -ms-transform: scale(1); -o-transform: scale(1); -webkit-transform: scale(1); transform: scale(1); background: #fff; }
     md2-select .md2-select-menu.open { display: block; }
   `],
+  providers: [MD2_SELECT_CONTROL_VALUE_ACCESSOR],
   host: {
     'role': 'select',
     '[tabindex]': 'disabled ? -1 : tabindex',
     '[attr.aria-disabled]': 'disabled'
   },
-  providers: [MD2_SELECT_CONTROL_VALUE_ACCESSOR],
   encapsulation: ViewEncapsulation.None
 })
-export class Md2Select implements AfterContentInit, AfterContentChecked, ControlValueAccessor {
+export class Md2Select implements AfterContentChecked, ControlValueAccessor {
 
   private _value: any = null;
   private _name: string = 'md2-select-' + _uniqueIdCounter++;
   private _disabled: boolean = false;
   private _selected: Md2Option = null;
-  private _isInitialized: boolean = false;
 
   private isOpenable: boolean = true;
   private isMenuVisible: boolean = false;
@@ -132,9 +137,7 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
     if (this._value !== newValue) {
       this._value = newValue;
       this._updateSelectedOptionValue();
-      if (this._isInitialized) {
-        this._emitChangeEvent();
-      }
+      this._emitChangeEvent();
     }
   }
 
@@ -149,10 +152,6 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   }
 
   constructor(public element: ElementRef) { }
-
-  ngAfterContentInit() {
-    this._isInitialized = true;
-  }
 
   ngAfterContentChecked() {
     let opt = this._options.filter(o => this.equals(o.value, this.value))[0];

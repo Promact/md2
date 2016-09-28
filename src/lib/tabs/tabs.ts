@@ -1,7 +1,6 @@
 import {
   AfterContentInit,
   Component,
-  ContentChild,
   ContentChildren,
   Directive,
   ElementRef,
@@ -10,23 +9,37 @@ import {
   Output,
   QueryList,
   TemplateRef,
+  ViewContainerRef,
   ViewEncapsulation,
   NgModule,
   ModuleWithProviders
 } from '@angular/core';
 import {CommonModule} from '@angular/common';
-import { Md2Transclude } from './transclude';
 
 export class Md2TabChangeEvent {
   index: number;
   tab: Md2Tab;
 }
 
-@Directive({ selector: '[md2-tab-label]' })
-export class Md2TabLabel {
-  //constructor(public templateRef: TemplateRef<any>, tab: Md2Tab) {
-  //  //tab.labelRef = templateRef;
-  //}
+@Directive({ selector: '[md2Transclude]' })
+export class Md2Transclude {
+
+  private _md2Transclude: TemplateRef<any>;
+
+  constructor(public viewRef: ViewContainerRef) { }
+
+  @Input()
+  private set md2Transclude(templateRef: TemplateRef<any>) {
+    this._md2Transclude = templateRef;
+    if (templateRef) {
+      this.viewRef.createEmbeddedView(templateRef);
+    }
+  }
+
+  private get md2Transclude() {
+    return this._md2Transclude;
+  }
+
 }
 
 @Component({
@@ -35,13 +48,10 @@ export class Md2TabLabel {
   template: `<ng-content></ng-content>`,
   host: {
     '[class]': 'class',
-    '[class.md2-tab]': 'true',
     '[class.active]': 'active'
   }
 })
 export class Md2Tab {
-
-  //@ContentChild(Md2TabLabel) tabLabel: Md2TabLabel;
 
   @Input() label: string;
 
@@ -52,10 +62,14 @@ export class Md2Tab {
   @Input() class: string;
 
   public labelRef: TemplateRef<any>;
-  //get labelRef(): TemplateRef<any> {
-  //  return this.tabLabel ? this.tabLabel.templateRef : null;
-  //}
 
+}
+
+@Directive({ selector: '[md2-tab-label]' })
+export class Md2TabLabel {
+  constructor(public templateRef: TemplateRef<any>, tab: Md2Tab) {
+    tab.labelRef = templateRef;
+  }
 }
 
 @Component({
@@ -72,7 +86,7 @@ export class Md2Tab {
       <div class="md2-tabs-canvas" [class.md2-paginated]="shouldPaginate" role="tablist" tabindex="0" (keydown.arrowRight)="focusNextTab()" (keydown.arrowLeft)="focusPreviousTab()" (keydown.enter)="selectedIndex = focusIndex" (mousewheel)="scroll($event)">
         <div class="md2-tabs-header" [style.marginLeft]="-offsetLeft + 'px'">
           <div class="md2-tab-label" role="tab" *ngFor="let tab of tabs; let i = index" [class.focus]="focusIndex === i" [class.active]="selectedIndex === i" [class.disabled]="tab.disabled" (click)="focusIndex = selectedIndex = i">
-            <span [attr.transclude]="tab.labelRef">{{tab.label}}</span>
+            <span [md2Transclude]="tab.labelRef">{{tab.label}}</span>
           </div>
           <div class="md2-tab-ink-bar" [style.left]="inkBarLeft" [style.width]="inkBarWidth"></div>
         </div>
@@ -83,7 +97,7 @@ export class Md2Tab {
     </div>
   `,
   styles: [`
-    .md2-tabs { position: relative; overflow: hidden; display: block; margin: 0; border: 1px solid #e1e1e1; border-radius: 2px; }
+    md2-tabs { position: relative; overflow: hidden; display: block; margin: 0; border: 1px solid #e1e1e1; border-radius: 2px; }
     .md2-tabs-header-wrapper { position: relative; display: block; height: 48px; background: white; border-width: 0 0 1px; border-style: solid; border-color: rgba(0,0,0,0.12); display: block; margin: 0; padding: 0; list-style: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
     .md2-tabs-header-wrapper:after { content: ''; display: table; clear: both; }
     .md2-prev-button,
@@ -104,12 +118,11 @@ export class Md2Tab {
     .md2-tab-label.disabled { color: rgba(0,0,0,0.26); pointer-events: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-user-drag: none; opacity: 0.5; cursor: default; }
     .md2-tab-ink-bar { position: absolute; bottom: 0; height: 2px; background: rgb(255,82,82); transition: .25s cubic-bezier(.35,0,.25,1); }
     .md2-tabs-body-wrapper { position: relative; min-height: 0; display: block; clear: both; }
-    .md2-tab { padding: 16px; display: none; position: relative; }
-    .md2-tab.active { display: block; position: relative; }
+    md2-tab { padding: 16px; display: none; position: relative; }
+    md2-tab.active { display: block; position: relative; }
   `],
   host: {
     '[class]': 'class',
-    '[class.md2-tabs]': 'true',
     '(window:resize)': 'onWindowResize($event)'
   },
   encapsulation: ViewEncapsulation.None
@@ -348,10 +361,10 @@ export class Md2Tabs implements AfterContentInit {
 
 }
 
-export const MD2_TABS_DIRECTIVES: any[] = [Md2Transclude, Md2TabLabel, Md2Tabs, Md2Tab];
+export const MD2_TABS_DIRECTIVES: any[] = [Md2TabLabel, Md2Tabs, Md2Tab];
 
 @NgModule({
-  declarations: MD2_TABS_DIRECTIVES,
+  declarations: [Md2Transclude, Md2TabLabel, Md2Tabs, Md2Tab],
   imports: [CommonModule],
   exports: MD2_TABS_DIRECTIVES,
 })

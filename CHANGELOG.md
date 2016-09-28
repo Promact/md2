@@ -1,6 +1,7 @@
-# [1.0.14](https://github.com/promact/md2/compare/1.0.13...1.0.14) (2016-08-11)
+# md2@0.0.0-alpha.6 (2016-09-28)
 
-### Bug Fixes
+### Updates
 
-* **select:** fixed ngModel clear issue.
-* fixed linting issues.
+* Fixed RC5 related all bugs
+* Improved performance of all components
+* Added floating label feature

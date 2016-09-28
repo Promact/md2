@@ -1,5 +1,4 @@
 import {
-  AfterContentInit,
   Component,
   ElementRef,
   EventEmitter,
@@ -100,19 +99,13 @@ export const MD2_MULTISELECT_CONTROL_VALUE_ACCESSOR: any = {
   encapsulation: ViewEncapsulation.None
 })
 
-export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
+export class Md2Multiselect implements ControlValueAccessor {
 
   constructor(private element: ElementRef) { }
-
-  /** TODO: internal */
-  ngAfterContentInit() {
-    this._isInitialized = true;
-  }
 
   @Output() change: EventEmitter<any> = new EventEmitter<any>();
 
   private _value: any = '';
-  private _isInitialized: boolean = false;
   private _onTouchedCallback: () => void = noop;
   private _onChangeCallback: (_: any) => void = noop;
 
@@ -154,10 +147,8 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
           if (selItm) { this.items.push(new Option(selItm, this.textKey, this.valueKey)); }
         }
       }
-      if (this._isInitialized) {
-        this._onChangeCallback(value);
-        this.change.emit(this._value);
-      }
+      this._onChangeCallback(value);
+      this.change.emit(this._value);
     }
   }
 

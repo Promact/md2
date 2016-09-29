@@ -107,6 +107,7 @@ export class Md2Multiselect implements ControlValueAccessor {
   @Output() change: EventEmitter<any> = new EventEmitter<any>();
 
   private _value: any = '';
+  private _disabled: boolean = false;
   private _onTouchedCallback: () => void = noop;
   private _onChangeCallback: (_: any) => void = noop;
 
@@ -118,7 +119,10 @@ export class Md2Multiselect implements ControlValueAccessor {
   private isFocused: boolean = false;
 
   @Input() id: string = 'md2-multiselect-' + (++nextId);
-  @Input() disabled: boolean = false;
+  @Input() get disabled(): boolean { return this._disabled; }
+  set disabled(value) {
+    this._disabled = (value !== null && value !== false) ? true : null;
+  }
   @Input() tabindex: number = 0;
   @Input() placeholder: string = '';
   @Input('item-text') textKey: string = 'text';

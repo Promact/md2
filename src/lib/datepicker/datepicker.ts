@@ -16,10 +16,10 @@ import {
   ControlValueAccessor,
   FormsModule
 } from '@angular/forms';
-import {CommonModule} from '@angular/common';
-import {Md2DateUtil} from './dateUtil';
+import { CommonModule } from '@angular/common';
+import { Md2DateUtil } from './dateUtil';
 
-import {KeyCodes} from '../core/core';
+import { KeyCodes } from '../core/core';
 
 export interface IDay {
   year: number;
@@ -88,6 +88,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   }
 
   private _value: Date = null;
+  private _disabled: boolean = false;
   private _onTouchedCallback: () => void = noop;
   private _onChangeCallback: (_: any) => void = noop;
 
@@ -125,7 +126,10 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   @Output() change: EventEmitter<any> = new EventEmitter<any>();
 
   @Input() type: 'date' | 'time' | 'datetime' = 'date';
-  @Input() disabled: boolean;
+  @Input() get disabled(): boolean { return this._disabled; }
+  set disabled(value) {
+    this._disabled = (value !== null && value !== false) ? true : null;
+  }
   @Input() name: string = '';
   @Input() id: string = 'md2-datepicker-' + (++nextId);
   @Input() class: string;
@@ -546,21 +550,21 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
 
   //  //let space = false;
 
-		//		//let x = event.pageX - this.clockEvent.x,
+  //		//let x = event.pageX - this.clockEvent.x,
   //  //  y = event.pageY - this.clockEvent.y;
   //  //if ((space || this.clockEvent.moved) && x === this.clockEvent.dx && y === this.clockEvent.dy) {
   //  //  this.setClockHand(x, y);
   //  //}
   //  //if (this.isHoursVisible) {
   //  //  //self.toggleView('minutes', duration / 2);
-		//		//} else {
+  //		//} else {
   //  //  //if (options.autoclose) {
   //  //  //  self.minutesView.addClass('clockpicker-dial-out');
   //  //  //  setTimeout(function () {
   //  //  //    self.done();
   //  //  //  }, duration / 2);
   //  //  //}
-		//		//}
+  //		//}
   //}
 
   /**

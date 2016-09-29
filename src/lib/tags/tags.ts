@@ -16,9 +16,9 @@ import {
   ControlValueAccessor,
   FormsModule,
 } from '@angular/forms';
-import {CommonModule} from '@angular/common';
+import { CommonModule } from '@angular/common';
 //import { HightlightPipe } from '../autocomplete/autocomplete.pipe';
-import {Md2AutocompleteModule} from 'md2/autocomplete/autocomplete';
+import { Md2AutocompleteModule } from 'md2/autocomplete/autocomplete';
 
 const noop = () => { };
 
@@ -107,6 +107,7 @@ export class Md2Tags implements ControlValueAccessor {
   @Output() change: EventEmitter<any> = new EventEmitter<any>();
 
   private _value: any = '';
+  private _disabled: boolean = false;
   private _onTouchedCallback: () => void = noop;
   private _onChangeCallback: (_: any) => void = noop;
 
@@ -121,7 +122,10 @@ export class Md2Tags implements ControlValueAccessor {
   private noBlur: boolean = true;
 
   @Input() id: string = 'md2-tags-' + (++nextId);
-  @Input() disabled: boolean = false;
+  @Input() get disabled(): boolean { return this._disabled; }
+  set disabled(value) {
+    this._disabled = (value !== null && value !== false) ? true : null;
+  }
   @Input() tabindex: number = 0;
   @Input() placeholder: string = '';
   @Input('md2-tag-text') textKey: string = 'text';

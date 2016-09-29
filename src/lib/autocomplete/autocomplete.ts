@@ -16,8 +16,8 @@ import {
   ControlValueAccessor,
   FormsModule,
 } from '@angular/forms';
-import {CommonModule} from '@angular/common';
-import {HightlightPipe} from './autocomplete.pipe';
+import { CommonModule } from '@angular/common';
+import { HightlightPipe } from './autocomplete.pipe';
 
 class Item {
   public text: string;
@@ -98,6 +98,7 @@ export class Md2Autocomplete implements ControlValueAccessor {
   @Output() change: EventEmitter<any> = new EventEmitter<any>();
 
   private _value: any = '';
+  private _disabled: boolean = false;
   private _onTouchedCallback: () => void = noop;
   private _onChangeCallback: (_: any) => void = noop;
 
@@ -111,7 +112,10 @@ export class Md2Autocomplete implements ControlValueAccessor {
   private noBlur: boolean = true;
 
   @Input() id: string = 'md2-autocomplete-' + (++nextId);
-  @Input() disabled: boolean = false;
+  @Input() get disabled(): boolean { return this._disabled; }
+  set disabled(value) {
+    this._disabled = (value !== null && value !== false) ? true : null;
+  }
   @Input() tabindex: number = 0;
   @Input() placeholder: string = '';
   @Input('item-text') textKey: string = 'text';

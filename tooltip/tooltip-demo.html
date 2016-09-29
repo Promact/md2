@@ -1,0 +1,36 @@
+<div class="demo-tooltip">
+  <h1>Tooltip Demo</h1>
+  <hr />
+  <p class="text-center">
+    <button type="button"
+            button="primary"
+            tooltip="to see a tooltip"
+            [tooltip-position]="position"
+            [tooltip-delay]="delay * 1000">
+      Mouse over here
+    </button>
+  </p>
+  <p>
+    <strong>Tooltip Delay</strong><br />
+    Seconds: <input type="number" name="delay" [(ngModel)]="delay" />
+    <br />
+  </p>
+  <p>
+    <strong>Tooltip Position</strong><br />
+    <label>
+      <input type="radio" name="position" value="below" [(ngModel)]="position" /> Below
+    </label>
+    <br />
+    <label>
+      <input type="radio" name="position" value="above" [(ngModel)]="position" /> Above
+    </label>
+    <br />
+    <label>
+      <input type="radio" name="position" value="before" [(ngModel)]="position" /> Before
+    </label>
+    <br />
+    <label>
+      <input type="radio" name="position" value="after" [(ngModel)]="position" /> After
+    </label>
+  </p>
+</div>

@@ -1,0 +1,38 @@
+<div class="sidenav-backdrop" [class.open]="isSidenavOpened" (click)="sidenav(false)"></div>
+<aside class="sidenav" [class.open]="isSidenavOpened">
+  <div class="sidenav-container">
+    <header>
+      <a (click)="sidenav(false)" [routerLink]="['']">
+        <img src="./assets/img/logo.png">
+        <h3>Material Design 2</h3>
+      </a>
+    </header>
+    <ul>
+      <li [class.active]="isActive('/accordion')" (click)="sidenav(false)"><a [routerLink]="['accordion']">Accordion</a></li>
+      <li [class.active]="isActive('/autocomplete')" (click)="sidenav(false)"><a [routerLink]="['autocomplete']">Autocomplete</a></li>
+      <li [class.active]="isActive('/collapse')" (click)="sidenav(false)"><a [routerLink]="['collapse']">Collapse</a></li>
+      <li [class.active]="isActive('/colorpicker')" (click)="sidenav(false)"><a [routerLink]="['colorpicker']">Colorpicker</a></li>
+      <li [class.active]="isActive('/datepicker')" (click)="sidenav(false)"><a [routerLink]="['datepicker']">Datepicker</a></li>
+      <li [class.active]="isActive('/dialog')" (click)="sidenav(false)"><a [routerLink]="['dialog']">Dialog</a></li>
+      <li [class.active]="isActive('/menu')" (click)="sidenav(false)"><a [routerLink]="['menu']">Menu</a></li>
+      <li [class.active]="isActive('/multiselect')" (click)="sidenav(false)"><a [routerLink]="['multiselect']">Multiselect</a></li>
+      <li [class.active]="isActive('/select')" (click)="sidenav(false)"><a [routerLink]="['select']">Select</a></li>
+      <li [class.active]="isActive('/tabs')" (click)="sidenav(false)"><a [routerLink]="['tabs']">Tabs</a></li>
+      <li [class.active]="isActive('/tags')" (click)="sidenav(false)"><a [routerLink]="['tags']">Tags</a></li>
+      <li [class.active]="isActive('/toast')" (click)="sidenav(false)"><a [routerLink]="['toast']">Toast</a></li>
+      <li [class.active]="isActive('/tooltip')" (click)="sidenav(false)"><a [routerLink]="['tooltip']">Tooltip</a></li>
+    </ul>
+  </div>
+</aside>
+<main class="main">
+  <header class="toolbar">
+    <button type="button" (click)="sidenavToggle()" class="sidenav-toggle"><em class="fa fa-bars"></em></button>
+    <h3>Material Design 2</h3>
+  </header>
+  <section class="demo-container">
+    <router-outlet></router-outlet>
+  </section>
+  <footer class="footer">
+    <span><a href="https://github.com/Promact/md2">Md2</a> is maintained by <a href="https://github.com/promact">Promact</a>.</span>
+  </footer>
+</main>

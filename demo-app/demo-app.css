@@ -1,0 +1,24 @@
+body {
+  font-family: Roboto, 'Helvetica Neue', sans-serif; }
+  body * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale; }
+  body md-sidenav {
+    min-width: 15%; }
+    body md-sidenav [md-button] {
+      width: 100%;
+      position: relative;
+      bottom: 0;
+      margin: 24px 0; }
+  body .demo-content {
+    padding: 32px; }
+  body md-toolbar md-icon {
+    cursor: pointer; }
+  body md-toolbar .demo-toolbar {
+    display: flex;
+    justify-content: space-between;
+    width: 100%; }
+  body h1 {
+    font-size: 20px; }
+
+/*# sourceMappingURL=demo-app.css.map */

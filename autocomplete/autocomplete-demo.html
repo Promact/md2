@@ -1,0 +1,21 @@
+<div class="demo-autocomplete">
+  <h1>Autocomplete Demo</h1>
+  <hr />
+  <div>
+    <md2-autocomplete [items]="items"
+                      item-text="name"
+                      [(ngModel)]="item"
+                      [disabled]="disabled"
+                      (change)="change($event)"
+                      placeholder="No city selected">
+    </md2-autocomplete>
+    <pre>{{item | json}}</pre>
+    <md2-autocomplete [items]="items"
+                      item-text="name"
+                      [(ngModel)]="item"
+                      [disabled]="disabled"
+                      (change)="change($event)"
+                      placeholder="No city selected">
+    </md2-autocomplete>
+  </div>
+</div>

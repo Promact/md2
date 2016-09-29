@@ -1,0 +1,11 @@
+<div class="demo-accordion">
+  <h1>Accordion Demo</h1>
+  <hr />
+  <div>
+    <md2-accordion [multiple]="multiple">
+      <md2-accordion-tab class="test" *ngFor="let tab of accordions" [header]="tab.title" [active]="tab.active" [disabled]="tab.disabled">
+        {{tab.content}}
+      </md2-accordion-tab>
+    </md2-accordion>
+  </div>
+</div>

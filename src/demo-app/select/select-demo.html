@@ -1,12 +1,42 @@
 <div class="demo-select">
   <h1>Select Demo</h1>
   <hr />
+  <h4>Basic Select</h4>
   <div>
-    <select [(ngModel)]="item" (change)="change($event)" placeholder="placeholder">
+    <input type="text" [(ngModel)]="items[2].name" />
+    <pre>{{item | json}}</pre>
+    <select [(ngModel)]="item" (change)="change($event)" placeholder="Select City">
       <option [value]="i.value" *ngFor="let i of items">{{i.name}}</option>
     </select>
-    <pre>{{item | json}}</pre>
-    <md2-select [(ngModel)]="item" (change)="change($event)" [disabled]="disabled" placeholder="Hint text">
+    <br />
+    <md2-select [(ngModel)]="item" (change)="change($event)" placeholder="Select City">
+      <md2-option> -- Select City -- </md2-option>
+      <md2-option *ngFor="let i of items" [value]="i.value">{{i.name}}</md2-option>
+    </md2-select>
+  </div>
+  <h4>Static Select</h4>
+  <div>
+    <md2-select [(ngModel)]="item" (change)="change($event)" placeholder="Select City">
+      <md2-option> -- Select City -- </md2-option>
+      <md2-option value=""> Null value </md2-option>
+      <md2-option value="undefined"> Undefined value </md2-option>
+      <md2-option value="1">Vadodara</md2-option>
+      <md2-option value="2">Rajkot</md2-option>
+      <md2-option value="3">Delhi</md2-option>
+      <md2-option value="4">Chennai</md2-option>
+      <md2-option value="5">Mumbai</md2-option>
+      <md2-option value="6">Goa</md2-option>
+    </md2-select>
+  </div>
+  <h4>Disabled Select</h4>
+  <div>
+    <md2-select [(ngModel)]="item" (change)="change($event)" disabled placeholder="Select City">
+      <md2-option *ngFor="let i of items" [value]="i.value">{{i.name}}</md2-option>
+    </md2-select>
+  </div>
+  <h4>Disabled Select Option</h4>
+  <div>
+    <md2-select [(ngModel)]="item" (change)="change($event)" placeholder="Select City">
       <md2-option *ngFor="let i of items" [value]="i.value" [disabled]="i.disabled">{{i.name}}</md2-option>
     </md2-select>
   </div>

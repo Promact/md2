@@ -22,7 +22,7 @@ import {
   ControlValueAccessor,
   FormsModule,
 } from '@angular/forms';
-import {CommonModule} from '@angular/common';
+import { CommonModule } from '@angular/common';
 
 export const MD2_SELECT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -346,7 +346,7 @@ export class Md2Select implements AfterContentChecked, ControlValueAccessor {
 
       if (matchingOption) {
         this.selected = matchingOption;
-      } else if (!this.value) {
+      } else {
         this.selected = null;
         this._options.forEach(option => { option.selected = false; });
       }
@@ -446,7 +446,7 @@ export class Md2Option implements OnInit {
     this.name = this.select.name;
   }
 
-  ngAfterViewInit() {
+  ngAfterViewChecked() {
     this.content = this.element.nativeElement.innerHTML;
   }
 

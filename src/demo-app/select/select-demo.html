@@ -1,20 +1,46 @@
 <div class="demo-select">
   <h1>Select Demo</h1>
   <hr />
+  <h4>Test Select</h4>
+  <div>
+    <pre>{{test | json}}</pre>
+    <select [(ngModel)]="test" placeholder="Select City" (change)="change($event)">
+      <option>Select</option>
+      <option value="">Select1</option>
+      <option value="undefined">Select2</option>
+      <option value="null">Select3</option>
+      <option value="test">Select4</option>
+      <option value="test">Select5</option>
+      <option [value]="i" *ngFor="let i of tests">{{i.name}}</option>
+    </select>
+  </div>
   <h4>Basic Select</h4>
   <div>
+    <button (click)="as()">AS</button>
+    <button (click)="ys()">YS</button>
     <input type="text" [(ngModel)]="items[2].name" />
     <pre>{{item | json}}</pre>
     <select [(ngModel)]="item" (change)="change($event)" placeholder="Select City">
+      <option value=""> -- Select City -- </option>
+      <option value=""> -- Select City1 -- </option>
+      <option value=""> -- Select City2 -- </option>
+      <option [value]="i.value" *ngFor="let i of items">{{i.name}}</option>
+    </select>
+    <select [(ngModel)]="item" (change)="change($event)" placeholder="Select City">
+      <option value=""> -- Select City -- </option>
+      <option value=""> -- Select City1 -- </option>
+      <option value=""> -- Select City2 -- </option>
       <option [value]="i.value" *ngFor="let i of items">{{i.name}}</option>
     </select>
     <br />
     <md2-select [(ngModel)]="item" (change)="change($event)" placeholder="Select City">
       <md2-option> -- Select City -- </md2-option>
+      <md2-option value=""> -- Select City1 -- </md2-option>
+      <md2-option value=""> -- Select City2 -- </md2-option>
       <md2-option *ngFor="let i of items" [value]="i.value">{{i.name}}</md2-option>
     </md2-select>
   </div>
-  <h4>Static Select</h4>
+  <!--<h4>Static Select</h4>
   <div>
     <md2-select [(ngModel)]="item" (change)="change($event)" placeholder="Select City">
       <md2-option> -- Select City -- </md2-option>
@@ -39,5 +65,5 @@
     <md2-select [(ngModel)]="item" (change)="change($event)" placeholder="Select City">
       <md2-option *ngFor="let i of items" [value]="i.value" [disabled]="i.disabled">{{i.name}}</md2-option>
     </md2-select>
-  </div>
+  </div>-->
 </div>

@@ -153,10 +153,10 @@ export class Md2Select implements AfterContentChecked, ControlValueAccessor {
   constructor(public element: ElementRef) { }
 
   ngAfterContentChecked() {
-    let opt = this._options.filter(o => this.equals(o.value, this.value))[0];
-    if (opt) {
-      this.selectedValue = opt.content;
-    }
+    //let opt = this._options.filter(o => this.equals(o.value, this.value))[0];
+    //if (opt) {
+    //  this.selectedValue = opt.content;
+    //}
   }
 
   /**
@@ -341,7 +341,7 @@ export class Md2Select implements AfterContentChecked, ControlValueAccessor {
     let isAlreadySelected = this._selected !== null && this._selected.value === this._value;
 
     if (this._options !== null && !isAlreadySelected) {
-      let matchingOption = this._options.filter((option: any) => option.value === this._value)[0];
+      let matchingOption = this._options.filter((option: any) => option.value === this.value)[0];
 
       if (matchingOption) {
         this.selected = matchingOption;
@@ -431,12 +431,9 @@ export class Md2Option implements OnInit {
   }
 
   @HostBinding('class.md2-option-disabled')
-  @Input() get disabled(): boolean {
-    return this._disabled || (this.select.disabled);
-  }
-
+  @Input() get disabled(): boolean { return this._disabled || (this.select.disabled); }
   set disabled(disabled: boolean) {
-    this._disabled = disabled;
+    this._disabled = (disabled !== null && disabled !== false) ? true : null;
   }
 
   ngOnInit() {
@@ -446,7 +443,7 @@ export class Md2Option implements OnInit {
 
   ngAfterViewChecked() {
     this.content = this.element.nativeElement.innerText;
-    if (!this.value) { this.value = this.content.trim(); }
+    if (this.value === null) { this.value = this.content.trim(); }
   }
 
   /**

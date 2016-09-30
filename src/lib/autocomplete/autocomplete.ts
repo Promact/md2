@@ -18,6 +18,7 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HightlightPipe } from './autocomplete.pipe';
+import { KeyCodes } from '../core/core';
 
 class Item {
   public text: string;
@@ -75,7 +76,7 @@ export const MD2_AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR: any = {
     md2-autocomplete.md2-autocomplete-disabled:focus .md2-multiselect-placeholder { color: rgba(0,0,0,0.38); }
     .md2-autocomplete-wrap svg { position: absolute; right: 0; top: 0; display: block; height: 100%; background: #fff; fill: currentColor; color: rgba(0,0,0,0.54); }
     .md2-autocomplete-menu { position: absolute; left: 0; top: 100%; display: block; z-index: 10; width: 100%; margin: 0; padding: 8px 0; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12); max-height: 256px; min-height: 48px; overflow-y: auto; background: #fff; }
-    .md2-autocomplete-menu .md2-option { position: relative; display: block; cursor: pointer; width: auto; padding: 0 16px; height: 48px; line-height: 48px; -moz-transition: background 0.15s linear; -o-transition: background 0.15s linear; -webkit-transition: background 0.15s linear; transition: background 0.15s linear; }
+    .md2-autocomplete-menu .md2-option { position: relative; display: block; color: #212121; cursor: pointer; width: auto; padding: 0 16px; height: 48px; line-height: 48px; -moz-transition: background 0.15s linear; -o-transition: background 0.15s linear; -webkit-transition: background 0.15s linear; transition: background 0.15s linear; }
     .md2-autocomplete-menu .md2-option:hover,
     .md2-autocomplete-menu .md2-option.focus { background: #eeeeee; }
     .md2-autocomplete-menu .md2-option .md2-text { width: auto; white-space: nowrap; overflow: hidden; -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; font-size: 16px; }
@@ -210,48 +211,45 @@ export class Md2Autocomplete implements ControlValueAccessor {
    */
   private inputKeydown(event: KeyboardEvent) {
     if (this.disabled) { return; }
-    // Down Arrow
-    if (event.keyCode === 40) {
-      if (!this.isMenuVisible) { return; }
-      event.stopPropagation();
-      event.preventDefault();
-      this.focusedOption = (this.focusedOption === this.list.length - 1) ? 0 : Math.min(this.focusedOption + 1, this.list.length - 1);
-      this.updateScroll();
-      return;
+    switch (event.keyCode) {
+      case KeyCodes.TAB: this.listLeave(); break;
+      case KeyCodes.ESCAPE:
+        event.stopPropagation();
+        event.preventDefault();
+        if (this.inputBuffer) {
+          this.onClear();
+        }
+        break;
+
+      case KeyCodes.ENTER:
+        event.preventDefault();
+        event.stopPropagation();
+        if (this.isMenuVisible) {
+          this.select(event, this.focusedOption);
+        }
+        break;
+
+      case KeyCodes.DOWN_ARROW:
+        event.preventDefault();
+        event.stopPropagation();
+        if (this.isMenuVisible) {
+          this.focusedOption = (this.focusedOption === this.list.length - 1) ? 0 : Math.min(this.focusedOption + 1, this.list.length - 1);
+          this.updateScroll();
+        }
+        break;
+      case KeyCodes.UP_ARROW:
+        event.preventDefault();
+        event.stopPropagation();
+        if (this.isMenuVisible) {
+          this.focusedOption = (this.focusedOption === 0) ? this.list.length - 1 : Math.max(0, this.focusedOption - 1);
+          this.updateScroll();
+        }
+        break;
+      default:
+        setTimeout(() => {
+          this.updateItems(new RegExp(this.inputBuffer, 'ig'));
+        }, 10);
     }
-    // Up Arrow
-    if (event.keyCode === 38) {
-      if (!this.isMenuVisible) { return; }
-      event.stopPropagation();
-      event.preventDefault();
-      this.focusedOption = (this.focusedOption === 0) ? this.list.length - 1 : Math.max(0, this.focusedOption - 1);
-      this.updateScroll();
-      return;
-    }
-    // Tab Key
-    if (event.keyCode === 9) {
-      this.listLeave();
-      return;
-    }
-    // Escape Key
-    if (event.keyCode === 27) {
-      event.stopPropagation();
-      event.preventDefault();
-      this.onClear();
-      return;
-    }
-    // Enter
-    if (event.keyCode === 13) {
-      if (this.isMenuVisible) {
-        this.select(event, this.focusedOption);
-      }
-      event.preventDefault();
-      return;
-    }
-    // filter
-    setTimeout(() => {
-      this.updateItems(new RegExp(this.inputBuffer, 'ig'));
-    }, 10);
   }
 
   /**

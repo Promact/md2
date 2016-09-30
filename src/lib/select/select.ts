@@ -83,7 +83,6 @@ export class Md2OptionChange {
     md2-select .md2-select-placeholder.has-value { transform: translate3d(0,6px,0) scale(.75); }
     md2-select.md2-select-disabled:focus .md2-select-placeholder { color: rgba(0,0,0,0.38); }
     md2-select .md2-select-container .md2-select-value { display: block; font-size: 15px; line-height: 26px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    md2-select .md2-select-container .md2-select-value * { display: inline; }
     md2-select .md2-select-container svg { position: absolute; right: 0; top: 2px; display: block; fill: currentColor; color: rgba(0,0,0,0.54); }
     md2-select .md2-select-menu { position: absolute; left: 0; top: 0; display: none; z-index: 10; -ms-flex-direction: column; -webkit-flex-direction: column; flex-direction: column; width: 100%; margin: 0; padding: 8px 0; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12); max-height: 256px; min-height: 48px; overflow-y: auto; -moz-transform: scale(1); -ms-transform: scale(1); -o-transform: scale(1); -webkit-transform: scale(1); transform: scale(1); background: #fff; }
     md2-select .md2-select-menu.open { display: block; }
@@ -144,8 +143,8 @@ export class Md2Select implements AfterContentChecked, ControlValueAccessor {
   @Input() get selected() { return this._selected; }
   set selected(selected: Md2Option) {
     this._selected = selected;
-    this.value = selected ? selected.value : null;
     if (selected) {
+      this.value = selected.value;
       if (!selected.selected) { selected.selected = true; }
       this.selectedValue = selected.content;
     } else { this.selectedValue = ''; }
@@ -356,7 +355,7 @@ export class Md2Select implements AfterContentChecked, ControlValueAccessor {
   private _emitChangeEvent(): void {
     let event = new Md2OptionChange();
     event.source = this._selected;
-    event.value = this._value;
+    event.value = this.value;
     this._controlValueAccessorChangeFn(event.value);
     this.change.emit(event);
   }
@@ -371,13 +370,12 @@ export class Md2Select implements AfterContentChecked, ControlValueAccessor {
 @Component({
   moduleId: module.id,
   selector: 'md2-option',
-  template: '<div class="md2-option-text"><ng-content></ng-content></div>',
+  template: '<ng-content></ng-content>',
   styles: [`
-    md2-option { cursor: pointer; position: relative; display: block; align-items: center; width: auto; -moz-transition: background 0.15s linear; -o-transition: background 0.15s linear; -webkit-transition: background 0.15s linear; transition: background 0.15s linear; padding: 0 16px; height: 48px; line-height: 48px; }
+    md2-option { cursor: pointer; position: relative; display: block; align-items: center; width: auto; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; -moz-transition: background 0.15s linear; -o-transition: background 0.15s linear; -webkit-transition: background 0.15s linear; transition: background 0.15s linear; padding: 0 16px; height: 48px; line-height: 48px; }
     md2-option.md2-option-selected { color: #106cc8; }
     md2-option:hover, md2-option.md2-option-focused { background: #eeeeee; }
     md2-option.md2-option-disabled, md2-option.md2-option-disabled:hover { color: rgba(189,189,189,0.87); cursor: default; background: transparent; }
-    md2-option .md2-option-text { width: auto; white-space: nowrap; overflow: hidden; -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; font-size: 16px; }
   `],
   host: {
     'role': 'option',
@@ -442,12 +440,13 @@ export class Md2Option implements OnInit {
   }
 
   ngOnInit() {
-    this.selected = this.select.value === this._value;
+    this.selected = this.select.value === this.value;
     this.name = this.select.name;
   }
 
   ngAfterViewChecked() {
-    this.content = this.element.nativeElement.innerHTML;
+    this.content = this.element.nativeElement.innerText;
+    if (!this.value) { this.value = this.content.trim(); }
   }
 
   /**

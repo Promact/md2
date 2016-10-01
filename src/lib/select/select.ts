@@ -23,6 +23,7 @@ import {
   FormsModule,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { KeyCodes } from '../core/core';
 
 export const MD2_SELECT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -153,10 +154,9 @@ export class Md2Select implements AfterContentChecked, ControlValueAccessor {
   constructor(public element: ElementRef) { }
 
   ngAfterContentChecked() {
-    //let opt = this._options.filter(o => this.equals(o.value, this.value))[0];
-    //if (opt) {
-    //  this.selectedValue = opt.content;
-    //}
+    if (this.selected && this.selectedValue !== this.selected.content) {
+      this.selectedValue = this.selected.content;
+    }
   }
 
   /**
@@ -258,59 +258,33 @@ export class Md2Select implements AfterContentChecked, ControlValueAccessor {
   }
 
   @HostListener('keydown', ['$event'])
-  private onKeyDown(e: any) {
+  private onKeyDown(event: any) {
     if (this.disabled) { return; }
 
-    // Tab Key
-    if (e.keyCode === 9) {
-      if (this.isMenuVisible) {
-        this.onBlur();
-        e.preventDefault();
-      }
-      return;
-    }
+    if (this.isMenuVisible) {
+      event.preventDefault();
+      event.stopPropagation();
 
-    // Escape Key
-    if (e.keyCode === 27) {
-      this.onBlur();
-      e.stopPropagation();
-      e.preventDefault();
-      return;
-    }
+      switch (event.keyCode) {
+        case KeyCodes.TAB:
+        case KeyCodes.ESCAPE: this.onBlur(); break;
+        case KeyCodes.ENTER:
+        case KeyCodes.SPACE: this._options.toArray()[this.focusIndex].onClick(event); break;
 
-    // Up Arrow
-    if (e.keyCode === 38) {
-      if (this.isMenuVisible) {
-        this.updateFocus(-1);
-      } else {
-        this.onClick(e);
+        case KeyCodes.DOWN_ARROW: this.updateFocus(1); break;
+        case KeyCodes.UP_ARROW: this.updateFocus(-1); break;
       }
-      e.stopPropagation();
-      e.preventDefault();
-      return;
-    }
-
-    // Down Arrow
-    if (e.keyCode === 40) {
-      if (this.isMenuVisible) {
-        this.updateFocus(1);
-      } else {
-        this.onClick(e);
+    } else {
+      switch (event.keyCode) {
+        case KeyCodes.ENTER:
+        case KeyCodes.SPACE:
+        case KeyCodes.DOWN_ARROW:
+        case KeyCodes.UP_ARROW:
+          event.preventDefault();
+          event.stopPropagation();
+          this.onClick(event);
+          break;
       }
-      e.stopPropagation();
-      e.preventDefault();
-      return;
-    }
-
-    // Enter / Space
-    if (e.keyCode === 13 || e.keyCode === 32) {
-      if (this.isMenuVisible) {
-        this._options.toArray()[this.focusIndex].onClick(e);
-      } else {
-        this.onClick(e);
-      }
-      e.preventDefault();
-      return;
     }
   }
 
@@ -338,7 +312,7 @@ export class Md2Select implements AfterContentChecked, ControlValueAccessor {
   }
 
   private _updateSelectedOptionValue(): void {
-    let isAlreadySelected = this._selected !== null && this._selected.value === this._value;
+    let isAlreadySelected = this.selected !== null && this.selected.value === this.value;
 
     if (this._options !== null && !isAlreadySelected) {
       let matchingOption = this._options.filter((option: any) => option.value === this.value)[0];
@@ -354,7 +328,7 @@ export class Md2Select implements AfterContentChecked, ControlValueAccessor {
 
   private _emitChangeEvent(): void {
     let event = new Md2OptionChange();
-    event.source = this._selected;
+    event.source = this.selected;
     event.value = this.value;
     this._controlValueAccessorChangeFn(event.value);
     this.change.emit(event);

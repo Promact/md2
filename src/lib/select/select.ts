@@ -252,6 +252,7 @@ export class Md2Select implements AfterContentChecked, ControlValueAccessor {
         setTimeout(() => {
           this.updateScroll();
         }, 0);
+        this.element.nativeElement.focus();
       }
     }
     this.isOpenable = true;

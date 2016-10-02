@@ -218,6 +218,7 @@ export class Md2Multiselect implements ControlValueAccessor {
       return;
     }
     this.updateOptions();
+    this.element.nativeElement.focus();
   }
 
   @HostListener('keydown', ['$event'])

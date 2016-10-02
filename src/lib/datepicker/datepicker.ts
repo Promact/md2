@@ -1,9 +1,9 @@
 import {
   AfterContentInit,
   Component,
+  ElementRef,
   HostListener,
   Input,
-  OnDestroy,
   Output,
   EventEmitter,
   forwardRef,
@@ -72,19 +72,15 @@ export const MD2_DATEPICKER_CONTROL_VALUE_ACCESSOR: any = {
   },
   encapsulation: ViewEncapsulation.None
 })
-export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueAccessor {
+export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
 
-  constructor(private dateUtil: Md2DateUtil) {
+  constructor(private dateUtil: Md2DateUtil, private element: ElementRef) {
     this.generateClock();
     this.isCalendarVisible;
   }
 
   ngAfterContentInit() {
     this.isCalendarVisible = this.type !== 'time' ? true : false;
-  }
-
-  ngOnDestroy() {
-
   }
 
   private _value: Date = null;
@@ -286,6 +282,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
     this.displayDate = this.value || this.today;
     this.generateCalendar();
     this._resetClock();
+    this.element.nativeElement.focus();
   }
 
   /**

@@ -222,9 +222,8 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
         case KeyCodes.TAB:
         case KeyCodes.ESCAPE: this.onBlur(); break;
       }
-
+      let displayDate = this.displayDate;
       if (this.isCalendarVisible) {
-        let displayDate = this.displayDate;
         switch (event.keyCode) {
           case KeyCodes.ENTER:
           case KeyCodes.SPACE: this.setDate(this.displayDate); break;
@@ -244,13 +243,21 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
         if (!this.dateUtil.isSameMonthAndYear(displayDate, this.displayDate)) {
           this.generateCalendar();
         }
+      } else if (this.isHoursVisible) {
+        switch (event.keyCode) {
+          case KeyCodes.ENTER:
+          case KeyCodes.SPACE: this.setHour(this.displayDate.getHours()); break;
+
+          case KeyCodes.UP_ARROW: this.displayDate = this.dateUtil.incrementHours(displayDate, 1); this._resetClock(); break;
+          case KeyCodes.DOWN_ARROW: this.displayDate = this.dateUtil.incrementHours(displayDate, -1); this._resetClock(); break;
+        }
       } else {
         switch (event.keyCode) {
-          case KeyCodes.ENTER: break;
-          case KeyCodes.SPACE: break;
+          case KeyCodes.ENTER:
+          case KeyCodes.SPACE: this.setMinute(this.displayDate.getMinutes()); break;
 
-          //case 40: this.displayDate = this.dateUtil.incrementHours(this.displayDate, 1); break;
-          //case 38: this.displayDate = this.dateUtil.incrementHours(this.displayDate, -1); break;
+          case KeyCodes.UP_ARROW: this.displayDate = this.dateUtil.incrementMinutes(displayDate, 1); this._resetClock(); break;
+          case KeyCodes.DOWN_ARROW: this.displayDate = this.dateUtil.incrementMinutes(displayDate, -1); this._resetClock(); break;
         }
       }
     } else {

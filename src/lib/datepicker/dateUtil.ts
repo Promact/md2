@@ -1,4 +1,4 @@
-import {Injectable} from "@angular/core";
+import { Injectable } from "@angular/core";
 
 @Injectable()
 export class Md2DateUtil {
@@ -98,6 +98,26 @@ export class Md2DateUtil {
   getWeekOfMonth(date: Date) {
     let firstDayOfMonth = this.getFirstDateOfMonth(date);
     return Math.floor((firstDayOfMonth.getDay() + date.getDate() - 1) / 7);
+  }
+
+  /**
+   * Gets a new date incremented by the given number of minutes. Number of minutes can be negative.
+   * @param {Date} date
+   * @param {number} numberOfMinutes
+   * @returns {Date}
+   */
+  incrementMinutes(date: Date, numberOfMinutes: number) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes() + numberOfMinutes);
+  }
+
+  /**
+   * Gets a new date incremented by the given number of hours. Number of hours can be negative.
+   * @param {Date} date
+   * @param {number} numberOfHours
+   * @returns {Date}
+   */
+  incrementHours(date: Date, numberOfHours: number) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours() + numberOfHours, date.getMinutes());
   }
 
   /**

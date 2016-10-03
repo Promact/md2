@@ -15,7 +15,7 @@ import {
   NgModule,
   ModuleWithProviders
 } from '@angular/core';
-import {CommonModule} from '@angular/common';
+import { CommonModule } from '@angular/common';
 import {
   Overlay,
   OVERLAY_PROVIDERS,
@@ -23,7 +23,7 @@ import {
   OverlayRef,
   TemplatePortal
 } from '../core/core';
-import {Animate} from './animate';
+import { Animate } from './animate';
 
 @Directive({ selector: '[md2DialogPortal]' })
 export class Md2DialogPortal extends TemplatePortal {
@@ -67,14 +67,14 @@ export class Md2DialogFooter { }
     @media (min-width: 768px) {
       .md2-dialog .md2-dialog-container { width: 600px; margin: 30px auto; }
     }
-    .md2-dialog-header { background: #2196f3; color: #fff; font-size: 25px; line-height: 1.1; font-weight: 500; padding: 0 16px; border-bottom: 1px solid #e5e5e5; }
+    .md2-dialog-header { background: #2196f3; color: #fff; font-size: 25px; line-height: 1.1; font-weight: 500; padding: 0 48px 0 16px; border-bottom: 1px solid #e5e5e5; word-wrap: break-word; }
     .md2-dialog-header .close { position: absolute; top: 21px; right: 16px; display: inline-block; width: 18px; height: 18px; overflow: hidden; -webkit-appearance: none; padding: 0; cursor: pointer; background: 0 0; border: 0; outline: 0; opacity: 0.8; font-size: 0; z-index: 1; min-width: initial; box-shadow: none; margin: 0; }
     .md2-dialog-header .close::before,
     .md2-dialog-header .close::after { content: ''; position: absolute; top: 50%; left: 0; height: 2px; width: 100%; margin-top: -1px;background: #ccc;border-radius: 2px;height: 2px;}
     .md2-dialog-header .close::before {-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);-ms-transform: rotate(45deg);-o-transform: rotate(45deg);transform: rotate(45deg);}
     .md2-dialog-header .close::after {-webkit-transform: rotate(-45deg);-moz-transform: rotate(-45deg);-ms-transform: rotate(-45deg);-o-transform: rotate(-45deg);transform: rotate(-45deg);}
     .md2-dialog-header .close:hover { opacity: 1; }
-    .md2-dialog-header md2-dialog-title, .md2-dialog-header .md2-dialog-title { margin: 0; font-size: 25px; line-height: 60px; font-weight: 500; }
+    .md2-dialog-header md2-dialog-title, .md2-dialog-header .md2-dialog-title { display: block; margin: 0; padding: 16px 0; font-size: 25px; font-weight: 500; }
     .md2-dialog-header dialog-header { line-height: 33px; }
     .md2-dialog-body { position: relative; padding: 16px; }
     .md2-dialog-footer, md2-dialog-footer { display: block; padding: 16px; text-align: right; border-top: 1px solid rgba(0,0,0,0.12); }
@@ -160,13 +160,9 @@ export class Md2Dialog implements OnDestroy {
   }
 }
 
-export const MD2_DIALOG_DIRECTIVES: any[] = [Md2Dialog, Md2DialogTitle, Md2DialogFooter,
-  Md2DialogPortal
-];
+export const MD2_DIALOG_DIRECTIVES: any[] = [Md2Dialog, Md2DialogTitle, Md2DialogFooter, Md2DialogPortal];
 
-export const MD2_DIALOG_PROVIDERS: any[] = [
-  Overlay, OVERLAY_PROVIDERS
-];
+export const MD2_DIALOG_PROVIDERS: any[] = [Overlay, OVERLAY_PROVIDERS];
 
 @NgModule({
   declarations: MD2_DIALOG_DIRECTIVES,

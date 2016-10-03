@@ -77,11 +77,16 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   constructor(private dateUtil: Md2DateUtil, private element: ElementRef) {
     this.generateClock();
     this.isCalendarVisible;
+    //this.mouseMoveListener = (event: MouseEvent) => { this.onMouseMoveClock(event); };
+    //this.mouseUpListener = (event: MouseEvent) => { this.onMouseUpClock(event); };
   }
 
   ngAfterContentInit() {
     this.isCalendarVisible = this.type !== 'time' ? true : false;
   }
+
+  //private mouseMoveListener: any;
+  //private mouseUpListener: any;
 
   private _value: Date = null;
   private _disabled: boolean = false;
@@ -522,53 +527,81 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   }
 
   //private onMouseDownClock(event: MouseEvent) {
-  //  let offset = this.offset(event.currentTarget)
-  //  this.clock.x = offset.left + this.clock.dialRadius;
-  //  this.clock.y = offset.top + this.clock.dialRadius;
-  //  this.clock.dx = event.pageX - this.clock.x;
-  //  this.clock.dy = event.pageY - this.clock.y;
-  //  let z = Math.sqrt(this.clock.dx * this.clock.dx + this.clock.dy * this.clock.dy);
-  //  if (z < this.clock.outerRadius - this.clock.tickRadius || z > this.clock.outerRadius + this.clock.tickRadius) { return; }
-  //  event.preventDefault();
-  //  this.setClockHand(this.clock.dx, this.clock.dy);
+  //  document.addEventListener('mousemove', this.mouseMoveListener);
+  //  document.addEventListener('mouseup', this.mouseUpListener);
 
-  //  //this.onMouseMoveClock = this.onMouseMoveClock.bind(this);
-  //  //this.onMouseUpClock = this.onMouseUpClock.bind(this);
-  //  document.addEventListener('mousemove', this.onMouseMoveClock);
-  //  document.addEventListener('mouseup', this.onMouseUpClock);
+
+
+  //  //let offset = this.offset(event.currentTarget)
+  //  //this.clock.x = offset.left + this.clock.dialRadius;
+  //  //this.clock.y = offset.top + this.clock.dialRadius;
+  //  //this.clock.dx = event.pageX - this.clock.x;
+  //  //this.clock.dy = event.pageY - this.clock.y;
+  //  //let z = Math.sqrt(this.clock.dx * this.clock.dx + this.clock.dy * this.clock.dy);
+  //  //if (z < this.clock.outerRadius - this.clock.tickRadius || z > this.clock.outerRadius + this.clock.tickRadius) { return; }
+  //  //event.preventDefault();
+  //  //this.setClockHand(this.clock.dx, this.clock.dy);
+
+  //  ////this.onMouseMoveClock = this.onMouseMoveClock.bind(this);
+  //  ////this.onMouseUpClock = this.onMouseUpClock.bind(this);
+  //  //document.addEventListener('mousemove', this.onMouseMoveClock);
+  //  //document.addEventListener('mouseup', this.onMouseUpClock);
   //}
 
   //onMouseMoveClock(event: MouseEvent) {
   //  event.preventDefault();
   //  event.stopPropagation();
-  //  //let x = event.pageX - this.clock.x,
-  //  //  y = event.pageY - this.clock.y;
-  //  //this.clock.moved = true;
-  //  //this.setClockHand(x, y);//, false, true
+  //  let x = event.pageX - this.clock.x,
+  //    y = event.pageY - this.clock.y;
+  //  this.clock.moved = true;
+  //  this._setClockHand(x, y);//, false, true
+  //  //if (!moved && x === dx && y === dy) {
+  //  //  // Clicking in chrome on windows will trigger a mousemove event
+  //  //  return;
+  //  //}
   //}
 
   //onMouseUpClock(event: MouseEvent) {
   //  event.preventDefault();
-  //  document.removeEventListener('mousemove', this.onMouseMoveClock);
-  //  document.removeEventListener('mouseup', this.onMouseUpClock);
-
+  //  document.removeEventListener('mousemove', this.mouseMoveListener);
+  //  document.removeEventListener('mouseup', this.mouseUpListener);
   //  //let space = false;
 
-  //		//let x = event.pageX - this.clockEvent.x,
-  //  //  y = event.pageY - this.clockEvent.y;
-  //  //if ((space || this.clockEvent.moved) && x === this.clockEvent.dx && y === this.clockEvent.dy) {
-  //  //  this.setClockHand(x, y);
-  //  //}
+  //  let x = event.pageX - this.clock.x,
+  //    y = event.pageY - this.clock.y;
+  //  if ((space || this.clockEvent.moved) && x === this.clockEvent.dx && y === this.clockEvent.dy) {
+  //    this.setClockHand(x, y);
+  //  }
   //  //if (this.isHoursVisible) {
   //  //  //self.toggleView('minutes', duration / 2);
-  //		//} else {
+  //  //} else {
   //  //  //if (options.autoclose) {
   //  //  //  self.minutesView.addClass('clockpicker-dial-out');
   //  //  //  setTimeout(function () {
   //  //  //    self.done();
   //  //  //  }, duration / 2);
   //  //  //}
-  //		//}
+  //  //}
+
+  //  if ((space || moved) && x === dx && y === dy) {
+  //    self.setHand(x, y);
+  //  }
+  //  if (self.currentView === 'hours') {
+  //    self.toggleView('minutes', duration / 2);
+  //  } else {
+  //    if (options.autoclose) {
+  //      self.minutesView.addClass('clockpicker-dial-out');
+  //      setTimeout(function () {
+  //        self.done();
+  //      }, duration / 2);
+  //    }
+  //  }
+  //  plate.prepend(canvas);
+
+  //  // Reset cursor style of body
+  //  clearTimeout(movingTimer);
+  //  $body.removeClass('clockpicker-moving');
+
   //}
 
   /**

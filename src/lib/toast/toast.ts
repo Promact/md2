@@ -93,9 +93,10 @@ export class Md2Toast {
     if (this.container) {
       let instance = this.container.instance;
       instance.remove(toastId);
-      if (!instance.hasToast()) {
-        this.dispose();
-      }
+      setTimeout(() => {
+        if (!instance.hasToast()) { this.dispose(); }
+      }, 250);
+
     }
   }
 
@@ -106,9 +107,10 @@ export class Md2Toast {
     if (this.container) {
       let instance = this.container.instance;
       instance.removeAll();
-      if (!instance.hasToast()) {
-        this.dispose();
-      }
+      setTimeout(() => {
+        if (!instance.hasToast()) { this.dispose(); }
+      }, 250);
+
     }
   }
 

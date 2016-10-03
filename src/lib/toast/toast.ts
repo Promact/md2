@@ -9,11 +9,12 @@ import {
   NgModule,
   ModuleWithProviders
 } from '@angular/core';
-import {CommonModule} from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Md2ToastComponent } from './toast.component';
 
 export class Toast {
   id: number;
+  isVisible: boolean;
   constructor(public message: string) { }
 }
 

@@ -93,6 +93,7 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   private _onTouchedCallback: () => void = noop;
   private _onChangeCallback: (_: any) => void = noop;
 
+  private isYearpickerVisible: boolean;
   private isDatepickerVisible: boolean;
   private isCalendarVisible: boolean;
   private isHoursVisible: boolean = true;

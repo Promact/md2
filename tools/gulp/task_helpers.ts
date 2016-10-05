@@ -178,7 +178,7 @@ export function serverTask(liveReload: boolean = true,
     const stream = gulp.src('dist').pipe(gulpServer({
       livereload: liveReload,
       fallback: 'index.html',
-      port: 4200
+      port: 3000
     }));
 
     if (streamCallback) {

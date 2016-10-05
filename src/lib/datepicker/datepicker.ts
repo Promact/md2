@@ -19,7 +19,10 @@ import {
 import { CommonModule } from '@angular/common';
 import { Md2DateUtil } from './dateUtil';
 
-import { KeyCodes } from '../core/core';
+import {
+  BooleanFieldValue,
+  KeyCodes
+} from '../core/core';
 
 export interface IDay {
   year: number;
@@ -89,7 +92,6 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   //private mouseUpListener: any;
 
   private _value: Date = null;
-  private _disabled: boolean = false;
   private _onTouchedCallback: () => void = noop;
   private _onChangeCallback: (_: any) => void = noop;
 
@@ -128,10 +130,7 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   @Output() change: EventEmitter<any> = new EventEmitter<any>();
 
   @Input() type: 'date' | 'time' | 'datetime' = 'date';
-  @Input() get disabled(): boolean { return this._disabled; }
-  set disabled(value) {
-    this._disabled = (value !== null && value !== false) ? true : null;
-  }
+  @Input() @BooleanFieldValue() disabled: boolean = false;
   @Input() name: string = '';
   @Input() id: string = 'md2-datepicker-' + (++nextId);
   @Input() class: string;

@@ -154,13 +154,13 @@ export class Md2Select implements AfterContentChecked, ControlValueAccessor {
   constructor(public element: ElementRef) { }
 
   ngAfterContentChecked() {
+    let opt = this._options.filter(o => this.equals(o.value, this.value))[0];
+    if (opt && !this.equals(this.selected, opt)) {
+      this.selectedValue = opt.content;
+    }
     if (this.selected && this.selectedValue !== this.selected.content) {
       this.selectedValue = this.selected.content;
     }
-    //let opt = this._options.filter(o => this.equals(o.value, this.value))[0];
-    //if (opt && !this.equals(this.selected, opt)) {
-    //  this.selectedValue = opt.content;
-    //}
   }
 
   /**

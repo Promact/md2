@@ -12,7 +12,10 @@ export enum KeyCodes {
 
   ENTER = 13,
   SPACE = 32,
+  BACKSPACE = 8,
+  DELETE = 46,
 
   TAB = 9,
   ESCAPE = 27,
+  COMMA = 188,
 }

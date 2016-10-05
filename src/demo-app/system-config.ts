@@ -6,6 +6,7 @@ const components = [
   'all',
   'accordion',
   'autocomplete',
+  'chips',
   'collapse',
   'colorpicker',
   'datepicker',

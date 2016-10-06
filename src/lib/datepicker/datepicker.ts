@@ -85,6 +85,7 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   }
 
   ngAfterContentInit() {
+    this._isInitialized = true;
     this.isCalendarVisible = this.type !== 'time' ? true : false;
   }
 
@@ -92,6 +93,7 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   //private mouseUpListener: any;
 
   private _value: Date = null;
+  private _isInitialized: boolean = false;
   private _onTouchedCallback: () => void = noop;
   private _onChangeCallback: (_: any) => void = noop;
 
@@ -153,8 +155,9 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
     this.getYears();
   }
 
+  @Input()
   get value(): any { return this._value; }
-  @Input() set value(value: any) {
+  set value(value: any) {
     if (value && value !== this._value) {
       if (this.dateUtil.isValidDate(value)) {
         this._value = value;
@@ -177,8 +180,10 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
       if (this.type !== 'date') {
         date += this._value.getHours() + ':' + this._value.getMinutes();
       }
-      this._onChangeCallback(date);
-      this.change.emit(date);
+      if (this._isInitialized) {
+        this._onChangeCallback(date);
+        this.change.emit(date);
+      }
     }
   }
 

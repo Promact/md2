@@ -1,4 +1,5 @@
 import {
+  AfterContentInit,
   Injectable,
   AfterContentChecked,
   Component,
@@ -96,12 +97,13 @@ export class Md2OptionChange {
   },
   encapsulation: ViewEncapsulation.None
 })
-export class Md2Select implements AfterContentChecked, ControlValueAccessor {
+export class Md2Select implements AfterContentInit, AfterContentChecked, ControlValueAccessor {
 
   private _value: any = null;
   private _name: string = 'md2-select-' + _uniqueIdCounter++;
   private _disabled: boolean = false;
   private _selected: Md2Option = null;
+  private _isInitialized: boolean = false;
 
   private isOpenable: boolean = true;
   private isMenuVisible: boolean = false;
@@ -137,7 +139,9 @@ export class Md2Select implements AfterContentChecked, ControlValueAccessor {
     if (this._value !== newValue) {
       this._value = newValue;
       this._updateSelectedOptionValue();
-      this._emitChangeEvent();
+      if (this._isInitialized) {
+        this._emitChangeEvent();
+      }
     }
   }
 
@@ -152,6 +156,8 @@ export class Md2Select implements AfterContentChecked, ControlValueAccessor {
   }
 
   constructor(public element: ElementRef) { }
+
+  ngAfterContentInit() { this._isInitialized = true; }
 
   ngAfterContentChecked() {
     let opt = this._options.filter(o => this.equals(o.value, this.value))[0];

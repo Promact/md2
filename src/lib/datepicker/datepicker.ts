@@ -78,8 +78,8 @@ export const MD2_DATEPICKER_CONTROL_VALUE_ACCESSOR: any = {
 export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
 
   constructor(private dateUtil: Md2DateUtil, private element: ElementRef) {
+    this.getYears();
     this.generateClock();
-    this.isCalendarVisible;
     //this.mouseMoveListener = (event: MouseEvent) => { this.onMouseMoveClock(event); };
     //this.mouseUpListener = (event: MouseEvent) => { this.onMouseUpClock(event); };
   }
@@ -95,8 +95,8 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   private _onTouchedCallback: () => void = noop;
   private _onChangeCallback: (_: any) => void = noop;
 
-  private isYearpickerVisible: boolean;
   private isDatepickerVisible: boolean;
+  private isYearsVisible: boolean;
   private isCalendarVisible: boolean;
   private isHoursVisible: boolean = true;
 
@@ -109,6 +109,7 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   private currMonth: number = 2;
   private nextMonth: number = 3;
 
+  private years: Array<number> = [];
   private dates: Array<Object> = [];
   private today: Date = new Date();
   private _displayDate: Date = null;
@@ -144,10 +145,12 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   @Input() set min(value: string) {
     this._minDate = new Date(value);
     this._minDate.setHours(0, 0, 0, 0);
+    this.getYears();
   }
   @Input() set max(value: string) {
     this._maxDate = new Date(value);
     this._maxDate.setHours(0, 0, 0, 0);
+    this.getYears();
   }
 
   get value(): any { return this._value; }
@@ -228,7 +231,24 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
         case KeyCodes.ESCAPE: this.onBlur(); break;
       }
       let displayDate = this.displayDate;
-      if (this.isCalendarVisible) {
+      if (this.isYearsVisible) {
+        switch (event.keyCode) {
+          case KeyCodes.ENTER:
+          case KeyCodes.SPACE: this.onClickOk(); break;
+
+          case KeyCodes.DOWN_ARROW:
+            if (this.displayDate.getFullYear() === (this.today.getFullYear() + 100)) break;
+            this.displayDate = this.dateUtil.incrementYears(displayDate, 1);
+            this._scrollToSelectedYear();
+            break;
+          case KeyCodes.UP_ARROW:
+            if (this.displayDate.getFullYear() === 1900) break;
+            this.displayDate = this.dateUtil.incrementYears(displayDate, -1);
+            this._scrollToSelectedYear();
+            break;
+        }
+
+      } else if (this.isCalendarVisible) {
         switch (event.keyCode) {
           case KeyCodes.ENTER:
           case KeyCodes.SPACE: this.setDate(this.displayDate); break;
@@ -280,8 +300,46 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   @HostListener('blur')
   private onBlur() {
     this.isDatepickerVisible = false;
+    this.isYearsVisible = false;
     this.isCalendarVisible = this.type !== 'time' ? true : false;
     this.isHoursVisible = true;
+  }
+  /**
+   * Display Years
+   */
+  private showYear() {
+    this.isYearsVisible = true;
+    this.isCalendarVisible = true;
+    this._scrollToSelectedYear();
+  }
+
+  private getYears() {
+    let startYear = this._minDate ? this._minDate.getFullYear() : 1900,
+      endYear = this._maxDate ? this._maxDate.getFullYear() : this.today.getFullYear() + 100;
+    this.years = [];
+    for (let i = startYear; i <= endYear; i++) {
+      this.years.push(i);
+    }
+  }
+
+  private _scrollToSelectedYear() {
+    setTimeout(() => {
+      let yearContainer = this.element.nativeElement.querySelector('.md2-years'),
+        selectedYear = this.element.nativeElement.querySelector('.md2-year.selected');
+      yearContainer.scrollTop = (selectedYear.offsetTop + 20) - yearContainer.clientHeight / 2;
+    }, 0);
+  }
+
+  /**
+   * select year
+   * @param year
+   */
+  private setYear(year: number) {
+    let date = this.displayDate;
+    this.displayDate = new Date(year, date.getMonth(), date.getDate(), date.getHours(), date.getMinutes());
+    this.generateCalendar();
+    this.isYearsVisible = false;
+    //this.isCalendarVisible = true;
   }
 
   /**
@@ -300,13 +358,18 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   /**
    * Display Calendar
    */
-  private showCalendar() { this.isCalendarVisible = true; }
+  private showCalendar() {
+    this.isYearsVisible = false;
+    this.isCalendarVisible = true;
+  }
 
   /**
    * Toggle Hour visiblity
    */
   private toggleHours(value: boolean) {
+    this.isYearsVisible = false;
     this.isCalendarVisible = false;
+    this.isYearsVisible = false;
     this.isHoursVisible = value;
     this._resetClock();
   }
@@ -315,7 +378,11 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
    * Ok Button Event
    */
   private onClickOk() {
-    if (this.isCalendarVisible) {
+    if (this.isYearsVisible) {
+      this.generateCalendar();
+      this.isYearsVisible = false;
+      this.isCalendarVisible = true;
+    } else if (this.isCalendarVisible) {
       this.setDate(this.displayDate);
     } else if (this.isHoursVisible) {
       this.isHoursVisible = false;

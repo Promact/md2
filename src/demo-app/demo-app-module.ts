@@ -9,6 +9,7 @@ import {DEMO_APP_ROUTES} from './demo-app/routes';
 
 import {AccordionDemo} from './accordion/accordion-demo';
 import {AutocompleteDemo} from './autocomplete/autocomplete-demo';
+import {ChipsDemo} from './chips/chips-demo';
 import {CollapseDemo} from './collapse/collapse-demo';
 import {ColorpickerDemo} from './colorpicker/colorpicker-demo';
 import {DatepickerDemo} from './datepicker/datepicker-demo';
@@ -33,6 +34,7 @@ import {TooltipDemo} from './tooltip/tooltip-demo';
   declarations: [
     AccordionDemo,
     AutocompleteDemo,
+    ChipsDemo,
     CollapseDemo,
     ColorpickerDemo,
     DatepickerDemo,

@@ -2,6 +2,7 @@ import {Routes} from '@angular/router';
 import {Home} from './demo-app';
 import {AccordionDemo} from '../accordion/accordion-demo';
 import {AutocompleteDemo} from '../autocomplete/autocomplete-demo';
+import {ChipsDemo} from '../chips/chips-demo';
 import {CollapseDemo} from '../collapse/collapse-demo';
 import {ColorpickerDemo} from '../colorpicker/colorpicker-demo';
 import {DatepickerDemo} from '../datepicker/datepicker-demo';
@@ -19,6 +20,7 @@ export const DEMO_APP_ROUTES: Routes = [
   { path: '', component: Home },
   { path: 'accordion', component: AccordionDemo },
   { path: 'autocomplete', component: AutocompleteDemo },
+  { path: 'chips', component: ChipsDemo },
   { path: 'collapse', component: CollapseDemo },
   { path: 'colorpicker', component: ColorpickerDemo },
   { path: 'datepicker', component: DatepickerDemo },

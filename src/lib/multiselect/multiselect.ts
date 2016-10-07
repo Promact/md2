@@ -1,4 +1,5 @@
 import {
+  AfterContentInit,
   Component,
   ElementRef,
   EventEmitter,
@@ -16,7 +17,7 @@ import {
   ControlValueAccessor,
   FormsModule,
 } from '@angular/forms';
-import {CommonModule} from '@angular/common';
+import { CommonModule } from '@angular/common';
 
 class Option {
   public text: string;
@@ -100,14 +101,17 @@ export const MD2_MULTISELECT_CONTROL_VALUE_ACCESSOR: any = {
   encapsulation: ViewEncapsulation.None
 })
 
-export class Md2Multiselect implements ControlValueAccessor {
+export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
 
   constructor(private element: ElementRef) { }
+
+  ngAfterContentInit() { this._isInitialized = true; }
 
   @Output() change: EventEmitter<any> = new EventEmitter<any>();
 
   private _value: any = '';
   private _disabled: boolean = false;
+  private _isInitialized: boolean = false;
   private _onTouchedCallback: () => void = noop;
   private _onChangeCallback: (_: any) => void = noop;
 
@@ -119,7 +123,8 @@ export class Md2Multiselect implements ControlValueAccessor {
   private isFocused: boolean = false;
 
   @Input() id: string = 'md2-multiselect-' + (++nextId);
-  @Input() get disabled(): boolean { return this._disabled; }
+  @Input()
+  get disabled(): boolean { return this._disabled; }
   set disabled(value) {
     this._disabled = (value !== null && value !== false) ? true : null;
   }
@@ -128,13 +133,16 @@ export class Md2Multiselect implements ControlValueAccessor {
   @Input('item-text') textKey: string = 'text';
   @Input('item-value') valueKey: string = null;
 
-  @Input('items') set options(value: Array<any>) {
+  @Input('items')
+  set options(value: Array<any>) {
     this._options = value;
   }
+
+  @Input()
   get value(): any {
     return this._value;
   }
-  @Input() set value(value: any) {
+  set value(value: any) {
     this.setValue(value);
   }
 
@@ -152,8 +160,10 @@ export class Md2Multiselect implements ControlValueAccessor {
           if (selItm) { this.items.push(new Option(selItm, this.textKey, this.valueKey)); }
         }
       }
-      this._onChangeCallback(value);
-      this.change.emit(this._value);
+      if (this._isInitialized) {
+        this._onChangeCallback(value);
+        this.change.emit(this._value);
+      }
     }
   }
 

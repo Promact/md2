@@ -1,4 +1,5 @@
 import {
+  AfterContentInit,
   Component,
   ElementRef,
   EventEmitter,
@@ -100,14 +101,17 @@ export const MD2_TAGS_CONTROL_VALUE_ACCESSOR: any = {
   encapsulation: ViewEncapsulation.None
 })
 
-export class Md2Tags implements ControlValueAccessor {
+export class Md2Tags implements AfterContentInit, ControlValueAccessor {
 
   constructor(private element: ElementRef) { }
+
+  ngAfterContentInit() { this._isInitialized = true; }
 
   @Output() change: EventEmitter<any> = new EventEmitter<any>();
 
   private _value: any = '';
   private _disabled: boolean = false;
+  private _isInitialized: boolean = false;
   private _onTouchedCallback: () => void = noop;
   private _onChangeCallback: (_: any) => void = noop;
 
@@ -156,8 +160,10 @@ export class Md2Tags implements ControlValueAccessor {
           if (selItm) { this.items.push(new Tag(selItm, this.textKey, this.valueKey)); }
         }
       }
-      this._onChangeCallback(value);
-      this.change.emit(this._value);
+      if (this._isInitialized) {
+        this._onChangeCallback(value);
+        this.change.emit(this._value);
+      }
     }
   }
 

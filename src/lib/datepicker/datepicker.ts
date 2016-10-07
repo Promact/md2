@@ -759,7 +759,8 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
       .replace('MM', this._prependZero((date.getMonth() + 1) + ''))
       .replace('DD', this._prependZero(date.getDate() + ''))
       .replace('HH', this._prependZero(date.getHours() + ''))
-      .replace('mm', this._prependZero(date.getMinutes() + ''));
+      .replace('mm', this._prependZero(date.getMinutes() + ''))
+      .replace('ss', this._prependZero(date.getSeconds() + ''));
   }
 
   /**

@@ -20,7 +20,7 @@ import { CommonModule } from '@angular/common';
 import { Md2DateUtil } from './dateUtil';
 
 import {
-  BooleanFieldValue,
+  coerceBooleanProperty,
   KeyCodes
 } from '../core/core';
 
@@ -93,6 +93,9 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   //private mouseUpListener: any;
 
   private _value: Date = null;
+  private _readonly: boolean;
+  private _required: boolean;
+  private _disabled: boolean = false;
   private _isInitialized: boolean = false;
   private _onTouchedCallback: () => void = noop;
   private _onChangeCallback: (_: any) => void = noop;
@@ -130,10 +133,12 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
     moved: false
   };
 
+  private _minDate: Date = null;
+  private _maxDate: Date = null;
+
   @Output() change: EventEmitter<any> = new EventEmitter<any>();
 
   @Input() type: 'date' | 'time' | 'datetime' = 'date';
-  @Input() @BooleanFieldValue() disabled: boolean = false;
   @Input() name: string = '';
   @Input() id: string = 'md2-datepicker-' + (++nextId);
   @Input() class: string;
@@ -141,8 +146,17 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   @Input() format: string = this.type === 'date' ? 'DD/MM/YYYY' : this.type === 'time' ? 'HH:mm' : this.type === 'datetime' ? 'DD/MM/YYYY HH:mm' : 'DD/MM/YYYY';
   @Input() tabindex: number = 0;
 
-  private _minDate: Date = null;
-  private _maxDate: Date = null;
+  @Input()
+  get readonly(): boolean { return this._readonly; }
+  set readonly(value) { this._readonly = coerceBooleanProperty(value); }
+
+  @Input()
+  get required(): boolean { return this._required; }
+  set required(value) { this._required = coerceBooleanProperty(value); }
+
+  @Input()
+  get disabled(): boolean { return this._disabled; }
+  set disabled(value) { this._disabled = coerceBooleanProperty(value); }
 
   @Input() set min(value: string) {
     this._minDate = new Date(value);
@@ -351,7 +365,7 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
    * Display Datepicker
    */
   private showDatepicker() {
-    if (this.disabled) { return; }
+    if (this.disabled || this.readonly) { return; }
     this.isDatepickerVisible = true;
     this.selectedDate = this.value || new Date(1, 0, 1);
     this.displayDate = this.value || this.today;

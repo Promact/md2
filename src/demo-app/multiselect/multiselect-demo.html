@@ -1,21 +1,25 @@
 <div class="demo-multiselect">
   <h1>Multiselect Demo</h1>
   <hr />
+  <h4>Basic Multiselect</h4>
   <div>
     <md2-multiselect [items]="items"
                      [item-text]="'name'"
                      [(ngModel)]="item"
-                     [disabled]="disabled"
+                     required
                      (change)="change($event)"
-                     placeholder="No city selected">
+                     placeholder="Select City">
     </md2-multiselect>
-    <pre>{{item | json}}</pre>
+  </div>
+  <h4>Disabled Multiselect</h4>
+  <div>
     <md2-multiselect [items]="items"
                      [item-text]="'name'"
                      [(ngModel)]="item"
-                     [disabled]="disabled"
+                     required
+                     disabled
                      (change)="change($event)"
-                     placeholder="No city selected">
+                     placeholder="Select City">
     </md2-multiselect>
   </div>
 </div>

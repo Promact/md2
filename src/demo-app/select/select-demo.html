@@ -3,7 +3,7 @@
   <hr />
   <h4>Basic Select</h4>
   <div>
-    <md2-select [(ngModel)]="item" (change)="change($event)" placeholder="Select City">
+    <md2-select [(ngModel)]="item" (change)="change($event)" placeholder="Select City" required>
       <md2-option> -- Select City -- </md2-option>
       <md2-option *ngFor="let i of items" [value]="i.value">{{i.name}}</md2-option>
     </md2-select>

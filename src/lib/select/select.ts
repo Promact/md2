@@ -24,7 +24,10 @@ import {
   FormsModule,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { KeyCodes } from '../core/core';
+import {
+  coerceBooleanProperty,
+  KeyCodes
+} from '../core/core';
 
 export const MD2_SELECT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -61,7 +64,10 @@ export class Md2OptionChange {
   selector: 'md2-select',
   template: `
     <div class="md2-select-container">
-      <span class="md2-select-placeholder" [class.has-value]="selectedValue">{{placeholder}}</span>
+      <span class="md2-select-placeholder" [class.has-value]="selectedValue">
+        {{placeholder}}
+        <span class="md2-placeholder-required" *ngIf="required">*</span>
+      </span>
       <span *ngIf="selectedValue" class="md2-select-value" [innerHtml]="selectedValue"></span>
       <svg width="24" height="24" viewBox="0 0 24 24">
         <path d="M7 10l5 5 5-5z" />
@@ -81,9 +87,11 @@ export class Md2OptionChange {
     md2-select.md2-select-disabled:focus .md2-select-container { padding-bottom: 1px; border-bottom: 1px solid transparent; }
     md2-select .md2-select-container .md2-select-placeholder { position: absolute; right: 26px; bottom: 100%; left: 0; color: rgba(0,0,0,0.38); max-width: 100%; padding-left: 3px; padding-right: 0; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; z-index: 1; transform: translate3d(0,26px,0) scale(1); transition: transform .4s cubic-bezier(.25,.8,.25,1); transform-origin: left top; color: rgba(0, 0, 0, 0.38); }
     md2-select:focus .md2-select-placeholder { color: #2196f3; }
+    md2-select:focus .md2-select-placeholder .md2-placeholder-required { color: #f00; }
     md2-select:focus .md2-select-placeholder,
     md2-select .md2-select-placeholder.has-value { transform: translate3d(0,6px,0) scale(.75); }
-    md2-select.md2-select-disabled:focus .md2-select-placeholder { color: rgba(0,0,0,0.38); }
+    md2-select.md2-select-disabled:focus .md2-select-placeholder,
+    md2-select.md2-select-disabled:focus .md2-select-placeholder .md2-placeholder-required { color: rgba(0,0,0,0.38); }
     md2-select .md2-select-container .md2-select-value { display: block; font-size: 15px; line-height: 26px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     md2-select .md2-select-container svg { position: absolute; right: 0; top: 2px; display: block; fill: currentColor; color: rgba(0,0,0,0.54); }
     md2-select .md2-select-menu { position: absolute; left: 0; top: 0; display: none; z-index: 10; -ms-flex-direction: column; -webkit-flex-direction: column; flex-direction: column; width: 100%; margin: 0; padding: 8px 0; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4); max-height: 256px; min-height: 48px; overflow-y: auto; -moz-transform: scale(1); -ms-transform: scale(1); -o-transform: scale(1); -webkit-transform: scale(1); transform: scale(1); background: #fff; }
@@ -99,8 +107,12 @@ export class Md2OptionChange {
 })
 export class Md2Select implements AfterContentInit, AfterContentChecked, ControlValueAccessor {
 
+  constructor(public element: ElementRef) { }
+
   private _value: any = null;
   private _name: string = 'md2-select-' + _uniqueIdCounter++;
+  private _readonly: boolean;
+  private _required: boolean;
   private _disabled: boolean = false;
   private _selected: Md2Option = null;
   private _isInitialized: boolean = false;
@@ -128,13 +140,21 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   @Input() tabindex: number = 0;
   @Input() placeholder: string = '';
 
-  @HostBinding('class.md2-select-disabled')
-  @Input() get disabled(): boolean { return this._disabled; }
-  set disabled(value) {
-    this._disabled = (value !== null && value !== false) ? true : null;
-  }
+  @Input()
+  get readonly(): boolean { return this._readonly; }
+  set readonly(value) { this._readonly = coerceBooleanProperty(value); }
 
-  @Input() get value(): any { return this._value; }
+  @Input()
+  get required(): boolean { return this._required; }
+  set required(value) { this._required = coerceBooleanProperty(value); }
+
+  @HostBinding('class.md2-select-disabled')
+  @Input()
+  get disabled(): boolean { return this._disabled; }
+  set disabled(value) { this._disabled = coerceBooleanProperty(value); }
+
+  @Input()
+  get value(): any { return this._value; }
   set value(value: any) {
     if (this._value !== value) {
       this._value = value;
@@ -145,7 +165,8 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
     }
   }
 
-  @Input() get selected() { return this._selected; }
+  @Input()
+  get selected() { return this._selected; }
   set selected(selected: Md2Option) {
     this._selected = selected;
     if (selected) {
@@ -154,8 +175,6 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
       this.selectedValue = selected.content;
     } else { this.selectedValue = ''; }
   }
-
-  constructor(public element: ElementRef) { }
 
   ngAfterContentInit() { this._isInitialized = true; }
 
@@ -246,7 +265,7 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
 
   @HostListener('click', ['$event'])
   private onClick(e: any) {
-    if (this.disabled) {
+    if (this.disabled || this.readonly) {
       e.stopPropagation();
       e.preventDefault();
       return;
@@ -423,10 +442,9 @@ export class Md2Option implements OnInit {
   }
 
   @HostBinding('class.md2-option-disabled')
-  @Input() get disabled(): boolean { return this._disabled || (this.select.disabled); }
-  set disabled(disabled: boolean) {
-    this._disabled = (disabled !== null && disabled !== false) ? true : null;
-  }
+  @Input()
+  get disabled(): boolean { return this._disabled || this.select.disabled; }
+  set disabled(value) { this._disabled = coerceBooleanProperty(value); }
 
   ngOnInit() {
     this.selected = this.value ? this.select.value === this.value : false;

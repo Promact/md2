@@ -9,7 +9,9 @@ md2-datepicker.md2-datepicker-disabled .md2-datepicker-input { color: rgba(0,0,0
 .md2-datepicker-placeholder.has-value,
 md2-datepicker:focus .md2-datepicker-placeholder { transform: translate3d(0,6px,0) scale(.75); }
 md2-datepicker:focus .md2-datepicker-placeholder { color: #2196f3; }
-md2-datepicker.md2-datepicker-disabled:focus .md2-datepicker-placeholder { color: rgba(0,0,0,0.38); }
+md2-datepicker:focus .md2-datepicker-placeholder .md2-placeholder-required { color: #f00; }
+md2-datepicker.md2-datepicker-disabled:focus .md2-datepicker-placeholder,
+md2-datepicker.md2-datepicker-disabled:focus .md2-datepicker-placeholder .md2-placeholder-required { color: rgba(0,0,0,0.38); }
 .md2-datepicker-input-text { display: block; font-size: 15px; line-height: 26px; }
 
 .md2-datepicker-wrapper { position: absolute; top: 0; left: 0; display: inline-block; width: 300px; border-radius: 2px; background-color: #fff; z-index: 10; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); transform: scale(0); transform-origin: left top; transition: 150ms; -webkit-touch-callout: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }

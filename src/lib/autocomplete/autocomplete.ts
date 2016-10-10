@@ -19,7 +19,10 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HightlightPipe } from './autocomplete.pipe';
-import { KeyCodes } from '../core/core';
+import {
+  coerceBooleanProperty,
+  KeyCodes
+} from '../core/core';
 
 class Item {
   public text: string;
@@ -52,7 +55,10 @@ export const MD2_AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR: any = {
   template: `
     <div class="md2-autocomplete-wrap" [class.is-focused]="inputFocused || isMenuVisible">
       <input [(ngModel)]="inputBuffer" type="text" tabs="false" autocomplete="off" [tabindex]="disabled ? -1 : tabindex" [disabled]="disabled" class="md2-autocomplete-input" (focus)="onInputFocus()" (blur)="onInputBlur()" (keydown)="inputKeydown($event)" (change)="$event.stopPropagation()" />
-      <span class="md2-autocomplete-placeholder" [class.has-value]="inputBuffer">{{placeholder}}</span>
+      <span class="md2-autocomplete-placeholder" [class.has-value]="inputBuffer">
+        {{placeholder}}
+        <span class="md2-placeholder-required" *ngIf="required">*</span>
+      </span>
       <svg *ngIf="inputBuffer" (click)="onClear()" width="24" height="24" viewBox="0 0 24 24">
         <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
       </svg>
@@ -74,6 +80,7 @@ export const MD2_AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR: any = {
     md2-autocomplete.md2-autocomplete-disabled .md2-autocomplete-input { color: rgba(0,0,0,0.38); }
     md2-autocomplete .md2-autocomplete-placeholder { color: rgba(0, 0, 0, 0.38); position: absolute; right: 26px; bottom: 100%; left: 0; color: rgba(0,0,0,0.38); max-width: 100%; padding-left: 3px; padding-right: 0; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; z-index: 1; transform: translate3d(0,26px,0) scale(1); transition: transform .4s cubic-bezier(.25,.8,.25,1); transform-origin: left top; color: rgba(0, 0, 0, 0.38); }
     .md2-autocomplete-wrap.is-focused .md2-autocomplete-placeholder { color: #2196f3; }
+    .md2-autocomplete-wrap.is-focused .md2-autocomplete-placeholder .md2-placeholder-required { color: #f00; }
     .md2-autocomplete-wrap.is-focused .md2-autocomplete-placeholder,
     md2-autocomplete .md2-autocomplete-placeholder.has-value { transform: translate3d(0,6px,0) scale(.75); }
     .md2-autocomplete-wrap svg { position: absolute; right: 0; top: 0; display: block; height: 100%; background: #fff; fill: currentColor; color: rgba(0,0,0,0.54); }
@@ -103,6 +110,8 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
   @Output() change: EventEmitter<any> = new EventEmitter<any>();
 
   private _value: any = '';
+  private _readonly: boolean;
+  private _required: boolean;
   private _disabled: boolean = false;
   private _isInitialized: boolean = false;
   private _onTouchedCallback: () => void = noop;
@@ -118,25 +127,29 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
   private noBlur: boolean = true;
 
   @Input() id: string = 'md2-autocomplete-' + (++nextId);
-  @Input() get disabled(): boolean { return this._disabled; }
-  set disabled(value) {
-    this._disabled = (value !== null && value !== false) ? true : null;
-  }
   @Input() tabindex: number = 0;
   @Input() placeholder: string = '';
   @Input('item-text') textKey: string = 'text';
   @Input('item-value') valueKey: string = null;
 
-  @Input() set items(value: Array<any>) {
-    this._items = value;
-  }
+  @Input()
+  get readonly(): boolean { return this._readonly; }
+  set readonly(value) { this._readonly = coerceBooleanProperty(value); }
 
-  get value(): any {
-    return this._value;
-  }
-  @Input() set value(value: any) {
-    this.setValue(value);
-  }
+  @Input()
+  get required(): boolean { return this._required; }
+  set required(value) { this._required = coerceBooleanProperty(value); }
+
+  @Input()
+  get disabled(): boolean { return this._disabled; }
+  set disabled(value) { this._disabled = coerceBooleanProperty(value); }
+
+  @Input()
+  set items(value: Array<any>) { this._items = value; }
+
+  @Input()
+  get value(): any { return this._value; }
+  set value(value: any) { this.setValue(value); }
 
   /**
    * set value
@@ -185,7 +198,7 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
   }
 
   get isMenuVisible(): boolean {
-    return ((this.inputFocused || this.noBlur) && this.list && this.list.length && !this.selectedItem) ? true : false;
+    return ((this.inputFocused || this.noBlur) && this.list && this.list.length && !this.selectedItem) && !this.readonly ? true : false;
   }
 
   /**

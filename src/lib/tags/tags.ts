@@ -18,6 +18,10 @@ import {
   FormsModule,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import {
+  coerceBooleanProperty,
+  KeyCodes
+} from '../core/core';
 //import { HightlightPipe } from '../autocomplete/autocomplete.pipe';
 import { Md2AutocompleteModule } from 'md2/autocomplete/autocomplete';
 
@@ -126,25 +130,21 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
   private noBlur: boolean = true;
 
   @Input() id: string = 'md2-tags-' + (++nextId);
-  @Input() get disabled(): boolean { return this._disabled; }
-  set disabled(value) {
-    this._disabled = (value !== null && value !== false) ? true : null;
-  }
   @Input() tabindex: number = 0;
   @Input() placeholder: string = '';
   @Input('md2-tag-text') textKey: string = 'text';
   @Input('md2-tag-value') valueKey: string = null;
 
-  @Input('md2-tags') set tags(value: Array<any>) {
-    this._tags = value;
-  }
+  @Input()
+  get disabled(): boolean { return this._disabled; }
+  set disabled(value) { this._disabled = coerceBooleanProperty(value); }
 
-  get value(): any {
-    return this._value;
-  }
-  @Input() set value(value: any) {
-    this.setValue(value);
-  }
+  @Input('md2-tags')
+  set tags(value: Array<any>) { this._tags = value; }
+
+  @Input()
+  get value(): any { return this._value; }
+  set value(value: any) { this.setValue(value); }
 
   /**
    * setup value
@@ -282,34 +282,29 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
 
   @HostListener('keydown', ['$event'])
   private onKeydown(event: KeyboardEvent) {
-    if (this.tagBuffer || this.disabled) { return; }
+    if (this.disabled || this.tagBuffer) { return; }
+    event.preventDefault();
+    switch (event.keyCode) {
+      case KeyCodes.BACKSPACE:
+      case KeyCodes.DELETE:
+        if (this.selectedTag < 0) { return; }
+        this.removeAndSelectAdjacentTag(this.selectedTag);
+        break;
 
-    // Backspace / Del Key
-    if (event.keyCode === 8 || event.keyCode === 46) {
-      if (this.selectedTag < 0) { return; }
-      event.preventDefault();
-      this.removeAndSelectAdjacentTag(this.selectedTag);
-    }
+      case KeyCodes.TAB:
+      case KeyCodes.ESCAPE:
+        if (this.selectedTag < 0) { return; }
+        this.onFocus();
+        break;
 
-    // Left Arrow
-    if (event.keyCode === 37) {
-      event.preventDefault();
-      if (this.selectedTag < 0) { this.selectedTag = this.items.length; }
-      if (this.items.length) { this.selectAndFocusTagSafe(this.selectedTag - 1); }
-    }
-
-    // Right Arrow
-    if (event.keyCode === 39) {
-      event.preventDefault();
-      if (this.selectedTag >= this.items.length) { this.selectedTag = -1; }
-      this.selectAndFocusTagSafe(this.selectedTag + 1);
-    }
-
-    // Escape / Tab Key
-    if (event.keyCode === 27 || event.keyCode === 9) {
-      if (this.selectedTag < 0) { return; }
-      event.preventDefault();
-      this.onFocus();
+      case KeyCodes.LEFT_ARROW:
+        if (this.selectedTag < 0) { this.selectedTag = this.items.length; }
+        if (this.items.length) { this.selectAndFocusTagSafe(this.selectedTag - 1); }
+        break;
+      case KeyCodes.RIGHT_ARROW:
+        if (this.selectedTag >= this.items.length) { this.selectedTag = -1; }
+        this.selectAndFocusTagSafe(this.selectedTag + 1);
+        break;
     }
   }
 

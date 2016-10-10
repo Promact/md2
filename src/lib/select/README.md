@@ -7,6 +7,8 @@ Select allow the user to select option from options.
 | Name | Type | Description |
 | --- | --- | --- |
 | `placeholder` | `string` | hint label |
+| `readonly` | `boolean` | Whether or not the select is readonly |
+| `required` | `boolean` | Whether or not the select is required |
 | `disabled` | `boolean` | Whether or not the select is disabled |
 
 ### Events of Select

@@ -18,6 +18,10 @@ import {
   FormsModule,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import {
+  coerceBooleanProperty,
+  KeyCodes
+} from '../core/core';
 
 class Option {
   public text: string;
@@ -49,7 +53,10 @@ export const MD2_MULTISELECT_CONTROL_VALUE_ACCESSOR: any = {
   selector: 'md2-multiselect',
   template: `
     <div class="md2-multiselect-container">
-      <span class="md2-multiselect-placeholder" [class.has-value]="items.length">{{placeholder}}</span>
+      <span class="md2-multiselect-placeholder" [class.has-value]="items.length">
+        {{placeholder}}
+        <span class="md2-placeholder-required" *ngIf="required">*</span>
+      </span>
       <div class="md2-multiselect-value">
         <div *ngFor="let v of items; let last = last" class="md2-multiselect-value-item">
           <span class="md2-multiselect-text">{{v.text}}</span><span *ngIf="!last">,&nbsp;</span>
@@ -76,9 +83,11 @@ export const MD2_MULTISELECT_CONTROL_VALUE_ACCESSOR: any = {
     md2-multiselect.md2-multiselect-disabled:focus .md2-multiselect-container { padding-bottom: 1px; border-bottom: 1px solid transparent; }
     md2-multiselect .md2-multiselect-placeholder { color: rgba(0, 0, 0, 0.38); position: absolute; right: 26px; bottom: 100%; left: 0; color: rgba(0,0,0,0.38); max-width: 100%; padding-left: 3px; padding-right: 0; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; z-index: 1; transform: translate3d(0,26px,0) scale(1); transition: transform .4s cubic-bezier(.25,.8,.25,1); transform-origin: left top; color: rgba(0, 0, 0, 0.38); }
     md2-multiselect:focus .md2-multiselect-placeholder { color: #2196f3; }
+    md2-multiselect:focus .md2-multiselect-placeholder .md2-placeholder-required { color: #f00; }
     md2-multiselect:focus .md2-multiselect-placeholder,
     md2-multiselect .md2-multiselect-placeholder.has-value { transform: translate3d(0,6px,0) scale(.75); }
-    md2-multiselect.md2-multiselect-disabled:focus .md2-multiselect-placeholder { color: rgba(0,0,0,0.38); }
+    md2-multiselect.md2-multiselect-disabled:focus .md2-multiselect-placeholder,
+    md2-multiselect.md2-multiselect-disabled:focus .md2-multiselect-placeholder .md2-placeholder-required { color: rgba(0,0,0,0.38); }
     md2-multiselect .md2-multiselect-container .md2-multiselect-value { display: block; max-height: 80px; padding-right: 26px; overflow-y: auto; font-size: 15px; line-height: 26px; }
     md2-multiselect .md2-multiselect-container .md2-multiselect-value-item { word-wrap: break-word; }
     md2-multiselect .md2-multiselect-container svg { position: absolute; right: 0; top: 0; display: block; height: 100%; background: #fff; fill: currentColor; color: rgba(0,0,0,0.54); }
@@ -110,8 +119,10 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
   @Output() change: EventEmitter<any> = new EventEmitter<any>();
 
   private _value: any = '';
-  private _disabled: boolean = false;
-  private _isInitialized: boolean = false;
+  private _readonly: boolean;
+  private _required: boolean;
+  private _disabled: boolean;
+  private _isInitialized: boolean;
   private _onTouchedCallback: () => void = noop;
   private _onChangeCallback: (_: any) => void = noop;
 
@@ -123,28 +134,29 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
   private isFocused: boolean = false;
 
   @Input() id: string = 'md2-multiselect-' + (++nextId);
-  @Input()
-  get disabled(): boolean { return this._disabled; }
-  set disabled(value) {
-    this._disabled = (value !== null && value !== false) ? true : null;
-  }
   @Input() tabindex: number = 0;
   @Input() placeholder: string = '';
   @Input('item-text') textKey: string = 'text';
   @Input('item-value') valueKey: string = null;
 
-  @Input('items')
-  set options(value: Array<any>) {
-    this._options = value;
-  }
+  @Input()
+  get readonly(): boolean { return this._readonly; }
+  set readonly(value) { this._readonly = coerceBooleanProperty(value); }
 
   @Input()
-  get value(): any {
-    return this._value;
-  }
-  set value(value: any) {
-    this.setValue(value);
-  }
+  get required(): boolean { return this._required; }
+  set required(value) { this._required = coerceBooleanProperty(value); }
+
+  @Input()
+  get disabled(): boolean { return this._disabled; }
+  set disabled(value) { this._disabled = coerceBooleanProperty(value); }
+
+  @Input('items')
+  set options(value: Array<any>) { this._options = value; }
+
+  @Input()
+  get value(): any { return this._value; }
+  set value(value: any) { this.setValue(value); }
 
   /**
    * set value
@@ -193,7 +205,7 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
   }
 
   get isMenuVisible(): boolean {
-    return (this.isFocused && this.list && this.list.length) ? true : false;
+    return (this.isFocused && this.list && this.list.length) && !this.readonly ? true : false;
   }
 
   /**
@@ -233,61 +245,38 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
 
   @HostListener('keydown', ['$event'])
   private onKeyDown(event: KeyboardEvent) {
-    // check enabled
     if (this.disabled) { return; }
 
-    // Tab Key
-    if (event.keyCode === 9) {
-      if (this.isMenuVisible) {
-        this.onBlur();
-        event.preventDefault();
-      }
-      return;
-    }
-
-    // Escape Key
-    if (event.keyCode === 27) {
-      this.onBlur();
+    if (this.isMenuVisible) {
+      event.preventDefault();
       event.stopPropagation();
-      event.preventDefault();
-      return;
-    }
 
-    // Down Arrow
-    if (event.keyCode === 40) {
-      if (this.isMenuVisible) {
-        this.focusedOption = (this.focusedOption === this.list.length - 1) ? 0 : Math.min(this.focusedOption + 1, this.list.length - 1);
-        this.updateScroll();
-      } else {
-        this.updateOptions();
-      }
-      event.stopPropagation();
-      event.preventDefault();
-      return;
-    }
+      switch (event.keyCode) {
+        case KeyCodes.TAB:
+        case KeyCodes.ESCAPE: this.onBlur(); break;
+        case KeyCodes.ENTER:
+        case KeyCodes.SPACE: this.toggleOption(event, this.focusedOption); break;
 
-    // Up Arrow
-    if (event.keyCode === 38) {
-      if (this.isMenuVisible) {
-        this.focusedOption = (this.focusedOption === 0) ? this.list.length - 1 : Math.max(0, this.focusedOption - 1);
-        this.updateScroll();
-      } else {
-        this.updateOptions();
+        case KeyCodes.DOWN_ARROW:
+          this.focusedOption = (this.focusedOption === this.list.length - 1) ? 0 : Math.min(this.focusedOption + 1, this.list.length - 1);
+          this.updateScroll();
+          break;
+        case KeyCodes.UP_ARROW:
+          this.focusedOption = (this.focusedOption === 0) ? this.list.length - 1 : Math.max(0, this.focusedOption - 1);
+          this.updateScroll();
+          break;
       }
-      event.stopPropagation();
-      event.preventDefault();
-      return;
-    }
-
-    // Enter / Space
-    if (event.keyCode === 13 || event.keyCode === 32) {
-      if (this.isMenuVisible) {
-        this.toggleOption(event, this.focusedOption);
-      } else {
-        this.updateOptions();
+    } else {
+      switch (event.keyCode) {
+        case KeyCodes.ENTER:
+        case KeyCodes.SPACE:
+        case KeyCodes.DOWN_ARROW:
+        case KeyCodes.UP_ARROW:
+          event.preventDefault();
+          event.stopPropagation();
+          this.updateOptions();
+          break;
       }
-      event.preventDefault();
-      return;
     }
   }
 

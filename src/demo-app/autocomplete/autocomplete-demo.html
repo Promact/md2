@@ -6,6 +6,7 @@
     <md2-autocomplete [items]="items"
                       item-text="name"
                       [(ngModel)]="item"
+                      required
                       (change)="change($event)"
                       placeholder="Select city">
     </md2-autocomplete>

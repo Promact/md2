@@ -339,7 +339,18 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
     }
   }
 
-  writeValue(value: any) { this.setValue(value); }
+  writeValue(value: any) {
+    if (value !== this._value) {
+      this._value = value;
+      this.inputBuffer = '';
+      if (value) {
+        let selItm = this._items.find((i: any) => this.equals(this.valueKey ? i[this.valueKey] : i, value));
+        this.selectedItem = new Item(selItm, this.textKey, this.valueKey);
+        if (this.selectedItem) { this.inputBuffer = this.selectedItem.text; }
+      }
+      if (!this.inputBuffer) { this.inputBuffer = ''; }
+    }
+  }
 
   registerOnChange(fn: any) { this._onChangeCallback = fn; }
 

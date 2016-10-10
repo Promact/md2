@@ -422,7 +422,16 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
   }
 
   writeValue(value: any) {
-    this.setValue(value);
+    if (value !== this._value) {
+      this._value = value;
+      this.items = [];
+      if (value && value.length && typeof value === 'object' && Array.isArray(value)) {
+        for (let i = 0; i < value.length; i++) {
+          let selItm = this._tags.find((t: any) => this.equals(this.valueKey ? t[this.valueKey] : t, value[i]));
+          if (selItm) { this.items.push(new Tag(selItm, this.textKey, this.valueKey)); }
+        }
+      }
+    }
   }
 
   registerOnChange(fn: any) { this._onChangeCallback = fn; }

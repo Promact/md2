@@ -3,16 +3,9 @@
   <hr />
   <h4>Basic Select</h4>
   <div>
-    <pre>{{item}}</pre>
-    <input type="text" [(ngModel)]="items[2].name" />
-    <select [(ngModel)]="item" (change)="change($event)" placeholder="Select City">
-      <option> -- Select City -- </option>
-      <option *ngFor="let i of items" [value]="i.value" [selected]="selected">{{i.name}}</option>
-    </select>
-    <br />
     <md2-select [(ngModel)]="item" (change)="change($event)" placeholder="Select City">
       <md2-option> -- Select City -- </md2-option>
-      <md2-option *ngFor="let i of items" [value]="i.value" [selected]="selected">{{i.name}}</md2-option>
+      <md2-option *ngFor="let i of items" [value]="i.value">{{i.name}}</md2-option>
     </md2-select>
   </div>
   <h4>Static Select</h4>

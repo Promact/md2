@@ -350,7 +350,18 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
    * Implemented as part of ControlValueAccessor.
    * TODO: internal
    */
-  writeValue(value: any) { this.setValue(value); }
+  writeValue(value: any) {
+    if (value !== this._value) {
+      this._value = value;
+      this.items = [];
+      if (value && value.length && typeof value === 'object' && Array.isArray(value)) {
+        for (let i = 0; i < value.length; i++) {
+          let selItm = this._options.find((itm: any) => this.equals(this.valueKey ? itm[this.valueKey] : itm, value[i]));
+          if (selItm) { this.items.push(new Option(selItm, this.textKey, this.valueKey)); }
+        }
+      }
+    }
+  }
 
   /**
    * Implemented as part of ControlValueAccessor.

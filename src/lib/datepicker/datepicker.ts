@@ -790,7 +790,31 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
     };
   }
 
-  writeValue(value: any): void { this.value = value; }
+  writeValue(value: any): void {
+    if (value && value !== this._value) {
+      if (this.dateUtil.isValidDate(value)) {
+        this._value = value;
+      } else {
+        if (this.type === 'time') {
+          this._value = new Date('1-1-1 ' + value);
+        }
+        else {
+          this._value = new Date(value);
+        }
+      }
+      this.displayInputDate = this._formatDate(this._value);
+      let date = '';
+      if (this.type !== 'time') {
+        date += this._value.getFullYear() + '-' + (this._value.getMonth() + 1) + '-' + this._value.getDate();
+      }
+      if (this.type === 'datetime') {
+        date += ' ';
+      }
+      if (this.type !== 'date') {
+        date += this._value.getHours() + ':' + this._value.getMinutes();
+      }
+    }
+  }
 
   registerOnChange(fn: any) { this._onChangeCallback = fn; }
 

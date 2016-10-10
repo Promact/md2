@@ -283,25 +283,28 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
   @HostListener('keydown', ['$event'])
   private onKeydown(event: KeyboardEvent) {
     if (this.disabled || this.tagBuffer) { return; }
-    event.preventDefault();
     switch (event.keyCode) {
       case KeyCodes.BACKSPACE:
       case KeyCodes.DELETE:
         if (this.selectedTag < 0) { return; }
+        event.preventDefault();
         this.removeAndSelectAdjacentTag(this.selectedTag);
         break;
 
       case KeyCodes.TAB:
       case KeyCodes.ESCAPE:
         if (this.selectedTag < 0) { return; }
+        event.preventDefault();
         this.onFocus();
         break;
 
       case KeyCodes.LEFT_ARROW:
+        event.preventDefault();
         if (this.selectedTag < 0) { this.selectedTag = this.items.length; }
         if (this.items.length) { this.selectAndFocusTagSafe(this.selectedTag - 1); }
         break;
       case KeyCodes.RIGHT_ARROW:
+        event.preventDefault();
         if (this.selectedTag >= this.items.length) { this.selectedTag = -1; }
         this.selectAndFocusTagSafe(this.selectedTag + 1);
         break;

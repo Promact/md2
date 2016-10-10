@@ -54,7 +54,7 @@ export const MD2_AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR: any = {
   selector: 'md2-autocomplete',
   template: `
     <div class="md2-autocomplete-wrap" [class.is-focused]="inputFocused || isMenuVisible">
-      <input [(ngModel)]="inputBuffer" type="text" tabs="false" autocomplete="off" [tabindex]="disabled ? -1 : tabindex" [disabled]="disabled" class="md2-autocomplete-input" (focus)="onInputFocus()" (blur)="onInputBlur()" (keydown)="inputKeydown($event)" (change)="$event.stopPropagation()" />
+      <input [(ngModel)]="inputBuffer" type="text" tabs="false" autocomplete="off" [readonly]="readonly" [tabindex]="disabled ? -1 : tabindex" [disabled]="disabled" class="md2-autocomplete-input" (focus)="onInputFocus()" (blur)="onInputBlur()" (keydown)="inputKeydown($event)" (change)="$event.stopPropagation()" />
       <span class="md2-autocomplete-placeholder" [class.has-value]="inputBuffer">
         {{placeholder}}
         <span class="md2-placeholder-required" *ngIf="required">*</span>

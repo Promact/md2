@@ -29,13 +29,13 @@ import {
   KeyCodes
 } from '../core/core';
 
+let _uniqueIdCounter = 0;
+
 export const MD2_SELECT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
   useExisting: forwardRef(() => Md2Select),
   multi: true
 };
-
-var _uniqueIdCounter = 0;
 
 export type Md2SelectDispatcherListener = (id: string, name: string) => void;
 
@@ -54,8 +54,8 @@ export class Md2SelectDispatcher {
   }
 }
 
-export class Md2OptionChange {
-  source: Md2Option;
+export class Md2SelectChange {
+  source: Md2Select;
   value: any;
 }
 
@@ -126,7 +126,7 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   private _controlValueAccessorChangeFn: (value: any) => void = (value) => { };
   onTouched: () => any = () => { };
 
-  @Output() change: EventEmitter<Md2OptionChange> = new EventEmitter<Md2OptionChange>();
+  @Output() change: EventEmitter<Md2SelectChange> = new EventEmitter<Md2SelectChange>();
 
   @ContentChildren(forwardRef(() => Md2Option))
   public _options: QueryList<Md2Option> = null;
@@ -172,7 +172,7 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
     if (selected) {
       this.value = selected.value;
       if (!selected.selected) { selected.selected = true; }
-      this.selectedValue = selected.content;
+      this.selectedValue = selected.text;
     } else { this.selectedValue = ''; }
   }
 
@@ -181,10 +181,10 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   ngAfterContentChecked() {
     let opt = this._options.filter(o => this.equals(o.value, this.value))[0];
     if (opt && !this.equals(this.selected, opt)) {
-      this.selectedValue = opt.content;
+      this.selectedValue = opt.text;
     }
-    if (this.selected && this.selectedValue !== this.selected.content) {
-      this.selectedValue = this.selected.content;
+    if (this.selected && this.selectedValue !== this.selected.text) {
+      this.selectedValue = this.selected.text;
     }
   }
 
@@ -299,7 +299,7 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
         case KeyCodes.TAB:
         case KeyCodes.ESCAPE: this.onBlur(); break;
         case KeyCodes.ENTER:
-        case KeyCodes.SPACE: this._options.toArray()[this.focusIndex].onClick(event); break;
+        case KeyCodes.SPACE: this._options.toArray()[this.focusIndex].onOptionClick(event); break;
 
         case KeyCodes.DOWN_ARROW: this.updateFocus(1); break;
         case KeyCodes.UP_ARROW: this.updateFocus(-1); break;
@@ -357,8 +357,8 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   }
 
   private _emitChangeEvent(): void {
-    let event = new Md2OptionChange();
-    event.source = this.selected;
+    let event = new Md2SelectChange();
+    event.source = this;
     event.value = this.value;
     this._controlValueAccessorChangeFn(event.value);
     this.change.emit(event);
@@ -388,50 +388,40 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   `],
   host: {
     'role': 'option',
-    '(click)': 'onClick($event)'
+    '(click)': 'onOptionClick($event)'
   },
   encapsulation: ViewEncapsulation.None
 })
 export class Md2Option implements OnInit {
 
-  private _selected: boolean = false;
-  private _disabled: boolean;
   private _value: any = null;
+  private _selected: boolean;
+  private _disabled: boolean;
+
+  public text: string;
+  name: string;
+  select: Md2Select;
 
   @HostBinding('class.md2-option-focused') focused: boolean = false;
 
-  @HostBinding('id')
-  @Input() id: string = `md2-option-${_uniqueIdCounter++}`;
+  @Input() label: boolean;
 
-  name: string;
-
-  public content: any = null;
-
-  select: Md2Select;
-
-  constructor(select: Md2Select, private selectDispatcher: Md2SelectDispatcher, private element: ElementRef) {
-    this.select = select;
-    selectDispatcher.listen((id: string, name: string) => {
-      if (id !== this.id && name === this.name) {
-        this.selected = false;
-      }
-    });
-  }
+  @HostBinding()
+  @Input() id: string = 'md2-option-' + _uniqueIdCounter++;
 
   @HostBinding('class.md2-option-selected')
   @Input()
   get selected(): boolean { return this._selected; }
   set selected(selected: boolean) {
     if (selected) { this.selectDispatcher.notify(this.id, this.name); }
-
     this._selected = selected;
-
     if (selected && this.select.value !== this.value) {
       this.select.selected = this;
     }
   }
 
-  @Input() get value(): any { return this._value; }
+  @Input()
+  get value(): any { return this._value; }
   set value(value: any) {
     if (this._value !== value) {
       if (this.selected) {
@@ -446,21 +436,30 @@ export class Md2Option implements OnInit {
   get disabled(): boolean { return this._disabled || this.select.disabled; }
   set disabled(value) { this._disabled = coerceBooleanProperty(value); }
 
+  constructor(select: Md2Select, private selectDispatcher: Md2SelectDispatcher, private _elementRef: ElementRef) {
+    this.select = select;
+    selectDispatcher.listen((id: string, name: string) => {
+      if (id !== this.id && name === this.name) {
+        this.selected = false;
+      }
+    });
+  }
+
   ngOnInit() {
     this.selected = this.value ? this.select.value === this.value : false;
     this.name = this.select.name;
   }
 
   ngAfterViewChecked() {
-    this.content = this.element.nativeElement.innerText;
-    if (this.value === null) { this.value = this.content.trim(); }
+    this.text = !!this.label ? this.label : this._elementRef.nativeElement.textContent.trim();
+    if (this.value === null) { this.value = this.text; }
   }
 
   /**
    * on click to select option
    * @param event
    */
-  public onClick(event: Event) {
+  public onOptionClick(event: Event) {
     if (this.disabled) {
       event.preventDefault();
       event.stopPropagation();

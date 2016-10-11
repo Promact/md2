@@ -113,7 +113,8 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   private _name: string = 'md2-select-' + _uniqueIdCounter++;
   private _readonly: boolean;
   private _required: boolean;
-  private _disabled: boolean = false;
+  private _disabled: boolean;
+  //private _multiple: boolean;
   private _selected: Md2Option = null;
   private _isInitialized: boolean = false;
 
@@ -152,6 +153,10 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   @Input()
   get disabled(): boolean { return this._disabled; }
   set disabled(value) { this._disabled = coerceBooleanProperty(value); }
+
+  //@Input()
+  //get multiple(): boolean { return this._multiple; }
+  //set multiple(value) { this._multiple = coerceBooleanProperty(value); }
 
   @Input()
   get value(): any { return this._value; }
@@ -381,10 +386,16 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   selector: 'md2-option',
   template: '<ng-content></ng-content>',
   styles: [`
-    md2-option { cursor: pointer; position: relative; display: block; align-items: center; width: auto; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; -moz-transition: background 0.15s linear; -o-transition: background 0.15s linear; -webkit-transition: background 0.15s linear; transition: background 0.15s linear; padding: 0 16px; height: 48px; line-height: 48px; }
+    md2-option { position: relative; display: block; width: 100%; padding: 12px 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 16px; cursor: pointer; box-sizing: border-box; transition: background 400ms linear; }
     md2-option.md2-option-selected { color: #106cc8; }
-    md2-option:hover, md2-option.md2-option-focused { background: #eeeeee; }
-    md2-option.md2-option-disabled, md2-option.md2-option-disabled:hover { color: rgba(189,189,189,0.87); cursor: default; background: transparent; }
+    md2-option:hover,
+    md2-option.md2-option-focused { background: #eeeeee; }
+    md2-option.md2-option-disabled,
+    md2-option.md2-option-disabled:hover { color: rgba(189,189,189,0.87); cursor: default; background: transparent; }
+    /*md2-select[multiple] md2-option { padding-left: 40px; }
+    md2-select[multiple] md2-option:after { content: ''; position: absolute; top: 50%; left: 12px; display: block; width: 16px; height: 16px; margin-top: -8px; border: 2px solid rgba(0,0,0,0.54); border-radius: 2px; box-sizing: border-box; transition: 240ms; }
+    md2-select[multiple] md2-option.md2-option-selected:after { transform: rotate(-45deg); height: 8px; border-width: 0 0 2px 2px; border-color: #106cc8; }
+    md2-select[multiple] md2-option.md2-option-disabled:after { border-color: rgba(187,187,187,0.54); }*/
   `],
   host: {
     'role': 'option',
@@ -465,10 +476,12 @@ export class Md2Option implements OnInit {
       event.stopPropagation();
       return;
     }
-
+    //if (this.select.multiple) {
+    //} else {
     this.select.selected = this;
     this.select.touch();
     this.select.onBlur();
+    //}
   }
 }
 

@@ -149,13 +149,7 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
 
   @Input()
   get value(): any { return this._value; }
-  set value(value: any) { this.setValue(value); }
-
-  /**
-   * set value
-   * @param value of ngModel
-   */
-  private setValue(value: any) {
+  set value(value: any) {
     if (value !== this._value) {
       this._value = value;
       this.inputBuffer = '';
@@ -167,7 +161,7 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
       if (!this.inputBuffer) { this.inputBuffer = ''; }
       if (this._isInitialized) {
         this._onChangeCallback(value);
-        this.change.emit(this._value);
+        this.change.emit(value);
       }
     }
   }

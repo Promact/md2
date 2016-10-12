@@ -3,7 +3,7 @@
     "declaration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "lib": [ "es6", "es2015", "dom" ],
+    "lib": ["es6", "es2015", "dom"],
     "mapRoot": "",
     "module": "commonjs",
     "moduleResolution": "node",
@@ -17,9 +17,6 @@
     "stripInternal": true,
     "baseUrl": "",
     "paths": {
-      "md2/*": [
-        "./*"
-      ]
     },
     "typeRoots": [
       "../../node_modules/@types"

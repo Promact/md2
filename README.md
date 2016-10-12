@@ -30,7 +30,7 @@ Angular2 based Material Design components, directives and services are Accordion
 // app.module.ts
 // =============
 
-import { Md2Module }  from 'md2/all';
+import { Md2Module }  from 'md2';
 @NgModule({
   imports: [
     ...,

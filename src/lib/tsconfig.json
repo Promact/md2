@@ -3,9 +3,9 @@
     "declaration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "lib": [ "es6", "es2015", "dom" ],
+    "lib": ["es6", "es2015", "dom"],
     "mapRoot": "",
-    "module": "umd",
+    "module": "es2015",
     "moduleResolution": "node",
     "noEmitOnError": true,
     "noImplicitAny": true,
@@ -15,12 +15,6 @@
     "target": "es5",
     "inlineSources": true,
     "stripInternal": true,
-    "baseUrl": "",
-    "paths": {
-      "md2/*": [
-        "./*"
-      ]
-    },
     "typeRoots": [
       "../../node_modules/@types"
     ],
@@ -29,10 +23,10 @@
   },
   "exclude": [
     "**/*.spec.*",
-    "system-config-spec"
+    "system-config-spec.ts"
   ],
   "angularCompilerOptions": {
-    "genDir": "../../dist",
+    "genDir": "../../dist/md2",
     "skipTemplateCodegen": true,
     "debug": true
   }

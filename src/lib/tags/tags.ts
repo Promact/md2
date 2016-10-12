@@ -22,8 +22,7 @@ import {
   coerceBooleanProperty,
   KeyCodes
 } from '../core/core';
-//import { HightlightPipe } from '../autocomplete/autocomplete.pipe';
-import { Md2AutocompleteModule } from 'md2/autocomplete/autocomplete';
+import { HightlightPipe } from '../autocomplete/autocomplete.pipe';
 
 const noop = () => { };
 
@@ -437,11 +436,11 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
   registerOnTouched(fn: any) { this._onTouchedCallback = fn; }
 }
 
-export const MD2_TAGS_DIRECTIVES = [Md2Tags];
+export const MD2_TAGS_DIRECTIVES = [Md2Tags, HightlightPipe];
 
 @NgModule({
   declarations: MD2_TAGS_DIRECTIVES,
-  imports: [CommonModule, FormsModule, Md2AutocompleteModule],
+  imports: [CommonModule, FormsModule],
   exports: MD2_TAGS_DIRECTIVES,
 })
 export class Md2TagsModule {

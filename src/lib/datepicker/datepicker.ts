@@ -840,9 +840,9 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
 export const MD2_DATEPICKER_DIRECTIVES = [Md2Datepicker];
 
 @NgModule({
-  declarations: MD2_DATEPICKER_DIRECTIVES,
   imports: [CommonModule, FormsModule],
   exports: MD2_DATEPICKER_DIRECTIVES,
+  declarations: MD2_DATEPICKER_DIRECTIVES,
 })
 export class Md2DatepickerModule {
   static forRoot(): ModuleWithProviders {

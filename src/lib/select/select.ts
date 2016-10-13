@@ -488,9 +488,9 @@ export class Md2Option implements OnInit {
 export const MD2_SELECT_DIRECTIVES = [Md2Select, Md2Option];
 
 @NgModule({
-  declarations: MD2_SELECT_DIRECTIVES,
   imports: [CommonModule, FormsModule],
   exports: MD2_SELECT_DIRECTIVES,
+  declarations: MD2_SELECT_DIRECTIVES,
 })
 export class Md2SelectModule {
   static forRoot(): ModuleWithProviders {

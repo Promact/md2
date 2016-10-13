@@ -128,8 +128,8 @@ export const MD2_TOAST_DIRECTIVES: any[] = [Md2ToastComponent];
 
 @NgModule({
   imports: [CommonModule],
-  declarations: MD2_TOAST_DIRECTIVES,
   exports: MD2_TOAST_DIRECTIVES,
+  declarations: MD2_TOAST_DIRECTIVES,
   providers: [Md2Toast],
   entryComponents: MD2_TOAST_DIRECTIVES
 })

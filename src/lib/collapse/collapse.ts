@@ -4,7 +4,7 @@ import {
   NgModule,
   ModuleWithProviders
 } from '@angular/core';
-import {CommonModule} from '@angular/common';
+import { CommonModule } from '@angular/common';
 
 @Directive({
   selector: '[collapse]',
@@ -62,9 +62,9 @@ export class Md2Collapse {
 export const MD2_COLLAPSE_DIRECTIVES: any[] = [Md2Collapse];
 
 @NgModule({
-  declarations: MD2_COLLAPSE_DIRECTIVES,
   imports: [CommonModule],
   exports: MD2_COLLAPSE_DIRECTIVES,
+  declarations: MD2_COLLAPSE_DIRECTIVES,
 })
 export class Md2CollapseModule {
   static forRoot(): ModuleWithProviders {

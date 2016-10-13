@@ -10,7 +10,7 @@ import {
   NgModule,
   ModuleWithProviders
 } from '@angular/core';
-import {CommonModule} from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Md2TooltipComponent } from './tooltip.component';
 import { Md2TooltipOptions } from './tooltip.options';
 
@@ -87,9 +87,8 @@ export const MD2_TOOLTIP_DIRECTIVES: any[] = [Md2Tooltip, Md2TooltipComponent];
 
 @NgModule({
   imports: [CommonModule],
-  declarations: MD2_TOOLTIP_DIRECTIVES,
   exports: MD2_TOOLTIP_DIRECTIVES,
-  providers: [],
+  declarations: MD2_TOOLTIP_DIRECTIVES,
   entryComponents: [Md2TooltipComponent]
 })
 export class Md2TooltipModule {

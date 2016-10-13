@@ -14,7 +14,7 @@ import {
   NgModule,
   ModuleWithProviders
 } from '@angular/core';
-import {CommonModule} from '@angular/common';
+import { CommonModule } from '@angular/common';
 
 export class Md2TabChangeEvent {
   index: number;
@@ -364,9 +364,9 @@ export class Md2Tabs implements AfterContentInit {
 export const MD2_TABS_DIRECTIVES: any[] = [Md2TabLabel, Md2Tabs, Md2Tab];
 
 @NgModule({
-  declarations: [Md2Transclude, Md2TabLabel, Md2Tabs, Md2Tab],
   imports: [CommonModule],
   exports: MD2_TABS_DIRECTIVES,
+  declarations: [Md2Transclude, Md2TabLabel, Md2Tabs, Md2Tab],
 })
 export class Md2TabsModule {
   static forRoot(): ModuleWithProviders {

@@ -165,9 +165,9 @@ export const MD2_DIALOG_DIRECTIVES: any[] = [Md2Dialog, Md2DialogTitle, Md2Dialo
 export const MD2_DIALOG_PROVIDERS: any[] = [Overlay, OVERLAY_PROVIDERS];
 
 @NgModule({
-  declarations: MD2_DIALOG_DIRECTIVES,
   imports: [CommonModule],
   exports: MD2_DIALOG_DIRECTIVES,
+  declarations: MD2_DIALOG_DIRECTIVES,
 })
 export class Md2DialogModule {
   static forRoot(): ModuleWithProviders {

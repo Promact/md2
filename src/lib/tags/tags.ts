@@ -22,7 +22,7 @@ import {
   coerceBooleanProperty,
   KeyCodes
 } from '../core/core';
-import { HightlightPipe } from '../autocomplete/autocomplete.pipe';
+import { Md2AutocompleteModule } from '../autocomplete/autocomplete';
 
 const noop = () => { };
 
@@ -64,7 +64,7 @@ export const MD2_TAGS_CONTROL_VALUE_ACCESSOR: any = {
         <input [(ngModel)]="tagBuffer" type="text" tabs="false" autocomplete="off" tabindex="-1" [disabled]="disabled" class="md2-tags-input" [placeholder]="placeholder" (focus)="onInputFocus()" (blur)="onInputBlur()" (keydown)="inputKeydown($event)" (change)="$event.stopPropagation()" />
         <ul *ngIf="isMenuVisible" class="md2-tags-menu" (mouseenter)="listEnter()" (mouseleave)="listLeave()">
           <li class="md2-option" *ngFor="let l of list; let i = index;" [class.focused]="focusedTag === i" (click)="addTag($event, i)">
-            <span class="md2-option-text" [innerHtml]="l.text | hightlight:tagBuffer"></span>
+            <span class="md2-option-text" [innerHtml]="l.text | highlight:tagBuffer"></span>
           </li>
         </ul>
       </span>
@@ -436,12 +436,12 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
   registerOnTouched(fn: any) { this._onTouchedCallback = fn; }
 }
 
-export const MD2_TAGS_DIRECTIVES = [Md2Tags, HightlightPipe];
+export const MD2_TAGS_DIRECTIVES = [Md2Tags];
 
 @NgModule({
-  declarations: MD2_TAGS_DIRECTIVES,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, Md2AutocompleteModule],
   exports: MD2_TAGS_DIRECTIVES,
+  declarations: MD2_TAGS_DIRECTIVES,
 })
 export class Md2TagsModule {
   static forRoot(): ModuleWithProviders {

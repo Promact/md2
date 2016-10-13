@@ -45,6 +45,9 @@ export * from './keyboard/keycodes';
 // Coersion
 export { coerceBooleanProperty } from './coersion/boolean-property';
 
+// Pipes
+export * from './pipes/pipes';
+
 @NgModule({
   imports: [PortalModule, OverlayModule],
   exports: [PortalModule, OverlayModule],

@@ -3,8 +3,8 @@ import {
   PipeTransform
 } from '@angular/core';
 
-@Pipe({ name: 'hightlight' })
-export class HightlightPipe implements PipeTransform {
+@Pipe({ name: 'highlight' })
+export class HighlightPipe implements PipeTransform {
   /**
    * Transform function
    * @param value string

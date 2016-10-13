@@ -18,7 +18,7 @@ import {
   FormsModule,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { HightlightPipe } from './autocomplete.pipe';
+import { HighlightPipe } from '../core/core';
 import {
   coerceBooleanProperty,
   KeyCodes
@@ -65,7 +65,7 @@ export const MD2_AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR: any = {
     </div>
     <ul *ngIf="isMenuVisible" class="md2-autocomplete-menu" (mouseenter)="listEnter()" (mouseleave)="listLeave()">
       <li class="md2-option" *ngFor="let l of list; let i = index;" [class.focus]="focusedOption === i" (click)="select($event, i)">
-        <div class="md2-text" [innerHtml]="l.text | hightlight:inputBuffer"></div>
+        <div class="md2-text" [innerHtml]="l.text | highlight:inputBuffer"></div>
       </li>
     </ul>
   `,
@@ -364,12 +364,12 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
   registerOnTouched(fn: any) { this._onTouchedCallback = fn; }
 }
 
-export const MD2_AUTOCOMPLETE_DIRECTIVES = [Md2Autocomplete, HightlightPipe];
+export const MD2_AUTOCOMPLETE_DIRECTIVES = [Md2Autocomplete, HighlightPipe];
 
 @NgModule({
-  declarations: MD2_AUTOCOMPLETE_DIRECTIVES,
   imports: [CommonModule, FormsModule],
   exports: MD2_AUTOCOMPLETE_DIRECTIVES,
+  declarations: MD2_AUTOCOMPLETE_DIRECTIVES,
 })
 export class Md2AutocompleteModule {
   static forRoot(): ModuleWithProviders {

@@ -30,14 +30,10 @@ const writeFile = promiseify(fs.writeFile);
 
 
 function inlineResources(globs) {
-  if (typeof globs == 'string') {
-    globs = [globs];
-  }
-
   /**
    * For every argument, inline the templates and styles under it and write the new file.
    */
-  return Promise.all(globs.map(pattern => {
+  for (let pattern of globs) {
     if (pattern.indexOf('*') < 0) {
       // Argument is a directory target, add glob patterns to include every files.
       pattern = path.join(pattern, '**', '*');
@@ -47,32 +43,17 @@ function inlineResources(globs) {
       .filter(name => /\.js$/.test(name));  // Matches only JavaScript files.
 
     // Generate all files content with inlined templates.
-    return Promise.all(files.map(filePath => {
-      return readFile(filePath, 'utf-8')
-        .then(content => inlineResourcesFromString(content, url => {
-          return path.join(path.dirname(filePath), url);
-        }))
+    files.forEach(filePath => {
+      readFile(filePath, 'utf-8')
+        .then(content => inlineTemplate(filePath, content))
+        .then(content => inlineStyle(filePath, content))
+        .then(content => removeModuleId(filePath, content))
         .then(content => writeFile(filePath, content))
         .catch(err => {
           console.error('An error occured: ', err);
         });
-    }));
-  }));
-}
-
-/**
- * Inline resources from a string content.
- * @param content {string} The source file's content.
- * @param urlResolver {Function} A resolver that takes a URL and return a path.
- * @returns {string} The content with resources inlined.
- */
-function inlineResourcesFromString(content, urlResolver) {
-  // Curry through the inlining functions.
-  return [
-    inlineTemplate,
-    inlineStyle,
-    removeModuleId
-  ].reduce((content, fn) => fn(content, urlResolver), content);
+    });
+  }
 }
 
 if (require.main === module) {
@@ -83,13 +64,13 @@ if (require.main === module) {
 /**
  * Inline the templates for a source file. Simply search for instances of `templateUrl: ...` and
  * replace with `template: ...` (with the content of the file included).
+ * @param filePath {string} The path of the source file.
  * @param content {string} The source file's content.
- * @param urlResolver {Function} A resolver that takes a URL and return a path.
  * @return {string} The content with all templates inlined.
  */
-function inlineTemplate(content, urlResolver) {
+function inlineTemplate(filePath, content) {
   return content.replace(/templateUrl:\s*'([^']+?\.html)'/g, function(m, templateUrl) {
-    const templateFile = urlResolver(templateUrl);
+    const templateFile = path.join(path.dirname(filePath), templateUrl);
     const templateContent = fs.readFileSync(templateFile, 'utf-8');
     const shortenedTemplate = templateContent
       .replace(/([\n\r]\s*)+/gm, ' ')
@@ -102,16 +83,16 @@ function inlineTemplate(content, urlResolver) {
 /**
  * Inline the styles for a source file. Simply search for instances of `styleUrls: [...]` and
  * replace with `styles: [...]` (with the content of the file included).
- * @param urlResolver {Function} A resolver that takes a URL and return a path.
+ * @param filePath {string} The path of the source file.
  * @param content {string} The source file's content.
  * @return {string} The content with all styles inlined.
  */
-function inlineStyle(content, urlResolver) {
+function inlineStyle(filePath, content) {
   return content.replace(/styleUrls:\s*(\[[\s\S]*?\])/gm, function(m, styleUrls) {
     const urls = eval(styleUrls);
     return 'styles: ['
       + urls.map(styleUrl => {
-          const styleFile = urlResolver(styleUrl);
+          const styleFile = path.join(path.dirname(filePath), styleUrl);
           const styleContent = fs.readFileSync(styleFile, 'utf-8');
           const shortenedStyle = styleContent
             .replace(/([\n\r]\s*)+/gm, ' ')
@@ -126,13 +107,13 @@ function inlineStyle(content, urlResolver) {
 
 /**
  * Remove every mention of `moduleId: module.id`.
+ * @param _ {string} The file path of the source file, currently ignored.
  * @param content {string} The source file's content.
  * @returns {string} The content with all moduleId: mentions removed.
  */
-function removeModuleId(content) {
+function removeModuleId(_, content) {
   return content.replace(/\s*moduleId:\s*module\.id\s*,?\s*/gm, '');
 }
 
 
 module.exports = inlineResources;
-module.exports.inlineResourcesFromString = inlineResourcesFromString;

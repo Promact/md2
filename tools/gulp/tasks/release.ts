@@ -34,41 +34,40 @@ task(':publish:whoami', execTask('npm', ['whoami'], {
 task(':publish:logout', execTask('npm', ['logout']));
 
 
-function _execNpmPublish(label: string): Promise<void> {
-  const packageDir = DIST_COMPONENTS_ROOT;
-  if (!statSync(packageDir).isDirectory()) {
+function _execNpmPublish(componentName: string, label: string): Promise<void> {
+  const componentPath = path.join(DIST_COMPONENTS_ROOT, componentName);
+  const stat = statSync(componentPath);
+
+  if (!stat.isDirectory()) {
     return;
   }
 
-  if (!existsSync(path.join(packageDir, 'package.json'))) {
-    throw new Error(`"${packageDir}" does not have a package.json.`);
+  if (!existsSync(path.join(componentPath, 'package.json'))) {
+    console.log(`Skipping ${componentPath} as it does not have a package.json.`);
+    return;
   }
 
-  process.chdir(packageDir);
-  console.log(`Publishing md2...`);
+  process.chdir(componentPath);
+  console.log(`Publishing ${componentName}...`);
 
   const command = 'npm';
   const args = ['publish', '--access', 'public', label ? `--tag` : undefined, label || undefined];
   return new Promise((resolve, reject) => {
-    console.log(`  Executing "${command} ${args.join(' ')}"...`);
-    if (argv['dry']) {
-      resolve();
-      return;
-    }
+    console.log(`Executing "${command} ${args.join(' ')}"...`);
 
     const childProcess = spawn(command, args);
     childProcess.stdout.on('data', (data: Buffer) => {
-      console.log(`  stdout: ${data.toString().split(/[\n\r]/g).join('\n          ')}`);
+      console.log(`stdout: ${data.toString().split(/[\n\r]/g).join('\n        ')}`);
     });
     childProcess.stderr.on('data', (data: Buffer) => {
-      console.error(`  stderr: ${data.toString().split(/[\n\r]/g).join('\n          ')}`);
+      console.error(`stderr: ${data.toString().split(/[\n\r]/g).join('\n        ')}`);
     });
 
     childProcess.on('close', (code: number) => {
       if (code == 0) {
         resolve();
       } else {
-        reject(new Error(`Material did not publish, status: ${code}.`));
+        reject(new Error(`Component ${componentName} did not publish, status: ${code}.`));
       }
     });
   });
@@ -86,8 +85,9 @@ task(':publish', function(done: (err?: any) => void) {
   }
   console.log('\n\n');
 
-  // Publish only the md2 package.
-  return _execNpmPublish(label)
+  // Build a promise chain that publish each component.
+  readdirSync(DIST_COMPONENTS_ROOT)
+    .reduce((prev, dirName) => prev.then(() => _execNpmPublish(dirName, label)), Promise.resolve())
     .then(() => done())
     .catch((err: Error) => done(err))
     .then(() => process.chdir(currentDir));

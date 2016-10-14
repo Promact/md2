@@ -1,24 +1,18 @@
-import { NgModule, ModuleWithProviders } from '@angular/core';
-
-import {
-  PortalModule,
-  OverlayModule,
-} from './core/index';
-
-import { Md2AccordionModule } from './accordion/index';
-import { Md2AutocompleteModule } from './autocomplete/index';
-import { Md2ChipsModule } from './chips/index';
-import { Md2CollapseModule } from './collapse/index';
-import { Md2ColorpickerModule } from './colorpicker/index';
-import { Md2DatepickerModule } from './datepicker/index';
-import { Md2DialogModule } from './dialog/index';
-import { Md2MenuModule } from './menu/index';
-import { Md2MultiselectModule } from './multiselect/index';
-import { Md2SelectModule } from './select/index';
-import { Md2TabsModule } from './tabs/index';
-import { Md2TagsModule } from './tags/index';
-import { Md2ToastModule } from './toast/index';
-import { Md2TooltipModule } from './tooltip/index';
+import {NgModule, ModuleWithProviders} from '@angular/core';
+import {Md2AccordionModule} from './accordion/accordion';
+import {Md2AutocompleteModule} from './autocomplete/autocomplete';
+import {Md2ChipsModule} from './chips/chips';
+import {Md2CollapseModule} from './collapse/collapse';
+import {Md2ColorpickerModule} from './colorpicker/colorpicker';
+import {Md2DatepickerModule} from './datepicker/datepicker';
+import {Md2DialogModule} from './dialog/dialog';
+import {Md2MenuModule} from './menu/menu';
+import {Md2MultiselectModule} from './multiselect/multiselect';
+import {Md2SelectModule} from './select/select';
+import {Md2TabsModule} from './tabs/tabs';
+import {Md2TagsModule} from './tags/tags';
+import {Md2ToastModule} from './toast/toast';
+import {Md2TooltipModule} from './tooltip/tooltip';
 
 const MD2_MODULES = [
   Md2AccordionModule,
@@ -55,6 +49,7 @@ const MD2_MODULES = [
     Md2TooltipModule.forRoot(),
   ],
   exports: MD2_MODULES,
+  providers: []
 })
 export class Md2RootModule { }
 

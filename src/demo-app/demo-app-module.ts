@@ -4,7 +4,7 @@ import {HttpModule} from '@angular/http';
 import {FormsModule} from '@angular/forms';
 import {DemoApp, Home} from './demo-app/demo-app';
 import {RouterModule} from '@angular/router';
-import {Md2Module} from 'md2/all';
+import {Md2Module} from 'md2';
 import {DEMO_APP_ROUTES} from './demo-app/routes';
 
 import {AccordionDemo} from './accordion/accordion-demo';

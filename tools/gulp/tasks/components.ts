@@ -1,42 +1,63 @@
 import {task, watch} from 'gulp';
-import {readdirSync, statSync, writeFileSync} from 'fs';
 import * as path from 'path';
 
 import {SOURCE_ROOT, DIST_COMPONENTS_ROOT, PROJECT_ROOT} from '../constants';
-import {sassBuildTask, tsBuildTask, execNodeTask, copyTask} from '../task_helpers';
+import {sassBuildTask, tsBuildTask, execNodeTask, copyTask, sequenceTask} from '../task_helpers';
+import {writeFileSync} from 'fs';
 
 // No typings for these.
 const inlineResources = require('../../../scripts/release/inline-resources');
 const rollup = require('rollup').rollup;
 
+
+// NOTE: there are two build "modes" in this file, based on which tsconfig is used.
+// When `tsconfig.json` is used, we are outputting ES6 modules and a UMD bundle. This is used
+// for serving and for release.
+//
+// When `tsconfig-spec.json` is used, we are outputting CommonJS modules. This is used
+// for unit tests (karma).
+
+/** Path to the root of the Angular Material component library. */
 const componentsDir = path.join(SOURCE_ROOT, 'lib');
 
-
-function camelCase(str: string) {
-  return str.replace(/-(\w)/g, (_: any, letter: string) => {
-    return letter.toUpperCase();
-  })
-}
+/** Path to the tsconfig used for ESM output. */
+const tsconfigPath = path.relative(PROJECT_ROOT, path.join(componentsDir, 'tsconfig.json'));
 
 
+/** [Watch task] Rebuilds (ESM output) whenever ts, scss, or html sources change. */
 task(':watch:components', () => {
   watch(path.join(componentsDir, '**/*.ts'), [':build:components:ts']);
   watch(path.join(componentsDir, '**/*.scss'), [':build:components:scss']);
   watch(path.join(componentsDir, '**/*.html'), [':build:components:assets']);
 });
 
+/** [Watch task] Rebuilds for tests (CJS output) whenever ts, scss, or html sources change. */
+task(':watch:components:spec', () => {
+  watch(path.join(componentsDir, '**/*.ts'), [':build:components:spec']);
+  watch(path.join(componentsDir, '**/*.scss'), [':build:components:scss']);
+  watch(path.join(componentsDir, '**/*.html'), [':build:components:assets']);
+});
 
+
+/** Builds component typescript only (ESM output). */
 task(':build:components:ts', tsBuildTask(componentsDir));
+
+/** Builds components typescript for tests (CJS output). */
 task(':build:components:spec', tsBuildTask(path.join(componentsDir, 'tsconfig-spec.json')));
-task(':build:components:assets',
-     copyTask(path.join(componentsDir, '*/**/*.!(ts|spec.ts)'), DIST_COMPONENTS_ROOT));
+
+/** Copies assets (html, markdown) to build output. */
+task(':build:components:assets', copyTask([
+  path.join(componentsDir, '**/*.!(ts|spec.ts)'),
+  path.join(PROJECT_ROOT, 'README.md'),
+], DIST_COMPONENTS_ROOT));
+
+/** Builds scss into css. */
 task(':build:components:scss', sassBuildTask(
   DIST_COMPONENTS_ROOT, componentsDir, [path.join(componentsDir, 'core/style')]
 ));
-task(':build:components:rollup', [':build:components:ts'], () => {
-  const components = readdirSync(componentsDir)
-    .filter(componentName => (statSync(path.join(componentsDir, componentName))).isDirectory());
 
+/** Builds the UMD bundle for all of Angular Material. */
+task(':build:components:rollup', [':build:components:inline'], () => {
   const globals: {[name: string]: string} = {
     // Angular dependencies
     '@angular/core': 'ng.core',
@@ -59,41 +80,46 @@ task(':build:components:rollup', [':build:components:ts'], () => {
     'rxjs/add/operator/catch': 'Rx.Observable.prototype',
     'rxjs/Observable': 'Rx'
   };
-  components.forEach(name => {
-    globals[`md2/${name}`] = `md.${camelCase(name)}`
-  });
 
-  // Build all of them asynchronously.
-  return components.reduce((previous, name) => {
-    return previous
-      .then(() => {
-        return rollup({
-          entry: path.join(DIST_COMPONENTS_ROOT, name, 'index.js'),
-          context: 'window',
-          external: [
-            ...Object.keys(globals),
-            ...components.map(name => `md2/${name}`)
-          ]
-        });
-      })
-      .then((bundle: any) => {
-        const result = bundle.generate({
-          moduleName: `md.${camelCase(name)}`,
-          format: 'umd',
-          globals
-        });
-        const outputPath = path.join(DIST_COMPONENTS_ROOT, name, `${name}.umd.js`);
-        writeFileSync( outputPath, result.code );
-      });
-  }, Promise.resolve());
+  // Rollup the md2 UMD bundle from all ES5 + imports JavaScript files built.
+  return rollup({
+    entry: path.join(DIST_COMPONENTS_ROOT, 'index.js'),
+    context: 'this',
+    external: Object.keys(globals)
+  }).then((bundle: { generate: any }) => {
+    const result = bundle.generate({
+      moduleName: 'ng.md2',
+      format: 'umd',
+      globals,
+      sourceMap: true,
+      dest: path.join(DIST_COMPONENTS_ROOT, 'md2.umd.js')
+    });
+
+    // Add source map URL to the code.
+    result.code += '\n\n//# sourceMappingURL=./md2.umd.js.map\n';
+    // Format mapping to show properly in the browser. Rollup by default will put the path
+    // as relative to the file, and since that path is in src/lib and the file is in
+    // dist/md2, we need to kill a few `../`.
+    result.map.sources = result.map.sources.map((s: string) => s.replace(/^(\.\.\/)+/, ''));
+
+    writeFileSync(path.join(DIST_COMPONENTS_ROOT, 'md2.umd.js'), result.code, 'utf8');
+    writeFileSync(path.join(DIST_COMPONENTS_ROOT, 'md2.umd.js.map'), result.map, 'utf8');
+  });
 });
 
-task('build:components', [
-  ':build:components:rollup',
-  ':build:components:assets',
-  ':build:components:scss'
-], () => inlineResources([DIST_COMPONENTS_ROOT]));
+/** Builds components with resources (html, css) inlined into the built JS (ESM output). */
+task(':build:components:inline', sequenceTask(
+  [':build:components:ts', ':build:components:scss', ':build:components:assets'],
+  ':inline-resources',
+));
 
+/** Inlines resources (html, css) into the JS output (for either ESM or CJS output). */
+task(':inline-resources', () => inlineResources(DIST_COMPONENTS_ROOT));
+
+/** Builds components to ESM output and UMD bundle. */
+task('build:components', [':build:components:rollup']);
+
+/** Generates metadata.json files for all of the components. */
 task(':build:components:ngc', ['build:components'], execNodeTask(
-  '@angular/compiler-cli', 'ngc', ['-p', path.relative(PROJECT_ROOT, path.join(componentsDir, 'tsconfig.json'))]
+  '@angular/compiler-cli', 'ngc', ['-p', tsconfigPath]
 ));

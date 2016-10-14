@@ -1,5 +1,5 @@
-import {Component} from '@angular/core';
-import {Md2Toast} from 'md2/toast/toast';
+import { Component } from '@angular/core';
+import { Md2Toast } from 'md2';
 
 @Component({
   moduleId: module.id,

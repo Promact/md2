@@ -15,12 +15,11 @@
     "stripInternal": true,
     "baseUrl": "",
     "typeRoots": [
-      "../../node_modules/@types",
-      "../../node_modules"
+      "../../node_modules/@types"
     ],
     "paths": {
-      "md2/*": [
-        "../../dist/md2/*"
+      "md2": [
+        "../../dist/md2"
       ]
     },
     "types": [

@@ -65,6 +65,6 @@ export class Md2RootModule { }
 })
 export class Md2Module {
   static forRoot(): ModuleWithProviders {
-    return { ngModule: Md2RootModule };
+    return { ngModule: Md2Module };
   }
 }

@@ -24,9 +24,9 @@ import { Md2TooltipModule } from './tooltip/index';
 const MD2_MODULES = [
   Md2AccordionModule,
   Md2AutocompleteModule,
-  //Md2ChipsModule,
+  Md2ChipsModule,
   Md2CollapseModule,
-  //Md2ColorpickerModule,
+  Md2ColorpickerModule,
   Md2DatepickerModule,
   Md2DialogModule,
   Md2MenuModule,
@@ -40,13 +40,13 @@ const MD2_MODULES = [
   PortalModule,
 ];
 
-@NgModule( {
+@NgModule({
   imports: [
     Md2AccordionModule.forRoot(),
     Md2AutocompleteModule.forRoot(),
-    //Md2ChipsModule.forRoot(),
+    Md2ChipsModule.forRoot(),
     Md2CollapseModule.forRoot(),
-    //Md2ColorpickerModule.forRoot(),
+    Md2ColorpickerModule.forRoot(),
     Md2DatepickerModule.forRoot(),
     Md2DialogModule.forRoot(),
     Md2MenuModule.forRoot(),
@@ -66,7 +66,7 @@ const MD2_MODULES = [
 export class Md2RootModule { }
 
 
-@NgModule( {
+@NgModule({
   imports: MD2_MODULES,
   exports: MD2_MODULES,
 })

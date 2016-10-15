@@ -131,6 +131,7 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
   @Input() placeholder: string = '';
   @Input('item-text') textKey: string = 'text';
   @Input('item-value') valueKey: string = null;
+  @Input('min-length') minLength: number = 1;
 
   @Input()
   get readonly(): boolean { return this._readonly; }
@@ -340,9 +341,14 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
    * @param query
    */
   private updateItems(query: RegExp) {
-    this.list = this._items.map((i: any) => new Item(i, this.textKey, this.valueKey)).filter(i => query.test(i.text));
-    if (this.list.length && this.list[0].text !== this.inputBuffer) {
-      this.selectedItem = null;
+    if (this.inputBuffer.length < this.minLength) {
+      this.list = [];
+    }
+    else {
+      this.list = this._items.map((i: any) => new Item(i, this.textKey, this.valueKey)).filter(i => query.test(i.text));
+      if (this.list.length && this.list[0].text !== this.inputBuffer) {
+        this.selectedItem = null;
+      }
     }
   }
 

@@ -68,7 +68,7 @@ function _execNpmPublish(label: string): Promise<void> {
       if (code == 0) {
         resolve();
       } else {
-        reject(new Error(`Material did not publish, status: ${code}.`));
+        reject(new Error(`Md2 did not publish, status: ${code}.`));
       }
     });
   });

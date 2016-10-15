@@ -78,8 +78,9 @@ html, body { position: relative; min-height: 100%; margin: 0; padding: 0; font-f
 
 .main { position: relative; margin-left: 280px; padding: 0 30px 100px; min-height: 100%;
   .toolbar { position: relative; margin: 0 -30px; padding: 0 30px; color: $white; background: rgba($primary,0.9); box-shadow: 0 0 8px rgba($black,0.3);
-    .sidenav-toggle { position: relative; float: left; display: none; min-width: initial; outline: none; padding: 16px; margin: 2px 0 0 -16px; background: transparent; border: 1px solid transparent; border-radius: 4px; font-size: 16px; color: $white; line-height: normal; cursor: pointer; box-shadow: none; }
-    h3 { margin: 0; padding: 15px 0; }
+    .sidenav-toggle { position: relative; float: left; display: none; min-width: initial; outline: none; padding: 16px; margin: 4px 0 0 -16px; background: transparent; border: 1px solid transparent; border-radius: 4px; font-size: 16px; color: $white; line-height: normal; cursor: pointer; box-shadow: none; }
+    h3 { margin: 0; padding: 16px 0; line-height: 28px; }
+    .source-code { float: right; fill: currentColor; color: $white; }
   }
   .footer { position: absolute; border-top: 1px solid rgba($black,0.2); margin-top: 30px; padding: 15px 30px; right: 0; bottom: 0; left: 0; }
   /*.footer { margin: 0 -30px; padding: 0 1em; background: $primary; color: $white; font-size: 20px;
@@ -101,7 +102,7 @@ html, body { position: relative; min-height: 100%; margin: 0; padding: 0; font-f
     &.open { -moz-transform: translateX(0); -ms-transform: translateX(0); -o-transform: translateX(0); -webkit-transform: translateX(0); transform: translateX(0); }
   }
   .main { margin-left: 0; padding: 60px 15px 100px;
-    .toolbar { position: fixed; top: 0; width: 100%; margin: 0 -15px; padding: 0 15px; z-index: 111;
+    .toolbar { position: fixed; top: 0; width: 100%; margin: 0 -15px; padding: 0 15px; z-index: 111; box-sizing: border-box;
       .sidenav-toggle { display: block; }
     }
   }

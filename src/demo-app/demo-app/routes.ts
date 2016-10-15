@@ -1,28 +1,27 @@
-import {Routes} from '@angular/router';
-import {Home} from './demo-app';
-import {AccordionDemo} from '../accordion/accordion-demo';
-import {AutocompleteDemo} from '../autocomplete/autocomplete-demo';
-import {ChipsDemo} from '../chips/chips-demo';
-import {CollapseDemo} from '../collapse/collapse-demo';
-import {ColorpickerDemo} from '../colorpicker/colorpicker-demo';
-import {DatepickerDemo} from '../datepicker/datepicker-demo';
-import {DialogDemo} from '../dialog/dialog-demo';
-import {MenuDemo} from '../menu/menu-demo';
-import {MultiselectDemo} from '../multiselect/multiselect-demo';
-import {SelectDemo} from '../select/select-demo';
-import {TabsDemo} from '../tabs/tabs-demo';
-import {TagsDemo} from '../tags/tags-demo';
-import {ToastDemo} from '../toast/toast-demo';
-import {TooltipDemo} from '../tooltip/tooltip-demo';
-
+import { Routes } from '@angular/router';
+import { Home } from './demo-app';
+import { AccordionDemo } from '../accordion/accordion-demo';
+import { AutocompleteDemo } from '../autocomplete/autocomplete-demo';
+//import { ChipsDemo } from '../chips/chips-demo';
+import { CollapseDemo } from '../collapse/collapse-demo';
+//import { ColorpickerDemo } from '../colorpicker/colorpicker-demo';
+import { DatepickerDemo } from '../datepicker/datepicker-demo';
+import { DialogDemo } from '../dialog/dialog-demo';
+import { MenuDemo } from '../menu/menu-demo';
+import { MultiselectDemo } from '../multiselect/multiselect-demo';
+import { SelectDemo } from '../select/select-demo';
+import { TabsDemo } from '../tabs/tabs-demo';
+import { TagsDemo } from '../tags/tags-demo';
+import { ToastDemo } from '../toast/toast-demo';
+import { TooltipDemo } from '../tooltip/tooltip-demo';
 
 export const DEMO_APP_ROUTES: Routes = [
   { path: '', component: Home },
   { path: 'accordion', component: AccordionDemo },
   { path: 'autocomplete', component: AutocompleteDemo },
-  { path: 'chips', component: ChipsDemo },
+  //{ path: 'chips', component: ChipsDemo },
   { path: 'collapse', component: CollapseDemo },
-  { path: 'colorpicker', component: ColorpickerDemo },
+  //{ path: 'colorpicker', component: ColorpickerDemo },
   { path: 'datepicker', component: DatepickerDemo },
   { path: 'dialog', component: DialogDemo },
   { path: 'menu', component: MenuDemo },

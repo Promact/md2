@@ -284,7 +284,7 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
     }
   }
 
-  private backspaceEvent(): void {
+  private backspaceEvent(): void {   
     if (!this.inputValue.length && this.chipItemList.length && this.isRemovable) {
       if (this.selectedChip != -1) {
         this.removeSelectedChip(this.selectedChip);

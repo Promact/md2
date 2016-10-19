@@ -6,6 +6,7 @@ export * from './autocomplete/index';
 export * from './chips/index';
 export * from './collapse/index';
 //export * from './colorpicker/index';
+export * from './data-table/index';
 export * from './datepicker/index';
 export * from './dialog/index';
 export * from './menu/index';

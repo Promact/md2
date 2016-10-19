@@ -10,6 +10,7 @@ import { Md2AutocompleteModule } from './autocomplete/index';
 import { Md2ChipsModule } from './chips/index';
 import { Md2CollapseModule } from './collapse/index';
 import { Md2ColorpickerModule } from './colorpicker/index';
+import { Md2DataTableModule } from './data-table/index';
 import { Md2DatepickerModule } from './datepicker/index';
 import { Md2DialogModule } from './dialog/index';
 import { Md2MenuModule } from './menu/index';
@@ -27,6 +28,7 @@ const MD2_MODULES = [
   Md2ChipsModule,
   Md2CollapseModule,
   Md2ColorpickerModule,
+  Md2DataTableModule,
   Md2DatepickerModule,
   Md2DialogModule,
   Md2MenuModule,
@@ -47,6 +49,7 @@ const MD2_MODULES = [
     Md2ChipsModule.forRoot(),
     Md2CollapseModule.forRoot(),
     Md2ColorpickerModule.forRoot(),
+    Md2DataTableModule.forRoot(),
     Md2DatepickerModule.forRoot(),
     Md2DialogModule.forRoot(),
     Md2MenuModule.forRoot(),
@@ -57,8 +60,6 @@ const MD2_MODULES = [
     Md2ToastModule.forRoot(),
     Md2TooltipModule.forRoot(),
     PortalModule.forRoot(),
-
-    // These modules include providers.
     OverlayModule.forRoot(),
   ],
   exports: MD2_MODULES,

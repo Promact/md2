@@ -11,6 +11,7 @@ import { AutocompleteDemo } from './autocomplete/autocomplete-demo';
 import { ChipsDemo } from './chips/chips-demo';
 import { CollapseDemo } from './collapse/collapse-demo';
 import { ColorpickerDemo } from './colorpicker/colorpicker-demo';
+import { DataTableDemo } from './data-table/data-table-demo';
 import { DatepickerDemo } from './datepicker/datepicker-demo';
 import { DialogDemo } from './dialog/dialog-demo';
 import { MenuDemo } from './menu/menu-demo';
@@ -37,6 +38,7 @@ import { TooltipDemo } from './tooltip/tooltip-demo';
     ChipsDemo,
     CollapseDemo,
     ColorpickerDemo,
+    DataTableDemo,
     DatepickerDemo,
     DialogDemo,
     MenuDemo,

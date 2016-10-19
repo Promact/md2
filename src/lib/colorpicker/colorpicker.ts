@@ -19,7 +19,7 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
-import { ColorpickerService } from './colorpicker.service';
+import { ColorpickerService } from './calculateColor';
 
 const noop = () => { };
 let nextId = 0;

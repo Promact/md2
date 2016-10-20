@@ -203,7 +203,7 @@ export class Md2DataTableSortField {
         </svg>
       </li>
     </ul>
-    <ul class="md2-pagination pull-right" *ngIf="dataLength > _minRows">
+    <ul class="md2-pagination md2-rows" *ngIf="dataLength > _minRows">
       <li *ngFor="let row of rows" [class.active]="_rows===row" (click)="_setRows(row)">{{row}}</li>
     </ul>
   `,
@@ -217,6 +217,7 @@ export class Md2DataTableSortField {
     md2-pagination .md2-pagination li.active,
     md2-pagination .md2-pagination li.active:hover { background: #106CC8; color: #fff; cursor: default; }
     md2-pagination .md2-pagination li svg { fill: currentColor; margin-bottom: -7px; }
+    md2-pagination .md2-pagination.md2-rows { float: right; }
   `],
   encapsulation: ViewEncapsulation.None
 })

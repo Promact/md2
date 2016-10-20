@@ -1,3 +1,8 @@
+# [0.0.6](https://github.com/promact/md2/compare/md2@0.0.5...md2@0.0.6) (2016-10-20)
+
+### Bug Fixes
+*	fix(data-tagle) position
+
 # [0.0.5](https://github.com/promact/md2/compare/md2@0.0.4...md2@0.0.5) (2016-10-20)
 
 ### Features

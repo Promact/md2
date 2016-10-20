@@ -1,10 +1,10 @@
 ﻿<div class="color-picker-selector" (click)="showColorpicker()">
-    <div class="color-div" [style.background-color]="innerValue"> </div>
-    <label class="color-text">{{innerValue}}</label>
+    <div class="color-div" [style.background-color]="_innerValue"> </div>
+    <label class="color-text">{{_innerValue}}</label>
 </div>
-<div class="md2-colorpicker-wrapper"  [class.active]="isColorpickerVisible">
+<div class="md2-colorpicker-wrapper"  [class.active]="_isColorpickerVisible">
     <div class="md2-color-picker" [style.top.px]="top" [style.left.px]="left" >
-        <div [colorpicker-slider] [style.background-color]="hueSliderColor" [point-x]="1" [point-y]="1" (change)="setSaturationAndBrightness($event)" class="saturation-lightness">
+        <div [colorpicker-slider] [style.background-color]="_hueSliderColor" [point-x]="1" [point-y]="1" (change)="setSaturationAndBrightness($event)" class="saturation-lightness">
             <div [style.left.px]="slider.s" [style.top.px]="slider.v" class="cursor"></div>
         </div>
         <div [colorpicker-slider] [point-x]="1" (change)="setHue($event)" class="hue">

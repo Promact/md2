@@ -20,8 +20,8 @@ Angular2 based Material Design components, directives and services are Accordion
   },
   packages: {
     'md2': {
-      main: 'all.js',
-      defaultExtension: 'js'
+	  format: 'cjs',
+      main: 'md2.umd.js'
     }
   }
 }

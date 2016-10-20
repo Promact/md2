@@ -52,6 +52,7 @@ export class AppModule { }
 - [md2-autocomplete](https://github.com/Promact/md2/tree/master/src/lib/autocomplete)
 - [md2-collapse](https://github.com/Promact/md2/tree/master/src/lib/collapse)
 - [md2-colorpicker](https://github.com/Promact/md2/tree/master/src/lib/colorpicker)
+- [md2-data-table](https://github.com/Promact/md2/tree/master/src/lib/data-table)
 - [md2-datepicker](https://github.com/Promact/md2/tree/master/src/lib/datepicker)
 - [md2-dialog](https://github.com/Promact/md2/tree/master/src/lib/dialog)
 - [md2-menu](https://github.com/Promact/md2/tree/master/src/lib/menu)

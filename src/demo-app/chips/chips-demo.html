@@ -1,5 +1,46 @@
-<md2-chips [(ngModel)]="items1" placeholder="Add" [isRemovable]="true" [readonly]="false" [maxChips]="5">
-    <div class="md2-template" [hidden]="true">
-        <em>(data)</em>
+<div class="demo-datepicker">
+    <h1>Chips Demo</h1>
+    <hr />
+    <h4>Basic Chips</h4>
+    <div>
+        <md2-chips [(ngModel)]="itemsData" 
+                   placeholder="Add" 
+                   [maxChips]="8" 
+                   [isRemovable]="true" 
+                   [readonly]="false" 
+                   [isAutoComplete]="false" 
+                   (change)="change($event)">
+            <div class="md2-template" [hidden]="true">
+                <em>(data)</em>
+            </div>
+        </md2-chips>
     </div>
-</md2-chips>
+    <h4>Chips with AutoComplete</h4>
+    <div>
+        <md2-chips [(ngModel)]="itemsData"
+                   placeholder="Add"
+                   [maxChips]="8"
+                   [isRemovable]="true"
+                   [readonly]="false"
+                   [isAutoComplete]="true"
+                   [autocompleteDataList]="items"
+                   (change)="change($event)">            
+        </md2-chips>
+    </div>
+
+    <h4>Disabled</h4>
+    <div>
+        <md2-chips [(ngModel)]="itemsData" 
+                   placeholder="Add" 
+                   [maxChips]="8" 
+                   [isRemovable]="true" 
+                   [readonly]="true" 
+                   [isAutoComplete]="false" 
+                   (change)="change($event)">
+            <div class="md2-template" [hidden]="true">
+                <em>(data)</em>
+            </div>
+        </md2-chips>
+    </div>
+
+</div>

@@ -149,6 +149,10 @@ export class Md2DataTable implements OnChanges, DoCheck {
       <svg *ngIf="isDesc" width="24"height="24" viewBox="0 0 24 24">
         <path d="M7 10l5 5 5-5z"/>
       </svg>
+      <svg *ngIf="!isAsc && !isDesc" width="24"height="24" viewBox="0 0 24 24">
+        <path d="M7,10.5l5-5l5,5H7z"/>
+        <path d="M7,12.5l5,5l5-5H7z"/>
+      </svg>
     </span>
   `,
   styles: [`

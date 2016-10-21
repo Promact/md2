@@ -43,7 +43,7 @@
   ],
   "license": "MIT",
   "engines": {
-    "node": ">= 4.2.1 < 5"
+    "node": ">= 5.4.1 < 7"
   },
   "dependencies": {
     "@angular/common": "^2.0.0",
@@ -78,6 +78,7 @@
     "fs-extra": "^0.26.5",
     "glob": "^6.0.4",
     "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^3.1.1",
     "gulp-clean": "^0.3.2",
     "gulp-sass": "^2.3.2",
     "gulp-server-livereload": "^1.8.2",

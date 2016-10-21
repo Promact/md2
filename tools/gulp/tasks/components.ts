@@ -17,7 +17,7 @@ const rollup = require('rollup').rollup;
 // When `tsconfig-spec.json` is used, we are outputting CommonJS modules. This is used
 // for unit tests (karma).
 
-/** Path to the root of the Angular Md2 component library. */
+/** Path to the root of the MD2 component library. */
 const componentsDir = path.join(SOURCE_ROOT, 'lib');
 
 /** Path to the tsconfig used for ESM output. */
@@ -40,10 +40,10 @@ task(':watch:components:spec', () => {
 
 
 /** Builds component typescript only (ESM output). */
-task(':build:components:ts', tsBuildTask(componentsDir));
+task(':build:components:ts', tsBuildTask(componentsDir, 'tsconfig-srcs.json'));
 
 /** Builds components typescript for tests (CJS output). */
-task(':build:components:spec', tsBuildTask(path.join(componentsDir, 'tsconfig-spec.json')));
+task(':build:components:spec', tsBuildTask(componentsDir));
 
 /** Copies assets (html, markdown) to build output. */
 task(':build:components:assets', copyTask([
@@ -56,7 +56,7 @@ task(':build:components:scss', sassBuildTask(
   DIST_COMPONENTS_ROOT, componentsDir, [path.join(componentsDir, 'core/style')]
 ));
 
-/** Builds the UMD bundle for all of Angular Md2. */
+/** Builds the UMD bundle for all of MD2. */
 task(':build:components:rollup', [':build:components:inline'], () => {
   const globals: {[name: string]: string} = {
     // Angular dependencies

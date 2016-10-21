@@ -9,11 +9,12 @@ export { OverlayState } from './overlay/overlay-state';
 export { ConnectedOverlayDirective, OverlayOrigin, OverlayModule } from './overlay/overlay-directives';
 export * from './overlay/position/connected-position-strategy';
 export * from './overlay/position/connected-position';
-export { MdUniqueSelectionDispatcher, MdUniqueSelectionDispatcherListener } from './coordination/unique-selection-dispatcher';
 export { applyCssTransform } from './style/apply-transform';
 export { MdError } from './errors/error';
 export { ComponentType } from './overlay/generic-component-type';
 export * from './keyboard/keycodes';
+export { coerceBooleanProperty } from './coersion/boolean-property';
+export * from './pipes/pipes';
 export declare class MdCoreModule {
     static forRoot(): ModuleWithProviders;
 }

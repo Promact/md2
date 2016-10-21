@@ -14,7 +14,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { ResponseOptions } from '../base_response_options';
 import { ReadyState, RequestMethod, ResponseType } from '../enums';
-import { StringWrapper, isPresent } from '../facade/lang';
+import { isPresent } from '../facade/lang';
 import { ConnectionBackend } from '../interfaces';
 import { Response } from '../static_response';
 import { BrowserJsonp } from './browser_jsonp';
@@ -51,7 +51,7 @@ export var JSONPConnection_ = (function (_super) {
             var callback = _dom.requestCallback(_this._id);
             var url = req.url;
             if (url.indexOf('=JSONP_CALLBACK&') > -1) {
-                url = StringWrapper.replace(url, '=JSONP_CALLBACK&', "=" + callback + "&");
+                url = url.replace('=JSONP_CALLBACK&', "=" + callback + "&");
             }
             else if (url.lastIndexOf('=JSONP_CALLBACK') === url.length - '=JSONP_CALLBACK'.length) {
                 url = url.substring(0, url.length - '=JSONP_CALLBACK'.length) + ("=" + callback);

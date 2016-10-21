@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var toast_1 = require('md2/toast/toast');
+var md2_1 = require('md2');
 var ToastDemo = (function () {
     function ToastDemo(toast) {
         this.toast = toast;
@@ -23,7 +23,7 @@ var ToastDemo = (function () {
             selector: 'toast-demo',
             templateUrl: 'toast-demo.html'
         }), 
-        __metadata('design:paramtypes', [toast_1.Md2Toast])
+        __metadata('design:paramtypes', [md2_1.Md2Toast])
     ], ToastDemo);
     return ToastDemo;
 }());

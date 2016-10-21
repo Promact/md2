@@ -1,12 +1,16 @@
-import { ElementRef, EventEmitter, ModuleWithProviders } from '@angular/core';
+import { AfterContentInit, ElementRef, EventEmitter, ModuleWithProviders } from '@angular/core';
 import { ControlValueAccessor } from '@angular/forms';
 export declare const MD2_MULTISELECT_CONTROL_VALUE_ACCESSOR: any;
-export declare class Md2Multiselect implements ControlValueAccessor {
+export declare class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
     private element;
     constructor(element: ElementRef);
+    ngAfterContentInit(): void;
     change: EventEmitter<any>;
     private _value;
+    private _readonly;
+    private _required;
     private _disabled;
+    private _isInitialized;
     private _onTouchedCallback;
     private _onChangeCallback;
     private _options;
@@ -15,11 +19,13 @@ export declare class Md2Multiselect implements ControlValueAccessor {
     private focusedOption;
     private isFocused;
     id: string;
-    disabled: boolean;
     tabindex: number;
     placeholder: string;
     textKey: string;
     valueKey: string;
+    readonly: boolean;
+    required: boolean;
+    disabled: boolean;
     options: Array<any>;
     value: any;
     /**

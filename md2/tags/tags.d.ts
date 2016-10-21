@@ -1,12 +1,14 @@
-import { ElementRef, EventEmitter, ModuleWithProviders } from '@angular/core';
+import { AfterContentInit, ElementRef, EventEmitter, ModuleWithProviders } from '@angular/core';
 import { ControlValueAccessor } from '@angular/forms';
 export declare const MD2_TAGS_CONTROL_VALUE_ACCESSOR: any;
-export declare class Md2Tags implements ControlValueAccessor {
+export declare class Md2Tags implements AfterContentInit, ControlValueAccessor {
     private element;
     constructor(element: ElementRef);
+    ngAfterContentInit(): void;
     change: EventEmitter<any>;
     private _value;
     private _disabled;
+    private _isInitialized;
     private _onTouchedCallback;
     private _onChangeCallback;
     private _tags;
@@ -18,11 +20,11 @@ export declare class Md2Tags implements ControlValueAccessor {
     private inputFocused;
     private noBlur;
     id: string;
-    disabled: boolean;
     tabindex: number;
     placeholder: string;
     textKey: string;
     valueKey: string;
+    disabled: boolean;
     tags: Array<any>;
     value: any;
     /**

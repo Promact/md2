@@ -1,5 +1,5 @@
 /*
- * SystemJS v0.19.31
+ * SystemJS v0.19.38
  */
 // from https://gist.github.com/Yaffle/1088850
 (function(global) {
@@ -48,9 +48,8 @@ function URLPolyfill(url, baseURL) {
       protocol = base.protocol;
   }
 
-  // convert windows file URLs to use /
-  if (protocol == 'file:')
-    pathname = pathname.replace(/\\/g, '/');
+  // convert URLs to use / always
+  pathname = pathname.replace(/\\/g, '/');
 
   this.origin = host ? protocol + (protocol !== "" || host !== "" ? "//" : "") + host : "";
   this.href = protocol + (protocol && host || protocol == "file:" ? "//" : "") + (username !== "" ? username + (password !== "" ? ":" + password : "") + "@" : "") + host + pathname + search + hash;
@@ -105,7 +104,7 @@ global.URLPolyfill = URLPolyfill;
   function addToError(err, msg) {
     // parse the stack removing loader code lines for simplification
     if (!err.originalErr) {
-      var stack = (err.stack || err.message || err).toString().split('\n');
+      var stack = ((err.message || err) + (err.stack ? '\n' + err.stack : '')).toString().split('\n');
       var newStack = [];
       for (var i = 0; i < stack.length; i++) {
         if (typeof $__curScript == 'undefined' || stack[i].indexOf($__curScript.src) == -1)
@@ -121,13 +120,8 @@ global.URLPolyfill = URLPolyfill;
 
     var newErr = errArgs ? new Error(newMsg, err.fileName, err.lineNumber) : new Error(newMsg);
     
-    // Node needs stack adjustment for throw to show message
-    if (!isBrowser)
-      newErr.stack = newMsg;
-    // Clearing the stack stops unnecessary loader lines showing
-    else
-      newErr.stack = null;
-    
+    newErr.stack = newMsg;
+        
     // track the original error
     newErr.originalErr = err.originalErr || err;
 
@@ -482,8 +476,6 @@ function logloads(loads) {
       .then(function() {
         // console.log('LoadSucceeded ' + load.name);
         // snapshot(loader);
-
-        console.assert(load.status == 'loading', 'is loading');
 
         load.status = 'loaded';
 
@@ -1369,7 +1361,7 @@ SystemJSLoader.prototype.locate = function(load) {
 
       // if nothing registered, then something went wrong
       if (!load.metadata.entry)
-        reject(new Error(load.address + ' did not call System.register or AMD define'));
+        reject(new Error(load.address + ' did not call System.register or AMD define. If loading a global, ensure the meta format is set to global.'));
 
       resolve('');
     });
@@ -1757,13 +1749,21 @@ function createEntry() {
         var importerModule = module.importers[i];
         if (!importerModule.locked) {
           var importerIndex = indexOf.call(importerModule.dependencies, module);
-          importerModule.setters[importerIndex](exports);
+          var setter = importerModule.setters[importerIndex];
+          if (setter)
+            setter(exports);
         }
       }
 
       module.locked = false;
       return value;
     }, { id: entry.name });
+
+    if (typeof declaration == 'function')
+      declaration = { setters: [], execute: declaration };
+
+    // allowing undefined declaration was a mistake! To be deprecated.
+    declaration = declaration || { setters: [], execute: function() {} };
     
     module.setters = declaration.setters;
     module.execute = declaration.execute;
@@ -1881,7 +1881,7 @@ function createEntry() {
       throw new Error('Module ' + name + ' not declared as a dependency of ' + entry.name);
     }, exports, module);
     
-    if (output)
+    if (output !== undefined)
       module.exports = output;
 
     // create the esModule object, which allows ES6 named imports of dynamics
@@ -2189,7 +2189,7 @@ hook('fetch', function(fetch) {
 });System = new SystemJSLoader();
 
 __global.SystemJS = System;
-System.version = '0.19.31 Register Only';
+System.version = '0.19.38 Register Only';
   if (typeof module == 'object' && module.exports && typeof exports == 'object')
     module.exports = System;
 

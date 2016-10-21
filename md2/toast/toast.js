@@ -7,148 +7,141 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-(function (factory) {
-    if (typeof module === 'object' && typeof module.exports === 'object') {
-        var v = factory(require, exports); if (v !== undefined) module.exports = v;
+import { ApplicationRef, ComponentFactoryResolver, Injectable, ReflectiveInjector, NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Md2ToastComponent } from './toast.component';
+export var Toast = (function () {
+    function Toast(message) {
+        this.message = message;
     }
-    else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", '@angular/core', '@angular/common', './toast.component'], factory);
+    return Toast;
+}());
+export var Md2Toast = (function () {
+    function Md2Toast(_componentFactory, _appRef) {
+        this._componentFactory = _componentFactory;
+        this._appRef = _appRef;
+        this.delay = 3000;
+        this.index = 0;
     }
-})(function (require, exports) {
-    "use strict";
-    var core_1 = require('@angular/core');
-    var common_1 = require('@angular/common');
-    var toast_component_1 = require('./toast.component');
-    var Toast = (function () {
-        function Toast(message) {
-            this.message = message;
+    /**
+     * toast message
+     * @param toast string or object with message and other properties of toast
+     */
+    Md2Toast.prototype.toast = function (toast) {
+        this.show(toast);
+    };
+    /**
+     * show toast
+     * @param toastObj string or object with message and other properties of toast
+     */
+    Md2Toast.prototype.show = function (toastObj) {
+        var toast;
+        if (typeof toastObj === 'string') {
+            toast = new Toast(toastObj);
         }
-        return Toast;
-    }());
-    exports.Toast = Toast;
-    var Md2Toast = (function () {
-        function Md2Toast(_componentFactory, _appRef) {
-            this._componentFactory = _componentFactory;
-            this._appRef = _appRef;
-            this.delay = 3000;
-            this.index = 0;
+        else if (typeof toastObj === 'object') {
+            toast = new Toast(toastObj.message);
+            this.delay = toastObj.hideDelay;
         }
-        /**
-         * toast message
-         * @param toast string or object with message and other properties of toast
-         */
-        Md2Toast.prototype.toast = function (toast) {
-            this.show(toast);
-        };
-        /**
-         * show toast
-         * @param toastObj string or object with message and other properties of toast
-         */
-        Md2Toast.prototype.show = function (toastObj) {
-            var toast;
-            if (typeof toastObj === 'string') {
-                toast = new Toast(toastObj);
+        if (toast) {
+            if (!this.container) {
+                var app = this._appRef;
+                var appContainer = app['_rootComponents'][0]['_hostElement'].vcRef;
+                var providers = ReflectiveInjector.resolve([]);
+                var toastFactory = this._componentFactory.resolveComponentFactory(Md2ToastComponent);
+                var childInjector = ReflectiveInjector.fromResolvedProviders(providers, appContainer.parentInjector);
+                this.container = appContainer.createComponent(toastFactory, appContainer.length, childInjector);
+                this.setupToast(toast);
             }
-            else if (typeof toastObj === 'object') {
-                toast = new Toast(toastObj.message);
-                this.delay = toastObj.hideDelay;
+            else {
+                this.setupToast(toast);
             }
-            if (toast) {
-                if (!this.container) {
-                    var app = this._appRef;
-                    var appContainer = app['_rootComponents'][0]['_hostElement'].vcRef;
-                    var providers = core_1.ReflectiveInjector.resolve([]);
-                    var toastFactory = this._componentFactory.resolveComponentFactory(toast_component_1.Md2ToastComponent);
-                    var childInjector = core_1.ReflectiveInjector.fromResolvedProviders(providers, appContainer.parentInjector);
-                    this.container = appContainer.createComponent(toastFactory, appContainer.length, childInjector);
-                    this.setupToast(toast);
-                }
-                else {
-                    this.setupToast(toast);
-                }
-            }
-        };
-        /**
-         * toast timeout
-         * @param toastId
-         */
-        Md2Toast.prototype.startTimeout = function (toastId) {
-            var _this = this;
+        }
+    };
+    /**
+     * toast timeout
+     * @param toastId
+     */
+    Md2Toast.prototype.startTimeout = function (toastId) {
+        var _this = this;
+        setTimeout(function () {
+            _this.clear(toastId);
+        }, this.delay);
+    };
+    /**
+     * setup toast
+     * @param toast
+     */
+    Md2Toast.prototype.setupToast = function (toast) {
+        toast.id = ++this.index;
+        this.container.instance.add(toast);
+        this.startTimeout(toast.id);
+    };
+    /**
+     * clear specific toast
+     * @param toastId
+     */
+    Md2Toast.prototype.clear = function (toastId) {
+        var _this = this;
+        if (this.container) {
+            var instance_1 = this.container.instance;
+            instance_1.remove(toastId);
             setTimeout(function () {
-                _this.clear(toastId);
-            }, this.delay);
-        };
-        /**
-         * setup toast
-         * @param toast
-         */
-        Md2Toast.prototype.setupToast = function (toast) {
-            toast.id = ++this.index;
-            this.container.instance.add(toast);
-            this.startTimeout(toast.id);
-        };
-        /**
-         * clear specific toast
-         * @param toastId
-         */
-        Md2Toast.prototype.clear = function (toastId) {
-            if (this.container) {
-                var instance = this.container.instance;
-                instance.remove(toastId);
-                if (!instance.hasToast()) {
-                    this.dispose();
+                if (!instance_1.hasToast()) {
+                    _this.dispose();
                 }
-            }
-        };
-        /**
-         * clear all toasts
-         */
-        Md2Toast.prototype.clearAll = function () {
-            if (this.container) {
-                var instance = this.container.instance;
-                instance.removeAll();
-                if (!instance.hasToast()) {
-                    this.dispose();
-                }
-            }
-        };
-        /**
-         * dispose all toasts
-         */
-        Md2Toast.prototype.dispose = function () {
-            this.container.destroy();
-            this.container = null;
-        };
-        Md2Toast = __decorate([
-            core_1.Injectable(), 
-            __metadata('design:paramtypes', [core_1.ComponentFactoryResolver, core_1.ApplicationRef])
-        ], Md2Toast);
-        return Md2Toast;
-    }());
-    exports.Md2Toast = Md2Toast;
-    exports.MD2_TOAST_DIRECTIVES = [toast_component_1.Md2ToastComponent];
-    var Md2ToastModule = (function () {
-        function Md2ToastModule() {
+            }, 250);
         }
-        Md2ToastModule.forRoot = function () {
-            return {
-                ngModule: Md2ToastModule,
-                providers: []
-            };
+    };
+    /**
+     * clear all toasts
+     */
+    Md2Toast.prototype.clearAll = function () {
+        var _this = this;
+        if (this.container) {
+            var instance_2 = this.container.instance;
+            instance_2.removeAll();
+            setTimeout(function () {
+                if (!instance_2.hasToast()) {
+                    _this.dispose();
+                }
+            }, 250);
+        }
+    };
+    /**
+     * dispose all toasts
+     */
+    Md2Toast.prototype.dispose = function () {
+        this.container.destroy();
+        this.container = null;
+    };
+    Md2Toast = __decorate([
+        Injectable(), 
+        __metadata('design:paramtypes', [ComponentFactoryResolver, ApplicationRef])
+    ], Md2Toast);
+    return Md2Toast;
+}());
+export var MD2_TOAST_DIRECTIVES = [Md2ToastComponent];
+export var Md2ToastModule = (function () {
+    function Md2ToastModule() {
+    }
+    Md2ToastModule.forRoot = function () {
+        return {
+            ngModule: Md2ToastModule,
+            providers: []
         };
-        Md2ToastModule = __decorate([
-            core_1.NgModule({
-                imports: [common_1.CommonModule],
-                declarations: exports.MD2_TOAST_DIRECTIVES,
-                exports: exports.MD2_TOAST_DIRECTIVES,
-                providers: [Md2Toast],
-                entryComponents: exports.MD2_TOAST_DIRECTIVES
-            }), 
-            __metadata('design:paramtypes', [])
-        ], Md2ToastModule);
-        return Md2ToastModule;
-    }());
-    exports.Md2ToastModule = Md2ToastModule;
-});
+    };
+    Md2ToastModule = __decorate([
+        NgModule({
+            imports: [CommonModule],
+            exports: MD2_TOAST_DIRECTIVES,
+            declarations: MD2_TOAST_DIRECTIVES,
+            providers: [Md2Toast],
+            entryComponents: MD2_TOAST_DIRECTIVES
+        }), 
+        __metadata('design:paramtypes', [])
+    ], Md2ToastModule);
+    return Md2ToastModule;
+}());
 
 //# sourceMappingURL=toast.js.map

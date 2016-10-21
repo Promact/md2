@@ -1,5 +1,5 @@
 /**
- * @license Angular v2.0.0-rc.6
+ * @license Angular v3.1.0
  * (c) 2010-2016 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -14,14 +14,40 @@
     var flatten = _angular_router.__router_private__.flatten;
 
     /**
-     * A spy for {@link NgModuleFactoryLoader} that allows tests to simulate the loading of ng module
-     * factories.
+     * @whatItDoes Allows to simulate the loading of ng modules in tests.
+     *
+     * @howToUse
+     *
+     * ```
+     * const loader = TestBed.get(NgModuleFactoryLoader);
+     *
+     * @Component({template: 'lazy-loaded'})
+     * class LazyLoadedComponent {}
+     * @NgModule({
+     *   declarations: [LazyLoadedComponent],
+     *   imports: [RouterModule.forChild([{path: 'loaded', component: LazyLoadedComponent}])]
+     * })
+     *
+     * class LoadedModule {}
+     *
+     * // sets up stubbedModules
+     * loader.stubbedModules = {lazyModule: LoadedModule};
+     *
+     * router.resetConfig([
+     *   {path: 'lazy', loadChildren: 'lazyModule'},
+     * ]);
+     *
+     * router.navigateByUrl('/lazy/loaded');
+     * ```
      *
      * @stable
      */
     var SpyNgModuleFactoryLoader = (function () {
         function SpyNgModuleFactoryLoader(compiler) {
             this.compiler = compiler;
+            /**
+             * @docsNotRequired
+             */
             this.stubbedModules = {};
         }
         SpyNgModuleFactoryLoader.prototype.load = function (path) {
@@ -50,15 +76,14 @@
         return new _angular_router.Router(null, urlSerializer, outletMap, location, injector, loader, compiler, flatten(routes));
     }
     /**
-     * A module setting up the router that should be used for testing.
-     * It provides spy implementations of Location, LocationStrategy, and NgModuleFactoryLoader.
+     * @whatItDoes Sets up the router to be used for testing.
      *
-     * # Example:
+     * @howToUse
      *
      * ```
      * beforeEach(() => {
      *   TestBed.configureTestModule({
-     *     modules: [
+     *     imports: [
      *       RouterTestingModule.withRoutes(
      *         [{path: '', component: BlankCmp}, {path: 'simple', component: SimpleCmp}])]
      *       )
@@ -66,6 +91,12 @@
      *   });
      * });
      * ```
+     *
+     * @description
+     *
+     * The modules sets up the router to be used for testing.
+     * It provides spy implementations of {@link Location}, {@link LocationStrategy}, and {@link
+     * NgModuleFactoryLoader}.
      *
      * @stable
      */
@@ -88,7 +119,7 @@
                                     _angular_router.UrlSerializer, _angular_router.RouterOutletMap, _angular_common.Location, _angular_core.NgModuleFactoryLoader, _angular_core.Compiler, _angular_core.Injector, ROUTES
                                 ]
                             },
-                            _angular_router.provideRoutes([])
+                            { provide: _angular_router.PreloadingStrategy, useExisting: _angular_router.NoPreloading }, _angular_router.provideRoutes([])
                         ]
                     },] },
         ];

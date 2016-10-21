@@ -11,7 +11,10 @@
     </svg>
   </div>
   <div class="md2-datepicker-input">
-    <span class="md2-datepicker-placeholder" [class.has-value]="value">{{placeholder}}</span>
+    <span class="md2-datepicker-placeholder" [class.has-value]="value">
+      {{placeholder}}
+      <span class="md2-placeholder-required" *ngIf="required">*</span>
+    </span>
     <span class="md2-datepicker-input-text">{{displayInputDate}}</span>
     <svg width="24" height="24" viewBox="0 0 24 24">
       <path d="M7 10l5 5 5-5z" />
@@ -21,9 +24,11 @@
 <div class="md2-datepicker-wrapper" [class.active]="isDatepickerVisible">
   <div class="md2-datepicker-header">
     <span class="md2-datepicker-year"
-          [class.hidden]="type==='time'">{{displayDay.year}}</span>
+          [class.active]="isYearsVisible"
+          [class.hidden]="type==='time'"
+          (click)="showYear()">{{displayDay.year}}</span>
     <span class="md2-datepicker-date"
-          [class.active]="isCalendarVisible"
+          [class.active]="isCalendarVisible && !isYearsVisible"
           [class.hidden]="type==='time'"
           (click)="showCalendar()">{{displayDay.day.substr(0, 3)}},&nbsp;{{displayDay.month.substr(0, 3)}}&nbsp;{{displayDay.date}}</span>
     <span class="md2-datepicker-time"
@@ -37,68 +42,78 @@
     </span>
   </div>
   <div class="md2-datepicker-body">
-    <div class="md2-calendar" [class.active]="isCalendarVisible">
-      <div class="md2-calendar-controls">
-        <div class="md2-calendar-prev-month"
-             [class.disabled]="!isBeforeMonth()"
-             (click)="isBeforeMonth() && updateMonth(-1)">
-          <svg viewBox="0 0 24 24" width="24" height="24">
-            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
-          </svg>
-        </div>
-        <div class="md2-calendar-next-month"
-             [class.disabled]="!isAfterMonth()"
-             (click)="isAfterMonth() && updateMonth(1)">
-          <svg viewBox="0 0 24 24" width="24" height="24">
-            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path>
-          </svg>
-        </div>
-        <div class="md2-calendar-header">{{displayDay.month}} {{displayDay.year}}</div>
+    <div class="md2-years" [class.active]="isYearsVisible">
+      <div class="md2-years-wrapper">
+        <div *ngFor="let y of years"
+             class="md2-year"
+             [class.selected]="y === displayDay.year"
+             (click)="setYear(y)">{{y}}</div>
       </div>
-      <table class="md2-calendar-month">
-        <thead><tr><th *ngFor="let d of days">{{d.substr(0, 1)}}</th></tr></thead>
-        <tbody>
-          <tr *ngFor="let w of dates">
-            <td *ngFor="let d of w">
-              <div class="md2-calendar-day"
-                   [class.today]="d.today"
-                   [class.focus]="dateUtil.isSameDay(displayDate, d.date)"
-                   [class.selected]="dateUtil.isSameDay(selectedDate, d.date)"
-                   [class.disabled]="d.disabled"
-                   [class.prev-month]="d.calMonth===prevMonth"
-                   [class.curr-month]="d.calMonth===currMonth"
-                   [class.next-month]="d.calMonth===nextMonth"
-                   (click)="onClickDate($event,d)">{{d.dateObj.day}}</div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
     </div>
-    <div class="md2-clock" [class.active]="!isCalendarVisible">
-      <!-- (mousedown)="onMouseDownClock($event)"-->
-      <div class="md2-clock-hand">
-        <svg class="md2-clock-svg" width="240" height="240">
-          <g transform="translate(120,120)">
-            <line x1="0" y1="0" [attr.x2]="clock.hand.x" [attr.y2]="clock.hand.y"></line>
-            <circle class="md2-clock-bg" r="17" [attr.cx]="clock.hand.x" [attr.cy]="clock.hand.y"></circle>
-            <circle class="md2-clock-fg" r="3.5" [attr.cx]="clock.hand.x" [attr.cy]="clock.hand.y"></circle>
-            <circle class="md2-clock-center" cx="0" cy="0" r="2"></circle>
-          </g>
-        </svg>
+    <div class="md2-datepicker-container" [class.active]="!isYearsVisible">
+      <div class="md2-calendar" [class.active]="isCalendarVisible">
+        <div class="md2-calendar-controls">
+          <div class="md2-calendar-prev-month"
+               [class.disabled]="!isBeforeMonth()"
+               (click)="isBeforeMonth() && updateMonth(-1)">
+            <svg viewBox="0 0 24 24" width="24" height="24">
+              <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
+            </svg>
+          </div>
+          <div class="md2-calendar-next-month"
+               [class.disabled]="!isAfterMonth()"
+               (click)="isAfterMonth() && updateMonth(1)">
+            <svg viewBox="0 0 24 24" width="24" height="24">
+              <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path>
+            </svg>
+          </div>
+          <div class="md2-calendar-header">{{displayDay.month}} {{displayDay.year}}</div>
+        </div>
+        <table class="md2-calendar-month">
+          <thead><tr><th *ngFor="let d of days">{{d.substr(0, 1)}}</th></tr></thead>
+          <tbody>
+            <tr *ngFor="let w of dates">
+              <td *ngFor="let d of w">
+                <div class="md2-calendar-day"
+                     [class.today]="d.today"
+                     [class.focus]="dateUtil.isSameDay(displayDate, d.date)"
+                     [class.selected]="dateUtil.isSameDay(selectedDate, d.date)"
+                     [class.disabled]="d.disabled"
+                     [class.prev-month]="d.calMonth===prevMonth"
+                     [class.curr-month]="d.calMonth===currMonth"
+                     [class.next-month]="d.calMonth===nextMonth"
+                     (click)="onClickDate($event,d)">{{d.dateObj.day}}</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-      <div class="md2-clock-hours" [class.active]="isHoursVisible">
-        <div *ngFor="let h of hours"
-             class="md2-clock-hour"
-             [style.top]="h.top + 'px'"
-             [style.left]="h.left + 'px'"
-             (click)="onClickHour($event,h.hour)">{{h.hour}}</div>
-      </div>
-      <div class="md2-clock-minutes" [class.active]="!isHoursVisible">
-        <div *ngFor="let m of minutes"
-             class="md2-clock-minute"
-             [style.top]="m.top + 'px'"
-             [style.left]="m.left + 'px'"
-             (click)="onClickMinute($event,m.minute)">{{m.minute}}</div>
+      <div class="md2-clock" [class.active]="!isCalendarVisible">
+        <!-- (mousedown)="onMouseDownClock($event)"-->
+        <div class="md2-clock-hand">
+          <svg class="md2-clock-svg" width="240" height="240">
+            <g transform="translate(120,120)">
+              <line x1="0" y1="0" [attr.x2]="clock.hand.x" [attr.y2]="clock.hand.y"></line>
+              <circle class="md2-clock-bg" r="17" [attr.cx]="clock.hand.x" [attr.cy]="clock.hand.y"></circle>
+              <circle class="md2-clock-fg" r="3.5" [attr.cx]="clock.hand.x" [attr.cy]="clock.hand.y"></circle>
+              <circle class="md2-clock-center" cx="0" cy="0" r="2"></circle>
+            </g>
+          </svg>
+        </div>
+        <div class="md2-clock-hours" [class.active]="isHoursVisible">
+          <div *ngFor="let h of hours"
+               class="md2-clock-hour"
+               [style.top]="h.top + 'px'"
+               [style.left]="h.left + 'px'"
+               (click)="onClickHour($event,h.hour)">{{h.hour}}</div>
+        </div>
+        <div class="md2-clock-minutes" [class.active]="!isHoursVisible">
+          <div *ngFor="let m of minutes"
+               class="md2-clock-minute"
+               [style.top]="m.top + 'px'"
+               [style.left]="m.left + 'px'"
+               (click)="onClickMinute($event,m.minute)">{{m.minute}}</div>
+        </div>
       </div>
     </div>
   </div>

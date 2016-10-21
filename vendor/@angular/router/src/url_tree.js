@@ -65,7 +65,31 @@ function containsSegmentGroupHelper(container, containee, containeePaths) {
     }
 }
 /**
- * A URL in the tree form.
+ * @whatItDoes Represents the parsed URL.
+ *
+ * @howToUse
+ *
+ * ```
+ * @Component({templateUrl:'template.html'})
+ * class MyComponent {
+ *   constructor(router: Router) {
+ *     const tree: UrlTree =
+ * router.parseUrl('/team/33/(user/victor//support:help)?debug=true#fragment');
+ *     const f = tree.fragment; // return 'fragment'
+ *     const q = tree.queryParams; // returns {debug: 'true'}
+ *     const g: UrlSegmentGroup = tree.root.children[PRIMARY_OUTLET];
+ *     const s: UrlSegment[] = g.segments; // returns 2 segments 'team' and '33'
+ *     g.children[PRIMARY_OUTLET].segments; // returns 2 segments 'user' and 'victor'
+ *     g.children['support'].segments; // return 1 segment 'help'
+ *   }
+ * }
+ * ```
+ *
+ * @description
+ *
+ * Since a router state is a tree, and the URL is nothing but a serialized state, the URL is a
+ * serialized tree.
+ * UrlTree is a data structure that provides a lot of affordances in dealing with URLs
  *
  * @stable
  */
@@ -73,22 +97,52 @@ export var UrlTree = (function () {
     /**
      * @internal
      */
-    function UrlTree(root, queryParams, fragment) {
+    function UrlTree(
+        /**
+        * The root segment group of the URL tree.
+         */
+        root, 
+        /**
+         * The query params of the URL.
+         */
+        queryParams, 
+        /**
+         * The fragment of the URL.
+         */
+        fragment) {
         this.root = root;
         this.queryParams = queryParams;
         this.fragment = fragment;
     }
+    /**
+     * @docsNotRequired
+     */
     UrlTree.prototype.toString = function () { return new DefaultUrlSerializer().serialize(this); };
     return UrlTree;
 }());
 /**
+ * @whatItDoes Represents the parsed URL segment.
+ *
+ * See {@link UrlTree} for more information.
+ *
  * @stable
  */
 export var UrlSegmentGroup = (function () {
-    function UrlSegmentGroup(segments, children) {
+    function UrlSegmentGroup(
+        /**
+         * The URL segments of this group. See {@link UrlSegment} for more information.
+         */
+        segments, 
+        /**
+         * The list of children of this group.
+         */
+        children) {
         var _this = this;
         this.segments = segments;
         this.children = children;
+        /**
+         * The parent node in the url tree.
+         */
         this.parent = null;
         forEach(children, function (v, k) { return v.parent = _this; });
     }
@@ -104,17 +158,53 @@ export var UrlSegmentGroup = (function () {
         enumerable: true,
         configurable: true
     });
+    /**
+     * @docsNotRequired
+     */
     UrlSegmentGroup.prototype.toString = function () { return serializePaths(this); };
     return UrlSegmentGroup;
 }());
 /**
+ * @whatItDoes Represents a single URL segment.
+ *
+ * @howToUse
+ *
+ * ```
+ * @Component({templateUrl:'template.html'})
+ * class MyComponent {
+ *   constructor(router: Router) {
+ *     const tree: UrlTree = router.parseUrl('/team;id=33');
+ *     const g: UrlSegmentGroup = tree.root.children[PRIMARY_OUTLET];
+ *     const s: UrlSegment[] = g.segments;
+ *     s[0].path; // returns 'team'
+ *     s[0].parameters; // returns {id: 33}
+ *   }
+ * }
+ * ```
+ *
+ * @description
+ *
+ * A UrlSegment is a part of a URL between the two slashes. It contains a path and
+ * the matrix parameters associated with the segment.
+ *
  * @stable
  */
 export var UrlSegment = (function () {
-    function UrlSegment(path, parameters) {
+    function UrlSegment(
+        /**
+         * The part part of a URL segment.
+         */
+        path, 
+        /**
+         * The matrix parameters associated with a segment.
+         */
+        parameters) {
         this.path = path;
         this.parameters = parameters;
     }
+    /**
+     * @docsNotRequired
+     */
     UrlSegment.prototype.toString = function () { return serializePath(this); };
     return UrlSegment;
 }());
@@ -153,7 +243,12 @@ export function mapChildrenIntoArray(segment, fn) {
     return res;
 }
 /**
- * Defines a way to serialize/deserialize a url tree.
+ * @whatItDoes Serializes and deserializes a URL string into a URL tree.
+ *
+ * @description The url serialization strategy is customizable. You can
+ * make all URLs case insensitive by providing a custom UrlSerializer.
+ *
+ * See {@link DefaultUrlSerializer} for an example of a URL serializer.
  *
  * @stable
  */
@@ -163,17 +258,36 @@ export var UrlSerializer = (function () {
     return UrlSerializer;
 }());
 /**
- * A default implementation of the serialization.
+ * @whatItDoes A default implementation of the {@link UrlSerializer}.
+ *
+ * @description
+ *
+ * Example URLs:
+ *
+ * ```
+ * /inbox/33(popup:compose)
+ * /inbox/33;open=true/messages/44
+ * ```
+ *
+ * DefaultUrlSerializer uses parentheses to serialize secondary segments (e.g., popup:compose), the
+ * colon syntax to specify the outlet, and the ';parameter=value' syntax (e.g., open=true) to
+ * specify route specific parameters.
  *
  * @stable
  */
 export var DefaultUrlSerializer = (function () {
     function DefaultUrlSerializer() {
     }
+    /**
+     * Parse a url into a {@link UrlTree}.
+     */
     DefaultUrlSerializer.prototype.parse = function (url) {
         var p = new UrlParser(url);
         return new UrlTree(p.parseRootSegment(), p.parseQueryParams(), p.parseFragment());
     };
+    /**
+     * Converts a {@link UrlTree} into a url.
+     */
     DefaultUrlSerializer.prototype.serialize = function (tree) {
         var segment = "/" + serializeSegment(tree.root, true);
         var query = serializeQueryParams(tree.queryParams);

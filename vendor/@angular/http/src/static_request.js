@@ -10,7 +10,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-import { StringWrapper, isPresent } from '../src/facade/lang';
+import { isPresent } from '../src/facade/lang';
 import { Body } from './body';
 import { ContentType } from './enums';
 import { Headers } from './headers';
@@ -67,7 +67,7 @@ export var Request = (function (_super) {
             var search = requestOptions.search.toString();
             if (search.length > 0) {
                 var prefix = '?';
-                if (StringWrapper.contains(this.url, '?')) {
+                if (this.url.indexOf('?') != -1) {
                     prefix = (this.url[this.url.length - 1] == '&') ? '' : '&';
                 }
                 // TODO: just delete search-query-looking string in url?

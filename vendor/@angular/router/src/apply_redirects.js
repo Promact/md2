@@ -86,7 +86,7 @@ var ApplyRedirects = (function () {
         });
     };
     ApplyRedirects.prototype.noMatchError = function (e) {
-        return new Error("Cannot match any routes: '" + e.segmentGroup + "'");
+        return new Error("Cannot match any routes. URL Segment: '" + e.segmentGroup + "'");
     };
     ApplyRedirects.prototype.createUrlTree = function (rootCandidate) {
         var root = rootCandidate.segments.length > 0 ?
@@ -174,7 +174,15 @@ var ApplyRedirects = (function () {
     ApplyRedirects.prototype.matchSegmentAgainstRoute = function (injector, rawSegmentGroup, route, segments) {
         var _this = this;
         if (route.path === '**') {
-            return of(new UrlSegmentGroup(segments, {}));
+            if (route.loadChildren) {
+                return map.call(this.configLoader.load(injector, route.loadChildren), function (r) {
+                    route._loadedConfig = r;
+                    return of(new UrlSegmentGroup(segments, {}));
+                });
+            }
+            else {
+                return of(new UrlSegmentGroup(segments, {}));
+            }
         }
         else {
             var _a = match(rawSegmentGroup, route, segments), matched = _a.matched, consumedSegments_1 = _a.consumedSegments, lastChild = _a.lastChild;

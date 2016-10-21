@@ -1,13 +1,17 @@
-import { ElementRef, EventEmitter, ModuleWithProviders } from '@angular/core';
+import { AfterContentInit, ElementRef, EventEmitter, ModuleWithProviders } from '@angular/core';
 import { ControlValueAccessor } from '@angular/forms';
-import { HightlightPipe } from './autocomplete.pipe';
+import { HighlightPipe } from '../core/core';
 export declare const MD2_AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR: any;
-export declare class Md2Autocomplete implements ControlValueAccessor {
+export declare class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
     private element;
     constructor(element: ElementRef);
+    ngAfterContentInit(): void;
     change: EventEmitter<any>;
     private _value;
+    private _readonly;
+    private _required;
     private _disabled;
+    private _isInitialized;
     private _onTouchedCallback;
     private _onChangeCallback;
     private _items;
@@ -18,18 +22,16 @@ export declare class Md2Autocomplete implements ControlValueAccessor {
     private inputFocused;
     private noBlur;
     id: string;
-    disabled: boolean;
     tabindex: number;
     placeholder: string;
     textKey: string;
     valueKey: string;
+    minLength: number;
+    readonly: boolean;
+    required: boolean;
+    disabled: boolean;
     items: Array<any>;
     value: any;
-    /**
-     * set value
-     * @param value of ngModel
-     */
-    private setValue(value);
     /**
      * Compare two vars or objects
      * @param o1 compare first object
@@ -90,7 +92,7 @@ export declare class Md2Autocomplete implements ControlValueAccessor {
     registerOnChange(fn: any): void;
     registerOnTouched(fn: any): void;
 }
-export declare const MD2_AUTOCOMPLETE_DIRECTIVES: (typeof HightlightPipe | typeof Md2Autocomplete)[];
+export declare const MD2_AUTOCOMPLETE_DIRECTIVES: (typeof HighlightPipe | typeof Md2Autocomplete)[];
 export declare class Md2AutocompleteModule {
     static forRoot(): ModuleWithProviders;
 }

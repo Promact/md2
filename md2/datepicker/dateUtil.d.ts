@@ -65,6 +65,20 @@ export declare class Md2DateUtil {
      */
     getWeekOfMonth(date: Date): number;
     /**
+     * Gets a new date incremented by the given number of minutes. Number of minutes can be negative.
+     * @param {Date} date
+     * @param {number} numberOfMinutes
+     * @returns {Date}
+     */
+    incrementMinutes(date: Date, numberOfMinutes: number): Date;
+    /**
+     * Gets a new date incremented by the given number of hours. Number of hours can be negative.
+     * @param {Date} date
+     * @param {number} numberOfHours
+     * @returns {Date}
+     */
+    incrementHours(date: Date, numberOfHours: number): Date;
+    /**
      * Gets a new date incremented by the given number of days. Number of days can be negative.
      * @param {Date} date
      * @param {number} numberOfDays

@@ -9,6 +9,7 @@ import { ComponentFactoryResolver, ReflectiveInjector } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { from } from 'rxjs/observable/from';
 import { of } from 'rxjs/observable/of';
+import { concatMap } from 'rxjs/operator/concatMap';
 import { every } from 'rxjs/operator/every';
 import { map } from 'rxjs/operator/map';
 import { mergeAll } from 'rxjs/operator/mergeAll';
@@ -26,76 +27,116 @@ import { NavigationCancelingError, PRIMARY_OUTLET } from './shared';
 import { UrlTree, containsTree, createEmptyUrlTree } from './url_tree';
 import { andObservables, forEach, merge, shallowEqual, waitForMap, wrapIntoObservable } from './utils/collection';
 /**
- * An event triggered when a navigation starts
+ * @whatItDoes Represents an event triggered when a navigation starts.
  *
  * @stable
  */
 export var NavigationStart = (function () {
-    function NavigationStart(id, url) {
+    // TODO: vsavkin: make internal
+    function NavigationStart(
+        /** @docsNotRequired */
+        id, 
+        /** @docsNotRequired */
+        url) {
         this.id = id;
         this.url = url;
     }
+    /** @docsNotRequired */
     NavigationStart.prototype.toString = function () { return "NavigationStart(id: " + this.id + ", url: '" + this.url + "')"; };
     return NavigationStart;
 }());
 /**
- * An event triggered when a navigation ends successfully
+ * @whatItDoes Represents an event triggered when a navigation ends successfully.
  *
  * @stable
  */
 export var NavigationEnd = (function () {
-    function NavigationEnd(id, url, urlAfterRedirects) {
+    // TODO: vsavkin: make internal
+    function NavigationEnd(
+        /** @docsNotRequired */
+        id, 
+        /** @docsNotRequired */
+        url, 
+        /** @docsNotRequired */
+        urlAfterRedirects) {
         this.id = id;
         this.url = url;
         this.urlAfterRedirects = urlAfterRedirects;
     }
+    /** @docsNotRequired */
     NavigationEnd.prototype.toString = function () {
         return "NavigationEnd(id: " + this.id + ", url: '" + this.url + "', urlAfterRedirects: '" + this.urlAfterRedirects + "')";
     };
     return NavigationEnd;
 }());
 /**
- * An event triggered when a navigation is canceled
+ * @whatItDoes Represents an event triggered when a navigation is canceled.
  *
  * @stable
  */
 export var NavigationCancel = (function () {
-    function NavigationCancel(id, url, reason) {
+    // TODO: vsavkin: make internal
+    function NavigationCancel(
+        /** @docsNotRequired */
+        id, 
+        /** @docsNotRequired */
+        url, 
+        /** @docsNotRequired */
+        reason) {
         this.id = id;
         this.url = url;
         this.reason = reason;
     }
+    /** @docsNotRequired */
     NavigationCancel.prototype.toString = function () { return "NavigationCancel(id: " + this.id + ", url: '" + this.url + "')"; };
     return NavigationCancel;
 }());
 /**
- * An event triggered when a navigation fails due to unexpected error
+ * @whatItDoes Represents an event triggered when a navigation fails due to an unexpected error.
  *
  * @stable
  */
 export var NavigationError = (function () {
-    function NavigationError(id, url, error) {
+    // TODO: vsavkin: make internal
+    function NavigationError(
+        /** @docsNotRequired */
+        id, 
+        /** @docsNotRequired */
+        url, 
+        /** @docsNotRequired */
+        error) {
         this.id = id;
         this.url = url;
         this.error = error;
     }
+    /** @docsNotRequired */
     NavigationError.prototype.toString = function () {
         return "NavigationError(id: " + this.id + ", url: '" + this.url + "', error: " + this.error + ")";
     };
     return NavigationError;
 }());
 /**
- * An event triggered when routes are recognized
+ * @whatItDoes Represents an event triggered when routes are recognized.
  *
  * @stable
  */
 export var RoutesRecognized = (function () {
-    function RoutesRecognized(id, url, urlAfterRedirects, state) {
+    // TODO: vsavkin: make internal
+    function RoutesRecognized(
+        /** @docsNotRequired */
+        id, 
+        /** @docsNotRequired */
+        url, 
+        /** @docsNotRequired */
+        urlAfterRedirects, 
+        /** @docsNotRequired */
+        state) {
         this.id = id;
         this.url = url;
         this.urlAfterRedirects = urlAfterRedirects;
         this.state = state;
     }
+    /** @docsNotRequired */
     RoutesRecognized.prototype.toString = function () {
         return "RoutesRecognized(id: " + this.id + ", url: '" + this.url + "', urlAfterRedirects: '" + this.urlAfterRedirects + "', state: " + this.state + ")";
     };
@@ -105,9 +146,11 @@ function defaultErrorHandler(error) {
     throw error;
 }
 /**
- * The `Router` is responsible for mapping URLs to components.
+ * @whatItDoes Provides the navigation and url manipulation capabilities.
  *
  * See {@link Routes} for more details and examples.
+ *
+ * @ngModule RouterModule
  *
  * @stable
  */
@@ -115,6 +158,7 @@ export var Router = (function () {
     /**
      * Creates the router service.
      */
+    // TODO: vsavkin make internal after the final is out.
     function Router(rootComponentType, urlSerializer, outletMap, location, injector, loader, compiler, config) {
         this.rootComponentType = rootComponentType;
         this.urlSerializer = urlSerializer;
@@ -123,11 +167,14 @@ export var Router = (function () {
         this.injector = injector;
         this.config = config;
         this.navigationId = 0;
+        /**
+         * Error handler that is invoked when a navigation errors.
+         *
+         * See {@link ErrorHandler} for more information.
+         */
         this.errorHandler = defaultErrorHandler;
         /**
          * Indicates if at least one navigation happened.
-         *
-         * @stable
          */
         this.navigated = false;
         this.resetConfig(config);
@@ -137,14 +184,24 @@ export var Router = (function () {
         this.currentRouterState = createEmptyState(this.currentUrlTree, this.rootComponentType);
     }
     /**
-     * Sets up the location change listener and performs the inital navigation
+     * @internal
+     * TODO: this should be removed once the constructor of the router made internal
+     */
+    Router.prototype.resetRootComponentType = function (rootComponentType) {
+        this.rootComponentType = rootComponentType;
+        // TODO: vsavkin router 4.0 should make the root component set to null
+        // this will simplify the lifecycle of the router.
+        this.currentRouterState.root.component = this.rootComponentType;
+    };
+    /**
+     * Sets up the location change listener and performs the initial navigation.
      */
     Router.prototype.initialNavigation = function () {
         this.setUpLocationChangeListener();
         this.navigateByUrl(this.location.path(true), { replaceUrl: true });
     };
     /**
-     * Sets up the location change listener
+     * Sets up the location change listener.
      */
     Router.prototype.setUpLocationChangeListener = function () {
         var _this = this;
@@ -201,14 +258,16 @@ export var Router = (function () {
         validateConfig(config);
         this.config = config;
     };
+    /**
+     * @docsNotRequired
+     */
     Router.prototype.ngOnDestroy = function () { this.dispose(); };
     /**
      * Disposes of the router.
      */
     Router.prototype.dispose = function () { this.locationSubscription.unsubscribe(); };
     /**
-     * Applies an array of commands to the current url tree and creates
-     * a new url tree.
+     * Applies an array of commands to the current url tree and creates a new url tree.
      *
      * When given an activate route, applies the given commands starting from the route.
      * When not given a route, applies the given command starting from the root.
@@ -297,10 +356,10 @@ export var Router = (function () {
      * ### Usage
      *
      * ```
-     * router.navigate(['team', 33, 'team', '11], {relativeTo: route});
+     * router.navigate(['team', 33, 'user', 11], {relativeTo: route});
      *
      * // Navigate without updating the URL
-     * router.navigate(['team', 33, 'team', '11], {relativeTo: route, skipLocationChange: true });
+     * router.navigate(['team', 33, 'user', 11], {relativeTo: route, skipLocationChange: true });
      * ```
      *
      * In opposite to `navigateByUrl`, `navigate` always takes a delta
@@ -315,7 +374,7 @@ export var Router = (function () {
      */
     Router.prototype.serializeUrl = function (url) { return this.urlSerializer.serialize(url); };
     /**
-     * Parse a string into a {@link UrlTree}.
+     * Parses a string into a {@link UrlTree}.
      */
     Router.prototype.parseUrl = function (url) { return this.urlSerializer.parse(url); };
     /**
@@ -488,7 +547,7 @@ export var PreActivation = (function () {
         if (this.checks.length === 0)
             return of(null);
         var checks$ = from(this.checks);
-        var runningChecks$ = mergeMap.call(checks$, function (s) {
+        var runningChecks$ = concatMap.call(checks$, function (s) {
             if (s instanceof CanActivate) {
                 return _this.runResolve(s.route);
             }

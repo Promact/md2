@@ -221,7 +221,7 @@ html, body {
       min-width: initial;
       outline: none;
       padding: 16px;
-      margin: 2px 0 0 -16px;
+      margin: 4px 0 0 -16px;
       background: transparent;
       border: 1px solid transparent;
       border-radius: 4px;
@@ -232,7 +232,12 @@ html, body {
       box-shadow: none; }
     .main .toolbar h3 {
       margin: 0;
-      padding: 15px 0; }
+      padding: 16px 0;
+      line-height: 28px; }
+    .main .toolbar .source-code {
+      float: right;
+      fill: currentColor;
+      color: #ffffff; }
   .main .footer {
     position: absolute;
     border-top: 1px solid rgba(0, 0, 0, 0.2);
@@ -266,7 +271,8 @@ html, body {
       width: 100%;
       margin: 0 -15px;
       padding: 0 15px;
-      z-index: 111; }
+      z-index: 111;
+      box-sizing: border-box; }
       .main .toolbar .sidenav-toggle {
         display: block; } }
 

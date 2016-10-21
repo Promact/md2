@@ -2,7 +2,6 @@ import { Toast } from './toast';
 export declare class Md2ToastComponent {
     toasts: Toast[];
     maxShown: number;
-    animate: string;
     /**
      * add toast
      * @param toast toast object with all parameters
@@ -17,7 +16,7 @@ export declare class Md2ToastComponent {
      * remove all toasts
      * @param toastId number of toast id
      */
-    removeAll(toastId: number): void;
+    removeAll(): void;
     /**
      * check has any toast
      * @return boolean

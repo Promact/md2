@@ -117,8 +117,8 @@ export class Md2TooltipComponent implements AfterViewInit {
     return {
       width: boundingClientRect.width || nativeEl.offsetWidth,
       height: boundingClientRect.height || nativeEl.offsetHeight,
-      top: boundingClientRect.top + (this.window.pageYOffset || this.document.documentElement.scrollTop) - this.document.body.scrollTop,
-      left: boundingClientRect.left + (this.window.pageXOffset || this.document.documentElement.scrollLeft) - this.document.body.scrollLeft
+      top: boundingClientRect.top,
+      left: boundingClientRect.left
     };
   }
 

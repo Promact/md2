@@ -16,20 +16,29 @@ import { UrlSegment } from './url_tree';
 import { merge, shallowEqual, shallowEqualArrays } from './utils/collection';
 import { Tree, TreeNode } from './utils/tree';
 /**
- * The state of the router.
+ * @whatItDoes Represents the state of the router.
  *
- * ### Usage
+ * @howToUse
  *
  * ```
- * @Component({template:''})
+ * @Component({templateUrl:'template.html'})
  * class MyComponent {
  *   constructor(router: Router) {
- *     const state = router.routerState;
- *     const id: Observable<string> = state.root.firstChild.params.map(p => p.id);
- *     const isDebug: Observable<string> = state.root.queryParams.map(q => q.debug);
+ *     const state: RouterState = router.routerState;
+ *     const root: ActivatedRoute = state.root;
+ *     const child = root.firstChild;
+ *     const id: Observable<string> = child.params.map(p => p.id);
+ *     //...
  *   }
  * }
  * ```
+ *
+ * @description
+ * RouterState is a tree of activated routes. Every node in this tree knows about the "consumed" URL
+ * segments,
+ * the extracted parameters, and the resolved data.
+ *
+ * See {@link ActivatedRoute} for more information.
  *
  * @stable
  */
@@ -38,7 +47,11 @@ export var RouterState = (function (_super) {
     /**
      * @internal
      */
-    function RouterState(root, snapshot) {
+    function RouterState(root, 
+        /**
+         * The current snapshot of the router state.
+         */
+        snapshot) {
         _super.call(this, root);
         this.snapshot = snapshot;
         setRouterStateSnapshot(this, root);
@@ -66,17 +79,19 @@ export function createEmptyStateSnapshot(urlTree, rootComponent) {
     return new RouterStateSnapshot('', new TreeNode(activated, []));
 }
 /**
- * Contains the information about a component loaded in an outlet. The information is provided
- * through the params, urlSegments, and data observables.
+ * @whatItDoes Contains the information about a route associated with a component loaded in an
+ * outlet.
+ * ActivatedRoute can also be used to traverse the router state tree.
  *
- * ### Usage
+ * @howToUse
  *
  * ```
- * @Component({template:''})
+ * @Component({templateUrl:'./my-component.html'})
  * class MyComponent {
  *   constructor(route: ActivatedRoute) {
  *     const id: Observable<string> = route.params.map(p => p.id);
- *     const data = route.data.map(d => d.user); //includes `data` and `resolve`
+ *     const url: Observable<string> = route.url.map(s => s.join(''));
+ *     const user = route.data.map(d => d.user); //includes `data` and `resolve`
  *   }
  * }
  * ```
@@ -87,7 +102,41 @@ export var ActivatedRoute = (function () {
     /**
      * @internal
      */
-    function ActivatedRoute(url, params, queryParams, fragment, data, outlet, component, futureSnapshot) {
+    function ActivatedRoute(
+        /**
+         *  The URL segments matched by this route. The observable will emit a new value when
+         *  the array of segments changes.
+         */
+        url, 
+        /**
+         * The matrix parameters scoped to this route. The observable will emit a new value when
+         * the set of the parameters changes.
+         */
+        params, 
+        /**
+         * The query parameters shared by all the routes. The observable will emit a new value when
+         * the set of the parameters changes.
+         */
+        queryParams, 
+        /**
+         * The URL fragment shared by all the routes. The observable will emit a new value when
+         * the URL fragment changes.
+         */
+        fragment, 
+        /**
+         * The static and resolved data of this route. The observable will emit a new value when
+         * any of the resolvers returns a new object.
+         */
+        data, 
+        /**
+         * The outlet name of the route. It's a constant.
+         */
+        outlet, 
+        /**
+         * The component of the route. It's a constant.
+         */
+        component, // TODO: vsavkin: remove |string
+        futureSnapshot) {
         this.url = url;
         this.params = params;
         this.queryParams = queryParams;
@@ -98,35 +147,56 @@ export var ActivatedRoute = (function () {
         this._futureSnapshot = futureSnapshot;
     }
     Object.defineProperty(ActivatedRoute.prototype, "routeConfig", {
+        /**
+         * The configuration used to match this route.
+         */
         get: function () { return this._futureSnapshot.routeConfig; },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(ActivatedRoute.prototype, "root", {
+        /**
+         * The root of the router state.
+         */
         get: function () { return this._routerState.root; },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(ActivatedRoute.prototype, "parent", {
+        /**
+         * The parent of this route in the router state tree.
+         */
         get: function () { return this._routerState.parent(this); },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(ActivatedRoute.prototype, "firstChild", {
+        /**
+         * The first child of this route in the router state tree.
+         */
         get: function () { return this._routerState.firstChild(this); },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(ActivatedRoute.prototype, "children", {
+        /**
+         * The children of this route in the router state tree.
+         */
         get: function () { return this._routerState.children(this); },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(ActivatedRoute.prototype, "pathFromRoot", {
+        /**
+         * The path from the root of the router state tree to this route.
+         */
         get: function () { return this._routerState.pathFromRoot(this); },
         enumerable: true,
         configurable: true
     });
+    /**
+     * @docsNotRequired
+     */
     ActivatedRoute.prototype.toString = function () {
         return this.snapshot ? this.snapshot.toString() : "Future(" + this._futureSnapshot + ")";
     };
@@ -163,16 +233,20 @@ export var InheritedResolve = (function () {
     return InheritedResolve;
 }());
 /**
- * Contains the information about a component loaded in an outlet at a particular moment in time.
+ * @whatItDoes Contains the information about a route associated with a component loaded in an
+ * outlet
+ * at a particular moment in time. ActivatedRouteSnapshot can also be used to traverse the router
+ * state tree.
  *
- * ### Usage
+ * @howToUse
  *
  * ```
- * @Component({template:''})
+ * @Component({templateUrl:'./my-component.html'})
  * class MyComponent {
  *   constructor(route: ActivatedRoute) {
  *     const id: string = route.snapshot.params.id;
- *     const data = route.snapshot.data;
+ *     const url: string = route.snapshot.url.join('');
+ *     const user = route.snapshot.data.user;
  *   }
  * }
  * ```
@@ -183,7 +257,35 @@ export var ActivatedRouteSnapshot = (function () {
     /**
      * @internal
      */
-    function ActivatedRouteSnapshot(url, params, queryParams, fragment, data, outlet, component, routeConfig, urlSegment, lastPathIndex, resolve) {
+    function ActivatedRouteSnapshot(
+        /**
+         *  The URL segments matched by this route.
+         */
+        url, 
+        /**
+         * The matrix parameters scoped to this route.
+         */
+        params, 
+        /**
+         * The query parameters shared by all the routes.
+         */
+        queryParams, 
+        /**
+         * The URL fragment shared by all the routes.
+         */
+        fragment, 
+        /**
+         * The static and resolved data of this route.
+         */
+        data, 
+        /**
+         * The outlet name of the route.
+         */
+        outlet, 
+        /**
+         * The component of the route.
+         */
+        component, routeConfig, urlSegment, lastPathIndex, resolve) {
         this.url = url;
         this.params = params;
         this.queryParams = queryParams;
@@ -197,35 +299,56 @@ export var ActivatedRouteSnapshot = (function () {
         this._resolve = resolve;
     }
     Object.defineProperty(ActivatedRouteSnapshot.prototype, "routeConfig", {
+        /**
+         * The configuration used to match this route.
+         */
         get: function () { return this._routeConfig; },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(ActivatedRouteSnapshot.prototype, "root", {
+        /**
+         * The root of the router state.
+         */
         get: function () { return this._routerState.root; },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(ActivatedRouteSnapshot.prototype, "parent", {
+        /**
+         * The parent of this route in the router state tree.
+         */
         get: function () { return this._routerState.parent(this); },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(ActivatedRouteSnapshot.prototype, "firstChild", {
+        /**
+         * The first child of this route in the router state tree.
+         */
         get: function () { return this._routerState.firstChild(this); },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(ActivatedRouteSnapshot.prototype, "children", {
+        /**
+         * The children of this route in the router state tree.
+         */
         get: function () { return this._routerState.children(this); },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(ActivatedRouteSnapshot.prototype, "pathFromRoot", {
+        /**
+         * The path from the root of the router state tree to this route.
+         */
         get: function () { return this._routerState.pathFromRoot(this); },
         enumerable: true,
         configurable: true
     });
+    /**
+     * @docsNotRequired
+     */
     ActivatedRouteSnapshot.prototype.toString = function () {
         var url = this.url.map(function (s) { return s.toString(); }).join('/');
         var matched = this._routeConfig ? this._routeConfig.path : '';
@@ -234,18 +357,27 @@ export var ActivatedRouteSnapshot = (function () {
     return ActivatedRouteSnapshot;
 }());
 /**
- * The state of the router at a particular moment in time.
+ * @whatItDoes Represents the state of the router at a moment in time.
  *
- * ### Usage
+ * @howToUse
  *
  * ```
- * @Component({template:''})
+ * @Component({templateUrl:'template.html'})
  * class MyComponent {
  *   constructor(router: Router) {
- *     const snapshot = router.routerState.snapshot;
+ *     const state: RouterState = router.routerState;
+ *     const snapshot: RouterStateSnapshot = state.snapshot;
+ *     const root: ActivatedRouteSnapshot = snapshot.root;
+ *     const child = root.firstChild;
+ *     const id: Observable<string> = child.params.map(p => p.id);
+ *     //...
  *   }
  * }
  * ```
+ *
+ * @description
+ * RouterStateSnapshot is a tree of activated route snapshots. Every node in this tree knows about
+ * the "consumed" URL segments, the extracted parameters, and the resolved data.
  *
  * @stable
  */
@@ -254,7 +386,9 @@ export var RouterStateSnapshot = (function (_super) {
     /**
      * @internal
      */
-    function RouterStateSnapshot(url, root) {
+    function RouterStateSnapshot(
+        /** The url from which this snapshot was created */
+        url, root) {
         _super.call(this, root);
         this.url = url;
         setRouterStateSnapshot(this, root);

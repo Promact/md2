@@ -1,4 +1,4 @@
-import { AfterContentInit, OnDestroy, EventEmitter, ModuleWithProviders } from '@angular/core';
+import { AfterContentInit, ElementRef, EventEmitter, ModuleWithProviders } from '@angular/core';
 import { ControlValueAccessor } from '@angular/forms';
 import { Md2DateUtil } from './dateUtil';
 export interface IDay {
@@ -24,16 +24,20 @@ export interface IWeek {
     disabled: boolean;
 }
 export declare const MD2_DATEPICKER_CONTROL_VALUE_ACCESSOR: any;
-export declare class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueAccessor {
+export declare class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
     private dateUtil;
-    constructor(dateUtil: Md2DateUtil);
+    private element;
+    constructor(dateUtil: Md2DateUtil, element: ElementRef);
     ngAfterContentInit(): void;
-    ngOnDestroy(): void;
     private _value;
+    private _readonly;
+    private _required;
     private _disabled;
+    private _isInitialized;
     private _onTouchedCallback;
     private _onChangeCallback;
     private isDatepickerVisible;
+    private isYearsVisible;
     private isCalendarVisible;
     private isHoursVisible;
     private months;
@@ -43,6 +47,7 @@ export declare class Md2Datepicker implements AfterContentInit, OnDestroy, Contr
     private prevMonth;
     private currMonth;
     private nextMonth;
+    private years;
     private dates;
     private today;
     private _displayDate;
@@ -50,17 +55,19 @@ export declare class Md2Datepicker implements AfterContentInit, OnDestroy, Contr
     private displayDay;
     private displayInputDate;
     private clock;
+    private _minDate;
+    private _maxDate;
     change: EventEmitter<any>;
     type: 'date' | 'time' | 'datetime';
-    disabled: boolean;
     name: string;
     id: string;
     class: string;
     placeholder: string;
     format: string;
     tabindex: number;
-    private _minDate;
-    private _maxDate;
+    readonly: boolean;
+    required: boolean;
+    disabled: boolean;
     min: string;
     max: string;
     value: any;
@@ -68,6 +75,17 @@ export declare class Md2Datepicker implements AfterContentInit, OnDestroy, Contr
     private onClick(event);
     private onKeyDown(event);
     private onBlur();
+    /**
+     * Display Years
+     */
+    private showYear();
+    private getYears();
+    private _scrollToSelectedYear();
+    /**
+     * select year
+     * @param year
+     */
+    private setYear(year);
     /**
      * Display Datepicker
      */

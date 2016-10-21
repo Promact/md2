@@ -1,5 +1,5 @@
 /*
- * SystemJS v0.19.31
+ * SystemJS v0.19.38
  */
 (function() {
 function bootstrap() {// from https://gist.github.com/Yaffle/1088850
@@ -49,9 +49,8 @@ function URLPolyfill(url, baseURL) {
       protocol = base.protocol;
   }
 
-  // convert windows file URLs to use /
-  if (protocol == 'file:')
-    pathname = pathname.replace(/\\/g, '/');
+  // convert URLs to use / always
+  pathname = pathname.replace(/\\/g, '/');
 
   this.origin = host ? protocol + (protocol !== "" || host !== "" ? "//" : "") + host : "";
   this.href = protocol + (protocol && host || protocol == "file:" ? "//" : "") + (username !== "" ? username + (password !== "" ? ":" + password : "") + "@" : "") + host + pathname + search + hash;
@@ -106,7 +105,7 @@ global.URLPolyfill = URLPolyfill;
   function addToError(err, msg) {
     // parse the stack removing loader code lines for simplification
     if (!err.originalErr) {
-      var stack = (err.stack || err.message || err).toString().split('\n');
+      var stack = ((err.message || err) + (err.stack ? '\n' + err.stack : '')).toString().split('\n');
       var newStack = [];
       for (var i = 0; i < stack.length; i++) {
         if (typeof $__curScript == 'undefined' || stack[i].indexOf($__curScript.src) == -1)
@@ -122,13 +121,8 @@ global.URLPolyfill = URLPolyfill;
 
     var newErr = errArgs ? new Error(newMsg, err.fileName, err.lineNumber) : new Error(newMsg);
     
-    // Node needs stack adjustment for throw to show message
-    if (!isBrowser)
-      newErr.stack = newMsg;
-    // Clearing the stack stops unnecessary loader lines showing
-    else
-      newErr.stack = null;
-    
+    newErr.stack = newMsg;
+        
     // track the original error
     newErr.originalErr = err.originalErr || err;
 
@@ -483,8 +477,6 @@ function logloads(loads) {
       .then(function() {
         // console.log('LoadSucceeded ' + load.name);
         // snapshot(loader);
-
-        console.assert(load.status == 'loading', 'is loading');
 
         load.status = 'loaded';
 
@@ -1471,7 +1463,24 @@ var __exec;
 
 (function() {
 
-  var hasBtoa = typeof btoa != 'undefined';
+  var hasBuffer = typeof Buffer != 'undefined';
+  try {
+    if (hasBuffer && new Buffer('a').toString('base64') != 'YQ==')
+      hasBuffer = false;
+  }
+  catch(e) {
+    hasBuffer = false;
+  }
+
+  var sourceMapPrefix = '\n//# sourceMappingURL=data:application/json;base64,';
+  function inlineSourceMap(sourceMapString) {
+    if (hasBuffer)
+      return sourceMapPrefix + new Buffer(sourceMapString).toString('base64');
+    else if (typeof btoa != 'undefined')
+      return sourceMapPrefix + btoa(unescape(encodeURIComponent(sourceMapString)));
+    else
+      return '';
+  }
 
   function getSource(load, wrap) {
     var lastLineIndex = load.source.lastIndexOf('\n');
@@ -1493,7 +1502,7 @@ var __exec;
         + (load.source.substr(lastLineIndex, 15) != '\n//# sourceURL=' 
           ? '\n//# sourceURL=' + load.address + (sourceMap ? '!transpiled' : '') : '')
         // add sourceMappingURL if load.metadata.sourceMap is set
-        + (sourceMap && hasBtoa && '\n//# sourceMappingURL=data:application/json;base64,' + btoa(unescape(encodeURIComponent(sourceMap))) || '');
+        + (sourceMap && inlineSourceMap(sourceMap) || '');
   }
 
   var curLoad;
@@ -1525,7 +1534,7 @@ var __exec;
     curLoad = undefined;
   }
 
-  var nwjs = typeof process != 'undefined' && process.versions && process.versions['node-webkit'];
+  var useVm;
   var vm;
   __exec = function(load) {
     if (!load.source)
@@ -1536,13 +1545,14 @@ var __exec;
       preExec(this, load);
       curLoad = load;
       // global scoped eval for node (avoids require scope leak)
-      if (this._nodeRequire && !nwjs) {
-        vm = vm || this._nodeRequire('vm');
+      if (!vm && this._nodeRequire) {
+        vm = this._nodeRequire('vm');
+        useVm = vm.runInThisContext("typeof System !== 'undefined' && System") === this;
+      }
+      if (useVm)
         vm.runInThisContext(getSource(load, true), { filename: load.address + (load.metadata.sourceMap ? '!transpiled' : '') });
-      }
-      else {
+      else
         (0, eval)(getSource(load, true));
-      }
       postExec();
     }
     catch(e) {
@@ -1647,6 +1657,10 @@ hookConstructor(function(constructor) {
     // support map and paths
     this.map = {};
 
+    // make the location of the system.js script accessible
+    if (typeof $__curScript != 'undefined')
+      this.scriptSrc = $__curScript.src;
+
     // global behaviour flags
     this.warnings = false;
     this.defaultJSExtensions = false;
@@ -1683,22 +1697,18 @@ if (typeof require != 'undefined' && typeof process != 'undefined' && !process.b
   a URL.
  */
 
-function getNodeModule(name) {
+var parentModuleContext;
+function getNodeModule(name, baseURL) {
   if (!isPlain(name))
     throw new Error('Node module ' + name + ' can\'t be loaded as it is not a package require.');
 
-  var nodePath = this._nodeRequire('path');
-  // try to load from node_modules
-  var module;
-  try {
-    module = this._nodeRequire(nodePath.resolve(process.cwd(), 'node_modules', name));
+  if (!parentModuleContext) {
+    var Module = this._nodeRequire('module');
+    var base = baseURL.substr(isWindows ? 8 : 7);
+    parentModuleContext = new Module(base);
+    parentModuleContext.paths = Module._nodeModulePaths(base);
   }
-  catch(e) {
-    // fall back to direct require (in theory this is core modules only, which should really be filtered)
-    if (e.code == 'MODULE_NOT_FOUND')
-      module = this._nodeRequire(name);
-  }
-  return module;
+  return parentModuleContext.require(name);
 }
 
 function coreResolve(name, parentName) {
@@ -1722,11 +1732,15 @@ function coreResolve(name, parentName) {
 
   if (this.has(name))
     return name;
+  
   // dynamically load node-core modules when requiring `@node/fs` for example
   if (name.substr(0, 6) == '@node/') {
     if (!this._nodeRequire)
       throw new TypeError('Error loading ' + name + '. Can only load node core modules in Node.');
-    this.set(name, this.newModule(getESModule(getNodeModule.call(this, name.substr(6)))));
+    if (this.builder)
+      this.set(name, this.newModule({}));
+    else
+      this.set(name, this.newModule(getESModule(getNodeModule.call(this, name.substr(6), this.baseURL))));
     return name;
   }
 
@@ -1894,9 +1908,9 @@ SystemJSLoader.prototype.getConfig = function(name) {
   var cfg = {};
   var loader = this;
   for (var p in loader) {
-    if (loader.hasOwnProperty && !loader.hasOwnProperty(p) || p in SystemJSLoader.prototype)
+    if (loader.hasOwnProperty && !loader.hasOwnProperty(p) || p in SystemJSLoader.prototype && p != 'transpiler')
       continue;
-    if (indexOf.call(['_loader', 'amdDefine', 'amdRequire', 'defined', 'failed', 'version'], p) == -1)
+    if (indexOf.call(['_loader', 'amdDefine', 'amdRequire', 'defined', 'failed', 'version', 'loads'], p) == -1)
       cfg[p] = loader[p];
   }
   cfg.production = envModule.production;
@@ -2780,7 +2794,7 @@ SystemJSLoader.prototype.config = function(cfg, isEnvConfig) {
 
       // if nothing registered, then something went wrong
       if (!load.metadata.entry)
-        reject(new Error(load.address + ' did not call System.register or AMD define'));
+        reject(new Error(load.address + ' did not call System.register or AMD define. If loading a global, ensure the meta format is set to global.'));
 
       resolve('');
     });
@@ -3168,13 +3182,21 @@ function createEntry() {
         var importerModule = module.importers[i];
         if (!importerModule.locked) {
           var importerIndex = indexOf.call(importerModule.dependencies, module);
-          importerModule.setters[importerIndex](exports);
+          var setter = importerModule.setters[importerIndex];
+          if (setter)
+            setter(exports);
         }
       }
 
       module.locked = false;
       return value;
     }, { id: entry.name });
+
+    if (typeof declaration == 'function')
+      declaration = { setters: [], execute: declaration };
+
+    // allowing undefined declaration was a mistake! To be deprecated.
+    declaration = declaration || { setters: [], execute: function() {} };
     
     module.setters = declaration.setters;
     module.execute = declaration.execute;
@@ -3292,7 +3314,7 @@ function createEntry() {
       throw new Error('Module ' + name + ' not declared as a dependency of ' + entry.name);
     }, exports, module);
     
-    if (output)
+    if (output !== undefined)
       module.exports = output;
 
     // create the esModule object, which allows ES6 named imports of dynamics
@@ -3601,6 +3623,8 @@ function createEntry() {
               load.metadata.sourceMap = undefined;
               return source;
             });            
+          }, function(err) {
+            throw addToError(err, 'Unable to load transpiler to transpile ' + load.name);
           });
         }
 
@@ -3752,7 +3776,7 @@ function getGlobalValue(exports) {
 
 hook('reduceRegister_', function(reduceRegister) {
   return function(load, register) {
-    if (register || !load.metadata.exports)
+    if (register || (!load.metadata.exports && !(isWorker && load.metadata.format == 'global')))
       return reduceRegister.call(this, load, register);
 
     load.metadata.format = 'global';
@@ -4282,7 +4306,7 @@ hookConstructor(function(constructor) {
           if (curMeta) {
             if (!curMeta.entry && !curMeta.bundle)
               curMeta.entry = entry;
-            else if (curMeta.entry && curMeta.entry.name)
+            else if (curMeta.entry && curMeta.entry.name && curMeta.entry.name != load.name)
               curMeta.entry = undefined;
 
             // note this is now a bundle
@@ -5076,7 +5100,7 @@ hookConstructor(function(constructor) {
 System = new SystemJSLoader();
 
 __global.SystemJS = System;
-System.version = '0.19.31 Standard';
+System.version = '0.19.38 Standard';
   if (typeof module == 'object' && module.exports && typeof exports == 'object')
     module.exports = System;
 
@@ -5091,6 +5115,8 @@ var doPolyfill = typeof Promise === 'undefined';
 if (typeof document !== 'undefined') {
   var scripts = document.getElementsByTagName('script');
   $__curScript = scripts[scripts.length - 1];
+  if ($__curScript.defer || $__curScript.async)
+    $__curScript = document.currentScript;
   if (doPolyfill) {
     var curPath = $__curScript.src;
     var basePath = curPath.substr(0, curPath.lastIndexOf('/') + 1);

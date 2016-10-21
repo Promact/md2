@@ -14,12 +14,14 @@ var http_1 = require('@angular/http');
 var forms_1 = require('@angular/forms');
 var demo_app_1 = require('./demo-app/demo-app');
 var router_1 = require('@angular/router');
-var all_1 = require('md2/all');
+var md2_1 = require('md2');
 var routes_1 = require('./demo-app/routes');
 var accordion_demo_1 = require('./accordion/accordion-demo');
 var autocomplete_demo_1 = require('./autocomplete/autocomplete-demo');
+var chips_demo_1 = require('./chips/chips-demo');
 var collapse_demo_1 = require('./collapse/collapse-demo');
 var colorpicker_demo_1 = require('./colorpicker/colorpicker-demo');
+var data_table_demo_1 = require('./data-table/data-table-demo');
 var datepicker_demo_1 = require('./datepicker/datepicker-demo');
 var dialog_demo_1 = require('./dialog/dialog-demo');
 var menu_demo_1 = require('./menu/menu-demo');
@@ -43,17 +45,19 @@ var DemoAppModule = (function () {
                 forms_1.FormsModule,
                 http_1.HttpModule,
                 router_1.RouterModule.forRoot(routes_1.DEMO_APP_ROUTES),
-                all_1.Md2Module.forRoot(),
+                md2_1.Md2Module.forRoot(),
             ],
             declarations: [
+                demo_app_1.DemoApp,
+                demo_app_1.Home,
                 accordion_demo_1.AccordionDemo,
                 autocomplete_demo_1.AutocompleteDemo,
+                chips_demo_1.ChipsDemo,
                 collapse_demo_1.CollapseDemo,
                 colorpicker_demo_1.ColorpickerDemo,
+                data_table_demo_1.DataTableDemo,
                 datepicker_demo_1.DatepickerDemo,
-                demo_app_1.DemoApp,
                 dialog_demo_1.DialogDemo,
-                demo_app_1.Home,
                 menu_demo_1.MenuDemo,
                 multiselect_demo_1.MultiselectDemo,
                 select_demo_1.SelectDemo,

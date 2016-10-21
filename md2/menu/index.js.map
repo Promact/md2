@@ -1,1 +1,1 @@
-{"version":3,"sources":["menu/index.ts"],"names":[],"mappings":";;;;;;;;;;;;IAAA,iBAAc,QAAQ,CAAC,EAAA","file":"menu/index.js","sourcesContent":["export * from './menu';\r\n"],"sourceRoot":"/source/"}
+{"version":3,"sources":["menu/index.ts"],"names":[],"mappings":"AAAA,cAAc,QAAQ,CAAC","file":"index.js","sourcesContent":["export * from './menu';\r\n"]}

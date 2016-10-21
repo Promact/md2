@@ -10,6 +10,8 @@ Multiselect allow the user to select multiple options to the select option list.
 | `item-text` | `string` | Map property for display text |
 | `item-value` | `string` | Map property for return value, by default it returns whole object of selected options |
 | `placeholder` | `string` | Hint label |
+| `readonly` | `boolean` | Whether or not the multiselect is readonly |
+| `required` | `boolean` | Whether or not the multiselect is required |
 | `disabled` | `boolean` | Whether or not the multiselect is disabled |
 
 ### Events

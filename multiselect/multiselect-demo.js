@@ -11,14 +11,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var MultiselectDemo = (function () {
     function MultiselectDemo() {
-        this.disabled = false;
         this.items = [
-            { name: 'Amsterdam', value: '1' },
-            { name: 'Birmingham', value: '2' },
-            { name: 'Dortmund', value: '3' },
-            { name: 'Gothenburg', value: '4' },
-            { name: 'London', value: '5' },
-            { name: 'Seville', value: '6' }
+            { name: 'Vadodara', value: '1', disabled: false },
+            { name: 'Rajkot', value: '2', disabled: false },
+            { name: 'Delhi', value: '3', disabled: false },
+            { name: 'Chennai', value: '4', disabled: true },
+            { name: 'Mumbai', value: '5', disabled: false },
+            { name: 'Goa', value: '6', disabled: true }
         ];
         this.item = [{ name: 'Birmingham', value: '2' }, { name: 'Dortmund', value: '3' }];
     }

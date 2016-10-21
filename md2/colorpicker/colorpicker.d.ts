@@ -1,6 +1,6 @@
 import { OnInit, EventEmitter, ModuleWithProviders, ElementRef } from '@angular/core';
 import { ControlValueAccessor } from '@angular/forms';
-import { ColorpickerService } from './colorpicker.service';
+import { ColorpickerService } from './calculateColor';
 export declare const MD2_COLORPICKER_CONTROL_VALUE_ACCESSOR: any;
 export declare class TextDirective {
     newValue: EventEmitter<any>;
@@ -50,24 +50,23 @@ export declare class ColorpickerSliderDirective {
 export declare class Md2Colorpicker implements OnInit, ControlValueAccessor {
     private service;
     private el;
-    private innerValue;
-    private onTouchedCallback;
-    private onChangeCallback;
-    private created;
-    private defalutColor;
-    private isColorpickerVisible;
+    private _innerValue;
+    private _onTouchedCallback;
+    private _onChangeCallback;
+    private _created;
+    private _defalutColor;
+    private _isColorpickerVisible;
+    private _hueSliderColor;
+    private _initialColor;
     private slider;
     private sliderDim;
-    private hueSliderColor;
     private hsva;
-    private outputColor;
-    private alphaColor;
     private rgbaText;
     private hslaText;
+    private outputColor;
+    private alphaColor;
     private hexText;
     private format;
-    private initialColor;
-    private toggled;
     cFormat: string;
     colorpickerChange: EventEmitter<string>;
     change: EventEmitter<string>;

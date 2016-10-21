@@ -7,98 +7,49 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-(function (factory) {
-    if (typeof module === 'object' && typeof module.exports === 'object') {
-        var v = factory(require, exports); if (v !== undefined) module.exports = v;
+import { NgModule } from '@angular/core';
+import { PortalModule } from './portal/portal-directives';
+import { OverlayModule } from './overlay/overlay-directives';
+// Portals
+export { Portal, BasePortalHost, ComponentPortal, TemplatePortal } from './portal/portal';
+export { PortalHostDirective, TemplatePortalDirective, PortalModule } from './portal/portal-directives';
+export { DomPortalHost } from './portal/dom-portal-host';
+// Overlay
+export { Overlay, OVERLAY_PROVIDERS } from './overlay/overlay';
+export { OverlayContainer } from './overlay/overlay-container';
+export { OverlayRef } from './overlay/overlay-ref';
+export { OverlayState } from './overlay/overlay-state';
+export { ConnectedOverlayDirective, OverlayOrigin, OverlayModule } from './overlay/overlay-directives';
+export * from './overlay/position/connected-position-strategy';
+export * from './overlay/position/connected-position';
+// Style
+export { applyCssTransform } from './style/apply-transform';
+// Error
+export { MdError } from './errors/error';
+// Misc
+// Keybindings
+export * from './keyboard/keycodes';
+// Coersion
+export { coerceBooleanProperty } from './coersion/boolean-property';
+// Pipes
+export * from './pipes/pipes';
+export var MdCoreModule = (function () {
+    function MdCoreModule() {
     }
-    else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", '@angular/core', './portal/portal-directives', './overlay/overlay-directives', './portal/portal', './portal/portal-directives', './portal/dom-portal-host', './overlay/overlay', './overlay/overlay-container', './overlay/overlay-ref', './overlay/overlay-state', './overlay/overlay-directives', './overlay/position/connected-position-strategy', './overlay/position/connected-position', './coordination/unique-selection-dispatcher', './style/apply-transform', './errors/error', './keyboard/keycodes'], factory);
-    }
-})(function (require, exports) {
-    "use strict";
-    function __export(m) {
-        for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-    }
-    var core_1 = require('@angular/core');
-    //import {MdLineModule} from './line/line';
-    //import {RtlModule} from './rtl/dir';
-    //import {MdRippleModule} from './ripple/ripple';
-    var portal_directives_1 = require('./portal/portal-directives');
-    var overlay_directives_1 = require('./overlay/overlay-directives');
-    //import {MdLiveAnnouncer} from './a11y/live-announcer';
-    // RTL
-    //export {Dir, LayoutDirection, RtlModule} from './rtl/dir';
-    // Portals
-    var portal_1 = require('./portal/portal');
-    exports.Portal = portal_1.Portal;
-    exports.BasePortalHost = portal_1.BasePortalHost;
-    exports.ComponentPortal = portal_1.ComponentPortal;
-    exports.TemplatePortal = portal_1.TemplatePortal;
-    var portal_directives_2 = require('./portal/portal-directives');
-    exports.PortalHostDirective = portal_directives_2.PortalHostDirective;
-    exports.TemplatePortalDirective = portal_directives_2.TemplatePortalDirective;
-    exports.PortalModule = portal_directives_2.PortalModule;
-    var dom_portal_host_1 = require('./portal/dom-portal-host');
-    exports.DomPortalHost = dom_portal_host_1.DomPortalHost;
-    // Overlay
-    var overlay_1 = require('./overlay/overlay');
-    exports.Overlay = overlay_1.Overlay;
-    exports.OVERLAY_PROVIDERS = overlay_1.OVERLAY_PROVIDERS;
-    var overlay_container_1 = require('./overlay/overlay-container');
-    exports.OverlayContainer = overlay_container_1.OverlayContainer;
-    var overlay_ref_1 = require('./overlay/overlay-ref');
-    exports.OverlayRef = overlay_ref_1.OverlayRef;
-    var overlay_state_1 = require('./overlay/overlay-state');
-    exports.OverlayState = overlay_state_1.OverlayState;
-    var overlay_directives_2 = require('./overlay/overlay-directives');
-    exports.ConnectedOverlayDirective = overlay_directives_2.ConnectedOverlayDirective;
-    exports.OverlayOrigin = overlay_directives_2.OverlayOrigin;
-    exports.OverlayModule = overlay_directives_2.OverlayModule;
-    __export(require('./overlay/position/connected-position-strategy'));
-    __export(require('./overlay/position/connected-position'));
-    // Gestures
-    //export {MdGestureConfig} from './gestures/MdGestureConfig';
-    // Ripple
-    //export {MdRipple, MdRippleModule} from './ripple/ripple';
-    // a11y
-    //export {
-    //  AriaLivePoliteness,
-    //  MdLiveAnnouncer,
-    //  LIVE_ANNOUNCER_ELEMENT_TOKEN,
-    //} from './a11y/live-announcer';
-    var unique_selection_dispatcher_1 = require('./coordination/unique-selection-dispatcher');
-    exports.MdUniqueSelectionDispatcher = unique_selection_dispatcher_1.MdUniqueSelectionDispatcher;
-    //export {MdLineModule, MdLine, MdLineSetter} from './line/line';
-    // Style
-    var apply_transform_1 = require('./style/apply-transform');
-    exports.applyCssTransform = apply_transform_1.applyCssTransform;
-    // Error
-    var error_1 = require('./errors/error');
-    exports.MdError = error_1.MdError;
-    // Annotations.
-    //export {BooleanFieldValue} from './annotations/field-value';
-    // Misc
-    // Keybindings
-    __export(require('./keyboard/keycodes'));
-    var MdCoreModule = (function () {
-        function MdCoreModule() {
-        }
-        MdCoreModule.forRoot = function () {
-            return {
-                ngModule: MdCoreModule,
-                providers: [] //MdLiveAnnouncer
-            };
+    MdCoreModule.forRoot = function () {
+        return {
+            ngModule: MdCoreModule,
+            providers: []
         };
-        MdCoreModule = __decorate([
-            core_1.NgModule({
-                imports: [portal_directives_1.PortalModule, overlay_directives_1.OverlayModule],
-                exports: [portal_directives_1.PortalModule, overlay_directives_1.OverlayModule],
-            }), 
-            __metadata('design:paramtypes', [])
-        ], MdCoreModule);
-        return MdCoreModule;
-    }());
-    exports.MdCoreModule = MdCoreModule;
-});
+    };
+    MdCoreModule = __decorate([
+        NgModule({
+            imports: [PortalModule, OverlayModule],
+            exports: [PortalModule, OverlayModule],
+        }), 
+        __metadata('design:paramtypes', [])
+    ], MdCoreModule);
+    return MdCoreModule;
+}());
 
 //# sourceMappingURL=core.js.map

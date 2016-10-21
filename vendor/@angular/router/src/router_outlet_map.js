@@ -6,6 +6,8 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /**
+ * @whatItDoes Contains all the router outlets created in a component.
+ *
  * @stable
  */
 export var RouterOutletMap = (function () {
@@ -13,7 +15,13 @@ export var RouterOutletMap = (function () {
         /** @internal */
         this._outlets = {};
     }
+    /**
+     * Adds an outlet to this map.
+     */
     RouterOutletMap.prototype.registerOutlet = function (name, outlet) { this._outlets[name] = outlet; };
+    /**
+     * Removes an outlet from this map.
+     */
     RouterOutletMap.prototype.removeOutlet = function (name) { this._outlets[name] = undefined; };
     return RouterOutletMap;
 }());

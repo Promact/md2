@@ -11,6 +11,7 @@ export { RouterOutlet } from './directives/router_outlet';
 export { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RoutesRecognized } from './router';
 export { RouterModule, provideRoutes } from './router_module';
 export { RouterOutletMap } from './router_outlet_map';
+export { NoPreloading, PreloadAllModules, PreloadingStrategy } from './router_preloader';
 export { ActivatedRoute, ActivatedRouteSnapshot, RouterState, RouterStateSnapshot } from './router_state';
 export { PRIMARY_OUTLET } from './shared';
 export { DefaultUrlSerializer, UrlSegment, UrlSerializer, UrlTree } from './url_tree';

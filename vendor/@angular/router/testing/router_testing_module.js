@@ -8,17 +8,43 @@
 import { Location, LocationStrategy } from '@angular/common';
 import { MockLocationStrategy, SpyLocation } from '@angular/common/testing';
 import { Compiler, Injectable, Injector, NgModule, NgModuleFactoryLoader } from '@angular/core';
-import { Router, RouterModule, RouterOutletMap, UrlSerializer, provideRoutes } from '@angular/router';
+import { NoPreloading, PreloadingStrategy, Router, RouterModule, RouterOutletMap, UrlSerializer, provideRoutes } from '@angular/router';
 import { ROUTER_PROVIDERS, ROUTES, flatten } from './private_import_router';
 /**
- * A spy for {@link NgModuleFactoryLoader} that allows tests to simulate the loading of ng module
- * factories.
+ * @whatItDoes Allows to simulate the loading of ng modules in tests.
+ *
+ * @howToUse
+ *
+ * ```
+ * const loader = TestBed.get(NgModuleFactoryLoader);
+ *
+ * @Component({template: 'lazy-loaded'})
+ * class LazyLoadedComponent {}
+ * @NgModule({
+ *   declarations: [LazyLoadedComponent],
+ *   imports: [RouterModule.forChild([{path: 'loaded', component: LazyLoadedComponent}])]
+ * })
+ *
+ * class LoadedModule {}
+ *
+ * // sets up stubbedModules
+ * loader.stubbedModules = {lazyModule: LoadedModule};
+ *
+ * router.resetConfig([
+ *   {path: 'lazy', loadChildren: 'lazyModule'},
+ * ]);
+ *
+ * router.navigateByUrl('/lazy/loaded');
+ * ```
  *
  * @stable
  */
 export var SpyNgModuleFactoryLoader = (function () {
     function SpyNgModuleFactoryLoader(compiler) {
         this.compiler = compiler;
+        /**
+         * @docsNotRequired
+         */
         this.stubbedModules = {};
     }
     SpyNgModuleFactoryLoader.prototype.load = function (path) {
@@ -47,15 +73,14 @@ export function setupTestingRouter(urlSerializer, outletMap, location, loader, c
     return new Router(null, urlSerializer, outletMap, location, injector, loader, compiler, flatten(routes));
 }
 /**
- * A module setting up the router that should be used for testing.
- * It provides spy implementations of Location, LocationStrategy, and NgModuleFactoryLoader.
+ * @whatItDoes Sets up the router to be used for testing.
  *
- * # Example:
+ * @howToUse
  *
  * ```
  * beforeEach(() => {
  *   TestBed.configureTestModule({
- *     modules: [
+ *     imports: [
  *       RouterTestingModule.withRoutes(
  *         [{path: '', component: BlankCmp}, {path: 'simple', component: SimpleCmp}])]
  *       )
@@ -63,6 +88,12 @@ export function setupTestingRouter(urlSerializer, outletMap, location, loader, c
  *   });
  * });
  * ```
+ *
+ * @description
+ *
+ * The modules sets up the router to be used for testing.
+ * It provides spy implementations of {@link Location}, {@link LocationStrategy}, and {@link
+ * NgModuleFactoryLoader}.
  *
  * @stable
  */
@@ -85,7 +116,7 @@ export var RouterTestingModule = (function () {
                                 UrlSerializer, RouterOutletMap, Location, NgModuleFactoryLoader, Compiler, Injector, ROUTES
                             ]
                         },
-                        provideRoutes([])
+                        { provide: PreloadingStrategy, useExisting: NoPreloading }, provideRoutes([])
                     ]
                 },] },
     ];

@@ -2,6 +2,7 @@ import { ApplicationRef, ComponentFactoryResolver, ComponentRef, ModuleWithProvi
 export declare class Toast {
     message: string;
     id: number;
+    isVisible: boolean;
     constructor(message: string);
 }
 export declare class Md2Toast {

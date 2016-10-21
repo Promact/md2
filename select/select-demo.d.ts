@@ -1,5 +1,5 @@
 export declare class SelectDemo {
-    private disabled;
+    constructor();
     private items;
     private item;
     private change(value);

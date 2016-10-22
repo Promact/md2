@@ -8,21 +8,11 @@
       </a>
     </header>
     <ul>
-      <li [class.active]="isActive('/accordion')" (click)="sidenav(false)"><a [routerLink]="['accordion']">Accordion</a></li>
-      <li [class.active]="isActive('/autocomplete')" (click)="sidenav(false)"><a [routerLink]="['autocomplete']">Autocomplete</a></li>
-      <li [class.active]="isActive('/chips')" (click)="sidenav(false)"><a [routerLink]="['chips']">Chips</a></li>
-      <li [class.active]="isActive('/collapse')" (click)="sidenav(false)"><a [routerLink]="['collapse']">Collapse</a></li>
-      <li [class.active]="isActive('/colorpicker')" (click)="sidenav(false)"><a [routerLink]="['colorpicker']">Colorpicker</a></li>
-      <li [class.active]="isActive('/datatable')" (click)="sidenav(false)"><a [routerLink]="['datatable']">Data Table</a></li>
-      <li [class.active]="isActive('/datepicker')" (click)="sidenav(false)"><a [routerLink]="['datepicker']">Datepicker</a></li>
-      <li [class.active]="isActive('/dialog')" (click)="sidenav(false)"><a [routerLink]="['dialog']">Dialog</a></li>
-      <li [class.active]="isActive('/menu')" (click)="sidenav(false)"><a [routerLink]="['menu']">Menu</a></li>
-      <li [class.active]="isActive('/multiselect')" (click)="sidenav(false)"><a [routerLink]="['multiselect']">Multiselect</a></li>
-      <li [class.active]="isActive('/select')" (click)="sidenav(false)"><a [routerLink]="['select']">Select</a></li>
-      <li [class.active]="isActive('/tabs')" (click)="sidenav(false)"><a [routerLink]="['tabs']">Tabs</a></li>
-      <li [class.active]="isActive('/tags')" (click)="sidenav(false)"><a [routerLink]="['tags']">Tags</a></li>
-      <li [class.active]="isActive('/toast')" (click)="sidenav(false)"><a [routerLink]="['toast']">Toast</a></li>
-      <li [class.active]="isActive('/tooltip')" (click)="sidenav(false)"><a [routerLink]="['tooltip']">Tooltip</a></li>
+      <li *ngFor="let navItem of navItems"
+          [class.active]="isActive(navItem.route)"
+          (click)="sidenav(false)">
+        <a [routerLink]="[navItem.route]">{{navItem.name}}</a>
+      </li>
     </ul>
   </div>
 </aside>

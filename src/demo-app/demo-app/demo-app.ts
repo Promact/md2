@@ -2,7 +2,7 @@ import {
   Component,
   ViewEncapsulation
 } from '@angular/core';
-import {Location} from '@angular/common';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'home',
@@ -37,6 +37,23 @@ export class Home { }
 })
 export class DemoApp {
   private isSidenavOpened: boolean = false;
+  navItems = [
+    { name: 'Accordion', route: 'accordion' },
+    { name: 'Autocomplete', route: 'autocomplete' },
+    { name: 'Chips', route: 'chips' },
+    { name: 'Collapse', route: 'collapse' },
+    { name: 'Colorpicker', route: 'colorpicker' },
+    { name: 'Data Table', route: 'datatable' },
+    { name: 'Datepicker', route: 'datepicker' },
+    { name: 'Dialog', route: 'dialog' },
+    { name: 'Menu', route: 'menu' },
+    { name: 'Multiselect', route: 'multiselect' },
+    { name: 'Select', route: 'select' },
+    { name: 'Tabs', route: 'tabs' },
+    { name: 'Tags', route: 'tags' },
+    { name: 'Toast', route: 'toast' },
+    { name: 'Tooltip', route: 'tooltip' },
+  ];
 
   constructor(private location: Location) { }
 
@@ -56,7 +73,7 @@ export class DemoApp {
   }
 
   isActive(path: string) {
-    return this.location.path() === path;
+    return this.location.path() === '/' + path;
   }
 
   private get window(): Window { return window; }

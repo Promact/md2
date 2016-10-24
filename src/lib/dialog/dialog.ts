@@ -111,7 +111,7 @@ export class Md2Dialog implements OnDestroy {
     return this.close();
   }
 
-  ///** Show the dialog */
+  /** Show the dialog */
   show(): Promise<Md2Dialog> {
     return this.open();
   }

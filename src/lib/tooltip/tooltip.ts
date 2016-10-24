@@ -1,193 +1,82 @@
 import {
-  NgModule,
-  ModuleWithProviders,
-  Component,
-  Directive,
-  Input,
-  ElementRef,
-  ViewContainerRef,
+  AfterViewInit,
+  ApplicationRef,
   ChangeDetectorRef,
-  ViewEncapsulation
+  Component,
+  ComponentFactoryResolver,
+  ComponentRef,
+  Directive,
+  ElementRef,
+  HostBinding,
+  HostListener,
+  Input,
+  ReflectiveInjector,
+  ViewContainerRef,
+  ViewEncapsulation,
+  NgModule,
+  ModuleWithProviders
 } from '@angular/core';
-import {
-  Overlay,
-  OverlayState,
-  OverlayModule,
-  OverlayRef,
-  ComponentPortal,
-  OverlayConnectionPosition,
-  OriginConnectionPosition,
-  OVERLAY_PROVIDERS,
-} from '../core';
+import { CommonModule } from '@angular/common';
 
 export type TooltipPosition = 'before' | 'after' | 'above' | 'below';
 
 @Directive({
-  selector: '[tooltip]',
-  host: {
-    '(mouseenter)': '_handleMouseEnter($event)',
-    '(mouseleave)': '_handleMouseLeave($event)',
-  }
+  selector: '[tooltip]'
 })
 export class Md2Tooltip {
-  visible: boolean = false;
+  private visible: boolean = false;
+  private timer: any;
 
-  /** Allows the user to define the delay of the tooltip */
-  private _delay: any;
+  @Input('tooltip') message: string;
+  @Input('tooltip-position') position: TooltipPosition = 'below';
   @Input('tooltip-delay') delay: number = 0;
 
-  /** Allows the user to define the position of the tooltip relative to the parent element */
-  private _position: TooltipPosition = 'below';
-  @Input('tooltip-position')
-  get position(): TooltipPosition {
-    return this._position;
-  }
-  set position(value: TooltipPosition) {
-    if (value !== this._position) {
-      this._position = value;
-      this._createOverlay();
-      this._updatePosition();
-    }
-  }
+  private tooltip: ComponentRef<any>;
 
-  /** The message to be displayed in the tooltip */
-  private _message: string;
-  @Input('tooltip') get message() {
-    return this._message;
-  }
-  set message(value: string) {
-    this._message = value;
-    this._updatePosition();
-  }
-
-  private _overlayRef: OverlayRef;
-
-  constructor(private _overlay: Overlay, private _elementRef: ElementRef,
-    private _viewContainerRef: ViewContainerRef,
-    private _changeDetectionRef: ChangeDetectorRef) { }
+  constructor(private _componentFactory: ComponentFactoryResolver, private _appRef: ApplicationRef, private _viewContainer: ViewContainerRef) { }
 
   /**
-   * Create overlay on init
-   * TODO: internal
-   */
-  ngOnInit() {
-    this._createOverlay();
-  }
-
-  /**
-   * Create the overlay config and position strategy
-   */
-  private _createOverlay() {
-    if (this._overlayRef) {
-      if (this.visible) {
-        // if visible, hide before destroying
-        this.hide();
-        this._createOverlay();
-      } else {
-        // if not visible, dispose and recreate
-        this._overlayRef.dispose();
-        this._overlayRef = null;
-        this._createOverlay();
-      }
-    } else {
-      let origin = this._getOrigin();
-      let position = this._getOverlayPosition();
-      let strategy = this._overlay.position().connectedTo(this._elementRef, origin, position);
-      let config = new OverlayState();
-      config.positionStrategy = strategy;
-
-      this._overlayRef = this._overlay.create(config);
-    }
-  }
-
-  /**
-   * Returns the origin position based on the user's position preference
-   */
-  private _getOrigin(): OriginConnectionPosition {
-    switch (this.position) {
-      case 'before': return { originX: 'start', originY: 'center' };
-      case 'after': return { originX: 'end', originY: 'center' };
-      case 'above': return { originX: 'center', originY: 'top' };
-      case 'below': return { originX: 'center', originY: 'bottom' };
-    }
-  }
-
-  /**
-   * Returns the overlay position based on the user's preference
-   */
-  private _getOverlayPosition(): OverlayConnectionPosition {
-    switch (this.position) {
-      case 'before': return { overlayX: 'end', overlayY: 'center' };
-      case 'after': return { overlayX: 'start', overlayY: 'center' };
-      case 'above': return { overlayX: 'center', overlayY: 'bottom' };
-      case 'below': return { overlayX: 'center', overlayY: 'top' };
-    }
-  }
-
-  /**
-   * Shows the tooltip on mouse enter
+   * show tooltip while mouse enter or focus of element
    * @param event
    */
-  _handleMouseEnter(event: MouseEvent) {
-    clearTimeout(this._delay);
-    this._delay = setTimeout(() => {
-      this._delay = 0;
-      this.show();
+  @HostListener('focusin', ['$event'])
+  @HostListener('mouseenter', ['$event'])
+  public show(event: Event): void {
+    if (this.visible) {
+      return;
+    }
+    this.visible = true;
+
+    clearTimeout(this.timer);
+    this.timer = setTimeout(() => {
+      this.timer = 0;
+      let app: any = this._appRef;
+      let appContainer: ViewContainerRef = app['_rootComponents'][0]['_hostElement'].vcRef;
+
+      let toastFactory = this._componentFactory.resolveComponentFactory(Md2TooltipComponent);
+      let childInjector = ReflectiveInjector.fromResolvedProviders([], appContainer.parentInjector);
+      this.tooltip = appContainer.createComponent(toastFactory, appContainer.length, childInjector);
+      this.tooltip.instance.message = this.message;
+      this.tooltip.instance.position = this.position;
+      this.tooltip.instance.hostEl = this._viewContainer.element;
     }, this.delay);
   }
 
   /**
-   * Hides the tooltip on mouse leave
+   * hide tooltip while mouse our/leave or blur of element
    * @param event
    */
-  _handleMouseLeave(event: MouseEvent) {
-    clearTimeout(this._delay);
-    this.hide();
-  }
-
-  /**
-   * Shows the tooltip and returns a promise that will resolve when the tooltip is visible
-   */
-  show(): void {
-    if (!this.visible && this._overlayRef && !this._overlayRef.hasAttached()) {
-      this.visible = true;
-
-      let portal = new ComponentPortal(TooltipComponent, this._viewContainerRef);
-      let tooltipRef = this._overlayRef.attach(portal);
-      tooltipRef.instance.message = this.message;
-      tooltipRef.instance.position = this.position;
-      this._updatePosition();
+  @HostListener('focusout', ['$event'])
+  @HostListener('mouseleave', ['$event'])
+  public hide(event: Event): void {
+    clearTimeout(this.timer);
+    if (!this.visible) {
+      return;
     }
-  }
-
-  /**
-   * Hides the tooltip and returns a promise that will resolve when the tooltip is hidden
-   */
-  hide(): void {
-    if (this.visible && this._overlayRef && this._overlayRef.hasAttached()) {
-      this.visible = false;
-      this._overlayRef.detach();
-    }
-  }
-
-  /**
-   * Shows/hides the tooltip and returns a promise that will resolve when it is done
-   */
-  toggle(): void {
-    if (this.visible) {
-      this.hide();
-    } else {
-      this.show();
-    }
-  }
-
-  /**
-   * Updates the tooltip's position
-   */
-  private _updatePosition() {
-    if (this._overlayRef) {
-      this._changeDetectionRef.detectChanges();
-      this._overlayRef.updatePosition();
+    this.visible = false;
+    if (this.tooltip) {
+      this.tooltip.destroy();
+      this.tooltip = null;
     }
   }
 }
@@ -195,35 +84,127 @@ export class Md2Tooltip {
 @Component({
   moduleId: module.id,
   selector: 'md2-tooltip',
-  template: `<div class="md2-tooltip {{position}}" [class.visible]="_isVisible">{{message}}</div>`,
+  template: `
+    <div class="md2-tooltip-container" [ngStyle]="{top: top, left: left}">
+      <div class="md2-tooltip {{position}}" [class.visible]="_isVisible">{{message}}</div>
+    </div>
+  `,
   styleUrls: ['tooltip.css'],
   host: {
     'role': 'tooltip',
   },
   encapsulation: ViewEncapsulation.None
 })
-export class TooltipComponent {
+export class Md2TooltipComponent implements AfterViewInit {
+  private _isVisible: boolean;
+  private top: string = '-1000px';
+  private left: string = '-1000px';
   message: string;
   position: string;
-  private _isVisible: boolean = false;
-  ngAfterViewInit() {
-    this._isVisible = true;
+  hostEl: ElementRef;
+
+  constructor(private _element: ElementRef, private _changeDetector: ChangeDetectorRef) {
+    this._isVisible = false;
   }
+
+  ngAfterViewInit() {
+    let _position = this.positionElements(this.hostEl.nativeElement, this._element.nativeElement.children[0], this.position);
+    this.top = _position.top + 'px';
+    this.left = _position.left + 'px';
+    this._isVisible = true;
+    this._changeDetector.detectChanges();
+  }
+
+  /**
+   * calculate position of target element
+   * @param hostEl host element
+   * @param targetEl targer element
+   * @param position position
+   * @return {top: number, left: number} object of top, left properties
+   */
+  private positionElements(hostEl: HTMLElement, targetEl: HTMLElement, position: string): { top: number, left: number } {
+    let positionStrParts = position.split('-');
+    let pos0 = positionStrParts[0];
+    let pos1 = positionStrParts[1] || 'center';
+    let hostElPos = this.offset(hostEl);
+    let targetElWidth = targetEl.offsetWidth;
+    let targetElHeight = targetEl.offsetHeight;
+    let shiftWidth: any = {
+      center: hostElPos.left + hostElPos.width / 2 - targetElWidth / 2,
+      before: hostElPos.left,
+      after: hostElPos.left + hostElPos.width
+    };
+
+    let shiftHeight: any = {
+      center: hostElPos.top + hostElPos.height / 2 - targetElHeight / 2,
+      above: hostElPos.top,
+      below: hostElPos.top + hostElPos.height
+    };
+
+    let targetElPos: { top: number, left: number };
+    switch (pos0) {
+      case 'before':
+        targetElPos = {
+          top: shiftHeight[pos1],
+          left: (hostElPos.left - targetElWidth)// > 0 ? (hostElPos.left - targetElWidth) : (hostElPos.width + hostElPos.left)
+        };
+        break;
+      case 'after':
+        targetElPos = {
+          top: shiftHeight[pos1],
+          left: shiftWidth[pos0]
+        };
+        break;
+      case 'above':
+        targetElPos = {
+          top: hostElPos.top - targetElHeight,
+          left: shiftWidth[pos1]
+        };
+        break;
+      default:
+        targetElPos = {
+          top: shiftHeight[pos0],
+          left: shiftWidth[pos1]
+        };
+        break;
+    }
+    return targetElPos;
+  }
+
+  /**
+   * calculate offset of target element
+   * @param nativeEl element
+   * @return {width: number, height: number,top: number, left: number} object of with, height, top, left properties
+   */
+  private offset(nativeEl: any): { width: number, height: number, top: number, left: number } {
+    let boundingClientRect = nativeEl.getBoundingClientRect();
+    return {
+      width: boundingClientRect.width || nativeEl.offsetWidth,
+      height: boundingClientRect.height || nativeEl.offsetHeight,
+      top: boundingClientRect.top,
+      left: boundingClientRect.left
+    };
+  }
+
+  private get window(): Window { return window; }
+
+  private get document(): Document { return window.document; }
+
 }
 
-export const MD2_TOOLTIP_DIRECTIVES: any[] = [Md2Tooltip, TooltipComponent];
+export const MD2_TOOLTIP_DIRECTIVES: any[] = [Md2Tooltip, Md2TooltipComponent];
 
 @NgModule({
-  imports: [OverlayModule],
+  imports: [CommonModule],
   exports: MD2_TOOLTIP_DIRECTIVES,
   declarations: MD2_TOOLTIP_DIRECTIVES,
-  entryComponents: [TooltipComponent],
+  entryComponents: [Md2TooltipComponent]
 })
 export class Md2TooltipModule {
   static forRoot(): ModuleWithProviders {
     return {
       ngModule: Md2TooltipModule,
-      providers: OVERLAY_PROVIDERS,
+      providers: []
     };
   }
 }

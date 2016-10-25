@@ -156,7 +156,7 @@ export class Md2DataTable implements OnChanges, DoCheck {
     </span>
   `,
   styles: [`
-    [md2-sort-field] span { position: relative; display: block; line-height: 24px; cursor: pointer; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+    [md2-sort-field] span { position: relative; display: block; line-height: 24px; white-space: nowrap; cursor: pointer; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
     [md2-sort-field] span svg { display: inline-block; vertical-align: middle; fill: currentColor; }
   `],
   encapsulation: ViewEncapsulation.None
@@ -207,12 +207,18 @@ export class Md2DataTableSortField {
         </svg>
       </li>
     </ul>
-    <ul class="md2-pagination md2-rows" *ngIf="dataLength > _minRows">
-      <li *ngFor="let row of rows" [class.active]="_rows===row" (click)="_setRows(row)">{{row}}</li>
-    </ul>
+    <div class="md2-rows-select" *ngIf="dataLength > _minRows">
+      Rows per page:
+      <select (change)="_setRows($event.target.value)">
+        <option *ngFor="let row of rows" [selected]="_rows===row">{{row}}</option>
+      </select>
+    </div>
   `,
   styles: [`
     md2-pagination { display: block; color: #0e59a5; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+    md2-pagination:before,
+    md2-pagination:after { display: table; content: ''; }
+    md2-pagination:after { clear: both; }
     md2-pagination .md2-pagination { display: inline-block; margin: .5rem 0; padding: 0; }
     md2-pagination .md2-pagination li { position: relative; display: inline-block; width: 36px; vertical-align: top; text-align: center; line-height: 36px; border-radius: 100px; cursor: pointer; box-sizing: border-box; }
     md2-pagination .md2-pagination li:hover { background: rgba(0,0,0,0.12); }
@@ -221,7 +227,8 @@ export class Md2DataTableSortField {
     md2-pagination .md2-pagination li.active,
     md2-pagination .md2-pagination li.active:hover { background: #106CC8; color: #fff; cursor: default; }
     md2-pagination .md2-pagination li svg { fill: currentColor; margin-bottom: -7px; }
-    md2-pagination .md2-pagination.md2-rows { float: right; }
+    md2-pagination .md2-rows-select { display: inline-block; margin: .5rem 0; padding: 0; float: right; color: rgba(0,0,0,.54); line-height: 36px; }
+    md2-pagination .md2-rows-select select { border: 0; outline: 0; }
   `],
   encapsulation: ViewEncapsulation.None
 })

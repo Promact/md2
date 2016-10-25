@@ -192,7 +192,7 @@ export function serverTask(liveReload: boolean = true,
       livereload: liveReload,
       fallback: 'index.html',
       port: 3200,
-      open:true
+      open: true
     }));
 
     if (streamCallback) {

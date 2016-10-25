@@ -27,6 +27,23 @@ var DemoApp = (function () {
     function DemoApp(location) {
         this.location = location;
         this.isSidenavOpened = false;
+        this.navItems = [
+            { name: 'Accordion', route: 'accordion' },
+            { name: 'Autocomplete', route: 'autocomplete' },
+            { name: 'Chips', route: 'chips' },
+            { name: 'Collapse', route: 'collapse' },
+            { name: 'Colorpicker', route: 'colorpicker' },
+            { name: 'Data Table', route: 'datatable' },
+            { name: 'Datepicker', route: 'datepicker' },
+            { name: 'Dialog', route: 'dialog' },
+            { name: 'Menu', route: 'menu' },
+            { name: 'Multiselect', route: 'multiselect' },
+            { name: 'Select', route: 'select' },
+            { name: 'Tabs', route: 'tabs' },
+            { name: 'Tags', route: 'tags' },
+            { name: 'Toast', route: 'toast' },
+            { name: 'Tooltip', route: 'tooltip' },
+        ];
     }
     DemoApp.prototype.ngOnInit = function () {
         console.log('Application component initialized ...');
@@ -41,7 +58,7 @@ var DemoApp = (function () {
         }
     };
     DemoApp.prototype.isActive = function (path) {
-        return this.location.path() === path;
+        return this.location.path() === '/' + path;
     };
     Object.defineProperty(DemoApp.prototype, "window", {
         get: function () { return window; },

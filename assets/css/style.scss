@@ -23,6 +23,9 @@ nav,
 section,
 summary { display: block; }
 
+.md2-input { margin: 8px 0; line-height: 26px; border: 0; border-bottom: 1px solid rgba(0,0,0,.12); }
+.md2-input:focus { margin-bottom: 7px; border-bottom: 2px solid #106CC8; outline: none; }
+
 a { color: $primary; text-decoration: none;
   &:hover,
   &:focus { color: darken($primary,3); text-decoration: underline; }

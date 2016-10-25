@@ -21,6 +21,8 @@ export declare class OverlayRef implements PortalHost {
     getState(): OverlayState;
     /** Updates the position of the overlay based on the position strategy. */
     updatePosition(): void;
+    /** Updates the size of the overlay based on the overlay config. */
+    updateSize(): void;
     /** Attaches a backdrop for this overlay. */
     private _attachBackdrop();
     /** Detaches the backdrop (if any) associated with the overlay. */

@@ -1,5 +1,5 @@
 /**
- * @license Angular v2.1.0
+ * @license Angular v2.1.1
  * (c) 2010-2016 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -60,64 +60,9 @@
     function isPresent(obj) {
         return obj !== undefined && obj !== null;
     }
-    function isString(obj) {
-        return typeof obj === 'string';
-    }
-    var NumberWrapper = (function () {
-        function NumberWrapper() {
-        }
-        NumberWrapper.toFixed = function (n, fractionDigits) { return n.toFixed(fractionDigits); };
-        NumberWrapper.equal = function (a, b) { return a === b; };
-        NumberWrapper.parseIntAutoRadix = function (text) {
-            var result = parseInt(text);
-            if (isNaN(result)) {
-                throw new Error('Invalid integer literal when parsing ' + text);
-            }
-            return result;
-        };
-        NumberWrapper.parseInt = function (text, radix) {
-            if (radix == 10) {
-                if (/^(\-|\+)?[0-9]+$/.test(text)) {
-                    return parseInt(text, radix);
-                }
-            }
-            else if (radix == 16) {
-                if (/^(\-|\+)?[0-9ABCDEFabcdef]+$/.test(text)) {
-                    return parseInt(text, radix);
-                }
-            }
-            else {
-                var result = parseInt(text, radix);
-                if (!isNaN(result)) {
-                    return result;
-                }
-            }
-            throw new Error('Invalid integer literal when parsing ' + text + ' in base ' + radix);
-        };
-        Object.defineProperty(NumberWrapper, "NaN", {
-            get: function () { return NaN; },
-            enumerable: true,
-            configurable: true
-        });
-        NumberWrapper.isNumeric = function (value) { return !isNaN(value - parseFloat(value)); };
-        NumberWrapper.isNaN = function (value) { return isNaN(value); };
-        NumberWrapper.isInteger = function (value) { return Number.isInteger(value); };
-        return NumberWrapper;
-    }());
     function isJsObject(o) {
         return o !== null && (typeof o === 'function' || typeof o === 'object');
     }
-    // Can't be all uppercase as our transpiler would think it is a special directive...
-    var Json = (function () {
-        function Json() {
-        }
-        Json.parse = function (s) { return global$1.JSON.parse(s); };
-        Json.stringify = function (data) {
-            // Dart doesn't take 3 arguments
-            return global$1.JSON.stringify(data, null, 2);
-        };
-        return Json;
-    }());
 
     /**
      * @license
@@ -194,41 +139,6 @@
         ResponseContentType[ResponseContentType["Blob"] = 3] = "Blob";
     })(exports.ResponseContentType || (exports.ResponseContentType = {}));
 
-    // Safari and Internet Explorer do not support the iterable parameter to the
-    // Map constructor.  We work around that by manually adding the items.
-    var createMapFromPairs = (function () {
-        try {
-            if (new Map([[1, 2]]).size === 1) {
-                return function createMapFromPairs(pairs) { return new Map(pairs); };
-            }
-        }
-        catch (e) {
-        }
-        return function createMapAndPopulateFromPairs(pairs) {
-            var map = new Map();
-            for (var i = 0; i < pairs.length; i++) {
-                var pair = pairs[i];
-                map.set(pair[0], pair[1]);
-            }
-            return map;
-        };
-    })();
-    var _clearValues = (function () {
-        if ((new Map()).keys().next) {
-            return function _clearValues(m) {
-                var keyIterator = m.keys();
-                var k;
-                while (!((k = keyIterator.next()).done)) {
-                    m.set(k.value, null);
-                }
-            };
-        }
-        else {
-            return function _clearValuesWithForeEach(m) {
-                m.forEach(function (v, k) { m.set(k, null); });
-            };
-        }
-    })();
     // Safari doesn't implement MapIterator.next(), which is used is Traceur's polyfill of Array.from
     // TODO(mlaval): remove the work around once we have a working polyfill of Array.from
     var _arrayFromMap = (function () {
@@ -260,13 +170,6 @@
             }
             return result;
         };
-        MapWrapper.toStringMap = function (m) {
-            var r = {};
-            m.forEach(function (v, k) { return r[k] = v; });
-            return r;
-        };
-        MapWrapper.createFromPairs = function (pairs) { return createMapFromPairs(pairs); };
-        MapWrapper.iterable = function (m) { return m; };
         MapWrapper.keys = function (m) { return _arrayFromMap(m, false); };
         MapWrapper.values = function (m) { return _arrayFromMap(m, true); };
         return MapWrapper;
@@ -620,15 +523,25 @@
     }());
 
     function normalizeMethodName(method) {
-        if (isString(method)) {
-            var originalMethod = method;
-            method = method
-                .replace(/(\w)(\w*)/g, function (g0, g1, g2) { return g1.toUpperCase() + g2.toLowerCase(); });
-            method = exports.RequestMethod[method];
-            if (typeof method !== 'number')
-                throw new Error("Invalid request method. The method \"" + originalMethod + "\" is not supported.");
+        if (typeof method !== 'string')
+            return method;
+        switch (method.toUpperCase()) {
+            case 'GET':
+                return exports.RequestMethod.Get;
+            case 'POST':
+                return exports.RequestMethod.Post;
+            case 'PUT':
+                return exports.RequestMethod.Put;
+            case 'DELETE':
+                return exports.RequestMethod.Delete;
+            case 'OPTIONS':
+                return exports.RequestMethod.Options;
+            case 'HEAD':
+                return exports.RequestMethod.Head;
+            case 'PATCH':
+                return exports.RequestMethod.Patch;
         }
-        return method;
+        throw new Error("Invalid request method. The method \"" + method + "\" is not supported.");
     }
     var isSuccess = function (status) { return (status >= 200 && status < 300); };
     function getResponseURL(xhr) {
@@ -836,11 +749,11 @@
          * Attempts to return body as parsed `JSON` object, or raises an exception.
          */
         Body.prototype.json = function () {
-            if (isString(this._body)) {
-                return Json.parse(this._body);
+            if (typeof this._body === 'string') {
+                return JSON.parse(this._body);
             }
             if (this._body instanceof ArrayBuffer) {
-                return Json.parse(this.text());
+                return JSON.parse(this.text());
             }
             return this._body;
         };
@@ -858,7 +771,7 @@
                 return '';
             }
             if (isJsObject(this._body)) {
-                return Json.stringify(this._body);
+                return JSON.stringify(this._body, null, 2);
             }
             return this._body.toString();
         };
@@ -1147,7 +1060,7 @@
                     // by IE10)
                     var body = _xhr.response === undefined ? _xhr.responseText : _xhr.response;
                     // Implicitly strip a potential XSSI prefix.
-                    if (isString(body))
+                    if (typeof body === 'string')
                         body = body.replace(XSSI_PREFIX, '');
                     var headers = Headers.fromResponseHeaderString(_xhr.getAllResponseHeaders());
                     var url = getResponseURL(_xhr);
@@ -1368,7 +1281,8 @@
             this.body = isPresent(body) ? body : null;
             this.url = isPresent(url) ? url : null;
             this.search = isPresent(search) ?
-                (isString(search) ? new URLSearchParams((search)) : (search)) :
+                (typeof search === 'string' ? new URLSearchParams((search)) :
+                    (search)) :
                 null;
             this.withCredentials = isPresent(withCredentials) ? withCredentials : null;
             this.responseType = isPresent(responseType) ? responseType : null;
@@ -1400,18 +1314,17 @@
          */
         RequestOptions.prototype.merge = function (options) {
             return new RequestOptions({
-                method: isPresent(options) && isPresent(options.method) ? options.method : this.method,
-                headers: isPresent(options) && isPresent(options.headers) ? options.headers : this.headers,
-                body: isPresent(options) && isPresent(options.body) ? options.body : this.body,
-                url: isPresent(options) && isPresent(options.url) ? options.url : this.url,
-                search: isPresent(options) && isPresent(options.search) ?
-                    (isString(options.search) ? new URLSearchParams((options.search)) :
+                method: options && isPresent(options.method) ? options.method : this.method,
+                headers: options && isPresent(options.headers) ? options.headers : this.headers,
+                body: options && isPresent(options.body) ? options.body : this.body,
+                url: options && isPresent(options.url) ? options.url : this.url,
+                search: options && isPresent(options.search) ?
+                    (typeof options.search === 'string' ? new URLSearchParams(options.search) :
                         (options.search).clone()) :
                     this.search,
-                withCredentials: isPresent(options) && isPresent(options.withCredentials) ?
-                    options.withCredentials :
+                withCredentials: options && isPresent(options.withCredentials) ? options.withCredentials :
                     this.withCredentials,
-                responseType: isPresent(options) && isPresent(options.responseType) ? options.responseType :
+                responseType: options && isPresent(options.responseType) ? options.responseType :
                     this.responseType
             });
         };
@@ -1741,7 +1654,7 @@
          */
         Http.prototype.request = function (url, options) {
             var responseObservable;
-            if (isString(url)) {
+            if (typeof url === 'string') {
                 responseObservable = httpRequest(this._backend, new Request(mergeOptions(this._defaultOptions, options, exports.RequestMethod.Get, url)));
             }
             else if (url instanceof Request) {
@@ -1756,43 +1669,43 @@
          * Performs a request with `get` http method.
          */
         Http.prototype.get = function (url, options) {
-            return httpRequest(this._backend, new Request(mergeOptions(this._defaultOptions, options, exports.RequestMethod.Get, url)));
+            return this.request(new Request(mergeOptions(this._defaultOptions, options, exports.RequestMethod.Get, url)));
         };
         /**
          * Performs a request with `post` http method.
          */
         Http.prototype.post = function (url, body, options) {
-            return httpRequest(this._backend, new Request(mergeOptions(this._defaultOptions.merge(new RequestOptions({ body: body })), options, exports.RequestMethod.Post, url)));
+            return this.request(new Request(mergeOptions(this._defaultOptions.merge(new RequestOptions({ body: body })), options, exports.RequestMethod.Post, url)));
         };
         /**
          * Performs a request with `put` http method.
          */
         Http.prototype.put = function (url, body, options) {
-            return httpRequest(this._backend, new Request(mergeOptions(this._defaultOptions.merge(new RequestOptions({ body: body })), options, exports.RequestMethod.Put, url)));
+            return this.request(new Request(mergeOptions(this._defaultOptions.merge(new RequestOptions({ body: body })), options, exports.RequestMethod.Put, url)));
         };
         /**
          * Performs a request with `delete` http method.
          */
         Http.prototype.delete = function (url, options) {
-            return httpRequest(this._backend, new Request(mergeOptions(this._defaultOptions, options, exports.RequestMethod.Delete, url)));
+            return this.request(new Request(mergeOptions(this._defaultOptions, options, exports.RequestMethod.Delete, url)));
         };
         /**
          * Performs a request with `patch` http method.
          */
         Http.prototype.patch = function (url, body, options) {
-            return httpRequest(this._backend, new Request(mergeOptions(this._defaultOptions.merge(new RequestOptions({ body: body })), options, exports.RequestMethod.Patch, url)));
+            return this.request(new Request(mergeOptions(this._defaultOptions.merge(new RequestOptions({ body: body })), options, exports.RequestMethod.Patch, url)));
         };
         /**
          * Performs a request with `head` http method.
          */
         Http.prototype.head = function (url, options) {
-            return httpRequest(this._backend, new Request(mergeOptions(this._defaultOptions, options, exports.RequestMethod.Head, url)));
+            return this.request(new Request(mergeOptions(this._defaultOptions, options, exports.RequestMethod.Head, url)));
         };
         /**
          * Performs a request with `options` http method.
          */
         Http.prototype.options = function (url, options) {
-            return httpRequest(this._backend, new Request(mergeOptions(this._defaultOptions, options, exports.RequestMethod.Options, url)));
+            return this.request(new Request(mergeOptions(this._defaultOptions, options, exports.RequestMethod.Options, url)));
         };
         Http.decorators = [
             { type: _angular_core.Injectable },
@@ -1828,7 +1741,7 @@
          */
         Jsonp.prototype.request = function (url, options) {
             var responseObservable;
-            if (isString(url)) {
+            if (typeof url === 'string') {
                 url =
                     new Request(mergeOptions(this._defaultOptions, options, exports.RequestMethod.Get, url));
             }

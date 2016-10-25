@@ -61,7 +61,7 @@ export var Md2Dialog = (function () {
     Md2Dialog.prototype.ngOnDestroy = function () {
         return this.close();
     };
-    ///** Show the dialog */
+    /** Show the dialog */
     Md2Dialog.prototype.show = function () {
         return this.open();
     };

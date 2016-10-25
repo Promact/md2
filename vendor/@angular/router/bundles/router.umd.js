@@ -1,12 +1,12 @@
 /**
- * @license Angular v3.1.0
+ * @license Angular v3.1.1
  * (c) 2010-2016 Google, Inc. https://angular.io/
  * License: MIT
  */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/common'), require('@angular/core'), require('rxjs/Subject'), require('rxjs/observable/from'), require('rxjs/observable/of'), require('rxjs/operator/concatMap'), require('rxjs/operator/every'), require('rxjs/operator/map'), require('rxjs/operator/mergeAll'), require('rxjs/operator/mergeMap'), require('rxjs/operator/reduce'), require('rxjs/Observable'), require('rxjs/operator/catch'), require('rxjs/operator/concatAll'), require('rxjs/operator/first'), require('rxjs/util/EmptyError'), require('rxjs/observable/fromPromise'), require('rxjs/operator/last'), require('rxjs/BehaviorSubject'), require('rxjs/operator/filter')) :
     typeof define === 'function' && define.amd ? define(['exports', '@angular/common', '@angular/core', 'rxjs/Subject', 'rxjs/observable/from', 'rxjs/observable/of', 'rxjs/operator/concatMap', 'rxjs/operator/every', 'rxjs/operator/map', 'rxjs/operator/mergeAll', 'rxjs/operator/mergeMap', 'rxjs/operator/reduce', 'rxjs/Observable', 'rxjs/operator/catch', 'rxjs/operator/concatAll', 'rxjs/operator/first', 'rxjs/util/EmptyError', 'rxjs/observable/fromPromise', 'rxjs/operator/last', 'rxjs/BehaviorSubject', 'rxjs/operator/filter'], factory) :
-    (factory((global.ng = global.ng || {}, global.ng.router = global.ng.router || {}),global.ng.common,global.ng.core,global.Rx,global.Rx.Observable,global.Rx.Observable,global.rxjs_operator_concatMap,global.Rx.Observable.prototype,global.Rx.Observable.prototype,global.Rx.Observable.prototype,global.Rx.Observable.prototype,global.Rx.Observable.prototype,global.Rx,global.Rx.Observable.prototype,global.Rx.Observable.prototype,global.Rx.Observable.prototype,global.Rx,global.Rx.Observable,global.Rx.Observable.prototype,global.Rx,global.rxjs_operator_filter));
+    (factory((global.ng = global.ng || {}, global.ng.router = global.ng.router || {}),global.ng.common,global.ng.core,global.Rx,global.Rx.Observable,global.Rx.Observable,global.rxjs_operator_concatMap,global.Rx.Observable.prototype,global.Rx.Observable.prototype,global.Rx.Observable.prototype,global.Rx.Observable.prototype,global.Rx.Observable.prototype,global.Rx,global.Rx.Observable.prototype,global.Rx.Observable.prototype,global.Rx.Observable.prototype,global.Rx,global.Rx.Observable,global.Rx.Observable.prototype,global.Rx,global.Rx.Observable.prototype));
 }(this, function (exports,_angular_common,_angular_core,rxjs_Subject,rxjs_observable_from,rxjs_observable_of,rxjs_operator_concatMap,rxjs_operator_every,rxjs_operator_map,rxjs_operator_mergeAll,rxjs_operator_mergeMap,rxjs_operator_reduce,rxjs_Observable,rxjs_operator_catch,rxjs_operator_concatAll,rxjs_operator_first,rxjs_util_EmptyError,rxjs_observable_fromPromise,l,rxjs_BehaviorSubject,rxjs_operator_filter) { 'use strict';
 
     /**
@@ -824,19 +824,20 @@
         };
         ApplyRedirects.prototype.expandSegmentAgainstRouteUsingRedirect = function (injector, segmentGroup, routes, route, segments, outlet) {
             if (route.path === '**') {
-                return this.expandWildCardWithParamsAgainstRouteUsingRedirect(route);
+                return this.expandWildCardWithParamsAgainstRouteUsingRedirect(injector, routes, route, outlet);
             }
             else {
                 return this.expandRegularSegmentAgainstRouteUsingRedirect(injector, segmentGroup, routes, route, segments, outlet);
             }
         };
-        ApplyRedirects.prototype.expandWildCardWithParamsAgainstRouteUsingRedirect = function (route) {
+        ApplyRedirects.prototype.expandWildCardWithParamsAgainstRouteUsingRedirect = function (injector, routes, route, outlet) {
             var newSegments = applyRedirectCommands([], route.redirectTo, {});
             if (route.redirectTo.startsWith('/')) {
                 return absoluteRedirect(newSegments);
             }
             else {
-                return rxjs_observable_of.of(new UrlSegmentGroup(newSegments, {}));
+                var group = new UrlSegmentGroup(newSegments, {});
+                return this.expandSegment(injector, group, routes, newSegments, outlet, false);
             }
         };
         ApplyRedirects.prototype.expandRegularSegmentAgainstRouteUsingRedirect = function (injector, segmentGroup, routes, route, segments, outlet) {
@@ -1810,6 +1811,8 @@
         return new Position(g, false, ci - dd);
     }
     function getPath(command) {
+        if (typeof command === 'object' && command.outlets)
+            return command.outlets[PRIMARY_OUTLET];
         return "" + command;
     }
     function getOutlets(commands) {
@@ -1828,8 +1831,14 @@
             return updateSegmentGroupChildren(segmentGroup, startIndex, commands);
         }
         var m = prefixedWith(segmentGroup, startIndex, commands);
-        var slicedCommands = commands.slice(m.lastIndex);
-        if (m.match && slicedCommands.length === 0) {
+        var slicedCommands = commands.slice(m.commandIndex);
+        if (m.match && m.pathIndex < segmentGroup.segments.length) {
+            var g = new UrlSegmentGroup(segmentGroup.segments.slice(0, m.pathIndex), {});
+            g.children[PRIMARY_OUTLET] =
+                new UrlSegmentGroup(segmentGroup.segments.slice(m.pathIndex), segmentGroup.children);
+            return updateSegmentGroupChildren(g, 0, slicedCommands);
+        }
+        else if (m.match && slicedCommands.length === 0) {
             return new UrlSegmentGroup(segmentGroup.segments, {});
         }
         else if (m.match && !segmentGroup.hasChildren()) {
@@ -1865,13 +1874,15 @@
     function prefixedWith(segmentGroup, startIndex, commands) {
         var currentCommandIndex = 0;
         var currentPathIndex = startIndex;
-        var noMatch = { match: false, lastIndex: 0 };
+        var noMatch = { match: false, pathIndex: 0, commandIndex: 0 };
         while (currentPathIndex < segmentGroup.segments.length) {
             if (currentCommandIndex >= commands.length)
                 return noMatch;
             var path = segmentGroup.segments[currentPathIndex];
             var curr = getPath(commands[currentCommandIndex]);
             var next = currentCommandIndex < commands.length - 1 ? commands[currentCommandIndex + 1] : null;
+            if (currentPathIndex > 0 && curr === undefined)
+                break;
             if (curr && next && (typeof next === 'object') && next.outlets === undefined) {
                 if (!compare(curr, next, path))
                     return noMatch;
@@ -1884,7 +1895,7 @@
             }
             currentPathIndex++;
         }
-        return { match: true, lastIndex: currentCommandIndex };
+        return { match: true, pathIndex: currentPathIndex, commandIndex: currentCommandIndex };
     }
     function createNewSegmentGroup(segmentGroup, startIndex, commands) {
         var paths = segmentGroup.segments.slice(0, startIndex);
@@ -3269,7 +3280,7 @@
      * @howToUse
      *
      * ```
-     * <a [routerLink]='/user/bob' routerLinkActive='active-link'>Bob</a>
+     * <a routerLink="/user/bob" routerLinkActive="active-link">Bob</a>
      * ```
      *
      * @description
@@ -3280,7 +3291,7 @@
      * Consider the following example:
      *
      * ```
-     * <a [routerLink]="/user/bob" routerLinkActive="active-link">Bob</a>
+     * <a routerLink="/user/bob" routerLinkActive="active-link">Bob</a>
      * ```
      *
      * When the url is either '/user' or '/user/bob', the active-link class will
@@ -3289,15 +3300,15 @@
      * You can set more than one class, as follows:
      *
      * ```
-     * <a [routerLink]="/user/bob" routerLinkActive="class1 class2">Bob</a>
-     * <a [routerLink]="/user/bob" [routerLinkActive]="['class1', 'class2']">Bob</a>
+     * <a routerLink="/user/bob" routerLinkActive="class1 class2">Bob</a>
+     * <a routerLink="/user/bob" [routerLinkActive]="['class1', 'class2']">Bob</a>
      * ```
      *
      * You can configure RouterLinkActive by passing `exact: true`. This will add the classes
      * only when the url matches the link exactly.
      *
      * ```
-     * <a [routerLink]="/user/bob" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact:
+     * <a routerLink="/user/bob" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact:
      * true}">Bob</a>
      * ```
      *
@@ -3305,8 +3316,8 @@
      *
      * ```
      * <div routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">
-     *   <a [routerLink]="/user/jim">Jim</a>
-     *   <a [routerLink]="/user/bob">Bob</a>
+     *   <a routerLink="/user/jim">Jim</a>
+     *   <a routerLink="/user/bob">Bob</a>
      * </div>
      * ```
      *

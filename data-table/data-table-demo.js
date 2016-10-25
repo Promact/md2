@@ -10,23 +10,33 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var http_1 = require("@angular/http");
+var DataTablePipe = (function () {
+    function DataTablePipe() {
+    }
+    DataTablePipe.prototype.transform = function (array, query) {
+        if (query) {
+            return array.filter(function (value, index, arr) { return value.name.indexOf(query) > -1; });
+        }
+        return array;
+    };
+    DataTablePipe = __decorate([
+        core_1.Pipe({ name: "dataPipe" }), 
+        __metadata('design:paramtypes', [])
+    ], DataTablePipe);
+    return DataTablePipe;
+}());
+exports.DataTablePipe = DataTablePipe;
 var DataTableDemo = (function () {
     function DataTableDemo(http) {
         var _this = this;
         this.http = http;
         this.data = null;
-        this.filterQuery = null;
-        this.sortByWordLength = function (a) {
-            return a.name.length;
-        };
+        this.search = null;
         http.get("./data-table/data.json")
             .subscribe(function (data) {
             _this.data = data.json();
         });
     }
-    DataTableDemo.prototype.toInt = function (num) {
-        return +num;
-    };
     DataTableDemo = __decorate([
         core_1.Component({
             moduleId: module.id,

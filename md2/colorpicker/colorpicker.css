@@ -3,7 +3,6 @@ md2-colorpicker {
   display: block;
   max-width: 200px;
   outline: none;
-  -moz-backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden; }
 
@@ -50,8 +49,6 @@ md2-colorpicker.md2-colorpicker-disabled {
   line-height: 30px; }
 
 .md2-color-picker, .md2-color-picker * {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
   box-sizing: border-box;
   margin: 0;
   font-size: 12px; }
@@ -66,8 +63,6 @@ md2-colorpicker.md2-colorpicker-disabled {
   right: 80px;
   border-radius: 3px;
   padding: 2px 7px;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
   box-sizing: border-box;
   background: transparent;
   text-align: center;
@@ -87,14 +82,7 @@ md2-colorpicker.md2-colorpicker-disabled {
   font-weight: 500;
   text-transform: uppercase;
   line-height: 26px;
-  -webkit-transition: background 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-  -moz-transition: background 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-  -o-transition: background 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
   transition: background 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-  -webkit-transform: translate3d(0, 0, 0);
-  -moz-transform: translate3d(0, 0, 0);
-  -ms-transform: translate3d(0, 0, 0);
-  -o-transform: translate3d(0, 0, 0);
   transform: translate3d(0, 0, 0);
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
   color: rgba(0, 0, 0, 0.87059);
@@ -109,8 +97,6 @@ md2-colorpicker.md2-colorpicker-disabled {
   right: 7px;
   border-radius: 3px;
   padding: 2px 7px;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
   box-sizing: border-box;
   background: transparent;
   text-align: center;
@@ -130,14 +116,7 @@ md2-colorpicker.md2-colorpicker-disabled {
   font-weight: 500;
   text-transform: uppercase;
   line-height: 26px;
-  -webkit-transition: background 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-  -moz-transition: background 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-  -o-transition: background 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
   transition: background 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-  -webkit-transform: translate3d(0, 0, 0);
-  -moz-transform: translate3d(0, 0, 0);
-  -ms-transform: translate3d(0, 0, 0);
-  -o-transform: translate3d(0, 0, 0);
   transform: translate3d(0, 0, 0);
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
   color: rgba(0, 0, 0, 0.87059);
@@ -149,8 +128,6 @@ md2-colorpicker.md2-colorpicker-disabled {
 .md2-color-picker div.cursor-sv {
   cursor: default;
   position: relative;
-  -moz-border-radius: 50%;
-  -webkit-border-radius: 50%;
   border-radius: 50%;
   width: 15px;
   height: 15px;
@@ -159,8 +136,6 @@ md2-colorpicker.md2-colorpicker-disabled {
 .md2-color-picker div.cursor {
   cursor: crosshair;
   position: relative;
-  -moz-border-radius: 50%;
-  -webkit-border-radius: 50%;
   border-radius: 50%;
   width: 15px;
   height: 15px;

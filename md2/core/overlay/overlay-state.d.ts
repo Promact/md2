@@ -8,4 +8,10 @@ export declare class OverlayState {
     positionStrategy: PositionStrategy;
     /** Whether the overlay has a backdrop. */
     hasBackdrop: boolean;
+    /** Custom class to add to the backdrop **/
+    backdropClass: string;
+    /** The width of the overlay panel. If a number is provided, pixel units are assumed. **/
+    width: number | string;
+    /** The height of the overlay panel. If a number is provided, pixel units are assumed. **/
+    height: number | string;
 }

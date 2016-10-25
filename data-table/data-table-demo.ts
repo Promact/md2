@@ -1,5 +1,19 @@
-import { Component } from '@angular/core';
+import {
+  Component,
+  Pipe,
+  PipeTransform
+} from '@angular/core';
 import { Http } from "@angular/http";
+
+@Pipe({ name: "dataPipe" })
+export class DataTablePipe implements PipeTransform {
+  transform(array: any[], query: string): any {
+    if (query) {
+      return array.filter((value: any, index: number, arr: any) => value.name.indexOf(query) > -1);
+    }
+    return array;
+  }
+}
 
 @Component({
   moduleId: module.id,
@@ -8,20 +22,12 @@ import { Http } from "@angular/http";
 })
 export class DataTableDemo {
   private data: any = null;
-  private filterQuery: string = null;
+  private search: string = null;
 
   constructor(private http: Http) {
     http.get("./data-table/data.json")
       .subscribe((data) => {
         this.data = data.json();
       });
-  }
-
-  public toInt(num: string) {
-    return +num;
-  }
-
-  public sortByWordLength = (a: any) => {
-    return a.name.length;
   }
 }

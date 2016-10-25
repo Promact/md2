@@ -56,6 +56,7 @@ var DemoAppModule = (function () {
                 collapse_demo_1.CollapseDemo,
                 colorpicker_demo_1.ColorpickerDemo,
                 data_table_demo_1.DataTableDemo,
+                data_table_demo_1.DataTablePipe,
                 datepicker_demo_1.DatepickerDemo,
                 dialog_demo_1.DialogDemo,
                 menu_demo_1.MenuDemo,

@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 import { Injectable } from '@angular/core';
-import { isPresent, isString } from '../src/facade/lang';
+import { isPresent } from '../src/facade/lang';
 import { RequestMethod } from './enums';
 import { Headers } from './headers';
 import { normalizeMethodName } from './http_utils';
@@ -50,7 +50,8 @@ export var RequestOptions = (function () {
         this.body = isPresent(body) ? body : null;
         this.url = isPresent(url) ? url : null;
         this.search = isPresent(search) ?
-            (isString(search) ? new URLSearchParams((search)) : (search)) :
+            (typeof search === 'string' ? new URLSearchParams((search)) :
+                (search)) :
             null;
         this.withCredentials = isPresent(withCredentials) ? withCredentials : null;
         this.responseType = isPresent(responseType) ? responseType : null;
@@ -82,18 +83,17 @@ export var RequestOptions = (function () {
      */
     RequestOptions.prototype.merge = function (options) {
         return new RequestOptions({
-            method: isPresent(options) && isPresent(options.method) ? options.method : this.method,
-            headers: isPresent(options) && isPresent(options.headers) ? options.headers : this.headers,
-            body: isPresent(options) && isPresent(options.body) ? options.body : this.body,
-            url: isPresent(options) && isPresent(options.url) ? options.url : this.url,
-            search: isPresent(options) && isPresent(options.search) ?
-                (isString(options.search) ? new URLSearchParams((options.search)) :
+            method: options && isPresent(options.method) ? options.method : this.method,
+            headers: options && isPresent(options.headers) ? options.headers : this.headers,
+            body: options && isPresent(options.body) ? options.body : this.body,
+            url: options && isPresent(options.url) ? options.url : this.url,
+            search: options && isPresent(options.search) ?
+                (typeof options.search === 'string' ? new URLSearchParams(options.search) :
                     (options.search).clone()) :
                 this.search,
-            withCredentials: isPresent(options) && isPresent(options.withCredentials) ?
-                options.withCredentials :
+            withCredentials: options && isPresent(options.withCredentials) ? options.withCredentials :
                 this.withCredentials,
-            responseType: isPresent(options) && isPresent(options.responseType) ? options.responseType :
+            responseType: options && isPresent(options.responseType) ? options.responseType :
                 this.responseType
         });
     };

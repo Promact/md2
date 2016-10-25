@@ -17,6 +17,17 @@ section,
 summary {
   display: block; }
 
+.md2-input {
+  margin: 8px 0;
+  line-height: 26px;
+  border: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12); }
+
+.md2-input:focus {
+  margin-bottom: 7px;
+  border-bottom: 2px solid #106CC8;
+  outline: none; }
+
 a {
   color: #106CC8;
   text-decoration: none; }
@@ -55,7 +66,6 @@ hr {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  -webkit-transition: background 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
   transition: background 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
   color: rgba(0, 0, 0, 0.9);
@@ -150,9 +160,6 @@ html, body {
   z-index: 999;
   overflow: hidden;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
-  -moz-transition: 0.3s ease-in-out;
-  -o-transition: 0.3s ease-in-out;
-  -webkit-transition: 0.3s ease-in-out;
   transition: 0.3s ease-in-out; }
   .sidenav:hover {
     overflow-y: auto; }
@@ -251,16 +258,8 @@ html, body {
   .sidenav-backdrop.open {
     display: block; }
   .sidenav {
-    -moz-transform: translateX(-100%);
-    -ms-transform: translateX(-100%);
-    -o-transform: translateX(-100%);
-    -webkit-transform: translateX(-100%);
     transform: translateX(-100%); }
     .sidenav.open {
-      -moz-transform: translateX(0);
-      -ms-transform: translateX(0);
-      -o-transform: translateX(0);
-      -webkit-transform: translateX(0);
       transform: translateX(0); }
   .main {
     margin-left: 0;

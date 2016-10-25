@@ -16,6 +16,7 @@ export var OverlayRef = (function () {
             this._attachBackdrop();
         }
         var attachResult = this._portalHost.attach(portal);
+        this.updateSize();
         this.updatePosition();
         return attachResult;
     };
@@ -43,11 +44,21 @@ export var OverlayRef = (function () {
             this._state.positionStrategy.apply(this._pane);
         }
     };
+    /** Updates the size of the overlay based on the overlay config. */
+    OverlayRef.prototype.updateSize = function () {
+        if (this._state.width || this._state.width === 0) {
+            this._pane.style.width = formatCssUnit(this._state.width);
+        }
+        if (this._state.height || this._state.height === 0) {
+            this._pane.style.height = formatCssUnit(this._state.height);
+        }
+    };
     /** Attaches a backdrop for this overlay. */
     OverlayRef.prototype._attachBackdrop = function () {
         var _this = this;
         this._backdropElement = document.createElement('div');
         this._backdropElement.classList.add('md-overlay-backdrop');
+        this._backdropElement.classList.add(this._state.backdropClass);
         this._pane.parentElement.appendChild(this._backdropElement);
         // Forward backdrop clicks such that the consumer of the overlay can perform whatever
         // action desired when such a click occurs (usually closing the overlay).
@@ -65,6 +76,7 @@ export var OverlayRef = (function () {
         var backdropToDetach = this._backdropElement;
         if (backdropToDetach) {
             backdropToDetach.classList.remove('md-overlay-backdrop-showing');
+            backdropToDetach.classList.remove(this._state.backdropClass);
             backdropToDetach.addEventListener('transitionend', function () {
                 backdropToDetach.parentNode.removeChild(backdropToDetach);
                 // It is possible that a new portal has been attached to this overlay since we started
@@ -78,5 +90,8 @@ export var OverlayRef = (function () {
     };
     return OverlayRef;
 }());
+function formatCssUnit(value) {
+    return typeof value === 'string' ? value : value + "px";
+}
 
 //# sourceMappingURL=overlay-ref.js.map

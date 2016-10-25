@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "lib": ["es6", "es2015", "dom"],
+    "mapRoot": "",
+    "module": "es2015",
+    "moduleResolution": "node",
+    "noEmitOnError": true,
+    "noImplicitAny": true,
+    "outDir": "../../dist/md2",
+    "rootDir": ".",
+    "sourceMap": true,
+    "target": "es5",
+    "inlineSources": true,
+    "stripInternal": true,
+    "typeRoots": [
+      "../../node_modules/@types"
+    ],
+    "types": [
+    ]
+  },
+  "exclude": [
+    "**/*.spec.*",
+    "system-config-spec.ts"
+  ],
+  "angularCompilerOptions": {
+    "genDir": "../../dist/md2",
+    "skipTemplateCodegen": true,
+    "debug": true
+  }
+}

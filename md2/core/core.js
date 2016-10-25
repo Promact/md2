@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 import { NgModule } from '@angular/core';
 import { PortalModule } from './portal/portal-directives';
 import { OverlayModule } from './overlay/overlay-directives';
+import { OVERLAY_PROVIDERS } from './overlay/overlay';
 // Portals
 export { Portal, BasePortalHost, ComponentPortal, TemplatePortal } from './portal/portal';
 export { PortalHostDirective, TemplatePortalDirective, PortalModule } from './portal/portal-directives';
@@ -39,7 +40,7 @@ export var MdCoreModule = (function () {
     MdCoreModule.forRoot = function () {
         return {
             ngModule: MdCoreModule,
-            providers: []
+            providers: [OVERLAY_PROVIDERS],
         };
     };
     MdCoreModule = __decorate([

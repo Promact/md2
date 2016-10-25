@@ -3,7 +3,6 @@ md2-datepicker {
   display: block;
   max-width: 200px;
   outline: none;
-  -moz-backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden; }
 

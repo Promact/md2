@@ -1,100 +1,53 @@
 import * as gulp from 'gulp';
-import { task } from 'gulp';
 import * as path from 'path';
 import * as fs from 'fs';
-import { DIST_ROOT } from '../constants';
 import gulpRunSequence = require('run-sequence');
 
-const ghPages = require('gulp-gh-pages');
-//const shell = require('gulp-shell');
-const ghpages = require('gh-pages');
-const conventionalChangelog = require('gulp-conventional-changelog');
-const conventionalGithubReleaser = require('conventional-github-releaser');
 const bump = require('gulp-bump');
-const gutil = require('gulp-util');
 const git = require('gulp-git');
+const changelog = require('gulp-conventional-changelog');
+const releaser = require('conventional-github-releaser');
 
 
-task(':deploy', () => {
-  //return gulp.src('CHANGELOG.md')
-  //  .pipe(conventionalChangelog({
-  //    preset: 'angular'
-  //  }))
-  //  .pipe(gulp.dest('./'));
+//task(':deploy', () => {
+//  //const indexFile = './dist/index.html';
+//  //fs.readFile(indexFile, 'utf8', (err, data) => {
+//  //  if (err) { return console.log(err); }
+//  //  const result = data.replace('<base href="/">', '<base href=".">');
 
-  //const indexFile = './dist/index.html';
-  //fs.readFile(indexFile, 'utf8', (err, data) => {
-  //  if (err) { return console.log(err); }
-  //  const result = data.replace('<base href="/">', '<base href=".">');
-
-  //  fs.writeFile(indexFile, result, 'utf8', (err) => {
-  //    if (err) {
-  //      return console.log(err);
-  //    } else {
-  //      //gulp.src('./dist/**/*').pipe(ghPages({ push: true, force: true, message: 'update md2 demo' }));
-  //      return console.log('md2 demo deployed');
-  //    }
-  //  });
-  //});
-  //ghpages.publish(DIST_ROOT, {
-  //  branch: '',
-  //}, (err: any) => {
-  //  if (err) {
-  //      return console.log(err);
-  //    }
-  //});
-});
-
-//gulp.task('shorthand', () => {
-//  shell.task([
-//    'cls',
-//    'echo hello',
-//    'echo world'
-//  ]);
-//})
-
-task('deploy', (done: () => void) => {
-  gulpRunSequence(
-    //'build:devapp',
-    ':deploy',
-    //'shorthand',
-    done
-  );
-});
-
-
-
-
-
-
-
-//=================================================================================================
-
+//  //  fs.writeFile(indexFile, result, 'utf8', (err) => {
+//  //    if (err) {
+//  //      return console.log(err);
+//  //    } else {
+//  //      return console.log('md2 demo deployed');
+//  //    }
+//  //  });
+//  //});
+//});
 
 // update package.json version
 gulp.task(':release:version', () => {
   gulp.src(['./package.json'])
-    .pipe(bump({ type: "patch" }).on('error', gutil.log))
+    .pipe(bump({ type: "patch" }))
     .pipe(gulp.dest('./'));
   return gulp.src(['./src/lib/package.json'])
-    .pipe(bump({ type: "patch" }).on('error', gutil.log))
+    .pipe(bump({ type: "patch" }))
     .pipe(gulp.dest('./src/lib'));
 });
 
 // update CHANGELOG.md
 gulp.task(':release:changelog', () => {
-  return gulp.src('CHANGELOG.md', {
-    buffer: false
-  }).pipe(conventionalChangelog({
-    preset: 'angular'
-  })).pipe(gulp.dest('./'));
+  return gulp.src('CHANGELOG.md', { buffer: false })
+    .pipe(changelog({ preset: 'angular' }))
+    .pipe(gulp.dest('./'));
 });
 
 // release commit
 gulp.task(':release:commit', () => {
+  var version = JSON.parse(fs.readFileSync('./package.json', 'utf8')).version;
   return gulp.src('.')
     .pipe(git.add())
-    .pipe(git.commit('[Prerelease] Bumped version number'));
+    .pipe(git.commit('Released MD2@' + version));
 });
 
 // release push
@@ -104,19 +57,16 @@ gulp.task(':release:push', (cb: any) => {
 
 // release tag
 gulp.task(':release:tag', (cb: any) => {
-  var version = getPackageJsonVersion();
+  var version = JSON.parse(fs.readFileSync('./package.json', 'utf8')).version;
   git.tag(version, 'Created Tag for version: ' + version, function (error: any) {
     if (error) { return cb(error); }
     git.push('origin', 'master', { args: '--tags' }, cb);
   });
-  function getPackageJsonVersion() {
-    return JSON.parse(fs.readFileSync('./package.json', 'utf8')).version;
-  };
 });
 
 // release
 //gulp.task('github-release', function (done: any) {
-//  conventionalGithubReleaser({
+//  releaser({
 //    type: "oauth",
 //    token: '0126af95c0e2d9b0a7c78738c4c00a860b04acc8' // change this to your own GitHub token or use an environment variable
 //  }, {
@@ -124,7 +74,7 @@ gulp.task(':release:tag', (cb: any) => {
 //    }, done);
 //});
 
-gulp.task('deploy1', function (callback: any) {
+gulp.task('deploy', function (callback: any) {
   gulpRunSequence(
     ':release:version',
     ':release:changelog',

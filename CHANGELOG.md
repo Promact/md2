@@ -1,3 +1,22 @@
+<a name="0.0.7"></a>
+## [0.0.7](https://github.com/Promact/md2/compare/1.0.16...v0.0.7) (2016-10-26)
+
+
+### Bug Fixes
+
+* design issue ([d5543d7](https://github.com/Promact/md2/commit/d5543d7))
+* disabled component design ([d497617](https://github.com/Promact/md2/commit/d497617))
+* disabled component issue ([c742351](https://github.com/Promact/md2/commit/c742351))
+
+
+### Features
+
+* BooleanFieldValue annotation ([cb955ca](https://github.com/Promact/md2/commit/cb955ca))
+* **Datepicker:** Add seconds to format ([21d4f62](https://github.com/Promact/md2/commit/21d4f62))
+* dev-app server open on browser ([2f70f65](https://github.com/Promact/md2/commit/2f70f65))
+
+
+
 # [0.0.6](https://github.com/promact/md2/compare/md2@0.0.5...md2@0.0.6) (2016-10-20)
 
 ### Bug Fixes

@@ -4,12 +4,9 @@ sudo: false
 node_js:
   - '5.6.0'
 
-branches:
-  only:
-  - master
-
 install:
   - npm install
 
 script:
   - gulp clean
+  - bash ./scripts/deploy/deploy.sh

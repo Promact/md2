@@ -16,7 +16,7 @@
     "tslint": "gulp lint",
     "stylelint": "gulp lint",
     "e2e": "gulp e2e",
-    "deploy": "firebase deploy",
+    "deploy": "gulp deploy",
     "webdriver-manager": "webdriver-manager"
   },
   "keywords": [
@@ -74,7 +74,6 @@
     "browserstacktunnel-wrapper": "^1.4.2",
     "conventional-changelog": "^1.1.0",
     "express": "^4.14.0",
-    "firebase-tools": "^2.2.1",
     "fs-extra": "^0.26.5",
     "glob": "^6.0.4",
     "gulp": "^3.9.1",

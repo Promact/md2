@@ -10,19 +10,17 @@ const releaser = require('conventional-github-releaser');
 
 
 gulp.task(':deploy', () => {
-  gulp.src('./dist')
-    .pipe(gulp.dest('./deploy'))
-
-  const indexFile = './deploy/index.html';
-  fs.readFile(indexFile, 'utf8', (err, data) => {
+  fs.readFile('./dist/index.html', 'utf8', (err, data) => {
     if (err) { return console.log(err); }
     const result = data.replace('<base href="/">', '<base href=".">');
 
-    fs.writeFile(indexFile, result, 'utf8', (err) => {
+    fs.writeFile('./dist/index.html', result, 'utf8', (err) => {
       if (err) {
         return console.log(err);
       } else {
-        return console.log('md2 demo deployed');
+        console.log('md2 demo deployed');
+        return gulp.src('./dist/**/*')
+          .pipe(gulp.dest('./deploy'));
       }
     });
   });

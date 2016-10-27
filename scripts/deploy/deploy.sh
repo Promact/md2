@@ -16,21 +16,22 @@ REPO=`git config remote.origin.url`
 SSH_REPO=${REPO/https:\/\/github.com\//git@github.com:}
 SHA=`git rev-parse --verify HEAD`
 
-# Clone the existing gh-pages for this repo into dist/
+# Clone the existing gh-pages for this repo into deploy/
 # Create a new empty branch if gh-pages doesn't exist yet (should only happen on first deply)
-git clone $REPO dist
-cd dist
+git clone $REPO deploy
+cd deploy
 git checkout $TARGET_BRANCH || git checkout --orphan $TARGET_BRANCH
 cd ..
 
-# Clean dist existing contents
-rm -rf dist/**/* || exit 0
+# Clean deploy existing contents
+rm -rf deploy/**/* || exit 0
 
 # Compile demo-app
 gulp build:devapp
+gulp deploy
 
 # Now let's go have some fun with the cloned repo
-cd dist
+cd deploy
 git config user.name "dharmeshpipariya"
 git config user.email "dharmeshpipariya@gmail.com"
 

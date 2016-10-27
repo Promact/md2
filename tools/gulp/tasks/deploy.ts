@@ -9,21 +9,24 @@ const changelog = require('gulp-conventional-changelog');
 const releaser = require('conventional-github-releaser');
 
 
-//task(':deploy', () => {
-//  //const indexFile = './dist/index.html';
-//  //fs.readFile(indexFile, 'utf8', (err, data) => {
-//  //  if (err) { return console.log(err); }
-//  //  const result = data.replace('<base href="/">', '<base href=".">');
+gulp.task(':deploy', () => {
+  gulp.src('./dist')
+    .pipe(gulp.dest('./deploy'))
 
-//  //  fs.writeFile(indexFile, result, 'utf8', (err) => {
-//  //    if (err) {
-//  //      return console.log(err);
-//  //    } else {
-//  //      return console.log('md2 demo deployed');
-//  //    }
-//  //  });
-//  //});
-//});
+  const indexFile = './deploy/index.html';
+  fs.readFile(indexFile, 'utf8', (err, data) => {
+    if (err) { return console.log(err); }
+    const result = data.replace('<base href="/">', '<base href=".">');
+
+    fs.writeFile(indexFile, result, 'utf8', (err) => {
+      if (err) {
+        return console.log(err);
+      } else {
+        return console.log('md2 demo deployed');
+      }
+    });
+  });
+});
 
 // update package.json version
 gulp.task(':release:version', () => {
@@ -76,11 +79,12 @@ gulp.task(':release:tag', (cb: any) => {
 
 gulp.task('deploy', function (callback: any) {
   gulpRunSequence(
-    ':release:version',
-    ':release:changelog',
-    ':release:commit',
-    ':release:push',
-    ':release:tag',
+    ':deploy',
+    //':release:version',
+    //':release:changelog',
+    //':release:commit',
+    //':release:push',
+    //':release:tag',
     //'github-release',
     function (error: any) {
       if (error) {

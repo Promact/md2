@@ -35,15 +35,15 @@ git config user.name "dharmeshpipariya"
 git config user.email "dharmeshpipariya@gmail.com"
 
 # If there are no changes (e.g. this is a README update) then just bail.
-#if [ -z `git diff --exit-code` ]; then
-#    echo "No changes to the spec on this push; exiting."
-#    exit 0
-#fi
+if [ -z `git diff --exit-code` ]; then
+    echo "Demo already updated."
+    exit 0
+fi
 
 # Commit the "changes", i.e. the new version.
 # The delta will show diffs between new and old versions.
-#git add .
-#git commit -m "Deploy to GitHub Pages: ${SHA}"
+git add .
+git commit -m "Deploy demo: ${SHA}"
 
 # Get the deploy key by using Travis's stored variables to decrypt deploy_key.enc
 #ENCRYPTED_KEY_VAR="encrypted_${ENCRYPTION_LABEL}_key"
@@ -56,4 +56,4 @@ git config user.email "dharmeshpipariya@gmail.com"
 #ssh-add deploy_key
 
 # Now that we're all set up, we can push.
-#git push $SSH_REPO $TARGET_BRANCH
+git push $SSH_REPO $TARGET_BRANCH

@@ -10,3 +10,7 @@ install:
 script:
   - gulp clean
   - bash ./scripts/deploy/deploy.sh
+
+cache:
+  directories:
+    - node_modules

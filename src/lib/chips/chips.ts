@@ -50,8 +50,8 @@ export const MD2_CHIPS_CONTROL_VALUE_ACCESSOR: any = {
             <input *ngIf="!isAutoComplete" class="chip-input" type="text" [(ngModel)]="inputValue" name="chipInput" [placeholder]="placeholder" (paste)="inputPaste($event)" (keydown)="inputChanged($event)" (blur)="inputBlurred($event)" (focus)="inputFocus()"/>
             <div *ngIf="isAutoComplete">
                 <md2-autocomplete [items]="autocompleteDataList"
-                                item-text="name"
-                                [(ngModel)]="item" name="autocomplete" (change)="changeAutocomplete($event)" [placeholder]="placeholder" (keydown)="inputChanged($event)">
+                                item-text="autocompleteItemText"
+                                [(ngModel)]="item" (textChange)="valueupdate($event)" name="autocomplete" (change)="changeAutocomplete($event)" [placeholder]="placeholder" (keydown)="inputChanged($event)">
 		        </md2-autocomplete>
             </div>
         </form>
@@ -66,7 +66,7 @@ export const MD2_CHIPS_CONTROL_VALUE_ACCESSOR: any = {
     md2-chips .md2-chips-container:after{clear:both;content:'';display:table;}
     md2-chips.chip-input-focus .md2-chips-container{box-shadow: 0 2px #0d8bff;}
     md2-chips .md2-chip-disabled{cursor: default;}
-    md2-chips md2-autocomplete{margin:7px 0;}
+    md2-chips md2-autocomplete{margin:0;}
     md2-chips .md2-autocomplete-wrap{border-bottom:0 !important;}
     .md2-template{display:none;}
     .chip-input-disabled{pointer-events: none;cursor: default;}
@@ -78,7 +78,12 @@ export const MD2_CHIPS_CONTROL_VALUE_ACCESSOR: any = {
     .chip-remove {cursor: pointer;display: inline-block;padding: 0 3px;color: #616161;font-size: 30px;vertical-align: top;line-height: 21px;font-family: serif;}
     .chip-input {display: inline-block;width: auto;box-shadow: one;border: 0;outline:none;height: 32px;line-height: 32px;font-size: 16px;}
     .chip-error{font-size:13px;color:#fd0f0f;}
-    .md2-chips-container .chip-input-form .md2-autocomplete-wrap{border-bottom:0!important;}
+    .md2-chips-container .chip-input-form .md2-autocomplete-wrap{border-bottom:0;}
+    .md2-chips-container .md2-autocomplete-wrap.is-focused .md2-autocomplete-placeholder{display:none;}
+    .md2-chips-container .md2-autocomplete-wrap .md2-autocomplete-placeholder.has-value{display:none;}
+    .md2-chips-container .md2-autocomplete-wrap svg{display:none;}
+    .md2-chips-container .md2-autocomplete-wrap .md2-autocomplete-input{height:32px;font-size:16px;}
+    .md2-chips-container md2-autocomplete .md2-autocomplete-placeholder{color: #a2a2a2;font-size: 16px;}
   `],
     providers: [MD2_CHIPS_CONTROL_VALUE_ACCESSOR],
 
@@ -86,7 +91,7 @@ export const MD2_CHIPS_CONTROL_VALUE_ACCESSOR: any = {
         'role': 'chips',
         '[id]': 'id',
         '[tabindex]': 'readonly ? -1 : tabindex',
-        '[class.chip-input-focus]': 'isFocused || selectedChip >= 0',
+        '[class.chip-input-focus]': 'inputFocused || selectedChip >= 0',
     },
     encapsulation: ViewEncapsulation.None
 })
@@ -108,8 +113,10 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
     @Input() minChips: number = 0;
     @Input() maxChips: number = 10000;
     @Input() id: string = 'md2-chips-' + (++nextId);
+    @Input('autocomplete-item-text') autocompleteItemText: string = 'text';
     @Output() change: EventEmitter<any> = new EventEmitter<any>();
     @ViewChild('chipInputForm') chipInputForm: NgForm;
+    @ViewChild('autocomplete') autocomplete: Md2AutocompleteModule;
 
     private onTouchedCallback: () => void = noop;
     private onChangeCallback: (_: any) => void = noop;
@@ -119,7 +126,8 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
     private splitRegExp: RegExp;
     private templateHtmlString: any;
     private item: any;
-    private isFocused: boolean = false;
+    private inputFocused: boolean = false;
+    private isEmptyAutoComplete: boolean = true;
 
     constructor(private elementRef: ElementRef) { }
 
@@ -157,6 +165,14 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
         this.splitRegExp = new RegExp(this.pasteSplitPattern);
         if (elements.template) {
             this.templateHtmlString = elements.template.innerHTML;
+        }
+    }
+    valueupdate(evt: Event) {
+        if (evt) {
+            this.isEmptyAutoComplete = false;
+        }
+        else {
+            this.isEmptyAutoComplete = true;
         }
     }
 
@@ -219,13 +235,26 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
     }
 
     @HostListener('focus')
+    private onFocus() {
+        if (this.readonly) {
+            return;
+        }
+        if (!this.isAutoComplete) {
+            this.elementRef.nativeElement.querySelector('input.chip-input').focus();
+        }        
+        this._resetSelected();
+    }
     inputBlurred(event: Event): void {
         if (this.addOnBlur && !this.readonly) { this.addNewChip([this.inputValue]); }
-        this.isFocused = false;
+        this.inputFocused = false;
     }
 
     inputFocus(event: Event): void {
-        this.isFocused = true;
+        if (this.readonly) {
+            return;
+        }
+        this.inputFocused = true;
+
     }
 
     inputPaste(event: any): void {
@@ -288,7 +317,7 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
     }
 
     private backspaceEvent(): void {
-        if (!this.inputValue.length && this.chipItemList.length && this.isRemovable) {
+        if (!this.inputValue.length && this.chipItemList.length && this.isRemovable && this.isEmptyAutoComplete) {
             if (this.selectedChip != -1) {
                 this.removeSelectedChip(this.selectedChip);
                 this.selectedChip = this.chipItemList.length - 1;

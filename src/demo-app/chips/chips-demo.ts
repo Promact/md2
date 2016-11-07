@@ -15,9 +15,8 @@ export class ChipsDemo {
   [
     'Data1', 'Data2', 'Data3'
   ];
-
+  private name: string = "abc";
   private validPattern = /^[0-9]*$/;
-
   private change(value: any) {
     console.log('Changed data: ', value);
   }

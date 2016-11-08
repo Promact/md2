@@ -32,7 +32,6 @@ export class Home { }
   selector: 'demo-app',
   providers: [],
   templateUrl: 'demo-app.html',
-  styleUrls: ['demo-app.css'],
   encapsulation: ViewEncapsulation.None,
 })
 export class DemoApp {

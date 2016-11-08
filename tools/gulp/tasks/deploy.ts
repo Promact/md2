@@ -8,8 +8,8 @@ const git = require('gulp-git');
 const changelog = require('gulp-conventional-changelog');
 const releaser = require('conventional-github-releaser');
 
-
-gulp.task(':deploy', () => {
+// Deploy demo source
+gulp.task('deploy', ['build:devapp'], () => {
   fs.readFile('./dist/index.html', 'utf8', (err, data) => {
     if (err) { return console.log(err); }
     const result = data.replace('<base href="/">', '<base href=".">');
@@ -18,7 +18,6 @@ gulp.task(':deploy', () => {
       if (err) {
         return console.log(err);
       } else {
-        console.log('md2 demo deployed');
         return gulp.src('./dist/**/*')
           .pipe(gulp.dest('./deploy'));
       }
@@ -75,11 +74,10 @@ gulp.task(':release:tag', (cb: any) => {
 //    }, done);
 //});
 
-gulp.task('deploy', function (callback: any) {
+gulp.task('release', ['build:devapp'], (callback: any) => {
   gulpRunSequence(
-    ':deploy',
-    //':release:version',
-    //':release:changelog',
+    ':release:version',
+    ':release:changelog',
     //':release:commit',
     //':release:push',
     //':release:tag',

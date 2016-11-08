@@ -2,18 +2,13 @@ language: node_js
 sudo: false
 
 node_js:
-  - 5.6.0
-
-branches:
-  only:
-  - master
-  - "/^deploy-.*$/"
+  - '5.6.0'
 
 install:
   - npm install
 
 script:
-  - bash ./scripts/deploy/deploy.sh
+  - ./scripts/deploy/deploy.sh
 
 before_deploy:
   - gulp build:devapp
@@ -29,6 +24,7 @@ deploy:
     branch: master
     repo: Promact/md2
     tags: true
+    condition: "/^deploy-.*$/"
 
 cache:
   directories:

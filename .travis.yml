@@ -8,7 +8,7 @@ install:
   - npm install
 
 script:
-  - ./scripts/deploy/deploy.sh
+  - bash ./scripts/deploy/deploy.sh
 
 before_deploy:
   - gulp build:devapp

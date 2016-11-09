@@ -11,15 +11,24 @@ import {
 
 /**
  * A strategy for positioning overlays. Using this strategy, an overlay is given an
- * implict position relative some origin element. The relative position is defined in terms of
+ * implicit position relative some origin element. The relative position is defined in terms of
  * a point on the origin element that is connected to a point on the overlay element. For example,
  * a basic dropdown is connecting the bottom-left corner of the origin to the top-left corner
  * of the overlay.
  */
 export class ConnectedPositionStrategy implements PositionStrategy {
-  // TODO(jelbourn): set RTL to the actual value from the app.
+  private _dir = 'ltr';
+
+  /** The offset in pixels for the overlay connection point on the x-axis */
+  private _offsetX: number = 0;
+
+  /** The offset in pixels for the overlay connection point on the y-axis */
+  private _offsetY: number = 0;
+
   /** Whether the we're dealing with an RTL context */
-  _isRtl: boolean = false;
+  get _isRtl() {
+    return this._dir === 'rtl';
+  }
 
   /** Ordered list of preferred positions, from most to least desirable. */
   _preferredPositions: ConnectionPositionPair[] = [];
@@ -85,6 +94,23 @@ export class ConnectedPositionStrategy implements PositionStrategy {
     return this;
   }
 
+  /** Sets the layout direction so the overlay's position can be adjusted to match. */
+  withDirection(dir: 'ltr' | 'rtl'): this {
+    this._dir = dir;
+    return this;
+  }
+
+  /** Sets an offset for the overlay's connection point on the x-axis */
+  withOffsetX(offset: number): this {
+    this._offsetX = offset;
+    return this;
+  }
+
+  /** Sets an offset for the overlay's connection point on the y-axis */
+  withOffsetY(offset: number): this {
+    this._offsetY = offset;
+    return this;
+  }
 
   /**
    * Gets the horizontal (x) "start" dimension based on whether the overlay is in an RTL context.
@@ -146,8 +172,10 @@ export class ConnectedPositionStrategy implements PositionStrategy {
     let overlayStartX: number;
     if (pos.overlayX == 'center') {
       overlayStartX = -overlayRect.width / 2;
+    } else if (pos.overlayX === 'start') {
+      overlayStartX = this._isRtl ? -overlayRect.width : 0;
     } else {
-      overlayStartX = pos.overlayX == 'start' ? 0 : -overlayRect.width;
+      overlayStartX = this._isRtl ? 0 : -overlayRect.width;
     }
 
     let overlayStartY: number;
@@ -158,8 +186,8 @@ export class ConnectedPositionStrategy implements PositionStrategy {
     }
 
     return {
-      x: originPoint.x + overlayStartX,
-      y: originPoint.y + overlayStartY
+      x: originPoint.x + overlayStartX + this._offsetX,
+      y: originPoint.y + overlayStartY + this._offsetY
     };
   }
 
@@ -189,10 +217,8 @@ export class ConnectedPositionStrategy implements PositionStrategy {
    * @param overlayPoint
    */
   private _setElementPosition(element: HTMLElement, overlayPoint: Point) {
-    let scrollPos = this._viewportRuler.getViewportScrollPosition();
-
-    let x = overlayPoint.x + scrollPos.left;
-    let y = overlayPoint.y + scrollPos.top;
+    let x = overlayPoint.x;
+    let y = overlayPoint.y;
 
     // TODO(jelbourn): we don't want to always overwrite the transform property here,
     // because it will need to be used for animations.

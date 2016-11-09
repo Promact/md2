@@ -1,8 +1,11 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
 
 import {
+  RtlModule,
   PortalModule,
   OverlayModule,
+  A11yModule,
+  StyleCompatibilityModule,
 } from './core/index';
 
 import { Md2AccordionModule } from './accordion/index';
@@ -40,6 +43,9 @@ const MD2_MODULES = [
   Md2TooltipModule,
   OverlayModule,
   PortalModule,
+  RtlModule,
+  A11yModule,
+  StyleCompatibilityModule,
 ];
 
 @NgModule({
@@ -60,7 +66,10 @@ const MD2_MODULES = [
     Md2ToastModule.forRoot(),
     Md2TooltipModule.forRoot(),
     PortalModule.forRoot(),
+    RtlModule.forRoot(),
+    A11yModule.forRoot(),
     OverlayModule.forRoot(),
+    StyleCompatibilityModule.forRoot(),
   ],
   exports: MD2_MODULES,
 })

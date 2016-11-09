@@ -21,7 +21,11 @@ import { CommonModule } from '@angular/common';
 import { HighlightPipe } from '../core/core';
 import {
   coerceBooleanProperty,
-  KeyCodes
+  UP_ARROW,
+  DOWN_ARROW,
+  ENTER,
+  ESCAPE,
+  TAB
 } from '../core/core';
 
 class Item {
@@ -227,8 +231,8 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
   private inputKeydown(event: KeyboardEvent) {
     if (this.disabled) { return; }
     switch (event.keyCode) {
-      case KeyCodes.TAB: this.listLeave(); break;
-      case KeyCodes.ESCAPE:
+      case TAB: this.listLeave(); break;
+      case ESCAPE:
         event.stopPropagation();
         event.preventDefault();
         if (this.inputBuffer) {
@@ -236,7 +240,7 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
         }
         break;
 
-      case KeyCodes.ENTER:
+      case ENTER:
         event.preventDefault();
         event.stopPropagation();
         if (this.isMenuVisible) {
@@ -244,7 +248,7 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
         }
         break;
 
-      case KeyCodes.DOWN_ARROW:
+      case DOWN_ARROW:
         event.preventDefault();
         event.stopPropagation();
         if (this.isMenuVisible) {
@@ -252,7 +256,7 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
           this.updateScroll();
         }
         break;
-      case KeyCodes.UP_ARROW:
+      case UP_ARROW:
         event.preventDefault();
         event.stopPropagation();
         if (this.isMenuVisible) {

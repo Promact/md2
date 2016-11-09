@@ -1,7 +1,6 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { MdLineModule } from './line/line';
 import { RtlModule } from './rtl/dir';
-import { MdRippleModule } from './ripple/ripple';
 import { PortalModule } from './portal/portal-directives';
 import { OverlayModule } from './overlay/overlay-directives';
 import { A11yModule, A11Y_PROVIDERS } from './a11y/index';

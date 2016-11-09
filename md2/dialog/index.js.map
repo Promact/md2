@@ -1,1 +1,1 @@
-{"version":3,"sources":["dialog/index.ts"],"names":[],"mappings":"AAAA,cAAc,UAAU,CAAC","file":"index.js","sourcesContent":["export * from './dialog';\r\n"]}
+{"version":3,"sources":["dialog/index.ts"],"names":[],"mappings":"AAAA,cAAc,UAAU,CAAC","file":"index.js","sourcesContent":["export * from './dialog';\n"]}

@@ -32,6 +32,17 @@
     <router-outlet></router-outlet>
   </section>
   <footer class="footer">
-    <span><a href="https://github.com/Promact/md2">Md2</a> is maintained by <a href="https://github.com/promact">Promact</a>.</span>
+    <div class="footer-container" *ngIf="footerNav">
+      <a class="left" *ngIf="footerNav.prev" [routerLink]="[footerNav.prev.route]">
+        <i class="material-icons arrow-L">arrow_back</i>
+        <span class="direction">Previous</span>
+        <div>{{footerNav.prev.name}}</div>
+      </a>
+      <a class="right" *ngIf="footerNav.next" [routerLink]="[footerNav.next.route]">
+        <i class="material-icons arrow-R">arrow_forward</i>
+        <span class="direction">Next</span>
+        <div>{{footerNav.next.name}}</div>
+      </a>
+    </div>
   </footer>
 </main>

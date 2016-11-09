@@ -61,7 +61,10 @@ export var PortalHostDirective = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    /** Attach the given ComponentPortal to this PortlHost using the ComponentFactoryResolver. */
+    PortalHostDirective.prototype.ngOnDestroy = function () {
+        this.dispose();
+    };
+    /** Attach the given ComponentPortal to this PortalHost using the ComponentFactoryResolver. */
     PortalHostDirective.prototype.attachComponentPortal = function (portal) {
         portal.setAttachedHost(this);
         // If the portal specifies an origin, use that as the logical location of the component

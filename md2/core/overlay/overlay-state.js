@@ -8,6 +8,8 @@ export var OverlayState = (function () {
         this.hasBackdrop = false;
         /** Custom class to add to the backdrop **/
         this.backdropClass = 'md-overlay-dark-backdrop';
+        /** The direction of the text in the overlay panel. */
+        this.direction = 'ltr';
     }
     return OverlayState;
 }());

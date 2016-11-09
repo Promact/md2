@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var common_1 = require('@angular/common');
+var router_1 = require('@angular/router');
 var Home = (function () {
     function Home() {
     }
@@ -24,9 +25,12 @@ var Home = (function () {
 }());
 exports.Home = Home;
 var DemoApp = (function () {
-    function DemoApp(location) {
+    function DemoApp(location, _router) {
+        var _this = this;
         this.location = location;
+        this._router = _router;
         this.isSidenavOpened = false;
+        this.footerNav = { prev: null, next: null };
         this.navItems = [
             { name: 'Accordion', route: 'accordion' },
             { name: 'Autocomplete', route: 'autocomplete' },
@@ -44,6 +48,14 @@ var DemoApp = (function () {
             { name: 'Toast', route: 'toast' },
             { name: 'Tooltip', route: 'tooltip' },
         ];
+        _router.events.subscribe(function (value) {
+            var current = _this.navItems.map(function (v) { return '/' + v.route; }).indexOf(value.url);
+            _this.footerNav.prev = _this.navItems[current - 1];
+            _this.footerNav.next = _this.navItems[current + 1];
+            if (current === 0) {
+                _this.footerNav.prev = { name: 'Home', route: '' };
+            }
+        });
     }
     DemoApp.prototype.ngOnInit = function () {
         console.log('Application component initialized ...');
@@ -71,10 +83,9 @@ var DemoApp = (function () {
             selector: 'demo-app',
             providers: [],
             templateUrl: 'demo-app.html',
-            styleUrls: ['demo-app.css'],
             encapsulation: core_1.ViewEncapsulation.None,
         }), 
-        __metadata('design:paramtypes', [common_1.Location])
+        __metadata('design:paramtypes', [common_1.Location, router_1.Router])
     ], DemoApp);
     return DemoApp;
 }());

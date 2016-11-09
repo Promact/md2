@@ -2,7 +2,7 @@ import { applyCssTransform } from '../../style/apply-transform';
 import { ConnectionPositionPair } from './connected-position';
 /**
  * A strategy for positioning overlays. Using this strategy, an overlay is given an
- * implict position relative some origin element. The relative position is defined in terms of
+ * implicit position relative some origin element. The relative position is defined in terms of
  * a point on the origin element that is connected to a point on the overlay element. For example,
  * a basic dropdown is connecting the bottom-left corner of the origin to the top-left corner
  * of the overlay.
@@ -13,14 +13,24 @@ export var ConnectedPositionStrategy = (function () {
         this._originPos = _originPos;
         this._overlayPos = _overlayPos;
         this._viewportRuler = _viewportRuler;
-        // TODO(jelbourn): set RTL to the actual value from the app.
-        /** Whether the we're dealing with an RTL context */
-        this._isRtl = false;
+        this._dir = 'ltr';
+        /** The offset in pixels for the overlay connection point on the x-axis */
+        this._offsetX = 0;
+        /** The offset in pixels for the overlay connection point on the y-axis */
+        this._offsetY = 0;
         /** Ordered list of preferred positions, from most to least desirable. */
         this._preferredPositions = [];
         this._origin = this._connectedTo.nativeElement;
         this.withFallbackPosition(_originPos, _overlayPos);
     }
+    Object.defineProperty(ConnectedPositionStrategy.prototype, "_isRtl", {
+        /** Whether the we're dealing with an RTL context */
+        get: function () {
+            return this._dir === 'rtl';
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(ConnectedPositionStrategy.prototype, "positions", {
         get: function () {
             return this._preferredPositions;
@@ -63,6 +73,21 @@ export var ConnectedPositionStrategy = (function () {
     };
     ConnectedPositionStrategy.prototype.withFallbackPosition = function (originPos, overlayPos) {
         this._preferredPositions.push(new ConnectionPositionPair(originPos, overlayPos));
+        return this;
+    };
+    /** Sets the layout direction so the overlay's position can be adjusted to match. */
+    ConnectedPositionStrategy.prototype.withDirection = function (dir) {
+        this._dir = dir;
+        return this;
+    };
+    /** Sets an offset for the overlay's connection point on the x-axis */
+    ConnectedPositionStrategy.prototype.withOffsetX = function (offset) {
+        this._offsetX = offset;
+        return this;
+    };
+    /** Sets an offset for the overlay's connection point on the y-axis */
+    ConnectedPositionStrategy.prototype.withOffsetY = function (offset) {
+        this._offsetY = offset;
         return this;
     };
     /**
@@ -117,8 +142,11 @@ export var ConnectedPositionStrategy = (function () {
         if (pos.overlayX == 'center') {
             overlayStartX = -overlayRect.width / 2;
         }
+        else if (pos.overlayX === 'start') {
+            overlayStartX = this._isRtl ? -overlayRect.width : 0;
+        }
         else {
-            overlayStartX = pos.overlayX == 'start' ? 0 : -overlayRect.width;
+            overlayStartX = this._isRtl ? 0 : -overlayRect.width;
         }
         var overlayStartY;
         if (pos.overlayY == 'center') {
@@ -128,8 +156,8 @@ export var ConnectedPositionStrategy = (function () {
             overlayStartY = pos.overlayY == 'top' ? 0 : -overlayRect.height;
         }
         return {
-            x: originPoint.x + overlayStartX,
-            y: originPoint.y + overlayStartY
+            x: originPoint.x + overlayStartX + this._offsetX,
+            y: originPoint.y + overlayStartY + this._offsetY
         };
     };
     /**
@@ -151,9 +179,8 @@ export var ConnectedPositionStrategy = (function () {
      * @param overlayPoint
      */
     ConnectedPositionStrategy.prototype._setElementPosition = function (element, overlayPoint) {
-        var scrollPos = this._viewportRuler.getViewportScrollPosition();
-        var x = overlayPoint.x + scrollPos.left;
-        var y = overlayPoint.y + scrollPos.top;
+        var x = overlayPoint.x;
+        var y = overlayPoint.y;
         // TODO(jelbourn): we don't want to always overwrite the transform property here,
         // because it will need to be used for animations.
         applyCssTransform(element, "translateX(" + x + "px) translateY(" + y + "px)");

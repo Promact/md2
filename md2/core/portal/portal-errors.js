@@ -4,15 +4,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 import { MdError } from '../errors/error';
-/** Exception thrown when a ComponentPortal is attached to a DomPortalHost without an origin. */
-export var MdComponentPortalAttachedToDomWithoutOriginError = (function (_super) {
-    __extends(MdComponentPortalAttachedToDomWithoutOriginError, _super);
-    function MdComponentPortalAttachedToDomWithoutOriginError() {
-        _super.call(this, 'A ComponentPortal must have an origin set when attached to a DomPortalHost ' +
-            'because the DOM element is not part of the Angular application context.');
-    }
-    return MdComponentPortalAttachedToDomWithoutOriginError;
-}(MdError));
 /** Exception thrown when attempting to attach a null portal to a host. */
 export var MdNullPortalError = (function (_super) {
     __extends(MdNullPortalError, _super);

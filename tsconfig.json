@@ -21,10 +21,7 @@
       "md2": [
         "../../dist/md2"
       ]
-    },
-    "types": [
-      "hammerjs"
-    ]
+    }
   },
   "angularCompilerOptions": {
     "genDir": "../../dist",

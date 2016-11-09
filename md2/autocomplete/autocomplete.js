@@ -11,7 +11,7 @@ import { Component, ElementRef, EventEmitter, forwardRef, Input, Output, ViewEnc
 import { NG_VALUE_ACCESSOR, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HighlightPipe } from '../core/core';
-import { coerceBooleanProperty, KeyCodes } from '../core/core';
+import { coerceBooleanProperty, UP_ARROW, DOWN_ARROW, ENTER, ESCAPE, TAB } from '../core/core';
 var Item = (function () {
     function Item(source, textKey, valueKey) {
         if (typeof source === 'string') {
@@ -183,24 +183,24 @@ export var Md2Autocomplete = (function () {
             return;
         }
         switch (event.keyCode) {
-            case KeyCodes.TAB:
+            case TAB:
                 this.listLeave();
                 break;
-            case KeyCodes.ESCAPE:
+            case ESCAPE:
                 event.stopPropagation();
                 event.preventDefault();
                 if (this.inputBuffer) {
                     this.onClear();
                 }
                 break;
-            case KeyCodes.ENTER:
+            case ENTER:
                 event.preventDefault();
                 event.stopPropagation();
                 if (this.isMenuVisible) {
                     this.select(event, this.focusedOption);
                 }
                 break;
-            case KeyCodes.DOWN_ARROW:
+            case DOWN_ARROW:
                 event.preventDefault();
                 event.stopPropagation();
                 if (this.isMenuVisible) {
@@ -208,7 +208,7 @@ export var Md2Autocomplete = (function () {
                     this.updateScroll();
                 }
                 break;
-            case KeyCodes.UP_ARROW:
+            case UP_ARROW:
                 event.preventDefault();
                 event.stopPropagation();
                 if (this.isMenuVisible) {

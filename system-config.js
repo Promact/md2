@@ -1,17 +1,17 @@
 // Apply the CLI SystemJS configuration.
 System.config({
     map: {
-        'rxjs': 'vendor/rxjs',
+        'rxjs': 'libs/rxjs',
         'main': 'main.js',
         // Angular specific mappings.
-        '@angular/core': 'vendor/@angular/core/bundles/core.umd.js',
-        '@angular/common': 'vendor/@angular/common/bundles/common.umd.js',
-        '@angular/compiler': 'vendor/@angular/compiler/bundles/compiler.umd.js',
-        '@angular/http': 'vendor/@angular/http/bundles/http.umd.js',
-        '@angular/forms': 'vendor/@angular/forms/bundles/forms.umd.js',
-        '@angular/router': 'vendor/@angular/router/bundles/router.umd.js',
-        '@angular/platform-browser': 'vendor/@angular/platform-browser/bundles/platform-browser.umd.js',
-        '@angular/platform-browser-dynamic': 'vendor/@angular/platform-browser-dynamic/bundles/platform-browser-dynamic.umd.js',
+        '@angular/core': 'libs/@angular/core/bundles/core.umd.js',
+        '@angular/common': 'libs/@angular/common/bundles/common.umd.js',
+        '@angular/compiler': 'libs/@angular/compiler/bundles/compiler.umd.js',
+        '@angular/http': 'libs/@angular/http/bundles/http.umd.js',
+        '@angular/forms': 'libs/@angular/forms/bundles/forms.umd.js',
+        '@angular/router': 'libs/@angular/router/bundles/router.umd.js',
+        '@angular/platform-browser': 'libs/@angular/platform-browser/bundles/platform-browser.umd.js',
+        '@angular/platform-browser-dynamic': 'libs/@angular/platform-browser-dynamic/bundles/platform-browser-dynamic.umd.js',
     },
     packages: {
         // Thirdparty barrels.

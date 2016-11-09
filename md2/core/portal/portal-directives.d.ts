@@ -1,4 +1,4 @@
-import { ModuleWithProviders, ComponentRef, TemplateRef, ComponentFactoryResolver, ViewContainerRef } from '@angular/core';
+import { ModuleWithProviders, ComponentRef, TemplateRef, ComponentFactoryResolver, ViewContainerRef, OnDestroy } from '@angular/core';
 import { Portal, TemplatePortal, ComponentPortal, BasePortalHost } from './portal';
 /**
  * Directive version of a `TemplatePortal`. Because the directive *is* a TemplatePortal,
@@ -19,14 +19,15 @@ export declare class TemplatePortalDirective extends TemplatePortal {
  * Usage:
  * <template [portalHost]="greeting"></template>
  */
-export declare class PortalHostDirective extends BasePortalHost {
+export declare class PortalHostDirective extends BasePortalHost implements OnDestroy {
     private _componentFactoryResolver;
     private _viewContainerRef;
     /** The attached portal. */
     private _portal;
     constructor(_componentFactoryResolver: ComponentFactoryResolver, _viewContainerRef: ViewContainerRef);
     portal: Portal<any>;
-    /** Attach the given ComponentPortal to this PortlHost using the ComponentFactoryResolver. */
+    ngOnDestroy(): void;
+    /** Attach the given ComponentPortal to this PortalHost using the ComponentFactoryResolver. */
     attachComponentPortal<T>(portal: ComponentPortal<T>): ComponentRef<T>;
     /** Attach the given TemplatePortal to this PortlHost as an embedded View. */
     attachTemplatePortal(portal: TemplatePortal): Map<string, any>;

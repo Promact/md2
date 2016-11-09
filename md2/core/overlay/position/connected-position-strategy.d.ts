@@ -4,7 +4,7 @@ import { ViewportRuler } from './viewport-ruler';
 import { ConnectionPositionPair, OriginConnectionPosition, OverlayConnectionPosition } from './connected-position';
 /**
  * A strategy for positioning overlays. Using this strategy, an overlay is given an
- * implict position relative some origin element. The relative position is defined in terms of
+ * implicit position relative some origin element. The relative position is defined in terms of
  * a point on the origin element that is connected to a point on the overlay element. For example,
  * a basic dropdown is connecting the bottom-left corner of the origin to the top-left corner
  * of the overlay.
@@ -14,8 +14,13 @@ export declare class ConnectedPositionStrategy implements PositionStrategy {
     private _originPos;
     private _overlayPos;
     private _viewportRuler;
+    private _dir;
+    /** The offset in pixels for the overlay connection point on the x-axis */
+    private _offsetX;
+    /** The offset in pixels for the overlay connection point on the y-axis */
+    private _offsetY;
     /** Whether the we're dealing with an RTL context */
-    _isRtl: boolean;
+    readonly _isRtl: boolean;
     /** Ordered list of preferred positions, from most to least desirable. */
     _preferredPositions: ConnectionPositionPair[];
     /** The origin element against which the overlay will be positioned. */
@@ -29,6 +34,12 @@ export declare class ConnectedPositionStrategy implements PositionStrategy {
      */
     apply(element: HTMLElement): Promise<void>;
     withFallbackPosition(originPos: OriginConnectionPosition, overlayPos: OverlayConnectionPosition): this;
+    /** Sets the layout direction so the overlay's position can be adjusted to match. */
+    withDirection(dir: 'ltr' | 'rtl'): this;
+    /** Sets an offset for the overlay's connection point on the x-axis */
+    withOffsetX(offset: number): this;
+    /** Sets an offset for the overlay's connection point on the y-axis */
+    withOffsetY(offset: number): this;
     /**
      * Gets the horizontal (x) "start" dimension based on whether the overlay is in an RTL context.
      * @param rect

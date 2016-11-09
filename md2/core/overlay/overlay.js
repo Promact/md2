@@ -7,7 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { ComponentFactoryResolver, Injectable } from '@angular/core';
+import { ComponentFactoryResolver, Injectable, ApplicationRef, Injector } from '@angular/core';
 import { OverlayState } from './overlay-state';
 import { DomPortalHost } from '../portal/dom-portal-host';
 import { OverlayRef } from './overlay-ref';
@@ -27,10 +27,12 @@ var defaultState = new OverlayState();
  * An overlay *is* a PortalHost, so any kind of Portal can be loaded into one.
  */
 export var Overlay = (function () {
-    function Overlay(_overlayContainer, _componentFactoryResolver, _positionBuilder) {
+    function Overlay(_overlayContainer, _componentFactoryResolver, _positionBuilder, _appRef, _injector) {
         this._overlayContainer = _overlayContainer;
         this._componentFactoryResolver = _componentFactoryResolver;
         this._positionBuilder = _positionBuilder;
+        this._appRef = _appRef;
+        this._injector = _injector;
     }
     /**
      * Creates an overlay.
@@ -65,7 +67,7 @@ export var Overlay = (function () {
      * @returns A portal host for the given DOM element.
      */
     Overlay.prototype._createPortalHost = function (pane) {
-        return new DomPortalHost(pane, this._componentFactoryResolver);
+        return new DomPortalHost(pane, this._componentFactoryResolver, this._appRef, this._injector);
     };
     /**
      * Creates an OverlayRef for an overlay in the given DOM element.
@@ -78,7 +80,7 @@ export var Overlay = (function () {
     };
     Overlay = __decorate([
         Injectable(), 
-        __metadata('design:paramtypes', [OverlayContainer, ComponentFactoryResolver, OverlayPositionBuilder])
+        __metadata('design:paramtypes', [OverlayContainer, ComponentFactoryResolver, OverlayPositionBuilder, ApplicationRef, Injector])
     ], Overlay);
     return Overlay;
 }());

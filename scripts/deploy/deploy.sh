@@ -3,7 +3,12 @@ set -e # Exit with nonzero exit code if anything fails
 
 SOURCE_BRANCH="master"
 TARGET_BRANCH="gh-pages"
-
+echo "=========================== START ==========================="
+echo "Branch: $TRAVIS_BRANCH"
+echo "Commit: $TRAVIS_COMMIT"
+echo "Event : $TRAVIS_EVENT_TYPE"
+echo "$TRAVIS_BRANCH"
+echo "============================ END ============================"
 # Pull requests and commits to other branches shouldn't try to deploy, just build to verify
 if [ "$TRAVIS_PULL_REQUEST" != "false" -o "$TRAVIS_BRANCH" != "$SOURCE_BRANCH" ]; then
   echo "Building demo-app"

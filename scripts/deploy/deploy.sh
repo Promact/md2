@@ -11,19 +11,15 @@ echo "Msg   : $COMMIT_MSG"
 echo "Event : $TRAVIS_EVENT_TYPE"
 echo "Range : $TRAVIS_COMMIT_RANGE"
 echo "============================ END ============================"
-if [[ "$COMMIT_MSG" != *"deploy-"* ]]; then
-  echo "In Deploy"
-  exit 0
-fi
-echo "OUT Deploy"
 
 # Pull requests and commits to other branches shouldn't try to deploy, just build to verify
-if [ "$TRAVIS_PULL_REQUEST" != "false" -o "$TRAVIS_BRANCH" != "$SOURCE_BRANCH" ]; then
+if [ "$TRAVIS_PULL_REQUEST" != "false" -o "$TRAVIS_BRANCH" != "$SOURCE_BRANCH" -o "$COMMIT_MSG" != "deploy-"* ]; then
+  echo "In Deploy"
   echo "Building demo-app"
   gulp build:devapp
   exit 0
 fi
-
+echo "OUT Deploy"
 # Save some useful information
 SHA=`git rev-parse --verify HEAD`
 

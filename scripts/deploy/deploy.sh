@@ -6,15 +6,25 @@ TARGET_BRANCH="gh-pages"
 COMMIT_MSG=`git log --format=%B --no-merges -n 1`
 echo "=========================== START ==========================="
 echo "Branch: $TRAVIS_BRANCH"
-echo "Commit: $TRAVIS_COMMIT"
 echo "Msg   : $COMMIT_MSG"
-echo "Event : $TRAVIS_EVENT_TYPE"
-echo "Range : $TRAVIS_COMMIT_RANGE"
+echo "Pull  : $TRAVIS_PULL_REQUEST"
 echo "============================ END ============================"
 
+if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
+  echo "In Pull"
+fi
+echo "Out Pull"
+
+if [ "$TRAVIS_BRANCH" != "$SOURCE_BRANCH" ]; then
+  echo "In Branch"
+fi
+echo "Out Branch"
+if [ "$COMMIT_MSG" != "deploy-"* ]; then
+  echo "In Deploy"
+fi
+echo "Out deploy"
 # Pull requests and commits to other branches shouldn't try to deploy, just build to verify
 if [ "$TRAVIS_PULL_REQUEST" != "false" ] || [ "$TRAVIS_BRANCH" != "$SOURCE_BRANCH" -o "$COMMIT_MSG" != "deploy-"* ]; then
-  echo "In Deploy"
   echo "Building demo-app"
   gulp build:devapp
   exit 0

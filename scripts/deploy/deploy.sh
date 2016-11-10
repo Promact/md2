@@ -5,6 +5,22 @@ SOURCE_BRANCH="dev"
 TARGET_BRANCH="gh-pages"
 COMMIT_MSG=`git log --format=%B --no-merges -n 1`
 
+if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
+  echo "Pull Req"
+fi
+echo "Not Pull Req"
+
+if [ "$TRAVIS_BRANCH" != "$SOURCE_BRANCH" ]; then
+  echo "Not Source Branch"
+fi
+echo "Source Branch"
+
+if [ "$COMMIT_MSG" != "deploy-"* ]; then
+  echo "Not Match Comment"
+fi
+echo "Match Comment"
+
+
 # Pull requests and commits to other branches shouldn't try to deploy, just build to verify
 if [ "$TRAVIS_PULL_REQUEST" != "false" ] || [ "$TRAVIS_BRANCH" != "$SOURCE_BRANCH" ] || [ "$COMMIT_MSG" != "deploy-"* ]; then
   echo "Building demo-app"

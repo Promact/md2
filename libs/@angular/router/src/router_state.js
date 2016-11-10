@@ -75,7 +75,7 @@ export function createEmptyStateSnapshot(urlTree, rootComponent) {
     var emptyData = {};
     var emptyQueryParams = {};
     var fragment = '';
-    var activated = new ActivatedRouteSnapshot([], emptyParams, emptyQueryParams, fragment, emptyData, PRIMARY_OUTLET, rootComponent, null, urlTree.root, -1, {});
+    var activated = new ActivatedRouteSnapshot([], emptyParams, emptyQueryParams, fragment, emptyData, PRIMARY_OUTLET, rootComponent, null, urlTree.root, -1, InheritedResolve.empty);
     return new RouterStateSnapshot('', new TreeNode(activated, []));
 }
 /**
@@ -205,30 +205,33 @@ export var ActivatedRoute = (function () {
 /**
  * @internal
  */
-export function inheritedParamsDataResolve(route) {
-    var pathToRoot = route.pathFromRoot;
-    var inhertingStartingFrom = pathToRoot.length - 1;
-    while (inhertingStartingFrom >= 1) {
-        var current = pathToRoot[inhertingStartingFrom];
-        var parent_1 = pathToRoot[inhertingStartingFrom - 1];
-        // current route is an empty path => inherits its parent's params and data
-        if (current.routeConfig && current.routeConfig.path === '') {
-            inhertingStartingFrom--;
-        }
-        else if (!parent_1.component) {
-            inhertingStartingFrom--;
-        }
-        else {
-            break;
-        }
+export var InheritedResolve = (function () {
+    function InheritedResolve(parent, current) {
+        this.parent = parent;
+        this.current = current;
+        /**
+         * @internal
+         */
+        this.resolvedData = {};
     }
-    return pathToRoot.slice(inhertingStartingFrom).reduce(function (res, curr) {
-        var params = merge(res.params, curr.params);
-        var data = merge(res.data, curr.data);
-        var resolve = merge(res.resolve, curr._resolvedData);
-        return { params: params, data: data, resolve: resolve };
-    }, { params: {}, data: {}, resolve: {} });
-}
+    Object.defineProperty(InheritedResolve.prototype, "flattenedResolvedData", {
+        /**
+         * @internal
+         */
+        get: function () {
+            return this.parent ? merge(this.parent.flattenedResolvedData, this.resolvedData) :
+                this.resolvedData;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(InheritedResolve, "empty", {
+        get: function () { return new InheritedResolve(null, {}); },
+        enumerable: true,
+        configurable: true
+    });
+    return InheritedResolve;
+}());
 /**
  * @whatItDoes Contains the information about a route associated with a component loaded in an
  * outlet

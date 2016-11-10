@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 import { CompileAnimationAnimateMetadata, CompileAnimationGroupMetadata, CompileAnimationKeyframesSequenceMetadata, CompileAnimationSequenceMetadata, CompileAnimationStateDeclarationMetadata, CompileAnimationStyleMetadata, CompileAnimationWithStepsMetadata } from '../compile_metadata';
-import { StringMapWrapper } from '../facade/collection';
+import { ListWrapper, StringMapWrapper } from '../facade/collection';
 import { isBlank, isPresent } from '../facade/lang';
 import { ParseError } from '../parse_util';
 import { ANY_STATE, FILL_STYLE_FLAG } from '../private_import_core';
@@ -157,7 +157,7 @@ function _normalizeStyleMetadata(entry, stateStyles, errors) {
     var normalizedStyles = [];
     entry.styles.forEach(function (styleEntry) {
         if (typeof styleEntry === 'string') {
-            normalizedStyles.push.apply(normalizedStyles, _resolveStylesFromState(styleEntry, stateStyles, errors));
+            ListWrapper.addAll(normalizedStyles, _resolveStylesFromState(styleEntry, stateStyles, errors));
         }
         else {
             normalizedStyles.push(styleEntry);
@@ -304,11 +304,11 @@ function _parseAnimationKeyframes(keyframeSequence, currentTime, collectedStyles
         index++;
     });
     if (doSortKeyframes) {
-        rawKeyframes.sort(function (a, b) { return a[0] <= b[0] ? -1 : 1; });
+        ListWrapper.sort(rawKeyframes, function (a, b) { return a[0] <= b[0] ? -1 : 1; });
     }
     var firstKeyframe = rawKeyframes[0];
     if (firstKeyframe[0] != _INITIAL_KEYFRAME) {
-        rawKeyframes.splice(0, 0, firstKeyframe = [_INITIAL_KEYFRAME, {}]);
+        ListWrapper.insert(rawKeyframes, 0, firstKeyframe = [_INITIAL_KEYFRAME, {}]);
     }
     var firstKeyframeStyles = firstKeyframe[1];
     limit = rawKeyframes.length - 1;
@@ -370,7 +370,7 @@ function _parseTransitionAnimation(entry, currentTime, collectedStyles, stateSty
                 }
                 else {
                     var innerStep = innerAst;
-                    (_a = innerStep.startingStyles.styles).push.apply(_a, previousStyles);
+                    ListWrapper.addAll(innerStep.startingStyles.styles, previousStyles);
                 }
                 previousStyles = null;
             }
@@ -379,7 +379,6 @@ function _parseTransitionAnimation(entry, currentTime, collectedStyles, stateSty
             playTime += astDuration;
             maxDuration = Math.max(astDuration, maxDuration);
             steps.push(innerAst);
-            var _a;
         });
         if (isPresent(previousStyles)) {
             var startingStyles = new AnimationStylesAst(previousStyles);

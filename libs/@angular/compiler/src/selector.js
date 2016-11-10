@@ -122,12 +122,12 @@ export var CssSelector = (function () {
  */
 export var SelectorMatcher = (function () {
     function SelectorMatcher() {
-        this._elementMap = new Map();
-        this._elementPartialMap = new Map();
-        this._classMap = new Map();
-        this._classPartialMap = new Map();
-        this._attrValueMap = new Map();
-        this._attrValuePartialMap = new Map();
+        this._elementMap = {};
+        this._elementPartialMap = {};
+        this._classMap = {};
+        this._classPartialMap = {};
+        this._attrValueMap = {};
+        this._attrValuePartialMap = {};
         this._listContexts = [];
     }
     SelectorMatcher.createNotMatcher = function (notSelectors) {
@@ -184,19 +184,19 @@ export var SelectorMatcher = (function () {
                 var value = attrs[i + 1];
                 if (isTerminal) {
                     var terminalMap = matcher._attrValueMap;
-                    var terminalValuesMap = terminalMap.get(name_2);
+                    var terminalValuesMap = terminalMap[name_2];
                     if (!terminalValuesMap) {
-                        terminalValuesMap = new Map();
-                        terminalMap.set(name_2, terminalValuesMap);
+                        terminalValuesMap = {};
+                        terminalMap[name_2] = terminalValuesMap;
                     }
                     this._addTerminal(terminalValuesMap, value, selectable);
                 }
                 else {
                     var partialMap = matcher._attrValuePartialMap;
-                    var partialValuesMap = partialMap.get(name_2);
+                    var partialValuesMap = partialMap[name_2];
                     if (!partialValuesMap) {
-                        partialValuesMap = new Map();
-                        partialMap.set(name_2, partialValuesMap);
+                        partialValuesMap = {};
+                        partialMap[name_2] = partialValuesMap;
                     }
                     matcher = this._addPartial(partialValuesMap, value);
                 }
@@ -204,18 +204,18 @@ export var SelectorMatcher = (function () {
         }
     };
     SelectorMatcher.prototype._addTerminal = function (map, name, selectable) {
-        var terminalList = map.get(name);
+        var terminalList = map[name];
         if (!terminalList) {
             terminalList = [];
-            map.set(name, terminalList);
+            map[name] = terminalList;
         }
         terminalList.push(selectable);
     };
     SelectorMatcher.prototype._addPartial = function (map, name) {
-        var matcher = map.get(name);
+        var matcher = map[name];
         if (!matcher) {
             matcher = new SelectorMatcher();
-            map.set(name, matcher);
+            map[name] = matcher;
         }
         return matcher;
     };
@@ -251,14 +251,14 @@ export var SelectorMatcher = (function () {
             for (var i = 0; i < attrs.length; i += 2) {
                 var name_3 = attrs[i];
                 var value = attrs[i + 1];
-                var terminalValuesMap = this._attrValueMap.get(name_3);
+                var terminalValuesMap = this._attrValueMap[name_3];
                 if (value) {
                     result =
                         this._matchTerminal(terminalValuesMap, '', cssSelector, matchedCallback) || result;
                 }
                 result =
                     this._matchTerminal(terminalValuesMap, value, cssSelector, matchedCallback) || result;
-                var partialValuesMap = this._attrValuePartialMap.get(name_3);
+                var partialValuesMap = this._attrValuePartialMap[name_3];
                 if (value) {
                     result = this._matchPartial(partialValuesMap, '', cssSelector, matchedCallback) || result;
                 }
@@ -273,8 +273,8 @@ export var SelectorMatcher = (function () {
         if (!map || typeof name !== 'string') {
             return false;
         }
-        var selectables = map.get(name);
-        var starSelectables = map.get('*');
+        var selectables = map[name];
+        var starSelectables = map['*'];
         if (starSelectables) {
             selectables = selectables.concat(starSelectables);
         }
@@ -294,7 +294,7 @@ export var SelectorMatcher = (function () {
         if (!map || typeof name !== 'string') {
             return false;
         }
-        var nestedSelector = map.get(name);
+        var nestedSelector = map[name];
         if (!nestedSelector) {
             return false;
         }

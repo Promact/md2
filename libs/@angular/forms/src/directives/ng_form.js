@@ -12,6 +12,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 import { Directive, Inject, Optional, Self, forwardRef } from '@angular/core';
 import { EventEmitter } from '../facade/async';
+import { ListWrapper } from '../facade/collection';
 import { isPresent } from '../facade/lang';
 import { FormGroup } from '../model';
 import { NG_ASYNC_VALIDATORS, NG_VALIDATORS } from '../validators';
@@ -148,7 +149,7 @@ export var NgForm = (function (_super) {
     /** @internal */
     NgForm.prototype._findContainer = function (path) {
         path.pop();
-        return path.length ? this.form.get(path) : this.form;
+        return ListWrapper.isEmpty(path) ? this.form : this.form.get(path);
     };
     NgForm.decorators = [
         { type: Directive, args: [{

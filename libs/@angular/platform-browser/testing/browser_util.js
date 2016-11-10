@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { NgZone } from '@angular/core';
-import { MapWrapper } from './facade/collection';
+import { ListWrapper } from './facade/collection';
 import { global, isPresent } from './facade/lang';
 import { getDOM } from './private_import_platform-browser';
 export var BrowserDetection = (function () {
@@ -19,7 +19,7 @@ export var BrowserDetection = (function () {
                 return this._overrideUa;
             }
             else {
-                return getDOM() ? getDOM().getUserAgent() : '';
+                return isPresent(getDOM()) ? getDOM().getUserAgent() : '';
             }
         },
         enumerable: true,
@@ -138,7 +138,9 @@ export function stringifyElement(el /** TODO #9100 */) {
         result += "<" + tagName;
         // Attributes in an ordered way
         var attributeMap = getDOM().attributeMap(el);
-        var keys = MapWrapper.keys(attributeMap).sort();
+        var keys = [];
+        attributeMap.forEach(function (v, k) { return keys.push(k); });
+        ListWrapper.sort(keys);
         for (var i = 0; i < keys.length; i++) {
             var key = keys[i];
             var attValue = attributeMap.get(key);
@@ -157,7 +159,7 @@ export function stringifyElement(el /** TODO #9100 */) {
             result += stringifyElement(children[j]);
         }
         // Closing tag
-        if (_singleTagWhitelist.indexOf(tagName) == -1) {
+        if (!ListWrapper.contains(_singleTagWhitelist, tagName)) {
             result += "</" + tagName + ">";
         }
     }

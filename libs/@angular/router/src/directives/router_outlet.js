@@ -76,9 +76,6 @@ export var RouterOutlet = (function () {
         }
     };
     RouterOutlet.prototype.activate = function (activatedRoute, loadedResolver, loadedInjector, providers, outletMap) {
-        if (this.isActivated) {
-            throw new Error('Cannot activate an already activated outlet');
-        }
         this.outletMap = outletMap;
         this._activatedRoute = activatedRoute;
         var snapshot = activatedRoute._futureSnapshot;

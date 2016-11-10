@@ -335,13 +335,13 @@ export var CompileMetadataResolver = (function () {
         });
     };
     CompileMetadataResolver.prototype._getTypeDescriptor = function (type) {
-        if (this._directiveResolver.resolve(type, false)) {
+        if (this._directiveResolver.resolve(type, false) !== null) {
             return 'directive';
         }
-        if (this._pipeResolver.resolve(type, false)) {
+        if (this._pipeResolver.resolve(type, false) !== null) {
             return 'pipe';
         }
-        if (this._ngModuleResolver.resolve(type, false)) {
+        if (this._ngModuleResolver.resolve(type, false) !== null) {
             return 'module';
         }
         if (type.provide) {

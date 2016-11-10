@@ -49,7 +49,7 @@ export var KeyEventsPlugin = (function (_super) {
         var key = KeyEventsPlugin._normalizeKey(parts.pop());
         var fullKey = '';
         modifierKeys.forEach(function (modifierName) {
-            if (parts.indexOf(modifierName) > -1) {
+            if (ListWrapper.contains(parts, modifierName)) {
                 ListWrapper.remove(parts, modifierName);
                 fullKey += modifierName + '.';
             }

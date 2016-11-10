@@ -3,6 +3,7 @@ set -e # Exit with nonzero exit code if anything fails
 
 SOURCE_BRANCH="master"
 TARGET_BRANCH="gh-pages"
+TRAVIS_COMMIT_MSG="$(git log --format=%B --no-merges -n 1)\"
 echo "=========================== START ==========================="
 echo "Branch: $TRAVIS_BRANCH"
 echo "Commit: $TRAVIS_COMMIT"
@@ -10,6 +11,12 @@ echo "Msg   : $TRAVIS_COMMIT_MSG"
 echo "Event : $TRAVIS_EVENT_TYPE"
 echo "Range : $TRAVIS_COMMIT_RANGE"
 echo "============================ END ============================"
+if [ "$TRAVIS_COMMIT_MSG" != *"deploy-"* ]; then
+  echo "In Deploy"
+  exit 0
+fi
+echo "OUT Deploy"
+
 # Pull requests and commits to other branches shouldn't try to deploy, just build to verify
 if [ "$TRAVIS_PULL_REQUEST" != "false" -o "$TRAVIS_BRANCH" != "$SOURCE_BRANCH" ]; then
   echo "Building demo-app"

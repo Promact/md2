@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e # Exit with nonzero exit code if anything fails
 
-SOURCE_BRANCH="dev"
+SOURCE_BRANCH="master"
 TARGET_BRANCH="gh-pages"
 COMMIT_MSG=`git log --format=%B --no-merges -n 1`
 echo "=========================== START ==========================="

@@ -18,7 +18,7 @@ import {
   FormsModule,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { HighlightPipe } from '../core/core';
+import { HighlightPipe } from './autocomplete-pipe';
 import {
   coerceBooleanProperty,
   UP_ARROW,

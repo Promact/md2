@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e # Exit with nonzero exit code if anything fails
 
-SOURCE_BRANCH="master"
+SOURCE_BRANCH="dev"
 TARGET_BRANCH="gh-pages"
 COMMIT_MSG=`git log --format=%B --no-merges -n 1`
 echo "=========================== START ==========================="
@@ -13,12 +13,13 @@ echo "Range : $TRAVIS_COMMIT_RANGE"
 echo "============================ END ============================"
 
 # Pull requests and commits to other branches shouldn't try to deploy, just build to verify
-if [ "$TRAVIS_PULL_REQUEST" != "false" -o "$TRAVIS_BRANCH" != "$SOURCE_BRANCH" -o "$COMMIT_MSG" != "deploy-"* ]; then
+if [ "$TRAVIS_PULL_REQUEST" != "false" ] || [ "$TRAVIS_BRANCH" != "$SOURCE_BRANCH" -o "$COMMIT_MSG" != "deploy-"* ]; then
   echo "In Deploy"
   echo "Building demo-app"
   gulp build:devapp
   exit 0
 fi
+
 echo "OUT Deploy"
 # Save some useful information
 SHA=`git rev-parse --verify HEAD`

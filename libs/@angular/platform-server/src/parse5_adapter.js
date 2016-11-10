@@ -383,7 +383,7 @@ export var Parse5DomAdapter = (function (_super) {
         }
     };
     Parse5DomAdapter.prototype.hasClass = function (element, className) {
-        return ListWrapper.contains(this.classList(element), className);
+        return this.classList(element).indexOf(className) > -1;
     };
     Parse5DomAdapter.prototype.hasStyle = function (element, styleName, styleValue) {
         if (styleValue === void 0) { styleValue = null; }

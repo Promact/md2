@@ -165,7 +165,7 @@ export var CookieXSRFStrategy = (function () {
     }
     CookieXSRFStrategy.prototype.configureRequest = function (req) {
         var xsrfToken = __platform_browser_private__.getDOM().getCookie(this._cookieName);
-        if (xsrfToken && !req.headers.has(this._headerName)) {
+        if (xsrfToken) {
             req.headers.set(this._headerName, xsrfToken);
         }
     };

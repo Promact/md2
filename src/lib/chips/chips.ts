@@ -52,7 +52,7 @@ export const MD2_CHIPS_CONTROL_VALUE_ACCESSOR: any = {
 @Component({
     selector: 'md2-chips',
     template:
-     `<div class="md2-chips-container" [class.md2-chip-disabled]="readonly">
+    `<div class="md2-chips-container" [class.md2-chip-disabled]="readonly">
         <span *ngFor="let chip of chipItemList; let i = index" class="md2-chip" [class.active]="selectedChip === i">
             <span *ngIf="isObject">{{chip.text}}</span>
             <span *ngIf="!isObject">{{chip}}</span>
@@ -205,12 +205,7 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
 
     //check autocomplete input is empty or not
     valueupdate(evt: Event) {
-        if (evt) {
-            this.isEmptyAutoComplete = false;
-        }
-        else {
-            this.isEmptyAutoComplete = true;
-        }
+        this.isEmptyAutoComplete = evt ? false : true;
     }
 
     /**
@@ -230,23 +225,19 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
                 break;
             //left arrow
             case KeyCodes.LEFT_ARROW:
-                if (this.isAutoComplete) {
-                    if (this.isEmptyAutoComplete) {
-                        this.leftArrowKeyEvents();
-                    }
+                if (this.isAutoComplete && this.isEmptyAutoComplete) {
+                    this.leftArrowKeyEvents();
                 }
-                else if (!this.inputValue) {
+                else if (!this.isAutoComplete && !this.inputValue) {
                     this.leftArrowKeyEvents();
                 }
                 break;
             //right arrow
             case KeyCodes.RIGHT_ARROW:
-                if (this.isAutoComplete) {
-                    if (this.isEmptyAutoComplete) {
-                        this.rightArrowKeyEvents();
-                    }
+                if (this.isAutoComplete && this.isEmptyAutoComplete) {
+                    this.rightArrowKeyEvents();
                 }
-                else if (!this.inputValue) {
+                else if (!this.isAutoComplete && !this.inputValue) {
                     this.rightArrowKeyEvents();
                 }
                 break;
@@ -346,13 +337,10 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
         if (validInput) {
             if (this.maxChips) {
                 if (this.chipItemList.length < this.maxChips) {
-
-                    if (this.isObject) {
-                        if (this.chipItemList.length > 0) {
+                    if (this.isObject && this.chipItemList.length > 0) {                       
                             var a: any = {}
                             a[this.textKey] = chips;
-                            this.chipItemList.push(new Chip(a, this.textKey, this.valueKey));
-                        }
+                            this.chipItemList.push(new Chip(a, this.textKey, this.valueKey));                      
                     }
                     else {
                         this.chipItemList.push(chips);

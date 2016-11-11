@@ -7,6 +7,8 @@ Chips allow the user to add tags.
 | Name | Type | Description |
 | --- | --- | --- |
 | `ngModel` | `Array<any>` | A model to bind the list of items to |
+| `item-text` | `string` | Map property for display text |
+| `autocomplete-item-text` | `string` | Map property for display text in auto complete|
 | `placeholder` | `string` | Placeholder text that will be forwarded to the input. |
 | `readonly` | `boolean` | Whether or not the chips is readonly |
 | `isRemovable` | `boolean` | Enables or disables the deletion of chips through the removal icon or the Delete/Backspace key. Defaults to true.|
@@ -22,12 +24,14 @@ A chips would have the following markup.
 <md2-chips [ngModel]="items"
                   [isRemovable]="true"
                   [readonly]="false" 
+                  item-text="name"
                   [minChips]="2"
                   [maxChips]="5"
                   (change)="selected($event)"
                   [placeholder]="Add"
                   [allowedPattern]="onlyTextPattern"
                   [isAutoComplete]="true"
-                  [autocompleteDataList]="itemList">    
+                  [autocompleteDataList]="itemList"
+                  autocomplete-item-text="data">    
 </md2-chips>    
 ```

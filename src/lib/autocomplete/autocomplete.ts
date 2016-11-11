@@ -112,6 +112,7 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
   ngAfterContentInit() { this._isInitialized = true; }
 
   @Output() change: EventEmitter<any> = new EventEmitter<any>();
+  @Output() textChange = new EventEmitter();
 
   private _value: any = '';
   private _readonly: boolean;
@@ -229,7 +230,8 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
    * @param event
    */
   private inputKeydown(event: KeyboardEvent) {
-    if (this.disabled) { return; }
+      if (this.disabled) { return; }
+      this.textChange.emit(this.inputBuffer);
     switch (event.keyCode) {
       case TAB: this.listLeave(); break;
       case ESCAPE:

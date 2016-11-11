@@ -24,6 +24,8 @@ Accordion it's allow the user to toggle visiblity of the multiple sections.
 | `active` | `boolean` | Whether or not the accordion is selected |
 | `disabled` | `boolean` | Whether or not the accordion is disabled |
 
+## `<md2-accordion-header>`
+
 ### Examples
 A accordion would have the following markup.
 ```html
@@ -33,6 +35,10 @@ A accordion would have the following markup.
                      [active]="tab.active" 
                      [disabled]="tab.disabled">
     {{tab.content}}
+  </md2-accordion-tab>
+  <md2-accordion-tab>
+    <md2-accordion-header>Custom Header</md2-accordion-header>
+    test content
   </md2-accordion-tab>
 </md2-accordion>
 ```

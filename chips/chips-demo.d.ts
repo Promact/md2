@@ -1,6 +1,7 @@
 export declare class ChipsDemo {
-    private items;
+    private item;
     private itemsData;
+    private items;
     private validPattern;
     private change(value);
 }

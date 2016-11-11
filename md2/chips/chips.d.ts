@@ -19,34 +19,45 @@ export declare class Md2Chips implements ControlValueAccessor, AfterContentInit 
     minChips: number;
     maxChips: number;
     id: string;
+    autocompleteItemText: string;
+    textKey: string;
+    valueKey: string;
     change: EventEmitter<any>;
     chipInputForm: NgForm;
     private onTouchedCallback;
     private onChangeCallback;
-    chipItemList: Array<string>;
+    private chipItemList;
     inputValue: string;
+    private _value;
     selectedChip: number;
     private splitRegExp;
     private templateHtmlString;
     private item;
-    private isFocused;
+    private inputFocused;
+    private isEmptyAutoComplete;
+    private isObject;
     constructor(elementRef: ElementRef);
     readonly element: any;
+    value: any;
     /**
      * set value
      * @param value
      */
-    value: any;
+    setValue: any;
     changeAutocomplete(value: any): void;
     ngAfterContentInit(): void;
+    valueupdate(evt: Event): void;
     /**
      * input key listener
      * @param event
      */
     inputChanged(event: KeyboardEvent): void;
+    private onFocus();
     inputBlurred(event: Event): void;
     inputFocus(event: Event): void;
     inputPaste(event: any): void;
+    leftArrowKeyEvents(): void;
+    rightArrowKeyEvents(): void;
     private addRegExpString(chipInputString);
     private _isValid(chipString);
     /**
@@ -67,6 +78,10 @@ export declare class Md2Chips implements ControlValueAccessor, AfterContentInit 
     private backspaceEvent();
     private _resetSelected();
     private _resetInput();
+    /**
+     * update value
+     */
+    private updateValue();
     writeValue(value: any): void;
     registerOnChange(fn: any): void;
     registerOnTouched(fn: any): void;

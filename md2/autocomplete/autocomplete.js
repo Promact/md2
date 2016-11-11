@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 import { Component, ElementRef, EventEmitter, forwardRef, Input, Output, ViewEncapsulation, NgModule } from '@angular/core';
 import { NG_VALUE_ACCESSOR, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { HighlightPipe } from '../core/core';
+import { HighlightPipe } from './autocomplete-pipe';
 import { coerceBooleanProperty, UP_ARROW, DOWN_ARROW, ENTER, ESCAPE, TAB } from '../core/core';
 var Item = (function () {
     function Item(source, textKey, valueKey) {
@@ -35,6 +35,7 @@ export var Md2Autocomplete = (function () {
     function Md2Autocomplete(element) {
         this.element = element;
         this.change = new EventEmitter();
+        this.textChange = new EventEmitter();
         this._value = '';
         this._disabled = false;
         this._isInitialized = false;
@@ -182,6 +183,7 @@ export var Md2Autocomplete = (function () {
         if (this.disabled) {
             return;
         }
+        this.textChange.emit(this.inputBuffer);
         switch (event.keyCode) {
             case TAB:
                 this.listLeave();
@@ -326,6 +328,10 @@ export var Md2Autocomplete = (function () {
         Output(), 
         __metadata('design:type', EventEmitter)
     ], Md2Autocomplete.prototype, "change", void 0);
+    __decorate([
+        Output(), 
+        __metadata('design:type', Object)
+    ], Md2Autocomplete.prototype, "textChange", void 0);
     __decorate([
         Input(), 
         __metadata('design:type', String)

@@ -10,6 +10,7 @@ export { OverlayState } from './overlay/overlay-state';
 export { ConnectedOverlayDirective, OverlayOrigin, OverlayModule } from './overlay/overlay-directives';
 export * from './overlay/position/connected-position-strategy';
 export * from './overlay/position/connected-position';
+export { MdRipple, MdRippleModule } from './ripple/ripple';
 export { AriaLivePoliteness, MdLiveAnnouncer, LIVE_ANNOUNCER_ELEMENT_TOKEN } from './a11y/live-announcer';
 export { FocusTrap } from './a11y/focus-trap';
 export { InteractivityChecker } from './a11y/interactivity-checker';
@@ -25,7 +26,6 @@ export * from './compatibility/style-compatibility';
 export * from './animation/animation';
 export { coerceBooleanProperty } from './coersion/boolean-property';
 export { coerceNumberProperty } from './coersion/number-property';
-export * from './pipes/pipes';
 export declare class MdCoreModule {
     static forRoot(): ModuleWithProviders;
 }

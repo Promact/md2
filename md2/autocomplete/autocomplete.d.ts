@@ -1,12 +1,13 @@
 import { AfterContentInit, ElementRef, EventEmitter, ModuleWithProviders } from '@angular/core';
 import { ControlValueAccessor } from '@angular/forms';
-import { HighlightPipe } from '../core/core';
+import { HighlightPipe } from './autocomplete-pipe';
 export declare const MD2_AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR: any;
 export declare class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
     private element;
     constructor(element: ElementRef);
     ngAfterContentInit(): void;
     change: EventEmitter<any>;
+    textChange: EventEmitter<{}>;
     private _value;
     private _readonly;
     private _required;

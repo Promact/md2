@@ -10,10 +10,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Md2Accordion } from './accordionpanel';
-import { Md2AccordionTab } from './accordiontab';
-export { Md2Accordion } from './accordionpanel';
-export { Md2AccordionTab } from './accordiontab';
-export var MD2_ACCORDION_DIRECTIVES = [Md2Accordion, Md2AccordionTab];
+import { Md2AccordionTab, Md2AccordionHeader } from './accordiontab';
+export * from './accordionpanel';
+export * from './accordiontab';
+export var MD2_ACCORDION_DIRECTIVES = [Md2Accordion, Md2AccordionTab, Md2AccordionHeader];
 export var Md2AccordionModule = (function () {
     function Md2AccordionModule() {
     }

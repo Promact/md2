@@ -11,11 +11,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var ChipsDemo = (function () {
     function ChipsDemo() {
-        this.items = [
-            'Data1', 'Data2', 'Data3', 'Data4', 'Data5', 'Data6', 'Data7', 'Data8'
-        ];
         this.itemsData = [
-            'Data1', 'Data2', 'Data3'
+            { name: 'Vadodara', value: '1' },
+            { name: 'Mumbai', value: '5' },
+            { name: 'Goa', value: '6' }
+        ];
+        this.items = [
+            { text: 'Vadodaraa', value: '8' },
+            { text: 'Mumbaia', value: '2' },
+            { text: 'Goaa', value: '4' }
         ];
         this.validPattern = /^[0-9]*$/;
     }

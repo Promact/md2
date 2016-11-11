@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 import { NgModule } from '@angular/core';
 import { MdLineModule } from './line/line';
 import { RtlModule } from './rtl/dir';
+import { MdRippleModule } from './ripple/ripple';
 import { PortalModule } from './portal/portal-directives';
 import { OverlayModule } from './overlay/overlay-directives';
 import { A11yModule, A11Y_PROVIDERS } from './a11y/index';
@@ -28,6 +29,8 @@ export { OverlayState } from './overlay/overlay-state';
 export { ConnectedOverlayDirective, OverlayOrigin, OverlayModule } from './overlay/overlay-directives';
 export * from './overlay/position/connected-position-strategy';
 export * from './overlay/position/connected-position';
+// Ripple
+export { MdRipple, MdRippleModule } from './ripple/ripple';
 // a11y
 export { MdLiveAnnouncer, LIVE_ANNOUNCER_ELEMENT_TOKEN } from './a11y/live-announcer';
 export { FocusTrap } from './a11y/focus-trap';
@@ -49,8 +52,6 @@ export * from './animation/animation';
 // Coersion
 export { coerceBooleanProperty } from './coersion/boolean-property';
 export { coerceNumberProperty } from './coersion/number-property';
-// Pipes
-export * from './pipes/pipes';
 export var MdCoreModule = (function () {
     function MdCoreModule() {
     }
@@ -62,8 +63,8 @@ export var MdCoreModule = (function () {
     };
     MdCoreModule = __decorate([
         NgModule({
-            imports: [MdLineModule, RtlModule, PortalModule, OverlayModule, A11yModule],
-            exports: [MdLineModule, RtlModule, PortalModule, OverlayModule, A11yModule],
+            imports: [MdLineModule, RtlModule, MdRippleModule, PortalModule, OverlayModule, A11yModule],
+            exports: [MdLineModule, RtlModule, MdRippleModule, PortalModule, OverlayModule, A11yModule],
         }), 
         __metadata('design:paramtypes', [])
     ], MdCoreModule);

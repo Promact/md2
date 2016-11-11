@@ -1,7 +1,8 @@
 import { Md2Accordion } from './accordionpanel';
+export declare class Md2AccordionHeader {
+}
 export declare class Md2AccordionTab {
     private accordion;
-    class: string;
     header: string;
     active: boolean;
     disabled: boolean;

@@ -7,12 +7,20 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { Component, Directive, Input, ViewEncapsulation } from '@angular/core';
 import { Md2Accordion } from './accordionpanel';
+export var Md2AccordionHeader = (function () {
+    function Md2AccordionHeader() {
+    }
+    Md2AccordionHeader = __decorate([
+        Directive({ selector: 'md2-accordion-header' }), 
+        __metadata('design:paramtypes', [])
+    ], Md2AccordionHeader);
+    return Md2AccordionHeader;
+}());
 export var Md2AccordionTab = (function () {
     function Md2AccordionTab(accordion) {
         this.accordion = accordion;
-        this.class = '';
         this.accordion.addTab(this);
     }
     /**
@@ -60,10 +68,6 @@ export var Md2AccordionTab = (function () {
     __decorate([
         Input(), 
         __metadata('design:type', String)
-    ], Md2AccordionTab.prototype, "class", void 0);
-    __decorate([
-        Input(), 
-        __metadata('design:type', String)
     ], Md2AccordionTab.prototype, "header", void 0);
     __decorate([
         Input(), 
@@ -75,12 +79,10 @@ export var Md2AccordionTab = (function () {
     ], Md2AccordionTab.prototype, "disabled", void 0);
     Md2AccordionTab = __decorate([
         Component({selector: 'md2-accordion-tab',
-            template: "\n    <div class=\"md2-accordion-header\" (click)=\"toggle($event)\">\n      <span class=\"md2-accordion-title\">{{header}}</span>\n      <span class=\"md2-accordion-header-icon\"></span>\n    </div>\n    <div class=\"md2-accordion-tab-content\">\n      <ng-content></ng-content>\n    </div>\n  ",
-            styles: ["\n    .md2-accordion-tab { position: relative; display: block; outline: 0; border: 0; border-width: 1px 0; border-style: solid; border-color: transparent; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }\n    .md2-accordion-tab.md2-accordion-tab-active { border-color: rgba(0, 0, 0, 0.12); }\n    .md2-accordion-tab .md2-accordion-header { position: relative; border-radius: 0; color: rgba(0, 0, 0, 0.54); font-weight: 500; cursor: pointer; display: block; align-items: inherit; line-height: 40px; margin: 0; max-height: 40px; overflow: hidden; padding: 0 35px 0 16px; text-align: left; text-decoration: none; white-space: nowrap; width: 100%; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-user-drag: none; }\n    .md2-accordion-tab.md2-accordion-tab-disabled .md2-accordion-header { color: rgba(0,0,0,0.26); pointer-events: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-user-drag: none; opacity: 0.5; cursor: default; }\n    .md2-accordion-tab .md2-accordion-title { color: rgba(0,0,0,0.85); }\n    .md2-accordion-tab.md2-accordion-tab-active .md2-accordion-title { color: #106cc8; }\n    .md2-accordion-tab .md2-accordion-header-icon { position: absolute; top: 12px; right: 17px; width: 8px; height: 8px; overflow: hidden; display: inline-block; border-width: 0 2px 2px 0; border-style: solid; border-color: rgba(0, 0, 0, 0.54); -moz-transform: rotate(45deg); -ms-transform: rotate(45deg); -o-transform: rotate(45deg); -webkit-transform: rotate(45deg); transform: rotate(45deg); -moz-transition: 0.3s ease-in-out; -o-transition: 0.3s ease-in-out; -webkit-transition: 0.3s ease-in-out; transition: 0.3s ease-in-out; }\n    .md2-accordion-tab.md2-accordion-tab-active .md2-accordion-header-icon { -moz-transform: rotate(225deg); -ms-transform: rotate(225deg); -o-transform: rotate(225deg); -webkit-transform: rotate(225deg); transform: rotate(225deg); top: 16px; }\n    .md2-accordion-tab .md2-accordion-tab-content { position: relative; display: none; padding: 16px; }\n    .md2-accordion-tab.md2-accordion-tab-active .md2-accordion-tab-content { display: block; }\n  "],
+            template: "\n    <div class=\"md2-accordion-header\" (click)=\"toggle($event)\">\n      <span>{{header}}</span>\n      <ng-content select=\"md2-accordion-header\"></ng-content>\n      <span class=\"md2-accordion-header-icon\"></span>\n    </div>\n    <div class=\"md2-accordion-tab-content\">\n      <ng-content></ng-content>\n    </div>\n  ",
+            styles: ["\n    md2-accordion-tab { position: relative; display: block; outline: 0; border: 0; border-width: 0 0 1px 0; border-style: solid; border-color: rgba(0, 0, 0, 0.12); -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }\n    md2-accordion-tab.md2-accordion-tab-active { border-color: rgba(0, 0, 0, 0.12); }\n    md2-accordion-tab .md2-accordion-header { position: relative; border-radius: 0; color: rgba(0, 0, 0, 0.85); font-weight: 500; cursor: pointer; display: block; align-items: inherit; line-height: 40px; margin: 0; max-height: 40px; overflow: hidden; padding: 0 35px 0 16px; text-align: left; text-decoration: none; white-space: nowrap; width: 100%; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-user-drag: none; }\n    md2-accordion-tab.md2-accordion-tab-active .md2-accordion-header { color: #106cc8; }\n    md2-accordion-tab.md2-accordion-tab-disabled .md2-accordion-header { pointer-events: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-user-drag: none; opacity: 0.5; cursor: default; }\n    md2-accordion-tab .md2-accordion-header-icon { position: absolute; top: 12px; right: 17px; width: 8px; height: 8px; overflow: hidden; display: inline-block; border-width: 0 2px 2px 0; border-style: solid; border-color: rgba(0, 0, 0, 0.54); -moz-transform: rotate(45deg); -ms-transform: rotate(45deg); -o-transform: rotate(45deg); -webkit-transform: rotate(45deg); transform: rotate(45deg); -moz-transition: 0.3s ease-in-out; -o-transition: 0.3s ease-in-out; -webkit-transition: 0.3s ease-in-out; transition: 0.3s ease-in-out; }\n    md2-accordion-tab.md2-accordion-tab-active .md2-accordion-header-icon { -moz-transform: rotate(225deg); -ms-transform: rotate(225deg); -o-transform: rotate(225deg); -webkit-transform: rotate(225deg); transform: rotate(225deg); top: 16px; }\n    md2-accordion-tab .md2-accordion-tab-content { position: relative; display: none; padding: 16px; }\n    md2-accordion-tab.md2-accordion-tab-active .md2-accordion-tab-content { display: block; }\n  "],
             host: {
                 'role': 'accordion-tab',
-                '[class]': 'class',
-                '[class.md2-accordion-tab]': 'true',
                 '[class.md2-accordion-tab-active]': 'active',
                 '[class.md2-accordion-tab-disabled]': 'disabled'
             },

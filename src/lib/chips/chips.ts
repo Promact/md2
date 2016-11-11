@@ -27,6 +27,21 @@ import { KeyCodes } from '../core/core';
 
 const noop = () => { };
 
+class Chip {
+    public text: string;
+    public value: string;
+
+    constructor(source: any, textKey: string, valueKey: string) {
+        if (typeof source === 'string') {
+            this.text = this.value = source;
+        }
+        if (typeof source === 'object') {
+            this.text = source[textKey];
+            this.value = valueKey ? source[valueKey] : source;
+        }
+    }
+}
+
 let nextId = 0;
 export const MD2_CHIPS_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
@@ -37,28 +52,29 @@ export const MD2_CHIPS_CONTROL_VALUE_ACCESSOR: any = {
 @Component({
     selector: 'md2-chips',
     template:
-    `<div class="md2-chips-container" [class.md2-chip-disabled]="readonly">
+     `<div class="md2-chips-container" [class.md2-chip-disabled]="readonly">
         <span *ngFor="let chip of chipItemList; let i = index" class="md2-chip" [class.active]="selectedChip === i">
-            <span>{{chip}}</span>
+            <span *ngIf="isObject">{{chip.text}}</span>
+            <span *ngIf="!isObject">{{chip}}</span>
             <span [innerHTML]="templateHtmlString"></span>
-            <svg (click)="removeSelectedChip(i)" width="24" height="24" viewBox="0 0 24 24"  *ngIf="isRemovable">
-              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-            </svg>            
+            <svg (click)="removeSelectedChip(i)" width="24" height="24" viewBox="0 0 24 24" *ngIf="isRemovable">
+                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+            </svg>
         </span>
-        <ng-content select=".md2-template"></ng-content>      
+        <ng-content select=".md2-template"></ng-content>
         <form #chipInputForm="ngForm" class="chip-input-form" *ngIf="!readonly">
-            <input *ngIf="!isAutoComplete" class="chip-input" type="text" [(ngModel)]="inputValue" name="chipInput" [placeholder]="placeholder" (paste)="inputPaste($event)" (keydown)="inputChanged($event)" (blur)="inputBlurred($event)" (focus)="inputFocus()"/>
+            <input *ngIf="!isAutoComplete" class="chip-input" type="text" [(ngModel)]="inputValue" name="chipInput" [placeholder]="placeholder" (paste)="inputPaste($event)" (keydown)="inputChanged($event)" (blur)="inputBlurred($event)" (focus)="inputFocus()" />
             <div *ngIf="isAutoComplete">
                 <md2-autocomplete [items]="autocompleteDataList"
-                                item-text="autocompleteItemText"
-                                [(ngModel)]="item" (textChange)="valueupdate($event)" name="autocomplete" (change)="changeAutocomplete($event)" [placeholder]="placeholder" (keydown)="inputChanged($event)">
-		        </md2-autocomplete>
+                                  [item-text]="autocompleteItemText"
+                                  [(ngModel)]="item" name="autocomplete" (textChange)="valueupdate($event)" (change)="changeAutocomplete($event)" [placeholder]="placeholder" (keydown)="inputChanged($event)">
+                </md2-autocomplete>
             </div>
         </form>
-    </div>   
+    </div>
     <div class="chip-error" *ngIf="this.chipItemList.length<this.minChips">Minimum {{minChips}} chip required.</div>
     <div class="chip-error" *ngIf="this.chipItemList.length>=this.maxChips">You are able to add Maximum {{maxChips}} chip.</div>
-`,
+    `,
     styles: [`
     .template-content{display:inline;}
     md2-chips{outline:none;}
@@ -114,20 +130,24 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
     @Input() maxChips: number = 10000;
     @Input() id: string = 'md2-chips-' + (++nextId);
     @Input('autocomplete-item-text') autocompleteItemText: string = 'text';
+    @Input('item-text') textKey: string = 'text';
+    @Input('item-value') valueKey: string = null;
+
     @Output() change: EventEmitter<any> = new EventEmitter<any>();
     @ViewChild('chipInputForm') chipInputForm: NgForm;
-    @ViewChild('autocomplete') autocomplete: Md2AutocompleteModule;
 
     private onTouchedCallback: () => void = noop;
     private onChangeCallback: (_: any) => void = noop;
-    public chipItemList: Array<string> = [];
+    private chipItemList: Array<Chip> = [];
     public inputValue: string = '';
+    private _value: any = '';
     public selectedChip: number = -1;
     private splitRegExp: RegExp;
     private templateHtmlString: any;
     private item: any;
     private inputFocused: boolean = false;
     private isEmptyAutoComplete: boolean = true;
+    private isObject: boolean;
 
     constructor(private elementRef: ElementRef) { }
 
@@ -137,36 +157,53 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
         elements.template = elements.mainDiv.querySelector('.md2-template');
         return elements;
     }
+    @Input()
+    get value(): any { return this._value; }
+    set value(value: any) { this.setValue(value); }
 
-    get value(): any {
-        return this.value;
-    };
 
     /**
      * set value
      * @param value
      */
-    set value(v: any) {
-        this.onChangeCallback(v);
-        this.change.emit(v);
+    set setValue(value: any) {
+        if (value !== this._value) {
+            this._value = value;
+            this.chipItemList = [];
+            if (value) {
+                if (value && value.length && typeof value[0] === 'object' && Array.isArray(value)) {
+                    for (let i = 0; i < value.length; i++) {
+                        this.chipItemList.push(new Chip(value[i], this.textKey, this.valueKey));
+                    }
+                    this.isObject = true;
+                }
+                else if (value && value.length && typeof value[0] === 'string' && Array.isArray(value)) {
+                    this.chipItemList = value;
+                    this.isObject = false;
+                }
+            }
+        }
+        this.onChangeCallback(value);
+        this.change.emit(this.chipItemList);
     }
 
     changeAutocomplete(value: any) {
         if (value) {
-            this.addNewChip([value]);
+            let objText = value[this.autocompleteItemText];
+            this.addNewChip(objText);
             this.item = null;
         }
     }
+
     ngAfterContentInit() {
         let elements = this.element;
-        if (this.ngModel) {
-            this.chipItemList = this.ngModel;
-        }
         this.splitRegExp = new RegExp(this.pasteSplitPattern);
         if (elements.template) {
             this.templateHtmlString = elements.template.innerHTML;
         }
     }
+
+    //check autocomplete input is empty or not
     valueupdate(evt: Event) {
         if (evt) {
             this.isEmptyAutoComplete = false;
@@ -193,38 +230,44 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
                 break;
             //left arrow
             case KeyCodes.LEFT_ARROW:
-                event.preventDefault();
-                if (this.selectedChip) {
-                    if (this.selectedChip < 0) { this.selectedChip = this.chipItemList.length - 1; }
-                    else { this.selectedChip = this.selectedChip - 1; }
+                if (this.isAutoComplete) {
+                    if (this.isEmptyAutoComplete) {
+                        this.leftArrowKeyEvents();
+                    }
+                }
+                else if (!this.inputValue) {
+                    this.leftArrowKeyEvents();
                 }
                 break;
             //right arrow
             case KeyCodes.RIGHT_ARROW:
-                event.preventDefault();
-                if (this.selectedChip != -1) {
-                    if (this.selectedChip >= this.chipItemList.length) { this.selectedChip = 0; }
-                    else { this.selectedChip = this.selectedChip + 1; }
+                if (this.isAutoComplete) {
+                    if (this.isEmptyAutoComplete) {
+                        this.rightArrowKeyEvents();
+                    }
+                }
+                else if (!this.inputValue) {
+                    this.rightArrowKeyEvents();
                 }
                 break;
             //enter
             case KeyCodes.ENTER:
                 if (this.addOnEnter) {
-                    this.addNewChip([this.inputValue]);
+                    this.addNewChip(this.inputValue);
                     event.preventDefault();
                 }
                 break;
             //comma
             case KeyCodes.COMMA:
                 if (this.addOnComma) {
-                    this.addNewChip([this.inputValue]);
+                    this.addNewChip(this.inputValue);
                     event.preventDefault();
                 }
                 break;
             //space
             case KeyCodes.SPACE:
                 if (this.addOnSpace) {
-                    this.addNewChip([this.inputValue]);
+                    this.addNewChip(this.inputValue);
                     event.preventDefault();
                 }
                 break;
@@ -236,25 +279,19 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
 
     @HostListener('focus')
     private onFocus() {
-        if (this.readonly) {
-            return;
-        }
+        if (this.readonly) { return; }
         if (!this.isAutoComplete) {
             this.elementRef.nativeElement.querySelector('input.chip-input').focus();
-        }        
+        }
         this._resetSelected();
     }
     inputBlurred(event: Event): void {
-        if (this.addOnBlur && !this.readonly) { this.addNewChip([this.inputValue]); }
         this.inputFocused = false;
     }
 
     inputFocus(event: Event): void {
-        if (this.readonly) {
-            return;
-        }
+        if (this.readonly) { return; }
         this.inputFocused = true;
-
     }
 
     inputPaste(event: any): void {
@@ -266,36 +303,72 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
         setTimeout(() => this._resetInput());
     }
 
+    leftArrowKeyEvents() {
+        event.preventDefault();
+        if (this.selectedChip) {
+            if (this.selectedChip < 0) { this.selectedChip = this.chipItemList.length - 1; }
+            else { this.selectedChip = this.selectedChip - 1; }
+        }
+    }
+    rightArrowKeyEvents() {
+        event.preventDefault();
+        if (this.selectedChip != -1) {
+            if (this.selectedChip >= this.chipItemList.length) { this.selectedChip = 0; }
+            else { this.selectedChip = this.selectedChip + 1; }
+        }
+    }
+
     private addRegExpString(chipInputString: string): string[] {
         chipInputString = chipInputString.trim();
         let chips = chipInputString.split(this.splitRegExp);
         return chips.filter((chip) => !!chip);
     }
 
-    private _isValid(chipString: string): boolean {
-        if (this.chipItemList.indexOf(chipString) === -1)
-            return this.allowedPattern.test(chipString);
+    private _isValid(chipString: any): boolean {
+        if (chipString) {
+            let isExist: any;
+            if (this.isObject) {
+                isExist = this.chipItemList.filter((chip) => chip.text === chipString);
+                return isExist.length ? false : true;
+            }
+            else {
+                if (this.chipItemList.indexOf(chipString) === -1)
+                    return this.allowedPattern.test(chipString);
+            }
+        }
     }
     /**
     * add new chip
     * @param chips
     */
-    private addNewChip(chips: string[]): void {
-        let validInput = chips.filter((chip) => this._isValid(chip));
-        if (this.maxChips) {
-            if (this.chipItemList.length < this.maxChips) {
-                this.chipItemList = this.chipItemList.concat(validInput.map(chip => chip.trim()));
+    private addNewChip(chips: any): void {
+        let validInput = this._isValid(chips);
+        if (validInput) {
+            if (this.maxChips) {
+                if (this.chipItemList.length < this.maxChips) {
+
+                    if (this.isObject) {
+                        if (this.chipItemList.length > 0) {
+                            var a: any = {}
+                            a[this.textKey] = chips;
+                            this.chipItemList.push(new Chip(a, this.textKey, this.valueKey));
+                        }
+                    }
+                    else {
+                        this.chipItemList.push(chips);
+                    }
+                }
             }
-        }
-        else {
-            this.chipItemList = this.chipItemList.concat(validInput.map(chip => chip.trim()));
-            this.item = null;
+            else {
+                this.chipItemList.push(new Chip(chips, this.textKey, this.valueKey));
+                this.item = null;
+            }
         }
         this._resetSelected();
         this._resetInput();
-        this.onChangeCallback(this.chipItemList);
-        this.change.emit(this.chipItemList);
+        this.updateValue();
     }
+
     /**
    * remove selected chip
    * @param chipIndexToRemove index of selected chip
@@ -303,8 +376,7 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
     private removeSelectedChip(chipIndexToRemove: number): void {
         this.chipItemList.splice(chipIndexToRemove, 1);
         this._resetSelected();
-        this.onChangeCallback(this.chipItemList);
-        this.change.emit(this.chipItemList);
+        this.updateValue();
     }
     /**
     * select chip
@@ -339,10 +411,40 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
             this.chipInputForm.controls['chipInput'].setValue('');
         }
     }
+    /**
+     * update value
+     */
+    private updateValue() {
+        this._value = new Array<any>();
+        for (let i = 0; i < this.chipItemList.length; i++) {
+            if (this.isObject) {
+                this._value.push(this.chipItemList[i].value);
+            }
+            else {
+                this._value.push(this.chipItemList[i]);
+            }
+        }
+        this.onChangeCallback(this._value);
+        this.change.emit(this._value);
+    }
 
     writeValue(value: any): void {
-        this.value = value;
-        this.chipItemList = value;
+        if (value !== this._value) {
+            this._value = value;
+            this.chipItemList = [];
+            if (value) {
+                if (value && value.length && typeof value[0] === 'object' && Array.isArray(value)) {
+                    for (let i = 0; i < value.length; i++) {
+                        this.chipItemList.push(new Chip(value[i], this.textKey, this.valueKey));
+                    }
+                    this.isObject = true;
+                }
+                else if (value && value.length && typeof value[0] === 'string' && Array.isArray(value)) {
+                    this.chipItemList = value;
+                    this.isObject = false;
+                }
+            }
+        }
     }
     registerOnChange(fn: any) { this.onChangeCallback = fn; }
     registerOnTouched(fn: any) { this.onTouchedCallback = fn; }

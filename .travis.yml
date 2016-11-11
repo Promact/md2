@@ -27,7 +27,6 @@ deploy:
   on:
     branch: master
     repo: Promact/md2
-    tags: true
     condition: "/^deploy-.*$/"
 
 cache:

@@ -74,7 +74,7 @@ gulp.task(':release:tag', (cb: any) => {
 //    }, done);
 //});
 
-gulp.task('release', ['build:devapp'], (callback: any) => {
+gulp.task('release', (callback: any) => {
   gulpRunSequence(
     ':release:version',
     ':release:changelog',

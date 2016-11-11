@@ -5,12 +5,12 @@ import {
 import { CommonModule } from '@angular/common';
 
 import { Md2Accordion } from './accordionpanel';
-import { Md2AccordionTab } from './accordiontab';
+import { Md2AccordionTab, Md2AccordionHeader } from './accordiontab';
 
-export { Md2Accordion } from './accordionpanel';
-export { Md2AccordionTab } from './accordiontab';
+export * from './accordionpanel';
+export * from './accordiontab';
 
-export const MD2_ACCORDION_DIRECTIVES: any[] = [Md2Accordion, Md2AccordionTab];
+export const MD2_ACCORDION_DIRECTIVES: any[] = [Md2Accordion, Md2AccordionTab, Md2AccordionHeader];
 
 @NgModule({
   imports: [CommonModule],

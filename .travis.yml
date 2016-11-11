@@ -16,7 +16,8 @@ script:
 
 before_deploy:
   - gulp build:devapp
-  - cd dist\md2
+  - cd dist
+  - cd md2
 
 deploy:
   provider: npm

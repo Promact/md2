@@ -9,6 +9,7 @@ import {
   HostListener,
   Input,
   OnInit,
+  Optional,
   Output,
   Provider,
   QueryList,
@@ -19,9 +20,8 @@ import {
   ModuleWithProviders
 } from '@angular/core';
 import {
-  NG_VALUE_ACCESSOR,
   ControlValueAccessor,
-  FormsModule,
+  NgControl,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import {
@@ -30,12 +30,6 @@ import {
 } from '../core/core';
 
 let _uniqueIdCounter = 0;
-
-export const MD2_SELECT_CONTROL_VALUE_ACCESSOR: any = {
-  provide: NG_VALUE_ACCESSOR,
-  useExisting: forwardRef(() => Md2Select),
-  multi: true
-};
 
 export type Md2SelectDispatcherListener = (id: string, name: string) => void;
 
@@ -97,23 +91,27 @@ export class Md2SelectChange {
     md2-select .md2-select-menu { position: absolute; left: 0; top: 0; display: none; z-index: 10; -ms-flex-direction: column; -webkit-flex-direction: column; flex-direction: column; width: 100%; margin: 0; padding: 8px 0; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4); max-height: 256px; min-height: 48px; overflow-y: auto; -moz-transform: scale(1); -ms-transform: scale(1); -o-transform: scale(1); -webkit-transform: scale(1); transform: scale(1); background: #fff; }
     md2-select .md2-select-menu.open { display: block; }
   `],
-  providers: [MD2_SELECT_CONTROL_VALUE_ACCESSOR],
   host: {
     'role': 'select',
     '[tabindex]': 'disabled ? -1 : tabindex',
-    '[attr.aria-disabled]': 'disabled'
+    '[attr.aria-label]': 'placeholder',
+    '[attr.aria-required]': 'required.toString()',
+    '[attr.aria-disabled]': 'disabled.toString()',
+    '[attr.aria-invalid]': '_control?.invalid || "false"',
   },
   encapsulation: ViewEncapsulation.None
 })
 export class Md2Select implements AfterContentInit, AfterContentChecked, ControlValueAccessor {
 
-  constructor(public element: ElementRef) { }
+  constructor(public element: ElementRef, @Optional() public _control: NgControl) {
+    this._control.valueAccessor = this;
+  }
 
   private _value: any = null;
   private _name: string = 'md2-select-' + _uniqueIdCounter++;
-  private _readonly: boolean;
-  private _required: boolean;
-  private _disabled: boolean;
+  private _readonly: boolean = false;
+  private _required: boolean = false;
+  private _disabled: boolean = false;
   //private _multiple: boolean;
   private _selected: Md2Option = null;
   private _isInitialized: boolean = false;
@@ -124,13 +122,13 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
 
   private focusIndex: number = 0;
 
-  private _controlValueAccessorChangeFn: (value: any) => void = (value) => { };
-  onTouched: () => any = () => { };
+  _onChange: (value: any) => void;
+  _onTouched: Function;
 
   @Output() change: EventEmitter<Md2SelectChange> = new EventEmitter<Md2SelectChange>();
 
   @ContentChildren(forwardRef(() => Md2Option))
-  public _options: QueryList<Md2Option> = null;
+  public options: QueryList<Md2Option> = null;
 
   @Input() get name(): string { return this._name; }
   set name(value: string) {
@@ -142,17 +140,17 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   @Input() placeholder: string = '';
 
   @Input()
-  get readonly(): boolean { return this._readonly; }
-  set readonly(value) { this._readonly = coerceBooleanProperty(value); }
+  get readonly() { return this._readonly; }
+  set readonly(value: any) { this._readonly = coerceBooleanProperty(value); }
 
   @Input()
-  get required(): boolean { return this._required; }
-  set required(value) { this._required = coerceBooleanProperty(value); }
+  get required() { return this._required; }
+  set required(value: any) { this._required = coerceBooleanProperty(value); }
 
   @HostBinding('class.md2-select-disabled')
   @Input()
-  get disabled(): boolean { return this._disabled; }
-  set disabled(value) { this._disabled = coerceBooleanProperty(value); }
+  get disabled() { return this._disabled; }
+  set disabled(value: any) { this._disabled = coerceBooleanProperty(value); }
 
   //@Input()
   //get multiple(): boolean { return this._multiple; }
@@ -184,7 +182,7 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   ngAfterContentInit() { this._isInitialized = true; }
 
   ngAfterContentChecked() {
-    let opt = this._options.filter(o => this.equals(o.value, this.value))[0];
+    let opt = this.options.filter(o => this.equals(o.value, this.value))[0];
     if (opt && !this.equals(this.selected, opt)) {
       this.selectedValue = opt.text;
     }
@@ -245,14 +243,14 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   /**
    * get index of focused option
    */
-  private getFocusIndex(): number { return this._options.toArray().findIndex((o: any) => o.focused); }
+  private getFocusIndex(): number { return this.options.toArray().findIndex((o: any) => o.focused); }
 
   /**
    * update focused option
    * @param inc
    */
   private updateFocus(inc: number) {
-    let options = this._options.toArray();
+    let options = this.options.toArray();
     let index = this.focusIndex;
     options.forEach(o => { if (o.focused) { o.focused = false; } });
     let option: any;
@@ -277,7 +275,7 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
     }
     if (this.isOpenable) {
       if (!this.isMenuVisible) {
-        this._options.forEach(o => {
+        this.options.forEach(o => {
           o.focused = false;
           if (o.selected) { o.focused = true; }
         });
@@ -302,9 +300,9 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
 
       switch (event.keyCode) {
         case KeyCodes.TAB:
-        case KeyCodes.ESCAPE: this.onBlur(); break;
+        case KeyCodes.ESCAPE: this._onBlur(); break;
         case KeyCodes.ENTER:
-        case KeyCodes.SPACE: this._options.toArray()[this.focusIndex].onOptionClick(event); break;
+        case KeyCodes.SPACE: this.options.toArray()[this.focusIndex].onOptionClick(event); break;
 
         case KeyCodes.DOWN_ARROW: this.updateFocus(1); break;
         case KeyCodes.UP_ARROW: this.updateFocus(-1); break;
@@ -324,23 +322,25 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   }
 
   @HostListener('blur')
-  public onBlur() {
-    this.isMenuVisible = false;
-    this.isOpenable = false;
-    setTimeout(() => {
-      this.isOpenable = true;
-    }, 200);
+  _onBlur() {
+    if (this.isMenuVisible) {
+      this.isMenuVisible = false;
+      this.isOpenable = false;
+      setTimeout(() => {
+        this.isOpenable = true;
+      }, 200);
+    } else { this._onTouched(); }
   }
 
   touch() {
-    if (this.onTouched) {
-      this.onTouched();
+    if (this._onTouched) {
+      this._onTouched();
     }
   }
 
   private _updateOptions(): void {
-    if (this._options) {
-      this._options.forEach((option: any) => {
+    if (this.options) {
+      this.options.forEach((option: any) => {
         option.name = this.name;
       });
     }
@@ -349,14 +349,14 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   private _updateSelectedOptionValue(): void {
     let isAlreadySelected = this.selected !== null && this.selected.value === this.value;
 
-    if (this._options !== null && !isAlreadySelected) {
-      let matchingOption = this._options.filter((option: any) => option.value === this.value)[0];
+    if (this.options !== null && !isAlreadySelected) {
+      let matchingOption = this.options.filter((option: any) => option.value === this.value)[0];
 
       if (matchingOption) {
         this.selected = matchingOption;
       } else {
         this.selected = null;
-        this._options.forEach(option => { option.selected = false; });
+        this.options.forEach(option => { option.selected = false; });
       }
     }
   }
@@ -365,20 +365,26 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
     let event = new Md2SelectChange();
     event.source = this;
     event.value = this.value;
-    this._controlValueAccessorChangeFn(event.value);
+    this._onChange(event.value);
     this.change.emit(event);
   }
 
   writeValue(value: any) {
+    if (!this.options) { return; }
+    //this.options.forEach((option: Md2Option) => {
+    //  if (option.value === value) {
+    //  }
+    //});
     if (this._value !== value) {
       this._value = value;
       this._updateSelectedOptionValue();
     }
   }
 
-  registerOnChange(fn: (value: any) => void) { this._controlValueAccessorChangeFn = fn; }
+  registerOnChange(fn: (value: any) => void): void { this._onChange = fn; }
 
-  registerOnTouched(fn: any) { this.onTouched = fn; }
+  registerOnTouched(fn: Function): void { this._onTouched = fn; }
+
 }
 
 @Component({
@@ -480,7 +486,7 @@ export class Md2Option implements OnInit {
     //} else {
     this.select.selected = this;
     this.select.touch();
-    this.select.onBlur();
+    this.select._onBlur();
     //}
   }
 }
@@ -488,7 +494,7 @@ export class Md2Option implements OnInit {
 export const MD2_SELECT_DIRECTIVES = [Md2Select, Md2Option];
 
 @NgModule({
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule],
   exports: MD2_SELECT_DIRECTIVES,
   declarations: MD2_SELECT_DIRECTIVES,
 })

@@ -8,6 +8,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
+import { coerceBooleanProperty } from '../core/core';
 export var Md2Accordion = (function () {
     function Md2Accordion() {
         this.class = '';
@@ -15,6 +16,12 @@ export var Md2Accordion = (function () {
         this.open = new EventEmitter();
         this.tabs = [];
     }
+    Object.defineProperty(Md2Accordion.prototype, "multiple", {
+        get: function () { return this._multiple; },
+        set: function (value) { this._multiple = coerceBooleanProperty(value); },
+        enumerable: true,
+        configurable: true
+    });
     /**
      * Add or append tab in accordion
      * @param tab object of Md2AccordionTab
@@ -25,7 +32,7 @@ export var Md2Accordion = (function () {
     __decorate([
         Input(), 
         __metadata('design:type', Boolean)
-    ], Md2Accordion.prototype, "multiple", void 0);
+    ], Md2Accordion.prototype, "multiple", null);
     __decorate([
         Input(), 
         __metadata('design:type', String)

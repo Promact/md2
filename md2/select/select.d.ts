@@ -1,6 +1,5 @@
 import { AfterContentInit, AfterContentChecked, EventEmitter, OnInit, QueryList, ElementRef, ModuleWithProviders } from '@angular/core';
-import { ControlValueAccessor } from '@angular/forms';
-export declare const MD2_SELECT_CONTROL_VALUE_ACCESSOR: any;
+import { ControlValueAccessor, NgControl } from '@angular/forms';
 export declare type Md2SelectDispatcherListener = (id: string, name: string) => void;
 export declare class Md2SelectDispatcher {
     private _listeners;
@@ -13,7 +12,8 @@ export declare class Md2SelectChange {
 }
 export declare class Md2Select implements AfterContentInit, AfterContentChecked, ControlValueAccessor {
     element: ElementRef;
-    constructor(element: ElementRef);
+    _control: NgControl;
+    constructor(element: ElementRef, _control: NgControl);
     private _value;
     private _name;
     private _readonly;
@@ -25,16 +25,16 @@ export declare class Md2Select implements AfterContentInit, AfterContentChecked,
     private isMenuVisible;
     private selectedValue;
     private focusIndex;
-    private _controlValueAccessorChangeFn;
-    onTouched: () => any;
+    _onChange: (value: any) => void;
+    _onTouched: Function;
     change: EventEmitter<Md2SelectChange>;
-    _options: QueryList<Md2Option>;
+    options: QueryList<Md2Option>;
     name: string;
     tabindex: number;
     placeholder: string;
-    readonly: boolean;
-    required: boolean;
-    disabled: boolean;
+    readonly: any;
+    required: any;
+    disabled: any;
     value: any;
     selected: Md2Option;
     ngAfterContentInit(): void;
@@ -61,14 +61,14 @@ export declare class Md2Select implements AfterContentInit, AfterContentChecked,
     private updateFocus(inc);
     private onClick(e);
     private onKeyDown(event);
-    onBlur(): void;
+    _onBlur(): void;
     touch(): void;
     private _updateOptions();
     private _updateSelectedOptionValue();
     private _emitChangeEvent();
     writeValue(value: any): void;
     registerOnChange(fn: (value: any) => void): void;
-    registerOnTouched(fn: any): void;
+    registerOnTouched(fn: Function): void;
 }
 export declare class Md2Option implements OnInit {
     private selectDispatcher;

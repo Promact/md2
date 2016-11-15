@@ -27,7 +27,7 @@ import { TooltipDemo } from './tooltip/tooltip-demo';
     BrowserModule,
     FormsModule,
     HttpModule,
-    RouterModule.forRoot(DEMO_APP_ROUTES),
+    RouterModule.forRoot(DEMO_APP_ROUTES, { useHash: true }),
     Md2Module.forRoot(),
   ],
   declarations: [

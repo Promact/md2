@@ -24,6 +24,7 @@ export class Md2AccordionHeader { }
   `,
   styles: [`
     md2-accordion-tab { position: relative; display: block; outline: 0; border: 0; border-width: 0 0 1px 0; border-style: solid; border-color: rgba(0, 0, 0, 0.12); -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+    md2-accordion-tab[hidden] { display: none; }
     md2-accordion-tab.md2-accordion-tab-active { border-color: rgba(0, 0, 0, 0.12); }
     md2-accordion-tab .md2-accordion-header { position: relative; border-radius: 0; color: rgba(0, 0, 0, 0.85); font-weight: 500; cursor: pointer; display: block; align-items: inherit; line-height: 40px; margin: 0; max-height: 40px; overflow: hidden; padding: 0 35px 0 16px; text-align: left; text-decoration: none; white-space: nowrap; width: 100%; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-user-drag: none; }
     md2-accordion-tab.md2-accordion-tab-active .md2-accordion-header { color: #106cc8; }

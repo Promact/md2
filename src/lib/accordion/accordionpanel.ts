@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
 import { Md2AccordionTab } from './accordiontab';
-
+import { coerceBooleanProperty } from '../core/core';
 @Component({
   moduleId: module.id,
   selector: 'md2-accordion',
@@ -17,7 +17,11 @@ import { Md2AccordionTab } from './accordiontab';
 
 export class Md2Accordion {
 
-  @Input() multiple: boolean;
+  private _multiple: boolean;
+
+  @Input()
+  get multiple(): boolean { return this._multiple; }
+  set multiple(value) { this._multiple = coerceBooleanProperty(value); }
 
   @Input() class: string = '';
 

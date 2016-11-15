@@ -1,3 +1,11 @@
+<a name="0.0.8"></a>
+## [0.0.8](https://github.com/Promact/md2/compare/0.0.7...v0.0.8) (2016-11-15)
+
+### Bug Fixes
+
+* fix(accordion) multiple boolean issue
+
+
 <a name="0.0.7"></a>
 ## [0.0.7](https://github.com/Promact/md2/compare/0.0.6...v0.0.7) (2016-11-11)
 

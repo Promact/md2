@@ -5,6 +5,7 @@ import {
   PortalModule,
   OverlayModule,
   A11yModule,
+  ProjectionModule,
   StyleCompatibilityModule,
 } from './core/index';
 
@@ -45,6 +46,7 @@ const MD2_MODULES = [
   PortalModule,
   RtlModule,
   A11yModule,
+  ProjectionModule,
   StyleCompatibilityModule,
 ];
 
@@ -66,6 +68,7 @@ const MD2_MODULES = [
     Md2ToastModule.forRoot(),
     Md2TooltipModule.forRoot(),
     PortalModule.forRoot(),
+    ProjectionModule.forRoot(),
     RtlModule.forRoot(),
     A11yModule.forRoot(),
     OverlayModule.forRoot(),

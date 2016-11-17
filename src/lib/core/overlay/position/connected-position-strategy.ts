@@ -5,9 +5,11 @@ import {applyCssTransform} from '../../style/apply-transform';
 import {
     ConnectionPositionPair,
     OriginConnectionPosition,
-    OverlayConnectionPosition
+    OverlayConnectionPosition,
+    ConnectedOverlayPositionChange
 } from './connected-position';
-
+import {Subject} from 'rxjs/Subject';
+import {Observable} from 'rxjs/Observable';
 
 /**
  * A strategy for positioning overlays. Using this strategy, an overlay is given an
@@ -36,6 +38,13 @@ export class ConnectedPositionStrategy implements PositionStrategy {
   /** The origin element against which the overlay will be positioned. */
   private _origin: HTMLElement;
 
+  private _onPositionChange:
+      Subject<ConnectedOverlayPositionChange> = new Subject<ConnectedOverlayPositionChange>();
+
+  /** Emits an event when the connection point changes. */
+  get onPositionChange(): Observable<ConnectedOverlayPositionChange> {
+    return this._onPositionChange.asObservable();
+  }
 
   constructor(
       private _connectedTo: ElementRef,
@@ -77,6 +86,7 @@ export class ConnectedPositionStrategy implements PositionStrategy {
       // If the overlay in the calculated position fits on-screen, put it there and we're done.
       if (this._willOverlayFitWithinViewport(overlayPoint, overlayRect, viewportRect)) {
         this._setElementPosition(element, overlayPoint);
+        this._onPositionChange.next(new ConnectedOverlayPositionChange(pos));
         return Promise.resolve(null);
       }
     }

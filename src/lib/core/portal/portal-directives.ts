@@ -57,7 +57,9 @@ export class PortalHostDirective extends BasePortalHost implements OnDestroy {
   }
 
   set portal(p: Portal<any>) {
-    this._replaceAttachedPortal(p);
+    if (p) {
+      this._replaceAttachedPortal(p);
+    }
   }
 
   ngOnDestroy() {
@@ -95,7 +97,7 @@ export class PortalHostDirective extends BasePortalHost implements OnDestroy {
     return new Map<string, any>();
   }
 
-  /** Detatches the currently attached Portal (if there is one) and attaches the given Portal. */
+  /** Detaches the currently attached Portal (if there is one) and attaches the given Portal. */
   private _replaceAttachedPortal(p: Portal<any>): void {
     if (this.hasAttached()) {
       this.detach();

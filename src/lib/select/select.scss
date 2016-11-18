@@ -1,153 +1,7 @@
-$primary: #2196f3;
-$warn: #f44336;
-
-md2-select {
-    position: relative;
-    display: block;
-    margin: 18px 0;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    -moz-backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-}
-
-md2-select:focus {
-    outline: none;
-}
-
-md2-select.md2-select-disabled {
-    pointer-events: none;
-    cursor: default;
-}
-
-md2-select .md2-select-container {
-    position: relative;
-    width: 100%;
-    min-width: 64px;
-    min-height: 30px;
-    align-items: center;
-    padding: 2px 26px 1px 2px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-    box-sizing: border-box;
-    cursor: pointer;
-}
-
-md2-select:focus .md2-select-container {
-    padding-bottom: 0;
-    border-bottom: 2px solid #106cc8;
-}
-
-md2-select.md2-select-disabled .md2-select-container {
-    color: rgba(0,0,0,0.38);
-    border-color: transparent;
-    background-image: linear-gradient(to right, rgba(0,0,0,0.38) 0%, rgba(0,0,0,0.38) 33%, transparent 0%);
-    background-position: bottom -1px left 0;
-    background-size: 4px 1px;
-    background-repeat: repeat-x;
-    cursor: default;
-}
-
-md2-select.md2-select-disabled:focus .md2-select-container {
-    padding-bottom: 1px;
-    border-bottom: 1px solid transparent;
-}
-
-md2-select .md2-select-container .md2-select-placeholder {
-    position: absolute;
-    right: 26px;
-    bottom: 100%;
-    left: 0;
-    color: rgba(0,0,0,0.38);
-    max-width: 100%;
-    padding-left: 3px;
-    padding-right: 0;
-    line-height: 1.4;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    pointer-events: none;
-    z-index: 1;
-    transform: translate3d(0,26px,0) scale(1);
-    transition: transform .4s cubic-bezier(.25,.8,.25,1);
-    transform-origin: left top;
-    color: rgba(0, 0, 0, 0.38);
-}
-
-[aria-required=true] .md2-select-placeholder::after {
-    content: '*';
-}
-/*md2-select:focus:not(.md2-select-disabled) { color: $primary; border-bottom: 1px solid $primary; }
-.ng-invalid.ng-touched:not(.md2-select-disabled) { color: $warn; border-bottom: 1px solid $warn; }*/
-md2-select:focus .md2-select-placeholder {
-    color: #2196f3;
-}
-
-md2-select:focus .md2-select-placeholder,
-md2-select .md2-select-placeholder.has-value {
-    transform: translate3d(0,6px,0) scale(.75);
-}
-
-md2-select.md2-select-disabled:focus .md2-select-placeholder,
-md2-select .md2-select-container .md2-select-value {
-    display: block;
-    font-size: 15px;
-    line-height: 26px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-md2-select .md2-select-container svg {
-    position: absolute;
-    right: 0;
-    top: 2px;
-    display: block;
-    fill: currentColor;
-    color: rgba(0,0,0,0.54);
-}
-
-md2-select .md2-select-menu {
-    position: absolute;
-    left: 0;
-    top: 0;
-    display: none;
-    z-index: 10;
-    -ms-flex-direction: column;
-    -webkit-flex-direction: column;
-    flex-direction: column;
-    width: 100%;
-    margin: 0;
-    padding: 8px 0;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-    max-height: 256px;
-    min-height: 48px;
-    overflow-y: auto;
-    -moz-transform: scale(1);
-    -ms-transform: scale(1);
-    -o-transform: scale(1);
-    -webkit-transform: scale(1);
-    transform: scale(1);
-    background: #fff;
-}
-
-md2-select .md2-select-menu.open {
-    display: block;
-}
-
-$foreground: #000;
-$background: #fff;
-$primary: #2196f3;
-$warn: #f44336;
-
 $md2-select-trigger-height: 30px !default;
 $md2-select-trigger-min-width: 112px !default;
 $md2-select-arrow-size: 5px !default;
-$md2-underline-disabled-background-image: linear-gradient(to right, rgba(0, 0, 0, 0.26) 0%, rgba(0, 0, 0, 0.26) 33%, transparent 0%);
-$md2-menu-overlay-min-width: 112px !default; // 56 * 2
-$md2-menu-overlay-max-width: 280px !default; // 56 * 5
+$md2-select-arrow-margin: 4px !default;
 
 md2-select {
     display: inline-block;
@@ -161,27 +15,14 @@ md2-select {
     height: $md2-select-trigger-height;
     min-width: $md2-select-trigger-min-width;
     cursor: pointer;
-    color: $foreground;
-    border-bottom: 1px solid $foreground;
+    position: relative;
 
     [aria-disabled='true'] & {
-        background-image: $md2-underline-disabled-background-image;
-        background-size: 4px 1px;
-        background-repeat: repeat-x;
+        /*@include md2-control-disabled-underline();*/
         border-bottom: transparent;
         background-position: 0 bottom;
         cursor: default;
         user-select: none;
-    }
-
-    md2-select:focus:not(.md2-select-disabled) & {
-        color: $primary;
-        border-bottom: 1px solid $primary;
-    }
-
-    .ng-invalid.ng-touched:not(.md2-select-disabled) & {
-        color: $warn;
-        border-bottom: 1px solid $warn;
     }
 }
 
@@ -200,10 +41,22 @@ md2-select {
 
 .md2-select-value {
     position: absolute;
-    color: $foreground;
+    // Firefox and some versions of IE incorrectly keep absolutely
+    // positioned children of flex containers in the flex flow when calculating
+    // position. This has been fixed for Firefox 52, slated for early 2017.
+    // Bug report: https://bugzilla.mozilla.org/show_bug.cgi?id=874718
+    //
+    // In the meantime, we must adjust the left position to 0 to mimic where it
+    // would be if it were correctly taken out of the flex flow. It's also necessary
+    // to adjust the top value because absolutely positioned elements should not be
+    // affected by the flex container's "align-items" property either. To center the text,
+    // we must offset by 6px (6px top + 6px bottom + 18px text height = 30px total height).
+    left: 0;
+    top: 6px;
 
-    .md2-select-disabled & {
-        color: $foreground;
+    [dir='rtl'] & {
+        left: auto;
+        right: 0;
     }
 }
 
@@ -213,45 +66,18 @@ md2-select {
     border-left: $md2-select-arrow-size solid transparent;
     border-right: $md2-select-arrow-size solid transparent;
     border-top: $md2-select-arrow-size solid;
-    color: $foreground;
-
-    md2-select:focus:not(.md2-select-disabled) & {
-        color: $primary;
-    }
-
-    .ng-invalid.ng-touched:not(.md2-select-disabled) & {
-        color: $warn;
-    }
+    margin: 0 $md2-select-arrow-margin;
 }
 
 .md2-select-panel {
-    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
-    min-width: $md2-menu-overlay-min-width;
-    max-width: $md2-menu-overlay-max-width;
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
+    /*@include md2-menu-base();*/
     padding-top: 0;
     padding-bottom: 0;
     transform-origin: top;
 }
 
-.md2-select-content {
-    background: $background;
-}
-
 md2-option {
-    white-space: nowrap;
-    overflow-x: hidden;
-    text-overflow: ellipsis;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    height: 48px;
-    padding: 0 16px;
-    font-size: 16px;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
-    text-align: start;
-    text-decoration: none;
+    /*@include md2-menu-item-base();*/
     position: relative;
     cursor: pointer;
     outline: none;
@@ -260,17 +86,12 @@ md2-option {
         cursor: default;
         user-select: none;
     }
+}
 
-    &:hover:not(.md2-option-disabled), &:focus:not(.md2-option-disabled) {
-        background: $background;
-    }
-
-    &.md2-selected {
-        background: $background;
-        color: $primary;
-    }
-
-    &.md2-option-disabled {
-        color: $foreground;
-    }
+.md2-option-ripple {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
 }

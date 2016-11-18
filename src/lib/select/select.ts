@@ -11,30 +11,33 @@ import {
   QueryList,
   Renderer,
   ViewEncapsulation,
-  ViewChild,
-  NgModule,
-  ModuleWithProviders
+  ViewChild
 } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
-import { ControlValueAccessor, NgControl } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { transformPlaceholder, transformPanel, fadeInContent } from './select-animations';
-import { ENTER, SPACE } from '../core/keyboard/keycodes';
-import { coerceBooleanProperty } from '../core/coersion/boolean-property';
+import {Md2Option} from './option';
+import {ENTER, SPACE} from '../core/keyboard/keycodes';
+import {ListKeyManager} from '../core/a11y/list-key-manager';
+import {Dir} from '../core/rtl/dir';
+import {Subscription} from 'rxjs/Subscription';
+import {transformPlaceholder, transformPanel, fadeInContent} from './select-animations';
+import {ControlValueAccessor, NgControl} from '@angular/forms';
+import {coerceBooleanProperty} from '../core/coersion/boolean-property';
+import {ConnectedOverlayPositionChange} from '../core/overlay/position/connected-position';
 
 @Component({
   moduleId: module.id,
   selector: 'md2-select',
   templateUrl: 'select.html',
   styleUrls: ['select.css'],
+  encapsulation: ViewEncapsulation.None,
   host: {
-    'role': 'select',
-    '[tabindex]': 'disabled ? -1 : tabindex',
+    'role': 'listbox',
+    '[attr.tabindex]': '_getTabIndex()',
     '[attr.aria-label]': 'placeholder',
     '[attr.aria-required]': 'required.toString()',
     '[attr.aria-disabled]': 'disabled.toString()',
-    '[class.md2-select-disabled]': 'disabled',
     '[attr.aria-invalid]': '_control?.invalid || "false"',
+    '[attr.aria-owns]': '_optionIds',
+    '[class.md2-select-disabled]': 'disabled',
     '(keydown)': '_handleKeydown($event)',
     '(blur)': '_onBlur()'
   },
@@ -43,22 +46,67 @@ import { coerceBooleanProperty } from '../core/coersion/boolean-property';
     transformPanel,
     fadeInContent
   ],
-  encapsulation: ViewEncapsulation.None
+  exportAs: 'md2Select',
 })
 export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDestroy {
-
+  /** Whether or not the overlay panel is open. */
   private _panelOpen = false;
+
+  /** The currently selected option. */
   private _selected: Md2Option;
+
+  /** Subscriptions to option events. */
   private _subscriptions: Subscription[] = [];
+
+  /** Subscription to changes in the option list. */
   private _changeSubscription: Subscription;
+
+  /** Subscription to tab events while overlay is focused. */
   private _tabSubscription: Subscription;
 
+  /** Whether filling out the select is required in the form.  */
   private _required: boolean = false;
+
+  /** Whether the select is disabled.  */
   private _disabled: boolean = false;
 
-  _onChange: (value: any) => void;
-  _onTouched: Function;
+  /** Manages keyboard events for options in the panel. */
+  _keyManager: ListKeyManager;
 
+  /** View -> model callback called when value changes */
+  _onChange: (value: any) => void;
+
+  /** View -> model callback called when select has been touched */
+  _onTouched = () => {};
+
+  /** The IDs of child options to be passed to the aria-owns attribute. */
+  _optionIds: string = '';
+
+  /** The value of the select panel's transform-origin property. */
+  _transformOrigin: string = 'top';
+
+  /**
+   * This position config ensures that the top "start" corner of the overlay
+   * is aligned with with the top "start" of the origin by default (overlapping
+   * the trigger completely). If the panel cannot fit below the trigger, it
+   * will fall back to a position above the trigger.
+   */
+  _positions = [
+    {
+      originX: 'start',
+      originY: 'top',
+      overlayX: 'start',
+      overlayY: 'top',
+    },
+    {
+      originX: 'start',
+      originY: 'bottom',
+      overlayX: 'start',
+      overlayY: 'bottom',
+    },
+  ];
+
+  @ViewChild('trigger') trigger: ElementRef;
   @ContentChildren(Md2Option) options: QueryList<Md2Option>;
 
   @Input() placeholder: string;
@@ -85,18 +133,16 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
   @Output() onClose = new EventEmitter();
 
   constructor(private _element: ElementRef, private _renderer: Renderer,
-    @Optional() public _control: NgControl) {
-    this._control.valueAccessor = this;
+              @Optional() private _dir: Dir, @Optional() public _control: NgControl) {
+    if (this._control) {
+      this._control.valueAccessor = this;
+    }
   }
 
   ngAfterContentInit() {
     this._initKeyManager();
-    this._listenToOptions();
-
-    this._changeSubscription = this.options.changes.subscribe(() => {
-      this._dropSubscriptions();
-      this._listenToOptions();
-    });
+    this._resetOptions();
+    this._changeSubscription = this.options.changes.subscribe(() => this._resetOptions());
   }
 
   ngOnDestroy() {
@@ -152,7 +198,7 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
    * by the user. Part of the ControlValueAccessor interface required
    * to integrate with Angular's core forms API.
    */
-  registerOnTouched(fn: Function): void {
+  registerOnTouched(fn: () => {}): void {
     this._onTouched = fn;
   }
 
@@ -174,10 +220,21 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
     return this._selected;
   }
 
+  _isRtl(): boolean {
+    return this._dir ? this._dir.value === 'rtl' : false;
+  }
+
+  /** The width of the trigger element. This is necessary to match
+   * the overlay width to the trigger width.
+   */
+  _getWidth(): number {
+    return this.trigger.nativeElement.getBoundingClientRect().width;
+  }
+
   /** The animation state of the placeholder. */
   _getPlaceholderState(): string {
     if (this.panelOpen || this.selected) {
-      return 'floating-ltr';
+      return this._isRtl() ? 'floating-rtl' : 'floating-ltr';
     } else {
       return 'normal';
     }
@@ -185,7 +242,7 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
 
   /** The animation state of the overlay panel. */
   _getPanelState(): string {
-    return 'showing-ltr';
+    return this._isRtl() ? `${this._transformOrigin}-rtl` : `${this._transformOrigin}-ltr`;
   }
 
   /** Ensures the panel opens if activated by the keyboard. */
@@ -223,12 +280,27 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
     return this.disabled ? '-1' : '0';
   }
 
+  /**
+   * Sets the transform-origin property of the panel to ensure that it
+   * animates in the correct direction based on its positioning.
+   */
+  _updateTransformOrigin(pos: ConnectedOverlayPositionChange): void {
+    this._transformOrigin = pos.connectionPair.originY;
+  }
+
   /** Sets up a key manager to listen to keyboard events on the overlay panel. */
   private _initKeyManager() {
-    //this._keyManager = new ListKeyManager(this.options);
-    //this._tabSubscription = this._keyManager.tabOut.subscribe(() => {
-    //  this.close();
-    //});
+    this._keyManager = new ListKeyManager(this.options);
+    this._tabSubscription = this._keyManager.tabOut.subscribe(() => {
+      this.close();
+    });
+  }
+
+  /** Drops current option subscriptions and IDs and resets from scratch. */
+  private _resetOptions(): void {
+    this._dropSubscriptions();
+    this._listenToOptions();
+    this._setOptionIds();
   }
 
   /** Listens to selection events on each option. */
@@ -248,6 +320,11 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
   private _dropSubscriptions(): void {
     this._subscriptions.forEach((sub: Subscription) => sub.unsubscribe());
     this._subscriptions = [];
+  }
+
+  /** Records option IDs to pass to the aria-owns property. */
+  private _setOptionIds() {
+    this._optionIds = this.options.map(option => option.id).join(' ');
   }
 
   /** When a new option is selected, deselects the others and closes the panel. */
@@ -270,11 +347,11 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
    * the first item instead.
    */
   private _focusCorrectOption(): void {
-    //if (this.selected) {
-    //  this._keyManager.setFocus(this._getOptionIndex(this.selected));
-    //} else {
-    //  this._keyManager.focusFirstItem();
-    //}
+    if (this.selected) {
+      this._keyManager.setFocus(this._getOptionIndex(this.selected));
+    } else {
+      this._keyManager.focusFirstItem();
+    }
   }
 
   /** Focuses the host element when the panel closes. */
@@ -289,373 +366,4 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
     }, undefined);
   }
 
-
-
-
-
-  //constructor(public element: ElementRef, @Optional() public _control: NgControl) {
-  //  this._control.valueAccessor = this;
-  //}
-
-  //private _value: any = null;
-  //private _name: string = 'md2-select-' + _uniqueIdCounter++;
-  //private _readonly: boolean = false;
-  //private _required: boolean = false;
-  //private _disabled: boolean = false;
-  ////private _multiple: boolean;
-  //private _selected: Md2Option = null;
-  //private _isInitialized: boolean = false;
-
-  //private isOpenable: boolean = true;
-  //private isMenuVisible: boolean = false;
-  //private selectedValue: string = '';
-
-  //private focusIndex: number = 0;
-
-  //_onChange: (value: any) => void;
-  //_onTouched: Function;
-
-  //@Output() change: EventEmitter<Md2SelectChange> = new EventEmitter<Md2SelectChange>();
-
-  //@ContentChildren(forwardRef(() => Md2Option))
-  //public options: QueryList<Md2Option> = null;
-
-  //@Input() get name(): string { return this._name; }
-  //set name(value: string) {
-  //  this._name = value;
-  //  this._updateOptions();
-  //}
-
-  //@Input() tabindex: number = 0;
-  //@Input() placeholder: string = '';
-
-  //@Input()
-  //get readonly() { return this._readonly; }
-  //set readonly(value: any) { this._readonly = coerceBooleanProperty(value); }
-
-  //@Input()
-  //get required() { return this._required; }
-  //set required(value: any) { this._required = coerceBooleanProperty(value); }
-
-  //@HostBinding('class.md2-select-disabled')
-  //@Input()
-  //get disabled() { return this._disabled; }
-  //set disabled(value: any) { this._disabled = coerceBooleanProperty(value); }
-
-  ////@Input()
-  ////get multiple(): boolean { return this._multiple; }
-  ////set multiple(value) { this._multiple = coerceBooleanProperty(value); }
-
-  //@Input()
-  //get value(): any { return this._value; }
-  //set value(value: any) {
-  //  if (this._value !== value) {
-  //    this._value = value;
-  //    this._updateSelectedOptionValue();
-  //    if (this._isInitialized) {
-  //      this._emitChangeEvent();
-  //    }
-  //  }
-  //}
-
-  //@Input()
-  //get selected() { return this._selected; }
-  //set selected(selected: Md2Option) {
-  //  this._selected = selected;
-  //  if (selected) {
-  //    this.value = selected.value;
-  //    if (!selected.selected) { selected.selected = true; }
-  //    this.selectedValue = selected.text;
-  //  } else { this.selectedValue = ''; }
-  //}
-
-  //ngAfterContentInit() { this._isInitialized = true; }
-
-  //ngAfterContentChecked() {
-  //  let opt = this.options.filter(o => this.equals(o.value, this.value))[0];
-  //  if (opt && !this.equals(this.selected, opt)) {
-  //    this.selectedValue = opt.text;
-  //  }
-  //  if (this.selected && this.selectedValue !== this.selected.text) {
-  //    this.selectedValue = this.selected.text;
-  //  }
-  //}
-
-  ///**
-  // * Compare two vars or objects
-  // * @param o1 compare first object
-  // * @param o2 compare second object
-  // * @return boolean comparation result
-  // */
-  //private equals(o1: any, o2: any) {
-  //  if (o1 === o2) { return true; }
-  //  if (o1 === null || o2 === null) { return false; }
-  //  if (o1 !== o1 && o2 !== o2) { return true; }
-  //  let t1 = typeof o1, t2 = typeof o2, length: any, key: any, keySet: any;
-  //  if (t1 === t2 && t1 === 'object') {
-  //    keySet = Object.create(null);
-  //    for (key in o1) {
-  //      if (!this.equals(o1[key], o2[key])) { return false; }
-  //      keySet[key] = true;
-  //    }
-  //    for (key in o2) {
-  //      if (!(key in keySet) && key.charAt(0) !== '$' && o2[key]) { return false; }
-  //    }
-  //    return true;
-  //  }
-  //  return false;
-  //}
-
-  ///**
-  // * To update scroll to position of focused option
-  // */
-  //private updateScroll() {
-  //  if (this.focusIndex < 0) { return; }
-  //  let menuContainer = this.element.nativeElement.querySelector('.md2-select-menu');
-  //  if (!menuContainer) { return; }
-
-  //  let choices = menuContainer.querySelectorAll('md2-option');
-  //  if (choices.length < 1) { return; }
-
-  //  let highlighted: any = choices[this.focusIndex];
-  //  if (!highlighted) { return; }
-
-  //  let top: number = highlighted.offsetTop + highlighted.clientHeight - menuContainer.scrollTop;
-  //  let height: number = menuContainer.offsetHeight;
-
-  //  if (top > height) {
-  //    menuContainer.scrollTop += top - height;
-  //  } else if (top < highlighted.clientHeight) {
-  //    menuContainer.scrollTop -= highlighted.clientHeight - top;
-  //  }
-  //}
-
-  ///**
-  // * get index of focused option
-  // */
-  //private getFocusIndex(): number { return this.options.toArray().findIndex((o: any) => o.focused); }
-
-  ///**
-  // * update focused option
-  // * @param inc
-  // */
-  //private updateFocus(inc: number) {
-  //  let options = this.options.toArray();
-  //  let index = this.focusIndex;
-  //  options.forEach(o => { if (o.focused) { o.focused = false; } });
-  //  let option: any;
-  //  do {
-  //    index += inc;
-  //    if (index < 0) { index = options.length - 1; }
-  //    if (index > options.length - 1) { index = 0; }
-  //    option = options[index];
-  //    this.focusIndex = index;
-  //    if (option.disabled) { option = undefined; }
-  //  } while (!option);
-  //  if (option) { option.focused = true; }
-  //  this.updateScroll();
-  //}
-
-  //@HostListener('click', ['$event'])
-  //private onClick(e: any) {
-  //  if (this.disabled || this.readonly) {
-  //    e.stopPropagation();
-  //    e.preventDefault();
-  //    return;
-  //  }
-  //  if (this.isOpenable) {
-  //    if (!this.isMenuVisible) {
-  //      this.options.forEach(o => {
-  //        o.focused = false;
-  //        if (o.selected) { o.focused = true; }
-  //      });
-  //      this.focusIndex = this.getFocusIndex();
-  //      this.isMenuVisible = true;
-  //      setTimeout(() => {
-  //        this.updateScroll();
-  //      }, 0);
-  //      this.element.nativeElement.focus();
-  //    }
-  //  }
-  //  this.isOpenable = true;
-  //}
-
-  //@HostListener('keydown', ['$event'])
-  //private onKeyDown(event: any) {
-  //  if (this.disabled) { return; }
-
-  //  if (this.isMenuVisible) {
-  //    event.preventDefault();
-  //    event.stopPropagation();
-
-  //    switch (event.keyCode) {
-  //      case KeyCodes.TAB:
-  //      case KeyCodes.ESCAPE: this._onBlur(); break;
-  //      case KeyCodes.ENTER:
-  //      case KeyCodes.SPACE: this.options.toArray()[this.focusIndex].onOptionClick(event); break;
-
-  //      case KeyCodes.DOWN_ARROW: this.updateFocus(1); break;
-  //      case KeyCodes.UP_ARROW: this.updateFocus(-1); break;
-  //    }
-  //  } else {
-  //    switch (event.keyCode) {
-  //      case KeyCodes.ENTER:
-  //      case KeyCodes.SPACE:
-  //      case KeyCodes.DOWN_ARROW:
-  //      case KeyCodes.UP_ARROW:
-  //        event.preventDefault();
-  //        event.stopPropagation();
-  //        this.onClick(event);
-  //        break;
-  //    }
-  //  }
-  //}
-
-  //@HostListener('blur')
-  //_onBlur() {
-  //  if (this.isMenuVisible) {
-  //    this.isMenuVisible = false;
-  //    this.isOpenable = false;
-  //    setTimeout(() => {
-  //      this.isOpenable = true;
-  //    }, 200);
-  //  } else { this._onTouched(); }
-  //}
-
-  //touch() {
-  //  if (this._onTouched) {
-  //    this._onTouched();
-  //  }
-  //}
-
-  //private _updateOptions(): void {
-  //  if (this.options) {
-  //    this.options.forEach((option: any) => {
-  //      option.name = this.name;
-  //    });
-  //  }
-  //}
-
-  //private _updateSelectedOptionValue(): void {
-  //  let isAlreadySelected = this.selected !== null && this.selected.value === this.value;
-
-  //  if (this.options !== null && !isAlreadySelected) {
-  //    let matchingOption = this.options.filter((option: any) => option.value === this.value)[0];
-
-  //    if (matchingOption) {
-  //      this.selected = matchingOption;
-  //    } else {
-  //      this.selected = null;
-  //      this.options.forEach(option => { option.selected = false; });
-  //    }
-  //  }
-  //}
-
-  //private _emitChangeEvent(): void {
-  //  let event = new Md2SelectChange();
-  //  event.source = this;
-  //  event.value = this.value;
-  //  this._onChange(event.value);
-  //  this.change.emit(event);
-  //}
-
-  //writeValue(value: any) {
-  //  if (!this.options) { return; }
-  //  //this.options.forEach((option: Md2Option) => {
-  //  //  if (option.value === value) {
-  //  //  }
-  //  //});
-  //  if (this._value !== value) {
-  //    this._value = value;
-  //    this._updateSelectedOptionValue();
-  //  }
-  //}
-
-  //registerOnChange(fn: (value: any) => void): void { this._onChange = fn; }
-
-  //registerOnTouched(fn: Function): void { this._onTouched = fn; }
-
-}
-
-@Component({
-  moduleId: module.id,
-  selector: 'md2-option',
-  template: '<ng-content></ng-content>',
-  styles: [`
-    md2-option { position: relative; display: block; width: 100%; padding: 12px 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 16px; cursor: pointer; box-sizing: border-box; transition: background 400ms linear; }
-    md2-option.md2-selected { color: #106cc8; }
-    md2-option:hover,
-    md2-option.md2-focused { background: #eeeeee; }
-    md2-option.md2-option-disabled,
-    md2-option.md2-option-disabled:hover { color: rgba(189,189,189,0.87); cursor: default; background: transparent; }
-    /*md2-select[multiple] md2-option { padding-left: 40px; }
-    md2-select[multiple] md2-option:after { content: ''; position: absolute; top: 50%; left: 12px; display: block; width: 16px; height: 16px; margin-top: -8px; border: 2px solid rgba(0,0,0,0.54); border-radius: 2px; box-sizing: border-box; transition: 240ms; }
-    md2-select[multiple] md2-option.md2-selected:after { transform: rotate(-45deg); height: 8px; border-width: 0 0 2px 2px; border-color: #106cc8; }
-    md2-select[multiple] md2-option.md2-option-disabled:after { border-color: rgba(187,187,187,0.54); }*/
-  `],
-  host: {
-    'role': 'option',
-    '[class.md2-selected]': 'selected',
-    '[attr.aria-selected]': 'selected.toString()',
-    '[attr.aria-disabled]': 'disabled.toString()',
-    '[class.md2-option-disabled]': 'disabled',
-    '(click)': '_handleClick($event)'
-  },
-  encapsulation: ViewEncapsulation.None
-})
-export class Md2Option {
-
-  private _selected: boolean = false;
-  private _disabled: boolean = false;
-
-  @Input() value: any;
-
-  @Input()
-  get disabled() { return this._disabled; }
-  set disabled(value: any) { this._disabled = coerceBooleanProperty(value); }
-
-  @Output() onSelect = new EventEmitter();
-
-  constructor(private _element: ElementRef) { }
-
-  get selected(): boolean {
-    return this._selected;
-  }
-
-  get viewValue(): string {
-    return this._element.nativeElement.textContent.trim();
-  }
-
-  select(): void {
-    this._selected = true;
-    this.onSelect.emit();
-  }
-
-  deselect(): void {
-    this._selected = false;
-  }
-
-  _handleClick(event: MouseEvent): void {
-    if (!this.disabled) {
-      this._selected = true;
-      this.onSelect.emit(true);
-    }
-  }
-
-}
-
-export const MD2_SELECT_DIRECTIVES = [Md2Select, Md2Option];
-
-@NgModule({
-  imports: [CommonModule],
-  exports: MD2_SELECT_DIRECTIVES,
-  declarations: MD2_SELECT_DIRECTIVES,
-})
-export class Md2SelectModule {
-  static forRoot(): ModuleWithProviders {
-    return {
-      ngModule: Md2SelectModule,
-      providers: []
-    };
-  }
 }

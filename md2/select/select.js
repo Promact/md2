@@ -55,11 +55,14 @@ export var Md2Select = (function () {
         this.isMenuVisible = false;
         this.selectedValue = '';
         this.focusIndex = 0;
+        this._onTouched = function () { };
         this.change = new EventEmitter();
         this.options = null;
         this.tabindex = 0;
         this.placeholder = '';
-        this._control.valueAccessor = this;
+        if (this._control) {
+            this._control.valueAccessor = this;
+        }
     }
     Object.defineProperty(Md2Select.prototype, "name", {
         get: function () { return this._name; },
@@ -336,7 +339,9 @@ export var Md2Select = (function () {
         var event = new Md2SelectChange();
         event.source = this;
         event.value = this.value;
-        this._onChange(event.value);
+        if (this._control) {
+            this._onChange(event.value);
+        }
         this.change.emit(event);
     };
     Md2Select.prototype.writeValue = function (value) {

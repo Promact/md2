@@ -12,7 +12,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { PRIMARY_OUTLET } from './shared';
-import { UrlSegment } from './url_tree';
+import { UrlSegment, equalSegments } from './url_tree';
 import { merge, shallowEqual, shallowEqualArrays } from './utils/collection';
 import { Tree, TreeNode } from './utils/tree';
 /**
@@ -416,10 +416,12 @@ export function advanceActivatedRoute(route) {
         }
         if (!shallowEqual(route.snapshot.params, route._futureSnapshot.params)) {
             route.params.next(route._futureSnapshot.params);
-            route.data.next(route._futureSnapshot.data);
         }
         if (!shallowEqualArrays(route.snapshot.url, route._futureSnapshot.url)) {
             route.url.next(route._futureSnapshot.url);
+        }
+        if (!equalParamsAndUrlSegments(route.snapshot, route._futureSnapshot)) {
+            route.data.next(route._futureSnapshot.data);
         }
         route.snapshot = route._futureSnapshot;
     }
@@ -428,5 +430,8 @@ export function advanceActivatedRoute(route) {
         // this is for resolved data
         route.data.next(route._futureSnapshot.data);
     }
+}
+export function equalParamsAndUrlSegments(a, b) {
+    return shallowEqual(a.params, b.params) && equalSegments(a.url, b.url);
 }
 //# sourceMappingURL=router_state.js.map

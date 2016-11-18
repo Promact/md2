@@ -20,3 +20,8 @@ export declare class ConnectionPositionPair {
     overlayY: VerticalConnectionPos;
     constructor(origin: OriginConnectionPosition, overlay: OverlayConnectionPosition);
 }
+/** The change event emitted by the strategy when a fallback position is used. */
+export declare class ConnectedOverlayPositionChange {
+    connectionPair: ConnectionPositionPair;
+    constructor(connectionPair: ConnectionPositionPair);
+}

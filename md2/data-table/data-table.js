@@ -14,6 +14,7 @@ import { Component, Directive, Input, EventEmitter, Optional, NgModule, ViewEnca
 import { CommonModule } from '@angular/common';
 export var Md2DataTable = (function () {
     function Md2DataTable() {
+        this.dataLength = 0;
         this.onDataChange = new EventEmitter();
         this.onSortChange = new EventEmitter();
         this.onPageChange = new EventEmitter();
@@ -73,6 +74,17 @@ export var Md2DataTable = (function () {
         }
     };
     Md2DataTable.prototype.ngDoCheck = function () {
+        if (this.dataLength !== this.inputData.length) {
+            this.dataLength = this.inputData.length;
+            this.fillData();
+            this.recalculatePage();
+            this.onPageChange.emit({
+                activePage: this.activePage,
+                pageLength: this.pageLength,
+                dataLength: this.inputData.length
+            });
+            this.isDataChanged = true;
+        }
         if (this.isDataChanged) {
             this.fillData();
             this.isDataChanged = false;

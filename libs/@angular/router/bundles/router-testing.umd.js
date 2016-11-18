@@ -1,9 +1,8 @@
 /**
- * @license Angular v3.1.2
+ * @license Angular v3.2.1
  * (c) 2010-2016 Google, Inc. https://angular.io/
  * License: MIT
- */
-(function (global, factory) {
+ */(function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/common'), require('@angular/common/testing'), require('@angular/core'), require('@angular/router')) :
     typeof define === 'function' && define.amd ? define(['exports', '@angular/common', '@angular/common/testing', '@angular/core', '@angular/router'], factory) :
     (factory((global.ng = global.ng || {}, global.ng.router = global.ng.router || {}, global.ng.router.testing = global.ng.router.testing || {}),global.ng.common,global.ng.common.testing,global.ng.core,global.ng.router));
@@ -91,8 +90,12 @@
      *
      * @stable
      */
-    function setupTestingRouter(urlSerializer, outletMap, location, loader, compiler, injector, routes) {
-        return new _angular_router.Router(null, urlSerializer, outletMap, location, injector, loader, compiler, flatten(routes));
+    function setupTestingRouter(urlSerializer, outletMap, location, loader, compiler, injector, routes, urlHandlingStrategy) {
+        var router = new _angular_router.Router(null, urlSerializer, outletMap, location, injector, loader, compiler, flatten(routes));
+        if (urlHandlingStrategy) {
+            router.urlHandlingStrategy = urlHandlingStrategy;
+        }
+        return router;
     }
     /**
      * @whatItDoes Sets up the router to be used for testing.
@@ -135,7 +138,8 @@
                                 provide: _angular_router.Router,
                                 useFactory: setupTestingRouter,
                                 deps: [
-                                    _angular_router.UrlSerializer, _angular_router.RouterOutletMap, _angular_common.Location, _angular_core.NgModuleFactoryLoader, _angular_core.Compiler, _angular_core.Injector, ROUTES
+                                    _angular_router.UrlSerializer, _angular_router.RouterOutletMap, _angular_common.Location, _angular_core.NgModuleFactoryLoader, _angular_core.Compiler, _angular_core.Injector, ROUTES,
+                                    [_angular_router.UrlHandlingStrategy, new _angular_core.Optional()]
                                 ]
                             },
                             { provide: _angular_router.PreloadingStrategy, useExisting: _angular_router.NoPreloading }, _angular_router.provideRoutes([])

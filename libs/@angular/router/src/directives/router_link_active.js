@@ -46,6 +46,14 @@ import { RouterLink, RouterLinkWithHref } from './router_link';
  * true}">Bob</a>
  * ```
  *
+ * You can assign the RouterLinkActive instance to a template variable and directly check
+ * the `isActive` status.
+ * ```
+ * <a routerLink="/user/bob" routerLinkActive #rla="routerLinkActive">
+ *   Bob {{ rla.isActive ? '(already open)' : ''}}
+ * </a>
+ * ```
+ *
  * Finally, you can apply the RouterLinkActive directive to an ancestor of a RouterLink.
  *
  * ```
@@ -77,6 +85,11 @@ export var RouterLinkActive = (function () {
             }
         });
     }
+    Object.defineProperty(RouterLinkActive.prototype, "isActive", {
+        get: function () { return this.hasActiveLink(); },
+        enumerable: true,
+        configurable: true
+    });
     RouterLinkActive.prototype.ngAfterContentInit = function () {
         var _this = this;
         this.links.changes.subscribe(function (s) { return _this.update(); });
@@ -102,7 +115,11 @@ export var RouterLinkActive = (function () {
         if (!this.links || !this.linksWithHrefs || !this.router.navigated)
             return;
         var isActive = this.hasActiveLink();
-        this.classes.forEach(function (c) { return _this.renderer.setElementClass(_this.element.nativeElement, c, isActive); });
+        this.classes.forEach(function (c) {
+            if (c) {
+                _this.renderer.setElementClass(_this.element.nativeElement, c, isActive);
+            }
+        });
     };
     RouterLinkActive.prototype.isLinkActive = function (router) {
         var _this = this;
@@ -115,7 +132,10 @@ export var RouterLinkActive = (function () {
             this.linksWithHrefs.some(this.isLinkActive(this.router));
     };
     RouterLinkActive.decorators = [
-        { type: Directive, args: [{ selector: '[routerLinkActive]' },] },
+        { type: Directive, args: [{
+                    selector: '[routerLinkActive]',
+                    exportAs: 'routerLinkActive',
+                },] },
     ];
     /** @nocollapse */
     RouterLinkActive.ctorParameters = [

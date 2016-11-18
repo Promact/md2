@@ -8,5 +8,12 @@ export var ConnectionPositionPair = (function () {
     }
     return ConnectionPositionPair;
 }());
+/** The change event emitted by the strategy when a fallback position is used. */
+export var ConnectedOverlayPositionChange = (function () {
+    function ConnectedOverlayPositionChange(connectionPair) {
+        this.connectionPair = connectionPair;
+    }
+    return ConnectedOverlayPositionChange;
+}());
 
 //# sourceMappingURL=connected-position.js.map

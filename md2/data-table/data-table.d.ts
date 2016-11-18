@@ -12,6 +12,7 @@ export interface DataEvent {
     length: number;
 }
 export declare class Md2DataTable implements OnChanges, DoCheck {
+    private dataLength;
     data: any[];
     onDataChange: EventEmitter<DataEvent>;
     onSortChange: EventEmitter<SortEvent>;

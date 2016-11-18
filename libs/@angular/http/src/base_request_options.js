@@ -11,7 +11,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 import { Injectable } from '@angular/core';
-import { isPresent } from '../src/facade/lang';
 import { RequestMethod } from './enums';
 import { Headers } from './headers';
 import { normalizeMethodName } from './http_utils';
@@ -45,16 +44,14 @@ import { URLSearchParams } from './url_search_params';
 export var RequestOptions = (function () {
     function RequestOptions(_a) {
         var _b = _a === void 0 ? {} : _a, method = _b.method, headers = _b.headers, body = _b.body, url = _b.url, search = _b.search, withCredentials = _b.withCredentials, responseType = _b.responseType;
-        this.method = isPresent(method) ? normalizeMethodName(method) : null;
-        this.headers = isPresent(headers) ? headers : null;
-        this.body = isPresent(body) ? body : null;
-        this.url = isPresent(url) ? url : null;
-        this.search = isPresent(search) ?
-            (typeof search === 'string' ? new URLSearchParams((search)) :
-                (search)) :
-            null;
-        this.withCredentials = isPresent(withCredentials) ? withCredentials : null;
-        this.responseType = isPresent(responseType) ? responseType : null;
+        this.method = method != null ? normalizeMethodName(method) : null;
+        this.headers = headers != null ? headers : null;
+        this.body = body != null ? body : null;
+        this.url = url != null ? url : null;
+        this.search =
+            search != null ? (typeof search === 'string' ? new URLSearchParams(search) : search) : null;
+        this.withCredentials = withCredentials != null ? withCredentials : null;
+        this.responseType = responseType != null ? responseType : null;
     }
     /**
      * Creates a copy of the `RequestOptions` instance, using the optional input as values to override
@@ -83,17 +80,17 @@ export var RequestOptions = (function () {
      */
     RequestOptions.prototype.merge = function (options) {
         return new RequestOptions({
-            method: options && isPresent(options.method) ? options.method : this.method,
-            headers: options && isPresent(options.headers) ? options.headers : this.headers,
-            body: options && isPresent(options.body) ? options.body : this.body,
-            url: options && isPresent(options.url) ? options.url : this.url,
-            search: options && isPresent(options.search) ?
+            method: options && options.method != null ? options.method : this.method,
+            headers: options && options.headers != null ? options.headers : this.headers,
+            body: options && options.body != null ? options.body : this.body,
+            url: options && options.url != null ? options.url : this.url,
+            search: options && options.search != null ?
                 (typeof options.search === 'string' ? new URLSearchParams(options.search) :
-                    (options.search).clone()) :
+                    options.search.clone()) :
                 this.search,
-            withCredentials: options && isPresent(options.withCredentials) ? options.withCredentials :
+            withCredentials: options && options.withCredentials != null ? options.withCredentials :
                 this.withCredentials,
-            responseType: options && isPresent(options.responseType) ? options.responseType :
+            responseType: options && options.responseType != null ? options.responseType :
                 this.responseType
         });
     };

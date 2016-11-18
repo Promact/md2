@@ -56,7 +56,9 @@ export var PortalHostDirective = (function (_super) {
             return this._portal;
         },
         set: function (p) {
-            this._replaceAttachedPortal(p);
+            if (p) {
+                this._replaceAttachedPortal(p);
+            }
         },
         enumerable: true,
         configurable: true
@@ -86,7 +88,7 @@ export var PortalHostDirective = (function (_super) {
         // TODO(jelbourn): return locals from view
         return new Map();
     };
-    /** Detatches the currently attached Portal (if there is one) and attaches the given Portal. */
+    /** Detaches the currently attached Portal (if there is one) and attaches the given Portal. */
     PortalHostDirective.prototype._replaceAttachedPortal = function (p) {
         if (this.hasAttached()) {
             this.detach();

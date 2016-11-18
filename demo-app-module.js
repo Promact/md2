@@ -45,6 +45,7 @@ var DemoAppModule = (function () {
                 forms_1.FormsModule,
                 http_1.HttpModule,
                 router_1.RouterModule.forRoot(routes_1.DEMO_APP_ROUTES, { useHash: true }),
+                forms_1.ReactiveFormsModule,
                 md2_1.Md2Module.forRoot(),
             ],
             declarations: [

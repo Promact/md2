@@ -7,8 +7,8 @@
  */
 import { Location, LocationStrategy } from '@angular/common';
 import { MockLocationStrategy, SpyLocation } from '@angular/common/testing';
-import { Compiler, Injectable, Injector, NgModule, NgModuleFactoryLoader } from '@angular/core';
-import { NoPreloading, PreloadingStrategy, Router, RouterModule, RouterOutletMap, UrlSerializer, provideRoutes } from '@angular/router';
+import { Compiler, Injectable, Injector, NgModule, NgModuleFactoryLoader, Optional } from '@angular/core';
+import { NoPreloading, PreloadingStrategy, Router, RouterModule, RouterOutletMap, UrlHandlingStrategy, UrlSerializer, provideRoutes } from '@angular/router';
 import { ROUTER_PROVIDERS, ROUTES, flatten } from './private_import_router';
 /**
  * @whatItDoes Allows to simulate the loading of ng modules in tests.
@@ -88,8 +88,12 @@ export var SpyNgModuleFactoryLoader = (function () {
  *
  * @stable
  */
-export function setupTestingRouter(urlSerializer, outletMap, location, loader, compiler, injector, routes) {
-    return new Router(null, urlSerializer, outletMap, location, injector, loader, compiler, flatten(routes));
+export function setupTestingRouter(urlSerializer, outletMap, location, loader, compiler, injector, routes, urlHandlingStrategy) {
+    var router = new Router(null, urlSerializer, outletMap, location, injector, loader, compiler, flatten(routes));
+    if (urlHandlingStrategy) {
+        router.urlHandlingStrategy = urlHandlingStrategy;
+    }
+    return router;
 }
 /**
  * @whatItDoes Sets up the router to be used for testing.
@@ -132,7 +136,8 @@ export var RouterTestingModule = (function () {
                             provide: Router,
                             useFactory: setupTestingRouter,
                             deps: [
-                                UrlSerializer, RouterOutletMap, Location, NgModuleFactoryLoader, Compiler, Injector, ROUTES
+                                UrlSerializer, RouterOutletMap, Location, NgModuleFactoryLoader, Compiler, Injector, ROUTES,
+                                [UrlHandlingStrategy, new Optional()]
                             ]
                         },
                         { provide: PreloadingStrategy, useExisting: NoPreloading }, provideRoutes([])

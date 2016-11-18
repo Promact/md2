@@ -31,7 +31,7 @@ export declare class PortalHostDirective extends BasePortalHost implements OnDes
     attachComponentPortal<T>(portal: ComponentPortal<T>): ComponentRef<T>;
     /** Attach the given TemplatePortal to this PortlHost as an embedded View. */
     attachTemplatePortal(portal: TemplatePortal): Map<string, any>;
-    /** Detatches the currently attached Portal (if there is one) and attaches the given Portal. */
+    /** Detaches the currently attached Portal (if there is one) and attaches the given Portal. */
     private _replaceAttachedPortal(p);
 }
 export declare class PortalModule {

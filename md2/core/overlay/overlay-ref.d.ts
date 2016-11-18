@@ -1,3 +1,4 @@
+import { NgZone } from '@angular/core';
 import { PortalHost, Portal } from '../portal/portal';
 import { OverlayState } from './overlay-state';
 import { Observable } from 'rxjs/Observable';
@@ -9,9 +10,10 @@ export declare class OverlayRef implements PortalHost {
     private _portalHost;
     private _pane;
     private _state;
+    private _ngZone;
     private _backdropElement;
     private _backdropClick;
-    constructor(_portalHost: PortalHost, _pane: HTMLElement, _state: OverlayState);
+    constructor(_portalHost: PortalHost, _pane: HTMLElement, _state: OverlayState, _ngZone: NgZone);
     attach(portal: Portal<any>): any;
     detach(): Promise<any>;
     dispose(): void;
@@ -28,5 +30,5 @@ export declare class OverlayRef implements PortalHost {
     /** Attaches a backdrop for this overlay. */
     private _attachBackdrop();
     /** Detaches the backdrop (if any) associated with the overlay. */
-    private _detatchBackdrop();
+    private _detachBackdrop();
 }

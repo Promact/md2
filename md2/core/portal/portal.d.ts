@@ -14,7 +14,7 @@ export declare abstract class Portal<T> {
     readonly isAttached: boolean;
     /**
      * Sets the PortalHost reference without performing `attach()`. This is used directly by
-     * the PortalHost when it is performing an `attach()` or `detatch()`.
+     * the PortalHost when it is performing an `attach()` or `detach()`.
      */
     setAttachedHost(host: PortalHost): void;
 }

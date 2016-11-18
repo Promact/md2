@@ -1,7 +1,7 @@
 import { ModuleWithProviders, EventEmitter, TemplateRef, ViewContainerRef, OnDestroy, ElementRef } from '@angular/core';
 import { Overlay } from './overlay';
 import { OverlayRef } from './overlay-ref';
-import { ConnectionPositionPair } from './position/connected-position';
+import { ConnectionPositionPair, ConnectedOverlayPositionChange } from './position/connected-position';
 import { Dir, LayoutDirection } from '../rtl/dir';
 /**
  * Directive applied to an element to make it usable as an origin for an Overlay using a
@@ -23,6 +23,7 @@ export declare class ConnectedOverlayDirective implements OnDestroy {
     private _open;
     private _hasBackdrop;
     private _backdropSubscription;
+    private _positionSubscription;
     origin: OverlayOrigin;
     positions: ConnectionPositionPair[];
     /** The offset in pixels for the overlay connection point on the x-axis */
@@ -40,6 +41,7 @@ export declare class ConnectedOverlayDirective implements OnDestroy {
     open: boolean;
     /** Event emitted when the backdrop is clicked. */
     backdropClick: EventEmitter<void>;
+    positionChange: EventEmitter<ConnectedOverlayPositionChange>;
     constructor(_overlay: Overlay, templateRef: TemplateRef<any>, viewContainerRef: ViewContainerRef, _dir: Dir);
     readonly overlayRef: OverlayRef;
     readonly dir: LayoutDirection;
@@ -51,6 +53,7 @@ export declare class ConnectedOverlayDirective implements OnDestroy {
     private _buildConfig();
     /** Returns the position strategy of the overlay to be set on the overlay config */
     private _createPositionStrategy();
+    private _handlePositionChanges(strategy);
     /** Attaches the overlay and subscribes to backdrop clicks if backdrop exists */
     private _attachOverlay();
     /** Detaches the overlay and unsubscribes to backdrop clicks if backdrop exists */

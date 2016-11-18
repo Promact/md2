@@ -15,7 +15,7 @@ import { map } from 'rxjs/operator/map';
 import { mergeMap } from 'rxjs/operator/mergeMap';
 import { EmptyError } from 'rxjs/util/EmptyError';
 import { LoadedRouterConfig } from './router_config_loader';
-import { NavigationCancelingError, PRIMARY_OUTLET } from './shared';
+import { NavigationCancelingError, PRIMARY_OUTLET, defaultUrlMatcher } from './shared';
 import { UrlSegment, UrlSegmentGroup, UrlTree } from './url_tree';
 import { andObservables, merge, waitForMap, wrapIntoObservable } from './utils/collection';
 var NoMatch = (function () {
@@ -123,12 +123,20 @@ var ApplyRedirects = (function () {
         var first$ = first.call(concattedProcessedRoutes$, function (s) { return !!s; });
         return _catch.call(first$, function (e, _) {
             if (e instanceof EmptyError) {
-                throw new NoMatch(segmentGroup);
+                if (_this.noLeftoversInUrl(segmentGroup, segments, outlet)) {
+                    return of(new UrlSegmentGroup([], {}));
+                }
+                else {
+                    throw new NoMatch(segmentGroup);
+                }
             }
             else {
                 throw e;
             }
         });
+    };
+    ApplyRedirects.prototype.noLeftoversInUrl = function (segmentGroup, segments, outlet) {
+        return segments.length === 0 && !segmentGroup.children[outlet];
     };
     ApplyRedirects.prototype.expandSegmentAgainstRoute = function (injector, segmentGroup, routes, route, paths, outlet, allowRedirects) {
         if (getOutlet(route) !== outlet)
@@ -212,7 +220,7 @@ var ApplyRedirects = (function () {
     ApplyRedirects.prototype.getChildConfig = function (injector, route) {
         var _this = this;
         if (route.children) {
-            return of(new LoadedRouterConfig(route.children, injector, null));
+            return of(new LoadedRouterConfig(route.children, injector, null, null));
         }
         else if (route.loadChildren) {
             return mergeMap.call(runGuards(injector, route), function (shouldLoad) {
@@ -233,7 +241,7 @@ var ApplyRedirects = (function () {
             });
         }
         else {
-            return of(new LoadedRouterConfig([], injector, null));
+            return of(new LoadedRouterConfig([], injector, null, null));
         }
     };
     return ApplyRedirects;
@@ -263,30 +271,16 @@ function match(segmentGroup, route, segments) {
             return { matched: true, consumedSegments: [], lastChild: 0, positionalParamSegments: {} };
         }
     }
-    var path = route.path;
-    var parts = path.split('/');
-    var positionalParamSegments = {};
-    var consumedSegments = [];
-    var currentIndex = 0;
-    for (var i = 0; i < parts.length; ++i) {
-        if (currentIndex >= segments.length)
-            return noMatch;
-        var current = segments[currentIndex];
-        var p = parts[i];
-        var isPosParam = p.startsWith(':');
-        if (!isPosParam && p !== current.path)
-            return noMatch;
-        if (isPosParam) {
-            positionalParamSegments[p.substring(1)] = current;
-        }
-        consumedSegments.push(current);
-        currentIndex++;
-    }
-    if (route.pathMatch === 'full' &&
-        (segmentGroup.hasChildren() || currentIndex < segments.length)) {
-        return { matched: false, consumedSegments: [], lastChild: 0, positionalParamSegments: {} };
-    }
-    return { matched: true, consumedSegments: consumedSegments, lastChild: currentIndex, positionalParamSegments: positionalParamSegments };
+    var matcher = route.matcher || defaultUrlMatcher;
+    var res = matcher(segments, segmentGroup, route);
+    if (!res)
+        return noMatch;
+    return {
+        matched: true,
+        consumedSegments: res.consumed,
+        lastChild: res.consumed.length,
+        positionalParamSegments: res.posParams
+    };
 }
 function applyRedirectCommands(segments, redirectTo, posParams) {
     var r = redirectTo.startsWith('/') ? redirectTo.substring(1) : redirectTo;

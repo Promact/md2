@@ -14,7 +14,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { ResponseOptions } from '../base_response_options';
 import { ReadyState, RequestMethod, ResponseType } from '../enums';
-import { isPresent } from '../facade/lang';
 import { ConnectionBackend } from '../interfaces';
 import { Response } from '../static_response';
 import { BrowserJsonp } from './browser_jsonp';
@@ -64,14 +63,14 @@ export var JSONPConnection_ = (function (_super) {
                 _dom.cleanup(script);
                 if (!_this._finished) {
                     var responseOptions_1 = new ResponseOptions({ body: JSONP_ERR_NO_CALLBACK, type: ResponseType.Error, url: url });
-                    if (isPresent(baseResponseOptions)) {
+                    if (baseResponseOptions) {
                         responseOptions_1 = baseResponseOptions.merge(responseOptions_1);
                     }
                     responseObserver.error(new Response(responseOptions_1));
                     return;
                 }
                 var responseOptions = new ResponseOptions({ body: _this._responseData, url: url });
-                if (isPresent(_this.baseResponseOptions)) {
+                if (_this.baseResponseOptions) {
                     responseOptions = _this.baseResponseOptions.merge(responseOptions);
                 }
                 responseObserver.next(new Response(responseOptions));
@@ -83,7 +82,7 @@ export var JSONPConnection_ = (function (_super) {
                 _this.readyState = ReadyState.Done;
                 _dom.cleanup(script);
                 var responseOptions = new ResponseOptions({ body: error.message, type: ResponseType.Error });
-                if (isPresent(baseResponseOptions)) {
+                if (baseResponseOptions) {
                     responseOptions = baseResponseOptions.merge(responseOptions);
                 }
                 responseObserver.error(new Response(responseOptions));
@@ -95,9 +94,7 @@ export var JSONPConnection_ = (function (_super) {
                 _this.readyState = ReadyState.Cancelled;
                 script.removeEventListener('load', onLoad);
                 script.removeEventListener('error', onError);
-                if (isPresent(script)) {
-                    _this._dom.cleanup(script);
-                }
+                _this._dom.cleanup(script);
             };
         });
     }

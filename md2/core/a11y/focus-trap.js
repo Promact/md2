@@ -23,14 +23,24 @@ export var FocusTrap = (function () {
     }
     /** Focuses the first tabbable element within the focus trap region. */
     FocusTrap.prototype.focusFirstTabbableElement = function () {
-        var redirectToElement = this._getFirstTabbableElement(this.trappedContent.nativeElement);
+        var rootElement = this.trappedContent.nativeElement;
+        var redirectToElement = rootElement.querySelector('[md-focus-start]') ||
+            this._getFirstTabbableElement(rootElement);
         if (redirectToElement) {
             redirectToElement.focus();
         }
     };
     /** Focuses the last tabbable element within the focus trap region. */
     FocusTrap.prototype.focusLastTabbableElement = function () {
-        var redirectToElement = this._getLastTabbableElement(this.trappedContent.nativeElement);
+        var rootElement = this.trappedContent.nativeElement;
+        var focusTargets = rootElement.querySelectorAll('[md-focus-end]');
+        var redirectToElement = null;
+        if (focusTargets.length) {
+            redirectToElement = focusTargets[focusTargets.length - 1];
+        }
+        else {
+            redirectToElement = this._getLastTabbableElement(rootElement);
+        }
         if (redirectToElement) {
             redirectToElement.focus();
         }

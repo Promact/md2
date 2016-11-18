@@ -16,10 +16,11 @@ import { flatten, wrapIntoObservable } from './utils/collection';
  */
 export var ROUTES = new OpaqueToken('ROUTES');
 export var LoadedRouterConfig = (function () {
-    function LoadedRouterConfig(routes, injector, factoryResolver) {
+    function LoadedRouterConfig(routes, injector, factoryResolver, injectorFactory) {
         this.routes = routes;
         this.injector = injector;
         this.factoryResolver = factoryResolver;
+        this.injectorFactory = injectorFactory;
     }
     return LoadedRouterConfig;
 }());
@@ -31,7 +32,8 @@ export var RouterConfigLoader = (function () {
     RouterConfigLoader.prototype.load = function (parentInjector, loadChildren) {
         return map.call(this.loadModuleFactory(loadChildren), function (r) {
             var ref = r.create(parentInjector);
-            return new LoadedRouterConfig(flatten(ref.injector.get(ROUTES)), ref.injector, ref.componentFactoryResolver);
+            var injectorFactory = function (parent) { return r.create(parent).injector; };
+            return new LoadedRouterConfig(flatten(ref.injector.get(ROUTES)), ref.injector, ref.componentFactoryResolver, injectorFactory);
         });
     };
     RouterConfigLoader.prototype.loadModuleFactory = function (loadChildren) {

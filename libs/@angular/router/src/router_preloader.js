@@ -68,6 +68,8 @@ export var NoPreloading = (function () {
  * will check if any configurations can be loaded lazily.
  *
  * If a route is protected by `canLoad` guards, the preloaded will not load it.
+ *
+ * @stable
  */
 export var RouterPreloader = (function () {
     function RouterPreloader(router, moduleLoader, compiler, injector, preloadingStrategy) {

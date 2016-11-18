@@ -8,9 +8,9 @@
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
 import { ActivatedRouteSnapshot, RouterStateSnapshot, inheritedParamsDataResolve } from './router_state';
-import { PRIMARY_OUTLET } from './shared';
+import { PRIMARY_OUTLET, defaultUrlMatcher } from './shared';
 import { UrlSegmentGroup, mapChildrenIntoArray } from './url_tree';
-import { last, merge } from './utils/collection';
+import { forEach, last, merge } from './utils/collection';
 import { TreeNode } from './utils/tree';
 var NoMatch = (function () {
     function NoMatch() {
@@ -75,7 +75,15 @@ var Recognizer = (function () {
                     throw e;
             }
         }
-        throw new NoMatch();
+        if (this.noLeftoversInUrl(segmentGroup, segments, outlet)) {
+            return [];
+        }
+        else {
+            throw new NoMatch();
+        }
+    };
+    Recognizer.prototype.noLeftoversInUrl = function (segmentGroup, segments, outlet) {
+        return segments.length === 0 && !segmentGroup.children[outlet];
     };
     Recognizer.prototype.processSegmentAgainstRoute = function (route, rawSegment, pathIndex, segments, outlet) {
         if (route.redirectTo)
@@ -135,31 +143,14 @@ function match(segmentGroup, route, segments) {
             return { consumedSegments: [], lastChild: 0, parameters: {} };
         }
     }
-    var path = route.path;
-    var parts = path.split('/');
-    var posParameters = {};
-    var consumedSegments = [];
-    var currentIndex = 0;
-    for (var i = 0; i < parts.length; ++i) {
-        if (currentIndex >= segments.length)
-            throw new NoMatch();
-        var current = segments[currentIndex];
-        var p = parts[i];
-        var isPosParam = p.startsWith(':');
-        if (!isPosParam && p !== current.path)
-            throw new NoMatch();
-        if (isPosParam) {
-            posParameters[p.substring(1)] = current.path;
-        }
-        consumedSegments.push(current);
-        currentIndex++;
-    }
-    if (route.pathMatch === 'full' &&
-        (segmentGroup.hasChildren() || currentIndex < segments.length)) {
+    var matcher = route.matcher || defaultUrlMatcher;
+    var res = matcher(segments, segmentGroup, route);
+    if (!res)
         throw new NoMatch();
-    }
-    var parameters = merge(posParameters, consumedSegments[consumedSegments.length - 1].parameters);
-    return { consumedSegments: consumedSegments, lastChild: currentIndex, parameters: parameters };
+    var posParams = {};
+    forEach(res.posParams, function (v, k) { posParams[k] = v.path; });
+    var parameters = merge(posParams, res.consumed[res.consumed.length - 1].parameters);
+    return { consumedSegments: res.consumed, lastChild: res.consumed.length, parameters: parameters };
 }
 function checkOutletNameUniqueness(nodes) {
     var names = {};

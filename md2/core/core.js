@@ -21,6 +21,8 @@ export { Dir, RtlModule } from './rtl/dir';
 export { Portal, BasePortalHost, ComponentPortal, TemplatePortal } from './portal/portal';
 export { PortalHostDirective, TemplatePortalDirective, PortalModule } from './portal/portal-directives';
 export { DomPortalHost } from './portal/dom-portal-host';
+// Projection
+export * from './projection/projection';
 // Overlay
 export { Overlay, OVERLAY_PROVIDERS } from './overlay/overlay';
 export { OverlayContainer } from './overlay/overlay-container';

@@ -3,6 +3,7 @@ export { Dir, LayoutDirection, RtlModule } from './rtl/dir';
 export { Portal, PortalHost, BasePortalHost, ComponentPortal, TemplatePortal } from './portal/portal';
 export { PortalHostDirective, TemplatePortalDirective, PortalModule } from './portal/portal-directives';
 export { DomPortalHost } from './portal/dom-portal-host';
+export * from './projection/projection';
 export { Overlay, OVERLAY_PROVIDERS } from './overlay/overlay';
 export { OverlayContainer } from './overlay/overlay-container';
 export { OverlayRef } from './overlay/overlay-ref';

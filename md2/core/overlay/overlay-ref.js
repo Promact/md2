@@ -4,10 +4,11 @@ import { Subject } from 'rxjs/Subject';
  * Used to manipulate or dispose of said overlay.
  */
 export var OverlayRef = (function () {
-    function OverlayRef(_portalHost, _pane, _state) {
+    function OverlayRef(_portalHost, _pane, _state, _ngZone) {
         this._portalHost = _portalHost;
         this._pane = _pane;
         this._state = _state;
+        this._ngZone = _ngZone;
         this._backdropElement = null;
         this._backdropClick = new Subject();
     }
@@ -22,11 +23,11 @@ export var OverlayRef = (function () {
         return attachResult;
     };
     OverlayRef.prototype.detach = function () {
-        this._detatchBackdrop();
+        this._detachBackdrop();
         return this._portalHost.detach();
     };
     OverlayRef.prototype.dispose = function () {
-        this._detatchBackdrop();
+        this._detachBackdrop();
         this._portalHost.dispose();
     };
     OverlayRef.prototype.hasAttached = function () {
@@ -72,24 +73,39 @@ export var OverlayRef = (function () {
         });
         // Add class to fade-in the backdrop after one frame.
         requestAnimationFrame(function () {
-            _this._backdropElement.classList.add('md-overlay-backdrop-showing');
+            if (_this._backdropElement) {
+                _this._backdropElement.classList.add('md-overlay-backdrop-showing');
+            }
         });
     };
     /** Detaches the backdrop (if any) associated with the overlay. */
-    OverlayRef.prototype._detatchBackdrop = function () {
+    OverlayRef.prototype._detachBackdrop = function () {
         var _this = this;
         var backdropToDetach = this._backdropElement;
         if (backdropToDetach) {
-            backdropToDetach.classList.remove('md-overlay-backdrop-showing');
-            backdropToDetach.classList.remove(this._state.backdropClass);
-            backdropToDetach.addEventListener('transitionend', function () {
-                backdropToDetach.parentNode.removeChild(backdropToDetach);
+            var finishDetach_1 = function () {
+                // It may not be attached to anything in certain cases (e.g. unit tests).
+                if (backdropToDetach && backdropToDetach.parentNode) {
+                    backdropToDetach.parentNode.removeChild(backdropToDetach);
+                }
                 // It is possible that a new portal has been attached to this overlay since we started
                 // removing the backdrop. If that is the case, only clear the backdrop reference if it
                 // is still the same instance that we started to remove.
                 if (_this._backdropElement == backdropToDetach) {
                     _this._backdropElement = null;
                 }
+            };
+            backdropToDetach.classList.remove('md-overlay-backdrop-showing');
+            backdropToDetach.classList.remove(this._state.backdropClass);
+            backdropToDetach.addEventListener('transitionend', finishDetach_1);
+            // If the backdrop doesn't have a transition, the `transitionend` event won't fire.
+            // In this case we make it unclickable and we try to remove it after a delay.
+            backdropToDetach.style.pointerEvents = 'none';
+            // Run this outside the Angular zone because there's nothing that Angular cares about.
+            // If it were to run inside the Angular zone, every test that used Overlay would have to be
+            // either async or fakeAsync.
+            this._ngZone.runOutsideAngular(function () {
+                setTimeout(finishDetach_1, 500);
             });
         }
     };

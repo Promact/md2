@@ -1,4 +1,4 @@
-import { ComponentFactoryResolver, ApplicationRef, Injector } from '@angular/core';
+import { ComponentFactoryResolver, ApplicationRef, Injector, NgZone } from '@angular/core';
 import { OverlayState } from './overlay-state';
 import { OverlayRef } from './overlay-ref';
 import { OverlayPositionBuilder } from './position/overlay-position-builder';
@@ -18,7 +18,8 @@ export declare class Overlay {
     private _positionBuilder;
     private _appRef;
     private _injector;
-    constructor(_overlayContainer: OverlayContainer, _componentFactoryResolver: ComponentFactoryResolver, _positionBuilder: OverlayPositionBuilder, _appRef: ApplicationRef, _injector: Injector);
+    private _ngZone;
+    constructor(_overlayContainer: OverlayContainer, _componentFactoryResolver: ComponentFactoryResolver, _positionBuilder: OverlayPositionBuilder, _appRef: ApplicationRef, _injector: Injector, _ngZone: NgZone);
     /**
      * Creates an overlay.
      * @param state State to apply to the overlay.

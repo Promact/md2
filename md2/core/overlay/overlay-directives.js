@@ -62,6 +62,7 @@ export var ConnectedOverlayDirective = (function () {
         this.offsetY = 0;
         /** Event emitted when the backdrop is clicked. */
         this.backdropClick = new EventEmitter();
+        this.positionChange = new EventEmitter();
         this._templatePortal = new TemplatePortal(templateRef, viewContainerRef);
     }
     Object.defineProperty(ConnectedOverlayDirective.prototype, "hasBackdrop", {
@@ -134,11 +135,21 @@ export var ConnectedOverlayDirective = (function () {
         var pos = this.positions[0];
         var originPoint = { originX: pos.originX, originY: pos.originY };
         var overlayPoint = { overlayX: pos.overlayX, overlayY: pos.overlayY };
-        return this._overlay.position()
+        var strategy = this._overlay.position()
             .connectedTo(this.origin.elementRef, originPoint, overlayPoint)
             .withDirection(this.dir)
             .withOffsetX(this.offsetX)
             .withOffsetY(this.offsetY);
+        this._handlePositionChanges(strategy);
+        return strategy;
+    };
+    ConnectedOverlayDirective.prototype._handlePositionChanges = function (strategy) {
+        var _this = this;
+        for (var i = 1; i < this.positions.length; i++) {
+            strategy.withFallbackPosition({ originX: this.positions[i].originX, originY: this.positions[i].originY }, { overlayX: this.positions[i].overlayX, overlayY: this.positions[i].overlayY });
+        }
+        this._positionSubscription =
+            strategy.onPositionChange.subscribe(function (pos) { return _this.positionChange.emit(pos); });
     };
     /** Attaches the overlay and subscribes to backdrop clicks if backdrop exists */
     ConnectedOverlayDirective.prototype._attachOverlay = function () {
@@ -172,6 +183,9 @@ export var ConnectedOverlayDirective = (function () {
         }
         if (this._backdropSubscription) {
             this._backdropSubscription.unsubscribe();
+        }
+        if (this._positionSubscription) {
+            this._positionSubscription.unsubscribe();
         }
     };
     __decorate([
@@ -214,6 +228,10 @@ export var ConnectedOverlayDirective = (function () {
         Output(), 
         __metadata('design:type', Object)
     ], ConnectedOverlayDirective.prototype, "backdropClick", void 0);
+    __decorate([
+        Output(), 
+        __metadata('design:type', Object)
+    ], ConnectedOverlayDirective.prototype, "positionChange", void 0);
     ConnectedOverlayDirective = __decorate([
         Directive({
             selector: '[connected-overlay]',

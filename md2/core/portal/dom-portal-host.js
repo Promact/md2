@@ -35,24 +35,33 @@ export var DomPortalHost = (function (_super) {
         }
         else {
             componentRef = componentFactory.create(portal.injector || this._defaultInjector);
-            // When creating a component outside of a ViewContainer, we need to manually register
-            // its ChangeDetector with the application. This API is unfortunately not yet published
-            // in Angular core. The change detector must also be deregistered when the component
-            // is destroyed to prevent memory leaks.
-            //
-            // See https://github.com/angular/angular/pull/12674
-            var changeDetectorRef_1 = componentRef.changeDetectorRef;
-            this._appRef.registerChangeDetector(changeDetectorRef_1);
-            this.setDisposeFn(function () {
-                _this._appRef.unregisterChangeDetector(changeDetectorRef_1);
-                // Normally the ViewContainer will remove the component's nodes from the DOM.
-                // Without a ViewContainer, we need to manually remove the nodes.
-                var componentRootNode = _this._getComponentRootNode(componentRef);
-                if (componentRootNode.parentNode) {
-                    componentRootNode.parentNode.removeChild(componentRootNode);
-                }
-                componentRef.destroy();
-            });
+            // ApplicationRef's attachView and detachView methods are in Angular ^2.2.1 but not before.
+            // The `else` clause here can be removed once 2.2.1 is released.
+            if (this._appRef['attachView']) {
+                this._appRef.attachView(componentRef.hostView);
+                this.setDisposeFn(function () {
+                    _this._appRef.detachView(componentRef.hostView);
+                    componentRef.destroy();
+                });
+            }
+            else {
+                // When creating a component outside of a ViewContainer, we need to manually register
+                // its ChangeDetector with the application. This API is unfortunately not published
+                // in Angular <= 2.2.0. The change detector must also be deregistered when the component
+                // is destroyed to prevent memory leaks.
+                var changeDetectorRef_1 = componentRef.changeDetectorRef;
+                this._appRef.registerChangeDetector(changeDetectorRef_1);
+                this.setDisposeFn(function () {
+                    _this._appRef.unregisterChangeDetector(changeDetectorRef_1);
+                    // Normally the ViewContainer will remove the component's nodes from the DOM.
+                    // Without a ViewContainer, we need to manually remove the nodes.
+                    var componentRootNode = _this._getComponentRootNode(componentRef);
+                    if (componentRootNode.parentNode) {
+                        componentRootNode.parentNode.removeChild(componentRootNode);
+                    }
+                    componentRef.destroy();
+                });
+            }
         }
         // At this point the component has been instantiated, so we move it to the location in the DOM
         // where we want it to be rendered.

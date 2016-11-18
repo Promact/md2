@@ -26,4 +26,32 @@ export var NavigationCancelingError = (function (_super) {
     NavigationCancelingError.prototype.toString = function () { return this.message; };
     return NavigationCancelingError;
 }(Error));
+export function defaultUrlMatcher(segments, segmentGroup, route) {
+    var path = route.path;
+    var parts = path.split('/');
+    var posParams = {};
+    var consumed = [];
+    var currentIndex = 0;
+    for (var i = 0; i < parts.length; ++i) {
+        if (currentIndex >= segments.length)
+            return null;
+        var current = segments[currentIndex];
+        var p = parts[i];
+        var isPosParam = p.startsWith(':');
+        if (!isPosParam && p !== current.path)
+            return null;
+        if (isPosParam) {
+            posParams[p.substring(1)] = current;
+        }
+        consumed.push(current);
+        currentIndex++;
+    }
+    if (route.pathMatch === 'full' &&
+        (segmentGroup.hasChildren() || currentIndex < segments.length)) {
+        return null;
+    }
+    else {
+        return { consumed: consumed, posParams: posParams };
+    }
+}
 //# sourceMappingURL=shared.js.map

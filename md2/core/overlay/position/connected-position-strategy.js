@@ -1,5 +1,6 @@
 import { applyCssTransform } from '../../style/apply-transform';
-import { ConnectionPositionPair } from './connected-position';
+import { ConnectionPositionPair, ConnectedOverlayPositionChange } from './connected-position';
+import { Subject } from 'rxjs/Subject';
 /**
  * A strategy for positioning overlays. Using this strategy, an overlay is given an
  * implicit position relative some origin element. The relative position is defined in terms of
@@ -20,6 +21,7 @@ export var ConnectedPositionStrategy = (function () {
         this._offsetY = 0;
         /** Ordered list of preferred positions, from most to least desirable. */
         this._preferredPositions = [];
+        this._onPositionChange = new Subject();
         this._origin = this._connectedTo.nativeElement;
         this.withFallbackPosition(_originPos, _overlayPos);
     }
@@ -27,6 +29,14 @@ export var ConnectedPositionStrategy = (function () {
         /** Whether the we're dealing with an RTL context */
         get: function () {
             return this._dir === 'rtl';
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ConnectedPositionStrategy.prototype, "onPositionChange", {
+        /** Emits an event when the connection point changes. */
+        get: function () {
+            return this._onPositionChange.asObservable();
         },
         enumerable: true,
         configurable: true
@@ -63,6 +73,7 @@ export var ConnectedPositionStrategy = (function () {
             // If the overlay in the calculated position fits on-screen, put it there and we're done.
             if (this._willOverlayFitWithinViewport(overlayPoint, overlayRect, viewportRect)) {
                 this._setElementPosition(element, overlayPoint);
+                this._onPositionChange.next(new ConnectedOverlayPositionChange(pos));
                 return Promise.resolve(null);
             }
         }
@@ -179,8 +190,9 @@ export var ConnectedPositionStrategy = (function () {
      * @param overlayPoint
      */
     ConnectedPositionStrategy.prototype._setElementPosition = function (element, overlayPoint) {
-        var x = overlayPoint.x;
-        var y = overlayPoint.y;
+        // Round the values to prevent blurry overlays due to subpixel rendering.
+        var x = Math.round(overlayPoint.x);
+        var y = Math.round(overlayPoint.y);
         // TODO(jelbourn): we don't want to always overwrite the transform property here,
         // because it will need to be used for animations.
         applyCssTransform(element, "translateX(" + x + "px) translateY(" + y + "px)");

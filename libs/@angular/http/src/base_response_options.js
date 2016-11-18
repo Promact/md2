@@ -11,7 +11,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 import { Injectable } from '@angular/core';
-import { isPresent } from '../src/facade/lang';
 import { ResponseType } from './enums';
 import { Headers } from './headers';
 /**
@@ -45,12 +44,12 @@ import { Headers } from './headers';
 export var ResponseOptions = (function () {
     function ResponseOptions(_a) {
         var _b = _a === void 0 ? {} : _a, body = _b.body, status = _b.status, headers = _b.headers, statusText = _b.statusText, type = _b.type, url = _b.url;
-        this.body = isPresent(body) ? body : null;
-        this.status = isPresent(status) ? status : null;
-        this.headers = isPresent(headers) ? headers : null;
-        this.statusText = isPresent(statusText) ? statusText : null;
-        this.type = isPresent(type) ? type : null;
-        this.url = isPresent(url) ? url : null;
+        this.body = body != null ? body : null;
+        this.status = status != null ? status : null;
+        this.headers = headers != null ? headers : null;
+        this.statusText = statusText != null ? statusText : null;
+        this.type = type != null ? type : null;
+        this.url = url != null ? url : null;
     }
     /**
      * Creates a copy of the `ResponseOptions` instance, using the optional input as values to
@@ -79,13 +78,12 @@ export var ResponseOptions = (function () {
      */
     ResponseOptions.prototype.merge = function (options) {
         return new ResponseOptions({
-            body: isPresent(options) && isPresent(options.body) ? options.body : this.body,
-            status: isPresent(options) && isPresent(options.status) ? options.status : this.status,
-            headers: isPresent(options) && isPresent(options.headers) ? options.headers : this.headers,
-            statusText: isPresent(options) && isPresent(options.statusText) ? options.statusText :
-                this.statusText,
-            type: isPresent(options) && isPresent(options.type) ? options.type : this.type,
-            url: isPresent(options) && isPresent(options.url) ? options.url : this.url,
+            body: options && options.body != null ? options.body : this.body,
+            status: options && options.status != null ? options.status : this.status,
+            headers: options && options.headers != null ? options.headers : this.headers,
+            statusText: options && options.statusText != null ? options.statusText : this.statusText,
+            type: options && options.type != null ? options.type : this.type,
+            url: options && options.url != null ? options.url : this.url,
         });
     };
     return ResponseOptions;

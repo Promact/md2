@@ -26,7 +26,7 @@ export declare class Md2Select implements AfterContentInit, AfterContentChecked,
     private selectedValue;
     private focusIndex;
     _onChange: (value: any) => void;
-    _onTouched: Function;
+    _onTouched: () => void;
     change: EventEmitter<Md2SelectChange>;
     options: QueryList<Md2Option>;
     name: string;
@@ -68,7 +68,7 @@ export declare class Md2Select implements AfterContentInit, AfterContentChecked,
     private _emitChangeEvent();
     writeValue(value: any): void;
     registerOnChange(fn: (value: any) => void): void;
-    registerOnTouched(fn: Function): void;
+    registerOnTouched(fn: () => {}): void;
 }
 export declare class Md2Option implements OnInit {
     private selectDispatcher;

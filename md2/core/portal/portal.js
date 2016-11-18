@@ -41,7 +41,7 @@ export var Portal = (function () {
     });
     /**
      * Sets the PortalHost reference without performing `attach()`. This is used directly by
-     * the PortalHost when it is performing an `attach()` or `detatch()`.
+     * the PortalHost when it is performing an `attach()` or `detach()`.
      */
     Portal.prototype.setAttachedHost = function (host) {
         this._attachedHost = host;

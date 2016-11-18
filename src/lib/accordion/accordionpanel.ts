@@ -5,13 +5,11 @@ import { coerceBooleanProperty } from '../core/core';
   moduleId: module.id,
   selector: 'md2-accordion',
   template: `<ng-content></ng-content>`,
+  styleUrls: ['accordion.css'],
   host: {
     '[class]': 'class',
     '[class.md2-accordion]': 'true'
   },
-  styles: [`
-    .md2-accordion { display: block; }
-  `],
   encapsulation: ViewEncapsulation.None
 })
 

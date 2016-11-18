@@ -2,13 +2,10 @@ import {
   Component,
   Output,
   Input,
-  ContentChild,
   EventEmitter,
   ViewChild,
   ViewEncapsulation,
   OnDestroy,
-  ChangeDetectionStrategy,
-  //Provider,
   Directive,
   ViewContainerRef,
   TemplateRef,
@@ -45,7 +42,7 @@ export class Md2DialogFooter { }
   styleUrls: ['dialog.css'],
   host: {
     'tabindex': '0',
-    '(body:keydown)': 'onDocumentKeypress($event)'
+    '(body:keydown)': '_handleDocumentKeydown($event)'
   },
   encapsulation: ViewEncapsulation.None,
 })
@@ -116,7 +113,7 @@ export class Md2Dialog implements OnDestroy {
       });
   }
 
-  private onDocumentKeypress(event: KeyboardEvent) {
+  private _handleDocumentKeydown(event: KeyboardEvent) {
     if (event.keyCode == 27) {
       this.close();
     }

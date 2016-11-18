@@ -3,7 +3,6 @@ import {
   ComponentFactoryResolver,
   ComponentRef,
   Injectable,
-  Optional,
   ReflectiveInjector,
   ViewContainerRef,
   NgModule,

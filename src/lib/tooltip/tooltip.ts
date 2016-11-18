@@ -7,7 +7,6 @@ import {
   ComponentRef,
   Directive,
   ElementRef,
-  HostBinding,
   HostListener,
   Input,
   ReflectiveInjector,

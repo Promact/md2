@@ -34,6 +34,8 @@ export interface DataEvent {
 })
 export class Md2DataTable implements OnChanges, DoCheck {
 
+  private dataLength = 0;
+
   public data: any[];
   public onDataChange = new EventEmitter<DataEvent>();
   public onSortChange = new EventEmitter<SortEvent>();
@@ -103,6 +105,17 @@ export class Md2DataTable implements OnChanges, DoCheck {
   }
 
   public ngDoCheck(): any {
+    if (this.dataLength !== this.inputData.length) {
+      this.dataLength = this.inputData.length;
+      this.fillData();
+      this.recalculatePage();
+      this.onPageChange.emit({
+        activePage: this.activePage,
+        pageLength: this.pageLength,
+        dataLength: this.inputData.length
+      });
+      this.isDataChanged = true;
+    }
     if (this.isDataChanged) {
       this.fillData();
       this.isDataChanged = false;
@@ -117,7 +130,7 @@ export class Md2DataTable implements OnChanges, DoCheck {
     let data = this.inputData;
     let sortField = this.sortField;
     if (sortField) {
-      data = data.sort((a, b) => {
+      data = data.sort((a: any, b: any) => {
         let x = isNaN(a[sortField + '']) ? a[sortField + ''].toLowerCase() : a[sortField + ''];
         let y = isNaN(b[sortField + '']) ? b[sortField + ''].toLowerCase() : b[sortField + ''];
         return (x > y) ? 1 : (y > x) ? -1 : 0;

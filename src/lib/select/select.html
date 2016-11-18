@@ -1,10 +1,11 @@
-<div class="md2-select-container">
-    <span class="md2-select-placeholder" [class.has-value]="selectedValue">    {{placeholder}}  </span>
-    <span *ngIf="selectedValue" class="md2-select-value" [innerHtml]="selectedValue"></span>
-    <svg width="24" height="24" viewBox="0 0 24 24">
-        <path d="M7 10l5 5 5-5z" />
-    </svg>
+<div class="md2-select-trigger" (click)="toggle()">
+  <span class="md2-select-placeholder" [@transformPlaceholder]="_getPlaceholderState()"> {{ placeholder }} </span>
+  <span class="md2-select-value" *ngIf="selected"> {{ selected?.viewValue }} </span>
+  <span class="md2-select-arrow"></span>
 </div>
-<div class="md2-select-menu" [class.open]="isMenuVisible">
+<div [class.open]="panelOpen" class="md2-select-panel" [@transformPanel]="_getPanelState()" (@transformPanel.done)="_onPanelDone()"
+     (keydown)="_keyManager.onKeydown($event)" [style.transformOrigin]="_transformOrigin">
+  <div class="md2-select-content" [@fadeInContent]="'showing'">
     <ng-content></ng-content>
+  </div>
 </div>

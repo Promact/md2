@@ -1,0 +1,108 @@
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  Output,
+  Renderer,
+  ViewEncapsulation
+} from '@angular/core';
+import { ENTER, SPACE } from '../core/keyboard/keycodes';
+import { coerceBooleanProperty } from '../core/coersion/boolean-property';
+
+/**
+ * Option IDs need to be unique across components, so this counter exists outside of
+ * the component definition.
+ */
+let _uniqueIdCounter = 0;
+
+@Component({
+  moduleId: module.id,
+  selector: 'md2-option',
+  host: {
+    'role': 'option',
+    '[class.md2-selected]': 'selected',
+    '[id]': 'id',
+    '[attr.aria-selected]': 'selected.toString()',
+    '[attr.aria-disabled]': 'disabled.toString()',
+    '[class.md2-option-disabled]': 'disabled',
+    '(click)': '_selectViaInteraction()',
+    '(keydown)': '_handleKeydown($event)'
+  },
+  template: '<ng-content></ng-content>',
+  styleUrls: ['select.css'],
+  encapsulation: ViewEncapsulation.None
+})
+export class Md2Option {
+  private _selected: boolean = false;
+
+  /** Whether the option is disabled.  */
+  private _disabled: boolean = false;
+
+  private _id: string = `md2-select-option-${_uniqueIdCounter++}`;
+
+  /** The unique ID of the option. */
+  get id() { return this._id; }
+
+  /** The form value of the option. */
+  @Input() value: any;
+
+  @Input()
+  get disabled() {
+    return this._disabled;
+  }
+
+  set disabled(value: any) {
+    this._disabled = coerceBooleanProperty(value);
+  }
+
+  /** Event emitted when the option is selected. */
+  @Output() onSelect = new EventEmitter();
+
+  constructor(private _element: ElementRef, private _renderer: Renderer) { }
+
+  /** Whether or not the option is currently selected. */
+  get selected(): boolean {
+    return this._selected;
+  }
+
+  /**
+   * The displayed value of the option. It is necessary to show the selected option in the
+   * select's trigger.
+   * TODO(kara): Add input property alternative for node envs.
+   */
+  get viewValue(): string {
+    return this._element.nativeElement.textContent.trim();
+  }
+
+  /** Selects the option. */
+  select(): void {
+    this._selected = true;
+    this.onSelect.emit();
+  }
+
+  /** Deselects the option. */
+  deselect(): void {
+    this._selected = false;
+  }
+
+  /** Ensures the option is selected when activated from the keyboard. */
+  _handleKeydown(event: KeyboardEvent): void {
+    if (event.keyCode === ENTER || event.keyCode === SPACE) {
+      this._selectViaInteraction();
+    }
+  }
+
+
+  /**
+   * Selects the option while indicating the selection came from the user. Used to
+   * determine if the select's view -> model callback should be invoked.
+   */
+  _selectViaInteraction() {
+    if (!this.disabled) {
+      this._selected = true;
+      this.onSelect.emit(true);
+    }
+  }
+
+}

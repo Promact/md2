@@ -71,7 +71,9 @@ export class Md2SelectChange {
 export class Md2Select implements AfterContentInit, AfterContentChecked, ControlValueAccessor {
 
   constructor(public element: ElementRef, @Optional() public _control: NgControl) {
-    this._control.valueAccessor = this;
+    if (this._control) {
+      this._control.valueAccessor = this;
+    }
   }
 
   private _value: any = null;
@@ -90,7 +92,7 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   private focusIndex: number = 0;
 
   _onChange: (value: any) => void;
-  _onTouched: Function;
+  _onTouched = () => { };
 
   @Output() change: EventEmitter<Md2SelectChange> = new EventEmitter<Md2SelectChange>();
 
@@ -332,7 +334,9 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
     let event = new Md2SelectChange();
     event.source = this;
     event.value = this.value;
-    this._onChange(event.value);
+    if (this._control) {
+      this._onChange(event.value);
+    }
     this.change.emit(event);
   }
 
@@ -350,7 +354,7 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
 
   registerOnChange(fn: (value: any) => void): void { this._onChange = fn; }
 
-  registerOnTouched(fn: Function): void { this._onTouched = fn; }
+  registerOnTouched(fn: () => {}): void { this._onTouched = fn; }
 
 }
 

@@ -33,14 +33,14 @@
 
 
 <a name="0.0.6"></a>
-# [0.0.6](https://github.com/promact/md2/compare/md2@0.0.5...md2@0.0.6) (2016-10-20)
+## [0.0.6](https://github.com/promact/md2/compare/md2@0.0.5...md2@0.0.6) (2016-10-20)
 
 ### Bug Fixes
 *	fix(data-tagle) position
 
 
 <a name="0.0.5"></a>
-# [0.0.5](https://github.com/promact/md2/compare/md2@0.0.4...md2@0.0.5) (2016-10-20)
+## [0.0.5](https://github.com/promact/md2/compare/md2@0.0.4...md2@0.0.5) (2016-10-20)
 
 ### Features
 * feat(autocomplete, datepicker, multiselect, select) readonly, required functionality.
@@ -59,7 +59,7 @@
 
 
 <a name="0.0.4"></a>
-# [0.0.4](https://github.com/promact/md2/compare/md2@0.0.3...md2@0.0.4) (2016-10-10)
+## [0.0.4](https://github.com/promact/md2/compare/md2@0.0.3...md2@0.0.4) (2016-10-10)
 
 ### Features
 * feat(datepicker) seconds format
@@ -70,7 +70,7 @@
 
 
 <a name="0.0.3"></a>
-# [0.0.3](https://github.com/promact/md2/compare/md2@0.0.2...md2@0.0.3) (2016-10-07)
+## [0.0.3](https://github.com/promact/md2/compare/md2@0.0.2...md2@0.0.3) (2016-10-07)
 
 ### Features
 * feat(Datepicker): Add seconds to format
@@ -84,7 +84,7 @@
 
 
 <a name="0.0.2"></a>
-# [0.0.2](https://github.com/promact/md2/compare/md2@0.0.1...md2@0.0.2) (2016-10-03)
+## [0.0.2](https://github.com/promact/md2/compare/md2@0.0.1...md2@0.0.2) (2016-10-03)
 
 ### Features
 * feat(datepicker) update key events
@@ -107,7 +107,7 @@
 
 
 <a name="0.0.1"></a>
-# [0.0.1](https://github.com/promact/md2/compare/md2@0.0.1...md2@0.0.2) (2016-09-29)
+## 0.0.1 (2016-09-29)
 
 ### Features
 * feat(datepicker) initial features

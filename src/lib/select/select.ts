@@ -127,9 +127,13 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
    */
   writeValue(value: any): void {
     if (!this.options) { return; }
-
+    this._selected = [];
     this.options.forEach((option: Md2Option) => {
-      if (option.value === value) {
+      if (Array.isArray(value)) {
+        if (value.indexOf(option.value) > -1) {
+          option.select();
+        } else { option.deselect(); }
+      } else if (option.value === value) {
         option.select();
       }
     });
@@ -247,7 +251,32 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
         //     this._onChange(option.value);
         //   }          
         // }
-        this._onSelect(option);
+        // this._onSelect(option);
+        if (this.multiple) {
+          let ind = this._selected.indexOf(option);
+          if (ind < 0) {
+            this._selected.push(option);
+            console.log('Add:' + option.viewValue);
+            this._selected = this._selected.sort((a: Md2Option, b: Md2Option) => {
+              return this.options.toArray().indexOf(a) - this.options.toArray().indexOf(b);
+            });
+          } else {
+            this._selected.splice(ind, 1);
+            option.deselect();
+            console.log('Remove:' + option.viewValue);
+          }
+        } else {
+          this._selected[0] = option;
+          this._updateOptions();
+          this.close();
+        }
+        if (isUserInput) {
+          if (this.multiple) {
+            this._onChange(this._selected.map(option => option.value));
+          } else {
+            this._onChange(option.value);
+          }
+        }
       });
       this._subscriptions.push(sub);
     });

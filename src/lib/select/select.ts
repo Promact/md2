@@ -100,7 +100,7 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
   ngOnDestroy() {
     this._dropSubscriptions();
     this._changeSubscription.unsubscribe();
-    this._tabSubscription.unsubscribe();
+    // this._tabSubscription.unsubscribe();
   }
 
   /** Toggles the overlay panel open or closed. */
@@ -224,10 +224,10 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
 
   /** Sets up a key manager to listen to keyboard events on the overlay panel. */
   private _initKeyManager() {
-    //this._keyManager = new ListKeyManager(this.options);
-    //this._tabSubscription = this._keyManager.tabOut.subscribe(() => {
-    //  this.close();
-    //});
+    // this._keyManager = new ListKeyManager(this.options);
+    // this._tabSubscription = this._keyManager.tabOut.subscribe(() => {
+    //   this.close();
+    // });
   }
 
   /** Drops current option subscriptions and IDs and resets from scratch. */
@@ -241,12 +241,12 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
   private _listenToOptions(): void {
     this.options.forEach((option: Md2Option) => {
       const sub = option.onSelect.subscribe((isUserInput: boolean) => {
-        //if (isUserInput) {
-        //  if (this.multiple) {
-        //  } else {
-        //    this._onChange(option.value);
-        //  }          
-        //}
+        // if (isUserInput) {
+        //   if (this.multiple) {
+        //   } else {
+        //     this._onChange(option.value);
+        //   }          
+        // }
         this._onSelect(option);
       });
       this._subscriptions.push(sub);
@@ -271,7 +271,7 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
       if (ind < 0) {
         this._selected.push(option);
         console.log('Add:' + option.viewValue);
-        //this._selected = this._selected.sort((a, b) => { return this.list.findIndex((i: any) => i.text === a.text) - this.list.findIndex((i: any) => i.text === b.text); });
+        // this._selected = this._selected.sort((a, b) => { return this.list.findIndex((i: any) => i.text === a.text) - this.list.findIndex((i: any) => i.text === b.text); });
       } else {
         this._selected.splice(ind, 1);
         option.deselect();
@@ -297,11 +297,11 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
    * the first item instead.
    */
   private _focusCorrectOption(): void {
-    //if (this.selected) {
-    //  this._keyManager.setFocus(this._getOptionIndex(this.selected));
-    //} else {
-    //  this._keyManager.focusFirstItem();
-    //}
+    // if (this.selected) {
+    //   this._keyManager.setFocus(this._getOptionIndex(this.selected));
+    // } else {
+    //   this._keyManager.focusFirstItem();
+    // }
   }
 
   /** Gets the index of the provided option in the option list. */

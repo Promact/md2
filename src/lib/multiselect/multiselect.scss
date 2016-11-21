@@ -3,12 +3,7 @@ md2-multiselect {
   position: relative;
   display: block;
   margin: 18px 0;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
-  -moz-backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
 }
 
@@ -39,7 +34,7 @@ md2-multiselect:focus .md2-multiselect-container {
 }
 
 md2-multiselect.md2-multiselect-disabled .md2-multiselect-container {
-  color: rgba(0,0,0,0.38);
+  color: rgba(0, 0, 0, 0.38);
   border-color: transparent;
   background-image: linear-gradient(to right, rgba(0, 0, 0, 0.38) 0%, rgba(0, 0, 0, 0.38) 33%, transparent 0%);
   background-position: bottom -1px left 0;
@@ -54,12 +49,11 @@ md2-multiselect.md2-multiselect-disabled:focus .md2-multiselect-container {
 }
 
 md2-multiselect .md2-multiselect-placeholder {
-  color: rgba(0, 0, 0, 0.38);
   position: absolute;
   right: 26px;
   bottom: 100%;
   left: 0;
-  color: rgba(0,0,0,0.38);
+  color: rgba(0, 0, 0, 0.38);
   max-width: 100%;
   padding-left: 3px;
   padding-right: 0;
@@ -69,10 +63,9 @@ md2-multiselect .md2-multiselect-placeholder {
   white-space: nowrap;
   pointer-events: none;
   z-index: 1;
-  transform: translate3d(0,26px,0) scale(1);
-  transition: transform .4s cubic-bezier(.25, .8, .25, 1);
+  transform: translate3d(0, 26px, 0) scale(1);
+  transition: transform 400ms cubic-bezier(0.25, 0.8, 0.25, 1);
   transform-origin: left top;
-  color: rgba(0, 0, 0, 0.38);
 }
 
 md2-multiselect:focus .md2-multiselect-placeholder {
@@ -85,7 +78,7 @@ md2-multiselect:focus .md2-multiselect-placeholder .md2-placeholder-required {
 
 md2-multiselect:focus .md2-multiselect-placeholder,
 md2-multiselect .md2-multiselect-placeholder.has-value {
-  transform: translate3d(0, 6px, 0) scale(.75);
+  transform: translate3d(0, 6px, 0) scale(0.75);
 }
 
 md2-multiselect.md2-multiselect-disabled:focus .md2-multiselect-placeholder,
@@ -130,10 +123,6 @@ md2-multiselect .md2-multiselect-menu {
   max-height: 256px;
   min-height: 48px;
   overflow-y: auto;
-  -moz-transform: scale(1);
-  -ms-transform: scale(1);
-  -o-transform: scale(1);
-  -webkit-transform: scale(1);
   transform: scale(1);
   background: #fff;
 }
@@ -143,10 +132,7 @@ md2-multiselect .md2-multiselect-menu .md2-option {
   display: block;
   cursor: pointer;
   width: auto;
-  -moz-transition: background 0.15s linear;
-  -o-transition: background 0.15s linear;
-  -webkit-transition: background 0.15s linear;
-  transition: background 0.15s linear;
+  transition: background 150ms linear;
   padding: 0 16px 0 40px;
   height: 48px;
   line-height: 48px;
@@ -164,8 +150,6 @@ md2-multiselect .md2-multiselect-menu .md2-option .md2-option-text {
   width: auto;
   white-space: nowrap;
   overflow: hidden;
-  -ms-text-overflow: ellipsis;
-  -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
   font-size: 16px;
 }
@@ -178,20 +162,11 @@ md2-multiselect .md2-option .md2-option-icon {
   height: 16px;
   border: 2px solid rgba(0, 0, 0, 0.54);
   border-radius: 2px;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
   box-sizing: border-box;
-  -moz-transition: 240ms;
-  -o-transition: 240ms;
-  -webkit-transition: 240ms;
   transition: 240ms;
 }
 
 md2-multiselect .md2-option.active .md2-option-icon {
-  -moz-transform: rotate(-45deg);
-  -ms-transform: rotate(-45deg);
-  -o-transform: rotate(-45deg);
-  -webkit-transform: rotate(-45deg);
   transform: rotate(-45deg);
   height: 8px;
   top: 17px;

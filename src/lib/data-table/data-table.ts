@@ -15,7 +15,7 @@ import { CommonModule } from '@angular/common';
 
 export interface SortEvent {
   sortField: string | string[];
-  sortOrder: string
+  sortOrder: string;
 }
 
 export interface PageEvent {
@@ -140,19 +140,19 @@ export class Md2DataTable implements OnChanges, DoCheck {
     this.data = data.slice(offset, offset + this.pageLength);
   }
 
-  private caseInsensitiveIteratee(sortField: string) {
-    return (row: any): any => {
-      let value = row[sortField];
-      if (value && typeof value === 'string' || value instanceof String) {
-        return value.toLowerCase();
-      }
-      return value;
-    };
-  }
+  // private caseInsensitiveIteratee(sortField: string) {
+  //  return (row: any): any => {
+  //    let value = row[sortField];
+  //    if (value && typeof value === 'string' || value instanceof String) {
+  //      return value.toLowerCase();
+  //    }
+  //    return value;
+  //  };
+  // }
 }
 
 @Component({
-  selector: "[md2-sort-field]",
+  selector: '[md2-sort-field]',
   template: `
     <span (click)="_sort()">
       <ng-content></ng-content>
@@ -182,16 +182,16 @@ export class Md2DataTableSortField {
 
   public constructor(private _md2Table: Md2DataTable) {
     _md2Table.onSortChange.subscribe((event: SortEvent) => {
-      this.isAsc = (event.sortField === this.sortField && event.sortOrder === "asc");
-      this.isDesc = (event.sortField === this.sortField && event.sortOrder === "desc");
-    })
+      this.isAsc = (event.sortField === this.sortField && event.sortOrder === 'asc');
+      this.isDesc = (event.sortField === this.sortField && event.sortOrder === 'desc');
+    });
   }
 
   private _sort() {
     if (this.isAsc) {
-      this._md2Table.setSort(this.sortField, "desc");
+      this._md2Table.setSort(this.sortField, 'desc');
     } else {
-      this._md2Table.setSort(this.sortField, "asc");
+      this._md2Table.setSort(this.sortField, 'asc');
     }
   }
 }
@@ -259,9 +259,9 @@ export class Md2Pagination implements OnChanges {
 
   constructor( @Optional() private injectMd2Table: Md2DataTable) { }
 
-  ngOnChanges(changes: any): any {//{ [key: string]: SimpleChange }
+  ngOnChanges(changes: any): any {// { [key: string]: SimpleChange }
     if (changes.rows) {
-      //this._minRows = _.min(this.rows)
+      // this._minRows = _.min(this.rows)
     }
     this._md2Table = this.md2InputTable || this.injectMd2Table;
     this._onPageChange(this._md2Table.getPage());

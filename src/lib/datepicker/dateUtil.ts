@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 
 @Injectable()
 export class Md2DateUtil {
@@ -201,15 +201,15 @@ export class Md2DateUtil {
    * 1. No argument for Date representing now.
    * 2. Single-argument value representing number of seconds since Unix Epoch
    * or a Date object.
-   * @param {number|Date=} opt_value
+   * @param {number|Date=} value
    * @return {Date} New date with time set to midnight.
    */
-  createDateAtMidnight(opt_value: any) {
+  createDateAtMidnight(value: any) {
     let date: Date;
-    if (!opt_value) {
+    if (!value) {
       date = new Date();
     } else {
-      date = new Date(opt_value);
+      date = new Date(value);
     }
     this.setDateTimeToMidnight(date);
     return date;

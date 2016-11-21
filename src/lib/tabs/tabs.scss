@@ -15,20 +15,16 @@ md2-tabs {
   border-width: 0 0 1px;
   border-style: solid;
   border-color: rgba(0, 0, 0, 0.12);
-  display: block;
   margin: 0;
   padding: 0;
   list-style: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
-}
 
-.md2-tabs-header-wrapper:after {
-  content: '';
-  display: table;
-  clear: both;
+  &::after {
+    content: '';
+    display: table;
+    clear: both;
+  }
 }
 
 .md2-prev-button,
@@ -40,6 +36,11 @@ md2-tabs {
   padding: 8px 0;
   z-index: 2;
   cursor: pointer;
+
+  &.disabled {
+    opacity: 0.25;
+    cursor: default;
+  }
 }
 
 .md2-prev-button {
@@ -48,12 +49,6 @@ md2-tabs {
 
 .md2-next-button {
   right: 0;
-}
-
-.md2-prev-button.disabled,
-.md2-next-button.disabled {
-  opacity: .25;
-  cursor: default;
 }
 
 .md2-prev-button .prev-icon,
@@ -91,10 +86,7 @@ md2-tabs {
   display: inline-block;
   height: 100%;
   white-space: nowrap;
-  -moz-transition: 0.5s cubic-bezier(0.35, 0, 0.25,1);
-  -o-transition: 0.5s cubic-bezier(0.35, 0, 0.25,1);
-  -webkit-transition: 0.5s cubic-bezier(0.35, 0, 0.25,1);
-  transition: 0.5s cubic-bezier(0.35, 0, 0.25,1);
+  transition: 500ms cubic-bezier(0.35, 0, 0.25, 1);
 }
 
 .md2-tab-label {
@@ -105,10 +97,7 @@ md2-tabs {
   text-align: center;
   line-height: 24px;
   padding: 12px 24px;
-  -moz-transition: background-color .35s cubic-bezier(.35, 0, .25, 1);
-  -o-transition: background-color .35s cubic-bezier(.35, 0, .25, 1);
-  -webkit-transition: background-color .35s cubic-bezier(.35, 0, .25, 1);
-  transition: background-color .35s cubic-bezier(.35, 0, .25, 1);
+  transition: background-color 350ms cubic-bezier(0.35, 0, 0.25, 1);
   cursor: pointer;
   white-space: nowrap;
   text-transform: uppercase;
@@ -134,9 +123,6 @@ md2-tabs {
 .md2-tab-label.disabled {
   color: rgba(0, 0, 0, 0.26);
   pointer-events: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
   -webkit-user-drag: none;
   opacity: 0.5;
@@ -147,8 +133,8 @@ md2-tabs {
   position: absolute;
   bottom: 0;
   height: 2px;
-  background: rgb(255,82,82);
-  transition: .25s cubic-bezier(.35, 0, .25,1);
+  background: rgb(255, 82, 82);
+  transition: 250ms cubic-bezier(0.35, 0, 0.25, 1);
 }
 
 .md2-tabs-body-wrapper {

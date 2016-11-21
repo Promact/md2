@@ -18,7 +18,6 @@ import { CommonModule } from '@angular/common';
 })
 
 export class Md2Collapse {
-  private height: string;
   private isExpanded: boolean = true;
   private isCollapsing: boolean = false;
 

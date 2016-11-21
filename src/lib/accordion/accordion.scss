@@ -7,7 +7,7 @@ md2-accordion-tab {
   display: block;
   outline: 0;
   border: 0;
-  border-width: 0 0 1px 0;
+  border-width: 0 0 1px;
   border-style: solid;
   border-color: rgba(0, 0, 0, 0.12);
   -moz-box-sizing: border-box;
@@ -81,10 +81,7 @@ md2-accordion-tab .md2-accordion-header-icon {
   -o-transform: rotate(45deg);
   -webkit-transform: rotate(45deg);
   transform: rotate(45deg);
-  -moz-transition: 0.3s ease-in-out;
-  -o-transition: 0.3s ease-in-out;
-  -webkit-transition: 0.3s ease-in-out;
-  transition: 0.3s ease-in-out;
+  transition: 300ms ease-in-out;
 }
 
 md2-accordion-tab.md2-accordion-tab-active .md2-accordion-header-icon {

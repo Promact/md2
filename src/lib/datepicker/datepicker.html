@@ -26,19 +26,19 @@
     <span class="md2-datepicker-year"
           [class.active]="isYearsVisible"
           [class.hidden]="type==='time'"
-          (click)="showYear()">{{displayDay.year}}</span>
+          (click)="_showYear()">{{displayDay.year}}</span>
     <span class="md2-datepicker-date"
           [class.active]="isCalendarVisible && !isYearsVisible"
           [class.hidden]="type==='time'"
-          (click)="showCalendar()">{{displayDay.day.substr(0, 3)}},&nbsp;{{displayDay.month.substr(0, 3)}}&nbsp;{{displayDay.date}}</span>
+          (click)="_showCalendar()">{{displayDay.day.substr(0, 3)}},&nbsp;{{displayDay.month.substr(0, 3)}}&nbsp;{{displayDay.date}}</span>
     <span class="md2-datepicker-time"
           [class.active]="!isCalendarVisible"
           [class.hidden]="type==='date'">
       <span class="md2-datepicker-hour"
             [class.active]="isHoursVisible"
-            (click)="toggleHours(true)">{{displayDay.hour}}</span>:<span class="md2-datepicker-minute"
-                                                                         [class.active]="!isHoursVisible"
-                                                                         (click)="toggleHours(false)">{{displayDay.minute}}</span>
+            (click)="_toggleHours(true)">{{displayDay.hour}}</span>:<span class="md2-datepicker-minute"
+                                                                          [class.active]="!isHoursVisible"
+                                                                          (click)="_toggleHours(false)">{{displayDay.minute}}</span>
     </span>
   </div>
   <div class="md2-datepicker-body">
@@ -47,22 +47,22 @@
         <div *ngFor="let y of years"
              class="md2-year"
              [class.selected]="y === displayDay.year"
-             (click)="setYear(y)">{{y}}</div>
+             (click)="_setYear(y)">{{y}}</div>
       </div>
     </div>
     <div class="md2-datepicker-container" [class.active]="!isYearsVisible">
       <div class="md2-calendar" [class.active]="isCalendarVisible">
         <div class="md2-calendar-controls">
           <div class="md2-calendar-prev-month"
-               [class.disabled]="!isBeforeMonth()"
-               (click)="isBeforeMonth() && updateMonth(-1)">
+               [class.disabled]="!_isBeforeMonth()"
+               (click)="_isBeforeMonth() && updateMonth(-1)">
             <svg viewBox="0 0 24 24" width="24" height="24">
               <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
             </svg>
           </div>
           <div class="md2-calendar-next-month"
-               [class.disabled]="!isAfterMonth()"
-               (click)="isAfterMonth() && updateMonth(1)">
+               [class.disabled]="!_isAfterMonth()"
+               (click)="_isAfterMonth() && updateMonth(1)">
             <svg viewBox="0 0 24 24" width="24" height="24">
               <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path>
             </svg>
@@ -82,7 +82,7 @@
                      [class.prev-month]="d.calMonth===prevMonth"
                      [class.curr-month]="d.calMonth===currMonth"
                      [class.next-month]="d.calMonth===nextMonth"
-                     (click)="onClickDate($event,d)">{{d.dateObj.day}}</div>
+                     (click)="_onClickDate($event,d)">{{d.dateObj.day}}</div>
               </td>
             </tr>
           </tbody>
@@ -105,20 +105,20 @@
                class="md2-clock-hour"
                [style.top]="h.top + 'px'"
                [style.left]="h.left + 'px'"
-               (click)="onClickHour($event,h.hour)">{{h.hour}}</div>
+               (click)="_onClickHour($event,h.hour)">{{h.hour}}</div>
         </div>
         <div class="md2-clock-minutes" [class.active]="!isHoursVisible">
           <div *ngFor="let m of minutes"
                class="md2-clock-minute"
                [style.top]="m.top + 'px'"
                [style.left]="m.left + 'px'"
-               (click)="onClickMinute($event,m.minute)">{{m.minute}}</div>
+               (click)="_onClickMinute($event,m.minute)">{{m.minute}}</div>
         </div>
       </div>
     </div>
   </div>
   <div class="md2-datepicker-footer">
     <div class="md2-button" (click)="onBlur()">Cancel</div>
-    <div class="md2-button" (click)="onClickOk()">Ok</div>
+    <div class="md2-button" (click)="_onClickOk()">Ok</div>
   </div>
 </div>

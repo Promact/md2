@@ -24,15 +24,15 @@ md2-tags .md2-tags-container {
   min-width: 64px;
   min-height: 26px;
   cursor: text;
-}
 
-md2-tags .md2-tags-container:before, md2-tags .md2-tags-container:after {
-  display: table;
-  content: " ";
-}
+  &::before, &::after {
+    display: table;
+    content: ' ';
+  }
 
-md2-tags .md2-tags-container:after {
-  clear: both;
+  &::after {
+    clear: both;
+  }
 }
 
 md2-tags.focus .md2-tags-container {
@@ -65,7 +65,7 @@ md2-tags .md2-tags-container .md2-tag {
   box-sizing: border-box;
   max-width: 100%;
   background: #e0e0e0;
-  color: rgb(66,66,66);
+  color: rgb(66, 66, 66);
   white-space: nowrap;
   overflow: hidden;
   -ms-text-overflow: ellipsis;
@@ -144,10 +144,7 @@ md2-tags .md2-tags-menu .md2-option {
   color: #212121;
   align-items: center;
   width: auto;
-  -moz-transition: background 0.15s linear;
-  -o-transition: background 0.15s linear;
-  -webkit-transition: background 0.15s linear;
-  transition: background 0.15s linear;
+  transition: background 150ms linear;
   padding: 0 16px;
   height: 48px;
   line-height: 48px;

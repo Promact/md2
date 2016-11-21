@@ -46,37 +46,22 @@ import { coerceBooleanProperty } from '../core/coersion/boolean-property';
   exportAs: 'md2Select',
 })
 export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDestroy {
-  /** Whether or not the overlay panel is open. */
+
   private _panelOpen = false;
-
-  /** The currently selected option. */
-  private _selected: Md2Option;
-
-  /** Subscriptions to option events. */
+  private _selected: Array<Md2Option> = [];
   private _subscriptions: Subscription[] = [];
-
-  /** Subscription to changes in the option list. */
   private _changeSubscription: Subscription;
-
-  /** Subscription to tab events while overlay is focused. */
   private _tabSubscription: Subscription;
 
-  /** Whether filling out the select is required in the form.  */
   private _required: boolean = false;
-
-  /** Whether the select is disabled.  */
   private _disabled: boolean = false;
+  private _multiple: boolean = true;
 
-  /** View -> model callback called when value changes */
   _onChange: (value: any) => void;
-
-  /** View -> model callback called when select has been touched */
   _onTouched = () => { };
 
-  /** The IDs of child options to be passed to the aria-owns attribute. */
   _optionIds: string = '';
 
-  /** The value of the select panel's transform-origin property. */
   _transformOrigin: string = 'top';
 
   @ViewChild('trigger') trigger: ElementRef;
@@ -85,22 +70,16 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
   @Input() placeholder: string;
 
   @Input()
-  get disabled() {
-    return this._disabled;
-  }
-
-  set disabled(value: any) {
-    this._disabled = coerceBooleanProperty(value);
-  }
+  get disabled() { return this._disabled; }
+  set disabled(value: any) { this._disabled = coerceBooleanProperty(value); }
 
   @Input()
-  get required() {
-    return this._required;
-  }
+  get multiple() { return this._multiple; }
+  set multiple(value: any) { this._multiple = coerceBooleanProperty(value); }
 
-  set required(value: any) {
-    this._required = coerceBooleanProperty(value);
-  }
+  @Input()
+  get required() { return this._required; }
+  set required(value: any) { this._required = coerceBooleanProperty(value); }
 
   @Output() onOpen = new EventEmitter();
   @Output() onClose = new EventEmitter();
@@ -188,13 +167,13 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
   }
 
   /** The currently selected option. */
-  get selected(): Md2Option {
+  get selected(): Array<Md2Option> {
     return this._selected;
   }
 
   /** The animation state of the placeholder. */
   _getPlaceholderState(): string {
-    if (this.panelOpen || this.selected) {
+    if (this.panelOpen || this.selected.length) {
       return 'floating-ltr';
     } else {
       return 'normal';
@@ -262,9 +241,12 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
   private _listenToOptions(): void {
     this.options.forEach((option: Md2Option) => {
       const sub = option.onSelect.subscribe((isUserInput: boolean) => {
-        if (isUserInput) {
-          this._onChange(option.value);
-        }
+        //if (isUserInput) {
+        //  if (this.multiple) {
+        //  } else {
+        //    this._onChange(option.value);
+        //  }          
+        //}
         this._onSelect(option);
       });
       this._subscriptions.push(sub);
@@ -284,15 +266,28 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
 
   /** When a new option is selected, deselects the others and closes the panel. */
   private _onSelect(option: Md2Option): void {
-    this._selected = option;
-    this._updateOptions();
-    this.close();
+    if (this.multiple) {
+      let ind = this._selected.indexOf(option);
+      if (ind < 0) {
+        this._selected.push(option);
+        console.log('Add:' + option.viewValue);
+        //this._selected = this._selected.sort((a, b) => { return this.list.findIndex((i: any) => i.text === a.text) - this.list.findIndex((i: any) => i.text === b.text); });
+      } else {
+        this._selected.splice(ind, 1);
+        option.deselect();
+        console.log('Remove:' + option.viewValue);
+      }
+    } else {
+      this._selected[0] = option;
+      this._updateOptions();
+      this.close();
+    }
   }
 
   /** Deselect each option that doesn't match the current selection. */
   private _updateOptions(): void {
     this.options.forEach((option: Md2Option) => {
-      if (option !== this.selected) {
+      if (option !== this.selected[0]) {
         option.deselect();
       }
     });

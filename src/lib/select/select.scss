@@ -52,6 +52,9 @@ md2-select {
 }
 
 .md2-select-placeholder {
+  position: absolute;
+  left: 0;
+  top: 6px;
   padding: 0 2px;
   transform-origin: left top;
 
@@ -65,10 +68,8 @@ md2-select {
 }
 
 .md2-select-value {
-  position: absolute;
-  left: 0;
-  top: 6px;
   color: $foreground;
+  white-space:nowrap;
 
   .md2-select-disabled & {
     color: $foreground;
@@ -77,6 +78,13 @@ md2-select {
   [dir='rtl'] & {
     left: auto;
     right: 0;
+  }
+}
+
+.md2-select-value-text{
+  &:not(:last-child)::after {
+    content: ',';
+    margin-left: -2px;
   }
 }
 

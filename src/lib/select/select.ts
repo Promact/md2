@@ -297,7 +297,8 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
       setTimeout(() => {
         this.isOpenable = true;
       }, 200);
-    } else { this._onTouched(); }
+    }
+    this._onTouched();
   }
 
   touch() {

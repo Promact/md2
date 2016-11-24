@@ -27,8 +27,8 @@ md2-select {
   min-width: $md2-select-trigger-min-width;
   cursor: pointer;
   position: relative;
-  color: $foreground;
-  border-bottom: 1px solid $foreground;
+  color: rgba($foreground, 0.38);
+  border-bottom: 1px solid rgba($foreground, 0.12);
 
   md2-select:focus:not(.md2-select-disabled) & {
     color: $primary;
@@ -68,11 +68,11 @@ md2-select {
 }
 
 .md2-select-value {
-  color: $foreground;
+  color: rgba($foreground, 0.87);
   white-space: nowrap;
 
   .md2-select-disabled & {
-    color: $foreground;
+    color: rgba($foreground, 0.38);
   }
 
   [dir='rtl'] & {
@@ -93,7 +93,7 @@ md2-select {
   border-right: $md2-select-arrow-size solid transparent;
   border-top: $md2-select-arrow-size solid;
   margin: 0 $md2-select-arrow-margin;
-  color: $foreground;
+  color: rgba($foreground, 0.38);
 
   md2-select:focus:not(.md2-select-disabled) & {
     color: $primary;
@@ -142,17 +142,18 @@ md2-option {
   cursor: pointer;
   outline: none;
 
-  &:hover:not(.md2-option-disabled), &:focus:not(.md2-option-disabled) {
-    background: $background;
+  &:hover:not(.md2-option-disabled),
+  &:focus:not(.md2-option-disabled) {
+    background: rgba($foreground, 0.04);
   }
 
   &.md2-selected {
-    background: $background;
+    background: rgba($foreground, 0.04);
     color: $primary;
   }
 
   &.md2-option-disabled {
-    color: $foreground;
+    color: rgba($foreground, 0.38);
   }
 
   &[disabled] {
@@ -170,5 +171,30 @@ md2-option {
   &[aria-disabled='true'] {
     cursor: default;
     user-select: none;
+  }
+
+  [multiple] & {
+    padding-left: 40px;
+
+    &:after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 12px;
+      display: block;
+      width: 16px;
+      height: 16px;
+      margin-top: -8px;
+      border: 2px solid;
+      border-radius: 2px;
+      box-sizing: border-box;
+      transition: 240ms;
+    }
+
+    &.md2-selected:after {
+      transform: rotate(-45deg);
+      height: 8px;
+      border-width: 0 0 2px 2px;
+    }
   }
 }

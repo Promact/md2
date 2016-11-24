@@ -11,7 +11,6 @@ import {
   OnInit,
   Optional,
   Output,
-  Provider,
   QueryList,
   ViewEncapsulation,
   forwardRef,
@@ -81,7 +80,7 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   private _readonly: boolean = false;
   private _required: boolean = false;
   private _disabled: boolean = false;
-  //private _multiple: boolean;
+  // private _multiple: boolean;
   private _selected: Md2Option = null;
   private _isInitialized: boolean = false;
 
@@ -121,9 +120,9 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   get disabled() { return this._disabled; }
   set disabled(value: any) { this._disabled = coerceBooleanProperty(value); }
 
-  //@Input()
-  //get multiple(): boolean { return this._multiple; }
-  //set multiple(value) { this._multiple = coerceBooleanProperty(value); }
+  // @Input()
+  // get multiple(): boolean { return this._multiple; }
+  // set multiple(value) { this._multiple = coerceBooleanProperty(value); }
 
   @Input()
   get value(): any { return this._value; }
@@ -170,7 +169,7 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
     if (o1 === o2) { return true; }
     if (o1 === null || o2 === null) { return false; }
     if (o1 !== o1 && o2 !== o2) { return true; }
-    let t1 = typeof o1, t2 = typeof o2, length: any, key: any, keySet: any;
+    let t1 = typeof o1, t2 = typeof o2, key: any, keySet: any;
     if (t1 === t2 && t1 === 'object') {
       keySet = Object.create(null);
       for (key in o1) {
@@ -260,7 +259,7 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   }
 
   @HostListener('keydown', ['$event'])
-  private onKeyDown(event: any) {
+  private _handleKeydown(event: any) {
     if (this.disabled) { return; }
 
     if (this.isMenuVisible) {
@@ -342,10 +341,10 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
 
   writeValue(value: any) {
     if (!this.options) { return; }
-    //this.options.forEach((option: Md2Option) => {
+    // this.options.forEach((option: Md2Option) => {
     //  if (option.value === value) {
     //  }
-    //});
+    // });
     if (this._value !== value) {
       this._value = value;
       this._updateSelectedOptionValue();
@@ -453,12 +452,12 @@ export class Md2Option implements OnInit {
       event.stopPropagation();
       return;
     }
-    //if (this.select.multiple) {
-    //} else {
+    // if (this.select.multiple) {
+    // } else {
     this.select.selected = this;
     this.select.touch();
     this.select._onBlur();
-    //}
+    // }
   }
 }
 

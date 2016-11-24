@@ -4,10 +4,8 @@ import {
   ElementRef,
   EventEmitter,
   forwardRef,
-  HostListener,
   Input,
   Output,
-  Provider,
   ViewEncapsulation,
   NgModule,
   ModuleWithProviders
@@ -58,7 +56,7 @@ export const MD2_AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR: any = {
   selector: 'md2-autocomplete',
   template: `
     <div class="md2-autocomplete-wrap" [class.is-focused]="inputFocused || isMenuVisible">
-      <input [(ngModel)]="inputBuffer" type="text" tabs="false" autocomplete="off" [readonly]="readonly" [tabindex]="disabled ? -1 : tabindex" [disabled]="disabled" class="md2-autocomplete-input" (focus)="onInputFocus()" (blur)="onInputBlur()" (keydown)="inputKeydown($event)" (change)="$event.stopPropagation()" />
+      <input [(ngModel)]="inputBuffer" type="text" tabs="false" autocomplete="off" [readonly]="readonly" [tabindex]="disabled ? -1 : tabindex" [disabled]="disabled" class="md2-autocomplete-input" (focus)="_handleFocus()" (blur)="_handleBlur()" (keydown)="_handleKeydown($event)" (change)="$event.stopPropagation()" />
       <span class="md2-autocomplete-placeholder" [class.has-value]="inputBuffer">
         {{placeholder}}
         <span class="md2-placeholder-required" *ngIf="required">*</span>
@@ -67,7 +65,7 @@ export const MD2_AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR: any = {
         <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
       </svg>
     </div>
-    <ul *ngIf="isMenuVisible" class="md2-autocomplete-menu" (mouseenter)="listEnter()" (mouseleave)="listLeave()">
+    <ul *ngIf="isMenuVisible" class="md2-autocomplete-menu" (mouseenter)="_handleMouseEnter()" (mouseleave)="_handleMouseLeave()">
       <li class="md2-option" *ngFor="let l of list; let i = index;" [class.focus]="focusedOption === i" (click)="select($event, i)">
         <div class="md2-text" [innerHtml]="l.text | highlight:inputBuffer"></div>
       </li>
@@ -182,7 +180,7 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
     if (o1 === o2) { return true; }
     if (o1 === null || o2 === null) { return false; }
     if (o1 !== o1 && o2 !== o2) { return true; }
-    let t1 = typeof o1, t2 = typeof o2, length: any, key: any, keySet: any;
+    let t1 = typeof o1, t2 = typeof o2, key: any, keySet: any;
     if (t1 === t2 && t1 === 'object') {
       keySet = Object.create(null);
       for (key in o1) {
@@ -229,11 +227,11 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
    * input event listner
    * @param event
    */
-  private inputKeydown(event: KeyboardEvent) {
-      if (this.disabled) { return; }
-      this.textChange.emit(this.inputBuffer);
+  private _handleKeydown(event: KeyboardEvent) {
+    if (this.disabled) { return; }
+    this.textChange.emit(this.inputBuffer);
     switch (event.keyCode) {
-      case TAB: this.listLeave(); break;
+      case TAB: this._handleMouseLeave(); break;
       case ESCAPE:
         event.stopPropagation();
         event.preventDefault();
@@ -319,7 +317,7 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
   /**
    * input focus listener
    */
-  private onInputFocus() {
+  private _handleFocus() {
     this.inputFocused = true;
     this.updateItems(new RegExp(this.inputBuffer, 'ig'));
     this.focusedOption = 0;
@@ -328,19 +326,19 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
   /**
    * input blur listener
    */
-  private onInputBlur() {
+  private _handleBlur() {
     this.inputFocused = false;
   }
 
   /**
    * suggestion menu mouse enter listener
    */
-  private listEnter() { this.noBlur = true; }
+  private _handleMouseEnter() { this.noBlur = true; }
 
   /**
    * suggestion menu mouse leave listener
    */
-  private listLeave() { this.noBlur = false; }
+  private _handleMouseLeave() { this.noBlur = false; }
 
   /**
    * Update suggestion to filter the query
@@ -349,8 +347,7 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
   private updateItems(query: RegExp) {
     if (this.inputBuffer.length < this.minLength) {
       this.list = [];
-    }
-    else {
+    } else {
       this.list = this._items.map((i: any) => new Item(i, this.textKey, this.valueKey)).filter(i => query.test(i.text));
       if (this.list.length && this.list[0].text !== this.inputBuffer) {
         this.selectedItem = null;

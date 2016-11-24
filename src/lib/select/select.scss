@@ -1,16 +1,12 @@
 $primary: #2196f3;
 $warn: #f44336;
+$black: black;
 
 md2-select {
     position: relative;
     display: block;
     margin: 18px 0;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
     user-select: none;
-    -moz-backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
 }
 
@@ -30,7 +26,7 @@ md2-select .md2-select-container {
     min-height: 30px;
     align-items: center;
     padding: 2px 26px 1px 2px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    border-bottom: 1px solid rgba($black, 0.12);
     box-sizing: border-box;
     cursor: pointer;
 }
@@ -41,9 +37,9 @@ md2-select:focus .md2-select-container {
 }
 
 md2-select.md2-select-disabled .md2-select-container {
-    color: rgba(0,0,0,0.38);
+    color: rgba($black, 0.38);
     border-color: transparent;
-    background-image: linear-gradient(to right, rgba(0,0,0,0.38) 0%, rgba(0,0,0,0.38) 33%, transparent 0%);
+    background-image: linear-gradient(to right, rgba($black, 0.38) 0%, rgba($black, 0.38) 33%, transparent 0%);
     background-position: bottom -1px left 0;
     background-size: 4px 1px;
     background-repeat: repeat-x;
@@ -60,7 +56,7 @@ md2-select .md2-select-container .md2-select-placeholder {
     right: 26px;
     bottom: 100%;
     left: 0;
-    color: rgba(0,0,0,0.38);
+    color: rgba($black, 0.38);
     max-width: 100%;
     padding-left: 3px;
     padding-right: 0;
@@ -70,10 +66,9 @@ md2-select .md2-select-container .md2-select-placeholder {
     white-space: nowrap;
     pointer-events: none;
     z-index: 1;
-    transform: translate3d(0,26px,0) scale(1);
-    transition: transform .4s cubic-bezier(.25,.8,.25,1);
+    transform: translate3d(0, 26px, 0) scale(1);
+    transition: transform 400ms cubic-bezier(0.25, 0.8, 0.25, 1);
     transform-origin: left top;
-    color: rgba(0, 0, 0, 0.38);
 }
 
 [aria-required=true] .md2-select-placeholder::after {
@@ -87,7 +82,7 @@ md2-select:focus .md2-select-placeholder {
 
 md2-select:focus .md2-select-placeholder,
 md2-select .md2-select-placeholder.has-value {
-    transform: translate3d(0,6px,0) scale(.75);
+    transform: translate3d(0, 6px, 0) scale(0.75);
 }
 
 md2-select.md2-select-disabled:focus .md2-select-placeholder,
@@ -106,7 +101,7 @@ md2-select .md2-select-container svg {
     top: 2px;
     display: block;
     fill: currentColor;
-    color: rgba(0,0,0,0.54);
+    color: rgba($black, 0.54);
 }
 
 md2-select .md2-select-menu {
@@ -115,20 +110,14 @@ md2-select .md2-select-menu {
     top: 0;
     display: none;
     z-index: 10;
-    -ms-flex-direction: column;
-    -webkit-flex-direction: column;
     flex-direction: column;
     width: 100%;
     margin: 0;
     padding: 8px 0;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 1px 3px rgba($black, 0.4);
     max-height: 256px;
     min-height: 48px;
     overflow-y: auto;
-    -moz-transform: scale(1);
-    -ms-transform: scale(1);
-    -o-transform: scale(1);
-    -webkit-transform: scale(1);
     transform: scale(1);
     background: #fff;
 }

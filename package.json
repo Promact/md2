@@ -17,7 +17,8 @@
     "stylelint": "gulp lint",
     "e2e": "gulp e2e",
     "deploy": "gulp deploy",
-    "webdriver-manager": "webdriver-manager"
+    "docs": "gulp docs",
+    "api": "gulp api"
   },
   "keywords": [
     "angular",

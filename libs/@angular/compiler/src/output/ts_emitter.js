@@ -10,14 +10,20 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-import { isBlank, isPresent } from '../facade/lang';
+import { isArray, isBlank, isPresent } from '../facade/lang';
 import { AbstractEmitterVisitor, CATCH_ERROR_VAR, CATCH_STACK_VAR, EmitterVisitorContext } from './abstract_emitter';
 import * as o from './output_ast';
 var _debugModuleUrl = 'asset://debug/lib';
 export function debugOutputAstAsTypeScript(ast) {
     var converter = new _TsEmitterVisitor(_debugModuleUrl);
     var ctx = EmitterVisitorContext.createRoot([]);
-    var asts = Array.isArray(ast) ? ast : [ast];
+    var asts;
+    if (isArray(ast)) {
+        asts = ast;
+    }
+    else {
+        asts = [ast];
+    }
     asts.forEach(function (ast) {
         if (ast instanceof o.Statement) {
             ast.visitStatement(converter, ctx);
@@ -71,26 +77,7 @@ var _TsEmitterVisitor = (function (_super) {
         }
     };
     _TsEmitterVisitor.prototype.visitLiteralExpr = function (ast, ctx) {
-        var value = ast.value;
-        if (isBlank(value) && ast.type != o.NULL_TYPE) {
-            ctx.print("(" + value + " as any)");
-            return null;
-        }
-        return _super.prototype.visitLiteralExpr.call(this, ast, ctx);
-    };
-    // Temporary workaround to support strictNullCheck enabled consumers of ngc emit.
-    // In SNC mode, [] have the type never[], so we cast here to any[].
-    // TODO: narrow the cast to a more explicit type, or use a pattern that does not
-    // start with [].concat. see https://github.com/angular/angular/pull/11846
-    _TsEmitterVisitor.prototype.visitLiteralArrayExpr = function (ast, ctx) {
-        if (ast.entries.length === 0) {
-            ctx.print('(');
-        }
-        var result = _super.prototype.visitLiteralArrayExpr.call(this, ast, ctx);
-        if (ast.entries.length === 0) {
-            ctx.print(' as any[])');
-        }
-        return result;
+        _super.prototype.visitLiteralExpr.call(this, ast, ctx, '(null as any)');
     };
     _TsEmitterVisitor.prototype.visitExternalExpr = function (ast, ctx) {
         this._visitIdentifier(ast.value, ast.typeParams, ctx);
@@ -294,7 +281,7 @@ var _TsEmitterVisitor = (function (_super) {
     };
     _TsEmitterVisitor.prototype._visitParams = function (params, ctx) {
         var _this = this;
-        this.visitAllObjects(function (param) {
+        this.visitAllObjects(function (param /** TODO #9100 */) {
             ctx.print(param.name);
             ctx.print(':');
             _this.visitType(param.type, ctx);
@@ -323,7 +310,7 @@ var _TsEmitterVisitor = (function (_super) {
         }
         if (isPresent(typeParams) && typeParams.length > 0) {
             ctx.print("<");
-            this.visitAllObjects(function (type) { return type.visitType(_this, ctx); }, typeParams, ctx, ',');
+            this.visitAllObjects(function (type /** TODO #9100 */) { return type.visitType(_this, ctx); }, typeParams, ctx, ',');
             ctx.print(">");
         }
     };

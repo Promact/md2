@@ -11,44 +11,8 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 import { Inject, Injectable, OpaqueToken } from '@angular/core';
-import { EventManagerPlugin } from './event_manager';
-var EVENT_NAMES = {
-    // pan
-    'pan': true,
-    'panstart': true,
-    'panmove': true,
-    'panend': true,
-    'pancancel': true,
-    'panleft': true,
-    'panright': true,
-    'panup': true,
-    'pandown': true,
-    // pinch
-    'pinch': true,
-    'pinchstart': true,
-    'pinchmove': true,
-    'pinchend': true,
-    'pinchcancel': true,
-    'pinchin': true,
-    'pinchout': true,
-    // press
-    'press': true,
-    'pressup': true,
-    // rotate
-    'rotate': true,
-    'rotatestart': true,
-    'rotatemove': true,
-    'rotateend': true,
-    'rotatecancel': true,
-    // swipe
-    'swipe': true,
-    'swipeleft': true,
-    'swiperight': true,
-    'swipeup': true,
-    'swipedown': true,
-    // tap
-    'tap': true,
-};
+import { isPresent } from '../../facade/lang';
+import { HammerGesturesPluginCommon } from './hammer_common';
 /**
  * A DI token that you can use to provide{@link HammerGestureConfig} to Angular. Use it to configure
  * Hammer gestures.
@@ -87,10 +51,9 @@ export var HammerGesturesPlugin = (function (_super) {
         this._config = _config;
     }
     HammerGesturesPlugin.prototype.supports = function (eventName) {
-        if (!EVENT_NAMES.hasOwnProperty(eventName.toLowerCase()) && !this.isCustomEvent(eventName)) {
+        if (!_super.prototype.supports.call(this, eventName) && !this.isCustomEvent(eventName))
             return false;
-        }
-        if (!window.Hammer) {
+        if (!isPresent(window['Hammer'])) {
             throw new Error("Hammer.js is not loaded, can not bind " + eventName + " event");
         }
         return true;
@@ -102,11 +65,11 @@ export var HammerGesturesPlugin = (function (_super) {
         return zone.runOutsideAngular(function () {
             // Creating the manager bind events, must be done outside of angular
             var mc = _this._config.buildHammer(element);
-            var callback = function (eventObj) {
+            var callback = function (eventObj /** TODO #???? */) {
                 zone.runGuarded(function () { handler(eventObj); });
             };
             mc.on(eventName, callback);
-            return function () { return mc.off(eventName, callback); };
+            return function () { mc.off(eventName, callback); };
         });
     };
     HammerGesturesPlugin.prototype.isCustomEvent = function (eventName) { return this._config.events.indexOf(eventName) > -1; };
@@ -118,5 +81,5 @@ export var HammerGesturesPlugin = (function (_super) {
         { type: HammerGestureConfig, decorators: [{ type: Inject, args: [HAMMER_GESTURE_CONFIG,] },] },
     ];
     return HammerGesturesPlugin;
-}(EventManagerPlugin));
+}(HammerGesturesPluginCommon));
 //# sourceMappingURL=hammer_gestures.js.map

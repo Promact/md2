@@ -27,7 +27,7 @@ export declare class Md2Dialog implements OnDestroy {
     open(): Promise<Md2Dialog>;
     /** Close the dialog */
     close(result?: any, cancel?: boolean): Promise<Md2Dialog>;
-    private onDocumentKeypress(event);
+    private _handleDocumentKeydown(event);
 }
 export declare const MD2_DIALOG_DIRECTIVES: any[];
 export declare const MD2_DIALOG_PROVIDERS: any[];

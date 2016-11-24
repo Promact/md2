@@ -52,7 +52,7 @@ export declare class Md2Chips implements ControlValueAccessor, AfterContentInit 
      * @param event
      */
     inputChanged(event: KeyboardEvent): void;
-    private onFocus();
+    private _handleFocus();
     inputBlurred(event: Event): void;
     inputFocus(event: Event): void;
     inputPaste(event: any): void;
@@ -70,11 +70,6 @@ export declare class Md2Chips implements ControlValueAccessor, AfterContentInit 
    * @param chipIndexToRemove index of selected chip
    */
     private removeSelectedChip(chipIndexToRemove);
-    /**
-    * select chip
-    * @param index of select chip
-    */
-    private selectChip(index);
     private backspaceEvent();
     private _resetSelected();
     private _resetInput();

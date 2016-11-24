@@ -6,7 +6,8 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { Pipe } from '@angular/core';
-import { isBlank } from '../facade/lang';
+import { ListWrapper } from '../facade/collection';
+import { StringWrapper, isArray, isBlank, isString } from '../facade/lang';
 import { InvalidPipeArgumentError } from './invalid_pipe_argument_error';
 /**
  * @ngModule CommonModule
@@ -56,14 +57,18 @@ export var SlicePipe = (function () {
     function SlicePipe() {
     }
     SlicePipe.prototype.transform = function (value, start, end) {
+        if (end === void 0) { end = null; }
         if (isBlank(value))
             return value;
         if (!this.supports(value)) {
             throw new InvalidPipeArgumentError(SlicePipe, value);
         }
-        return value.slice(start, end);
+        if (isString(value)) {
+            return StringWrapper.slice(value, start, end);
+        }
+        return ListWrapper.slice(value, start, end);
     };
-    SlicePipe.prototype.supports = function (obj) { return typeof obj === 'string' || Array.isArray(obj); };
+    SlicePipe.prototype.supports = function (obj) { return isString(obj) || isArray(obj); };
     SlicePipe.decorators = [
         { type: Pipe, args: [{ name: 'slice', pure: false },] },
     ];

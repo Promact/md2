@@ -6,7 +6,8 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { Directive, ElementRef, Host, Input, Optional, Renderer, forwardRef } from '@angular/core';
-import { isPrimitive, looseIdentical } from '../facade/lang';
+import { MapWrapper } from '../facade/collection';
+import { StringWrapper, isBlank, isPresent, isPrimitive, looseIdentical } from '../facade/lang';
 import { NG_VALUE_ACCESSOR } from './control_value_accessor';
 export var SELECT_VALUE_ACCESSOR = {
     provide: NG_VALUE_ACCESSOR,
@@ -14,50 +15,22 @@ export var SELECT_VALUE_ACCESSOR = {
     multi: true
 };
 function _buildValueString(id, value) {
-    if (id == null)
+    if (isBlank(id))
         return "" + value;
     if (!isPrimitive(value))
         value = 'Object';
-    return (id + ": " + value).slice(0, 50);
+    return StringWrapper.slice(id + ": " + value, 0, 50);
 }
 function _extractId(valueString) {
     return valueString.split(':')[0];
 }
 /**
- * @whatItDoes Writes values and listens to changes on a select element.
+ * The accessor for writing a value and listening to changes on a select element.
  *
- * Used by {@link NgModel}, {@link FormControlDirective}, and {@link FormControlName}
- * to keep the view synced with the {@link FormControl} model.
- *
- * @howToUse
- *
- * If you have imported the {@link FormsModule} or the {@link ReactiveFormsModule}, this
- * value accessor will be active on any select control that has a form directive. You do
- * **not** need to add a special selector to activate it.
- *
- * ### How to use select controls with form directives
- *
- * To use a select in a template-driven form, simply add an `ngModel` and a `name`
- * attribute to the main `<select>` tag.
- *
- * If your option values are simple strings, you can bind to the normal `value` property
- * on the option.  If your option values happen to be objects (and you'd like to save the
- * selection in your form as an object), use `ngValue` instead:
- *
- * {@example forms/ts/selectControl/select_control_example.ts region='Component'}
- *
- * In reactive forms, you'll also want to add your form directive (`formControlName` or
- * `formControl`) on the main `<select>` tag. Like in the former example, you have the
- * choice of binding to the  `value` or `ngValue` property on the select's options.
- *
- * {@example forms/ts/reactiveSelectControl/reactive_select_control_example.ts region='Component'}
- *
- * Note: We listen to the 'change' event because 'input' events aren't fired
+ * Note: We have to listen to the 'change' event because 'input' events aren't fired
  * for selects in Firefox and IE:
  * https://bugzilla.mozilla.org/show_bug.cgi?id=1024350
  * https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/4660045/
- *
- * * **npm package**: `@angular/forms`
  *
  * @stable
  */
@@ -92,7 +65,7 @@ export var SelectControlValueAccessor = (function () {
     SelectControlValueAccessor.prototype._registerOption = function () { return (this._idCounter++).toString(); };
     /** @internal */
     SelectControlValueAccessor.prototype._getOptionId = function (value) {
-        for (var _i = 0, _a = Array.from(this._optionMap.keys()); _i < _a.length; _i++) {
+        for (var _i = 0, _a = MapWrapper.keys(this._optionMap); _i < _a.length; _i++) {
             var id = _a[_i];
             if (looseIdentical(this._optionMap.get(id), value))
                 return id;
@@ -101,8 +74,8 @@ export var SelectControlValueAccessor = (function () {
     };
     /** @internal */
     SelectControlValueAccessor.prototype._getOptionValue = function (valueString) {
-        var id = _extractId(valueString);
-        return this._optionMap.has(id) ? this._optionMap.get(id) : valueString;
+        var value = this._optionMap.get(_extractId(valueString));
+        return isPresent(value) ? value : valueString;
     };
     SelectControlValueAccessor.decorators = [
         { type: Directive, args: [{
@@ -119,11 +92,15 @@ export var SelectControlValueAccessor = (function () {
     return SelectControlValueAccessor;
 }());
 /**
- * @whatItDoes Marks `<option>` as dynamic, so Angular can be notified when options change.
+ * Marks `<option>` as dynamic, so Angular can be notified when options change.
  *
- * @howToUse
+ * ### Example
  *
- * See docs for {@link SelectControlValueAccessor} for usage examples.
+ * ```
+ * <select name="city" ngModel>
+ *   <option *ngFor="let c of cities" [value]="c"></option>
+ * </select>
+ * ```
  *
  * @stable
  */
@@ -132,7 +109,7 @@ export var NgSelectOption = (function () {
         this._element = _element;
         this._renderer = _renderer;
         this._select = _select;
-        if (this._select)
+        if (isPresent(this._select))
             this.id = this._select._registerOption();
     }
     Object.defineProperty(NgSelectOption.prototype, "ngValue", {
@@ -149,7 +126,7 @@ export var NgSelectOption = (function () {
     Object.defineProperty(NgSelectOption.prototype, "value", {
         set: function (value) {
             this._setElementValue(value);
-            if (this._select)
+            if (isPresent(this._select))
                 this._select.writeValue(this._select.value);
         },
         enumerable: true,
@@ -160,7 +137,7 @@ export var NgSelectOption = (function () {
         this._renderer.setElementProperty(this._element.nativeElement, 'value', value);
     };
     NgSelectOption.prototype.ngOnDestroy = function () {
-        if (this._select) {
+        if (isPresent(this._select)) {
             this._select._optionMap.delete(this.id);
             this._select.writeValue(this._select.value);
         }

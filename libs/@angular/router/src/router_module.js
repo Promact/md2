@@ -10,13 +10,10 @@ import { ANALYZE_FOR_ENTRY_COMPONENTS, APP_BOOTSTRAP_LISTENER, ApplicationRef, C
 import { RouterLink, RouterLinkWithHref } from './directives/router_link';
 import { RouterLinkActive } from './directives/router_link_active';
 import { RouterOutlet } from './directives/router_outlet';
-import { getDOM } from './private_import_platform-browser';
 import { Router } from './router';
 import { ROUTES } from './router_config_loader';
 import { RouterOutletMap } from './router_outlet_map';
-import { NoPreloading, PreloadAllModules, PreloadingStrategy, RouterPreloader } from './router_preloader';
 import { ActivatedRoute } from './router_state';
-import { UrlHandlingStrategy } from './url_handling_strategy';
 import { DefaultUrlSerializer, UrlSerializer } from './url_tree';
 import { flatten } from './utils/collection';
 /**
@@ -47,12 +44,12 @@ export var ROUTER_PROVIDERS = [
         useFactory: setupRouter,
         deps: [
             ApplicationRef, UrlSerializer, RouterOutletMap, Location, Injector, NgModuleFactoryLoader,
-            Compiler, ROUTES, ROUTER_CONFIGURATION, [UrlHandlingStrategy, new Optional()]
+            Compiler, ROUTES, ROUTER_CONFIGURATION
         ]
     },
     RouterOutletMap, { provide: ActivatedRoute, useFactory: rootRoute, deps: [Router] },
-    { provide: NgModuleFactoryLoader, useClass: SystemJsNgModuleLoader }, RouterPreloader, NoPreloading,
-    PreloadAllModules, { provide: ROUTER_CONFIGURATION, useValue: { enableTracing: false } }
+    { provide: NgModuleFactoryLoader, useClass: SystemJsNgModuleLoader },
+    { provide: ROUTER_CONFIGURATION, useValue: { enableTracing: false } }
 ];
 /**
  * @whatItDoes Adds router directives and providers.
@@ -136,11 +133,6 @@ export var RouterModule = (function () {
                         PlatformLocation, [new Inject(APP_BASE_HREF), new Optional()], ROUTER_CONFIGURATION
                     ]
                 },
-                {
-                    provide: PreloadingStrategy,
-                    useExisting: config && config.preloadingStrategy ? config.preloadingStrategy :
-                        NoPreloading
-                },
                 provideRouterInitializer()
             ]
         };
@@ -192,36 +184,31 @@ export function provideRoutes(routes) {
         { provide: ROUTES, multi: true, useValue: routes }
     ];
 }
-export function setupRouter(ref, urlSerializer, outletMap, location, injector, loader, compiler, config, opts, urlHandlingStrategy) {
+export function setupRouter(ref, urlSerializer, outletMap, location, injector, loader, compiler, config, opts) {
     if (opts === void 0) { opts = {}; }
-    var router = new Router(null, urlSerializer, outletMap, location, injector, loader, compiler, flatten(config));
-    if (urlHandlingStrategy) {
-        router.urlHandlingStrategy = urlHandlingStrategy;
+    if (ref.componentTypes.length == 0) {
+        throw new Error('Bootstrap at least one component before injecting Router.');
     }
+    var componentType = ref.componentTypes[0];
+    var r = new Router(componentType, urlSerializer, outletMap, location, injector, loader, compiler, flatten(config));
     if (opts.errorHandler) {
-        router.errorHandler = opts.errorHandler;
+        r.errorHandler = opts.errorHandler;
     }
     if (opts.enableTracing) {
-        var dom_1 = getDOM();
-        router.events.subscribe(function (e) {
-            dom_1.logGroup("Router Event: " + e.constructor.name);
-            dom_1.log(e.toString());
-            dom_1.log(e);
-            dom_1.logGroupEnd();
+        r.events.subscribe(function (e) {
+            console.group("Router Event: " + e.constructor.name);
+            console.log(e.toString());
+            console.log(e);
+            console.groupEnd();
         });
     }
-    return router;
+    return r;
 }
 export function rootRoute(router) {
     return router.routerState.root;
 }
-export function initialRouterNavigation(router, ref, preloader, opts) {
-    return function (bootstrappedComponentRef) {
-        if (bootstrappedComponentRef !== ref.components[0]) {
-            return;
-        }
-        router.resetRootComponentType(ref.componentTypes[0]);
-        preloader.setUpPreloading();
+export function initialRouterNavigation(router, opts) {
+    return function () {
         if (opts.initialNavigation === false) {
             router.setUpLocationChangeListener();
         }
@@ -230,20 +217,12 @@ export function initialRouterNavigation(router, ref, preloader, opts) {
         }
     };
 }
-/**
- * A token for the router initializer that will be called after the app is bootstrapped.
- *
- * @experimental
- */
-export var ROUTER_INITIALIZER = new OpaqueToken('Router Initializer');
 export function provideRouterInitializer() {
-    return [
-        {
-            provide: ROUTER_INITIALIZER,
-            useFactory: initialRouterNavigation,
-            deps: [Router, ApplicationRef, RouterPreloader, ROUTER_CONFIGURATION]
-        },
-        { provide: APP_BOOTSTRAP_LISTENER, multi: true, useExisting: ROUTER_INITIALIZER }
-    ];
+    return {
+        provide: APP_BOOTSTRAP_LISTENER,
+        multi: true,
+        useFactory: initialRouterNavigation,
+        deps: [Router, ROUTER_CONFIGURATION]
+    };
 }
 //# sourceMappingURL=router_module.js.map

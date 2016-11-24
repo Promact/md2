@@ -49,7 +49,7 @@ export declare class Md2Autocomplete implements AfterContentInit, ControlValueAc
      * input event listner
      * @param event
      */
-    private inputKeydown(event);
+    private _handleKeydown(event);
     /**
      * select option
      * @param event
@@ -71,19 +71,19 @@ export declare class Md2Autocomplete implements AfterContentInit, ControlValueAc
     /**
      * input focus listener
      */
-    private onInputFocus();
+    private _handleFocus();
     /**
      * input blur listener
      */
-    private onInputBlur();
+    private _handleBlur();
     /**
      * suggestion menu mouse enter listener
      */
-    private listEnter();
+    private _handleMouseEnter();
     /**
      * suggestion menu mouse leave listener
      */
-    private listLeave();
+    private _handleMouseLeave();
     /**
      * Update suggestion to filter the query
      * @param query

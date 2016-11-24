@@ -8,7 +8,8 @@
 import { Injector, NgModule, NgZone, OpaqueToken } from '@angular/core';
 import { AsyncTestCompleter } from './async_test_completer';
 import { ComponentFixture } from './component_fixture';
-import { stringify } from './facade/lang';
+import { ListWrapper } from './facade/collection';
+import { FunctionWrapper, stringify } from './facade/lang';
 import { TestingCompilerFactory } from './test_compiler';
 var UNDEFINED = new Object();
 /**
@@ -32,13 +33,7 @@ export var ComponentFixtureAutoDetect = new OpaqueToken('ComponentFixtureAutoDet
  */
 export var ComponentFixtureNoNgZone = new OpaqueToken('ComponentFixtureNoNgZone');
 /**
- * @whatItDoes Configures and initializes environment for unit testing and provides methods for
- * creating components and services in unit tests.
- * @description
- *
- * TestBed is the primary api for writing unit tests for Angular applications and libraries.
- *
- * @stable
+ * @experimental
  */
 export var TestBed = (function () {
     function TestBed() {
@@ -74,7 +69,7 @@ export var TestBed = (function () {
      */
     TestBed.initTestEnvironment = function (ngModule, platform) {
         var testBed = getTestBed();
-        testBed.initTestEnvironment(ngModule, platform);
+        getTestBed().initTestEnvironment(ngModule, platform);
         return testBed;
     };
     /**
@@ -186,18 +181,17 @@ export var TestBed = (function () {
     TestBed.prototype.configureTestingModule = function (moduleDef) {
         this._assertNotInstantiated('TestBed.configureTestingModule', 'configure the test module');
         if (moduleDef.providers) {
-            (_a = this._providers).push.apply(_a, moduleDef.providers);
+            this._providers = ListWrapper.concat(this._providers, moduleDef.providers);
         }
         if (moduleDef.declarations) {
-            (_b = this._declarations).push.apply(_b, moduleDef.declarations);
+            this._declarations = ListWrapper.concat(this._declarations, moduleDef.declarations);
         }
         if (moduleDef.imports) {
-            (_c = this._imports).push.apply(_c, moduleDef.imports);
+            this._imports = ListWrapper.concat(this._imports, moduleDef.imports);
         }
         if (moduleDef.schemas) {
-            (_d = this._schemas).push.apply(_d, moduleDef.schemas);
+            this._schemas = ListWrapper.concat(this._schemas, moduleDef.schemas);
         }
-        var _a, _b, _c, _d;
     };
     TestBed.prototype.compileComponents = function () {
         var _this = this;
@@ -280,7 +274,7 @@ export var TestBed = (function () {
         var _this = this;
         this._initIfNeeded();
         var params = tokens.map(function (t) { return _this.get(t); });
-        return fn.apply(void 0, params);
+        return FunctionWrapper.apply(fn, params);
     };
     TestBed.prototype.overrideModule = function (ngModule, override) {
         this._assertNotInstantiated('overrideModule', 'override module metadata');
@@ -315,7 +309,7 @@ export var TestBed = (function () {
             var componentRef = componentFactory.create(_this, [], "#" + rootElId);
             return new ComponentFixture(componentRef, ngZone, autoDetect);
         };
-        var fixture = !ngZone ? initComponent() : ngZone.run(initComponent);
+        var fixture = ngZone == null ? initComponent() : ngZone.run(initComponent);
         this._activeFixtures.push(fixture);
         return fixture;
     };
@@ -326,7 +320,10 @@ var _testBed = null;
  * @experimental
  */
 export function getTestBed() {
-    return _testBed = _testBed || new TestBed();
+    if (_testBed == null) {
+        _testBed = new TestBed();
+    }
+    return _testBed;
 }
 /**
  * Allows injecting dependencies in `beforeEach()` and `it()`.

@@ -5,23 +5,25 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { isBlank, isPresent, looseIdentical } from '../facade/lang';
+import { ListWrapper, StringMapWrapper } from '../facade/collection';
+import { hasConstructor, isBlank, isPresent, looseIdentical } from '../facade/lang';
 import { Validators } from '../validators';
 import { CheckboxControlValueAccessor } from './checkbox_value_accessor';
 import { DefaultValueAccessor } from './default_value_accessor';
 import { normalizeAsyncValidator, normalizeValidator } from './normalize_validator';
 import { NumberValueAccessor } from './number_value_accessor';
 import { RadioControlValueAccessor } from './radio_control_value_accessor';
-import { RangeValueAccessor } from './range_value_accessor';
 import { SelectControlValueAccessor } from './select_control_value_accessor';
 import { SelectMultipleControlValueAccessor } from './select_multiple_control_value_accessor';
 export function controlPath(name, parent) {
-    return parent.path.concat([name]);
+    var p = ListWrapper.clone(parent.path);
+    p.push(name);
+    return p;
 }
 export function setUpControl(control, dir) {
-    if (!control)
+    if (isBlank(control))
         _throwError(dir, 'Cannot find control with');
-    if (!dir.valueAccessor)
+    if (isBlank(dir.valueAccessor))
         _throwError(dir, 'No value accessor for form control with');
     control.validator = Validators.compose([control.validator, dir.validator]);
     control.asyncValidator = Validators.composeAsync([control.asyncValidator, dir.asyncValidator]);
@@ -57,16 +59,8 @@ export function setUpControl(control, dir) {
 export function cleanUpControl(control, dir) {
     dir.valueAccessor.registerOnChange(function () { return _noControlError(dir); });
     dir.valueAccessor.registerOnTouched(function () { return _noControlError(dir); });
-    dir._rawValidators.forEach(function (validator) {
-        if (validator.registerOnValidatorChange) {
-            validator.registerOnValidatorChange(null);
-        }
-    });
-    dir._rawAsyncValidators.forEach(function (validator) {
-        if (validator.registerOnValidatorChange) {
-            validator.registerOnValidatorChange(null);
-        }
-    });
+    dir._rawValidators.forEach(function (validator) { return validator.registerOnValidatorChange(null); });
+    dir._rawAsyncValidators.forEach(function (validator) { return validator.registerOnValidatorChange(null); });
     if (control)
         control._clearChangeFns();
 }
@@ -100,51 +94,47 @@ export function composeAsyncValidators(validators) {
         null;
 }
 export function isPropertyUpdated(changes, viewModel) {
-    if (!changes.hasOwnProperty('model'))
+    if (!StringMapWrapper.contains(changes, 'model'))
         return false;
     var change = changes['model'];
     if (change.isFirstChange())
         return true;
     return !looseIdentical(viewModel, change.currentValue);
 }
-var BUILTIN_ACCESSORS = [
-    CheckboxControlValueAccessor,
-    RangeValueAccessor,
-    NumberValueAccessor,
-    SelectControlValueAccessor,
-    SelectMultipleControlValueAccessor,
-    RadioControlValueAccessor,
-];
 export function isBuiltInAccessor(valueAccessor) {
-    return BUILTIN_ACCESSORS.some(function (a) { return valueAccessor.constructor === a; });
+    return (hasConstructor(valueAccessor, CheckboxControlValueAccessor) ||
+        hasConstructor(valueAccessor, NumberValueAccessor) ||
+        hasConstructor(valueAccessor, SelectControlValueAccessor) ||
+        hasConstructor(valueAccessor, SelectMultipleControlValueAccessor) ||
+        hasConstructor(valueAccessor, RadioControlValueAccessor));
 }
 // TODO: vsavkin remove it once https://github.com/angular/angular/issues/3011 is implemented
 export function selectValueAccessor(dir, valueAccessors) {
-    if (!valueAccessors)
+    if (isBlank(valueAccessors))
         return null;
     var defaultAccessor;
     var builtinAccessor;
     var customAccessor;
     valueAccessors.forEach(function (v) {
-        if (v.constructor === DefaultValueAccessor) {
+        if (hasConstructor(v, DefaultValueAccessor)) {
             defaultAccessor = v;
         }
         else if (isBuiltInAccessor(v)) {
-            if (builtinAccessor)
+            if (isPresent(builtinAccessor))
                 _throwError(dir, 'More than one built-in value accessor matches form control with');
             builtinAccessor = v;
         }
         else {
-            if (customAccessor)
+            if (isPresent(customAccessor))
                 _throwError(dir, 'More than one custom value accessor matches form control with');
             customAccessor = v;
         }
     });
-    if (customAccessor)
+    if (isPresent(customAccessor))
         return customAccessor;
-    if (builtinAccessor)
+    if (isPresent(builtinAccessor))
         return builtinAccessor;
-    if (defaultAccessor)
+    if (isPresent(defaultAccessor))
         return defaultAccessor;
     _throwError(dir, 'No valid value accessor for form control with');
     return null;

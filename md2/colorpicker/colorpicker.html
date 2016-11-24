@@ -1,39 +1,39 @@
-<div class="color-picker-selector" (click)="showColorpicker()">
-    <div class="color-div" [style.background-color]="_innerValue"> </div>
-    <label class="color-text">{{_innerValue}}</label>
+<div class="color-picker-selector" (click)="_showColorpicker()">
+  <div class="color-div" [style.background-color]="_innerValue"> </div>
+  <label class="color-text">{{_innerValue}}</label>
 </div>
-<div class="md2-colorpicker-wrapper"  [class.active]="_isColorpickerVisible">
-    <div class="md2-color-picker" [style.top.px]="top" [style.left.px]="left" >
-        <div [colorpicker-slider] [style.background-color]="_hueSliderColor" [point-x]="1" [point-y]="1" (change)="setSaturationAndBrightness($event)" class="saturation-lightness">
-            <div [style.left.px]="slider.s" [style.top.px]="slider.v" class="cursor"></div>
-        </div>
-        <div [colorpicker-slider] [point-x]="1" (change)="setHue($event)" class="hue">
-            <div [style.left.px]="slider.h" class="cursor"></div>
-        </div>
-        <div [colorpicker-slider] [style.background-color]="alphaColor" [point-x]="1" (change)="setAlpha($event)" class="alpha">
-            <div [style.left.px]="slider.a" class="cursor"></div>
-        </div>
-        <div [style.background-color]="outputColor" class="selected-color"></div>
-        <div [hidden]="format!=2" class="hsla-text">
-            <input [text] type="number" pattern="[0-9]*" min="0" max="360" [rg]="360" (newValue)="setHue($event)" [value]="hslaText.h" />
-            <input [text] type="number" pattern="[0-9]*" min="0" max="100" [rg]="100" (newValue)="setSaturation($event)" [value]="hslaText.s" />
-            <input [text] type="number" pattern="[0-9]*" min="0" max="100" [rg]="100" (newValue)="setLightness($event)" [value]="hslaText.l" />
-            <input [text] type="number" pattern="[0-9]+([\.,][0-9]{1,2})?" min="0" max="1" step="0.1" [rg]="1" (newValue)="setAlpha($event)" [value]="hslaText.a" />
-            <div>H</div><div>S</div><div>L</div><div>A</div>
-        </div>
-        <div [hidden]="format!=1" class="rgba-text">
-            <input [text] type="number" pattern="[0-9]*" min="0" max="255" [rg]="255" (newValue)="setR($event)" [value]="rgbaText.r" />
-            <input [text] type="number" pattern="[0-9]*" min="0" max="255" [rg]="255" (newValue)="setG($event)" [value]="rgbaText.g" />
-            <input [text] type="number" pattern="[0-9]*" min="0" max="255" [rg]="255" (newValue)="setB($event)" [value]="rgbaText.b" />
-            <input [text] type="number" pattern="[0-9]+([\.,][0-9]{1,2})?" min="0" max="1" step="0.1" [rg]="1" (newValue)="setAlpha($event)" [value]="rgbaText.a" />
-            <div>R</div><div>G</div><div>B</div><div>A</div>
-        </div>
-        <div [hidden]="format!=0" class="hex-text">
-            <input [text] (newValue)="setColorFromString($event)" [value]="hexText" />
-            <div>Hex</div>
-        </div>
-        <div (click)="formatPolicy()" class="type-policy"></div>
-        <div class="md2-color-picker-ok-btn" (click)="clickOk()">OK</div>
-        <div class="md2-color-picker-cancel-btn" (click)="cancelColor()">Cancel</div>
+<div class="md2-colorpicker-wrapper" [class.active]="_isColorpickerVisible">
+  <div class="md2-color-picker" [style.top.px]="top" [style.left.px]="left">
+    <div [colorpicker-slider] [style.background-color]="_hueSliderColor" [point-x]="1" [point-y]="1" (change)="setSaturationAndBrightness($event)" class="saturation-lightness">
+      <div [style.left.px]="slider.s" [style.top.px]="slider.v" class="cursor"></div>
     </div>
+    <div [colorpicker-slider] [point-x]="1" (change)="setHue($event)" class="hue">
+      <div [style.left.px]="slider.h" class="cursor"></div>
+    </div>
+    <div [colorpicker-slider] [style.background-color]="alphaColor" [point-x]="1" (change)="setAlpha($event)" class="alpha">
+      <div [style.left.px]="slider.a" class="cursor"></div>
+    </div>
+    <div [style.background-color]="outputColor" class="selected-color"></div>
+    <div [hidden]="format!=2" class="hsla-text">
+      <input [text] type="number" pattern="[0-9]*" min="0" max="360" [rg]="360" (newValue)="setHue($event)" [value]="hslaText.h" />
+      <input [text] type="number" pattern="[0-9]*" min="0" max="100" [rg]="100" (newValue)="setSaturation($event)" [value]="hslaText.s" />
+      <input [text] type="number" pattern="[0-9]*" min="0" max="100" [rg]="100" (newValue)="setLightness($event)" [value]="hslaText.l" />
+      <input [text] type="number" pattern="[0-9]+([\.,][0-9]{1,2})?" min="0" max="1" step="0.1" [rg]="1" (newValue)="setAlpha($event)" [value]="hslaText.a" />
+      <div>H</div><div>S</div><div>L</div><div>A</div>
+    </div>
+    <div [hidden]="format!=1" class="rgba-text">
+      <input [text] type="number" pattern="[0-9]*" min="0" max="255" [rg]="255" (newValue)="setR($event)" [value]="rgbaText.r" />
+      <input [text] type="number" pattern="[0-9]*" min="0" max="255" [rg]="255" (newValue)="setG($event)" [value]="rgbaText.g" />
+      <input [text] type="number" pattern="[0-9]*" min="0" max="255" [rg]="255" (newValue)="setB($event)" [value]="rgbaText.b" />
+      <input [text] type="number" pattern="[0-9]+([\.,][0-9]{1,2})?" min="0" max="1" step="0.1" [rg]="1" (newValue)="setAlpha($event)" [value]="rgbaText.a" />
+      <div>R</div><div>G</div><div>B</div><div>A</div>
+    </div>
+    <div [hidden]="format!=0" class="hex-text">
+      <input [text] (newValue)="setColorFromString($event)" [value]="hexText" />
+      <div>Hex</div>
+    </div>
+    <div (click)="formatPolicy()" class="type-policy"></div>
+    <div class="md2-color-picker-ok-btn" (click)="clickOk()">OK</div>
+    <div class="md2-color-picker-cancel-btn" (click)="cancelColor()">Cancel</div>
+  </div>
 </div>

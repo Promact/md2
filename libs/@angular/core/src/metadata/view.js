@@ -34,8 +34,16 @@ export var ViewEncapsulation;
      */
     ViewEncapsulation[ViewEncapsulation["None"] = 2] = "None";
 })(ViewEncapsulation || (ViewEncapsulation = {}));
+export var VIEW_ENCAPSULATION_VALUES = [ViewEncapsulation.Emulated, ViewEncapsulation.Native, ViewEncapsulation.None];
 /**
  * Metadata properties available for configuring Views.
+ *
+ * Each Angular component requires a single `@Component` and at least one `@View` annotation. The
+ * `@View` annotation specifies the HTML template to use, and lists the directives that are active
+ * within the template.
+ *
+ * When a component is instantiated, the template is loaded into the component's shadow root, and
+ * the expressions and statements in the template are evaluated against the component.
  *
  * For details on the `@Component` annotation, see {@link Component}.
  *
@@ -45,6 +53,7 @@ export var ViewEncapsulation;
  * @Component({
  *   selector: 'greet',
  *   template: 'Hello {{name}}!',
+ *   directives: [GreetUser, Bold]
  * })
  * class Greet {
  *   name: string;
@@ -56,8 +65,6 @@ export var ViewEncapsulation;
  * ```
  *
  * @deprecated Use Component instead.
- *
- * {@link Component}
  */
 export var ViewMetadata = (function () {
     function ViewMetadata(_a) {

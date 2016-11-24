@@ -1,0 +1,159 @@
+md2-multiselect {
+  position: relative;
+  display: block;
+  margin: 18px 0;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden; }
+
+md2-multiselect:focus {
+  outline: none; }
+
+md2-multiselect.md2-multiselect-disabled {
+  pointer-events: none;
+  cursor: default; }
+
+md2-multiselect .md2-multiselect-container {
+  position: relative;
+  width: 100%;
+  min-width: 64px;
+  min-height: 30px;
+  align-items: center;
+  padding: 2px 2px 1px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  box-sizing: border-box;
+  cursor: pointer; }
+
+md2-multiselect:focus .md2-multiselect-container {
+  padding-bottom: 0;
+  border-bottom: 2px solid #106cc8; }
+
+md2-multiselect.md2-multiselect-disabled .md2-multiselect-container {
+  color: rgba(0, 0, 0, 0.38);
+  border-color: transparent;
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.38) 0%, rgba(0, 0, 0, 0.38) 33%, transparent 0%);
+  background-position: bottom -1px left 0;
+  background-size: 4px 1px;
+  background-repeat: repeat-x;
+  cursor: default; }
+
+md2-multiselect.md2-multiselect-disabled:focus .md2-multiselect-container {
+  padding-bottom: 1px;
+  border-bottom: 1px solid transparent; }
+
+md2-multiselect .md2-multiselect-placeholder {
+  position: absolute;
+  right: 26px;
+  bottom: 100%;
+  left: 0;
+  color: rgba(0, 0, 0, 0.38);
+  max-width: 100%;
+  padding-left: 3px;
+  padding-right: 0;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 1;
+  transform: translate3d(0, 26px, 0) scale(1);
+  transition: transform 400ms cubic-bezier(0.25, 0.8, 0.25, 1);
+  transform-origin: left top; }
+
+md2-multiselect:focus .md2-multiselect-placeholder {
+  color: #2196f3; }
+
+md2-multiselect:focus .md2-multiselect-placeholder .md2-placeholder-required {
+  color: #f00; }
+
+md2-multiselect:focus .md2-multiselect-placeholder,
+md2-multiselect .md2-multiselect-placeholder.has-value {
+  transform: translate3d(0, 6px, 0) scale(0.75); }
+
+md2-multiselect.md2-multiselect-disabled:focus .md2-multiselect-placeholder,
+md2-multiselect.md2-multiselect-disabled:focus .md2-multiselect-placeholder .md2-placeholder-required {
+  color: rgba(0, 0, 0, 0.38); }
+
+md2-multiselect .md2-multiselect-container .md2-multiselect-value {
+  display: block;
+  max-height: 80px;
+  padding-right: 26px;
+  overflow-y: auto;
+  font-size: 15px;
+  line-height: 26px; }
+
+md2-multiselect .md2-multiselect-container .md2-multiselect-value-item {
+  word-wrap: break-word; }
+
+md2-multiselect .md2-multiselect-container svg {
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: block;
+  height: 100%;
+  background: #fff;
+  fill: currentColor;
+  color: rgba(0, 0, 0, 0.54); }
+
+md2-multiselect .md2-multiselect-menu {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  z-index: 10;
+  width: 100%;
+  margin: 0;
+  padding: 8px 0;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12);
+  max-height: 256px;
+  min-height: 48px;
+  overflow-y: auto;
+  transform: scale(1);
+  background: #fff; }
+
+md2-multiselect .md2-multiselect-menu .md2-option {
+  position: relative;
+  display: block;
+  cursor: pointer;
+  width: auto;
+  transition: background 150ms linear;
+  padding: 0 16px 0 40px;
+  height: 48px;
+  line-height: 48px; }
+
+md2-multiselect .md2-multiselect-menu .md2-option.active {
+  color: #106cc8; }
+
+md2-multiselect .md2-multiselect-menu .md2-option:hover, .md2-multiselect .md2-multiselect-menu .md2-option.focus {
+  background: #eeeeee; }
+
+md2-multiselect .md2-multiselect-menu .md2-option .md2-option-text {
+  width: auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 16px; }
+
+md2-multiselect .md2-option .md2-option-icon {
+  position: absolute;
+  top: 14px;
+  left: 12px;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(0, 0, 0, 0.54);
+  border-radius: 2px;
+  box-sizing: border-box;
+  transition: 240ms; }
+
+md2-multiselect .md2-option.active .md2-option-icon {
+  transform: rotate(-45deg);
+  height: 8px;
+  top: 17px;
+  border-color: #106cc8;
+  border-top-style: none;
+  border-right-style: none; }
+
+/*# sourceMappingURL=multiselect.css.map */

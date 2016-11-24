@@ -10,6 +10,8 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+import { ListWrapper, MapWrapper } from '../facade/collection';
+import { isPresent } from '../facade/lang';
 export var EventListener = (function () {
     function EventListener(name, callback) {
         this.name = name;
@@ -25,7 +27,7 @@ export var DebugNode = (function () {
     function DebugNode(nativeNode, parent, _debugInfo) {
         this._debugInfo = _debugInfo;
         this.nativeNode = nativeNode;
-        if (parent && parent instanceof DebugElement) {
+        if (isPresent(parent) && parent instanceof DebugElement) {
             parent.addChild(this);
         }
         else {
@@ -34,34 +36,38 @@ export var DebugNode = (function () {
         this.listeners = [];
     }
     Object.defineProperty(DebugNode.prototype, "injector", {
-        get: function () { return this._debugInfo ? this._debugInfo.injector : null; },
+        get: function () { return isPresent(this._debugInfo) ? this._debugInfo.injector : null; },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(DebugNode.prototype, "componentInstance", {
-        get: function () { return this._debugInfo ? this._debugInfo.component : null; },
+        get: function () {
+            return isPresent(this._debugInfo) ? this._debugInfo.component : null;
+        },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(DebugNode.prototype, "context", {
-        get: function () { return this._debugInfo ? this._debugInfo.context : null; },
+        get: function () { return isPresent(this._debugInfo) ? this._debugInfo.context : null; },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(DebugNode.prototype, "references", {
         get: function () {
-            return this._debugInfo ? this._debugInfo.references : null;
+            return isPresent(this._debugInfo) ? this._debugInfo.references : null;
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(DebugNode.prototype, "providerTokens", {
-        get: function () { return this._debugInfo ? this._debugInfo.providerTokens : null; },
+        get: function () {
+            return isPresent(this._debugInfo) ? this._debugInfo.providerTokens : null;
+        },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(DebugNode.prototype, "source", {
-        get: function () { return this._debugInfo ? this._debugInfo.source : null; },
+        get: function () { return isPresent(this._debugInfo) ? this._debugInfo.source : null; },
         enumerable: true,
         configurable: true
     });
@@ -82,7 +88,7 @@ export var DebugElement = (function (_super) {
         this.nativeElement = nativeNode;
     }
     DebugElement.prototype.addChild = function (child) {
-        if (child) {
+        if (isPresent(child)) {
             this.childNodes.push(child);
             child.parent = this;
         }
@@ -99,10 +105,11 @@ export var DebugElement = (function (_super) {
         if (siblingIndex !== -1) {
             var previousChildren = this.childNodes.slice(0, siblingIndex + 1);
             var nextChildren = this.childNodes.slice(siblingIndex + 1);
-            this.childNodes = previousChildren.concat(newChildren, nextChildren);
+            this.childNodes =
+                ListWrapper.concat(ListWrapper.concat(previousChildren, newChildren), nextChildren);
             for (var i = 0; i < newChildren.length; ++i) {
                 var newChild = newChildren[i];
-                if (newChild.parent) {
+                if (isPresent(newChild.parent)) {
                     newChild.parent.removeChild(newChild);
                 }
                 newChild.parent = this;
@@ -111,7 +118,7 @@ export var DebugElement = (function (_super) {
     };
     DebugElement.prototype.query = function (predicate) {
         var results = this.queryAll(predicate);
-        return results[0] || null;
+        return results.length > 0 ? results[0] : null;
     };
     DebugElement.prototype.queryAll = function (predicate) {
         var matches = [];
@@ -125,7 +132,13 @@ export var DebugElement = (function (_super) {
     };
     Object.defineProperty(DebugElement.prototype, "children", {
         get: function () {
-            return this.childNodes.filter(function (node) { return node instanceof DebugElement; });
+            var children = [];
+            this.childNodes.forEach(function (node) {
+                if (node instanceof DebugElement) {
+                    children.push(node);
+                }
+            });
+            return children;
         },
         enumerable: true,
         configurable: true
@@ -176,7 +189,7 @@ export function getDebugNode(nativeNode) {
     return _nativeNodeToDebugNode.get(nativeNode);
 }
 export function getAllDebugNodes() {
-    return Array.from(_nativeNodeToDebugNode.values());
+    return MapWrapper.values(_nativeNodeToDebugNode);
 }
 export function indexDebugNode(node) {
     _nativeNodeToDebugNode.set(node.nativeNode, node);

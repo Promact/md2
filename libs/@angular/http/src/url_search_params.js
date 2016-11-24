@@ -5,6 +5,8 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+import { ListWrapper, Map, isListLikeIterable } from '../src/facade/collection';
+import { isPresent } from '../src/facade/lang';
 function paramParser(rawParams) {
     if (rawParams === void 0) { rawParams = ''; }
     var map = new Map();
@@ -93,16 +95,21 @@ export var URLSearchParams = (function () {
     URLSearchParams.prototype.has = function (param) { return this.paramsMap.has(param); };
     URLSearchParams.prototype.get = function (param) {
         var storedParam = this.paramsMap.get(param);
-        return Array.isArray(storedParam) ? storedParam[0] : null;
-    };
-    URLSearchParams.prototype.getAll = function (param) { return this.paramsMap.get(param) || []; };
-    URLSearchParams.prototype.set = function (param, val) {
-        if (val === void 0 || val === null) {
-            this.delete(param);
-            return;
+        if (isListLikeIterable(storedParam)) {
+            return ListWrapper.first(storedParam);
         }
-        var list = this.paramsMap.get(param) || [];
-        list.length = 0;
+        else {
+            return null;
+        }
+    };
+    URLSearchParams.prototype.getAll = function (param) {
+        var mapParam = this.paramsMap.get(param);
+        return isPresent(mapParam) ? mapParam : [];
+    };
+    URLSearchParams.prototype.set = function (param, val) {
+        var mapParam = this.paramsMap.get(param);
+        var list = isPresent(mapParam) ? mapParam : [];
+        ListWrapper.clear(list);
         list.push(val);
         this.paramsMap.set(param, list);
     };
@@ -115,16 +122,16 @@ export var URLSearchParams = (function () {
     URLSearchParams.prototype.setAll = function (searchParams) {
         var _this = this;
         searchParams.paramsMap.forEach(function (value, param) {
-            var list = _this.paramsMap.get(param) || [];
-            list.length = 0;
+            var mapParam = _this.paramsMap.get(param);
+            var list = isPresent(mapParam) ? mapParam : [];
+            ListWrapper.clear(list);
             list.push(value[0]);
             _this.paramsMap.set(param, list);
         });
     };
     URLSearchParams.prototype.append = function (param, val) {
-        if (val === void 0 || val === null)
-            return;
-        var list = this.paramsMap.get(param) || [];
+        var mapParam = this.paramsMap.get(param);
+        var list = isPresent(mapParam) ? mapParam : [];
         list.push(val);
         this.paramsMap.set(param, list);
     };
@@ -138,7 +145,8 @@ export var URLSearchParams = (function () {
     URLSearchParams.prototype.appendAll = function (searchParams) {
         var _this = this;
         searchParams.paramsMap.forEach(function (value, param) {
-            var list = _this.paramsMap.get(param) || [];
+            var mapParam = _this.paramsMap.get(param);
+            var list = isPresent(mapParam) ? mapParam : [];
             for (var i = 0; i < value.length; ++i) {
                 list.push(value[i]);
             }
@@ -155,8 +163,9 @@ export var URLSearchParams = (function () {
     URLSearchParams.prototype.replaceAll = function (searchParams) {
         var _this = this;
         searchParams.paramsMap.forEach(function (value, param) {
-            var list = _this.paramsMap.get(param) || [];
-            list.length = 0;
+            var mapParam = _this.paramsMap.get(param);
+            var list = isPresent(mapParam) ? mapParam : [];
+            ListWrapper.clear(list);
             for (var i = 0; i < value.length; ++i) {
                 list.push(value[i]);
             }

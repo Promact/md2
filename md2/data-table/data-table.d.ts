@@ -34,7 +34,6 @@ export declare class Md2DataTable implements OnChanges, DoCheck {
     }): any;
     ngDoCheck(): any;
     private fillData();
-    private caseInsensitiveIteratee(sortField);
 }
 export declare class Md2DataTableSortField {
     private _md2Table;
@@ -47,7 +46,6 @@ export declare class Md2DataTableSortField {
 export declare class Md2Pagination implements OnChanges {
     private injectMd2Table;
     private _md2Table;
-    private _minRows;
     private _activePage;
     private _rows;
     private _lastPage;
@@ -55,6 +53,7 @@ export declare class Md2Pagination implements OnChanges {
     rows: any;
     md2InputTable: Md2DataTable;
     constructor(injectMd2Table: Md2DataTable);
+    ngAfterViewInit(): void;
     ngOnChanges(changes: any): any;
     private _setPage(page);
     private _setRows(rows);

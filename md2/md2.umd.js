@@ -2512,11 +2512,11 @@ var Md2Accordion = (function () {
     Md2Accordion = __decorate$18([
         _angular_core.Component({selector: 'md2-accordion',
             template: "<ng-content></ng-content>",
+            styles: [".md2-accordion { display: block; } md2-accordion-tab { position: relative; display: block; outline: 0; border: 0; border-width: 0 0 1px; border-style: solid; border-color: rgba(0, 0, 0, 0.12); box-sizing: border-box; } md2-accordion-tab[hidden] { display: none; } md2-accordion-tab.md2-accordion-tab-active { border-color: rgba(0, 0, 0, 0.12); } md2-accordion-tab .md2-accordion-header { position: relative; border-radius: 0; color: rgba(0, 0, 0, 0.85); font-weight: 500; cursor: pointer; display: block; align-items: inherit; line-height: 40px; margin: 0; max-height: 40px; overflow: hidden; padding: 0 35px 0 16px; text-align: left; text-decoration: none; white-space: nowrap; width: 100%; box-sizing: border-box; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-user-drag: none; } md2-accordion-tab.md2-accordion-tab-active .md2-accordion-header { color: #106cc8; } md2-accordion-tab.md2-accordion-tab-disabled .md2-accordion-header { pointer-events: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-user-drag: none; opacity: 0.5; cursor: default; } md2-accordion-tab .md2-accordion-header-icon { position: absolute; top: 12px; right: 17px; width: 8px; height: 8px; overflow: hidden; display: inline-block; border-width: 0 2px 2px 0; border-style: solid; border-color: rgba(0, 0, 0, 0.54); transform: rotate(45deg); transition: 300ms ease-in-out; } md2-accordion-tab.md2-accordion-tab-active .md2-accordion-header-icon { transform: rotate(225deg); top: 16px; } md2-accordion-tab .md2-accordion-tab-content { position: relative; display: none; padding: 16px; } md2-accordion-tab.md2-accordion-tab-active .md2-accordion-tab-content { display: block; } /*# sourceMappingURL=accordion.css.map */ "],
             host: {
                 '[class]': 'class',
                 '[class.md2-accordion]': 'true'
             },
-            styles: ["\n    .md2-accordion { display: block; }\n  "],
             encapsulation: _angular_core.ViewEncapsulation.None
         }), 
         __metadata$18('design:paramtypes', [])
@@ -2604,7 +2604,7 @@ var Md2AccordionTab = (function () {
     Md2AccordionTab = __decorate$19([
         _angular_core.Component({selector: 'md2-accordion-tab',
             template: "\n    <div class=\"md2-accordion-header\" (click)=\"toggle($event)\">\n      <span>{{header}}</span>\n      <ng-content select=\"md2-accordion-header\"></ng-content>\n      <span class=\"md2-accordion-header-icon\"></span>\n    </div>\n    <div class=\"md2-accordion-tab-content\">\n      <ng-content></ng-content>\n    </div>\n  ",
-            styles: ["\n    md2-accordion-tab { position: relative; display: block; outline: 0; border: 0; border-width: 0 0 1px 0; border-style: solid; border-color: rgba(0, 0, 0, 0.12); -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }\n    md2-accordion-tab[hidden] { display: none; }\n    md2-accordion-tab.md2-accordion-tab-active { border-color: rgba(0, 0, 0, 0.12); }\n    md2-accordion-tab .md2-accordion-header { position: relative; border-radius: 0; color: rgba(0, 0, 0, 0.85); font-weight: 500; cursor: pointer; display: block; align-items: inherit; line-height: 40px; margin: 0; max-height: 40px; overflow: hidden; padding: 0 35px 0 16px; text-align: left; text-decoration: none; white-space: nowrap; width: 100%; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-user-drag: none; }\n    md2-accordion-tab.md2-accordion-tab-active .md2-accordion-header { color: #106cc8; }\n    md2-accordion-tab.md2-accordion-tab-disabled .md2-accordion-header { pointer-events: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-user-drag: none; opacity: 0.5; cursor: default; }\n    md2-accordion-tab .md2-accordion-header-icon { position: absolute; top: 12px; right: 17px; width: 8px; height: 8px; overflow: hidden; display: inline-block; border-width: 0 2px 2px 0; border-style: solid; border-color: rgba(0, 0, 0, 0.54); -moz-transform: rotate(45deg); -ms-transform: rotate(45deg); -o-transform: rotate(45deg); -webkit-transform: rotate(45deg); transform: rotate(45deg); -moz-transition: 0.3s ease-in-out; -o-transition: 0.3s ease-in-out; -webkit-transition: 0.3s ease-in-out; transition: 0.3s ease-in-out; }\n    md2-accordion-tab.md2-accordion-tab-active .md2-accordion-header-icon { -moz-transform: rotate(225deg); -ms-transform: rotate(225deg); -o-transform: rotate(225deg); -webkit-transform: rotate(225deg); transform: rotate(225deg); top: 16px; }\n    md2-accordion-tab .md2-accordion-tab-content { position: relative; display: none; padding: 16px; }\n    md2-accordion-tab.md2-accordion-tab-active .md2-accordion-tab-content { display: block; }\n  "],
+            styles: [".md2-accordion { display: block; } md2-accordion-tab { position: relative; display: block; outline: 0; border: 0; border-width: 0 0 1px; border-style: solid; border-color: rgba(0, 0, 0, 0.12); box-sizing: border-box; } md2-accordion-tab[hidden] { display: none; } md2-accordion-tab.md2-accordion-tab-active { border-color: rgba(0, 0, 0, 0.12); } md2-accordion-tab .md2-accordion-header { position: relative; border-radius: 0; color: rgba(0, 0, 0, 0.85); font-weight: 500; cursor: pointer; display: block; align-items: inherit; line-height: 40px; margin: 0; max-height: 40px; overflow: hidden; padding: 0 35px 0 16px; text-align: left; text-decoration: none; white-space: nowrap; width: 100%; box-sizing: border-box; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-user-drag: none; } md2-accordion-tab.md2-accordion-tab-active .md2-accordion-header { color: #106cc8; } md2-accordion-tab.md2-accordion-tab-disabled .md2-accordion-header { pointer-events: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-user-drag: none; opacity: 0.5; cursor: default; } md2-accordion-tab .md2-accordion-header-icon { position: absolute; top: 12px; right: 17px; width: 8px; height: 8px; overflow: hidden; display: inline-block; border-width: 0 2px 2px 0; border-style: solid; border-color: rgba(0, 0, 0, 0.54); transform: rotate(45deg); transition: 300ms ease-in-out; } md2-accordion-tab.md2-accordion-tab-active .md2-accordion-header-icon { transform: rotate(225deg); top: 16px; } md2-accordion-tab .md2-accordion-tab-content { position: relative; display: none; padding: 16px; } md2-accordion-tab.md2-accordion-tab-active .md2-accordion-tab-content { display: block; } /*# sourceMappingURL=accordion.css.map */ "],
             host: {
                 'role': 'accordion-tab',
                 '[class.md2-accordion-tab-active]': 'active',
@@ -2804,7 +2804,7 @@ var Md2Autocomplete = (function () {
         if (o1 !== o1 && o2 !== o2) {
             return true;
         }
-        var t1 = typeof o1, t2 = typeof o2, length, key, keySet;
+        var t1 = typeof o1, t2 = typeof o2, key, keySet;
         if (t1 === t2 && t1 === 'object') {
             keySet = Object.create(null);
             for (key in o1) {
@@ -2861,7 +2861,7 @@ var Md2Autocomplete = (function () {
      * input event listner
      * @param event
      */
-    Md2Autocomplete.prototype.inputKeydown = function (event) {
+    Md2Autocomplete.prototype._handleKeydown = function (event) {
         var _this = this;
         if (this.disabled) {
             return;
@@ -2869,7 +2869,7 @@ var Md2Autocomplete = (function () {
         this.textChange.emit(this.inputBuffer);
         switch (event.keyCode) {
             case TAB:
-                this.listLeave();
+                this._handleMouseLeave();
                 break;
             case ESCAPE:
                 event.stopPropagation();
@@ -2953,7 +2953,7 @@ var Md2Autocomplete = (function () {
     /**
      * input focus listener
      */
-    Md2Autocomplete.prototype.onInputFocus = function () {
+    Md2Autocomplete.prototype._handleFocus = function () {
         this.inputFocused = true;
         this.updateItems(new RegExp(this.inputBuffer, 'ig'));
         this.focusedOption = 0;
@@ -2961,17 +2961,17 @@ var Md2Autocomplete = (function () {
     /**
      * input blur listener
      */
-    Md2Autocomplete.prototype.onInputBlur = function () {
+    Md2Autocomplete.prototype._handleBlur = function () {
         this.inputFocused = false;
     };
     /**
      * suggestion menu mouse enter listener
      */
-    Md2Autocomplete.prototype.listEnter = function () { this.noBlur = true; };
+    Md2Autocomplete.prototype._handleMouseEnter = function () { this.noBlur = true; };
     /**
      * suggestion menu mouse leave listener
      */
-    Md2Autocomplete.prototype.listLeave = function () { this.noBlur = false; };
+    Md2Autocomplete.prototype._handleMouseLeave = function () { this.noBlur = false; };
     /**
      * Update suggestion to filter the query
      * @param query
@@ -3062,7 +3062,7 @@ var Md2Autocomplete = (function () {
     ], Md2Autocomplete.prototype, "value", null);
     Md2Autocomplete = __decorate$20([
         _angular_core.Component({selector: 'md2-autocomplete',
-            template: "\n    <div class=\"md2-autocomplete-wrap\" [class.is-focused]=\"inputFocused || isMenuVisible\">\n      <input [(ngModel)]=\"inputBuffer\" type=\"text\" tabs=\"false\" autocomplete=\"off\" [readonly]=\"readonly\" [tabindex]=\"disabled ? -1 : tabindex\" [disabled]=\"disabled\" class=\"md2-autocomplete-input\" (focus)=\"onInputFocus()\" (blur)=\"onInputBlur()\" (keydown)=\"inputKeydown($event)\" (change)=\"$event.stopPropagation()\" />\n      <span class=\"md2-autocomplete-placeholder\" [class.has-value]=\"inputBuffer\">\n        {{placeholder}}\n        <span class=\"md2-placeholder-required\" *ngIf=\"required\">*</span>\n      </span>\n      <svg *ngIf=\"inputBuffer\" (click)=\"onClear()\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\">\n        <path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\" />\n      </svg>\n    </div>\n    <ul *ngIf=\"isMenuVisible\" class=\"md2-autocomplete-menu\" (mouseenter)=\"listEnter()\" (mouseleave)=\"listLeave()\">\n      <li class=\"md2-option\" *ngFor=\"let l of list; let i = index;\" [class.focus]=\"focusedOption === i\" (click)=\"select($event, i)\">\n        <div class=\"md2-text\" [innerHtml]=\"l.text | highlight:inputBuffer\"></div>\n      </li>\n    </ul>\n  ",
+            template: "\n    <div class=\"md2-autocomplete-wrap\" [class.is-focused]=\"inputFocused || isMenuVisible\">\n      <input [(ngModel)]=\"inputBuffer\" type=\"text\" tabs=\"false\" autocomplete=\"off\" [readonly]=\"readonly\" [tabindex]=\"disabled ? -1 : tabindex\" [disabled]=\"disabled\" class=\"md2-autocomplete-input\" (focus)=\"_handleFocus()\" (blur)=\"_handleBlur()\" (keydown)=\"_handleKeydown($event)\" (change)=\"$event.stopPropagation()\" />\n      <span class=\"md2-autocomplete-placeholder\" [class.has-value]=\"inputBuffer\">\n        {{placeholder}}\n        <span class=\"md2-placeholder-required\" *ngIf=\"required\">*</span>\n      </span>\n      <svg *ngIf=\"inputBuffer\" (click)=\"onClear()\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\">\n        <path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\" />\n      </svg>\n    </div>\n    <ul *ngIf=\"isMenuVisible\" class=\"md2-autocomplete-menu\" (mouseenter)=\"_handleMouseEnter()\" (mouseleave)=\"_handleMouseLeave()\">\n      <li class=\"md2-option\" *ngFor=\"let l of list; let i = index;\" [class.focus]=\"focusedOption === i\" (click)=\"select($event, i)\">\n        <div class=\"md2-text\" [innerHtml]=\"l.text | highlight:inputBuffer\"></div>\n      </li>\n    </ul>\n  ",
             styles: ["\n    md2-autocomplete { position: relative; display: block; margin: 18px 0; outline: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -moz-backface-visibility: hidden; -webkit-backface-visibility: hidden; backface-visibility: hidden; }\n    md2-autocomplete.md2-autocomplete-disabled { pointer-events: none; cursor: default; }\n    md2-autocomplete .md2-autocomplete-wrap { position: relative; display: block; width: 100%; padding: 2px 2px 1px; border-bottom: 1px solid rgba(0, 0, 0, 0.12); box-sizing: border-box; min-width: 64px; min-height: 26px; cursor: pointer; }\n    .md2-autocomplete-wrap.is-focused { padding-bottom: 0; border-bottom: 2px solid #106cc8; }\n    md2-autocomplete.md2-autocomplete-disabled .md2-autocomplete-wrap { color: rgba(0,0,0,0.38); border-color: transparent; background-image: linear-gradient(to right, rgba(0,0,0,0.38) 0%, rgba(0,0,0,0.38) 33%, transparent 0%); background-position: bottom -1px left 0; background-size: 4px 1px; background-repeat: repeat-x; cursor: default; cursor: default; }\n    md2-autocomplete.md2-autocomplete-disabled .md2-autocomplete-wrap.is-focused { padding-bottom: 1px; border-bottom: 1px solid transparent; }\n    .md2-autocomplete-wrap .md2-autocomplete-input { width: 100%; height: 26px; font-size: 15px; outline: none; background: transparent; border: 0; box-sizing: border-box; }\n    md2-autocomplete.md2-autocomplete-disabled .md2-autocomplete-input { color: rgba(0,0,0,0.38); }\n    md2-autocomplete .md2-autocomplete-placeholder { color: rgba(0, 0, 0, 0.38); position: absolute; right: 26px; bottom: 100%; left: 0; color: rgba(0,0,0,0.38); max-width: 100%; padding-left: 3px; padding-right: 0; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; z-index: 1; transform: translate3d(0,26px,0) scale(1); transition: transform .4s cubic-bezier(.25,.8,.25,1); transform-origin: left top; color: rgba(0, 0, 0, 0.38); }\n    .md2-autocomplete-wrap.is-focused .md2-autocomplete-placeholder { color: #2196f3; }\n    .md2-autocomplete-wrap.is-focused .md2-autocomplete-placeholder .md2-placeholder-required { color: #f00; }\n    .md2-autocomplete-wrap.is-focused .md2-autocomplete-placeholder,\n    md2-autocomplete .md2-autocomplete-placeholder.has-value { transform: translate3d(0,6px,0) scale(.75); }\n    .md2-autocomplete-wrap svg { position: absolute; right: 0; top: 0; display: block; height: 100%; background: #fff; fill: currentColor; color: rgba(0,0,0,0.54); }\n    .md2-autocomplete-menu { position: absolute; left: 0; top: 100%; display: block; z-index: 10; width: 100%; margin: 0; padding: 8px 0; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12); max-height: 256px; min-height: 48px; overflow-y: auto; background: #fff; }\n    .md2-autocomplete-menu .md2-option { position: relative; display: block; color: #212121; cursor: pointer; width: auto; padding: 0 16px; height: 48px; line-height: 48px; -moz-transition: background 0.15s linear; -o-transition: background 0.15s linear; -webkit-transition: background 0.15s linear; transition: background 0.15s linear; }\n    .md2-autocomplete-menu .md2-option:hover,\n    .md2-autocomplete-menu .md2-option.focus { background: #eeeeee; }\n    .md2-autocomplete-menu .md2-option .md2-text { width: auto; white-space: nowrap; overflow: hidden; -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; font-size: 16px; }\n    .md2-autocomplete-menu .highlight { color: #757575; }\n  "],
             providers: [MD2_AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR],
             host: {
@@ -3214,7 +3214,7 @@ var Md2Chips = (function () {
             this.templateHtmlString = elements.template.innerHTML;
         }
     };
-    //check autocomplete input is empty or not
+    // check autocomplete input is empty or not
     Md2Chips.prototype.valueupdate = function (evt) {
         this.isEmptyAutoComplete = evt ? false : true;
     };
@@ -3225,15 +3225,15 @@ var Md2Chips = (function () {
     Md2Chips.prototype.inputChanged = function (event) {
         var key = event.keyCode;
         switch (key) {
-            //back space
+            // back space
             case exports.KeyCodes.BACKSPACE:
                 this.backspaceEvent();
                 break;
-            //delete
+            // delete
             case exports.KeyCodes.DELETE:
                 this.backspaceEvent();
                 break;
-            //left arrow
+            // left arrow
             case exports.KeyCodes.LEFT_ARROW:
                 if (this.isAutoComplete && this.isEmptyAutoComplete) {
                     this.leftArrowKeyEvents();
@@ -3242,7 +3242,7 @@ var Md2Chips = (function () {
                     this.leftArrowKeyEvents();
                 }
                 break;
-            //right arrow
+            // right arrow
             case exports.KeyCodes.RIGHT_ARROW:
                 if (this.isAutoComplete && this.isEmptyAutoComplete) {
                     this.rightArrowKeyEvents();
@@ -3251,21 +3251,21 @@ var Md2Chips = (function () {
                     this.rightArrowKeyEvents();
                 }
                 break;
-            //enter
+            // enter
             case exports.KeyCodes.ENTER:
                 if (this.addOnEnter) {
                     this.addNewChip(this.inputValue);
                     event.preventDefault();
                 }
                 break;
-            //comma
+            // comma
             case exports.KeyCodes.COMMA:
                 if (this.addOnComma) {
                     this.addNewChip(this.inputValue);
                     event.preventDefault();
                 }
                 break;
-            //space
+            // space
             case exports.KeyCodes.SPACE:
                 if (this.addOnSpace) {
                     this.addNewChip(this.inputValue);
@@ -3276,7 +3276,7 @@ var Md2Chips = (function () {
                 break;
         }
     };
-    Md2Chips.prototype.onFocus = function () {
+    Md2Chips.prototype._handleFocus = function () {
         if (this.readonly) {
             return;
         }
@@ -3337,9 +3337,8 @@ var Md2Chips = (function () {
                 isExist = this.chipItemList.filter(function (chip) { return chip.text === chipString; });
                 return isExist.length ? false : true;
             }
-            else {
-                if (this.chipItemList.indexOf(chipString) === -1)
-                    return this.allowedPattern.test(chipString);
+            else if (this.chipItemList.indexOf(chipString) === -1) {
+                return this.allowedPattern.test(chipString);
             }
         }
     };
@@ -3379,15 +3378,6 @@ var Md2Chips = (function () {
         this.chipItemList.splice(chipIndexToRemove, 1);
         this._resetSelected();
         this.updateValue();
-    };
-    /**
-    * select chip
-    * @param index of select chip
-    */
-    Md2Chips.prototype.selectChip = function (index) {
-        if (index >= -1 && index <= this.chipItemList.length) {
-            this.selectedChip = index;
-        }
     };
     Md2Chips.prototype.backspaceEvent = function () {
         if (!this.inputValue.length && this.chipItemList.length && this.isRemovable && this.isEmptyAutoComplete) {
@@ -3540,7 +3530,7 @@ var Md2Chips = (function () {
         __metadata$22('design:type', Function), 
         __metadata$22('design:paramtypes', []), 
         __metadata$22('design:returntype', void 0)
-    ], Md2Chips.prototype, "onFocus", null);
+    ], Md2Chips.prototype, "_handleFocus", null);
     Md2Chips = __decorate$22([
         _angular_core.Component({
             selector: 'md2-chips',
@@ -3762,22 +3752,34 @@ var ColorpickerService = (function () {
         var t = v * (1 - (1 - f) * s);
         switch (i % 6) {
             case 0:
-                r = v, g = t, b = p;
+                r = v;
+                g = t;
+                b = p;
                 break;
             case 1:
-                r = q, g = v, b = p;
+                r = q;
+                g = v;
+                b = p;
                 break;
             case 2:
-                r = p, g = v, b = t;
+                r = p;
+                g = v;
+                b = t;
                 break;
             case 3:
-                r = p, g = q, b = v;
+                r = p;
+                g = q;
+                b = v;
                 break;
             case 4:
-                r = t, g = p, b = v;
+                r = t;
+                g = p;
+                b = v;
                 break;
             case 5:
-                r = v, g = p, b = q;
+                r = v;
+                g = p;
+                b = q;
                 break;
         }
         return new Rgba(r, g, b, a);
@@ -4095,7 +4097,7 @@ var Md2Colorpicker = (function () {
     /**
     * Show Colorpicker dialog
     */
-    Md2Colorpicker.prototype.showColorpicker = function () {
+    Md2Colorpicker.prototype._showColorpicker = function () {
         if (this.disabled) {
             return;
         }
@@ -4287,8 +4289,8 @@ var Md2Colorpicker = (function () {
     ], Md2Colorpicker.prototype, "id", void 0);
     Md2Colorpicker = __decorate$24([
         _angular_core.Component({selector: 'md2-colorpicker',
-            template: "<div class=\"color-picker-selector\" (click)=\"showColorpicker()\"> <div class=\"color-div\" [style.background-color]=\"_innerValue\"> </div> <label class=\"color-text\">{{_innerValue}}</label> </div> <div class=\"md2-colorpicker-wrapper\"  [class.active]=\"_isColorpickerVisible\"> <div class=\"md2-color-picker\" [style.top.px]=\"top\" [style.left.px]=\"left\" > <div [colorpicker-slider] [style.background-color]=\"_hueSliderColor\" [point-x]=\"1\" [point-y]=\"1\" (change)=\"setSaturationAndBrightness($event)\" class=\"saturation-lightness\"> <div [style.left.px]=\"slider.s\" [style.top.px]=\"slider.v\" class=\"cursor\"></div> </div> <div [colorpicker-slider] [point-x]=\"1\" (change)=\"setHue($event)\" class=\"hue\"> <div [style.left.px]=\"slider.h\" class=\"cursor\"></div> </div> <div [colorpicker-slider] [style.background-color]=\"alphaColor\" [point-x]=\"1\" (change)=\"setAlpha($event)\" class=\"alpha\"> <div [style.left.px]=\"slider.a\" class=\"cursor\"></div> </div> <div [style.background-color]=\"outputColor\" class=\"selected-color\"></div> <div [hidden]=\"format!=2\" class=\"hsla-text\"> <input [text] type=\"number\" pattern=\"[0-9]*\" min=\"0\" max=\"360\" [rg]=\"360\" (newValue)=\"setHue($event)\" [value]=\"hslaText.h\" /> <input [text] type=\"number\" pattern=\"[0-9]*\" min=\"0\" max=\"100\" [rg]=\"100\" (newValue)=\"setSaturation($event)\" [value]=\"hslaText.s\" /> <input [text] type=\"number\" pattern=\"[0-9]*\" min=\"0\" max=\"100\" [rg]=\"100\" (newValue)=\"setLightness($event)\" [value]=\"hslaText.l\" /> <input [text] type=\"number\" pattern=\"[0-9]+([\.,][0-9]{1,2})?\" min=\"0\" max=\"1\" step=\"0.1\" [rg]=\"1\" (newValue)=\"setAlpha($event)\" [value]=\"hslaText.a\" /> <div>H</div><div>S</div><div>L</div><div>A</div> </div> <div [hidden]=\"format!=1\" class=\"rgba-text\"> <input [text] type=\"number\" pattern=\"[0-9]*\" min=\"0\" max=\"255\" [rg]=\"255\" (newValue)=\"setR($event)\" [value]=\"rgbaText.r\" /> <input [text] type=\"number\" pattern=\"[0-9]*\" min=\"0\" max=\"255\" [rg]=\"255\" (newValue)=\"setG($event)\" [value]=\"rgbaText.g\" /> <input [text] type=\"number\" pattern=\"[0-9]*\" min=\"0\" max=\"255\" [rg]=\"255\" (newValue)=\"setB($event)\" [value]=\"rgbaText.b\" /> <input [text] type=\"number\" pattern=\"[0-9]+([\.,][0-9]{1,2})?\" min=\"0\" max=\"1\" step=\"0.1\" [rg]=\"1\" (newValue)=\"setAlpha($event)\" [value]=\"rgbaText.a\" /> <div>R</div><div>G</div><div>B</div><div>A</div> </div> <div [hidden]=\"format!=0\" class=\"hex-text\"> <input [text] (newValue)=\"setColorFromString($event)\" [value]=\"hexText\" /> <div>Hex</div> </div> <div (click)=\"formatPolicy()\" class=\"type-policy\"></div> <div class=\"md2-color-picker-ok-btn\" (click)=\"clickOk()\">OK</div> <div class=\"md2-color-picker-cancel-btn\" (click)=\"cancelColor()\">Cancel</div> </div> </div> ",
-            styles: ["md2-colorpicker { position: relative; display: block; max-width: 200px; outline: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } .md2-colorpicker-wrapper { width: 230px; height: 270px; position: absolute; border-radius: 2px; background-color: #fff; z-index: 10; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); transform: scale(0); transform-origin: left top; transition: 150ms; -webkit-touch-callout: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } .md2-colorpicker-wrapper.active { transform: scale(1); } md2-colorpicker.md2-colorpicker-disabled { pointer-events: none; cursor: default; } .color-picker-selector .color-div { height: 30px; width: 30px; display: inline-block; overflow: hidden; cursor: pointer; border-radius: 50%; vertical-align: middle; box-shadow: 0 1px 1px 0px rgba(0, 0, 0, 0.2), 0 1px 1px 1px rgba(0, 0, 0, 0.14), 0 1px 1px 1px rgba(0, 0, 0, 0.12); } .color-picker-selector .color-text { display: inline-block; margin-left: 5px; vertical-align: middle; cursor: pointer; vertical-align: middle; line-height: 30px; } .md2-color-picker, .md2-color-picker * { box-sizing: border-box; margin: 0; font-size: 12px; } .md2-color-picker i { cursor: default; position: relative; } .md2-color-picker .md2-color-picker-ok-btn { position: absolute; bottom: 5px; right: 80px; border-radius: 3px; padding: 2px 7px; box-sizing: border-box; background: transparent; text-align: center; overflow: hidden; cursor: pointer; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; outline: none; border: none; display: inline-block; white-space: nowrap; text-decoration: none; vertical-align: middle; font-size: 12px; font-weight: 500; text-transform: uppercase; line-height: 26px; transition: background 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); transform: translate3d(0, 0, 0); box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26); color: rgba(0, 0, 0, 0.87059); background-color: #fafafa; } .md2-color-picker .md2-color-picker-ok-btn:hover { background-color: rgba(158, 158, 158, 0.2); } .md2-color-picker .md2-color-picker-cancel-btn { position: absolute; bottom: 5px; right: 7px; border-radius: 3px; padding: 2px 7px; box-sizing: border-box; background: transparent; text-align: center; overflow: hidden; cursor: pointer; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; outline: none; border: none; display: inline-block; white-space: nowrap; text-decoration: none; vertical-align: middle; font-size: 12px; font-weight: 500; text-transform: uppercase; line-height: 26px; transition: background 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); transform: translate3d(0, 0, 0); box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26); color: rgba(0, 0, 0, 0.87059); background-color: #fafafa; } .md2-color-picker .md2-color-picker-cancel-btn:hover { background-color: rgba(158, 158, 158, 0.2); } .md2-color-picker div.cursor-sv { cursor: default; position: relative; border-radius: 50%; width: 15px; height: 15px; border: #ddd solid 1px; } .md2-color-picker div.cursor { cursor: crosshair; position: relative; border-radius: 50%; width: 15px; height: 15px; box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5), inset 0 0 2px 0 rgba(0, 0, 0, 0.5); border: 2px solid #fff; } .md2-color-picker .saturation-lightness { width: 100%; height: 130px; border: none; top: 0; left: 0; position: absolute; background-image: url(\"data:image/png;base64,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\"); overflow: hidden; border-radius: 4px 4px 0 0; } .md2-color-picker .saturation-lightness:hover { cursor: crosshair; } .md2-color-picker .hue { width: 150px; height: 16px; border: none; top: 140px; left: 60px; position: absolute; background-image: url(\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAAAQCAYAAAD06IYnAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4AIWDwkUFWbCCAAAAFxJREFUaN7t0kEKg0AQAME2x83/n2qu5qCgD1iDhCoYdpnbQC9bbY1qVO/jvc6k3ad91s7/7F1/csgPrujuQ17BDYSFsBAWwgJhISyEBcJCWAgLhIWwEBYIi2f7Ar/1TCgFH2X9AAAAAElFTkSuQmCC\"); } .md2-color-picker .alpha { width: 150px; height: 16px; border: none; top: 165px; left: 60px; position: absolute; background-image: url(\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAAAQCAYAAAD06IYnAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4AIWDwYQlZMa3gAAAWVJREFUaN7tmEGO6jAQRCsOArHgBpyAJYGjcGocxAm4A2IHpmoWE0eBH+ezmFlNvU06shJ3W6VEelWMUQAIIF9f6qZpimsA1LYtS2uF51/u27YVAFZVRUkEoGHdPV/sIcbIEIIkUdI/9Xa7neyv61+SWFUVAVCSct00TWn2fv6u3+Ecfd3tXzy/0+nEUu+SPjo/kqzrmiQpScN6v98XewfA8/lMkiLJ2WxGSUopcT6fM6U0NX9/frfbjev1WtfrlZfLhYfDQQHG/AIOlnGwjINlHCxjHCzjYJm/TJWdCwquJXseFFzGwDNNeiKMOJTO8xQdDQaeB29+K9efeLaBo9J7vdvtJj1RjFFjfiv7qv95tjx/7leSQgh93e1ffMeIp6O+YQjho/N791t1XVOSSI7N//K+4/GoxWLBx+PB5/Op5XLJ+/3OlJJWqxU3m83ovv5iGf8KjYNlHCxjHCzjYBkHy5gf5gusvQU7U37jTAAAAABJRU5ErkJggg==\"); } .md2-color-picker .selected-color { width: 45px; height: 45px; top: 140px; left: 2%; position: absolute; border: 1px solid #cccccc; } .hex-text { position: absolute; top: 190px; left: 30px; font-size: 11px; } .hex-text input { float: left; width: 150px; border: 1px solid #a9a9a9; padding: 4px; } .hex-text div { text-align: center; color: #555; float: left; clear: left; width: 160px; margin-top: 4px; } .hsla-text, .rgba-text { position: absolute; top: 190px; left: 12px; font-size: 11px; } .hsla-text input, .rgba-text input { margin: 0 0 0 7px; float: left; width: 40px; border: 1px solid #a9a9a9; padding: 4px 0; } .hsla-text div, .rgba-text div { float: left; width: 40px; text-align: center; color: #555; margin-left: 7px; margin-top: 4px; } .hsla-text div:nth-child(5), .rgba-text div:nth-child(5) { clear: left; } .type-policy { position: absolute; top: 190px; left: 206px; background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAAgCAYAAAAffCjxAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAACewAAAnsB01CO3AAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAIASURBVEiJ7ZY9axRRFIafsxMStrLQJpAgpBFhi+C9w1YSo00I6RZ/g9vZpBf/QOr4GyRgkSKNSrAadsZqQGwCkuAWyRZJsySwvhZ7N/vhzrgbLH3Ld8597jlzz50zJokyxXH8DqDVar0qi6v8BbItqSGpEcfxdlmsFWXkvX8AfAVWg3UKPEnT9GKujMzsAFgZsVaCN1VTQd77XUnrgE1kv+6935268WRpzrnHZvYRWC7YvC3pRZZl3wozqtVqiyH9IgjAspkd1Gq1xUJQtVrdB9ZKIAOthdg/Qc65LUk7wNIMoCVJO865rYFhkqjX6/d7vV4GPJwBMqofURS5JEk6FYBer/eeYb/Mo9WwFnPOvQbeAvfuAAK4BN4sAJtAG/gJIElmNuiJyba3EGNmZiPeZuEVmVell/Y/6N+CzDn3AXhEOOo7Hv/3BeAz8IzQkMPnJbuPx1wC+yYJ7/0nYIP5S/0FHKdp+rwCEEXRS/rf5Hl1Gtb2M0iSpCOpCZzPATmX1EySpHMLAsiy7MjMDoHrGSDXZnaYZdnRwBh7J91utwmczAA6CbG3GgPleX4jqUH/a1CktqRGnuc3hSCAMB32gKspkCtgb3KCQMmkjeP4WNJThrNNZval1WptTIsv7JtQ4tmIdRa8qSoEpWl6YWZNoAN0zKxZNPehpLSBZv2t+Q0CJ9lLnARQLAAAAABJRU5ErkJggg==); background-repeat: no-repeat; background-position: center; background-size: 8px 16px; -moz-background-size: 8px 16px; -webkit-background-size: 8px 16px; -o-background-size: 8px 16px; width: 16px; height: 24px; } /*# sourceMappingURL=colorpicker.css.map */ "],
+            template: "<div class=\"color-picker-selector\" (click)=\"_showColorpicker()\"> <div class=\"color-div\" [style.background-color]=\"_innerValue\"> </div> <label class=\"color-text\">{{_innerValue}}</label> </div> <div class=\"md2-colorpicker-wrapper\" [class.active]=\"_isColorpickerVisible\"> <div class=\"md2-color-picker\" [style.top.px]=\"top\" [style.left.px]=\"left\"> <div [colorpicker-slider] [style.background-color]=\"_hueSliderColor\" [point-x]=\"1\" [point-y]=\"1\" (change)=\"setSaturationAndBrightness($event)\" class=\"saturation-lightness\"> <div [style.left.px]=\"slider.s\" [style.top.px]=\"slider.v\" class=\"cursor\"></div> </div> <div [colorpicker-slider] [point-x]=\"1\" (change)=\"setHue($event)\" class=\"hue\"> <div [style.left.px]=\"slider.h\" class=\"cursor\"></div> </div> <div [colorpicker-slider] [style.background-color]=\"alphaColor\" [point-x]=\"1\" (change)=\"setAlpha($event)\" class=\"alpha\"> <div [style.left.px]=\"slider.a\" class=\"cursor\"></div> </div> <div [style.background-color]=\"outputColor\" class=\"selected-color\"></div> <div [hidden]=\"format!=2\" class=\"hsla-text\"> <input [text] type=\"number\" pattern=\"[0-9]*\" min=\"0\" max=\"360\" [rg]=\"360\" (newValue)=\"setHue($event)\" [value]=\"hslaText.h\" /> <input [text] type=\"number\" pattern=\"[0-9]*\" min=\"0\" max=\"100\" [rg]=\"100\" (newValue)=\"setSaturation($event)\" [value]=\"hslaText.s\" /> <input [text] type=\"number\" pattern=\"[0-9]*\" min=\"0\" max=\"100\" [rg]=\"100\" (newValue)=\"setLightness($event)\" [value]=\"hslaText.l\" /> <input [text] type=\"number\" pattern=\"[0-9]+([\.,][0-9]{1,2})?\" min=\"0\" max=\"1\" step=\"0.1\" [rg]=\"1\" (newValue)=\"setAlpha($event)\" [value]=\"hslaText.a\" /> <div>H</div><div>S</div><div>L</div><div>A</div> </div> <div [hidden]=\"format!=1\" class=\"rgba-text\"> <input [text] type=\"number\" pattern=\"[0-9]*\" min=\"0\" max=\"255\" [rg]=\"255\" (newValue)=\"setR($event)\" [value]=\"rgbaText.r\" /> <input [text] type=\"number\" pattern=\"[0-9]*\" min=\"0\" max=\"255\" [rg]=\"255\" (newValue)=\"setG($event)\" [value]=\"rgbaText.g\" /> <input [text] type=\"number\" pattern=\"[0-9]*\" min=\"0\" max=\"255\" [rg]=\"255\" (newValue)=\"setB($event)\" [value]=\"rgbaText.b\" /> <input [text] type=\"number\" pattern=\"[0-9]+([\.,][0-9]{1,2})?\" min=\"0\" max=\"1\" step=\"0.1\" [rg]=\"1\" (newValue)=\"setAlpha($event)\" [value]=\"rgbaText.a\" /> <div>R</div><div>G</div><div>B</div><div>A</div> </div> <div [hidden]=\"format!=0\" class=\"hex-text\"> <input [text] (newValue)=\"setColorFromString($event)\" [value]=\"hexText\" /> <div>Hex</div> </div> <div (click)=\"formatPolicy()\" class=\"type-policy\"></div> <div class=\"md2-color-picker-ok-btn\" (click)=\"clickOk()\">OK</div> <div class=\"md2-color-picker-cancel-btn\" (click)=\"cancelColor()\">Cancel</div> </div> </div> ",
+            styles: ["md2-colorpicker { position: relative; display: block; max-width: 200px; outline: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } .md2-colorpicker-wrapper { width: 230px; height: 270px; position: absolute; border-radius: 2px; background-color: #fff; z-index: 10; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); transform: scale(0); transform-origin: left top; transition: 150ms; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } .md2-colorpicker-wrapper.active { transform: scale(1); } md2-colorpicker.md2-colorpicker-disabled { pointer-events: none; cursor: default; } .color-picker-selector .color-div { height: 30px; width: 30px; display: inline-block; overflow: hidden; cursor: pointer; border-radius: 50%; vertical-align: middle; box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 1px rgba(0, 0, 0, 0.14), 0 1px 1px 1px rgba(0, 0, 0, 0.12); } .color-picker-selector .color-text { display: inline-block; margin-left: 5px; vertical-align: middle; cursor: pointer; line-height: 30px; } .md2-color-picker, .md2-color-picker * { box-sizing: border-box; margin: 0; font-size: 12px; } .md2-color-picker i { cursor: default; position: relative; } .md2-color-picker .md2-color-picker-ok-btn { position: absolute; bottom: 5px; right: 80px; border-radius: 3px; padding: 2px 7px; box-sizing: border-box; background: transparent; text-align: center; overflow: hidden; cursor: pointer; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; outline: none; border: none; display: inline-block; white-space: nowrap; text-decoration: none; vertical-align: middle; font-size: 12px; font-weight: 500; text-transform: uppercase; line-height: 26px; transition: background 400ms cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 400ms cubic-bezier(0.25, 0.8, 0.25, 1); transform: translate3d(0, 0, 0); box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26); color: rgba(0, 0, 0, 0.87059); background-color: #fafafa; } .md2-color-picker .md2-color-picker-ok-btn:hover { background-color: rgba(158, 158, 158, 0.2); } .md2-color-picker .md2-color-picker-cancel-btn { position: absolute; bottom: 5px; right: 7px; border-radius: 3px; padding: 2px 7px; box-sizing: border-box; background: transparent; text-align: center; overflow: hidden; cursor: pointer; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; outline: none; border: none; display: inline-block; white-space: nowrap; text-decoration: none; vertical-align: middle; font-size: 12px; font-weight: 500; text-transform: uppercase; line-height: 26px; transition: background 400ms cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 400ms cubic-bezier(0.25, 0.8, 0.25, 1); transform: translate3d(0, 0, 0); box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26); color: rgba(0, 0, 0, 0.87059); background-color: #fafafa; } .md2-color-picker .md2-color-picker-cancel-btn:hover { background-color: rgba(158, 158, 158, 0.2); } .md2-color-picker div.cursor-sv { cursor: default; position: relative; border-radius: 50%; width: 15px; height: 15px; border: #ddd solid 1px; } .md2-color-picker div.cursor { cursor: crosshair; position: relative; border-radius: 50%; width: 15px; height: 15px; box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5), inset 0 0 2px 0 rgba(0, 0, 0, 0.5); border: 2px solid #fff; } .md2-color-picker .saturation-lightness { width: 100%; height: 130px; border: none; top: 0; left: 0; position: absolute; background-image: url(\"data:image/png;base64,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\"); overflow: hidden; border-radius: 4px 4px 0 0; } .md2-color-picker .saturation-lightness:hover { cursor: crosshair; } .md2-color-picker .hue { width: 150px; height: 16px; border: none; top: 140px; left: 60px; position: absolute; background-image: url(\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAAAQCAYAAAD06IYnAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4AIWDwkUFWbCCAAAAFxJREFUaN7t0kEKg0AQAME2x83/n2qu5qCgD1iDhCoYdpnbQC9bbY1qVO/jvc6k3ad91s7/7F1/csgPrujuQ17BDYSFsBAWwgJhISyEBcJCWAgLhIWwEBYIi2f7Ar/1TCgFH2X9AAAAAElFTkSuQmCC\"); } .md2-color-picker .alpha { width: 150px; height: 16px; border: none; top: 165px; left: 60px; position: absolute; background-image: url(\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAAAQCAYAAAD06IYnAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4AIWDwYQlZMa3gAAAWVJREFUaN7tmEGO6jAQRCsOArHgBpyAJYGjcGocxAm4A2IHpmoWE0eBH+ezmFlNvU06shJ3W6VEelWMUQAIIF9f6qZpimsA1LYtS2uF51/u27YVAFZVRUkEoGHdPV/sIcbIEIIkUdI/9Xa7neyv61+SWFUVAVCSct00TWn2fv6u3+Ecfd3tXzy/0+nEUu+SPjo/kqzrmiQpScN6v98XewfA8/lMkiLJ2WxGSUopcT6fM6U0NX9/frfbjev1WtfrlZfLhYfDQQHG/AIOlnGwjINlHCxjHCzjYJm/TJWdCwquJXseFFzGwDNNeiKMOJTO8xQdDQaeB29+K9efeLaBo9J7vdvtJj1RjFFjfiv7qv95tjx/7leSQgh93e1ffMeIp6O+YQjho/N791t1XVOSSI7N//K+4/GoxWLBx+PB5/Op5XLJ+/3OlJJWqxU3m83ovv5iGf8KjYNlHCxjHCzjYBkHy5gf5gusvQU7U37jTAAAAABJRU5ErkJggg==\"); } .md2-color-picker .selected-color { width: 45px; height: 45px; top: 140px; left: 2%; position: absolute; border: 1px solid #cccccc; } .hex-text { position: absolute; top: 190px; left: 30px; font-size: 11px; } .hex-text input { float: left; width: 150px; border: 1px solid #a9a9a9; padding: 4px; } .hex-text div { text-align: center; color: #555; float: left; clear: left; width: 160px; margin-top: 4px; } .hsla-text, .rgba-text { position: absolute; top: 190px; left: 12px; font-size: 11px; } .hsla-text input, .rgba-text input { margin: 0 0 0 7px; float: left; width: 40px; border: 1px solid #a9a9a9; padding: 4px 0; } .hsla-text div, .rgba-text div { float: left; width: 40px; text-align: center; color: #555; margin-left: 7px; margin-top: 4px; } .hsla-text div:nth-child(5), .rgba-text div:nth-child(5) { clear: left; } .type-policy { position: absolute; top: 190px; left: 206px; background-image: url(\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAAgCAYAAAAffCjxAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAACewAAAnsB01CO3AAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAIASURBVEiJ7ZY9axRRFIafsxMStrLQJpAgpBFhi+C9w1YSo00I6RZ/g9vZpBf/QOr4GyRgkSKNSrAadsZqQGwCkuAWyRZJsySwvhZ7N/vhzrgbLH3Ld8597jlzz50zJokyxXH8DqDVar0qi6v8BbItqSGpEcfxdlmsFWXkvX8AfAVWg3UKPEnT9GKujMzsAFgZsVaCN1VTQd77XUnrgE1kv+6935268WRpzrnHZvYRWC7YvC3pRZZl3wozqtVqiyH9IgjAspkd1Gq1xUJQtVrdB9ZKIAOthdg/Qc65LUk7wNIMoCVJO865rYFhkqjX6/d7vV4GPJwBMqofURS5JEk6FYBer/eeYb/Mo9WwFnPOvQbeAvfuAAK4BN4sAJtAG/gJIElmNuiJyba3EGNmZiPeZuEVmVell/Y/6N+CzDn3AXhEOOo7Hv/3BeAz8IzQkMPnJbuPx1wC+yYJ7/0nYIP5S/0FHKdp+rwCEEXRS/rf5Hl1Gtb2M0iSpCOpCZzPATmX1EySpHMLAsiy7MjMDoHrGSDXZnaYZdnRwBh7J91utwmczAA6CbG3GgPleX4jqUH/a1CktqRGnuc3hSCAMB32gKspkCtgb3KCQMmkjeP4WNJThrNNZval1WptTIsv7JtQ4tmIdRa8qSoEpWl6YWZNoAN0zKxZNPehpLSBZv2t+Q0CJ9lLnARQLAAAAABJRU5ErkJggg==\"); background-repeat: no-repeat; background-position: center; background-size: 8px 16px; width: 16px; height: 24px; } /*# sourceMappingURL=colorpicker.css.map */ "],
             providers: [MD2_COLORPICKER_CONTROL_VALUE_ACCESSOR],
             host: {
                 'role': 'colorpicker',
@@ -4476,15 +4478,6 @@ var Md2DataTable = (function () {
         }
         this.data = data.slice(offset, offset + this.pageLength);
     };
-    Md2DataTable.prototype.caseInsensitiveIteratee = function (sortField) {
-        return function (row) {
-            var value = row[sortField];
-            if (value && typeof value === 'string' || value instanceof String) {
-                return value.toLowerCase();
-            }
-            return value;
-        };
-    };
     __decorate$26([
         _angular_core.Input('md2-data'), 
         __metadata$26('design:type', Array)
@@ -4513,16 +4506,16 @@ var Md2DataTableSortField = (function () {
         this.isAsc = false;
         this.isDesc = false;
         _md2Table.onSortChange.subscribe(function (event) {
-            _this.isAsc = (event.sortField === _this.sortField && event.sortOrder === "asc");
-            _this.isDesc = (event.sortField === _this.sortField && event.sortOrder === "desc");
+            _this.isAsc = (event.sortField === _this.sortField && event.sortOrder === 'asc');
+            _this.isDesc = (event.sortField === _this.sortField && event.sortOrder === 'desc');
         });
     }
     Md2DataTableSortField.prototype._sort = function () {
         if (this.isAsc) {
-            this._md2Table.setSort(this.sortField, "desc");
+            this._md2Table.setSort(this.sortField, 'desc');
         }
         else {
-            this._md2Table.setSort(this.sortField, "asc");
+            this._md2Table.setSort(this.sortField, 'asc');
         }
     };
     __decorate$26([
@@ -4531,7 +4524,7 @@ var Md2DataTableSortField = (function () {
     ], Md2DataTableSortField.prototype, "sortField", void 0);
     Md2DataTableSortField = __decorate$26([
         _angular_core.Component({
-            selector: "[md2-sort-field]",
+            selector: '[md2-sort-field]',
             template: "\n    <span (click)=\"_sort()\">\n      <ng-content></ng-content>\n      <svg *ngIf=\"isAsc\" width=\"24\"height=\"24\" viewBox=\"0 0 24 24\">\n        <path d=\"M7 14l5-5 5 5z\"/>\n      </svg>\n      <svg *ngIf=\"isDesc\" width=\"24\"height=\"24\" viewBox=\"0 0 24 24\">\n        <path d=\"M7 10l5 5 5-5z\"/>\n      </svg>\n      <svg *ngIf=\"!isAsc && !isDesc\" width=\"24\"height=\"24\" viewBox=\"0 0 24 24\">\n        <path d=\"M7,10.5l5-5l5,5H7z\"/>\n        <path d=\"M7,12.5l5,5l5-5H7z\"/>\n      </svg>\n    </span>\n  ",
             styles: ["\n    [md2-sort-field] span { position: relative; display: block; line-height: 24px; white-space: nowrap; cursor: pointer; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }\n    [md2-sort-field] span svg { display: inline-block; vertical-align: middle; fill: currentColor; }\n  "],
             encapsulation: _angular_core.ViewEncapsulation.None
@@ -4544,7 +4537,6 @@ var Md2Pagination = (function () {
     function Md2Pagination(injectMd2Table) {
         var _this = this;
         this.injectMd2Table = injectMd2Table;
-        this._minRows = 0;
         this.dataLength = 0;
         this.rows = [];
         this._onPageChange = function (event) {
@@ -4554,9 +4546,12 @@ var Md2Pagination = (function () {
             _this._lastPage = Math.ceil(_this.dataLength / _this._rows);
         };
     }
+    Md2Pagination.prototype.ngAfterViewInit = function () {
+        this._md2Table = this.md2InputTable || this.injectMd2Table;
+        this._onPageChange(this._md2Table.getPage());
+        this._md2Table.onPageChange.subscribe(this._onPageChange);
+    };
     Md2Pagination.prototype.ngOnChanges = function (changes) {
-        if (changes.rows) {
-        }
         this._md2Table = this.md2InputTable || this.injectMd2Table;
         this._onPageChange(this._md2Table.getPage());
         this._md2Table.onPageChange.subscribe(this._onPageChange);
@@ -4578,7 +4573,7 @@ var Md2Pagination = (function () {
     Md2Pagination = __decorate$26([
         _angular_core.Component({
             selector: 'md2-pagination',
-            template: "\n    <ul class=\"md2-pagination\" *ngIf=\"dataLength > _rows\">\n      <li [class.disabled]=\"_activePage <= 1\" (click)=\"_setPage(1)\">\n        <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\">\n          <path d=\"M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z\"/>\n        </svg>\n      </li>\n      <li *ngIf=\"_activePage > 4 && _activePage + 1 > _lastPage\" (click)=\"_setPage(_activePage - 4)\">{{_activePage-4}}</li>\n      <li *ngIf=\"_activePage > 3 && _activePage + 2 > _lastPage\" (click)=\"_setPage(_activePage - 3)\">{{_activePage-3}}</li>\n      <li *ngIf=\"_activePage > 2\" (click)=\"_setPage(_activePage - 2)\">{{_activePage-2}}</li>\n      <li *ngIf=\"_activePage > 1\" (click)=\"_setPage(_activePage - 1)\">{{_activePage-1}}</li>\n      <li class=\"active\">{{_activePage}}</li>\n      <li *ngIf=\"_activePage + 1 <= _lastPage\" (click)=\"_setPage(_activePage + 1)\">{{_activePage+1}}</li>\n      <li *ngIf=\"_activePage + 2 <= _lastPage\" (click)=\"_setPage(_activePage + 2)\">{{_activePage+2}}</li>\n      <li *ngIf=\"_activePage + 3 <= _lastPage && _activePage < 3\" (click)=\"_setPage(_activePage + 3)\">{{_activePage+3}}</li>\n      <li *ngIf=\"_activePage + 4 <= _lastPage && _activePage < 2\" (click)=\"_setPage(_activePage + 4)\">{{_activePage+4}}</li>\n      <li [class.disabled]=\"_activePage >= _lastPage\" (click)=\"_setPage(_lastPage)\">\n        <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\">\n          <path d=\"M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z\"/>\n        </svg>\n      </li>\n    </ul>\n    <div class=\"md2-rows-select\" *ngIf=\"dataLength > _minRows\">\n      Rows per page:\n      <select (change)=\"_setRows($event.target.value)\">\n        <option *ngFor=\"let row of rows\" [selected]=\"_rows===row\">{{row}}</option>\n      </select>\n    </div>\n  ",
+            template: "\n    <ul class=\"md2-pagination\" *ngIf=\"dataLength > _rows\">\n      <li [class.disabled]=\"_activePage <= 1\" (click)=\"_setPage(1)\">\n        <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\">\n          <path d=\"M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z\"/>\n        </svg>\n      </li>\n      <li *ngIf=\"_activePage > 4 && _activePage + 1 > _lastPage\" (click)=\"_setPage(_activePage - 4)\">{{_activePage-4}}</li>\n      <li *ngIf=\"_activePage > 3 && _activePage + 2 > _lastPage\" (click)=\"_setPage(_activePage - 3)\">{{_activePage-3}}</li>\n      <li *ngIf=\"_activePage > 2\" (click)=\"_setPage(_activePage - 2)\">{{_activePage-2}}</li>\n      <li *ngIf=\"_activePage > 1\" (click)=\"_setPage(_activePage - 1)\">{{_activePage-1}}</li>\n      <li class=\"active\">{{_activePage}}</li>\n      <li *ngIf=\"_activePage + 1 <= _lastPage\" (click)=\"_setPage(_activePage + 1)\">{{_activePage+1}}</li>\n      <li *ngIf=\"_activePage + 2 <= _lastPage\" (click)=\"_setPage(_activePage + 2)\">{{_activePage+2}}</li>\n      <li *ngIf=\"_activePage + 3 <= _lastPage && _activePage < 3\" (click)=\"_setPage(_activePage + 3)\">{{_activePage+3}}</li>\n      <li *ngIf=\"_activePage + 4 <= _lastPage && _activePage < 2\" (click)=\"_setPage(_activePage + 4)\">{{_activePage+4}}</li>\n      <li [class.disabled]=\"_activePage >= _lastPage\" (click)=\"_setPage(_lastPage)\">\n        <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\">\n          <path d=\"M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z\"/>\n        </svg>\n      </li>\n    </ul>\n    <div class=\"md2-rows-select\" *ngIf=\"rows.length > 0\">\n      Rows per page:\n      <select (change)=\"_setRows($event.target.value)\">\n        <option *ngFor=\"let row of rows\" [selected]=\"_rows===row\">{{row}}</option>\n      </select>\n    </div>\n  ",
             styles: ["\n    md2-pagination { display: block; color: #0e59a5; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }\n    md2-pagination:before,\n    md2-pagination:after { display: table; content: ''; }\n    md2-pagination:after { clear: both; }\n    md2-pagination .md2-pagination { display: inline-block; margin: .5rem 0; padding: 0; }\n    md2-pagination .md2-pagination li { position: relative; display: inline-block; width: 36px; vertical-align: top; text-align: center; line-height: 36px; border-radius: 100px; cursor: pointer; box-sizing: border-box; }\n    md2-pagination .md2-pagination li:hover { background: rgba(0,0,0,0.12); }\n    md2-pagination .md2-pagination li.disabled,\n    md2-pagination .md2-pagination li.disabled:hover { pointer-events: none; background: transparent; cursor: default; opacity: .5; }\n    md2-pagination .md2-pagination li.active,\n    md2-pagination .md2-pagination li.active:hover { background: #106CC8; color: #fff; cursor: default; }\n    md2-pagination .md2-pagination li svg { fill: currentColor; margin-bottom: -7px; }\n    md2-pagination .md2-rows-select { display: inline-block; margin: .5rem 0; padding: 0; float: right; color: rgba(0,0,0,.54); line-height: 36px; }\n    md2-pagination .md2-rows-select select { border: 0; outline: 0; }\n  "],
             encapsulation: _angular_core.ViewEncapsulation.None
         }),
@@ -4801,16 +4796,16 @@ var Md2DateUtil = (function () {
      * 1. No argument for Date representing now.
      * 2. Single-argument value representing number of seconds since Unix Epoch
      * or a Date object.
-     * @param {number|Date=} opt_value
+     * @param {number|Date=} value
      * @return {Date} New date with time set to midnight.
      */
-    Md2DateUtil.prototype.createDateAtMidnight = function (opt_value) {
+    Md2DateUtil.prototype.createDateAtMidnight = function (value) {
         var date;
-        if (!opt_value) {
+        if (!value) {
             date = new Date();
         }
         else {
-            date = new Date(opt_value);
+            date = new Date(value);
         }
         this.setDateTimeToMidnight(date);
         return date;
@@ -4918,8 +4913,8 @@ var Md2Datepicker = (function () {
     function Md2Datepicker(dateUtil, element) {
         this.dateUtil = dateUtil;
         this.element = element;
-        //private mouseMoveListener: any;
-        //private mouseUpListener: any;
+        // private mouseMoveListener: any;
+        // private mouseUpListener: any;
         this._value = null;
         this._disabled = false;
         this._isInitialized = false;
@@ -4960,8 +4955,8 @@ var Md2Datepicker = (function () {
         this.tabindex = 0;
         this.getYears();
         this.generateClock();
-        //this.mouseMoveListener = (event: MouseEvent) => { this.onMouseMoveClock(event); };
-        //this.mouseUpListener = (event: MouseEvent) => { this.onMouseUpClock(event); };
+        // this.mouseMoveListener = (event: MouseEvent) => { this.onMouseMoveClock(event); };
+        // this.mouseUpListener = (event: MouseEvent) => { this.onMouseUpClock(event); };
     }
     Md2Datepicker.prototype.ngAfterContentInit = function () {
         this._isInitialized = true;
@@ -5069,14 +5064,14 @@ var Md2Datepicker = (function () {
         enumerable: true,
         configurable: true
     });
-    Md2Datepicker.prototype.onClick = function (event) {
+    Md2Datepicker.prototype._handleClick = function (event) {
         if (this.disabled) {
             event.stopPropagation();
             event.preventDefault();
             return;
         }
     };
-    Md2Datepicker.prototype.onKeyDown = function (event) {
+    Md2Datepicker.prototype._handleKeydown = function (event) {
         if (this.disabled) {
             return;
         }
@@ -5094,19 +5089,19 @@ var Md2Datepicker = (function () {
                 switch (event.keyCode) {
                     case exports.KeyCodes.ENTER:
                     case exports.KeyCodes.SPACE:
-                        this.onClickOk();
+                        this._onClickOk();
                         break;
                     case exports.KeyCodes.DOWN_ARROW:
-                        if (this.displayDate.getFullYear() === (this.today.getFullYear() + 100))
-                            break;
-                        this.displayDate = this.dateUtil.incrementYears(displayDate, 1);
-                        this._scrollToSelectedYear();
+                        if (this.displayDate.getFullYear() < (this.today.getFullYear() + 100)) {
+                            this.displayDate = this.dateUtil.incrementYears(displayDate, 1);
+                            this._scrollToSelectedYear();
+                        }
                         break;
                     case exports.KeyCodes.UP_ARROW:
-                        if (this.displayDate.getFullYear() === 1900)
-                            break;
-                        this.displayDate = this.dateUtil.incrementYears(displayDate, -1);
-                        this._scrollToSelectedYear();
+                        if (this.displayDate.getFullYear() > 1900) {
+                            this.displayDate = this.dateUtil.incrementYears(displayDate, -1);
+                            this._scrollToSelectedYear();
+                        }
                         break;
                 }
             }
@@ -5198,7 +5193,7 @@ var Md2Datepicker = (function () {
     /**
      * Display Years
      */
-    Md2Datepicker.prototype.showYear = function () {
+    Md2Datepicker.prototype._showYear = function () {
         this.isYearsVisible = true;
         this.isCalendarVisible = true;
         this._scrollToSelectedYear();
@@ -5221,12 +5216,12 @@ var Md2Datepicker = (function () {
      * select year
      * @param year
      */
-    Md2Datepicker.prototype.setYear = function (year) {
+    Md2Datepicker.prototype._setYear = function (year) {
         var date = this.displayDate;
         this.displayDate = new Date(year, date.getMonth(), date.getDate(), date.getHours(), date.getMinutes());
         this.generateCalendar();
         this.isYearsVisible = false;
-        //this.isCalendarVisible = true;
+        // this.isCalendarVisible = true;
     };
     /**
      * Display Datepicker
@@ -5245,14 +5240,14 @@ var Md2Datepicker = (function () {
     /**
      * Display Calendar
      */
-    Md2Datepicker.prototype.showCalendar = function () {
+    Md2Datepicker.prototype._showCalendar = function () {
         this.isYearsVisible = false;
         this.isCalendarVisible = true;
     };
     /**
      * Toggle Hour visiblity
      */
-    Md2Datepicker.prototype.toggleHours = function (value) {
+    Md2Datepicker.prototype._toggleHours = function (value) {
         this.isYearsVisible = false;
         this.isCalendarVisible = false;
         this.isYearsVisible = false;
@@ -5262,7 +5257,7 @@ var Md2Datepicker = (function () {
     /**
      * Ok Button Event
      */
-    Md2Datepicker.prototype.onClickOk = function () {
+    Md2Datepicker.prototype._onClickOk = function () {
         if (this.isYearsVisible) {
             this.generateCalendar();
             this.isYearsVisible = false;
@@ -5285,7 +5280,7 @@ var Md2Datepicker = (function () {
      * @param event Event Object
      * @param date Date Object
      */
-    Md2Datepicker.prototype.onClickDate = function (event, date) {
+    Md2Datepicker.prototype._onClickDate = function (event, date) {
         event.preventDefault();
         event.stopPropagation();
         if (date.disabled) {
@@ -5330,14 +5325,14 @@ var Md2Datepicker = (function () {
      * Check is Before month enabled or not
      * @return boolean
      */
-    Md2Datepicker.prototype.isBeforeMonth = function () {
+    Md2Datepicker.prototype._isBeforeMonth = function () {
         return !this._minDate ? true : this._minDate && this.dateUtil.getMonthDistance(this.displayDate, this._minDate) < 0;
     };
     /**
      * Check is After month enabled or not
      * @return boolean
      */
-    Md2Datepicker.prototype.isAfterMonth = function () {
+    Md2Datepicker.prototype._isAfterMonth = function () {
         return !this._maxDate ? true : this._maxDate && this.dateUtil.getMonthDistance(this.displayDate, this._maxDate) > 0;
     };
     /**
@@ -5358,13 +5353,13 @@ var Md2Datepicker = (function () {
         else {
             return false;
         }
-        //if (this.disableWeekends) {
-        //  let dayNbr = this.getDayNumber(date);
-        //  if (dayNbr === 0 || dayNbr === 6) {
-        //    return true;
-        //  }
-        //}
-        //return false;
+        // if (this.disableWeekends) {
+        //   let dayNbr = this.getDayNumber(date);
+        //   if (dayNbr === 0 || dayNbr === 6) {
+        //     return true;
+        //   }
+        // }
+        // return false;
     };
     /**
      * Generate Month Calendar
@@ -5434,7 +5429,7 @@ var Md2Datepicker = (function () {
      * @param event Event Object
      * @param hour number of hours
      */
-    Md2Datepicker.prototype.onClickHour = function (event, hour) {
+    Md2Datepicker.prototype._onClickHour = function (event, hour) {
         event.preventDefault();
         event.stopPropagation();
         this.setHour(hour);
@@ -5444,7 +5439,7 @@ var Md2Datepicker = (function () {
      * @param event Event Object
      * @param minute number of minutes
      */
-    Md2Datepicker.prototype.onClickMinute = function (event, minute) {
+    Md2Datepicker.prototype._onClickMinute = function (event, minute) {
         event.preventDefault();
         event.stopPropagation();
         this.setMinute(minute);
@@ -5470,73 +5465,73 @@ var Md2Datepicker = (function () {
         this.value = this.selectedDate;
         this.onBlur();
     };
-    //private onMouseDownClock(event: MouseEvent) {
+    // private onMouseDownClock(event: MouseEvent) {
     //  document.addEventListener('mousemove', this.mouseMoveListener);
     //  document.addEventListener('mouseup', this.mouseUpListener);
-    //  //let offset = this.offset(event.currentTarget)
-    //  //this.clock.x = offset.left + this.clock.dialRadius;
-    //  //this.clock.y = offset.top + this.clock.dialRadius;
-    //  //this.clock.dx = event.pageX - this.clock.x;
-    //  //this.clock.dy = event.pageY - this.clock.y;
-    //  //let z = Math.sqrt(this.clock.dx * this.clock.dx + this.clock.dy * this.clock.dy);
-    //  //if (z < this.clock.outerRadius - this.clock.tickRadius || z > this.clock.outerRadius + this.clock.tickRadius) { return; }
-    //  //event.preventDefault();
-    //  //this.setClockHand(this.clock.dx, this.clock.dy);
-    //  ////this.onMouseMoveClock = this.onMouseMoveClock.bind(this);
-    //  ////this.onMouseUpClock = this.onMouseUpClock.bind(this);
-    //  //document.addEventListener('mousemove', this.onMouseMoveClock);
-    //  //document.addEventListener('mouseup', this.onMouseUpClock);
-    //}
-    //onMouseMoveClock(event: MouseEvent) {
-    //  event.preventDefault();
-    //  event.stopPropagation();
-    //  let x = event.pageX - this.clock.x,
-    //    y = event.pageY - this.clock.y;
-    //  this.clock.moved = true;
-    //  this._setClockHand(x, y);//, false, true
-    //  //if (!moved && x === dx && y === dy) {
-    //  //  // Clicking in chrome on windows will trigger a mousemove event
-    //  //  return;
-    //  //}
-    //}
-    //onMouseUpClock(event: MouseEvent) {
-    //  event.preventDefault();
-    //  document.removeEventListener('mousemove', this.mouseMoveListener);
-    //  document.removeEventListener('mouseup', this.mouseUpListener);
-    //  //let space = false;
-    //  let x = event.pageX - this.clock.x,
-    //    y = event.pageY - this.clock.y;
-    //  if ((space || this.clockEvent.moved) && x === this.clockEvent.dx && y === this.clockEvent.dy) {
-    //    this.setClockHand(x, y);
-    //  }
-    //  //if (this.isHoursVisible) {
-    //  //  //self.toggleView('minutes', duration / 2);
-    //  //} else {
-    //  //  //if (options.autoclose) {
-    //  //  //  self.minutesView.addClass('clockpicker-dial-out');
-    //  //  //  setTimeout(function () {
-    //  //  //    self.done();
-    //  //  //  }, duration / 2);
-    //  //  //}
-    //  //}
-    //  if ((space || moved) && x === dx && y === dy) {
-    //    self.setHand(x, y);
-    //  }
-    //  if (self.currentView === 'hours') {
-    //    self.toggleView('minutes', duration / 2);
-    //  } else {
-    //    if (options.autoclose) {
-    //      self.minutesView.addClass('clockpicker-dial-out');
-    //      setTimeout(function () {
-    //        self.done();
-    //      }, duration / 2);
-    //    }
-    //  }
-    //  plate.prepend(canvas);
-    //  // Reset cursor style of body
-    //  clearTimeout(movingTimer);
-    //  $body.removeClass('clockpicker-moving');
-    //}
+    //  // let offset = this.offset(event.currentTarget)
+    //  // this.clock.x = offset.left + this.clock.dialRadius;
+    //  // this.clock.y = offset.top + this.clock.dialRadius;
+    //  // this.clock.dx = event.pageX - this.clock.x;
+    //  // this.clock.dy = event.pageY - this.clock.y;
+    //  // let z = Math.sqrt(this.clock.dx * this.clock.dx + this.clock.dy * this.clock.dy);
+    //  // if (z < this.clock.outerRadius - this.clock.tickRadius || z > this.clock.outerRadius + this.clock.tickRadius) { return; }
+    //  // event.preventDefault();
+    //  // this.setClockHand(this.clock.dx, this.clock.dy);
+    //  // // this.onMouseMoveClock = this.onMouseMoveClock.bind(this);
+    //  // // this.onMouseUpClock = this.onMouseUpClock.bind(this);
+    //  // document.addEventListener('mousemove', this.onMouseMoveClock);
+    //  // document.addEventListener('mouseup', this.onMouseUpClock);
+    // }
+    // onMouseMoveClock(event: MouseEvent) {
+    //   event.preventDefault();
+    //   event.stopPropagation();
+    //   let x = event.pageX - this.clock.x,
+    //     y = event.pageY - this.clock.y;
+    //   this.clock.moved = true;
+    //   this._setClockHand(x, y);// , false, true
+    //   // if (!moved && x === dx && y === dy) {
+    //   //   // Clicking in chrome on windows will trigger a mousemove event
+    //   //   return;
+    //   // }
+    // }
+    // onMouseUpClock(event: MouseEvent) {
+    //   event.preventDefault();
+    //   document.removeEventListener('mousemove', this.mouseMoveListener);
+    //   document.removeEventListener('mouseup', this.mouseUpListener);
+    //   // let space = false;
+    //   let x = event.pageX - this.clock.x,
+    //     y = event.pageY - this.clock.y;
+    //   if ((space || this.clockEvent.moved) && x === this.clockEvent.dx && y === this.clockEvent.dy) {
+    //     this.setClockHand(x, y);
+    //   }
+    //   // if (this.isHoursVisible) {
+    //   //   // self.toggleView('minutes', duration / 2);
+    //   // } else {
+    //   //   // if (options.autoclose) {
+    //   //   //   self.minutesView.addClass('clockpicker-dial-out');
+    //   //   //   setTimeout(function () {
+    //   //   //     self.done();
+    //   //   //   }, duration / 2);
+    //   //   // }
+    //   // }
+    //   if ((space || moved) && x === dx && y === dy) {
+    //     self.setHand(x, y);
+    //   }
+    //   if (self.currentView === 'hours') {
+    //     self.toggleView('minutes', duration / 2);
+    //   } else {
+    //     if (options.autoclose) {
+    //       self.minutesView.addClass('clockpicker-dial-out');
+    //       setTimeout(function () {
+    //         self.done();
+    //       }, duration / 2);
+    //     }
+    //   }
+    //   plate.prepend(canvas);
+    //   // Reset cursor style of body
+    //   clearTimeout(movingTimer);
+    //   $body.removeClass('clockpicker-moving');
+    // }
     /**
      * reser clock hands
      */
@@ -5727,13 +5722,13 @@ var Md2Datepicker = (function () {
         __metadata$27('design:type', Function), 
         __metadata$27('design:paramtypes', [MouseEvent]), 
         __metadata$27('design:returntype', void 0)
-    ], Md2Datepicker.prototype, "onClick", null);
+    ], Md2Datepicker.prototype, "_handleClick", null);
     __decorate$27([
         _angular_core.HostListener('keydown', ['$event']), 
         __metadata$27('design:type', Function), 
         __metadata$27('design:paramtypes', [KeyboardEvent]), 
         __metadata$27('design:returntype', void 0)
-    ], Md2Datepicker.prototype, "onKeyDown", null);
+    ], Md2Datepicker.prototype, "_handleKeydown", null);
     __decorate$27([
         _angular_core.HostListener('blur'), 
         __metadata$27('design:type', Function), 
@@ -5742,8 +5737,8 @@ var Md2Datepicker = (function () {
     ], Md2Datepicker.prototype, "onBlur", null);
     Md2Datepicker = __decorate$27([
         _angular_core.Component({selector: 'md2-datepicker',
-            template: "<div class=\"md2-datepicker-input-container\" (click)=\"showDatepicker()\"> <div class=\"md2-datepicker-calendar-icon\"> <svg *ngIf=\"type==='date'\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z\"></path> </svg> <svg *ngIf=\"type==='time'\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z\"></path> </svg> <svg *ngIf=\"type==='datetime'\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M15,13H16.5V15.82L18.94,17.23L18.19,18.53L15,16.69V13M19,8H5V19H9.67C9.24,18.09 9,17.07 9,16A7,7 0 0,1 16,9C17.07,9 18.09,9.24 19,9.67V8M5,21C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H6V1H8V3H16V1H18V3H19A2,2 0 0,1 21,5V11.1C22.24,12.36 23,14.09 23,16A7,7 0 0,1 16,23C14.09,23 12.36,22.24 11.1,21H5M16,11.15A4.85,4.85 0 0,0 11.15,16C11.15,18.68 13.32,20.85 16,20.85A4.85,4.85 0 0,0 20.85,16C20.85,13.32 18.68,11.15 16,11.15Z\"></path> </svg> </div> <div class=\"md2-datepicker-input\"> <span class=\"md2-datepicker-placeholder\" [class.has-value]=\"value\"> {{placeholder}} <span class=\"md2-placeholder-required\" *ngIf=\"required\">*</span> </span> <span class=\"md2-datepicker-input-text\">{{displayInputDate}}</span> <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M7 10l5 5 5-5z\" /> </svg> </div> </div> <div class=\"md2-datepicker-wrapper\" [class.active]=\"isDatepickerVisible\"> <div class=\"md2-datepicker-header\"> <span class=\"md2-datepicker-year\" [class.active]=\"isYearsVisible\" [class.hidden]=\"type==='time'\" (click)=\"showYear()\">{{displayDay.year}}</span> <span class=\"md2-datepicker-date\" [class.active]=\"isCalendarVisible && !isYearsVisible\" [class.hidden]=\"type==='time'\" (click)=\"showCalendar()\">{{displayDay.day.substr(0, 3)}},&nbsp;{{displayDay.month.substr(0, 3)}}&nbsp;{{displayDay.date}}</span> <span class=\"md2-datepicker-time\" [class.active]=\"!isCalendarVisible\" [class.hidden]=\"type==='date'\"> <span class=\"md2-datepicker-hour\" [class.active]=\"isHoursVisible\" (click)=\"toggleHours(true)\">{{displayDay.hour}}</span>:<span class=\"md2-datepicker-minute\" [class.active]=\"!isHoursVisible\" (click)=\"toggleHours(false)\">{{displayDay.minute}}</span> </span> </div> <div class=\"md2-datepicker-body\"> <div class=\"md2-years\" [class.active]=\"isYearsVisible\"> <div class=\"md2-years-wrapper\"> <div *ngFor=\"let y of years\" class=\"md2-year\" [class.selected]=\"y === displayDay.year\" (click)=\"setYear(y)\">{{y}}</div> </div> </div> <div class=\"md2-datepicker-container\" [class.active]=\"!isYearsVisible\"> <div class=\"md2-calendar\" [class.active]=\"isCalendarVisible\"> <div class=\"md2-calendar-controls\"> <div class=\"md2-calendar-prev-month\" [class.disabled]=\"!isBeforeMonth()\" (click)=\"isBeforeMonth() && updateMonth(-1)\"> <svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\"> <path d=\"M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z\"></path> </svg> </div> <div class=\"md2-calendar-next-month\" [class.disabled]=\"!isAfterMonth()\" (click)=\"isAfterMonth() && updateMonth(1)\"> <svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\"> <path d=\"M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z\"></path> </svg> </div> <div class=\"md2-calendar-header\">{{displayDay.month}} {{displayDay.year}}</div> </div> <table class=\"md2-calendar-month\"> <thead><tr><th *ngFor=\"let d of days\">{{d.substr(0, 1)}}</th></tr></thead> <tbody> <tr *ngFor=\"let w of dates\"> <td *ngFor=\"let d of w\"> <div class=\"md2-calendar-day\" [class.today]=\"d.today\" [class.focus]=\"dateUtil.isSameDay(displayDate, d.date)\" [class.selected]=\"dateUtil.isSameDay(selectedDate, d.date)\" [class.disabled]=\"d.disabled\" [class.prev-month]=\"d.calMonth===prevMonth\" [class.curr-month]=\"d.calMonth===currMonth\" [class.next-month]=\"d.calMonth===nextMonth\" (click)=\"onClickDate($event,d)\">{{d.dateObj.day}}</div> </td> </tr> </tbody> </table> </div> <div class=\"md2-clock\" [class.active]=\"!isCalendarVisible\"> <!-- (mousedown)=\"onMouseDownClock($event)\"--> <div class=\"md2-clock-hand\"> <svg class=\"md2-clock-svg\" width=\"240\" height=\"240\"> <g transform=\"translate(120,120)\"> <line x1=\"0\" y1=\"0\" [attr.x2]=\"clock.hand.x\" [attr.y2]=\"clock.hand.y\"></line> <circle class=\"md2-clock-bg\" r=\"17\" [attr.cx]=\"clock.hand.x\" [attr.cy]=\"clock.hand.y\"></circle> <circle class=\"md2-clock-fg\" r=\"3.5\" [attr.cx]=\"clock.hand.x\" [attr.cy]=\"clock.hand.y\"></circle> <circle class=\"md2-clock-center\" cx=\"0\" cy=\"0\" r=\"2\"></circle> </g> </svg> </div> <div class=\"md2-clock-hours\" [class.active]=\"isHoursVisible\"> <div *ngFor=\"let h of hours\" class=\"md2-clock-hour\" [style.top]=\"h.top + 'px'\" [style.left]=\"h.left + 'px'\" (click)=\"onClickHour($event,h.hour)\">{{h.hour}}</div> </div> <div class=\"md2-clock-minutes\" [class.active]=\"!isHoursVisible\"> <div *ngFor=\"let m of minutes\" class=\"md2-clock-minute\" [style.top]=\"m.top + 'px'\" [style.left]=\"m.left + 'px'\" (click)=\"onClickMinute($event,m.minute)\">{{m.minute}}</div> </div> </div> </div> </div> <div class=\"md2-datepicker-footer\"> <div class=\"md2-button\" (click)=\"onBlur()\">Cancel</div> <div class=\"md2-button\" (click)=\"onClickOk()\">Ok</div> </div> </div> ",
-            styles: ["md2-datepicker { position: relative; display: block; max-width: 200px; outline: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } md2-datepicker.md2-datepicker-disabled { pointer-events: none; cursor: default; } .md2-datepicker-input-container { display: block; padding: 18px 0 18px 32px; white-space: nowrap; cursor: pointer; } .md2-datepicker-calendar-icon { position: absolute; top: 21px; left: 0; display: block; height: 24px; width: 24px; vertical-align: middle; fill: currentColor; color: rgba(0, 0, 0, 0.54); } .md2-datepicker-input { position: relative; display: block; height: 30px; padding: 2px 26px 1px 2px; margin: 0; line-height: 26px; color: rgba(0, 0, 0, 0.87); vertical-align: middle; box-sizing: border-box; border-bottom: 1px solid rgba(0, 0, 0, 0.12); } .md2-datepicker-input svg { position: absolute; right: 0; top: 2px; fill: currentColor; color: rgba(0, 0, 0, 0.54); } md2-datepicker.md2-datepicker-disabled .md2-datepicker-input { color: rgba(0, 0, 0, 0.38); border-color: transparent; background-image: linear-gradient(to right, rgba(0, 0, 0, 0.38) 0%, rgba(0, 0, 0, 0.38) 33%, transparent 0%); background-position: bottom -1px left 0; background-size: 4px 1px; background-repeat: repeat-x; } .md2-datepicker-placeholder { position: absolute; right: 26px; bottom: 100%; left: 0; color: rgba(0, 0, 0, 0.38); max-width: 100%; padding-left: 3px; padding-right: 0; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; z-index: 1; transform: translate3d(0, 26px, 0) scale(1); transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); transform-origin: left top; } .md2-datepicker-placeholder.has-value, md2-datepicker:focus .md2-datepicker-placeholder { transform: translate3d(0, 6px, 0) scale(0.75); } md2-datepicker:focus .md2-datepicker-placeholder { color: #2196f3; } md2-datepicker:focus .md2-datepicker-placeholder .md2-placeholder-required { color: #f00; } md2-datepicker.md2-datepicker-disabled:focus .md2-datepicker-placeholder, md2-datepicker.md2-datepicker-disabled:focus .md2-datepicker-placeholder .md2-placeholder-required { color: rgba(0, 0, 0, 0.38); } .md2-datepicker-input-text { display: block; font-size: 15px; line-height: 26px; } .md2-datepicker-wrapper { position: absolute; top: 0; left: 0; display: inline-block; width: 300px; border-radius: 2px; background-color: #fff; z-index: 10; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); transform: scale(0); transform-origin: left top; transition: 150ms; -webkit-touch-callout: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } .md2-datepicker-wrapper.active { transform: scale(1); } .md2-datepicker-header { display: block; padding: 20px; color: #fff; font-size: 28px; line-height: 28px; font-weight: 500; background: #2196f3; box-sizing: border-box; } .md2-datepicker-year { display: block; height: 16px; margin: 0 0 10px; font-size: 16px; line-height: 16px; opacity: 0.7; cursor: pointer; } .md2-datepicker-year.active { opacity: 1; pointer-events: none; } .md2-datepicker-year.hidden { display: none; } .md2-datepicker-date { cursor: pointer; opacity: 0.7; } .md2-datepicker-date.active { opacity: 1; pointer-events: none; } .md2-datepicker-date.hidden { display: none; } .md2-datepicker-time { display: inline-block; padding-left: 10px; cursor: pointer; opacity: 0.7; } .md2-datepicker-time.active { opacity: 1; } .md2-datepicker-time.hidden { display: none; } .md2-datepicker-hour, .md2-datepicker-minute { opacity: 1; } .md2-datepicker-time.active .md2-datepicker-hour, .md2-datepicker-time.active .md2-datepicker-minute { opacity: 0.7; } .md2-datepicker-time.active .md2-datepicker-hour.active, .md2-datepicker-time.active .md2-datepicker-minute.active { opacity: 1; pointer-events: none; } .md2-datepicker-body { position: relative; width: 100%; height: 300px; overflow: hidden; } .md2-datepicker-footer { text-align: right; } .md2-datepicker-footer .md2-button { display: inline-block; min-width: 64px; margin: 4px 8px 8px 0px; padding: 0 12px; font-size: 14px; color: #2196f3; line-height: 36px; text-align: center; text-transform: uppercase; border-radius: 2px; cursor: pointer; box-sizing: border-box; transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1); } .md2-datepicker-footer .md2-button:hover { background: #ebebeb; } .md2-years { position: absolute; top: 10px; right: 100%; bottom: 10px; display: block; width: 100%; line-height: 40px; background: #fff; overflow-x: hidden; overflow-y: auto; transition: 300ms; } .md2-years.active { right: 0; } .md2-years .md2-years-wrapper { display: flex; flex-direction: column; justify-content: center; min-height: 100%; } .md2-years .md2-year { position: relative; display: block; margin: 0 auto; padding: 0; font-size: 17px; font-weight: 400; text-align: center; cursor: pointer; } .md2-years .md2-year.selected { color: #2196f3; font-size: 26px; font-weight: 500; } .md2-datepicker-container { position: absolute; top: 0; left: 100%; display: block; width: 100%; transition: 300ms; } .md2-datepicker-container.active { left: 0; } .md2-calendar { position: absolute; right: 100%; display: block; width: 100%; font-size: 12px; font-weight: 400; text-align: center; transition: 300ms; } .md2-calendar.active { right: 0; } .md2-calendar-controls { position: relative; display: block; height: 48px; text-align: left; } .md2-calendar-header { height: 48px; line-height: 48px; font-size: 14px; font-weight: 500; text-align: center; } .md2-calendar-prev-month, .md2-calendar-next-month { position: absolute; display: inline-block; width: 48px; height: 48px; padding: 12px; margin: 0 12px; box-sizing: border-box; cursor: pointer; } .md2-calendar-next-month { right: 0; } .md2-calendar-prev-month.disabled, .md2-calendar-next-month.disabled { opacity: 0.25; cursor: default; pointer-events: none; } .md2-calendar-month { margin: 0 20px; } .md2-calendar-month th { width: 35px; height: 20px; font-weight: 500; line-height: 15px; opacity: 0.5; } .md2-calendar-month td { padding: 0; } .md2-calendar-day { position: relative; display: inline-block; width: 35px; height: 35px; border-radius: 50%; text-align: center; cursor: pointer; line-height: 35px; box-sizing: border-box; } .md2-calendar-day.today { color: #2196f3; } .md2-calendar-day:hover, .md2-calendar-day.focus { background: #e0e0e0; } .md2-calendar-day.selected, .md2-calendar-day.selected:hover { color: #fff; background: #2196f3; } .md2-calendar-day.disabled, .md2-calendar-day.disabled:hover { color: rgba(0, 0, 0, 0.45); background: transparent; pointer-events: none; } .md2-calendar-day.prev-month, .md2-calendar-day.next-month { visibility: hidden; } .md2-clock { position: absolute; left: 100%; display: block; width: 240px; height: 240px; margin: 30px; font-size: 14px; font-weight: 400; text-align: center; background-color: #e0e0e0; border-radius: 50%; transition: 300ms; } .md2-clock.active { left: 0; } .md2-clock-hours, .md2-clock-minutes { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; visibility: hidden; transition: 350ms; transform: scale(1.2); } .md2-clock-minutes { transform: scale(0.8); } .md2-clock-hours.active, .md2-clock-minutes.active { opacity: 1; visibility: visible; transform: scale(1); } .md2-clock-hour, .md2-clock-minute { position: absolute; width: 34px; height: 34px; line-height: 34px; text-align: center; border-radius: 50%; cursor: pointer; } .md2-clock-hour:hover, .md2-clock-minute:hover { background: #5aaced; } .md2-clock-hand { position: absolute; top: 0; left: 0; width: 100%; height: 100%; } .md2-clock-hand line { stroke: #2196f3; stroke-width: 1; stroke-linecap: round; } .md2-clock-bg { fill: #5aaced; } .md2-clock-fg { stroke: none; fill: #2196f3; } .md2-clock-center { stroke: none; fill: #2196f3; } /*# sourceMappingURL=datepicker.css.map */ "],
+            template: "<div class=\"md2-datepicker-input-container\" (click)=\"showDatepicker()\"> <div class=\"md2-datepicker-calendar-icon\"> <svg *ngIf=\"type==='date'\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z\"></path> </svg> <svg *ngIf=\"type==='time'\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z\"></path> </svg> <svg *ngIf=\"type==='datetime'\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M15,13H16.5V15.82L18.94,17.23L18.19,18.53L15,16.69V13M19,8H5V19H9.67C9.24,18.09 9,17.07 9,16A7,7 0 0,1 16,9C17.07,9 18.09,9.24 19,9.67V8M5,21C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H6V1H8V3H16V1H18V3H19A2,2 0 0,1 21,5V11.1C22.24,12.36 23,14.09 23,16A7,7 0 0,1 16,23C14.09,23 12.36,22.24 11.1,21H5M16,11.15A4.85,4.85 0 0,0 11.15,16C11.15,18.68 13.32,20.85 16,20.85A4.85,4.85 0 0,0 20.85,16C20.85,13.32 18.68,11.15 16,11.15Z\"></path> </svg> </div> <div class=\"md2-datepicker-input\"> <span class=\"md2-datepicker-placeholder\" [class.has-value]=\"value\"> {{placeholder}} <span class=\"md2-placeholder-required\" *ngIf=\"required\">*</span> </span> <span class=\"md2-datepicker-input-text\">{{displayInputDate}}</span> <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M7 10l5 5 5-5z\" /> </svg> </div> </div> <div class=\"md2-datepicker-wrapper\" [class.active]=\"isDatepickerVisible\"> <div class=\"md2-datepicker-header\"> <span class=\"md2-datepicker-year\" [class.active]=\"isYearsVisible\" [class.hidden]=\"type==='time'\" (click)=\"_showYear()\">{{displayDay.year}}</span> <span class=\"md2-datepicker-date\" [class.active]=\"isCalendarVisible && !isYearsVisible\" [class.hidden]=\"type==='time'\" (click)=\"_showCalendar()\">{{displayDay.day.substr(0, 3)}},&nbsp;{{displayDay.month.substr(0, 3)}}&nbsp;{{displayDay.date}}</span> <span class=\"md2-datepicker-time\" [class.active]=\"!isCalendarVisible\" [class.hidden]=\"type==='date'\"> <span class=\"md2-datepicker-hour\" [class.active]=\"isHoursVisible\" (click)=\"_toggleHours(true)\">{{displayDay.hour}}</span>:<span class=\"md2-datepicker-minute\" [class.active]=\"!isHoursVisible\" (click)=\"_toggleHours(false)\">{{displayDay.minute}}</span> </span> </div> <div class=\"md2-datepicker-body\"> <div class=\"md2-years\" [class.active]=\"isYearsVisible\"> <div class=\"md2-years-wrapper\"> <div *ngFor=\"let y of years\" class=\"md2-year\" [class.selected]=\"y === displayDay.year\" (click)=\"_setYear(y)\">{{y}}</div> </div> </div> <div class=\"md2-datepicker-container\" [class.active]=\"!isYearsVisible\"> <div class=\"md2-calendar\" [class.active]=\"isCalendarVisible\"> <div class=\"md2-calendar-controls\"> <div class=\"md2-calendar-prev-month\" [class.disabled]=\"!_isBeforeMonth()\" (click)=\"_isBeforeMonth() && updateMonth(-1)\"> <svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\"> <path d=\"M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z\"></path> </svg> </div> <div class=\"md2-calendar-next-month\" [class.disabled]=\"!_isAfterMonth()\" (click)=\"_isAfterMonth() && updateMonth(1)\"> <svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\"> <path d=\"M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z\"></path> </svg> </div> <div class=\"md2-calendar-header\">{{displayDay.month}} {{displayDay.year}}</div> </div> <table class=\"md2-calendar-month\"> <thead><tr><th *ngFor=\"let d of days\">{{d.substr(0, 1)}}</th></tr></thead> <tbody> <tr *ngFor=\"let w of dates\"> <td *ngFor=\"let d of w\"> <div class=\"md2-calendar-day\" [class.today]=\"d.today\" [class.focus]=\"dateUtil.isSameDay(displayDate, d.date)\" [class.selected]=\"dateUtil.isSameDay(selectedDate, d.date)\" [class.disabled]=\"d.disabled\" [class.prev-month]=\"d.calMonth===prevMonth\" [class.curr-month]=\"d.calMonth===currMonth\" [class.next-month]=\"d.calMonth===nextMonth\" (click)=\"_onClickDate($event,d)\">{{d.dateObj.day}}</div> </td> </tr> </tbody> </table> </div> <div class=\"md2-clock\" [class.active]=\"!isCalendarVisible\"> <!-- (mousedown)=\"onMouseDownClock($event)\"--> <div class=\"md2-clock-hand\"> <svg class=\"md2-clock-svg\" width=\"240\" height=\"240\"> <g transform=\"translate(120,120)\"> <line x1=\"0\" y1=\"0\" [attr.x2]=\"clock.hand.x\" [attr.y2]=\"clock.hand.y\"></line> <circle class=\"md2-clock-bg\" r=\"17\" [attr.cx]=\"clock.hand.x\" [attr.cy]=\"clock.hand.y\"></circle> <circle class=\"md2-clock-fg\" r=\"3.5\" [attr.cx]=\"clock.hand.x\" [attr.cy]=\"clock.hand.y\"></circle> <circle class=\"md2-clock-center\" cx=\"0\" cy=\"0\" r=\"2\"></circle> </g> </svg> </div> <div class=\"md2-clock-hours\" [class.active]=\"isHoursVisible\"> <div *ngFor=\"let h of hours\" class=\"md2-clock-hour\" [style.top]=\"h.top + 'px'\" [style.left]=\"h.left + 'px'\" (click)=\"_onClickHour($event,h.hour)\">{{h.hour}}</div> </div> <div class=\"md2-clock-minutes\" [class.active]=\"!isHoursVisible\"> <div *ngFor=\"let m of minutes\" class=\"md2-clock-minute\" [style.top]=\"m.top + 'px'\" [style.left]=\"m.left + 'px'\" (click)=\"_onClickMinute($event,m.minute)\">{{m.minute}}</div> </div> </div> </div> </div> <div class=\"md2-datepicker-footer\"> <div class=\"md2-button\" (click)=\"onBlur()\">Cancel</div> <div class=\"md2-button\" (click)=\"_onClickOk()\">Ok</div> </div> </div> ",
+            styles: ["md2-datepicker { position: relative; display: block; max-width: 200px; outline: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } md2-datepicker.md2-datepicker-disabled { pointer-events: none; cursor: default; } .md2-datepicker-input-container { display: block; padding: 18px 0 18px 32px; white-space: nowrap; cursor: pointer; } .md2-datepicker-calendar-icon { position: absolute; top: 21px; left: 0; display: block; height: 24px; width: 24px; vertical-align: middle; fill: currentColor; color: rgba(0, 0, 0, 0.54); } .md2-datepicker-input { position: relative; display: block; height: 30px; padding: 2px 26px 1px 2px; margin: 0; line-height: 26px; color: rgba(0, 0, 0, 0.87); vertical-align: middle; box-sizing: border-box; border-bottom: 1px solid rgba(0, 0, 0, 0.12); } .md2-datepicker-input svg { position: absolute; right: 0; top: 2px; fill: currentColor; color: rgba(0, 0, 0, 0.54); } md2-datepicker.md2-datepicker-disabled .md2-datepicker-input { color: rgba(0, 0, 0, 0.38); border-color: transparent; background-image: linear-gradient(to right, rgba(0, 0, 0, 0.38) 0%, rgba(0, 0, 0, 0.38) 33%, transparent 0%); background-position: bottom -1px left 0; background-size: 4px 1px; background-repeat: repeat-x; } .md2-datepicker-placeholder { position: absolute; right: 26px; bottom: 100%; left: 0; color: rgba(0, 0, 0, 0.38); max-width: 100%; padding-left: 3px; padding-right: 0; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; z-index: 1; transform: translate3d(0, 26px, 0) scale(1); transition: transform 400ms cubic-bezier(0.25, 0.8, 0.25, 1); transform-origin: left top; } .md2-datepicker-placeholder.has-value, md2-datepicker:focus .md2-datepicker-placeholder { transform: translate3d(0, 6px, 0) scale(0.75); } md2-datepicker:focus .md2-datepicker-placeholder { color: #2196f3; } md2-datepicker:focus .md2-datepicker-placeholder .md2-placeholder-required { color: #f00; } md2-datepicker.md2-datepicker-disabled:focus .md2-datepicker-placeholder, md2-datepicker.md2-datepicker-disabled:focus .md2-datepicker-placeholder .md2-placeholder-required { color: rgba(0, 0, 0, 0.38); } .md2-datepicker-input-text { display: block; font-size: 15px; line-height: 26px; } .md2-datepicker-wrapper { position: absolute; top: 0; left: 0; display: inline-block; width: 300px; border-radius: 2px; background-color: #fff; z-index: 10; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); transform: scale(0); transform-origin: left top; transition: 150ms; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } .md2-datepicker-wrapper.active { transform: scale(1); } .md2-datepicker-header { display: block; padding: 20px; color: #fff; font-size: 28px; line-height: 28px; font-weight: 500; background: #2196f3; box-sizing: border-box; } .md2-datepicker-year { display: block; height: 16px; margin: 0 0 10px; font-size: 16px; line-height: 16px; opacity: 0.7; cursor: pointer; } .md2-datepicker-year.active { opacity: 1; pointer-events: none; } .md2-datepicker-year.hidden { display: none; } .md2-datepicker-date { cursor: pointer; opacity: 0.7; } .md2-datepicker-date.active { opacity: 1; pointer-events: none; } .md2-datepicker-date.hidden { display: none; } .md2-datepicker-time { display: inline-block; padding-left: 10px; cursor: pointer; opacity: 0.7; } .md2-datepicker-time.active { opacity: 1; } .md2-datepicker-time.hidden { display: none; } .md2-datepicker-hour, .md2-datepicker-minute { opacity: 1; } .md2-datepicker-time.active .md2-datepicker-hour, .md2-datepicker-time.active .md2-datepicker-minute { opacity: 0.7; } .md2-datepicker-time.active .md2-datepicker-hour.active, .md2-datepicker-time.active .md2-datepicker-minute.active { opacity: 1; pointer-events: none; } .md2-datepicker-body { position: relative; width: 100%; height: 300px; overflow: hidden; } .md2-datepicker-footer { text-align: right; } .md2-datepicker-footer .md2-button { display: inline-block; min-width: 64px; margin: 4px 8px 8px 0; padding: 0 12px; font-size: 14px; color: #2196f3; line-height: 36px; text-align: center; text-transform: uppercase; border-radius: 2px; cursor: pointer; box-sizing: border-box; transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1); } .md2-datepicker-footer .md2-button:hover { background: #ebebeb; } .md2-years { position: absolute; top: 10px; right: 100%; bottom: 10px; display: block; width: 100%; line-height: 40px; background: #fff; overflow-x: hidden; overflow-y: auto; transition: 300ms; } .md2-years.active { right: 0; } .md2-years .md2-years-wrapper { display: flex; flex-direction: column; justify-content: center; min-height: 100%; } .md2-years .md2-year { position: relative; display: block; margin: 0 auto; padding: 0; font-size: 17px; font-weight: 400; text-align: center; cursor: pointer; } .md2-years .md2-year.selected { color: #2196f3; font-size: 26px; font-weight: 500; } .md2-datepicker-container { position: absolute; top: 0; left: 100%; display: block; width: 100%; transition: 300ms; } .md2-datepicker-container.active { left: 0; } .md2-calendar { position: absolute; right: 100%; display: block; width: 100%; font-size: 12px; font-weight: 400; text-align: center; transition: 300ms; } .md2-calendar.active { right: 0; } .md2-calendar-controls { position: relative; display: block; height: 48px; text-align: left; } .md2-calendar-header { height: 48px; line-height: 48px; font-size: 14px; font-weight: 500; text-align: center; } .md2-calendar-prev-month, .md2-calendar-next-month { position: absolute; display: inline-block; width: 48px; height: 48px; padding: 12px; margin: 0 12px; box-sizing: border-box; cursor: pointer; } .md2-calendar-next-month { right: 0; } .md2-calendar-prev-month.disabled, .md2-calendar-next-month.disabled { opacity: 0.25; cursor: default; pointer-events: none; } .md2-calendar-month { margin: 0 20px; } .md2-calendar-month th { width: 35px; height: 20px; font-weight: 500; line-height: 15px; opacity: 0.5; } .md2-calendar-month td { padding: 0; } .md2-calendar-day { position: relative; display: inline-block; width: 35px; height: 35px; border-radius: 50%; text-align: center; cursor: pointer; line-height: 35px; box-sizing: border-box; } .md2-calendar-day.today { color: #2196f3; } .md2-calendar-day:hover, .md2-calendar-day.focus { background: #e0e0e0; } .md2-calendar-day.selected, .md2-calendar-day.selected:hover { color: #fff; background: #2196f3; } .md2-calendar-day.disabled, .md2-calendar-day.disabled:hover { color: rgba(0, 0, 0, 0.45); background: transparent; pointer-events: none; } .md2-calendar-day.prev-month, .md2-calendar-day.next-month { visibility: hidden; } .md2-clock { position: absolute; left: 100%; display: block; width: 240px; height: 240px; margin: 30px; font-size: 14px; font-weight: 400; text-align: center; background-color: #e0e0e0; border-radius: 50%; transition: 300ms; } .md2-clock.active { left: 0; } .md2-clock-hours, .md2-clock-minutes { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; visibility: hidden; transition: 350ms; transform: scale(1.2); } .md2-clock-minutes { transform: scale(0.8); } .md2-clock-hours.active, .md2-clock-minutes.active { opacity: 1; visibility: visible; transform: scale(1); } .md2-clock-hour, .md2-clock-minute { position: absolute; width: 34px; height: 34px; line-height: 34px; text-align: center; border-radius: 50%; cursor: pointer; } .md2-clock-hour:hover, .md2-clock-minute:hover { background: #5aaced; } .md2-clock-hand { position: absolute; top: 0; left: 0; width: 100%; height: 100%; } .md2-clock-hand line { stroke: #2196f3; stroke-width: 1; stroke-linecap: round; } .md2-clock-bg { fill: #5aaced; } .md2-clock-fg { stroke: none; fill: #2196f3; } .md2-clock-center { stroke: none; fill: #2196f3; } /*# sourceMappingURL=datepicker.css.map */ "],
             providers: [MD2_DATEPICKER_CONTROL_VALUE_ACCESSOR],
             host: {
                 'role': 'datepicker',
@@ -5873,7 +5868,6 @@ var Animate = (function () {
         return -1;
     };
     Animate.setTransitionDuration = function (element, delayMs) {
-        //element.style['transition-duration'] = `${delayMs}ms`;
     };
     /* From Modernizr */
     Animate.whichTransitionEvent = function () {
@@ -5902,7 +5896,6 @@ var Animate = (function () {
         Animate.setTransitionDuration(element, 0);
         return new Promise(function (resolve, reject) {
             Object.keys(styles).forEach(function (key) {
-                //element.style[key] = `${styles[key]}`;
             });
             if (saveDuration !== -1) {
                 Animate.setTransitionDuration(element, saveDuration);
@@ -6033,7 +6026,7 @@ var Md2Dialog = (function () {
             return _this;
         });
     };
-    Md2Dialog.prototype.onDocumentKeypress = function (event) {
+    Md2Dialog.prototype._handleDocumentKeydown = function (event) {
         if (event.keyCode == 27) {
             this.close();
         }
@@ -6064,11 +6057,11 @@ var Md2Dialog = (function () {
     ], Md2Dialog.prototype, "config", void 0);
     Md2Dialog = __decorate$29([
         _angular_core.Component({selector: 'md2-dialog',
-            template: "\n    <template md2DialogPortal>\n      <div class=\"md2-dialog\" [class.open]=\"isOpened\">\n        <div class=\"md2-dialog-container\">\n          <div class=\"md2-dialog-header\">\n            <button type=\"button\" class=\"close\" aria-label=\"Close\" (click)=\"close()\">&times;</button>\n            <h2 *ngIf=\"dialogTitle\" class=\"md2-dialog-title\" id=\"myDialogLabel\" [innerHtml]=\"dialogTitle\"></h2>\n            <ng-content select=\"md2-dialog-title\"></ng-content>\n          </div>\n          <div class=\"md2-dialog-body\">\n            <ng-content></ng-content>\n          </div>\n          <ng-content select=\"md2-dialog-footer\"></ng-content>\n        </div>\n      </div>\n    </template>\n  ",
-            styles: ["\n    .md2-dialog-open { overflow-y: hidden; }\n    .md2-dialog { position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 1050; background-color: rgba(33, 33, 33, 0.48); display: none; overflow-x: hidden; overflow-y: scroll; -webkit-overflow-scrolling: touch; outline: 0; }\n    .md2-dialog.open { display: block; }\n    .md2-dialog .md2-dialog-container { position: relative; width: auto; margin: 15px; background-color: #fff; -webkit-background-clip: padding-box; -moz-background-clip: padding-box; background-clip: padding-box; border-radius: 0 0 4px 4px; outline: 0; -webkit-box-shadow: 0 7px 8px -4px rgba(0,0,0,.2),0 13px 19px 2px rgba(0,0,0,.14),0 5px 24px 4px rgba(0,0,0,.12); box-shadow: 0 7px 8px -4px rgba(0,0,0,.2),0 13px 19px 2px rgba(0,0,0,.14),0 5px 24px 4px rgba(0,0,0,.12); -webkit-transition: .3s; -o-transition: .3s; -moz-transition: .3s; transition: .3s; -webkit-transform: scale(0.1); -ms-transform: scale(0.1); -o-transform: scale(0.1); -moz-transform: scale(0.1); transform: scale(0.1); }\n    .md2-dialog.open .md2-dialog-container { -webkit-transform: scale(1); -ms-transform: scale(1); -o-transform: scale(1); -moz-transform: scale(1); transform: scale(1); }\n    @media (min-width: 768px) {\n      .md2-dialog .md2-dialog-container { width: 600px; margin: 30px auto; }\n    }\n    .md2-dialog-header { background: #2196f3; color: #fff; font-size: 25px; line-height: 1.1; font-weight: 500; padding: 0 48px 0 16px; border-bottom: 1px solid #e5e5e5; word-wrap: break-word; }\n    .md2-dialog-header .close { position: absolute; top: 21px; right: 16px; display: inline-block; width: 18px; height: 18px; overflow: hidden; -webkit-appearance: none; padding: 0; cursor: pointer; background: 0 0; border: 0; outline: 0; opacity: 0.8; font-size: 0; z-index: 1; min-width: initial; box-shadow: none; margin: 0; }\n    .md2-dialog-header .close::before,\n    .md2-dialog-header .close::after { content: ''; position: absolute; top: 50%; left: 0; height: 2px; width: 100%; margin-top: -1px;background: #ccc;border-radius: 2px;height: 2px;}\n    .md2-dialog-header .close::before {-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);-ms-transform: rotate(45deg);-o-transform: rotate(45deg);transform: rotate(45deg);}\n    .md2-dialog-header .close::after {-webkit-transform: rotate(-45deg);-moz-transform: rotate(-45deg);-ms-transform: rotate(-45deg);-o-transform: rotate(-45deg);transform: rotate(-45deg);}\n    .md2-dialog-header .close:hover { opacity: 1; }\n    .md2-dialog-header md2-dialog-title, .md2-dialog-header .md2-dialog-title { display: block; margin: 0; padding: 16px 0; font-size: 25px; font-weight: 500; }\n    .md2-dialog-header dialog-header { line-height: 33px; }\n    .md2-dialog-body { position: relative; padding: 16px; }\n    .md2-dialog-footer, md2-dialog-footer { display: block; padding: 16px; text-align: right; border-top: 1px solid rgba(0,0,0,0.12); }\n  "],
+            template: "<template md2DialogPortal> <div class=\"md2-dialog\" [class.open]=\"isOpened\"> <div class=\"md2-dialog-container\"> <div class=\"md2-dialog-header\"> <button type=\"button\" class=\"close\" aria-label=\"Close\" (click)=\"close()\">&times;</button> <h2 *ngIf=\"dialogTitle\" class=\"md2-dialog-title\" id=\"myDialogLabel\" [innerHtml]=\"dialogTitle\"></h2> <ng-content select=\"md2-dialog-title\"></ng-content> </div> <div class=\"md2-dialog-body\"> <ng-content></ng-content> </div> <ng-content select=\"md2-dialog-footer\"></ng-content> </div> </div> </template> ",
+            styles: [".md2-dialog-open { overflow-y: hidden; } .md2-dialog { position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 1050; background-color: rgba(33, 33, 33, 0.48); display: none; overflow-x: hidden; overflow-y: scroll; -webkit-overflow-scrolling: touch; outline: 0; } .md2-dialog.open { display: block; } .md2-dialog .md2-dialog-container { position: relative; width: auto; margin: 15px; background-color: #fff; background-clip: padding-box; border-radius: 0 0 4px 4px; outline: 0; box-shadow: 0 7px 8px -4px rgba(0, 0, 0, 0.2), 0 13px 19px 2px rgba(0, 0, 0, 0.14), 0 5px 24px 4px rgba(0, 0, 0, 0.12); transition: 300ms; transform: scale(0.1); } .md2-dialog.open .md2-dialog-container { transform: scale(1); } @media (min-width: 768px) { .md2-dialog .md2-dialog-container { width: 600px; margin: 30px auto; } } .md2-dialog-header { background: #2196f3; color: #fff; font-size: 25px; line-height: 1.1; font-weight: 500; padding: 0 48px 0 16px; border-bottom: 1px solid #e5e5e5; word-wrap: break-word; } .md2-dialog-header .close { position: absolute; top: 21px; right: 16px; display: inline-block; width: 18px; height: 18px; overflow: hidden; -webkit-appearance: none; padding: 0; cursor: pointer; background: 0 0; border: 0; outline: 0; opacity: 0.8; font-size: 0; z-index: 1; min-width: initial; box-shadow: none; margin: 0; } .md2-dialog-header .close::before, .md2-dialog-header .close::after { content: ''; position: absolute; top: 50%; left: 0; width: 100%; height: 2px; margin-top: -1px; background: #ccc; border-radius: 2px; } .md2-dialog-header .close::before { transform: rotate(45deg); } .md2-dialog-header .close::after { transform: rotate(-45deg); } .md2-dialog-header .close:hover { opacity: 1; } .md2-dialog-header md2-dialog-title, .md2-dialog-header .md2-dialog-title { display: block; margin: 0; padding: 16px 0; font-size: 25px; font-weight: 500; } .md2-dialog-header dialog-header { line-height: 33px; } .md2-dialog-body { position: relative; padding: 16px; } .md2-dialog-footer, md2-dialog-footer { display: block; padding: 16px; text-align: right; border-top: 1px solid rgba(0, 0, 0, 0.12); } /*# sourceMappingURL=dialog.css.map */ "],
             host: {
                 'tabindex': '0',
-                '(body:keydown)': 'onDocumentKeypress($event)'
+                '(body:keydown)': '_handleDocumentKeydown($event)'
             },
             encapsulation: _angular_core.ViewEncapsulation.None,
         }), 
@@ -6341,7 +6334,7 @@ var Md2Multiselect = (function () {
         if (o1 !== o1 && o2 !== o2) {
             return true;
         }
-        var t1 = typeof o1, t2 = typeof o2, length, key, keySet;
+        var t1 = typeof o1, t2 = typeof o2, key, keySet;
         if (t1 === t2 && t1 === 'object') {
             keySet = Object.create(null);
             for (key in o1) {
@@ -6394,7 +6387,7 @@ var Md2Multiselect = (function () {
             menuContainer.scrollTop -= highlighted.clientHeight - top;
         }
     };
-    Md2Multiselect.prototype.onClick = function (event) {
+    Md2Multiselect.prototype._handleClick = function (event) {
         if (this.disabled) {
             event.stopPropagation();
             event.preventDefault();
@@ -6403,7 +6396,7 @@ var Md2Multiselect = (function () {
         this.updateOptions();
         this.element.nativeElement.focus();
     };
-    Md2Multiselect.prototype.onKeyDown = function (event) {
+    Md2Multiselect.prototype._handleKeydown = function (event) {
         if (this.disabled) {
             return;
         }
@@ -6455,7 +6448,7 @@ var Md2Multiselect = (function () {
      * @param index
      * @return boolean the item is active or not
      */
-    Md2Multiselect.prototype.isActive = function (index) {
+    Md2Multiselect.prototype._isActive = function (index) {
         return this.items.map(function (i) { return i.text; }).indexOf(this.list[index].text) < 0 ? false : true;
     };
     /**
@@ -6575,13 +6568,13 @@ var Md2Multiselect = (function () {
         __metadata$31('design:type', Function), 
         __metadata$31('design:paramtypes', [MouseEvent]), 
         __metadata$31('design:returntype', void 0)
-    ], Md2Multiselect.prototype, "onClick", null);
+    ], Md2Multiselect.prototype, "_handleClick", null);
     __decorate$31([
         _angular_core.HostListener('keydown', ['$event']), 
         __metadata$31('design:type', Function), 
         __metadata$31('design:paramtypes', [KeyboardEvent]), 
         __metadata$31('design:returntype', void 0)
-    ], Md2Multiselect.prototype, "onKeyDown", null);
+    ], Md2Multiselect.prototype, "_handleKeydown", null);
     __decorate$31([
         _angular_core.HostListener('blur'), 
         __metadata$31('design:type', Function), 
@@ -6590,8 +6583,8 @@ var Md2Multiselect = (function () {
     ], Md2Multiselect.prototype, "onBlur", null);
     Md2Multiselect = __decorate$31([
         _angular_core.Component({selector: 'md2-multiselect',
-            template: "\n    <div class=\"md2-multiselect-container\">\n      <span class=\"md2-multiselect-placeholder\" [class.has-value]=\"items.length\">\n        {{placeholder}}\n        <span class=\"md2-placeholder-required\" *ngIf=\"required\">*</span>\n      </span>\n      <div class=\"md2-multiselect-value\">\n        <div *ngFor=\"let v of items; let last = last\" class=\"md2-multiselect-value-item\">\n          <span class=\"md2-multiselect-text\">{{v.text}}</span><span *ngIf=\"!last\">,&nbsp;</span>\n        </div>\n      </div>\n      <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\">\n        <path d=\"M7 10l5 5 5-5z\" />\n      </svg>\n    </div>\n    <ul *ngIf=\"isMenuVisible\" class=\"md2-multiselect-menu\">\n      <li class=\"md2-option\" *ngFor=\"let l of list; let i = index;\" [class.active]=\"isActive(i)\" [class.focus]=\"focusedOption === i\" (click)=\"toggleOption($event, i)\">\n        <div class=\"md2-option-icon\"></div>\n        <div class=\"md2-option-text\" [innerHtml]=\"l.text\"></div>\n      </li>\n    </ul>\n  ",
-            styles: ["\n    md2-multiselect { position: relative; display: block; margin: 18px 0; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -moz-backface-visibility: hidden; -webkit-backface-visibility: hidden; backface-visibility: hidden; }\n    md2-multiselect:focus { outline: none; }\n    md2-multiselect.md2-multiselect-disabled { pointer-events: none; cursor: default; }\n    md2-multiselect .md2-multiselect-container { position: relative; width: 100%; min-width: 64px; min-height: 30px; align-items: center; padding: 2px 2px 1px; border-bottom: 1px solid rgba(0, 0, 0, 0.12); box-sizing: border-box; cursor: pointer; }\n    md2-multiselect:focus .md2-multiselect-container { padding-bottom: 0; border-bottom: 2px solid #106cc8; }\n    md2-multiselect.md2-multiselect-disabled .md2-multiselect-container { color: rgba(0,0,0,0.38); border-color: transparent; background-image: linear-gradient(to right, rgba(0,0,0,0.38) 0%, rgba(0,0,0,0.38) 33%, transparent 0%); background-position: bottom -1px left 0; background-size: 4px 1px; background-repeat: repeat-x; cursor: default; }\n    md2-multiselect.md2-multiselect-disabled:focus .md2-multiselect-container { padding-bottom: 1px; border-bottom: 1px solid transparent; }\n    md2-multiselect .md2-multiselect-placeholder { color: rgba(0, 0, 0, 0.38); position: absolute; right: 26px; bottom: 100%; left: 0; color: rgba(0,0,0,0.38); max-width: 100%; padding-left: 3px; padding-right: 0; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; z-index: 1; transform: translate3d(0,26px,0) scale(1); transition: transform .4s cubic-bezier(.25,.8,.25,1); transform-origin: left top; color: rgba(0, 0, 0, 0.38); }\n    md2-multiselect:focus .md2-multiselect-placeholder { color: #2196f3; }\n    md2-multiselect:focus .md2-multiselect-placeholder .md2-placeholder-required { color: #f00; }\n    md2-multiselect:focus .md2-multiselect-placeholder,\n    md2-multiselect .md2-multiselect-placeholder.has-value { transform: translate3d(0,6px,0) scale(.75); }\n    md2-multiselect.md2-multiselect-disabled:focus .md2-multiselect-placeholder,\n    md2-multiselect.md2-multiselect-disabled:focus .md2-multiselect-placeholder .md2-placeholder-required { color: rgba(0,0,0,0.38); }\n    md2-multiselect .md2-multiselect-container .md2-multiselect-value { display: block; max-height: 80px; padding-right: 26px; overflow-y: auto; font-size: 15px; line-height: 26px; }\n    md2-multiselect .md2-multiselect-container .md2-multiselect-value-item { word-wrap: break-word; }\n    md2-multiselect .md2-multiselect-container svg { position: absolute; right: 0; top: 0; display: block; height: 100%; background: #fff; fill: currentColor; color: rgba(0,0,0,0.54); }\n    md2-multiselect .md2-multiselect-menu { position: absolute; left: 0; top: 0; display: block; z-index: 10; width: 100%; margin: 0; padding: 8px 0; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12); max-height: 256px; min-height: 48px; overflow-y: auto; -moz-transform: scale(1); -ms-transform: scale(1); -o-transform: scale(1); -webkit-transform: scale(1); transform: scale(1); background: #fff; }\n    md2-multiselect .md2-multiselect-menu .md2-option { position: relative; display: block; cursor: pointer; width: auto; -moz-transition: background 0.15s linear; -o-transition: background 0.15s linear; -webkit-transition: background 0.15s linear; transition: background 0.15s linear; padding: 0 16px 0 40px; height: 48px; line-height: 48px; }\n    md2-multiselect .md2-multiselect-menu .md2-option.active { color: #106cc8; }\n    md2-multiselect .md2-multiselect-menu .md2-option:hover, .md2-multiselect .md2-multiselect-menu .md2-option.focus { background: #eeeeee; }\n    md2-multiselect .md2-multiselect-menu .md2-option .md2-option-text { width: auto; white-space: nowrap; overflow: hidden; -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; font-size: 16px; }\n    md2-multiselect .md2-option .md2-option-icon { position: absolute; top: 14px; left: 12px; width: 16px; height: 16px; border: 2px solid rgba(0,0,0,0.54); border-radius: 2px; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; -moz-transition: 240ms; -o-transition: 240ms; -webkit-transition: 240ms; transition: 240ms; }\n    md2-multiselect .md2-option.active .md2-option-icon { -moz-transform: rotate(-45deg); -ms-transform: rotate(-45deg); -o-transform: rotate(-45deg); -webkit-transform: rotate(-45deg); transform: rotate(-45deg); height: 8px; top: 17px; border-color: #106cc8; border-top-style: none; border-right-style: none; }\n  "],
+            template: "\n    <div class=\"md2-multiselect-container\">\n      <span class=\"md2-multiselect-placeholder\" [class.has-value]=\"items.length\">\n        {{placeholder}}\n        <span class=\"md2-placeholder-required\" *ngIf=\"required\">*</span>\n      </span>\n      <div class=\"md2-multiselect-value\">\n        <div *ngFor=\"let v of items; let last = last\" class=\"md2-multiselect-value-item\">\n          <span class=\"md2-multiselect-text\">{{v.text}}</span><span *ngIf=\"!last\">,&nbsp;</span>\n        </div>\n      </div>\n      <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\">\n        <path d=\"M7 10l5 5 5-5z\" />\n      </svg>\n    </div>\n    <ul *ngIf=\"isMenuVisible\" class=\"md2-multiselect-menu\">\n      <li class=\"md2-option\" *ngFor=\"let l of list; let i = index;\" [class.active]=\"_isActive(i)\" [class.focus]=\"focusedOption === i\" (click)=\"toggleOption($event, i)\">\n        <div class=\"md2-option-icon\"></div>\n        <div class=\"md2-option-text\" [innerHtml]=\"l.text\"></div>\n      </li>\n    </ul>\n  ",
+            styles: ["md2-multiselect { position: relative; display: block; margin: 18px 0; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } md2-multiselect:focus { outline: none; } md2-multiselect.md2-multiselect-disabled { pointer-events: none; cursor: default; } md2-multiselect .md2-multiselect-container { position: relative; width: 100%; min-width: 64px; min-height: 30px; align-items: center; padding: 2px 2px 1px; border-bottom: 1px solid rgba(0, 0, 0, 0.12); box-sizing: border-box; cursor: pointer; } md2-multiselect:focus .md2-multiselect-container { padding-bottom: 0; border-bottom: 2px solid #106cc8; } md2-multiselect.md2-multiselect-disabled .md2-multiselect-container { color: rgba(0, 0, 0, 0.38); border-color: transparent; background-image: linear-gradient(to right, rgba(0, 0, 0, 0.38) 0%, rgba(0, 0, 0, 0.38) 33%, transparent 0%); background-position: bottom -1px left 0; background-size: 4px 1px; background-repeat: repeat-x; cursor: default; } md2-multiselect.md2-multiselect-disabled:focus .md2-multiselect-container { padding-bottom: 1px; border-bottom: 1px solid transparent; } md2-multiselect .md2-multiselect-placeholder { position: absolute; right: 26px; bottom: 100%; left: 0; color: rgba(0, 0, 0, 0.38); max-width: 100%; padding-left: 3px; padding-right: 0; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; z-index: 1; transform: translate3d(0, 26px, 0) scale(1); transition: transform 400ms cubic-bezier(0.25, 0.8, 0.25, 1); transform-origin: left top; } md2-multiselect:focus .md2-multiselect-placeholder { color: #2196f3; } md2-multiselect:focus .md2-multiselect-placeholder .md2-placeholder-required { color: #f00; } md2-multiselect:focus .md2-multiselect-placeholder, md2-multiselect .md2-multiselect-placeholder.has-value { transform: translate3d(0, 6px, 0) scale(0.75); } md2-multiselect.md2-multiselect-disabled:focus .md2-multiselect-placeholder, md2-multiselect.md2-multiselect-disabled:focus .md2-multiselect-placeholder .md2-placeholder-required { color: rgba(0, 0, 0, 0.38); } md2-multiselect .md2-multiselect-container .md2-multiselect-value { display: block; max-height: 80px; padding-right: 26px; overflow-y: auto; font-size: 15px; line-height: 26px; } md2-multiselect .md2-multiselect-container .md2-multiselect-value-item { word-wrap: break-word; } md2-multiselect .md2-multiselect-container svg { position: absolute; right: 0; top: 0; display: block; height: 100%; background: #fff; fill: currentColor; color: rgba(0, 0, 0, 0.54); } md2-multiselect .md2-multiselect-menu { position: absolute; left: 0; top: 0; display: block; z-index: 10; width: 100%; margin: 0; padding: 8px 0; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12); max-height: 256px; min-height: 48px; overflow-y: auto; transform: scale(1); background: #fff; } md2-multiselect .md2-multiselect-menu .md2-option { position: relative; display: block; cursor: pointer; width: auto; transition: background 150ms linear; padding: 0 16px 0 40px; height: 48px; line-height: 48px; } md2-multiselect .md2-multiselect-menu .md2-option.active { color: #106cc8; } md2-multiselect .md2-multiselect-menu .md2-option:hover, .md2-multiselect .md2-multiselect-menu .md2-option.focus { background: #eeeeee; } md2-multiselect .md2-multiselect-menu .md2-option .md2-option-text { width: auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 16px; } md2-multiselect .md2-option .md2-option-icon { position: absolute; top: 14px; left: 12px; width: 16px; height: 16px; border: 2px solid rgba(0, 0, 0, 0.54); border-radius: 2px; box-sizing: border-box; transition: 240ms; } md2-multiselect .md2-option.active .md2-option-icon { transform: rotate(-45deg); height: 8px; top: 17px; border-color: #106cc8; border-top-style: none; border-right-style: none; } /*# sourceMappingURL=multiselect.css.map */ "],
             providers: [MD2_MULTISELECT_CONTROL_VALUE_ACCESSOR],
             host: {
                 'role': 'select',
@@ -6673,7 +6666,7 @@ var Md2Select = (function () {
         this._readonly = false;
         this._required = false;
         this._disabled = false;
-        //private _multiple: boolean;
+        // private _multiple: boolean;
         this._selected = null;
         this._isInitialized = false;
         this.isOpenable = true;
@@ -6717,9 +6710,9 @@ var Md2Select = (function () {
         configurable: true
     });
     Object.defineProperty(Md2Select.prototype, "value", {
-        //@Input()
-        //get multiple(): boolean { return this._multiple; }
-        //set multiple(value) { this._multiple = coerceBooleanProperty(value); }
+        // @Input()
+        // get multiple(): boolean { return this._multiple; }
+        // set multiple(value) { this._multiple = coerceBooleanProperty(value); }
         get: function () { return this._value; },
         set: function (value) {
             if (this._value !== value) {
@@ -6778,7 +6771,7 @@ var Md2Select = (function () {
         if (o1 !== o1 && o2 !== o2) {
             return true;
         }
-        var t1 = typeof o1, t2 = typeof o2, length, key, keySet;
+        var t1 = typeof o1, t2 = typeof o2, key, keySet;
         if (t1 === t2 && t1 === 'object') {
             keySet = Object.create(null);
             for (key in o1) {
@@ -6883,7 +6876,7 @@ var Md2Select = (function () {
         }
         this.isOpenable = true;
     };
-    Md2Select.prototype.onKeyDown = function (event) {
+    Md2Select.prototype._handleKeydown = function (event) {
         if (this.disabled) {
             return;
         }
@@ -6973,10 +6966,10 @@ var Md2Select = (function () {
         if (!this.options) {
             return;
         }
-        //this.options.forEach((option: Md2Option) => {
+        // this.options.forEach((option: Md2Option) => {
         //  if (option.value === value) {
         //  }
-        //});
+        // });
         if (this._value !== value) {
             this._value = value;
             this._updateSelectedOptionValue();
@@ -7036,7 +7029,7 @@ var Md2Select = (function () {
         __metadata$32('design:type', Function), 
         __metadata$32('design:paramtypes', [Object]), 
         __metadata$32('design:returntype', void 0)
-    ], Md2Select.prototype, "onKeyDown", null);
+    ], Md2Select.prototype, "_handleKeydown", null);
     __decorate$32([
         _angular_core.HostListener('blur'), 
         __metadata$32('design:type', Function), 
@@ -7046,7 +7039,7 @@ var Md2Select = (function () {
     Md2Select = __decorate$32([
         _angular_core.Component({selector: 'md2-select',
             template: "<div class=\"md2-select-container\"> <span class=\"md2-select-placeholder\" [class.has-value]=\"selectedValue\">    {{placeholder}}  </span> <span *ngIf=\"selectedValue\" class=\"md2-select-value\" [innerHtml]=\"selectedValue\"></span> <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M7 10l5 5 5-5z\" /> </svg> </div> <div class=\"md2-select-menu\" [class.open]=\"isMenuVisible\"> <ng-content></ng-content> </div>",
-            styles: ["md2-select { position: relative; display: block; margin: 18px 0; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } md2-select:focus { outline: none; } md2-select.md2-select-disabled { pointer-events: none; cursor: default; } md2-select .md2-select-container { position: relative; width: 100%; min-width: 64px; min-height: 30px; align-items: center; padding: 2px 26px 1px 2px; border-bottom: 1px solid rgba(0, 0, 0, 0.12); box-sizing: border-box; cursor: pointer; } md2-select:focus .md2-select-container { padding-bottom: 0; border-bottom: 2px solid #106cc8; } md2-select.md2-select-disabled .md2-select-container { color: rgba(0, 0, 0, 0.38); border-color: transparent; background-image: linear-gradient(to right, rgba(0, 0, 0, 0.38) 0%, rgba(0, 0, 0, 0.38) 33%, transparent 0%); background-position: bottom -1px left 0; background-size: 4px 1px; background-repeat: repeat-x; cursor: default; } md2-select.md2-select-disabled:focus .md2-select-container { padding-bottom: 1px; border-bottom: 1px solid transparent; } md2-select .md2-select-container .md2-select-placeholder { position: absolute; right: 26px; bottom: 100%; left: 0; color: rgba(0, 0, 0, 0.38); max-width: 100%; padding-left: 3px; padding-right: 0; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; z-index: 1; transform: translate3d(0, 26px, 0) scale(1); transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); transform-origin: left top; color: rgba(0, 0, 0, 0.38); } [aria-required=true] .md2-select-placeholder::after { content: '*'; } /*md2-select:focus:not(.md-select-disabled) { color: $primary; border-bottom: 1px solid $primary; } .ng-invalid.ng-touched:not(.md2-select-disabled) { color: $warn; border-bottom: 1px solid $warn; }*/ md2-select:focus .md2-select-placeholder { color: #2196f3; } md2-select:focus .md2-select-placeholder, md2-select .md2-select-placeholder.has-value { transform: translate3d(0, 6px, 0) scale(0.75); } md2-select.md2-select-disabled:focus .md2-select-placeholder, md2-select .md2-select-container .md2-select-value { display: block; font-size: 15px; line-height: 26px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } md2-select .md2-select-container svg { position: absolute; right: 0; top: 2px; display: block; fill: currentColor; color: rgba(0, 0, 0, 0.54); } md2-select .md2-select-menu { position: absolute; left: 0; top: 0; display: none; z-index: 10; flex-direction: column; width: 100%; margin: 0; padding: 8px 0; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4); max-height: 256px; min-height: 48px; overflow-y: auto; transform: scale(1); background: #fff; } md2-select .md2-select-menu.open { display: block; } /*# sourceMappingURL=select.css.map */ "],
+            styles: ["md2-select { position: relative; display: block; margin: 18px 0; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } md2-select:focus { outline: none; } md2-select.md2-select-disabled { pointer-events: none; cursor: default; } md2-select .md2-select-container { position: relative; width: 100%; min-width: 64px; min-height: 30px; align-items: center; padding: 2px 26px 1px 2px; border-bottom: 1px solid rgba(0, 0, 0, 0.12); box-sizing: border-box; cursor: pointer; } md2-select:focus .md2-select-container { padding-bottom: 0; border-bottom: 2px solid #106cc8; } md2-select.md2-select-disabled .md2-select-container { color: rgba(0, 0, 0, 0.38); border-color: transparent; background-image: linear-gradient(to right, rgba(0, 0, 0, 0.38) 0%, rgba(0, 0, 0, 0.38) 33%, transparent 0%); background-position: bottom -1px left 0; background-size: 4px 1px; background-repeat: repeat-x; cursor: default; } md2-select.md2-select-disabled:focus .md2-select-container { padding-bottom: 1px; border-bottom: 1px solid transparent; } md2-select .md2-select-container .md2-select-placeholder { position: absolute; right: 26px; bottom: 100%; left: 0; color: rgba(0, 0, 0, 0.38); max-width: 100%; padding-left: 3px; padding-right: 0; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; z-index: 1; transform: translate3d(0, 26px, 0) scale(1); transition: transform 400ms cubic-bezier(0.25, 0.8, 0.25, 1); transform-origin: left top; } [aria-required=true] .md2-select-placeholder::after { content: '*'; } /*md2-select:focus:not(.md-select-disabled) { color: $primary; border-bottom: 1px solid $primary; } .ng-invalid.ng-touched:not(.md2-select-disabled) { color: $warn; border-bottom: 1px solid $warn; }*/ md2-select:focus .md2-select-placeholder { color: #2196f3; } md2-select:focus .md2-select-placeholder, md2-select .md2-select-placeholder.has-value { transform: translate3d(0, 6px, 0) scale(0.75); } md2-select.md2-select-disabled:focus .md2-select-placeholder, md2-select .md2-select-container .md2-select-value { display: block; font-size: 15px; line-height: 26px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } md2-select .md2-select-container svg { position: absolute; right: 0; top: 2px; display: block; fill: currentColor; color: rgba(0, 0, 0, 0.54); } md2-select .md2-select-menu { position: absolute; left: 0; top: 0; display: none; z-index: 10; flex-direction: column; width: 100%; margin: 0; padding: 8px 0; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4); max-height: 256px; min-height: 48px; overflow-y: auto; transform: scale(1); background: #fff; } md2-select .md2-select-menu.open { display: block; } /*# sourceMappingURL=select.css.map */ "],
             host: {
                 'role': 'select',
                 '[tabindex]': 'disabled ? -1 : tabindex',
@@ -7130,12 +7123,12 @@ var Md2Option = (function () {
             event.stopPropagation();
             return;
         }
-        //if (this.select.multiple) {
-        //} else {
+        // if (this.select.multiple) {
+        // } else {
         this.select.selected = this;
         this.select.touch();
         this.select._onBlur();
-        //}
+        // }
     };
     __decorate$32([
         _angular_core.HostBinding('class.md2-option-focused'), 
@@ -7530,7 +7523,7 @@ var Md2Tabs = (function () {
     Md2Tabs = __decorate$33([
         _angular_core.Component({selector: 'md2-tabs',
             template: "\n    <div class=\"md2-tabs-header-wrapper\">\n      <div role=\"button\" class=\"md2-prev-button\" [class.disabled]=\"!canPageBack()\" *ngIf=\"shouldPaginate\" (click)=\"previousPage()\">\n        <em class=\"prev-icon\">Prev</em>\n      </div>\n      <div role=\"button\" class=\"md2-next-button\" [class.disabled]=\"!canPageForward()\" *ngIf=\"shouldPaginate\" (click)=\"nextPage()\">\n        <em class=\"next-icon\">Next</em>\n      </div>\n      <div class=\"md2-tabs-canvas\" [class.md2-paginated]=\"shouldPaginate\" role=\"tablist\" tabindex=\"0\" (keydown.arrowRight)=\"focusNextTab()\" (keydown.arrowLeft)=\"focusPreviousTab()\" (keydown.enter)=\"selectedIndex = focusIndex\" (mousewheel)=\"scroll($event)\">\n        <div class=\"md2-tabs-header\" [style.marginLeft]=\"-offsetLeft + 'px'\">\n          <div class=\"md2-tab-label\" role=\"tab\" *ngFor=\"let tab of tabs; let i = index\" [class.focus]=\"focusIndex === i\" [class.active]=\"selectedIndex === i\" [class.disabled]=\"tab.disabled\" (click)=\"focusIndex = selectedIndex = i\">\n            <span [md2Transclude]=\"tab.labelRef\">{{tab.label}}</span>\n          </div>\n          <div class=\"md2-tab-ink-bar\" [style.left]=\"inkBarLeft\" [style.width]=\"inkBarWidth\"></div>\n        </div>\n      </div>\n    </div>\n    <div class=\"md2-tabs-body-wrapper\">\n      <ng-content></ng-content>\n    </div>\n  ",
-            styles: ["\n    md2-tabs { position: relative; overflow: hidden; display: block; margin: 0; border: 1px solid #e1e1e1; border-radius: 2px; }\n    .md2-tabs-header-wrapper { position: relative; display: block; height: 48px; background: white; border-width: 0 0 1px; border-style: solid; border-color: rgba(0,0,0,0.12); display: block; margin: 0; padding: 0; list-style: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }\n    .md2-tabs-header-wrapper:after { content: ''; display: table; clear: both; }\n    .md2-prev-button,\n    .md2-next-button { position: absolute; top: 0; height: 100%; width: 32px; padding: 8px 0; z-index: 2; cursor: pointer; }\n    .md2-prev-button { left: 0; }\n    .md2-next-button { right: 0; }\n    .md2-prev-button.disabled,\n    .md2-next-button.disabled { opacity: .25; cursor: default; }\n    .md2-prev-button .prev-icon,\n    .md2-next-button .next-icon { display: block; width: 12px; height: 12px; font-size: 0; border-width: 0 0 2px 2px; border-style: solid; border-color: #757575; border-radius: 1px; transform: rotate(45deg); margin: 10px; }\n    .md2-next-button .next-icon { border-width: 2px 2px 0 0; }\n    .md2-tabs-canvas { position: relative; height: 100%; overflow: hidden; display: block; outline: none; }\n    .md2-tabs-canvas.md2-paginated { margin: 0 32px; }\n    .md2-tabs-header { position: relative; display: inline-block; height: 100%; white-space: nowrap; -moz-transition: 0.5s cubic-bezier(0.35,0,0.25,1); -o-transition: 0.5s cubic-bezier(0.35,0,0.25,1); -webkit-transition: 0.5s cubic-bezier(0.35,0,0.25,1); transition: 0.5s cubic-bezier(0.35,0,0.25,1); }\n    .md2-tab-label { position: relative; height: 100%; color: rgba(0,0,0,0.54); font-size: 14px; text-align: center; line-height: 24px; padding: 12px 24px; -moz-transition: background-color .35s cubic-bezier(.35,0,.25,1); -o-transition: background-color .35s cubic-bezier(.35,0,.25,1); -webkit-transition: background-color .35s cubic-bezier(.35,0,.25,1); transition: background-color .35s cubic-bezier(.35,0,.25,1); cursor: pointer; white-space: nowrap; text-transform: uppercase; display: inline-block; font-weight: 500; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; overflow: hidden; -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; }\n    .md2-tab-label.active { color: rgb(16,108,200); }\n    .md2-tabs-canvas:focus .md2-tab-label.focus { background: rgba(0,0,0,0.05); }\n    .md2-tab-label.disabled { color: rgba(0,0,0,0.26); pointer-events: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-user-drag: none; opacity: 0.5; cursor: default; }\n    .md2-tab-ink-bar { position: absolute; bottom: 0; height: 2px; background: rgb(255,82,82); transition: .25s cubic-bezier(.35,0,.25,1); }\n    .md2-tabs-body-wrapper { position: relative; min-height: 0; display: block; clear: both; }\n    md2-tab { padding: 16px; display: none; position: relative; }\n    md2-tab.active { display: block; position: relative; }\n  "],
+            styles: ["md2-tabs { position: relative; overflow: hidden; display: block; margin: 0; border: 1px solid #e1e1e1; border-radius: 2px; } .md2-tabs-header-wrapper { position: relative; display: block; height: 48px; background: white; border-width: 0 0 1px; border-style: solid; border-color: rgba(0, 0, 0, 0.12); margin: 0; padding: 0; list-style: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } .md2-tabs-header-wrapper::after { content: ''; display: table; clear: both; } .md2-prev-button, .md2-next-button { position: absolute; top: 0; height: 100%; width: 32px; padding: 8px 0; z-index: 2; cursor: pointer; } .md2-prev-button.disabled, .md2-next-button.disabled { opacity: 0.25; cursor: default; } .md2-prev-button { left: 0; } .md2-next-button { right: 0; } .md2-prev-button .prev-icon, .md2-next-button .next-icon { display: block; width: 12px; height: 12px; font-size: 0; border-width: 0 0 2px 2px; border-style: solid; border-color: #757575; border-radius: 1px; transform: rotate(45deg); margin: 10px; } .md2-next-button .next-icon { border-width: 2px 2px 0 0; } .md2-tabs-canvas { position: relative; height: 100%; overflow: hidden; display: block; outline: none; } .md2-tabs-canvas.md2-paginated { margin: 0 32px; } .md2-tabs-header { position: relative; display: inline-block; height: 100%; white-space: nowrap; transition: 500ms cubic-bezier(0.35, 0, 0.25, 1); } .md2-tab-label { position: relative; height: 100%; color: rgba(0, 0, 0, 0.54); font-size: 14px; text-align: center; line-height: 24px; padding: 12px 24px; transition: background-color 350ms cubic-bezier(0.35, 0, 0.25, 1); cursor: pointer; white-space: nowrap; text-transform: uppercase; display: inline-block; font-weight: 500; box-sizing: border-box; overflow: hidden; -ms-text-overflow: ellipsis; text-overflow: ellipsis; } .md2-tab-label.active { color: #106cc8; } .md2-tabs-canvas:focus .md2-tab-label.focus { background: rgba(0, 0, 0, 0.05); } .md2-tab-label.disabled { color: rgba(0, 0, 0, 0.26); pointer-events: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-user-drag: none; opacity: 0.5; cursor: default; } .md2-tab-ink-bar { position: absolute; bottom: 0; height: 2px; background: #ff5252; transition: 250ms cubic-bezier(0.35, 0, 0.25, 1); } .md2-tabs-body-wrapper { position: relative; min-height: 0; display: block; clear: both; } md2-tab { padding: 16px; display: none; position: relative; } md2-tab.active { display: block; position: relative; } /*# sourceMappingURL=tabs.css.map */ "],
             host: {
                 '[class]': 'class',
                 '(window:resize)': 'onWindowResize($event)'
@@ -7614,7 +7607,7 @@ var Md2Tags = (function () {
         this.valueKey = null;
         this.selectAndFocusTagSafe = function (index) {
             if (!this.items.length) {
-                this.selectTag(-1);
+                this._selectTag(-1);
                 this.onFocus();
                 return;
             }
@@ -7623,7 +7616,7 @@ var Md2Tags = (function () {
             }
             index = Math.max(index, 0);
             index = Math.min(index, this.items.length - 1);
-            this.selectTag(index);
+            this._selectTag(index);
         };
     }
     Md2Tags.prototype.ngAfterContentInit = function () { this._isInitialized = true; };
@@ -7687,7 +7680,7 @@ var Md2Tags = (function () {
         if (o1 !== o1 && o2 !== o2) {
             return true;
         }
-        var t1 = typeof o1, t2 = typeof o2, length, key, keySet;
+        var t1 = typeof o1, t2 = typeof o2, key, keySet;
         if (t1 === t2 && t1 === 'object') {
             keySet = Object.create(null);
             for (key in o1) {
@@ -7744,7 +7737,7 @@ var Md2Tags = (function () {
      * input key listener
      * @param event
      */
-    Md2Tags.prototype.inputKeydown = function (event) {
+    Md2Tags.prototype._handleInputKeydown = function (event) {
         var _this = this;
         // Backspace
         if (event.keyCode === 8 && !this.tagBuffer) {
@@ -7823,7 +7816,7 @@ var Md2Tags = (function () {
             _this.filterMatches(new RegExp(_this.tagBuffer, 'ig'));
         }, 10);
     };
-    Md2Tags.prototype.onKeydown = function (event) {
+    Md2Tags.prototype._handleKeydown = function (event) {
         if (this.disabled || this.tagBuffer) {
             return;
         }
@@ -7887,7 +7880,7 @@ var Md2Tags = (function () {
         this.tagBuffer = '';
         this.updateValue();
     };
-    Md2Tags.prototype.removeTagAndFocusInput = function (index) {
+    Md2Tags.prototype._removeTagAndFocusInput = function (index) {
         this.removeTag(index);
         this.onFocus();
     };
@@ -7914,7 +7907,7 @@ var Md2Tags = (function () {
      * select tag
      * @param index of select tag
      */
-    Md2Tags.prototype.selectTag = function (index) {
+    Md2Tags.prototype._selectTag = function (index) {
         if (index >= -1 && index <= this.items.length) {
             this.selectedTag = index;
         }
@@ -7923,15 +7916,15 @@ var Md2Tags = (function () {
         this.element.nativeElement.querySelector('input').focus();
         this.resetselectedTag();
     };
-    Md2Tags.prototype.onInputFocus = function () {
+    Md2Tags.prototype._onInputFocus = function () {
         this.inputFocused = true;
         this.resetselectedTag();
     };
-    Md2Tags.prototype.onInputBlur = function () {
+    Md2Tags.prototype._onInputBlur = function () {
         this.inputFocused = false;
     };
-    Md2Tags.prototype.listEnter = function () { this.noBlur = true; };
-    Md2Tags.prototype.listLeave = function () { this.noBlur = false; };
+    Md2Tags.prototype._listEnter = function () { this.noBlur = true; };
+    Md2Tags.prototype._listLeave = function () { this.noBlur = false; };
     /**
      * update suggestion menu with filter
      * @param query
@@ -8007,7 +8000,7 @@ var Md2Tags = (function () {
         __metadata$34('design:type', Function), 
         __metadata$34('design:paramtypes', [KeyboardEvent]), 
         __metadata$34('design:returntype', void 0)
-    ], Md2Tags.prototype, "onKeydown", null);
+    ], Md2Tags.prototype, "_handleKeydown", null);
     __decorate$34([
         _angular_core.HostListener('focus'), 
         __metadata$34('design:type', Function), 
@@ -8016,8 +8009,8 @@ var Md2Tags = (function () {
     ], Md2Tags.prototype, "onFocus", null);
     Md2Tags = __decorate$34([
         _angular_core.Component({selector: 'md2-tags',
-            template: "\n    <div class=\"md2-tags-container\">\n      <span *ngFor=\"let t of items; let i = index;\" class=\"md2-tag\" [class.active]=\"selectedTag === i\" (click)=\"selectTag(i)\">\n        <span class=\"md2-tag-text\">{{t.text}}</span>\n        <svg (click)=\"removeTagAndFocusInput(i)\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\">\n          <path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\" />\n        </svg>\n      </span>\n      <span class=\"md2-tag-add\">\n        <input [(ngModel)]=\"tagBuffer\" type=\"text\" tabs=\"false\" autocomplete=\"off\" tabindex=\"-1\" [disabled]=\"disabled\" class=\"md2-tags-input\" [placeholder]=\"placeholder\" (focus)=\"onInputFocus()\" (blur)=\"onInputBlur()\" (keydown)=\"inputKeydown($event)\" (change)=\"$event.stopPropagation()\" />\n        <ul *ngIf=\"isMenuVisible\" class=\"md2-tags-menu\" (mouseenter)=\"listEnter()\" (mouseleave)=\"listLeave()\">\n          <li class=\"md2-option\" *ngFor=\"let l of list; let i = index;\" [class.focused]=\"focusedTag === i\" (click)=\"addTag($event, i)\">\n            <span class=\"md2-option-text\" [innerHtml]=\"l.text | highlight:tagBuffer\"></span>\n          </li>\n        </ul>\n      </span>\n    </div>\n  ",
-            styles: ["\n    md2-tags { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -moz-backface-visibility: hidden; -webkit-backface-visibility: hidden; backface-visibility: hidden; }\n    md2-tags:focus { outline: none; }\n    md2-tags .md2-tags-container { position: relative; display: block; max-width: 100%; padding: 2px 3px 8px; border-bottom: 1px solid rgba(0, 0, 0, 0.38); -moz-box-sizing: content-box; -webkit-box-sizing: content-box; box-sizing: content-box; min-width: 64px; min-height: 26px; cursor: text; }\n    md2-tags .md2-tags-container:before, md2-tags .md2-tags-container:after { display: table; content: \" \"; }\n    md2-tags .md2-tags-container:after { clear: both; }\n    md2-tags.focus .md2-tags-container { padding-bottom: 7px; border-bottom: 2px solid #106cc8; }\n    md2-tags.md2-tags-disabled .md2-tags-container { color: rgba(0,0,0,0.38); cursor: default; }\n    md2-tags.md2-tags-disabled.focus .md2-tags-container { padding-bottom: 8px; border-bottom: 1px solid rgba(0, 0, 0, 0.38); }\n    md2-tags .md2-tags-container .md2-tag { position: relative; cursor: default; border-radius: 16px; display: block; height: 32px; line-height: 32px; margin: 8px 8px 0 0; padding: 0 26px 0 12px; float: left; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; max-width: 100%; background: rgb(224,224,224); color: rgb(66,66,66); white-space: nowrap; overflow: hidden; -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; }\n    md2-tags .md2-tags-container .md2-tag.active { background: #106cc8; color: rgba(255,255,255,0.87); }\n    md2-tags .md2-tags-container .md2-tag svg { position: absolute; top: 4px; right: 2px; cursor: pointer; display: inline-block; overflow: hidden;fill: currentColor; color: rgba(0,0,0,0.54); }\n    md2-tags .md2-tag.active svg { color: rgba(255,255,255,0.87); }\n    md2-tags .md2-tag-add { position: relative; display: inline-block; }\n    md2-tags input { border: 0; outline: 0; margin-top: 8px; height: 32px; line-height: 32px; padding: 0; color: rgba(0,0,0,0.87); background: 0 0; }\n    md2-tags .md2-tags-container .md2-tags-placeholder { color: rgba(0, 0, 0, 0.38); }\n    md2-tags .md2-tags-menu { position: absolute; left: 0; top: 100%; display: block; z-index: 10; -ms-flex-direction: column; -webkit-flex-direction: column; flex-direction: column; width: 100%; margin: 6px 0 0; padding: 8px 0; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12); max-height: 256px; min-height: 48px; overflow-y: auto; -moz-transform: scale(1); -ms-transform: scale(1); -o-transform: scale(1); -webkit-transform: scale(1); transform: scale(1); background: #fff; }\n    md2-tags .md2-tags-menu .md2-option { cursor: pointer; position: relative; display: block; color: #212121; align-items: center; width: auto; -moz-transition: background 0.15s linear; -o-transition: background 0.15s linear; -webkit-transition: background 0.15s linear; transition: background 0.15s linear; padding: 0 16px; height: 48px; line-height: 48px; }\n    md2-tags .md2-tags-menu .md2-option:hover, md2-tags .md2-tags-menu .md2-option.focused { background: #eeeeee; }\n    md2-tags .md2-tags-menu .md2-option .md2-option-text { width: auto; white-space: nowrap; overflow: hidden; -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; font-size: 16px; }\n    md2-tags .highlight { color: #757575; }\n  "],
+            template: "\n    <div class=\"md2-tags-container\">\n      <span *ngFor=\"let t of items; let i = index;\" class=\"md2-tag\" [class.active]=\"selectedTag === i\" (click)=\"_selectTag(i)\">\n        <span class=\"md2-tag-text\">{{t.text}}</span>\n        <svg (click)=\"_removeTagAndFocusInput(i)\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\">\n          <path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\" />\n        </svg>\n      </span>\n      <span class=\"md2-tag-add\">\n        <input [(ngModel)]=\"tagBuffer\" type=\"text\" tabs=\"false\" autocomplete=\"off\" tabindex=\"-1\" [disabled]=\"disabled\" class=\"md2-tags-input\" [placeholder]=\"placeholder\" (focus)=\"_onInputFocus()\" (blur)=\"_onInputBlur()\" (keydown)=\"_handleInputKeydown($event)\" (change)=\"$event.stopPropagation()\" />\n        <ul *ngIf=\"isMenuVisible\" class=\"md2-tags-menu\" (mouseenter)=\"_listEnter()\" (mouseleave)=\"_listLeave()\">\n          <li class=\"md2-option\" *ngFor=\"let l of list; let i = index;\" [class.focused]=\"focusedTag === i\" (click)=\"addTag($event, i)\">\n            <span class=\"md2-option-text\" [innerHtml]=\"l.text | highlight:tagBuffer\"></span>\n          </li>\n        </ul>\n      </span>\n    </div>\n  ",
+            styles: ["md2-tags { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } md2-tags:focus { outline: none; } md2-tags .md2-tags-container { position: relative; display: block; max-width: 100%; padding: 2px 3px 8px; border-bottom: 1px solid rgba(0, 0, 0, 0.38); box-sizing: content-box; min-width: 64px; min-height: 26px; cursor: text; } md2-tags .md2-tags-container::before, md2-tags .md2-tags-container::after { display: table; content: ' '; } md2-tags .md2-tags-container::after { clear: both; } md2-tags.focus .md2-tags-container { padding-bottom: 7px; border-bottom: 2px solid #106cc8; } md2-tags.md2-tags-disabled .md2-tags-container { color: rgba(0, 0, 0, 0.38); cursor: default; } md2-tags.md2-tags-disabled.focus .md2-tags-container { padding-bottom: 8px; border-bottom: 1px solid rgba(0, 0, 0, 0.38); } md2-tags .md2-tags-container .md2-tag { position: relative; cursor: default; border-radius: 16px; display: block; height: 32px; line-height: 32px; margin: 8px 8px 0 0; padding: 0 26px 0 12px; float: left; box-sizing: border-box; max-width: 100%; background: #e0e0e0; color: #424242; white-space: nowrap; overflow: hidden; -ms-text-overflow: ellipsis; text-overflow: ellipsis; } md2-tags .md2-tags-container .md2-tag.active { background: #106cc8; color: rgba(255, 255, 255, 0.87); } md2-tags .md2-tags-container .md2-tag svg { position: absolute; top: 4px; right: 2px; cursor: pointer; display: inline-block; overflow: hidden; fill: currentColor; color: rgba(0, 0, 0, 0.54); } md2-tags .md2-tag.active svg { color: rgba(255, 255, 255, 0.87); } md2-tags .md2-tag-add { position: relative; display: inline-block; } md2-tags input { border: 0; outline: 0; margin-top: 8px; height: 32px; line-height: 32px; padding: 0; color: rgba(0, 0, 0, 0.87); background: 0 0; } md2-tags .md2-tags-container .md2-tags-placeholder { color: rgba(0, 0, 0, 0.38); } md2-tags .md2-tags-menu { position: absolute; left: 0; top: 100%; display: block; z-index: 10; flex-direction: column; width: 100%; margin: 6px 0 0; padding: 8px 0; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12); max-height: 256px; min-height: 48px; overflow-y: auto; transform: scale(1); background: #fff; } md2-tags .md2-tags-menu .md2-option { cursor: pointer; position: relative; display: block; color: #212121; align-items: center; width: auto; transition: background 150ms linear; padding: 0 16px; height: 48px; line-height: 48px; } md2-tags .md2-tags-menu .md2-option:hover, md2-tags .md2-tags-menu .md2-option.focused { background: #eeeeee; } md2-tags .md2-tags-menu .md2-option .md2-option-text { width: auto; white-space: nowrap; overflow: hidden; -ms-text-overflow: ellipsis; text-overflow: ellipsis; font-size: 16px; } md2-tags .highlight { color: #757575; } /*# sourceMappingURL=tags.css.map */ "],
             host: {
                 'role': 'tags',
                 '[id]': 'id',
@@ -8118,7 +8111,7 @@ var Md2ToastComponent = (function () {
         _angular_core.Component({
             selector: 'md2-toast',
             template: "\n    <div class=\"md2-toast-wrapper\">\n      <div *ngFor=\"let toast of toasts\" class=\"md2-toast\" [class.in]=\"toast.isVisible\" (click)=\"remove(toast.id)\">{{toast.message}}</div>\n    </div>\n  ",
-            styles: ["\n    .md2-toast-wrapper { position: fixed; top: 0; right: 0; z-index: 1060; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; cursor: default; overflow: hidden; min-width: 304px; max-width: 100%; padding: 8px; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }\n    .md2-toast { position: relative; padding: 14px 24px; margin-bottom: 5px; display: block; margin-top: -53px; opacity: 0; background-color: #323232; color: #fafafa; box-shadow: 0 2px 5px 0 rgba(0,0,0,.26); border-radius: 2px; font-size: 14px; overflow: hidden; -ms-word-wrap: break-word; word-wrap: break-word; transition: all .25s linear; }\n    .md2-toast.in { margin-top: 0; opacity: 1; }\n  "],
+            styles: [".md2-toast-wrapper { position: fixed; top: 0; right: 0; z-index: 1060; box-sizing: border-box; cursor: default; overflow: hidden; min-width: 304px; max-width: 100%; padding: 8px; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } .md2-toast { position: relative; padding: 14px 24px; margin-bottom: 5px; display: block; margin-top: -53px; opacity: 0; background-color: #323232; color: #fafafa; box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26); border-radius: 2px; font-size: 14px; overflow: hidden; -ms-word-wrap: break-word; word-wrap: break-word; transition: all 250ms linear; } .md2-toast.in { margin-top: 0; opacity: 1; } /*# sourceMappingURL=toast.css.map */ "],
             encapsulation: _angular_core.ViewEncapsulation.None,
         }), 
         __metadata$36('design:paramtypes', [])
@@ -8454,7 +8447,7 @@ var Md2TooltipComponent = (function () {
     Md2TooltipComponent = __decorate$37([
         _angular_core.Component({selector: 'md2-tooltip',
             template: "\n    <div class=\"md2-tooltip-container\" [ngStyle]=\"{top: top, left: left}\">\n      <div class=\"md2-tooltip {{position}}\" [class.visible]=\"_isVisible\">{{message}}</div>\n    </div>\n  ",
-            styles: ["md2-tooltip { pointer-events: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } md2-tooltip .md2-tooltip-container { position: fixed; display: block; overflow: hidden; z-index: 1070; } md2-tooltip .md2-tooltip { max-width: 200px; margin: 14px; padding: 4px 12px; font-family: \"\"; color: white; font-size: 10px; word-wrap: break-word; background-color: rgba(97, 97, 97, 0.9); border-radius: 2px; line-height: 1.5; opacity: 0; transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1); transform-origin: center top; transform: scale(0); } md2-tooltip .md2-tooltip.before { transform-origin: center right; } md2-tooltip .md2-tooltip.after { transform-origin: center left; } md2-tooltip .md2-tooltip.above { transform-origin: center bottom; } md2-tooltip .md2-tooltip.visible { opacity: 1; transform: scale(1); } /*# sourceMappingURL=tooltip.css.map */ "],
+            styles: ["md2-tooltip { pointer-events: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } md2-tooltip .md2-tooltip-container { position: fixed; display: block; overflow: hidden; z-index: 1070; } md2-tooltip .md2-tooltip { max-width: 200px; margin: 14px; padding: 4px 12px; font-family: \"\"; color: white; font-size: 10px; word-wrap: break-word; background-color: rgba(97, 97, 97, 0.9); border-radius: 2px; line-height: 1.5; opacity: 0; transition: all 200ms cubic-bezier(0.25, 0.8, 0.25, 1); transform-origin: center top; transform: scale(0); } md2-tooltip .md2-tooltip.before { transform-origin: center right; } md2-tooltip .md2-tooltip.after { transform-origin: center left; } md2-tooltip .md2-tooltip.above { transform-origin: center bottom; } md2-tooltip .md2-tooltip.visible { opacity: 1; transform: scale(1); } /*# sourceMappingURL=tooltip.css.map */ "],
             host: {
                 'role': 'tooltip',
             },

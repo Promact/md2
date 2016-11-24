@@ -6,6 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { Pipe } from '@angular/core';
+import { Json } from '../facade/lang';
 /**
  * @ngModule CommonModule
  * @whatItDoes Converts value into JSON string.
@@ -22,7 +23,7 @@ import { Pipe } from '@angular/core';
 export var JsonPipe = (function () {
     function JsonPipe() {
     }
-    JsonPipe.prototype.transform = function (value) { return JSON.stringify(value, null, 2); };
+    JsonPipe.prototype.transform = function (value) { return Json.stringify(value); };
     JsonPipe.decorators = [
         { type: Pipe, args: [{ name: 'json', pure: false },] },
     ];

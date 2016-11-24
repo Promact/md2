@@ -1,5 +1,5 @@
 /**
- * @license Angular v2.2.1
+ * @license Angular v2.0.0
  * (c) 2010-2016 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -38,6 +38,278 @@
     _global.assert = function assert(condition) {
         // TODO: to be fixed properly via #2830, noop for now
     };
+    function isPresent(obj) {
+        return obj !== undefined && obj !== null;
+    }
+    function isBlank(obj) {
+        return obj === undefined || obj === null;
+    }
+    function isArray(obj) {
+        return Array.isArray(obj);
+    }
+    var NumberWrapper = (function () {
+        function NumberWrapper() {
+        }
+        NumberWrapper.toFixed = function (n, fractionDigits) { return n.toFixed(fractionDigits); };
+        NumberWrapper.equal = function (a, b) { return a === b; };
+        NumberWrapper.parseIntAutoRadix = function (text) {
+            var result = parseInt(text);
+            if (isNaN(result)) {
+                throw new Error('Invalid integer literal when parsing ' + text);
+            }
+            return result;
+        };
+        NumberWrapper.parseInt = function (text, radix) {
+            if (radix == 10) {
+                if (/^(\-|\+)?[0-9]+$/.test(text)) {
+                    return parseInt(text, radix);
+                }
+            }
+            else if (radix == 16) {
+                if (/^(\-|\+)?[0-9ABCDEFabcdef]+$/.test(text)) {
+                    return parseInt(text, radix);
+                }
+            }
+            else {
+                var result = parseInt(text, radix);
+                if (!isNaN(result)) {
+                    return result;
+                }
+            }
+            throw new Error('Invalid integer literal when parsing ' + text + ' in base ' + radix);
+        };
+        Object.defineProperty(NumberWrapper, "NaN", {
+            get: function () { return NaN; },
+            enumerable: true,
+            configurable: true
+        });
+        NumberWrapper.isNumeric = function (value) { return !isNaN(value - parseFloat(value)); };
+        NumberWrapper.isNaN = function (value) { return isNaN(value); };
+        NumberWrapper.isInteger = function (value) { return Number.isInteger(value); };
+        return NumberWrapper;
+    }());
+
+    var Map$1 = _global.Map;
+    var Set = _global.Set;
+    // Safari and Internet Explorer do not support the iterable parameter to the
+    // Map constructor.  We work around that by manually adding the items.
+    var createMapFromPairs = (function () {
+        try {
+            if (new Map$1([[1, 2]]).size === 1) {
+                return function createMapFromPairs(pairs) { return new Map$1(pairs); };
+            }
+        }
+        catch (e) {
+        }
+        return function createMapAndPopulateFromPairs(pairs) {
+            var map = new Map$1();
+            for (var i = 0; i < pairs.length; i++) {
+                var pair = pairs[i];
+                map.set(pair[0], pair[1]);
+            }
+            return map;
+        };
+    })();
+    var createMapFromMap = (function () {
+        try {
+            if (new Map$1(new Map$1())) {
+                return function createMapFromMap(m) { return new Map$1(m); };
+            }
+        }
+        catch (e) {
+        }
+        return function createMapAndPopulateFromMap(m) {
+            var map = new Map$1();
+            m.forEach(function (v, k) { map.set(k, v); });
+            return map;
+        };
+    })();
+    var _clearValues = (function () {
+        if ((new Map$1()).keys().next) {
+            return function _clearValues(m) {
+                var keyIterator = m.keys();
+                var k;
+                while (!((k = keyIterator.next()).done)) {
+                    m.set(k.value, null);
+                }
+            };
+        }
+        else {
+            return function _clearValuesWithForeEach(m) {
+                m.forEach(function (v, k) { m.set(k, null); });
+            };
+        }
+    })();
+    // Safari doesn't implement MapIterator.next(), which is used is Traceur's polyfill of Array.from
+    // TODO(mlaval): remove the work around once we have a working polyfill of Array.from
+    var _arrayFromMap = (function () {
+        try {
+            if ((new Map$1()).values().next) {
+                return function createArrayFromMap(m, getValues) {
+                    return getValues ? Array.from(m.values()) : Array.from(m.keys());
+                };
+            }
+        }
+        catch (e) {
+        }
+        return function createArrayFromMapWithForeach(m, getValues) {
+            var res = ListWrapper.createFixedSize(m.size), i = 0;
+            m.forEach(function (v, k) {
+                res[i] = getValues ? v : k;
+                i++;
+            });
+            return res;
+        };
+    })();
+    var ListWrapper = (function () {
+        function ListWrapper() {
+        }
+        // JS has no way to express a statically fixed size list, but dart does so we
+        // keep both methods.
+        ListWrapper.createFixedSize = function (size) { return new Array(size); };
+        ListWrapper.createGrowableSize = function (size) { return new Array(size); };
+        ListWrapper.clone = function (array) { return array.slice(0); };
+        ListWrapper.forEachWithIndex = function (array, fn) {
+            for (var i = 0; i < array.length; i++) {
+                fn(array[i], i);
+            }
+        };
+        ListWrapper.first = function (array) {
+            if (!array)
+                return null;
+            return array[0];
+        };
+        ListWrapper.last = function (array) {
+            if (!array || array.length == 0)
+                return null;
+            return array[array.length - 1];
+        };
+        ListWrapper.indexOf = function (array, value, startIndex) {
+            if (startIndex === void 0) { startIndex = 0; }
+            return array.indexOf(value, startIndex);
+        };
+        ListWrapper.contains = function (list, el) { return list.indexOf(el) !== -1; };
+        ListWrapper.reversed = function (array) {
+            var a = ListWrapper.clone(array);
+            return a.reverse();
+        };
+        ListWrapper.concat = function (a, b) { return a.concat(b); };
+        ListWrapper.insert = function (list, index, value) { list.splice(index, 0, value); };
+        ListWrapper.removeAt = function (list, index) {
+            var res = list[index];
+            list.splice(index, 1);
+            return res;
+        };
+        ListWrapper.removeAll = function (list, items) {
+            for (var i = 0; i < items.length; ++i) {
+                var index = list.indexOf(items[i]);
+                list.splice(index, 1);
+            }
+        };
+        ListWrapper.remove = function (list, el) {
+            var index = list.indexOf(el);
+            if (index > -1) {
+                list.splice(index, 1);
+                return true;
+            }
+            return false;
+        };
+        ListWrapper.clear = function (list) { list.length = 0; };
+        ListWrapper.isEmpty = function (list) { return list.length == 0; };
+        ListWrapper.fill = function (list, value, start, end) {
+            if (start === void 0) { start = 0; }
+            if (end === void 0) { end = null; }
+            list.fill(value, start, end === null ? list.length : end);
+        };
+        ListWrapper.equals = function (a, b) {
+            if (a.length != b.length)
+                return false;
+            for (var i = 0; i < a.length; ++i) {
+                if (a[i] !== b[i])
+                    return false;
+            }
+            return true;
+        };
+        ListWrapper.slice = function (l, from, to) {
+            if (from === void 0) { from = 0; }
+            if (to === void 0) { to = null; }
+            return l.slice(from, to === null ? undefined : to);
+        };
+        ListWrapper.splice = function (l, from, length) { return l.splice(from, length); };
+        ListWrapper.sort = function (l, compareFn) {
+            if (isPresent(compareFn)) {
+                l.sort(compareFn);
+            }
+            else {
+                l.sort();
+            }
+        };
+        ListWrapper.toString = function (l) { return l.toString(); };
+        ListWrapper.toJSON = function (l) { return JSON.stringify(l); };
+        ListWrapper.maximum = function (list, predicate) {
+            if (list.length == 0) {
+                return null;
+            }
+            var solution = null;
+            var maxValue = -Infinity;
+            for (var index = 0; index < list.length; index++) {
+                var candidate = list[index];
+                if (isBlank(candidate)) {
+                    continue;
+                }
+                var candidateValue = predicate(candidate);
+                if (candidateValue > maxValue) {
+                    solution = candidate;
+                    maxValue = candidateValue;
+                }
+            }
+            return solution;
+        };
+        ListWrapper.flatten = function (list) {
+            var target = [];
+            _flattenArray(list, target);
+            return target;
+        };
+        ListWrapper.addAll = function (list, source) {
+            for (var i = 0; i < source.length; i++) {
+                list.push(source[i]);
+            }
+        };
+        return ListWrapper;
+    }());
+    function _flattenArray(source, target) {
+        if (isPresent(source)) {
+            for (var i = 0; i < source.length; i++) {
+                var item = source[i];
+                if (isArray(item)) {
+                    _flattenArray(item, target);
+                }
+                else {
+                    target.push(item);
+                }
+            }
+        }
+        return target;
+    }
+    // Safari and Internet Explorer do not support the iterable parameter to the
+    // Set constructor.  We work around that by manually adding the items.
+    var createSetFromList = (function () {
+        var test = new Set([1, 2, 3]);
+        if (test.size === 3) {
+            return function createSetFromList(lst) { return new Set(lst); };
+        }
+        else {
+            return function createSetAndPopulateFromList(lst) {
+                var res = new Set(lst);
+                if (res.size !== lst.length) {
+                    for (var i = 0; i < lst.length; i++) {
+                        res.add(lst[i]);
+                    }
+                }
+                return res;
+            };
+        }
+    })();
 
     var getDOM = _angular_platformBrowser.__platform_browser_private__.getDOM;
     var BrowserDomAdapter = _angular_platformBrowser.__platform_browser_private__.BrowserDomAdapter;
@@ -49,10 +321,12 @@
         }
         Object.defineProperty(BrowserDetection.prototype, "_ua", {
             get: function () {
-                if (typeof this._overrideUa === 'string') {
+                if (isPresent(this._overrideUa)) {
                     return this._overrideUa;
                 }
-                return getDOM() ? getDOM().getUserAgent() : '';
+                else {
+                    return isPresent(getDOM()) ? getDOM().getUserAgent() : '';
+                }
             },
             enumerable: true,
             configurable: true

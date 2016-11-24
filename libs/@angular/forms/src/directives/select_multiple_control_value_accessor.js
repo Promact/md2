@@ -6,7 +6,8 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { Directive, ElementRef, Host, Input, Optional, Renderer, forwardRef } from '@angular/core';
-import { isPrimitive, looseIdentical } from '../facade/lang';
+import { MapWrapper } from '../facade/collection';
+import { StringWrapper, isBlank, isPresent, isPrimitive, isString, looseIdentical } from '../facade/lang';
 import { NG_VALUE_ACCESSOR } from './control_value_accessor';
 export var SELECT_MULTIPLE_VALUE_ACCESSOR = {
     provide: NG_VALUE_ACCESSOR,
@@ -14,13 +15,13 @@ export var SELECT_MULTIPLE_VALUE_ACCESSOR = {
     multi: true
 };
 function _buildValueString(id, value) {
-    if (id == null)
+    if (isBlank(id))
         return "" + value;
-    if (typeof value === 'string')
+    if (isString(value))
         value = "'" + value + "'";
     if (!isPrimitive(value))
         value = 'Object';
-    return (id + ": " + value).slice(0, 50);
+    return StringWrapper.slice(id + ": " + value, 0, 50);
 }
 function _extractId(valueString) {
     return valueString.split(':')[0];
@@ -94,7 +95,7 @@ export var SelectMultipleControlValueAccessor = (function () {
     };
     /** @internal */
     SelectMultipleControlValueAccessor.prototype._getOptionId = function (value) {
-        for (var _i = 0, _a = Array.from(this._optionMap.keys()); _i < _a.length; _i++) {
+        for (var _i = 0, _a = MapWrapper.keys(this._optionMap); _i < _a.length; _i++) {
             var id = _a[_i];
             if (looseIdentical(this._optionMap.get(id)._value, value))
                 return id;
@@ -103,8 +104,8 @@ export var SelectMultipleControlValueAccessor = (function () {
     };
     /** @internal */
     SelectMultipleControlValueAccessor.prototype._getOptionValue = function (valueString) {
-        var id = _extractId(valueString);
-        return this._optionMap.has(id) ? this._optionMap.get(id)._value : valueString;
+        var opt = this._optionMap.get(_extractId(valueString));
+        return isPresent(opt) ? opt._value : valueString;
     };
     SelectMultipleControlValueAccessor.decorators = [
         { type: Directive, args: [{
@@ -136,7 +137,7 @@ export var NgSelectMultipleOption = (function () {
         this._element = _element;
         this._renderer = _renderer;
         this._select = _select;
-        if (this._select) {
+        if (isPresent(this._select)) {
             this.id = this._select._registerOption(this);
         }
     }
@@ -153,7 +154,7 @@ export var NgSelectMultipleOption = (function () {
     });
     Object.defineProperty(NgSelectMultipleOption.prototype, "value", {
         set: function (value) {
-            if (this._select) {
+            if (isPresent(this._select)) {
                 this._value = value;
                 this._setElementValue(_buildValueString(this.id, value));
                 this._select.writeValue(this._select.value);
@@ -174,7 +175,7 @@ export var NgSelectMultipleOption = (function () {
         this._renderer.setElementProperty(this._element.nativeElement, 'selected', selected);
     };
     NgSelectMultipleOption.prototype.ngOnDestroy = function () {
-        if (this._select) {
+        if (isPresent(this._select)) {
             this._select._optionMap.delete(this.id);
             this._select.writeValue(this._select.value);
         }
@@ -194,4 +195,5 @@ export var NgSelectMultipleOption = (function () {
     };
     return NgSelectMultipleOption;
 }());
+export var SELECT_DIRECTIVES = [SelectMultipleControlValueAccessor, NgSelectMultipleOption];
 //# sourceMappingURL=select_multiple_control_value_accessor.js.map

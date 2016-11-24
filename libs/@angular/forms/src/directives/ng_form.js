@@ -12,6 +12,8 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 import { Directive, Inject, Optional, Self, forwardRef } from '@angular/core';
 import { EventEmitter } from '../facade/async';
+import { ListWrapper } from '../facade/collection';
+import { isPresent } from '../facade/lang';
 import { FormGroup } from '../model';
 import { NG_ASYNC_VALIDATORS, NG_VALIDATORS } from '../validators';
 import { ControlContainer } from './control_container';
@@ -41,8 +43,7 @@ var resolvedPromise = Promise.resolve(null);
  * sub-groups within the form.
  *
  * You can listen to the directive's `ngSubmit` event to be notified when the user has
- * triggered a form submission. The `ngSubmit` event will be emitted with the original form
- * submission event.
+ * triggered a form submission.
  *
  * {@example forms/ts/simpleForm/simple_form_example.ts region='Component'}
  *
@@ -100,7 +101,7 @@ export var NgForm = (function (_super) {
         var _this = this;
         resolvedPromise.then(function () {
             var container = _this._findContainer(dir.path);
-            if (container) {
+            if (isPresent(container)) {
                 container.removeControl(dir.name);
             }
         });
@@ -119,7 +120,7 @@ export var NgForm = (function (_super) {
         var _this = this;
         resolvedPromise.then(function () {
             var container = _this._findContainer(dir.path);
-            if (container) {
+            if (isPresent(container)) {
                 container.removeControl(dir.name);
             }
         });
@@ -133,9 +134,9 @@ export var NgForm = (function (_super) {
         });
     };
     NgForm.prototype.setValue = function (value) { this.control.setValue(value); };
-    NgForm.prototype.onSubmit = function ($event) {
+    NgForm.prototype.onSubmit = function () {
         this._submitted = true;
-        this.ngSubmit.emit($event);
+        this.ngSubmit.emit(null);
         return false;
     };
     NgForm.prototype.onReset = function () { this.resetForm(); };
@@ -147,13 +148,13 @@ export var NgForm = (function (_super) {
     /** @internal */
     NgForm.prototype._findContainer = function (path) {
         path.pop();
-        return path.length ? this.form.get(path) : this.form;
+        return ListWrapper.isEmpty(path) ? this.form : this.form.get(path);
     };
     NgForm.decorators = [
         { type: Directive, args: [{
                     selector: 'form:not([ngNoForm]):not([formGroup]),ngForm,[ngForm]',
                     providers: [formDirectiveProvider],
-                    host: { '(submit)': 'onSubmit($event)', '(reset)': 'onReset()' },
+                    host: { '(submit)': 'onSubmit()', '(reset)': 'onReset()' },
                     outputs: ['ngSubmit'],
                     exportAs: 'ngForm'
                 },] },

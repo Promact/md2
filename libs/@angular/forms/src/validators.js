@@ -8,11 +8,7 @@
 import { OpaqueToken } from '@angular/core';
 import { toPromise } from 'rxjs/operator/toPromise';
 import { StringMapWrapper } from './facade/collection';
-import { isPresent } from './facade/lang';
-import { isPromise } from './private_import_core';
-function isEmptyInputValue(value) {
-    return value == null || typeof value === 'string' && value.length === 0;
-}
+import { isBlank, isPresent, isPromise, isString } from './facade/lang';
 /**
  * Providers for validators to be used for {@link FormControl}s in a form.
  *
@@ -56,19 +52,20 @@ export var Validators = (function () {
      * Validator that requires controls to have a non-empty value.
      */
     Validators.required = function (control) {
-        return isEmptyInputValue(control.value) ? { 'required': true } : null;
+        return isBlank(control.value) || (isString(control.value) && control.value == '') ?
+            { 'required': true } :
+            null;
     };
     /**
      * Validator that requires controls to have a value of a minimum length.
      */
     Validators.minLength = function (minLength) {
         return function (control) {
-            if (isEmptyInputValue(control.value)) {
-                return null; // don't validate empty values to allow optional controls
-            }
-            var length = typeof control.value === 'string' ? control.value.length : 0;
-            return length < minLength ?
-                { 'minlength': { 'requiredLength': minLength, 'actualLength': length } } :
+            if (isPresent(Validators.required(control)))
+                return null;
+            var v = control.value;
+            return v.length < minLength ?
+                { 'minlength': { 'requiredLength': minLength, 'actualLength': v.length } } :
                 null;
         };
     };
@@ -77,9 +74,11 @@ export var Validators = (function () {
      */
     Validators.maxLength = function (maxLength) {
         return function (control) {
-            var length = typeof control.value === 'string' ? control.value.length : 0;
-            return length > maxLength ?
-                { 'maxlength': { 'requiredLength': maxLength, 'actualLength': length } } :
+            if (isPresent(Validators.required(control)))
+                return null;
+            var v = control.value;
+            return v.length > maxLength ?
+                { 'maxlength': { 'requiredLength': maxLength, 'actualLength': v.length } } :
                 null;
         };
     };
@@ -87,25 +86,13 @@ export var Validators = (function () {
      * Validator that requires a control to match a regex to its value.
      */
     Validators.pattern = function (pattern) {
-        if (!pattern)
-            return Validators.nullValidator;
-        var regex;
-        var regexStr;
-        if (typeof pattern === 'string') {
-            regexStr = "^" + pattern + "$";
-            regex = new RegExp(regexStr);
-        }
-        else {
-            regexStr = pattern.toString();
-            regex = pattern;
-        }
         return function (control) {
-            if (isEmptyInputValue(control.value)) {
-                return null; // don't validate empty values to allow optional controls
-            }
-            var value = control.value;
-            return regex.test(value) ? null :
-                { 'pattern': { 'requiredPattern': regexStr, 'actualValue': value } };
+            if (isPresent(Validators.required(control)))
+                return null;
+            var regex = new RegExp("^" + pattern + "$");
+            var v = control.value;
+            return regex.test(v) ? null :
+                { 'pattern': { 'requiredPattern': "^" + pattern + "$", 'actualValue': v } };
         };
     };
     /**
@@ -117,7 +104,7 @@ export var Validators = (function () {
      * of the individual error maps.
      */
     Validators.compose = function (validators) {
-        if (!validators)
+        if (isBlank(validators))
             return null;
         var presentValidators = validators.filter(isPresent);
         if (presentValidators.length == 0)
@@ -127,7 +114,7 @@ export var Validators = (function () {
         };
     };
     Validators.composeAsync = function (validators) {
-        if (!validators)
+        if (isBlank(validators))
             return null;
         var presentValidators = validators.filter(isPresent);
         if (presentValidators.length == 0)
@@ -152,6 +139,6 @@ function _mergeErrors(arrayOfErrors) {
     var res = arrayOfErrors.reduce(function (res, errors) {
         return isPresent(errors) ? StringMapWrapper.merge(res, errors) : res;
     }, {});
-    return Object.keys(res).length === 0 ? null : res;
+    return StringMapWrapper.isEmpty(res) ? null : res;
 }
 //# sourceMappingURL=validators.js.map

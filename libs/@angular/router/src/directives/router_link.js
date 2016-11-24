@@ -100,9 +100,12 @@ export var RouterLink = (function () {
         enumerable: true,
         configurable: true
     });
-    RouterLink.prototype.onClick = function () {
+    RouterLink.prototype.onClick = function (button, ctrlKey, metaKey) {
+        if (button !== 0 || ctrlKey || metaKey) {
+            return true;
+        }
         this.router.navigateByUrl(this.urlTree);
-        return true;
+        return false;
     };
     Object.defineProperty(RouterLink.prototype, "urlTree", {
         get: function () {
@@ -132,7 +135,7 @@ export var RouterLink = (function () {
         'preserveQueryParams': [{ type: Input },],
         'preserveFragment': [{ type: Input },],
         'routerLink': [{ type: Input },],
-        'onClick': [{ type: HostListener, args: ['click', [],] },],
+        'onClick': [{ type: HostListener, args: ['click', ['$event.button', '$event.ctrlKey', '$event.metaKey'],] },],
     };
     return RouterLink;
 }());

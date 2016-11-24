@@ -6,7 +6,8 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { Injectable } from '@angular/core';
-import { isPresent } from './facade/lang';
+import { StringMapWrapper } from './facade/collection';
+import { isArray, isPresent } from './facade/lang';
 import { FormArray, FormControl, FormGroup } from './model';
 /**
  * @whatItDoes Creates an {@link AbstractControl} from a user-specified configuration.
@@ -40,8 +41,8 @@ export var FormBuilder = (function () {
     FormBuilder.prototype.group = function (controlsConfig, extra) {
         if (extra === void 0) { extra = null; }
         var controls = this._reduceControls(controlsConfig);
-        var validator = isPresent(extra) ? extra['validator'] : null;
-        var asyncValidator = isPresent(extra) ? extra['asyncValidator'] : null;
+        var validator = isPresent(extra) ? StringMapWrapper.get(extra, 'validator') : null;
+        var asyncValidator = isPresent(extra) ? StringMapWrapper.get(extra, 'asyncValidator') : null;
         return new FormGroup(controls, validator, asyncValidator);
     };
     /**
@@ -72,8 +73,8 @@ export var FormBuilder = (function () {
     FormBuilder.prototype._reduceControls = function (controlsConfig) {
         var _this = this;
         var controls = {};
-        Object.keys(controlsConfig).forEach(function (controlName) {
-            controls[controlName] = _this._createControl(controlsConfig[controlName]);
+        StringMapWrapper.forEach(controlsConfig, function (controlConfig, controlName) {
+            controls[controlName] = _this._createControl(controlConfig);
         });
         return controls;
     };
@@ -83,7 +84,7 @@ export var FormBuilder = (function () {
             controlConfig instanceof FormArray) {
             return controlConfig;
         }
-        else if (Array.isArray(controlConfig)) {
+        else if (isArray(controlConfig)) {
             var value = controlConfig[0];
             var validator = controlConfig.length > 1 ? controlConfig[1] : null;
             var asyncValidator = controlConfig.length > 2 ? controlConfig[2] : null;

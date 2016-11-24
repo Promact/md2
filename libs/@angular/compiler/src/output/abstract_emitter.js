@@ -5,7 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { isBlank, isPresent } from '../facade/lang';
+import { StringWrapper, isBlank, isPresent, isString } from '../facade/lang';
 import * as o from './output_ast';
 var _SINGLE_QUOTE_ESCAPE_STRING_RE = /'|\\|\n|\r|\$/g;
 var _LEGAL_IDENTIFIER_RE = /^[$A-Z_][0-9A-Z_$]*$/i;
@@ -238,10 +238,14 @@ export var AbstractEmitterVisitor = (function () {
         ctx.print(")");
         return null;
     };
-    AbstractEmitterVisitor.prototype.visitLiteralExpr = function (ast, ctx) {
+    AbstractEmitterVisitor.prototype.visitLiteralExpr = function (ast, ctx, absentValue) {
+        if (absentValue === void 0) { absentValue = 'null'; }
         var value = ast.value;
-        if (typeof value === 'string') {
+        if (isString(value)) {
             ctx.print(escapeIdentifier(value, this._escapeDollarInStrings));
+        }
+        else if (isBlank(value)) {
+            ctx.print(absentValue);
         }
         else {
             ctx.print("" + value);
@@ -348,7 +352,7 @@ export var AbstractEmitterVisitor = (function () {
         var useNewLine = ast.entries.length > 1;
         ctx.print("{", useNewLine);
         ctx.incIndent();
-        this.visitAllObjects(function (entry) {
+        this.visitAllObjects(function (entry /** TODO #9100 */) {
             ctx.print(escapeIdentifier(entry[0], _this._escapeDollarInStrings, false) + ": ");
             entry[1].visitExpression(_this, ctx);
         }, ast.entries, ctx, ',', useNewLine);
@@ -359,7 +363,7 @@ export var AbstractEmitterVisitor = (function () {
     AbstractEmitterVisitor.prototype.visitAllExpressions = function (expressions, ctx, separator, newLine) {
         var _this = this;
         if (newLine === void 0) { newLine = false; }
-        this.visitAllObjects(function (expr) { return expr.visitExpression(_this, ctx); }, expressions, ctx, separator, newLine);
+        this.visitAllObjects(function (expr /** TODO #9100 */) { return expr.visitExpression(_this, ctx); }, expressions, ctx, separator, newLine);
     };
     AbstractEmitterVisitor.prototype.visitAllObjects = function (handler, expressions, ctx, separator, newLine) {
         if (newLine === void 0) { newLine = false; }
@@ -384,11 +388,7 @@ export function escapeIdentifier(input, escapeDollar, alwaysQuote) {
     if (isBlank(input)) {
         return null;
     }
-    var body = input.replace(_SINGLE_QUOTE_ESCAPE_STRING_RE, function () {
-        var match = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            match[_i - 0] = arguments[_i];
-        }
+    var body = StringWrapper.replaceAllMapped(input, _SINGLE_QUOTE_ESCAPE_STRING_RE, function (match /** TODO #9100 */) {
         if (match[0] == '$') {
             return escapeDollar ? '\\$' : '$';
         }

@@ -6,6 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { Pipe } from '@angular/core';
+import { isBlank, isStringMap } from '../facade/lang';
 import { InvalidPipeArgumentError } from './invalid_pipe_argument_error';
 /**
  * @ngModule CommonModule
@@ -13,10 +14,9 @@ import { InvalidPipeArgumentError } from './invalid_pipe_argument_error';
  * @howToUse `expression | i18nSelect:mapping`
  * @description
  *
- *  Where `mapping` is an object that indicates the text that should be displayed
+ *  Where:
+ *  - `mapping`: is an object that indicates the text that should be displayed
  *  for different values of the provided `expression`.
- *  If none of the keys of the mapping match the value of the `expression`, then the content
- *  of the `other` key is returned when present, otherwise an empty string is returned.
  *
  *  ## Example
  *
@@ -28,18 +28,12 @@ export var I18nSelectPipe = (function () {
     function I18nSelectPipe() {
     }
     I18nSelectPipe.prototype.transform = function (value, mapping) {
-        if (value == null)
+        if (isBlank(value))
             return '';
-        if (typeof mapping !== 'object' || typeof value !== 'string') {
+        if (!isStringMap(mapping)) {
             throw new InvalidPipeArgumentError(I18nSelectPipe, mapping);
         }
-        if (mapping.hasOwnProperty(value)) {
-            return mapping[value];
-        }
-        if (mapping.hasOwnProperty('other')) {
-            return mapping['other'];
-        }
-        return '';
+        return mapping.hasOwnProperty(value) ? mapping[value] : '';
     };
     I18nSelectPipe.decorators = [
         { type: Pipe, args: [{ name: 'i18nSelect', pure: true },] },

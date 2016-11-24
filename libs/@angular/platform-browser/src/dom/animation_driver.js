@@ -9,8 +9,7 @@ import { NoOpAnimationPlayer } from '../private_import_core';
 var _NoOpAnimationDriver = (function () {
     function _NoOpAnimationDriver() {
     }
-    _NoOpAnimationDriver.prototype.animate = function (element, startingStyles, keyframes, duration, delay, easing, previousPlayers) {
-        if (previousPlayers === void 0) { previousPlayers = []; }
+    _NoOpAnimationDriver.prototype.animate = function (element, startingStyles, keyframes, duration, delay, easing) {
         return new NoOpAnimationPlayer();
     };
     return _NoOpAnimationDriver;

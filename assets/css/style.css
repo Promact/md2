@@ -25,11 +25,11 @@ summary {
 
 .md2-input:focus {
   margin-bottom: 7px;
-  border-bottom: 2px solid #106CC8;
+  border-bottom: 2px solid #106cc8;
   outline: none; }
 
 a {
-  color: #106CC8;
+  color: #106cc8;
   text-decoration: none; }
   a:hover, a:focus {
     color: #0f64ba;
@@ -66,7 +66,7 @@ hr {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  transition: background 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: background 400ms cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 400ms cubic-bezier(0.25, 0.8, 0.25, 1);
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
   color: rgba(0, 0, 0, 0.9);
   background-color: #fafafa; }
@@ -79,12 +79,12 @@ hr {
     cursor: default;
     opacity: 0.8;
     box-shadow: none; }
-  [button][button="primary"] {
+  [button][button='primary'] {
     color: #ffffff;
-    background: #106CC8; }
-  [button][class*="block"] {
+    background: #106cc8; }
+  [button][class*='block'] {
     width: 100%; }
-  [button][class*="large"] {
+  [button][class*='large'] {
     font-size: 16px;
     padding: 0 12px;
     min-width: 128px;
@@ -99,7 +99,7 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  font-family: "Roboto-Regular","Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-family: 'Roboto-Regular', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 15px;
   font-weight: 400;
   line-height: 1.42857143;
@@ -112,7 +112,7 @@ html, body {
   display: block;
   padding: 100px 16px 0;
   box-sizing: border-box;
-  background-color: #106CC8;
+  background-color: #106cc8;
   height: 256px;
   color: #ffffff; }
   .loading-demo h1 {
@@ -160,7 +160,7 @@ html, body {
   z-index: 999;
   overflow: hidden;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
-  transition: 0.3s ease-in-out; }
+  transition: 300ms ease-in-out; }
   .sidenav:hover {
     overflow-y: auto; }
   .sidenav .sidenav-container {
@@ -170,8 +170,12 @@ html, body {
     padding: 0 16px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.12);
     text-align: center; }
-    .sidenav header a, .sidenav header a:hover, .sidenav header a:focus, .sidenav header a:active, .sidenav header a:visited {
-      color: #106CC8;
+    .sidenav header a,
+    .sidenav header a:hover,
+    .sidenav header a:focus,
+    .sidenav header a:active,
+    .sidenav header a:visited {
+      color: #106cc8;
       text-decoration: none; }
     .sidenav header img {
       max-height: 100px; }
@@ -193,8 +197,11 @@ html, body {
         .sidenav ul li a:hover, .sidenav ul li a:focus, .sidenav ul li a:active {
           text-decoration: none;
           background: rgba(0, 0, 0, 0.1); }
-      .sidenav ul li.active a, .sidenav ul li.active a:hover, .sidenav ul li.active a:focus, .sidenav ul li.active a:active {
-        border-left-color: #106CC8;
+      .sidenav ul li.active a,
+      .sidenav ul li.active a:hover,
+      .sidenav ul li.active a:focus,
+      .sidenav ul li.active a:active {
+        border-left-color: #106cc8;
         background: rgba(0, 0, 0, 0.15); }
 
 .main {
@@ -241,7 +248,7 @@ html, body {
     left: 0;
     height: 96px;
     margin-top: 30px;
-    background: #106CC8;
+    background: #106cc8;
     color: #ffffff;
     box-sizing: border-box;
     overflow: hidden; }

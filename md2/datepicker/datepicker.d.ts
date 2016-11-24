@@ -72,20 +72,20 @@ export declare class Md2Datepicker implements AfterContentInit, ControlValueAcce
     max: string;
     value: any;
     displayDate: Date;
-    private onClick(event);
-    private onKeyDown(event);
+    private _handleClick(event);
+    private _handleKeydown(event);
     private onBlur();
     /**
      * Display Years
      */
-    private showYear();
+    private _showYear();
     private getYears();
     private _scrollToSelectedYear();
     /**
      * select year
      * @param year
      */
-    private setYear(year);
+    private _setYear(year);
     /**
      * Display Datepicker
      */
@@ -93,21 +93,21 @@ export declare class Md2Datepicker implements AfterContentInit, ControlValueAcce
     /**
      * Display Calendar
      */
-    private showCalendar();
+    private _showCalendar();
     /**
      * Toggle Hour visiblity
      */
-    private toggleHours(value);
+    private _toggleHours(value);
     /**
      * Ok Button Event
      */
-    private onClickOk();
+    private _onClickOk();
     /**
      * Date Selection Event
      * @param event Event Object
      * @param date Date Object
      */
-    private onClickDate(event, date);
+    private _onClickDate(event, date);
     /**
      * Set Date
      * @param date Date Object
@@ -122,12 +122,12 @@ export declare class Md2Datepicker implements AfterContentInit, ControlValueAcce
      * Check is Before month enabled or not
      * @return boolean
      */
-    private isBeforeMonth();
+    private _isBeforeMonth();
     /**
      * Check is After month enabled or not
      * @return boolean
      */
-    private isAfterMonth();
+    private _isAfterMonth();
     /**
      * Check the date is enabled or not
      * @param date Date Object
@@ -143,13 +143,13 @@ export declare class Md2Datepicker implements AfterContentInit, ControlValueAcce
      * @param event Event Object
      * @param hour number of hours
      */
-    private onClickHour(event, hour);
+    private _onClickHour(event, hour);
     /**
      * Select Minute
      * @param event Event Object
      * @param minute number of minutes
      */
-    private onClickMinute(event, minute);
+    private _onClickMinute(event, minute);
     /**
      * Set hours
      * @param hour number of hours

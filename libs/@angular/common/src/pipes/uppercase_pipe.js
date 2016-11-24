@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { Pipe } from '@angular/core';
-import { isBlank } from '../facade/lang';
+import { isBlank, isString } from '../facade/lang';
 import { InvalidPipeArgumentError } from './invalid_pipe_argument_error';
 /**
  * @ngModule CommonModule
@@ -14,7 +14,7 @@ import { InvalidPipeArgumentError } from './invalid_pipe_argument_error';
  * @howToUse `expression | uppercase`
  * @description
  *
- * Converts value into an uppercase string using `String.prototype.toUpperCase()`.
+ * Converts value into lowercase string using `String.prototype.toUpperCase()`.
  *
  * ### Example
  *
@@ -28,7 +28,7 @@ export var UpperCasePipe = (function () {
     UpperCasePipe.prototype.transform = function (value) {
         if (isBlank(value))
             return value;
-        if (typeof value !== 'string') {
+        if (!isString(value)) {
             throw new InvalidPipeArgumentError(UpperCasePipe, value);
         }
         return value.toUpperCase();

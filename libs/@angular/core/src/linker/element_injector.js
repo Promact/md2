@@ -21,7 +21,14 @@ export var ElementInjector = (function (_super) {
     }
     ElementInjector.prototype.get = function (token, notFoundValue) {
         if (notFoundValue === void 0) { notFoundValue = THROW_IF_NOT_FOUND; }
-        return this._view.injectorGet(token, this._nodeIndex, notFoundValue);
+        var result = _UNDEFINED;
+        if (result === _UNDEFINED) {
+            result = this._view.injectorGet(token, this._nodeIndex, _UNDEFINED);
+        }
+        if (result === _UNDEFINED) {
+            result = this._view.parentInjector.get(token, notFoundValue);
+        }
+        return result;
     };
     return ElementInjector;
 }(Injector));

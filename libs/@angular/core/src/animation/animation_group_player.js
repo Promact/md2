@@ -6,6 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { isPresent, scheduleMicroTask } from '../facade/lang';
+import { Math } from '../facade/math';
 export var AnimationGroupPlayer = (function () {
     function AnimationGroupPlayer(_players) {
         var _this = this;
@@ -14,7 +15,6 @@ export var AnimationGroupPlayer = (function () {
         this._onStartFns = [];
         this._finished = false;
         this._started = false;
-        this._destroyed = false;
         this.parentPlayer = null;
         var count = 0;
         var total = this._players.length;
@@ -35,6 +35,9 @@ export var AnimationGroupPlayer = (function () {
     AnimationGroupPlayer.prototype._onFinish = function () {
         if (!this._finished) {
             this._finished = true;
+            if (!isPresent(this.parentPlayer)) {
+                this.destroy();
+            }
             this._onDoneFns.forEach(function (fn) { return fn(); });
             this._onDoneFns = [];
         }
@@ -61,19 +64,11 @@ export var AnimationGroupPlayer = (function () {
         this._players.forEach(function (player) { return player.finish(); });
     };
     AnimationGroupPlayer.prototype.destroy = function () {
-        if (!this._destroyed) {
-            this._onFinish();
-            this._players.forEach(function (player) { return player.destroy(); });
-            this._destroyed = true;
-        }
+        this._onFinish();
+        this._players.forEach(function (player) { return player.destroy(); });
     };
-    AnimationGroupPlayer.prototype.reset = function () {
-        this._players.forEach(function (player) { return player.reset(); });
-        this._destroyed = false;
-        this._finished = false;
-        this._started = false;
-    };
-    AnimationGroupPlayer.prototype.setPosition = function (p) {
+    AnimationGroupPlayer.prototype.reset = function () { this._players.forEach(function (player) { return player.reset(); }); };
+    AnimationGroupPlayer.prototype.setPosition = function (p /** TODO #9100 */) {
         this._players.forEach(function (player) { player.setPosition(p); });
     };
     AnimationGroupPlayer.prototype.getPosition = function () {
@@ -84,11 +79,6 @@ export var AnimationGroupPlayer = (function () {
         });
         return min;
     };
-    Object.defineProperty(AnimationGroupPlayer.prototype, "players", {
-        get: function () { return this._players; },
-        enumerable: true,
-        configurable: true
-    });
     return AnimationGroupPlayer;
 }());
 //# sourceMappingURL=animation_group_player.js.map

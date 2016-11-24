@@ -14,6 +14,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { ResponseOptions } from '../base_response_options';
 import { ReadyState, RequestMethod, ResponseType } from '../enums';
+import { StringWrapper, isPresent } from '../facade/lang';
 import { ConnectionBackend } from '../interfaces';
 import { Response } from '../static_response';
 import { BrowserJsonp } from './browser_jsonp';
@@ -50,7 +51,7 @@ export var JSONPConnection_ = (function (_super) {
             var callback = _dom.requestCallback(_this._id);
             var url = req.url;
             if (url.indexOf('=JSONP_CALLBACK&') > -1) {
-                url = url.replace('=JSONP_CALLBACK&', "=" + callback + "&");
+                url = StringWrapper.replace(url, '=JSONP_CALLBACK&', "=" + callback + "&");
             }
             else if (url.lastIndexOf('=JSONP_CALLBACK') === url.length - '=JSONP_CALLBACK'.length) {
                 url = url.substring(0, url.length - '=JSONP_CALLBACK'.length) + ("=" + callback);
@@ -63,14 +64,14 @@ export var JSONPConnection_ = (function (_super) {
                 _dom.cleanup(script);
                 if (!_this._finished) {
                     var responseOptions_1 = new ResponseOptions({ body: JSONP_ERR_NO_CALLBACK, type: ResponseType.Error, url: url });
-                    if (baseResponseOptions) {
+                    if (isPresent(baseResponseOptions)) {
                         responseOptions_1 = baseResponseOptions.merge(responseOptions_1);
                     }
                     responseObserver.error(new Response(responseOptions_1));
                     return;
                 }
                 var responseOptions = new ResponseOptions({ body: _this._responseData, url: url });
-                if (_this.baseResponseOptions) {
+                if (isPresent(_this.baseResponseOptions)) {
                     responseOptions = _this.baseResponseOptions.merge(responseOptions);
                 }
                 responseObserver.next(new Response(responseOptions));
@@ -82,7 +83,7 @@ export var JSONPConnection_ = (function (_super) {
                 _this.readyState = ReadyState.Done;
                 _dom.cleanup(script);
                 var responseOptions = new ResponseOptions({ body: error.message, type: ResponseType.Error });
-                if (baseResponseOptions) {
+                if (isPresent(baseResponseOptions)) {
                     responseOptions = baseResponseOptions.merge(responseOptions);
                 }
                 responseObserver.error(new Response(responseOptions));
@@ -94,7 +95,9 @@ export var JSONPConnection_ = (function (_super) {
                 _this.readyState = ReadyState.Cancelled;
                 script.removeEventListener('load', onLoad);
                 script.removeEventListener('error', onError);
-                _this._dom.cleanup(script);
+                if (isPresent(script)) {
+                    _this._dom.cleanup(script);
+                }
             };
         });
     }

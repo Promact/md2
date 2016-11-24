@@ -5,6 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+import { ListWrapper } from '../../facade/collection';
 import * as xml from './xml_helper';
 var _MESSAGES_TAG = 'messagebundle';
 var _MESSAGE_TAG = 'msg';
@@ -17,6 +18,7 @@ export var Xmb = (function () {
     Xmb.prototype.write = function (messageMap) {
         var visitor = new _Visitor();
         var rootNode = new xml.Tag(_MESSAGES_TAG);
+        rootNode.children.push(new xml.Text('\n'));
         Object.keys(messageMap).forEach(function (id) {
             var message = messageMap[id];
             var attrs = { id: id };
@@ -26,16 +28,14 @@ export var Xmb = (function () {
             if (message.meaning) {
                 attrs['meaning'] = message.meaning;
             }
-            rootNode.children.push(new xml.CR(2), new xml.Tag(_MESSAGE_TAG, attrs, visitor.serialize(message.nodes)));
+            rootNode.children.push(new xml.Text('  '), new xml.Tag(_MESSAGE_TAG, attrs, visitor.serialize(message.nodes)), new xml.Text('\n'));
         });
-        rootNode.children.push(new xml.CR());
         return xml.serialize([
             new xml.Declaration({ version: '1.0', encoding: 'UTF-8' }),
-            new xml.CR(),
+            new xml.Text('\n'),
             new xml.Doctype(_MESSAGES_TAG, _DOCTYPE),
-            new xml.CR(),
+            new xml.Text('\n'),
             rootNode,
-            new xml.CR(),
         ]);
     };
     Xmb.prototype.load = function (content, url, messageBundle) {
@@ -81,8 +81,7 @@ var _Visitor = (function () {
     };
     _Visitor.prototype.serialize = function (nodes) {
         var _this = this;
-        return (_a = []).concat.apply(_a, nodes.map(function (node) { return node.visit(_this); }));
-        var _a;
+        return ListWrapper.flatten(nodes.map(function (node) { return node.visit(_this); }));
     };
     return _Visitor;
 }());

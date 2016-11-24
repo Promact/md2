@@ -1,6 +1,5 @@
 import { ModuleWithProviders } from '@angular/core';
 export declare class Md2Collapse {
-    private height;
     private isExpanded;
     private isCollapsing;
     collapse: boolean;

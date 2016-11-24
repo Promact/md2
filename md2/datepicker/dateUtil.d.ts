@@ -127,10 +127,10 @@ export declare class Md2DateUtil {
      * 1. No argument for Date representing now.
      * 2. Single-argument value representing number of seconds since Unix Epoch
      * or a Date object.
-     * @param {number|Date=} opt_value
+     * @param {number|Date=} value
      * @return {Date} New date with time set to midnight.
      */
-    createDateAtMidnight(opt_value: any): Date;
+    createDateAtMidnight(value: any): Date;
     /**
      * Checks if a date is within a min and max range, ignoring the time component.
      * If minDate or maxDate are not dates, they are ignored.

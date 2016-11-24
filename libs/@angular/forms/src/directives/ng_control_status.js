@@ -11,6 +11,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 import { Directive, Self } from '@angular/core';
+import { isPresent } from '../facade/lang';
 import { ControlContainer } from './control_container';
 import { NgControl } from './ng_control';
 export var AbstractControlStatus = (function () {
@@ -18,37 +19,44 @@ export var AbstractControlStatus = (function () {
         this._cd = cd;
     }
     Object.defineProperty(AbstractControlStatus.prototype, "ngClassUntouched", {
-        get: function () { return this._cd.control ? this._cd.control.untouched : false; },
+        get: function () {
+            return isPresent(this._cd.control) ? this._cd.control.untouched : false;
+        },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(AbstractControlStatus.prototype, "ngClassTouched", {
-        get: function () { return this._cd.control ? this._cd.control.touched : false; },
+        get: function () {
+            return isPresent(this._cd.control) ? this._cd.control.touched : false;
+        },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(AbstractControlStatus.prototype, "ngClassPristine", {
-        get: function () { return this._cd.control ? this._cd.control.pristine : false; },
+        get: function () {
+            return isPresent(this._cd.control) ? this._cd.control.pristine : false;
+        },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(AbstractControlStatus.prototype, "ngClassDirty", {
-        get: function () { return this._cd.control ? this._cd.control.dirty : false; },
+        get: function () {
+            return isPresent(this._cd.control) ? this._cd.control.dirty : false;
+        },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(AbstractControlStatus.prototype, "ngClassValid", {
-        get: function () { return this._cd.control ? this._cd.control.valid : false; },
+        get: function () {
+            return isPresent(this._cd.control) ? this._cd.control.valid : false;
+        },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(AbstractControlStatus.prototype, "ngClassInvalid", {
-        get: function () { return this._cd.control ? this._cd.control.invalid : false; },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(AbstractControlStatus.prototype, "ngClassPending", {
-        get: function () { return this._cd.control ? this._cd.control.pending : false; },
+        get: function () {
+            return isPresent(this._cd.control) ? this._cd.control.invalid : false;
+        },
         enumerable: true,
         configurable: true
     });
@@ -60,8 +68,7 @@ export var ngControlStatusHost = {
     '[class.ng-pristine]': 'ngClassPristine',
     '[class.ng-dirty]': 'ngClassDirty',
     '[class.ng-valid]': 'ngClassValid',
-    '[class.ng-invalid]': 'ngClassInvalid',
-    '[class.ng-pending]': 'ngClassPending',
+    '[class.ng-invalid]': 'ngClassInvalid'
 };
 /**
  * Directive automatically applied to Angular form controls that sets CSS classes

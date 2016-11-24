@@ -13,8 +13,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 import { ErrorHandler } from '../src/error_handler';
 import { ListWrapper } from '../src/facade/collection';
 import { unimplemented } from '../src/facade/errors';
-import { stringify } from '../src/facade/lang';
-import { isPromise } from '../src/util/lang';
+import { isBlank, isPresent, isPromise, stringify } from '../src/facade/lang';
 import { ApplicationInitStatus } from './application_init';
 import { APP_BOOTSTRAP_LISTENER, PLATFORM_INITIALIZER } from './application_tokens';
 import { Console } from './console';
@@ -63,12 +62,12 @@ export function isDevMode() {
  * @experimental APIs related to application bootstrap are currently under review.
  */
 export function createPlatform(injector) {
-    if (_platform && !_platform.destroyed) {
+    if (isPresent(_platform) && !_platform.destroyed) {
         throw new Error('There can be only one platform. Destroy the previous one to create a new one.');
     }
     _platform = injector.get(PlatformRef);
     var inits = injector.get(PLATFORM_INITIALIZER, null);
-    if (inits)
+    if (isPresent(inits))
         inits.forEach(function (init) { return init(); });
     return _platform;
 }
@@ -101,10 +100,10 @@ export function createPlatformFactory(parentPlaformFactory, name, providers) {
  */
 export function assertPlatform(requiredToken) {
     var platform = getPlatform();
-    if (!platform) {
+    if (isBlank(platform)) {
         throw new Error('No platform exists!');
     }
-    if (!platform.injector.get(requiredToken, null)) {
+    if (isPresent(platform) && isBlank(platform.injector.get(requiredToken, null))) {
         throw new Error('A platform with a different configuration has been created. Please destroy it first.');
     }
     return platform;
@@ -115,7 +114,7 @@ export function assertPlatform(requiredToken) {
  * @experimental APIs related to application bootstrap are currently under review.
  */
 export function destroyPlatform() {
-    if (_platform && !_platform.destroyed) {
+    if (isPresent(_platform) && !_platform.destroyed) {
         _platform.destroy();
     }
 }
@@ -125,7 +124,7 @@ export function destroyPlatform() {
  * @experimental APIs related to application bootstrap are currently under review.
  */
 export function getPlatform() {
-    return _platform && !_platform.destroyed ? _platform : null;
+    return isPresent(_platform) && !_platform.destroyed ? _platform : null;
 }
 /**
  * The Angular platform is the entry point for Angular on a web page. Each page
@@ -212,7 +211,9 @@ function _callAndReportToErrorHandler(errorHandler, callback) {
                 throw e;
             });
         }
-        return result;
+        else {
+            return result;
+        }
     }
     catch (e) {
         errorHandler.handleError(e);
@@ -244,8 +245,8 @@ export var PlatformRef_ = (function (_super) {
         if (this._destroyed) {
             throw new Error('The platform has already been destroyed!');
         }
-        this._modules.slice().forEach(function (module) { return module.destroy(); });
-        this._destroyListeners.forEach(function (listener) { return listener(); });
+        ListWrapper.clone(this._modules).forEach(function (app) { return app.destroy(); });
+        this._destroyListeners.forEach(function (dispose) { return dispose(); });
         this._destroyed = true;
     };
     PlatformRef_.prototype.bootstrapModuleFactory = function (moduleFactory) {
@@ -287,7 +288,7 @@ export var PlatformRef_ = (function (_super) {
         var _this = this;
         if (compilerOptions === void 0) { compilerOptions = []; }
         var compilerFactory = this.injector.get(CompilerFactory);
-        var compiler = compilerFactory.createCompiler(Array.isArray(compilerOptions) ? compilerOptions : [compilerOptions]);
+        var compiler = compilerFactory.createCompiler(compilerOptions instanceof Array ? compilerOptions : [compilerOptions]);
         // ugly internal api hack: generate host component factories for all declared components and
         // pass the factories into the callback - this is used by UpdateAdapter to get hold of all
         // factories.
@@ -399,7 +400,7 @@ export var ApplicationRef_ = (function (_super) {
         var compRef = componentFactory.create(this._injector, [], componentFactory.selector);
         compRef.onDestroy(function () { _this._unloadComponent(compRef); });
         var testability = compRef.injector.get(Testability, null);
-        if (testability) {
+        if (isPresent(testability)) {
             compRef.injector.get(TestabilityRegistry)
                 .registerApplication(compRef.location.nativeElement, testability);
         }
@@ -421,7 +422,7 @@ export var ApplicationRef_ = (function (_super) {
     };
     /** @internal */
     ApplicationRef_.prototype._unloadComponent = function (componentRef) {
-        if (this._rootComponents.indexOf(componentRef) == -1) {
+        if (!ListWrapper.contains(this._rootComponents, componentRef)) {
             return;
         }
         this.unregisterChangeDetector(componentRef.changeDetectorRef);
@@ -431,7 +432,7 @@ export var ApplicationRef_ = (function (_super) {
         if (this._runningTick) {
             throw new Error('ApplicationRef.tick is called recursively');
         }
-        var scope = ApplicationRef_._tickScope();
+        var s = ApplicationRef_._tickScope();
         try {
             this._runningTick = true;
             this._changeDetectorRefs.forEach(function (detector) { return detector.detectChanges(); });
@@ -441,12 +442,12 @@ export var ApplicationRef_ = (function (_super) {
         }
         finally {
             this._runningTick = false;
-            wtfLeave(scope);
+            wtfLeave(s);
         }
     };
     ApplicationRef_.prototype.ngOnDestroy = function () {
         // TODO(alxhub): Dispose of the NgZone.
-        this._rootComponents.slice().forEach(function (component) { return component.destroy(); });
+        ListWrapper.clone(this._rootComponents).forEach(function (ref) { return ref.destroy(); });
     };
     Object.defineProperty(ApplicationRef_.prototype, "componentTypes", {
         get: function () { return this._rootComponentTypes; },

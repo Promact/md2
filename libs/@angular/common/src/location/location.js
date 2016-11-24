@@ -47,13 +47,7 @@ export var Location = (function () {
         this._platformStrategy = platformStrategy;
         var browserBaseHref = this._platformStrategy.getBaseHref();
         this._baseHref = Location.stripTrailingSlash(_stripIndexHtml(browserBaseHref));
-        this._platformStrategy.onPopState(function (ev) {
-            _this._subject.emit({
-                'url': _this.path(true),
-                'pop': true,
-                'type': ev.type,
-            });
-        });
+        this._platformStrategy.onPopState(function (ev) { _this._subject.emit({ 'url': _this.path(true), 'pop': true, 'type': ev.type }); });
     }
     /**
      * Returns the normalized URL path.

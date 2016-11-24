@@ -11,6 +11,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 import { Inject, Injectable } from '@angular/core';
+import { getDOM } from './dom_adapter';
 import { DOCUMENT } from './dom_tokens';
 export var SharedStylesHost = (function () {
     function SharedStylesHost() {
@@ -50,9 +51,8 @@ export var DomSharedStylesHost = (function (_super) {
     /** @internal */
     DomSharedStylesHost.prototype._addStylesToHost = function (styles, host) {
         for (var i = 0; i < styles.length; i++) {
-            var styleEl = document.createElement('style');
-            styleEl.textContent = styles[i];
-            host.appendChild(styleEl);
+            var style = styles[i];
+            getDOM().appendChild(host, getDOM().createStyleElement(style));
         }
     };
     DomSharedStylesHost.prototype.addHost = function (hostNode) {

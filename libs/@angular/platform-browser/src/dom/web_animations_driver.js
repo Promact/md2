@@ -5,22 +5,24 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { isPresent } from '../facade/lang';
+import { AUTO_STYLE } from '@angular/core';
+import { StringMapWrapper } from '../facade/collection';
+import { StringWrapper, isNumber, isPresent } from '../facade/lang';
+import { dashCaseToCamelCase } from './util';
 import { WebAnimationsPlayer } from './web_animations_player';
 export var WebAnimationsDriver = (function () {
     function WebAnimationsDriver() {
     }
-    WebAnimationsDriver.prototype.animate = function (element, startingStyles, keyframes, duration, delay, easing, previousPlayers) {
-        if (previousPlayers === void 0) { previousPlayers = []; }
+    WebAnimationsDriver.prototype.animate = function (element, startingStyles, keyframes, duration, delay, easing) {
         var formattedSteps = [];
         var startingStyleLookup = {};
         if (isPresent(startingStyles) && startingStyles.styles.length > 0) {
-            startingStyleLookup = _populateStyles(startingStyles, {});
+            startingStyleLookup = _populateStyles(element, startingStyles, {});
             startingStyleLookup['offset'] = 0;
             formattedSteps.push(startingStyleLookup);
         }
         keyframes.forEach(function (keyframe) {
-            var data = _populateStyles(keyframe.styles, startingStyleLookup);
+            var data = _populateStyles(element, keyframe.styles, startingStyleLookup);
             data['offset'] = keyframe.offset;
             formattedSteps.push(data);
         });
@@ -43,24 +45,83 @@ export var WebAnimationsDriver = (function () {
         if (easing) {
             playerOptions['easing'] = easing;
         }
-        // there may be a chance a NoOp player is returned depending
-        // on when the previous animation was cancelled
-        previousPlayers = previousPlayers.filter(filterWebAnimationPlayerFn);
-        return new WebAnimationsPlayer(element, formattedSteps, playerOptions, previousPlayers);
+        return new WebAnimationsPlayer(element, formattedSteps, playerOptions);
     };
     return WebAnimationsDriver;
 }());
-function _populateStyles(styles, defaultStyles) {
+function _populateStyles(element, styles, defaultStyles) {
     var data = {};
-    styles.styles.forEach(function (entry) { Object.keys(entry).forEach(function (prop) { data[prop] = entry[prop]; }); });
-    Object.keys(defaultStyles).forEach(function (prop) {
+    styles.styles.forEach(function (entry) {
+        StringMapWrapper.forEach(entry, function (val, prop) {
+            var formattedProp = dashCaseToCamelCase(prop);
+            data[formattedProp] =
+                val == AUTO_STYLE ? val : val.toString() + _resolveStyleUnit(val, prop, formattedProp);
+        });
+    });
+    StringMapWrapper.forEach(defaultStyles, function (value, prop) {
         if (!isPresent(data[prop])) {
-            data[prop] = defaultStyles[prop];
+            data[prop] = value;
         }
     });
     return data;
 }
-function filterWebAnimationPlayerFn(player) {
-    return player instanceof WebAnimationsPlayer;
+function _resolveStyleUnit(val, userProvidedProp, formattedProp) {
+    var unit = '';
+    if (_isPixelDimensionStyle(formattedProp) && val != 0 && val != '0') {
+        if (isNumber(val)) {
+            unit = 'px';
+        }
+        else if (_findDimensionalSuffix(val.toString()).length == 0) {
+            throw new Error('Please provide a CSS unit value for ' + userProvidedProp + ':' + val);
+        }
+    }
+    return unit;
+}
+var _$0 = 48;
+var _$9 = 57;
+var _$PERIOD = 46;
+function _findDimensionalSuffix(value) {
+    for (var i = 0; i < value.length; i++) {
+        var c = StringWrapper.charCodeAt(value, i);
+        if ((c >= _$0 && c <= _$9) || c == _$PERIOD)
+            continue;
+        return value.substring(i, value.length);
+    }
+    return '';
+}
+function _isPixelDimensionStyle(prop) {
+    switch (prop) {
+        case 'width':
+        case 'height':
+        case 'minWidth':
+        case 'minHeight':
+        case 'maxWidth':
+        case 'maxHeight':
+        case 'left':
+        case 'top':
+        case 'bottom':
+        case 'right':
+        case 'fontSize':
+        case 'outlineWidth':
+        case 'outlineOffset':
+        case 'paddingTop':
+        case 'paddingLeft':
+        case 'paddingBottom':
+        case 'paddingRight':
+        case 'marginTop':
+        case 'marginLeft':
+        case 'marginBottom':
+        case 'marginRight':
+        case 'borderRadius':
+        case 'borderWidth':
+        case 'borderTopWidth':
+        case 'borderLeftWidth':
+        case 'borderRightWidth':
+        case 'borderBottomWidth':
+        case 'textIndent':
+            return true;
+        default:
+            return false;
+    }
 }
 //# sourceMappingURL=web_animations_driver.js.map

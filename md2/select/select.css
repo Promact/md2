@@ -60,9 +60,8 @@ md2-select .md2-select-container .md2-select-placeholder {
   pointer-events: none;
   z-index: 1;
   transform: translate3d(0, 26px, 0) scale(1);
-  transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-  transform-origin: left top;
-  color: rgba(0, 0, 0, 0.38); }
+  transition: transform 400ms cubic-bezier(0.25, 0.8, 0.25, 1);
+  transform-origin: left top; }
 
 [aria-required=true] .md2-select-placeholder::after {
   content: '*'; }

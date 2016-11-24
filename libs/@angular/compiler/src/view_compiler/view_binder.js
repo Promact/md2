@@ -1,24 +1,20 @@
-/**
- * @license
- * Copyright Google Inc. All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
 import { templateVisitAll } from '../template_parser/template_ast';
-import { bindOutputs } from './event_binder';
-import { bindDirectiveAfterContentLifecycleCallbacks, bindDirectiveAfterViewLifecycleCallbacks, bindDirectiveWrapperLifecycleCallbacks, bindInjectableDestroyLifecycleCallbacks, bindPipeDestroyLifecycleCallbacks } from './lifecycle_binder';
+import { CompileElementAnimationOutput, bindAnimationOutputs, bindDirectiveOutputs, bindRenderOutputs, collectEventListeners } from './event_binder';
+import { bindDirectiveAfterContentLifecycleCallbacks, bindDirectiveAfterViewLifecycleCallbacks, bindDirectiveDetectChangesLifecycleCallbacks, bindInjectableDestroyLifecycleCallbacks, bindPipeDestroyLifecycleCallbacks } from './lifecycle_binder';
 import { bindDirectiveHostProps, bindDirectiveInputs, bindRenderInputs, bindRenderText } from './property_binder';
-export function bindView(view, parsedTemplate, schemaRegistry) {
-    var visitor = new ViewBinderVisitor(view, schemaRegistry);
+export function bindView(view, parsedTemplate, animationOutputs) {
+    var visitor = new ViewBinderVisitor(view, animationOutputs);
     templateVisitAll(visitor, parsedTemplate);
     view.pipes.forEach(function (pipe) { bindPipeDestroyLifecycleCallbacks(pipe.meta, pipe.instance, pipe.view); });
 }
 var ViewBinderVisitor = (function () {
-    function ViewBinderVisitor(view, _schemaRegistry) {
+    function ViewBinderVisitor(view, animationOutputs) {
+        var _this = this;
         this.view = view;
-        this._schemaRegistry = _schemaRegistry;
+        this.animationOutputs = animationOutputs;
         this._nodeIndex = 0;
+        this._animationOutputsMap = {};
+        animationOutputs.forEach(function (entry) { _this._animationOutputsMap[entry.fullPropertyName] = entry; });
     }
     ViewBinderVisitor.prototype.visitBoundText = function (ast, parent) {
         var node = this.view.nodes[this._nodeIndex++];
@@ -33,22 +29,40 @@ var ViewBinderVisitor = (function () {
     ViewBinderVisitor.prototype.visitElement = function (ast, parent) {
         var _this = this;
         var compileElement = this.view.nodes[this._nodeIndex++];
-        var hasEvents = bindOutputs(ast.outputs, ast.directives, compileElement, true);
-        bindRenderInputs(ast.inputs, hasEvents, compileElement);
-        ast.directives.forEach(function (directiveAst, dirIndex) {
-            var directiveWrapperInstance = compileElement.directiveWrapperInstance.get(directiveAst.directive.type.reference);
-            bindDirectiveInputs(directiveAst, directiveWrapperInstance, dirIndex, compileElement);
-            bindDirectiveHostProps(directiveAst, directiveWrapperInstance, compileElement, ast.name, _this._schemaRegistry);
+        var eventListeners = [];
+        var animationEventListeners = [];
+        collectEventListeners(ast.outputs, ast.directives, compileElement).forEach(function (entry) {
+            // TODO: figure out how to abstract this `if` statement elsewhere
+            if (entry.eventName[0] == '@') {
+                var animationOutputName = entry.eventName.substr(1);
+                var output = _this._animationOutputsMap[animationOutputName];
+                // no need to report an error here since the parser will
+                // have caught the missing animation trigger definition
+                if (output) {
+                    animationEventListeners.push(new CompileElementAnimationOutput(entry, output));
+                }
+            }
+            else {
+                eventListeners.push(entry);
+            }
+        });
+        bindAnimationOutputs(animationEventListeners);
+        bindRenderInputs(ast.inputs, compileElement);
+        bindRenderOutputs(eventListeners);
+        ast.directives.forEach(function (directiveAst) {
+            var directiveInstance = compileElement.instances.get(directiveAst.directive.type.reference);
+            bindDirectiveInputs(directiveAst, directiveInstance, compileElement);
+            bindDirectiveDetectChangesLifecycleCallbacks(directiveAst, directiveInstance, compileElement);
+            bindDirectiveHostProps(directiveAst, directiveInstance, compileElement);
+            bindDirectiveOutputs(directiveAst, directiveInstance, eventListeners);
         });
         templateVisitAll(this, ast.children, compileElement);
         // afterContent and afterView lifecycles need to be called bottom up
         // so that children are notified before parents
         ast.directives.forEach(function (directiveAst) {
             var directiveInstance = compileElement.instances.get(directiveAst.directive.type.reference);
-            var directiveWrapperInstance = compileElement.directiveWrapperInstance.get(directiveAst.directive.type.reference);
             bindDirectiveAfterContentLifecycleCallbacks(directiveAst.directive, directiveInstance, compileElement);
             bindDirectiveAfterViewLifecycleCallbacks(directiveAst.directive, directiveInstance, compileElement);
-            bindDirectiveWrapperLifecycleCallbacks(directiveAst, directiveWrapperInstance, compileElement);
         });
         ast.providers.forEach(function (providerAst) {
             var providerInstance = compileElement.instances.get(providerAst.token.reference);
@@ -58,20 +72,20 @@ var ViewBinderVisitor = (function () {
     };
     ViewBinderVisitor.prototype.visitEmbeddedTemplate = function (ast, parent) {
         var compileElement = this.view.nodes[this._nodeIndex++];
-        bindOutputs(ast.outputs, ast.directives, compileElement, false);
-        ast.directives.forEach(function (directiveAst, dirIndex) {
+        var eventListeners = collectEventListeners(ast.outputs, ast.directives, compileElement);
+        ast.directives.forEach(function (directiveAst) {
             var directiveInstance = compileElement.instances.get(directiveAst.directive.type.reference);
-            var directiveWrapperInstance = compileElement.directiveWrapperInstance.get(directiveAst.directive.type.reference);
-            bindDirectiveInputs(directiveAst, directiveWrapperInstance, dirIndex, compileElement);
+            bindDirectiveInputs(directiveAst, directiveInstance, compileElement);
+            bindDirectiveDetectChangesLifecycleCallbacks(directiveAst, directiveInstance, compileElement);
+            bindDirectiveOutputs(directiveAst, directiveInstance, eventListeners);
             bindDirectiveAfterContentLifecycleCallbacks(directiveAst.directive, directiveInstance, compileElement);
             bindDirectiveAfterViewLifecycleCallbacks(directiveAst.directive, directiveInstance, compileElement);
-            bindDirectiveWrapperLifecycleCallbacks(directiveAst, directiveWrapperInstance, compileElement);
         });
         ast.providers.forEach(function (providerAst) {
             var providerInstance = compileElement.instances.get(providerAst.token.reference);
             bindInjectableDestroyLifecycleCallbacks(providerAst, providerInstance, compileElement);
         });
-        bindView(compileElement.embeddedView, ast.children, this._schemaRegistry);
+        bindView(compileElement.embeddedView, ast.children, this.animationOutputs);
         return null;
     };
     ViewBinderVisitor.prototype.visitAttr = function (ast, ctx) { return null; };

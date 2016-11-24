@@ -7,12 +7,10 @@
  */
 import { SecurityContext } from '@angular/core';
 export var MockSchemaRegistry = (function () {
-    function MockSchemaRegistry(existingProperties, attrPropMapping, existingElements, invalidProperties, invalidAttributes) {
+    function MockSchemaRegistry(existingProperties, attrPropMapping, existingElements) {
         this.existingProperties = existingProperties;
         this.attrPropMapping = attrPropMapping;
         this.existingElements = existingElements;
-        this.invalidProperties = invalidProperties;
-        this.invalidAttributes = invalidAttributes;
     }
     MockSchemaRegistry.prototype.hasProperty = function (tagName, property, schemas) {
         var value = this.existingProperties[property];
@@ -22,35 +20,11 @@ export var MockSchemaRegistry = (function () {
         var value = this.existingElements[tagName.toLowerCase()];
         return value === void 0 ? true : value;
     };
-    MockSchemaRegistry.prototype.allKnownElementNames = function () { return Object.keys(this.existingElements); };
-    MockSchemaRegistry.prototype.securityContext = function (selector, property, isAttribute) {
+    MockSchemaRegistry.prototype.securityContext = function (tagName, property) {
         return SecurityContext.NONE;
     };
     MockSchemaRegistry.prototype.getMappedPropName = function (attrName) { return this.attrPropMapping[attrName] || attrName; };
     MockSchemaRegistry.prototype.getDefaultComponentElementName = function () { return 'ng-component'; };
-    MockSchemaRegistry.prototype.validateProperty = function (name) {
-        if (this.invalidProperties.indexOf(name) > -1) {
-            return { error: true, msg: "Binding to property '" + name + "' is disallowed for security reasons" };
-        }
-        else {
-            return { error: false };
-        }
-    };
-    MockSchemaRegistry.prototype.validateAttribute = function (name) {
-        if (this.invalidAttributes.indexOf(name) > -1) {
-            return {
-                error: true,
-                msg: "Binding to attribute '" + name + "' is disallowed for security reasons"
-            };
-        }
-        else {
-            return { error: false };
-        }
-    };
-    MockSchemaRegistry.prototype.normalizeAnimationStyleProperty = function (propName) { return propName; };
-    MockSchemaRegistry.prototype.normalizeAnimationStyleValue = function (camelCaseProp, userProvidedProp, val) {
-        return { error: null, value: val.toString() };
-    };
     return MockSchemaRegistry;
 }());
 //# sourceMappingURL=schema_registry_mock.js.map

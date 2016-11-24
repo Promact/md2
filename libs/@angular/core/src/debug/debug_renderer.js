@@ -59,9 +59,9 @@ export var DebugDomRenderer = (function () {
         if (isPresent(debugNode)) {
             var debugParent = debugNode.parent;
             if (viewRootNodes.length > 0 && isPresent(debugParent)) {
-                var debugViewRootNodes_1 = [];
-                viewRootNodes.forEach(function (rootNode) { return debugViewRootNodes_1.push(getDebugNode(rootNode)); });
-                debugParent.insertChildrenAfter(debugNode, debugViewRootNodes_1);
+                var debugViewRootNodes = [];
+                viewRootNodes.forEach(function (rootNode) { return debugViewRootNodes.push(getDebugNode(rootNode)); });
+                debugParent.insertChildrenAfter(debugNode, debugViewRootNodes);
             }
         }
         this._delegate.attachViewAfter(node, viewRootNodes);
@@ -76,7 +76,6 @@ export var DebugDomRenderer = (function () {
         this._delegate.detachView(viewRootNodes);
     };
     DebugDomRenderer.prototype.destroyView = function (hostElement, viewAllNodes) {
-        viewAllNodes = viewAllNodes || [];
         viewAllNodes.forEach(function (node) { removeDebugNodeFromIndex(getDebugNode(node)); });
         this._delegate.destroyView(hostElement, viewAllNodes);
     };
@@ -125,9 +124,8 @@ export var DebugDomRenderer = (function () {
         this._delegate.invokeElementMethod(renderElement, methodName, args);
     };
     DebugDomRenderer.prototype.setText = function (renderNode, text) { this._delegate.setText(renderNode, text); };
-    DebugDomRenderer.prototype.animate = function (element, startingStyles, keyframes, duration, delay, easing, previousPlayers) {
-        if (previousPlayers === void 0) { previousPlayers = []; }
-        return this._delegate.animate(element, startingStyles, keyframes, duration, delay, easing, previousPlayers);
+    DebugDomRenderer.prototype.animate = function (element, startingStyles, keyframes, duration, delay, easing) {
+        return this._delegate.animate(element, startingStyles, keyframes, duration, delay, easing);
     };
     return DebugDomRenderer;
 }());

@@ -5,7 +5,8 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { stringToArrayBuffer } from './http_utils';
+import { Json, isString } from '../src/facade/lang';
+import { isJsObject, stringToArrayBuffer } from './http_utils';
 import { URLSearchParams } from './url_search_params';
 /**
  * HTTP request body used by both {@link Request} and {@link Response}
@@ -18,11 +19,11 @@ export var Body = (function () {
      * Attempts to return body as parsed `JSON` object, or raises an exception.
      */
     Body.prototype.json = function () {
-        if (typeof this._body === 'string') {
-            return JSON.parse(this._body);
+        if (isString(this._body)) {
+            return Json.parse(this._body);
         }
         if (this._body instanceof ArrayBuffer) {
-            return JSON.parse(this.text());
+            return Json.parse(this.text());
         }
         return this._body;
     };
@@ -39,8 +40,8 @@ export var Body = (function () {
         if (this._body === null) {
             return '';
         }
-        if (typeof this._body === 'object') {
-            return JSON.stringify(this._body, null, 2);
+        if (isJsObject(this._body)) {
+            return Json.stringify(this._body);
         }
         return this._body.toString();
     };

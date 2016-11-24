@@ -82,7 +82,7 @@ export declare class Md2Colorpicker implements OnInit, ControlValueAccessor {
     /**
     * Show Colorpicker dialog
     */
-    private showColorpicker();
+    private _showColorpicker();
     /**
     * input event listner
     * @param event

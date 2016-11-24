@@ -42,7 +42,7 @@ export var NgTemplateOutlet = (function () {
         enumerable: true,
         configurable: true
     });
-    NgTemplateOutlet.prototype.ngOnChanges = function (changes) {
+    NgTemplateOutlet.prototype.ngOnChanges = function () {
         if (this._viewRef) {
             this._viewContainerRef.remove(this._viewContainerRef.indexOf(this._viewRef));
         }

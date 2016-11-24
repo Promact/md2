@@ -12,6 +12,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 import { NgModuleResolver } from '@angular/compiler';
 import { Compiler, Injectable, Injector } from '@angular/core';
+import { Map } from './facade/collection';
 export var MockNgModuleResolver = (function (_super) {
     __extends(MockNgModuleResolver, _super);
     function MockNgModuleResolver(_injector) {
@@ -19,6 +20,12 @@ export var MockNgModuleResolver = (function (_super) {
         this._injector = _injector;
         this._ngModules = new Map();
     }
+    Object.defineProperty(MockNgModuleResolver.prototype, "_compiler", {
+        get: function () { return this._injector.get(Compiler); },
+        enumerable: true,
+        configurable: true
+    });
+    MockNgModuleResolver.prototype._clearCacheFor = function (component) { this._compiler.clearCacheFor(component); };
     /**
      * Overrides the {@link NgModule} for a module.
      */
@@ -34,14 +41,12 @@ export var MockNgModuleResolver = (function (_super) {
      */
     MockNgModuleResolver.prototype.resolve = function (type, throwIfNotFound) {
         if (throwIfNotFound === void 0) { throwIfNotFound = true; }
-        return this._ngModules.get(type) || _super.prototype.resolve.call(this, type, throwIfNotFound);
+        var metadata = this._ngModules.get(type);
+        if (!metadata) {
+            metadata = _super.prototype.resolve.call(this, type, throwIfNotFound);
+        }
+        return metadata;
     };
-    Object.defineProperty(MockNgModuleResolver.prototype, "_compiler", {
-        get: function () { return this._injector.get(Compiler); },
-        enumerable: true,
-        configurable: true
-    });
-    MockNgModuleResolver.prototype._clearCacheFor = function (component) { this._compiler.clearCacheFor(component); };
     MockNgModuleResolver.decorators = [
         { type: Injectable },
     ];

@@ -5,6 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+import { ListWrapper } from '../../facade/collection';
 import * as ml from '../../ml_parser/ast';
 import { XmlParser } from '../../ml_parser/xml_parser';
 import { I18nError } from '../parse_util';
@@ -18,6 +19,10 @@ var _PLACEHOLDER_TAG = 'x';
 var _SOURCE_TAG = 'source';
 var _TARGET_TAG = 'target';
 var _UNIT_TAG = 'trans-unit';
+var _CR = function (ws) {
+    if (ws === void 0) { ws = 0; }
+    return new xml.Text("\n" + new Array(ws).join(' '));
+};
 // http://docs.oasis-open.org/xliff/v1.2/os/xliff-core.html
 // http://docs.oasis-open.org/xliff/v1.2/xliff-profile-html/xliff-profile-html-1.2.html
 export var Xliff = (function () {
@@ -31,22 +36,20 @@ export var Xliff = (function () {
         Object.keys(messageMap).forEach(function (id) {
             var message = messageMap[id];
             var transUnit = new xml.Tag(_UNIT_TAG, { id: id, datatype: 'html' });
-            transUnit.children.push(new xml.CR(8), new xml.Tag(_SOURCE_TAG, {}, visitor.serialize(message.nodes)), new xml.CR(8), new xml.Tag(_TARGET_TAG));
+            transUnit.children.push(_CR(8), new xml.Tag(_SOURCE_TAG, {}, visitor.serialize(message.nodes)), _CR(8), new xml.Tag(_TARGET_TAG));
             if (message.description) {
-                transUnit.children.push(new xml.CR(8), new xml.Tag('note', { priority: '1', from: 'description' }, [new xml.Text(message.description)]));
+                transUnit.children.push(_CR(8), new xml.Tag('note', { priority: '1', from: 'description' }, [new xml.Text(message.description)]));
             }
             if (message.meaning) {
-                transUnit.children.push(new xml.CR(8), new xml.Tag('note', { priority: '1', from: 'meaning' }, [new xml.Text(message.meaning)]));
+                transUnit.children.push(_CR(8), new xml.Tag('note', { priority: '1', from: 'meaning' }, [new xml.Text(message.meaning)]));
             }
-            transUnit.children.push(new xml.CR(6));
-            transUnits.push(new xml.CR(6), transUnit);
+            transUnit.children.push(_CR(6));
+            transUnits.push(_CR(6), transUnit);
         });
-        var body = new xml.Tag('body', {}, transUnits.concat([new xml.CR(4)]));
-        var file = new xml.Tag('file', { 'source-language': _SOURCE_LANG, datatype: 'plaintext', original: 'ng2.template' }, [new xml.CR(4), body, new xml.CR(2)]);
-        var xliff = new xml.Tag('xliff', { version: _VERSION, xmlns: _XMLNS }, [new xml.CR(2), file, new xml.CR()]);
-        return xml.serialize([
-            new xml.Declaration({ version: '1.0', encoding: 'UTF-8' }), new xml.CR(), xliff, new xml.CR()
-        ]);
+        var body = new xml.Tag('body', {}, transUnits.concat([_CR(4)]));
+        var file = new xml.Tag('file', { 'source-language': _SOURCE_LANG, datatype: 'plaintext', original: 'ng2.template' }, [_CR(4), body, _CR(2)]);
+        var xliff = new xml.Tag('xliff', { version: _VERSION, xmlns: _XMLNS }, [_CR(2), file, _CR()]);
+        return xml.serialize([new xml.Declaration({ version: '1.0', encoding: 'UTF-8' }), _CR(), xliff]);
     };
     Xliff.prototype.load = function (content, url, messageBundle) {
         var _this = this;
@@ -100,13 +103,12 @@ var _WriteVisitor = (function () {
         return nodes;
     };
     _WriteVisitor.prototype.visitTagPlaceholder = function (ph, context) {
-        var ctype = getCtypeForTag(ph.tag);
-        var startTagPh = new xml.Tag(_PLACEHOLDER_TAG, { id: ph.startName, ctype: ctype });
+        var startTagPh = new xml.Tag(_PLACEHOLDER_TAG, { id: ph.startName, ctype: ph.tag });
         if (ph.isVoid) {
             // void tags have no children nor closing tags
             return [startTagPh];
         }
-        var closeTagPh = new xml.Tag(_PLACEHOLDER_TAG, { id: ph.closeName, ctype: ctype });
+        var closeTagPh = new xml.Tag(_PLACEHOLDER_TAG, { id: ph.closeName, ctype: ph.tag });
         return [startTagPh].concat(this.serialize(ph.children), [closeTagPh]);
     };
     _WriteVisitor.prototype.visitPlaceholder = function (ph, context) {
@@ -118,8 +120,7 @@ var _WriteVisitor = (function () {
     _WriteVisitor.prototype.serialize = function (nodes) {
         var _this = this;
         this._isInIcu = false;
-        return (_a = []).concat.apply(_a, nodes.map(function (node) { return node.visit(_this); }));
-        var _a;
+        return ListWrapper.flatten(nodes.map(function (node) { return node.visit(_this); }));
     };
     return _WriteVisitor;
 }());
@@ -228,14 +229,4 @@ var _LoadVisitor = (function () {
     };
     return _LoadVisitor;
 }());
-function getCtypeForTag(tag) {
-    switch (tag.toLowerCase()) {
-        case 'br':
-            return 'lb';
-        case 'img':
-            return 'image';
-        default:
-            return "x-" + tag;
-    }
-}
 //# sourceMappingURL=xliff.js.map

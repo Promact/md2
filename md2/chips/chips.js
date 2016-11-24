@@ -119,7 +119,7 @@ export var Md2Chips = (function () {
             this.templateHtmlString = elements.template.innerHTML;
         }
     };
-    //check autocomplete input is empty or not
+    // check autocomplete input is empty or not
     Md2Chips.prototype.valueupdate = function (evt) {
         this.isEmptyAutoComplete = evt ? false : true;
     };
@@ -130,15 +130,15 @@ export var Md2Chips = (function () {
     Md2Chips.prototype.inputChanged = function (event) {
         var key = event.keyCode;
         switch (key) {
-            //back space
+            // back space
             case KeyCodes.BACKSPACE:
                 this.backspaceEvent();
                 break;
-            //delete
+            // delete
             case KeyCodes.DELETE:
                 this.backspaceEvent();
                 break;
-            //left arrow
+            // left arrow
             case KeyCodes.LEFT_ARROW:
                 if (this.isAutoComplete && this.isEmptyAutoComplete) {
                     this.leftArrowKeyEvents();
@@ -147,7 +147,7 @@ export var Md2Chips = (function () {
                     this.leftArrowKeyEvents();
                 }
                 break;
-            //right arrow
+            // right arrow
             case KeyCodes.RIGHT_ARROW:
                 if (this.isAutoComplete && this.isEmptyAutoComplete) {
                     this.rightArrowKeyEvents();
@@ -156,21 +156,21 @@ export var Md2Chips = (function () {
                     this.rightArrowKeyEvents();
                 }
                 break;
-            //enter
+            // enter
             case KeyCodes.ENTER:
                 if (this.addOnEnter) {
                     this.addNewChip(this.inputValue);
                     event.preventDefault();
                 }
                 break;
-            //comma
+            // comma
             case KeyCodes.COMMA:
                 if (this.addOnComma) {
                     this.addNewChip(this.inputValue);
                     event.preventDefault();
                 }
                 break;
-            //space
+            // space
             case KeyCodes.SPACE:
                 if (this.addOnSpace) {
                     this.addNewChip(this.inputValue);
@@ -181,7 +181,7 @@ export var Md2Chips = (function () {
                 break;
         }
     };
-    Md2Chips.prototype.onFocus = function () {
+    Md2Chips.prototype._handleFocus = function () {
         if (this.readonly) {
             return;
         }
@@ -242,9 +242,8 @@ export var Md2Chips = (function () {
                 isExist = this.chipItemList.filter(function (chip) { return chip.text === chipString; });
                 return isExist.length ? false : true;
             }
-            else {
-                if (this.chipItemList.indexOf(chipString) === -1)
-                    return this.allowedPattern.test(chipString);
+            else if (this.chipItemList.indexOf(chipString) === -1) {
+                return this.allowedPattern.test(chipString);
             }
         }
     };
@@ -284,15 +283,6 @@ export var Md2Chips = (function () {
         this.chipItemList.splice(chipIndexToRemove, 1);
         this._resetSelected();
         this.updateValue();
-    };
-    /**
-    * select chip
-    * @param index of select chip
-    */
-    Md2Chips.prototype.selectChip = function (index) {
-        if (index >= -1 && index <= this.chipItemList.length) {
-            this.selectedChip = index;
-        }
     };
     Md2Chips.prototype.backspaceEvent = function () {
         if (!this.inputValue.length && this.chipItemList.length && this.isRemovable && this.isEmptyAutoComplete) {
@@ -445,7 +435,7 @@ export var Md2Chips = (function () {
         __metadata('design:type', Function), 
         __metadata('design:paramtypes', []), 
         __metadata('design:returntype', void 0)
-    ], Md2Chips.prototype, "onFocus", null);
+    ], Md2Chips.prototype, "_handleFocus", null);
     Md2Chips = __decorate([
         Component({
             selector: 'md2-chips',

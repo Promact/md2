@@ -5,6 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+import { StringMapWrapper } from '../facade/collection';
 import { isBlank, isPresent } from '../facade/lang';
 import { ViewType } from './view_type';
 export var StaticNodeDebugInfo = (function () {
@@ -48,10 +49,13 @@ export var DebugContext = (function () {
     Object.defineProperty(DebugContext.prototype, "componentRenderElement", {
         get: function () {
             var componentView = this._view;
-            while (isPresent(componentView.parentView) && componentView.type !== ViewType.COMPONENT) {
-                componentView = componentView.parentView;
+            while (isPresent(componentView.declarationAppElement) &&
+                componentView.type !== ViewType.COMPONENT) {
+                componentView = componentView.declarationAppElement.parentView;
             }
-            return componentView.parentElement;
+            return isPresent(componentView.declarationAppElement) ?
+                componentView.declarationAppElement.nativeElement :
+                null;
         },
         enumerable: true,
         configurable: true
@@ -94,9 +98,8 @@ export var DebugContext = (function () {
             var varValues = {};
             var staticNodeInfo = this._staticNodeInfo;
             if (isPresent(staticNodeInfo)) {
-                var refs_1 = staticNodeInfo.refTokens;
-                Object.keys(refs_1).forEach(function (refName) {
-                    var refToken = refs_1[refName];
+                var refs = staticNodeInfo.refTokens;
+                StringMapWrapper.forEach(refs, function (refToken, refName) {
                     var varValue;
                     if (isBlank(refToken)) {
                         varValue = _this._view.allNodes ? _this._view.allNodes[_this._nodeIndex] : null;

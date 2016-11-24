@@ -91,7 +91,6 @@ export var Animate = (function () {
         return -1;
     };
     Animate.setTransitionDuration = function (element, delayMs) {
-        //element.style['transition-duration'] = `${delayMs}ms`;
     };
     /* From Modernizr */
     Animate.whichTransitionEvent = function () {
@@ -120,7 +119,6 @@ export var Animate = (function () {
         Animate.setTransitionDuration(element, 0);
         return new Promise(function (resolve, reject) {
             Object.keys(styles).forEach(function (key) {
-                //element.style[key] = `${styles[key]}`;
             });
             if (saveDuration !== -1) {
                 Animate.setTransitionDuration(element, saveDuration);

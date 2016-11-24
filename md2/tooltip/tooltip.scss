@@ -27,7 +27,7 @@ md2-tooltip {
         border-radius: 2px;
         line-height: $md2-tooltip-height;
         opacity: 0;
-        transition: all .2s cubic-bezier(.25,.8,.25,1);
+        transition: all 200ms cubic-bezier(0.25, 0.8, 0.25, 1);
         transform-origin: center top;
         transform: scale(0);
 

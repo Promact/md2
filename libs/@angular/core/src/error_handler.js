@@ -6,19 +6,18 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /**
- * @whatItDoes Provides a hook for centralized exception handling.
+ * Provides a hook for centralized exception handling.
  *
- * @description
- *
- * The default implementation of `ErrorHandler` prints error messages to the `console`. To
- * intercept error handling, write a custom exception handler that replaces this default as
- * appropriate for your app.
+ * The default implementation of `ErrorHandler` prints error messages to the `Console`. To
+ * intercept error handling,
+ * write a custom exception handler that replaces this default as appropriate for your app.
  *
  * ### Example
  *
- * ```
+ * ```javascript
+ *
  * class MyErrorHandler implements ErrorHandler {
- *   handleError(error) {
+ *   call(error, stackTrace = null, reason = null) {
  *     // do something with the exception
  *   }
  * }
@@ -28,7 +27,6 @@
  * })
  * class MyModule {}
  * ```
- *
  * @stable
  */
 export var ErrorHandler = (function () {
@@ -71,7 +69,9 @@ export var ErrorHandler = (function () {
             return error.context ? error.context :
                 this._findContext(error.originalError);
         }
-        return null;
+        else {
+            return null;
+        }
     };
     /** @internal */
     ErrorHandler.prototype._findOriginalError = function (error) {

@@ -45,8 +45,8 @@ export declare class Md2Multiselect implements AfterContentInit, ControlValueAcc
      * to update scroll of options
      */
     private updateScroll();
-    private onClick(event);
-    private onKeyDown(event);
+    private _handleClick(event);
+    private _handleKeydown(event);
     /**
      * on focus current component
      */
@@ -57,7 +57,7 @@ export declare class Md2Multiselect implements AfterContentInit, ControlValueAcc
      * @param index
      * @return boolean the item is active or not
      */
-    private isActive(index);
+    private _isActive(index);
     /**
      * to toggle option to select/deselect option
      * @param event

@@ -7,7 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 export var Md2DateUtil = (function () {
     function Md2DateUtil() {
     }
@@ -192,16 +192,16 @@ export var Md2DateUtil = (function () {
      * 1. No argument for Date representing now.
      * 2. Single-argument value representing number of seconds since Unix Epoch
      * or a Date object.
-     * @param {number|Date=} opt_value
+     * @param {number|Date=} value
      * @return {Date} New date with time set to midnight.
      */
-    Md2DateUtil.prototype.createDateAtMidnight = function (opt_value) {
+    Md2DateUtil.prototype.createDateAtMidnight = function (value) {
         var date;
-        if (!opt_value) {
+        if (!value) {
             date = new Date();
         }
         else {
-            date = new Date(opt_value);
+            date = new Date(value);
         }
         this.setDateTimeToMidnight(date);
         return date;

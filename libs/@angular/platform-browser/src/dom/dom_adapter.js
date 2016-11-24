@@ -5,6 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+import { isBlank } from '../facade/lang';
 var _DOM = null;
 export function getDOM() {
     return _DOM;
@@ -13,7 +14,7 @@ export function setDOM(adapter) {
     _DOM = adapter;
 }
 export function setRootDomAdapter(adapter) {
-    if (!_DOM) {
+    if (isBlank(_DOM)) {
         _DOM = adapter;
     }
 }

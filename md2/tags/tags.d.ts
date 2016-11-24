@@ -48,8 +48,8 @@ export declare class Md2Tags implements AfterContentInit, ControlValueAccessor {
      * input key listener
      * @param event
      */
-    private inputKeydown(event);
-    private onKeydown(event);
+    private _handleInputKeydown(event);
+    private _handleKeydown(event);
     private removeAndSelectAdjacentTag(index);
     private resetselectedTag();
     private getAdjacentTagIndex(index);
@@ -59,7 +59,7 @@ export declare class Md2Tags implements AfterContentInit, ControlValueAccessor {
      * @param index index of the specific tag
      */
     private addTag(event, index);
-    private removeTagAndFocusInput(index);
+    private _removeTagAndFocusInput(index);
     /**
      * remove tag
      * @param index
@@ -74,12 +74,12 @@ export declare class Md2Tags implements AfterContentInit, ControlValueAccessor {
      * select tag
      * @param index of select tag
      */
-    private selectTag(index);
+    private _selectTag(index);
     private onFocus();
-    private onInputFocus();
-    private onInputBlur();
-    private listEnter();
-    private listLeave();
+    private _onInputFocus();
+    private _onInputBlur();
+    private _listEnter();
+    private _listLeave();
     /**
      * update suggestion menu with filter
      * @param query

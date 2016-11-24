@@ -60,7 +60,7 @@ export declare class Md2Select implements AfterContentInit, AfterContentChecked,
      */
     private updateFocus(inc);
     private onClick(e);
-    private onKeyDown(event);
+    private _handleKeydown(event);
     _onBlur(): void;
     touch(): void;
     private _updateOptions();

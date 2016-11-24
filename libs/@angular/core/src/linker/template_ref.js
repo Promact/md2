@@ -10,7 +10,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-import { ElementRef } from './element_ref';
 /**
  * Represents an Embedded Template that can be used to instantiate Embedded Views.
  *
@@ -48,19 +47,18 @@ export var TemplateRef = (function () {
 }());
 export var TemplateRef_ = (function (_super) {
     __extends(TemplateRef_, _super);
-    function TemplateRef_(_parentView, _nodeIndex, _nativeElement) {
+    function TemplateRef_(_appElement, _viewFactory) {
         _super.call(this);
-        this._parentView = _parentView;
-        this._nodeIndex = _nodeIndex;
-        this._nativeElement = _nativeElement;
+        this._appElement = _appElement;
+        this._viewFactory = _viewFactory;
     }
     TemplateRef_.prototype.createEmbeddedView = function (context) {
-        var view = this._parentView.createEmbeddedViewInternal(this._nodeIndex);
-        view.create(context || {});
+        var view = this._viewFactory(this._appElement.parentView.viewUtils, this._appElement.parentInjector, this._appElement);
+        view.create(context || {}, null, null);
         return view.ref;
     };
     Object.defineProperty(TemplateRef_.prototype, "elementRef", {
-        get: function () { return new ElementRef(this._nativeElement); },
+        get: function () { return this._appElement.elementRef; },
         enumerable: true,
         configurable: true
     });

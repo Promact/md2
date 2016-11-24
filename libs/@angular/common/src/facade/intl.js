@@ -63,13 +63,12 @@ var DATE_FORMATS = {
     MM: datePartGetterFactory(digitCondition('month', 2)),
     M: datePartGetterFactory(digitCondition('month', 1)),
     LLLL: datePartGetterFactory(nameCondition('month', 4)),
-    L: datePartGetterFactory(nameCondition('month', 1)),
     dd: datePartGetterFactory(digitCondition('day', 2)),
     d: datePartGetterFactory(digitCondition('day', 1)),
-    HH: digitModifier(hourExtractor(datePartGetterFactory(hour12Modify(digitCondition('hour', 2), false)))),
-    H: hourExtractor(datePartGetterFactory(hour12Modify(digitCondition('hour', 1), false))),
-    hh: digitModifier(hourExtractor(datePartGetterFactory(hour12Modify(digitCondition('hour', 2), true)))),
-    h: hourExtractor(datePartGetterFactory(hour12Modify(digitCondition('hour', 1), true))),
+    HH: digitModifier(hourExtracter(datePartGetterFactory(hour12Modify(digitCondition('hour', 2), false)))),
+    H: hourExtracter(datePartGetterFactory(hour12Modify(digitCondition('hour', 1), false))),
+    hh: digitModifier(hourExtracter(datePartGetterFactory(hour12Modify(digitCondition('hour', 2), true)))),
+    h: hourExtracter(datePartGetterFactory(hour12Modify(digitCondition('hour', 1), true))),
     jj: datePartGetterFactory(digitCondition('hour', 2)),
     j: datePartGetterFactory(digitCondition('hour', 1)),
     mm: digitModifier(datePartGetterFactory(digitCondition('minute', 2))),
@@ -84,7 +83,7 @@ var DATE_FORMATS = {
     EEE: datePartGetterFactory(nameCondition('weekday', 3)),
     EE: datePartGetterFactory(nameCondition('weekday', 2)),
     E: datePartGetterFactory(nameCondition('weekday', 1)),
-    a: hourClockExtractor(datePartGetterFactory(hour12Modify(digitCondition('hour', 1), true))),
+    a: hourClockExtracter(datePartGetterFactory(hour12Modify(digitCondition('hour', 1), true))),
     Z: timeZoneGetter('short'),
     z: timeZoneGetter('long'),
     ww: datePartGetterFactory({}),
@@ -102,11 +101,17 @@ function digitModifier(inner) {
         return result.length == 1 ? '0' + result : result;
     };
 }
-function hourClockExtractor(inner) {
-    return function (date, locale) { return inner(date, locale).split(' ')[1]; };
+function hourClockExtracter(inner) {
+    return function (date, locale) {
+        var result = inner(date, locale);
+        return result.split(' ')[1];
+    };
 }
-function hourExtractor(inner) {
-    return function (date, locale) { return inner(date, locale).split(' ')[0]; };
+function hourExtracter(inner) {
+    return function (date, locale) {
+        var result = inner(date, locale);
+        return result.split(' ')[0];
+    };
 }
 function intlDateFormat(date, locale, options) {
     return new Intl.DateTimeFormat(locale, options).format(date).replace(/[\u200e\u200f]/g, '');
@@ -126,40 +131,40 @@ function hour12Modify(options, value) {
 }
 function digitCondition(prop, len) {
     var result = {};
-    result[prop] = len === 2 ? '2-digit' : 'numeric';
+    result[prop] = len == 2 ? '2-digit' : 'numeric';
     return result;
 }
 function nameCondition(prop, len) {
     var result = {};
-    if (len < 4) {
-        result[prop] = len > 1 ? 'short' : 'narrow';
-    }
-    else {
-        result[prop] = 'long';
-    }
+    result[prop] = len < 4 ? 'short' : 'long';
     return result;
 }
 function combine(options) {
-    return (_a = Object).assign.apply(_a, [{}].concat(options));
-    var _a;
+    var result = {};
+    options.forEach(function (option) { Object.assign(result, option); });
+    return result;
 }
 function datePartGetterFactory(ret) {
     return function (date, locale) { return intlDateFormat(date, locale, ret); };
 }
-var DATE_FORMATTER_CACHE = new Map();
+var datePartsFormatterCache = new Map();
 function dateFormatter(format, date, locale) {
-    var fn = PATTERN_ALIASES[format];
-    if (fn)
-        return fn(date, locale);
-    var parts = DATE_FORMATTER_CACHE.get(format);
-    if (!parts) {
-        parts = [];
-        var match = void 0;
-        DATE_FORMATS_SPLIT.exec(format);
+    var text = '';
+    var match;
+    var fn;
+    var parts = [];
+    if (PATTERN_ALIASES[format]) {
+        return PATTERN_ALIASES[format](date, locale);
+    }
+    if (datePartsFormatterCache.has(format)) {
+        parts = datePartsFormatterCache.get(format);
+    }
+    else {
+        var matches = DATE_FORMATS_SPLIT.exec(format);
         while (format) {
             match = DATE_FORMATS_SPLIT.exec(format);
             if (match) {
-                parts = parts.concat(match.slice(1));
+                parts = concat(parts, match, 1);
                 format = parts.pop();
             }
             else {
@@ -167,15 +172,18 @@ function dateFormatter(format, date, locale) {
                 format = null;
             }
         }
-        DATE_FORMATTER_CACHE.set(format, parts);
+        datePartsFormatterCache.set(format, parts);
     }
-    return parts.reduce(function (text, part) {
-        var fn = DATE_FORMATS[part];
-        return text + (fn ? fn(date, locale) : partToTime(part));
-    }, '');
+    parts.forEach(function (part) {
+        fn = DATE_FORMATS[part];
+        text += fn ? fn(date, locale) :
+            part === '\'\'' ? '\'' : part.replace(/(^'|'$)/g, '').replace(/''/g, '\'');
+    });
+    return text;
 }
-function partToTime(part) {
-    return part === '\'\'' ? '\'' : part.replace(/(^'|'$)/g, '').replace(/''/g, '\'');
+var slice = [].slice;
+function concat(array1 /** TODO #9100 */, array2 /** TODO #9100 */, index /** TODO #9100 */) {
+    return array1.concat(slice.call(array2, index));
 }
 export var DateFormatter = (function () {
     function DateFormatter() {

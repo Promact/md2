@@ -5,6 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+import { StringMapWrapper } from '../../facade/collection';
 import { isJsObject, looseIdentical, stringify } from '../../facade/lang';
 export var DefaultKeyValueDifferFactory = (function () {
     function DefaultKeyValueDifferFactory() {
@@ -267,7 +268,7 @@ export var DefaultKeyValueDiffer = (function () {
             obj.forEach(fn);
         }
         else {
-            Object.keys(obj).forEach(function (k) { return fn(obj[k], k); });
+            StringMapWrapper.forEach(obj, fn);
         }
     };
     return DefaultKeyValueDiffer;

@@ -220,7 +220,7 @@ export class Md2DataTableSortField {
         </svg>
       </li>
     </ul>
-    <div class="md2-rows-select" *ngIf="dataLength > _minRows">
+    <div class="md2-rows-select" *ngIf="rows.length > 0">
       Rows per page:
       <select (change)="_setRows($event.target.value)">
         <option *ngFor="let row of rows" [selected]="_rows===row">{{row}}</option>
@@ -248,7 +248,6 @@ export class Md2DataTableSortField {
 export class Md2Pagination implements OnChanges {
 
   private _md2Table: Md2DataTable;
-  private _minRows = 0;
   private _activePage: number;
   private _rows: number;
   private _lastPage: number;
@@ -259,10 +258,13 @@ export class Md2Pagination implements OnChanges {
 
   constructor( @Optional() private injectMd2Table: Md2DataTable) { }
 
-  ngOnChanges(changes: any): any {// { [key: string]: SimpleChange }
-    if (changes.rows) {
-      // this._minRows = _.min(this.rows)
-    }
+  ngAfterViewInit() {
+    this._md2Table = this.md2InputTable || this.injectMd2Table;
+    this._onPageChange(this._md2Table.getPage());
+    this._md2Table.onPageChange.subscribe(this._onPageChange);
+  }
+
+  ngOnChanges(changes: any): any {
     this._md2Table = this.md2InputTable || this.injectMd2Table;
     this._onPageChange(this._md2Table.getPage());
     this._md2Table.onPageChange.subscribe(this._onPageChange);

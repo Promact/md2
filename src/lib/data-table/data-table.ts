@@ -2,6 +2,7 @@ import {
   Component,
   Directive,
   Input,
+  Output,
   EventEmitter,
   SimpleChange,
   OnChanges,
@@ -35,6 +36,7 @@ export interface DataEvent {
 export class Md2DataTable implements OnChanges, DoCheck {
 
   private dataLength = 0;
+  private _activePage: number = 1;
 
   public data: any[];
   public onDataChange = new EventEmitter<DataEvent>();
@@ -47,7 +49,14 @@ export class Md2DataTable implements OnChanges, DoCheck {
 
   @Input('md2-data') inputData: any[] = [];
   @Input('md2-page-length') pageLength = 1000;
-  @Input('md2-active-page') activePage = 1;
+  @Input()
+  get activePage(): number { return this._activePage; }
+  set activePage(value: number) {
+    this._activePage = value;
+    this.activePageChange.emit(value);
+  }
+
+  @Output() activePageChange = new EventEmitter();
 
   public getSort(): SortEvent {
     return { sortField: this.sortField, sortOrder: this.sortOrder };
@@ -94,13 +103,15 @@ export class Md2DataTable implements OnChanges, DoCheck {
   public ngOnChanges(changes: { [key: string]: SimpleChange }): any {
     if (changes['inputData']) {
       this.inputData = changes['inputData'].currentValue || [];
-      this.recalculatePage();
-      this.onPageChange.emit({
-        activePage: this.activePage,
-        pageLength: this.pageLength,
-        dataLength: this.inputData.length
-      });
-      this.isDataChanged = true;
+      if (this.inputData.length > 0) {
+        this.recalculatePage();
+        this.onPageChange.emit({
+          activePage: this.activePage,
+          pageLength: this.pageLength,
+          dataLength: this.inputData.length
+        });
+        this.isDataChanged = true;
+      }
     }
   }
 

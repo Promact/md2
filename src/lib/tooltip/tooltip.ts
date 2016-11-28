@@ -1,21 +1,24 @@
 import {
   AfterViewInit,
-  ApplicationRef,
   ChangeDetectorRef,
   Component,
-  ComponentFactoryResolver,
-  ComponentRef,
   Directive,
   ElementRef,
   HostListener,
   Input,
-  ReflectiveInjector,
   ViewContainerRef,
   ViewEncapsulation,
   NgModule,
   ModuleWithProviders
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {
+  Overlay,
+  OverlayState,
+  OverlayRef,
+  ComponentPortal,
+  OVERLAY_PROVIDERS
+} from '../core';
 
 export type TooltipPosition = 'before' | 'after' | 'above' | 'below';
 
@@ -26,13 +29,14 @@ export class Md2Tooltip {
   private visible: boolean = false;
   private timer: any;
 
+  _overlayRef: OverlayRef;
+  _tooltipInstance: Md2TooltipComponent;
+
   @Input('tooltip') message: string;
   @Input('tooltip-position') position: TooltipPosition = 'below';
   @Input('tooltip-delay') delay: number = 0;
 
-  private tooltip: ComponentRef<any>;
-
-  constructor(private _componentFactory: ComponentFactoryResolver, private _appRef: ApplicationRef, private _viewContainer: ViewContainerRef) { }
+  constructor(private _viewContainer: ViewContainerRef, private _overlay: Overlay) { }
 
   /**
    * show tooltip while mouse enter or focus of element
@@ -49,15 +53,18 @@ export class Md2Tooltip {
     clearTimeout(this.timer);
     this.timer = setTimeout(() => {
       this.timer = 0;
-      let app: any = this._appRef;
-      let appContainer: ViewContainerRef = app['_rootComponents'][0]['_hostElement'].vcRef;
 
-      let toastFactory = this._componentFactory.resolveComponentFactory(Md2TooltipComponent);
-      let childInjector = ReflectiveInjector.fromResolvedProviders([], appContainer.parentInjector);
-      this.tooltip = appContainer.createComponent(toastFactory, appContainer.length, childInjector);
-      this.tooltip.instance.message = this.message;
-      this.tooltip.instance.position = this.position;
-      this.tooltip.instance.hostEl = this._viewContainer.element;
+      let strategy = this._overlay.position().global().fixed().top('0').left('0');
+      let config = new OverlayState();
+      config.positionStrategy = strategy;
+
+      this._overlayRef = this._overlay.create(config);
+      let portal = new ComponentPortal(Md2TooltipComponent);
+      this._tooltipInstance = this._overlayRef.attach(portal).instance;
+
+      this._tooltipInstance.message = this.message;
+      this._tooltipInstance.position = this.position;
+      this._tooltipInstance.hostEl = this._viewContainer.element;
     }, this.delay);
   }
 
@@ -73,9 +80,10 @@ export class Md2Tooltip {
       return;
     }
     this.visible = false;
-    if (this.tooltip) {
-      this.tooltip.destroy();
-      this.tooltip = null;
+    if (this._tooltipInstance) {
+      this._overlayRef.dispose();
+      this._overlayRef = null;
+      this._tooltipInstance = null;
     }
   }
 }
@@ -203,7 +211,7 @@ export class Md2TooltipModule {
   static forRoot(): ModuleWithProviders {
     return {
       ngModule: Md2TooltipModule,
-      providers: []
+      providers: [OVERLAY_PROVIDERS]
     };
   }
 }

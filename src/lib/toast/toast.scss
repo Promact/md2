@@ -1,19 +1,11 @@
-.md2-toast-wrapper {
-  position: fixed;
-  top: 0;
-  right: 0;
-  z-index: 1060;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
+md2-toast {
+  display: block;
   box-sizing: border-box;
   cursor: default;
   overflow: hidden;
   min-width: 304px;
   max-width: 100%;
   padding: 8px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
 }
 
@@ -30,7 +22,6 @@
   border-radius: 2px;
   font-size: 14px;
   overflow: hidden;
-  -ms-word-wrap: break-word;
   word-wrap: break-word;
   transition: all 250ms linear;
 }

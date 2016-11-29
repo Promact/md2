@@ -1,3 +1,28 @@
+<a name="0.0.10-2"></a>
+## [0.0.11](https://github.com/Promact/md2/compare/v0.0.8...v0.0.11) (2016-11-29)
+
+
+### Bug Fixes
+
+* style linting issues. ([da1b927](https://github.com/Promact/md2/commit/da1b927))
+
+
+### Bug Fixis
+
+* fix(select) require validation issue
+* fix(toast) move applicationRef -> viewContainerRef to overlay
+* fix(tooltip) move applicationRef -> viewContainerRef to overlay
+
+
+### Features
+* feat(data-table) handle active page
+
+
+### Breaking Changes
+
+* Renamed `md2-active-page` to `activePage` and made it as two way binding property
+
+
 <a name="0.0.10"></a>
 ## [0.0.10](https://github.com/Promact/md2/compare/v0.0.8...v0.0.10) (2016-11-24)
 

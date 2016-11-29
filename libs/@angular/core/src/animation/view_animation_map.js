@@ -5,18 +5,12 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { ListWrapper, Map, StringMapWrapper } from '../facade/collection';
 import { isPresent } from '../facade/lang';
 export var ViewAnimationMap = (function () {
     function ViewAnimationMap() {
         this._map = new Map();
         this._allPlayers = [];
     }
-    Object.defineProperty(ViewAnimationMap.prototype, "length", {
-        get: function () { return this.getAllPlayers().length; },
-        enumerable: true,
-        configurable: true
-    });
     ViewAnimationMap.prototype.find = function (element, animationName) {
         var playersByAnimation = this._map.get(element);
         if (isPresent(playersByAnimation)) {
@@ -25,7 +19,7 @@ export var ViewAnimationMap = (function () {
     };
     ViewAnimationMap.prototype.findAllPlayersByElement = function (element) {
         var el = this._map.get(element);
-        return el ? StringMapWrapper.values(el) : [];
+        return el ? Object.keys(el).map(function (k) { return el[k]; }) : [];
     };
     ViewAnimationMap.prototype.set = function (element, animationName, player) {
         var playersByAnimation = this._map.get(element);
@@ -43,12 +37,12 @@ export var ViewAnimationMap = (function () {
     ViewAnimationMap.prototype.getAllPlayers = function () { return this._allPlayers; };
     ViewAnimationMap.prototype.remove = function (element, animationName) {
         var playersByAnimation = this._map.get(element);
-        if (isPresent(playersByAnimation)) {
+        if (playersByAnimation) {
             var player = playersByAnimation[animationName];
             delete playersByAnimation[animationName];
             var index = this._allPlayers.indexOf(player);
-            ListWrapper.removeAt(this._allPlayers, index);
-            if (StringMapWrapper.isEmpty(playersByAnimation)) {
+            this._allPlayers.splice(index, 1);
+            if (Object.keys(playersByAnimation).length === 0) {
                 this._map.delete(element);
             }
         }

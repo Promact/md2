@@ -23,7 +23,7 @@ import { Directive, ElementRef, Input, KeyValueDiffers, Renderer } from '@angula
  * @description
  *
  * The styles are updated according to the value of the expression evaluation:
- * - keys are style names with an option `.<unit>` suffix (ie 'top.px', 'font-style.em'),
+ * - keys are style names with an optional `.<unit>` suffix (ie 'top.px', 'font-style.em'),
  * - values are the values assigned to those properties (expressed in the given unit).
  *
  * @stable
@@ -60,7 +60,7 @@ export var NgStyle = (function () {
     };
     NgStyle.prototype._setStyle = function (nameAndUnit, value) {
         var _a = nameAndUnit.split('.'), name = _a[0], unit = _a[1];
-        value = value !== null && value !== void (0) && unit ? "" + value + unit : value;
+        value = value && unit ? "" + value + unit : value;
         this._renderer.setElementStyle(this._ngEl.nativeElement, name, value);
     };
     NgStyle.decorators = [

@@ -26,13 +26,8 @@ export function scheduleMicroTask(fn) {
 var _global = globalScope;
 export { _global as global };
 export function getTypeNameForDebugging(type) {
-    if (type['name']) {
-        return type['name'];
-    }
-    return typeof type;
+    return type['name'] || typeof type;
 }
-export var Math = _global.Math;
-export var Date = _global.Date;
 // TODO: remove calls to assert in production environment
 // Note: Can't just export this and import in in other files
 // as `assert` is a reserved keyword in Dart
@@ -40,50 +35,23 @@ _global.assert = function assert(condition) {
     // TODO: to be fixed properly via #2830, noop for now
 };
 export function isPresent(obj) {
-    return obj !== undefined && obj !== null;
+    return obj != null;
 }
 export function isBlank(obj) {
-    return obj === undefined || obj === null;
-}
-export function isBoolean(obj) {
-    return typeof obj === 'boolean';
-}
-export function isNumber(obj) {
-    return typeof obj === 'number';
-}
-export function isString(obj) {
-    return typeof obj === 'string';
-}
-export function isFunction(obj) {
-    return typeof obj === 'function';
-}
-export function isType(obj) {
-    return isFunction(obj);
-}
-export function isStringMap(obj) {
-    return typeof obj === 'object' && obj !== null;
+    return obj == null;
 }
 var STRING_MAP_PROTO = Object.getPrototypeOf({});
 export function isStrictStringMap(obj) {
-    return isStringMap(obj) && Object.getPrototypeOf(obj) === STRING_MAP_PROTO;
-}
-export function isPromise(obj) {
-    // allow any Promise/A+ compliant thenable.
-    // It's up to the caller to ensure that obj.then conforms to the spec
-    return isPresent(obj) && isFunction(obj.then);
-}
-export function isArray(obj) {
-    return Array.isArray(obj);
+    return typeof obj === 'object' && obj !== null && Object.getPrototypeOf(obj) === STRING_MAP_PROTO;
 }
 export function isDate(obj) {
     return obj instanceof Date && !isNaN(obj.valueOf());
 }
-export function noop() { }
 export function stringify(token) {
     if (typeof token === 'string') {
         return token;
     }
-    if (token === undefined || token === null) {
+    if (token == null) {
         return '' + token;
     }
     if (token.overriddenName) {
@@ -94,101 +62,11 @@ export function stringify(token) {
     }
     var res = token.toString();
     var newLineIndex = res.indexOf('\n');
-    return (newLineIndex === -1) ? res : res.substring(0, newLineIndex);
+    return newLineIndex === -1 ? res : res.substring(0, newLineIndex);
 }
-// serialize / deserialize enum exist only for consistency with dart API
-// enums in typescript don't need to be serialized
-export function serializeEnum(val) {
-    return val;
-}
-export function deserializeEnum(val, values) {
-    return val;
-}
-export function resolveEnumToken(enumValue, val) {
-    return enumValue[val];
-}
-export var StringWrapper = (function () {
-    function StringWrapper() {
-    }
-    StringWrapper.fromCharCode = function (code) { return String.fromCharCode(code); };
-    StringWrapper.charCodeAt = function (s, index) { return s.charCodeAt(index); };
-    StringWrapper.split = function (s, regExp) { return s.split(regExp); };
-    StringWrapper.equals = function (s, s2) { return s === s2; };
-    StringWrapper.stripLeft = function (s, charVal) {
-        if (s && s.length) {
-            var pos = 0;
-            for (var i = 0; i < s.length; i++) {
-                if (s[i] != charVal)
-                    break;
-                pos++;
-            }
-            s = s.substring(pos);
-        }
-        return s;
-    };
-    StringWrapper.stripRight = function (s, charVal) {
-        if (s && s.length) {
-            var pos = s.length;
-            for (var i = s.length - 1; i >= 0; i--) {
-                if (s[i] != charVal)
-                    break;
-                pos--;
-            }
-            s = s.substring(0, pos);
-        }
-        return s;
-    };
-    StringWrapper.replace = function (s, from, replace) {
-        return s.replace(from, replace);
-    };
-    StringWrapper.replaceAll = function (s, from, replace) {
-        return s.replace(from, replace);
-    };
-    StringWrapper.slice = function (s, from, to) {
-        if (from === void 0) { from = 0; }
-        if (to === void 0) { to = null; }
-        return s.slice(from, to === null ? undefined : to);
-    };
-    StringWrapper.replaceAllMapped = function (s, from, cb) {
-        return s.replace(from, function () {
-            var matches = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                matches[_i - 0] = arguments[_i];
-            }
-            // Remove offset & string from the result array
-            matches.splice(-2, 2);
-            // The callback receives match, p1, ..., pn
-            return cb(matches);
-        });
-    };
-    StringWrapper.contains = function (s, substr) { return s.indexOf(substr) != -1; };
-    StringWrapper.compare = function (a, b) {
-        if (a < b) {
-            return -1;
-        }
-        else if (a > b) {
-            return 1;
-        }
-        else {
-            return 0;
-        }
-    };
-    return StringWrapper;
-}());
-export var StringJoiner = (function () {
-    function StringJoiner(parts) {
-        if (parts === void 0) { parts = []; }
-        this.parts = parts;
-    }
-    StringJoiner.prototype.add = function (part) { this.parts.push(part); };
-    StringJoiner.prototype.toString = function () { return this.parts.join(''); };
-    return StringJoiner;
-}());
 export var NumberWrapper = (function () {
     function NumberWrapper() {
     }
-    NumberWrapper.toFixed = function (n, fractionDigits) { return n.toFixed(fractionDigits); };
-    NumberWrapper.equal = function (a, b) { return a === b; };
     NumberWrapper.parseIntAutoRadix = function (text) {
         var result = parseInt(text);
         if (isNaN(result)) {
@@ -196,57 +74,12 @@ export var NumberWrapper = (function () {
         }
         return result;
     };
-    NumberWrapper.parseInt = function (text, radix) {
-        if (radix == 10) {
-            if (/^(\-|\+)?[0-9]+$/.test(text)) {
-                return parseInt(text, radix);
-            }
-        }
-        else if (radix == 16) {
-            if (/^(\-|\+)?[0-9ABCDEFabcdef]+$/.test(text)) {
-                return parseInt(text, radix);
-            }
-        }
-        else {
-            var result = parseInt(text, radix);
-            if (!isNaN(result)) {
-                return result;
-            }
-        }
-        throw new Error('Invalid integer literal when parsing ' + text + ' in base ' + radix);
-    };
-    Object.defineProperty(NumberWrapper, "NaN", {
-        get: function () { return NaN; },
-        enumerable: true,
-        configurable: true
-    });
     NumberWrapper.isNumeric = function (value) { return !isNaN(value - parseFloat(value)); };
-    NumberWrapper.isNaN = function (value) { return isNaN(value); };
-    NumberWrapper.isInteger = function (value) { return Number.isInteger(value); };
     return NumberWrapper;
-}());
-export var RegExp = _global.RegExp;
-export var FunctionWrapper = (function () {
-    function FunctionWrapper() {
-    }
-    FunctionWrapper.apply = function (fn, posArgs) { return fn.apply(null, posArgs); };
-    FunctionWrapper.bind = function (fn, scope) { return fn.bind(scope); };
-    return FunctionWrapper;
 }());
 // JS has NaN !== NaN
 export function looseIdentical(a, b) {
     return a === b || typeof a === 'number' && typeof b === 'number' && isNaN(a) && isNaN(b);
-}
-// JS considers NaN is the same as NaN for map Key (while NaN !== NaN otherwise)
-// see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map
-export function getMapKey(value) {
-    return value;
-}
-export function normalizeBlank(obj) {
-    return isBlank(obj) ? null : obj;
-}
-export function normalizeBool(obj) {
-    return isBlank(obj) ? false : obj;
 }
 export function isJsObject(o) {
     return o !== null && (typeof o === 'function' || typeof o === 'object');
@@ -257,46 +90,16 @@ export function print(obj) {
 export function warn(obj) {
     console.warn(obj);
 }
-// Can't be all uppercase as our transpiler would think it is a special directive...
-export var Json = (function () {
-    function Json() {
-    }
-    Json.parse = function (s) { return _global.JSON.parse(s); };
-    Json.stringify = function (data) {
-        // Dart doesn't take 3 arguments
-        return _global.JSON.stringify(data, null, 2);
-    };
-    return Json;
-}());
-export var DateWrapper = (function () {
-    function DateWrapper() {
-    }
-    DateWrapper.create = function (year, month, day, hour, minutes, seconds, milliseconds) {
-        if (month === void 0) { month = 1; }
-        if (day === void 0) { day = 1; }
-        if (hour === void 0) { hour = 0; }
-        if (minutes === void 0) { minutes = 0; }
-        if (seconds === void 0) { seconds = 0; }
-        if (milliseconds === void 0) { milliseconds = 0; }
-        return new Date(year, month - 1, day, hour, minutes, seconds, milliseconds);
-    };
-    DateWrapper.fromISOString = function (str) { return new Date(str); };
-    DateWrapper.fromMillis = function (ms) { return new Date(ms); };
-    DateWrapper.toMillis = function (date) { return date.getTime(); };
-    DateWrapper.now = function () { return new Date(); };
-    DateWrapper.toJson = function (date) { return date.toJSON(); };
-    return DateWrapper;
-}());
 export function setValueOnPath(global, path, value) {
     var parts = path.split('.');
     var obj = global;
     while (parts.length > 1) {
-        var name = parts.shift();
-        if (obj.hasOwnProperty(name) && isPresent(obj[name])) {
-            obj = obj[name];
+        var name_1 = parts.shift();
+        if (obj.hasOwnProperty(name_1) && obj[name_1] != null) {
+            obj = obj[name_1];
         }
         else {
-            obj = obj[name] = {};
+            obj = obj[name_1] = {};
         }
     }
     if (obj === undefined || obj === null) {
@@ -306,8 +109,8 @@ export function setValueOnPath(global, path, value) {
 }
 var _symbolIterator = null;
 export function getSymbolIterator() {
-    if (isBlank(_symbolIterator)) {
-        if (isPresent(globalScope.Symbol) && isPresent(Symbol.iterator)) {
+    if (!_symbolIterator) {
+        if (globalScope.Symbol && Symbol.iterator) {
             _symbolIterator = Symbol.iterator;
         }
         else {
@@ -324,24 +127,8 @@ export function getSymbolIterator() {
     }
     return _symbolIterator;
 }
-export function evalExpression(sourceUrl, expr, declarations, vars) {
-    var fnBody = declarations + "\nreturn " + expr + "\n//# sourceURL=" + sourceUrl;
-    var fnArgNames = [];
-    var fnArgValues = [];
-    for (var argName in vars) {
-        fnArgNames.push(argName);
-        fnArgValues.push(vars[argName]);
-    }
-    return new (Function.bind.apply(Function, [void 0].concat(fnArgNames.concat(fnBody))))().apply(void 0, fnArgValues);
-}
 export function isPrimitive(obj) {
     return !isJsObject(obj);
-}
-export function hasConstructor(value, type) {
-    return value.constructor === type;
-}
-export function escape(s) {
-    return _global.encodeURI(s);
 }
 export function escapeRegExp(s) {
     return s.replace(/([.*+?^=!:${}()|[\]\/\\])/g, '\\$1');

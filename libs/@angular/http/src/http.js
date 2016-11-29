@@ -11,7 +11,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 import { Injectable } from '@angular/core';
-import { isPresent, isString } from '../src/facade/lang';
 import { RequestOptions } from './base_request_options';
 import { RequestMethod } from './enums';
 import { ConnectionBackend } from './interfaces';
@@ -21,7 +20,7 @@ function httpRequest(backend, request) {
 }
 function mergeOptions(defaultOpts, providedOpts, method, url) {
     var newOptions = defaultOpts;
-    if (isPresent(providedOpts)) {
+    if (providedOpts) {
         // Hack so Dart can used named parameters
         return newOptions.merge(new RequestOptions({
             method: providedOpts.method || method,
@@ -33,12 +32,7 @@ function mergeOptions(defaultOpts, providedOpts, method, url) {
             responseType: providedOpts.responseType
         }));
     }
-    if (isPresent(method)) {
-        return newOptions.merge(new RequestOptions({ method: method, url: url }));
-    }
-    else {
-        return newOptions.merge(new RequestOptions({ url: url }));
-    }
+    return newOptions.merge(new RequestOptions({ method: method, url: url }));
 }
 /**
  * Performs http requests using `XMLHttpRequest` as the default backend.
@@ -113,7 +107,7 @@ export var Http = (function () {
      */
     Http.prototype.request = function (url, options) {
         var responseObservable;
-        if (isString(url)) {
+        if (typeof url === 'string') {
             responseObservable = httpRequest(this._backend, new Request(mergeOptions(this._defaultOptions, options, RequestMethod.Get, url)));
         }
         else if (url instanceof Request) {
@@ -128,43 +122,43 @@ export var Http = (function () {
      * Performs a request with `get` http method.
      */
     Http.prototype.get = function (url, options) {
-        return httpRequest(this._backend, new Request(mergeOptions(this._defaultOptions, options, RequestMethod.Get, url)));
+        return this.request(new Request(mergeOptions(this._defaultOptions, options, RequestMethod.Get, url)));
     };
     /**
      * Performs a request with `post` http method.
      */
     Http.prototype.post = function (url, body, options) {
-        return httpRequest(this._backend, new Request(mergeOptions(this._defaultOptions.merge(new RequestOptions({ body: body })), options, RequestMethod.Post, url)));
+        return this.request(new Request(mergeOptions(this._defaultOptions.merge(new RequestOptions({ body: body })), options, RequestMethod.Post, url)));
     };
     /**
      * Performs a request with `put` http method.
      */
     Http.prototype.put = function (url, body, options) {
-        return httpRequest(this._backend, new Request(mergeOptions(this._defaultOptions.merge(new RequestOptions({ body: body })), options, RequestMethod.Put, url)));
+        return this.request(new Request(mergeOptions(this._defaultOptions.merge(new RequestOptions({ body: body })), options, RequestMethod.Put, url)));
     };
     /**
      * Performs a request with `delete` http method.
      */
     Http.prototype.delete = function (url, options) {
-        return httpRequest(this._backend, new Request(mergeOptions(this._defaultOptions, options, RequestMethod.Delete, url)));
+        return this.request(new Request(mergeOptions(this._defaultOptions, options, RequestMethod.Delete, url)));
     };
     /**
      * Performs a request with `patch` http method.
      */
     Http.prototype.patch = function (url, body, options) {
-        return httpRequest(this._backend, new Request(mergeOptions(this._defaultOptions.merge(new RequestOptions({ body: body })), options, RequestMethod.Patch, url)));
+        return this.request(new Request(mergeOptions(this._defaultOptions.merge(new RequestOptions({ body: body })), options, RequestMethod.Patch, url)));
     };
     /**
      * Performs a request with `head` http method.
      */
     Http.prototype.head = function (url, options) {
-        return httpRequest(this._backend, new Request(mergeOptions(this._defaultOptions, options, RequestMethod.Head, url)));
+        return this.request(new Request(mergeOptions(this._defaultOptions, options, RequestMethod.Head, url)));
     };
     /**
      * Performs a request with `options` http method.
      */
     Http.prototype.options = function (url, options) {
-        return httpRequest(this._backend, new Request(mergeOptions(this._defaultOptions, options, RequestMethod.Options, url)));
+        return this.request(new Request(mergeOptions(this._defaultOptions, options, RequestMethod.Options, url)));
     };
     Http.decorators = [
         { type: Injectable },
@@ -200,7 +194,7 @@ export var Jsonp = (function (_super) {
      */
     Jsonp.prototype.request = function (url, options) {
         var responseObservable;
-        if (isString(url)) {
+        if (typeof url === 'string') {
             url =
                 new Request(mergeOptions(this._defaultOptions, options, RequestMethod.Get, url));
         }

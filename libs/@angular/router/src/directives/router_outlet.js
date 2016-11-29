@@ -44,6 +44,16 @@ export var RouterOutlet = (function () {
         parentOutletMap.registerOutlet(name ? name : PRIMARY_OUTLET, this);
     }
     RouterOutlet.prototype.ngOnDestroy = function () { this.parentOutletMap.removeOutlet(this.name ? this.name : PRIMARY_OUTLET); };
+    Object.defineProperty(RouterOutlet.prototype, "locationInjector", {
+        get: function () { return this.location.injector; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(RouterOutlet.prototype, "locationFactoryResolver", {
+        get: function () { return this.resolver; },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(RouterOutlet.prototype, "isActivated", {
         get: function () { return !!this.activated; },
         enumerable: true,
@@ -75,19 +85,15 @@ export var RouterOutlet = (function () {
             this.deactivateEvents.emit(c);
         }
     };
-    RouterOutlet.prototype.activate = function (activatedRoute, loadedResolver, loadedInjector, providers, outletMap) {
+    RouterOutlet.prototype.activate = function (activatedRoute, resolver, injector, providers, outletMap) {
+        if (this.isActivated) {
+            throw new Error('Cannot activate an already activated outlet');
+        }
         this.outletMap = outletMap;
         this._activatedRoute = activatedRoute;
         var snapshot = activatedRoute._futureSnapshot;
         var component = snapshot._routeConfig.component;
-        var factory;
-        if (loadedResolver) {
-            factory = loadedResolver.resolveComponentFactory(component);
-        }
-        else {
-            factory = this.resolver.resolveComponentFactory(component);
-        }
-        var injector = loadedInjector ? loadedInjector : this.location.parentInjector;
+        var factory = resolver.resolveComponentFactory(component);
         var inj = ReflectiveInjector.fromResolvedProviders(providers, injector);
         this.activated = this.location.createComponent(factory, this.location.length, inj, []);
         this.activated.changeDetectorRef.detectChanges();

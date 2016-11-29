@@ -12,7 +12,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { PRIMARY_OUTLET } from './shared';
-import { UrlSegment } from './url_tree';
+import { UrlSegment, equalSegments } from './url_tree';
 import { merge, shallowEqual, shallowEqualArrays } from './utils/collection';
 import { Tree, TreeNode } from './utils/tree';
 /**
@@ -75,7 +75,7 @@ export function createEmptyStateSnapshot(urlTree, rootComponent) {
     var emptyData = {};
     var emptyQueryParams = {};
     var fragment = '';
-    var activated = new ActivatedRouteSnapshot([], emptyParams, emptyQueryParams, fragment, emptyData, PRIMARY_OUTLET, rootComponent, null, urlTree.root, -1, InheritedResolve.empty);
+    var activated = new ActivatedRouteSnapshot([], emptyParams, emptyQueryParams, fragment, emptyData, PRIMARY_OUTLET, rootComponent, null, urlTree.root, -1, {});
     return new RouterStateSnapshot('', new TreeNode(activated, []));
 }
 /**
@@ -205,33 +205,30 @@ export var ActivatedRoute = (function () {
 /**
  * @internal
  */
-export var InheritedResolve = (function () {
-    function InheritedResolve(parent, current) {
-        this.parent = parent;
-        this.current = current;
-        /**
-         * @internal
-         */
-        this.resolvedData = {};
+export function inheritedParamsDataResolve(route) {
+    var pathToRoot = route.pathFromRoot;
+    var inhertingStartingFrom = pathToRoot.length - 1;
+    while (inhertingStartingFrom >= 1) {
+        var current = pathToRoot[inhertingStartingFrom];
+        var parent_1 = pathToRoot[inhertingStartingFrom - 1];
+        // current route is an empty path => inherits its parent's params and data
+        if (current.routeConfig && current.routeConfig.path === '') {
+            inhertingStartingFrom--;
+        }
+        else if (!parent_1.component) {
+            inhertingStartingFrom--;
+        }
+        else {
+            break;
+        }
     }
-    Object.defineProperty(InheritedResolve.prototype, "flattenedResolvedData", {
-        /**
-         * @internal
-         */
-        get: function () {
-            return this.parent ? merge(this.parent.flattenedResolvedData, this.resolvedData) :
-                this.resolvedData;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(InheritedResolve, "empty", {
-        get: function () { return new InheritedResolve(null, {}); },
-        enumerable: true,
-        configurable: true
-    });
-    return InheritedResolve;
-}());
+    return pathToRoot.slice(inhertingStartingFrom).reduce(function (res, curr) {
+        var params = merge(res.params, curr.params);
+        var data = merge(res.data, curr.data);
+        var resolve = merge(res.resolve, curr._resolvedData);
+        return { params: params, data: data, resolve: resolve };
+    }, { params: {}, data: {}, resolve: {} });
+}
 /**
  * @whatItDoes Contains the information about a route associated with a component loaded in an
  * outlet
@@ -419,10 +416,12 @@ export function advanceActivatedRoute(route) {
         }
         if (!shallowEqual(route.snapshot.params, route._futureSnapshot.params)) {
             route.params.next(route._futureSnapshot.params);
-            route.data.next(route._futureSnapshot.data);
         }
         if (!shallowEqualArrays(route.snapshot.url, route._futureSnapshot.url)) {
             route.url.next(route._futureSnapshot.url);
+        }
+        if (!equalParamsAndUrlSegments(route.snapshot, route._futureSnapshot)) {
+            route.data.next(route._futureSnapshot.data);
         }
         route.snapshot = route._futureSnapshot;
     }
@@ -431,5 +430,8 @@ export function advanceActivatedRoute(route) {
         // this is for resolved data
         route.data.next(route._futureSnapshot.data);
     }
+}
+export function equalParamsAndUrlSegments(a, b) {
+    return shallowEqual(a.params, b.params) && equalSegments(a.url, b.url);
 }
 //# sourceMappingURL=router_state.js.map

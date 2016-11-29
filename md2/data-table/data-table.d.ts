@@ -13,6 +13,7 @@ export interface DataEvent {
 }
 export declare class Md2DataTable implements OnChanges, DoCheck {
     private dataLength;
+    private _activePage;
     data: any[];
     onDataChange: EventEmitter<DataEvent>;
     onSortChange: EventEmitter<SortEvent>;
@@ -23,6 +24,7 @@ export declare class Md2DataTable implements OnChanges, DoCheck {
     inputData: any[];
     pageLength: number;
     activePage: number;
+    activePageChange: EventEmitter<{}>;
     getSort(): SortEvent;
     setSort(sortField: string | string[], sortOrder: string): void;
     getPage(): PageEvent;

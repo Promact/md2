@@ -1,16 +1,17 @@
-import { AfterViewInit, ApplicationRef, ChangeDetectorRef, ComponentFactoryResolver, ElementRef, ViewContainerRef, ModuleWithProviders } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, ElementRef, ViewContainerRef, ModuleWithProviders } from '@angular/core';
+import { Overlay, OverlayRef } from '../core';
 export declare type TooltipPosition = 'before' | 'after' | 'above' | 'below';
 export declare class Md2Tooltip {
-    private _componentFactory;
-    private _appRef;
     private _viewContainer;
+    private _overlay;
     private visible;
     private timer;
+    _overlayRef: OverlayRef;
+    _tooltipInstance: Md2TooltipComponent;
     message: string;
     position: TooltipPosition;
     delay: number;
-    private tooltip;
-    constructor(_componentFactory: ComponentFactoryResolver, _appRef: ApplicationRef, _viewContainer: ViewContainerRef);
+    constructor(_viewContainer: ViewContainerRef, _overlay: Overlay);
     /**
      * show tooltip while mouse enter or focus of element
      * @param event

@@ -1,5 +1,5 @@
 /**
- * @license Angular v2.0.0
+ * @license Angular v2.2.3
  * (c) 2010-2016 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -132,45 +132,21 @@
     }
     // Need to declare a new variable for global here since TypeScript
     // exports the original value of the symbol.
-    var global$1 = globalScope;
+    var _global = globalScope;
     function getTypeNameForDebugging(type) {
-        if (type['name']) {
-            return type['name'];
-        }
-        return typeof type;
+        return type['name'] || typeof type;
     }
-    var Date = global$1.Date;
     // TODO: remove calls to assert in production environment
     // Note: Can't just export this and import in in other files
     // as `assert` is a reserved keyword in Dart
-    global$1.assert = function assert(condition) {
+    _global.assert = function assert(condition) {
         // TODO: to be fixed properly via #2830, noop for now
     };
     function isPresent(obj) {
-        return obj !== undefined && obj !== null;
+        return obj != null;
     }
     function isBlank(obj) {
-        return obj === undefined || obj === null;
-    }
-    function isNumber(obj) {
-        return typeof obj === 'number';
-    }
-    function isString(obj) {
-        return typeof obj === 'string';
-    }
-    function isFunction(obj) {
-        return typeof obj === 'function';
-    }
-    function isStringMap(obj) {
-        return typeof obj === 'object' && obj !== null;
-    }
-    function isPromise(obj) {
-        // allow any Promise/A+ compliant thenable.
-        // It's up to the caller to ensure that obj.then conforms to the spec
-        return isPresent(obj) && isFunction(obj.then);
-    }
-    function isArray(obj) {
-        return Array.isArray(obj);
+        return obj == null;
     }
     function isDate(obj) {
         return obj instanceof Date && !isNaN(obj.valueOf());
@@ -179,7 +155,7 @@
         if (typeof token === 'string') {
             return token;
         }
-        if (token === undefined || token === null) {
+        if (token == null) {
             return '' + token;
         }
         if (token.overriddenName) {
@@ -190,81 +166,11 @@
         }
         var res = token.toString();
         var newLineIndex = res.indexOf('\n');
-        return (newLineIndex === -1) ? res : res.substring(0, newLineIndex);
+        return newLineIndex === -1 ? res : res.substring(0, newLineIndex);
     }
-    var StringWrapper = (function () {
-        function StringWrapper() {
-        }
-        StringWrapper.fromCharCode = function (code) { return String.fromCharCode(code); };
-        StringWrapper.charCodeAt = function (s, index) { return s.charCodeAt(index); };
-        StringWrapper.split = function (s, regExp) { return s.split(regExp); };
-        StringWrapper.equals = function (s, s2) { return s === s2; };
-        StringWrapper.stripLeft = function (s, charVal) {
-            if (s && s.length) {
-                var pos = 0;
-                for (var i = 0; i < s.length; i++) {
-                    if (s[i] != charVal)
-                        break;
-                    pos++;
-                }
-                s = s.substring(pos);
-            }
-            return s;
-        };
-        StringWrapper.stripRight = function (s, charVal) {
-            if (s && s.length) {
-                var pos = s.length;
-                for (var i = s.length - 1; i >= 0; i--) {
-                    if (s[i] != charVal)
-                        break;
-                    pos--;
-                }
-                s = s.substring(0, pos);
-            }
-            return s;
-        };
-        StringWrapper.replace = function (s, from, replace) {
-            return s.replace(from, replace);
-        };
-        StringWrapper.replaceAll = function (s, from, replace) {
-            return s.replace(from, replace);
-        };
-        StringWrapper.slice = function (s, from, to) {
-            if (from === void 0) { from = 0; }
-            if (to === void 0) { to = null; }
-            return s.slice(from, to === null ? undefined : to);
-        };
-        StringWrapper.replaceAllMapped = function (s, from, cb) {
-            return s.replace(from, function () {
-                var matches = [];
-                for (var _i = 0; _i < arguments.length; _i++) {
-                    matches[_i - 0] = arguments[_i];
-                }
-                // Remove offset & string from the result array
-                matches.splice(-2, 2);
-                // The callback receives match, p1, ..., pn
-                return cb(matches);
-            });
-        };
-        StringWrapper.contains = function (s, substr) { return s.indexOf(substr) != -1; };
-        StringWrapper.compare = function (a, b) {
-            if (a < b) {
-                return -1;
-            }
-            else if (a > b) {
-                return 1;
-            }
-            else {
-                return 0;
-            }
-        };
-        return StringWrapper;
-    }());
     var NumberWrapper = (function () {
         function NumberWrapper() {
         }
-        NumberWrapper.toFixed = function (n, fractionDigits) { return n.toFixed(fractionDigits); };
-        NumberWrapper.equal = function (a, b) { return a === b; };
         NumberWrapper.parseIntAutoRadix = function (text) {
             var result = parseInt(text);
             if (isNaN(result)) {
@@ -272,72 +178,16 @@
             }
             return result;
         };
-        NumberWrapper.parseInt = function (text, radix) {
-            if (radix == 10) {
-                if (/^(\-|\+)?[0-9]+$/.test(text)) {
-                    return parseInt(text, radix);
-                }
-            }
-            else if (radix == 16) {
-                if (/^(\-|\+)?[0-9ABCDEFabcdef]+$/.test(text)) {
-                    return parseInt(text, radix);
-                }
-            }
-            else {
-                var result = parseInt(text, radix);
-                if (!isNaN(result)) {
-                    return result;
-                }
-            }
-            throw new Error('Invalid integer literal when parsing ' + text + ' in base ' + radix);
-        };
-        Object.defineProperty(NumberWrapper, "NaN", {
-            get: function () { return NaN; },
-            enumerable: true,
-            configurable: true
-        });
         NumberWrapper.isNumeric = function (value) { return !isNaN(value - parseFloat(value)); };
-        NumberWrapper.isNaN = function (value) { return isNaN(value); };
-        NumberWrapper.isInteger = function (value) { return Number.isInteger(value); };
         return NumberWrapper;
     }());
     function isJsObject(o) {
         return o !== null && (typeof o === 'function' || typeof o === 'object');
     }
-    // Can't be all uppercase as our transpiler would think it is a special directive...
-    var Json = (function () {
-        function Json() {
-        }
-        Json.parse = function (s) { return global$1.JSON.parse(s); };
-        Json.stringify = function (data) {
-            // Dart doesn't take 3 arguments
-            return global$1.JSON.stringify(data, null, 2);
-        };
-        return Json;
-    }());
-    var DateWrapper = (function () {
-        function DateWrapper() {
-        }
-        DateWrapper.create = function (year, month, day, hour, minutes, seconds, milliseconds) {
-            if (month === void 0) { month = 1; }
-            if (day === void 0) { day = 1; }
-            if (hour === void 0) { hour = 0; }
-            if (minutes === void 0) { minutes = 0; }
-            if (seconds === void 0) { seconds = 0; }
-            if (milliseconds === void 0) { milliseconds = 0; }
-            return new Date(year, month - 1, day, hour, minutes, seconds, milliseconds);
-        };
-        DateWrapper.fromISOString = function (str) { return new Date(str); };
-        DateWrapper.fromMillis = function (ms) { return new Date(ms); };
-        DateWrapper.toMillis = function (date) { return date.getTime(); };
-        DateWrapper.now = function () { return new Date(); };
-        DateWrapper.toJson = function (date) { return date.toJSON(); };
-        return DateWrapper;
-    }());
     var _symbolIterator = null;
     function getSymbolIterator() {
-        if (isBlank(_symbolIterator)) {
-            if (isPresent(globalScope.Symbol) && isPresent(Symbol.iterator)) {
+        if (!_symbolIterator) {
+            if (globalScope.Symbol && Symbol.iterator) {
                 _symbolIterator = Symbol.iterator;
             }
             else {
@@ -395,7 +245,13 @@
             this._platformStrategy = platformStrategy;
             var browserBaseHref = this._platformStrategy.getBaseHref();
             this._baseHref = Location.stripTrailingSlash(_stripIndexHtml(browserBaseHref));
-            this._platformStrategy.onPopState(function (ev) { _this._subject.emit({ 'url': _this.path(true), 'pop': true, 'type': ev.type }); });
+            this._platformStrategy.onPopState(function (ev) {
+                _this._subject.emit({
+                    'url': _this.path(true),
+                    'pop': true,
+                    'type': ev.type,
+                });
+            });
         }
         /**
          * Returns the normalized URL path.
@@ -1192,298 +1048,13 @@
         }
     }
 
-    var Map$1 = global$1.Map;
-    var Set$1 = global$1.Set;
-    // Safari and Internet Explorer do not support the iterable parameter to the
-    // Map constructor.  We work around that by manually adding the items.
-    var createMapFromPairs = (function () {
-        try {
-            if (new Map$1([[1, 2]]).size === 1) {
-                return function createMapFromPairs(pairs) { return new Map$1(pairs); };
-            }
-        }
-        catch (e) {
-        }
-        return function createMapAndPopulateFromPairs(pairs) {
-            var map = new Map$1();
-            for (var i = 0; i < pairs.length; i++) {
-                var pair = pairs[i];
-                map.set(pair[0], pair[1]);
-            }
-            return map;
-        };
-    })();
-    var createMapFromMap = (function () {
-        try {
-            if (new Map$1(new Map$1())) {
-                return function createMapFromMap(m) { return new Map$1(m); };
-            }
-        }
-        catch (e) {
-        }
-        return function createMapAndPopulateFromMap(m) {
-            var map = new Map$1();
-            m.forEach(function (v, k) { map.set(k, v); });
-            return map;
-        };
-    })();
-    var _clearValues = (function () {
-        if ((new Map$1()).keys().next) {
-            return function _clearValues(m) {
-                var keyIterator = m.keys();
-                var k;
-                while (!((k = keyIterator.next()).done)) {
-                    m.set(k.value, null);
-                }
-            };
-        }
-        else {
-            return function _clearValuesWithForeEach(m) {
-                m.forEach(function (v, k) { m.set(k, null); });
-            };
-        }
-    })();
-    // Safari doesn't implement MapIterator.next(), which is used is Traceur's polyfill of Array.from
-    // TODO(mlaval): remove the work around once we have a working polyfill of Array.from
-    var _arrayFromMap = (function () {
-        try {
-            if ((new Map$1()).values().next) {
-                return function createArrayFromMap(m, getValues) {
-                    return getValues ? Array.from(m.values()) : Array.from(m.keys());
-                };
-            }
-        }
-        catch (e) {
-        }
-        return function createArrayFromMapWithForeach(m, getValues) {
-            var res = ListWrapper.createFixedSize(m.size), i = 0;
-            m.forEach(function (v, k) {
-                res[i] = getValues ? v : k;
-                i++;
-            });
-            return res;
-        };
-    })();
-    /**
-     * Wraps Javascript Objects
-     */
-    var StringMapWrapper = (function () {
-        function StringMapWrapper() {
-        }
-        StringMapWrapper.create = function () {
-            // Note: We are not using Object.create(null) here due to
-            // performance!
-            // http://jsperf.com/ng2-object-create-null
-            return {};
-        };
-        StringMapWrapper.contains = function (map, key) {
-            return map.hasOwnProperty(key);
-        };
-        StringMapWrapper.get = function (map, key) {
-            return map.hasOwnProperty(key) ? map[key] : undefined;
-        };
-        StringMapWrapper.set = function (map, key, value) { map[key] = value; };
-        StringMapWrapper.keys = function (map) { return Object.keys(map); };
-        StringMapWrapper.values = function (map) {
-            return Object.keys(map).map(function (k) { return map[k]; });
-        };
-        StringMapWrapper.isEmpty = function (map) {
-            for (var prop in map) {
-                return false;
-            }
-            return true;
-        };
-        StringMapWrapper.delete = function (map, key) { delete map[key]; };
-        StringMapWrapper.forEach = function (map, callback) {
-            for (var _i = 0, _a = Object.keys(map); _i < _a.length; _i++) {
-                var k = _a[_i];
-                callback(map[k], k);
-            }
-        };
-        StringMapWrapper.merge = function (m1, m2) {
-            var m = {};
-            for (var _i = 0, _a = Object.keys(m1); _i < _a.length; _i++) {
-                var k = _a[_i];
-                m[k] = m1[k];
-            }
-            for (var _b = 0, _c = Object.keys(m2); _b < _c.length; _b++) {
-                var k = _c[_b];
-                m[k] = m2[k];
-            }
-            return m;
-        };
-        StringMapWrapper.equals = function (m1, m2) {
-            var k1 = Object.keys(m1);
-            var k2 = Object.keys(m2);
-            if (k1.length != k2.length) {
-                return false;
-            }
-            for (var i = 0; i < k1.length; i++) {
-                var key = k1[i];
-                if (m1[key] !== m2[key]) {
-                    return false;
-                }
-            }
-            return true;
-        };
-        return StringMapWrapper;
-    }());
-    var ListWrapper = (function () {
-        function ListWrapper() {
-        }
-        // JS has no way to express a statically fixed size list, but dart does so we
-        // keep both methods.
-        ListWrapper.createFixedSize = function (size) { return new Array(size); };
-        ListWrapper.createGrowableSize = function (size) { return new Array(size); };
-        ListWrapper.clone = function (array) { return array.slice(0); };
-        ListWrapper.forEachWithIndex = function (array, fn) {
-            for (var i = 0; i < array.length; i++) {
-                fn(array[i], i);
-            }
-        };
-        ListWrapper.first = function (array) {
-            if (!array)
-                return null;
-            return array[0];
-        };
-        ListWrapper.last = function (array) {
-            if (!array || array.length == 0)
-                return null;
-            return array[array.length - 1];
-        };
-        ListWrapper.indexOf = function (array, value, startIndex) {
-            if (startIndex === void 0) { startIndex = 0; }
-            return array.indexOf(value, startIndex);
-        };
-        ListWrapper.contains = function (list, el) { return list.indexOf(el) !== -1; };
-        ListWrapper.reversed = function (array) {
-            var a = ListWrapper.clone(array);
-            return a.reverse();
-        };
-        ListWrapper.concat = function (a, b) { return a.concat(b); };
-        ListWrapper.insert = function (list, index, value) { list.splice(index, 0, value); };
-        ListWrapper.removeAt = function (list, index) {
-            var res = list[index];
-            list.splice(index, 1);
-            return res;
-        };
-        ListWrapper.removeAll = function (list, items) {
-            for (var i = 0; i < items.length; ++i) {
-                var index = list.indexOf(items[i]);
-                list.splice(index, 1);
-            }
-        };
-        ListWrapper.remove = function (list, el) {
-            var index = list.indexOf(el);
-            if (index > -1) {
-                list.splice(index, 1);
-                return true;
-            }
-            return false;
-        };
-        ListWrapper.clear = function (list) { list.length = 0; };
-        ListWrapper.isEmpty = function (list) { return list.length == 0; };
-        ListWrapper.fill = function (list, value, start, end) {
-            if (start === void 0) { start = 0; }
-            if (end === void 0) { end = null; }
-            list.fill(value, start, end === null ? list.length : end);
-        };
-        ListWrapper.equals = function (a, b) {
-            if (a.length != b.length)
-                return false;
-            for (var i = 0; i < a.length; ++i) {
-                if (a[i] !== b[i])
-                    return false;
-            }
-            return true;
-        };
-        ListWrapper.slice = function (l, from, to) {
-            if (from === void 0) { from = 0; }
-            if (to === void 0) { to = null; }
-            return l.slice(from, to === null ? undefined : to);
-        };
-        ListWrapper.splice = function (l, from, length) { return l.splice(from, length); };
-        ListWrapper.sort = function (l, compareFn) {
-            if (isPresent(compareFn)) {
-                l.sort(compareFn);
-            }
-            else {
-                l.sort();
-            }
-        };
-        ListWrapper.toString = function (l) { return l.toString(); };
-        ListWrapper.toJSON = function (l) { return JSON.stringify(l); };
-        ListWrapper.maximum = function (list, predicate) {
-            if (list.length == 0) {
-                return null;
-            }
-            var solution = null;
-            var maxValue = -Infinity;
-            for (var index = 0; index < list.length; index++) {
-                var candidate = list[index];
-                if (isBlank(candidate)) {
-                    continue;
-                }
-                var candidateValue = predicate(candidate);
-                if (candidateValue > maxValue) {
-                    solution = candidate;
-                    maxValue = candidateValue;
-                }
-            }
-            return solution;
-        };
-        ListWrapper.flatten = function (list) {
-            var target = [];
-            _flattenArray(list, target);
-            return target;
-        };
-        ListWrapper.addAll = function (list, source) {
-            for (var i = 0; i < source.length; i++) {
-                list.push(source[i]);
-            }
-        };
-        return ListWrapper;
-    }());
-    function _flattenArray(source, target) {
-        if (isPresent(source)) {
-            for (var i = 0; i < source.length; i++) {
-                var item = source[i];
-                if (isArray(item)) {
-                    _flattenArray(item, target);
-                }
-                else {
-                    target.push(item);
-                }
-            }
-        }
-        return target;
-    }
     function isListLikeIterable(obj) {
         if (!isJsObject(obj))
             return false;
-        return isArray(obj) ||
-            (!(obj instanceof Map$1) &&
+        return Array.isArray(obj) ||
+            (!(obj instanceof Map) &&
                 getSymbolIterator() in obj); // JS Iterable have a Symbol.iterator prop
     }
-    // Safari and Internet Explorer do not support the iterable parameter to the
-    // Set constructor.  We work around that by manually adding the items.
-    var createSetFromList = (function () {
-        var test = new Set$1([1, 2, 3]);
-        if (test.size === 3) {
-            return function createSetFromList(lst) { return new Set$1(lst); };
-        }
-        else {
-            return function createSetAndPopulateFromList(lst) {
-                var res = new Set$1(lst);
-                if (res.size !== lst.length) {
-                    for (var i = 0; i < lst.length; i++) {
-                        res.add(lst[i]);
-                    }
-                }
-                return res;
-            };
-        }
-    })();
 
     /**
      * @ngModule CommonModule
@@ -1503,11 +1074,11 @@
      *
      * @description
      *
-     * The CSS classes are updated as follow depending on the type of the expression evaluation:
-     * - `string` - the CSS classes listed in a string (space delimited) are added,
-     * - `Array` - the CSS classes (Array elements) are added,
-     * - `Object` - keys are CSS class names that get added when the expression given in the value
-     *              evaluates to a truthy value, otherwise class are removed.
+     * The CSS classes are updated as follows, depending on the type of the expression evaluation:
+     * - `string` - the CSS classes listed in the string (space delimited) are added,
+     * - `Array` - the CSS classes declared as Array elements are added,
+     * - `Object` - keys are CSS classes that get added when the expression given in the value
+     *              evaluates to a truthy value, otherwise they are removed.
      *
      * @stable
      */
@@ -1577,7 +1148,14 @@
         };
         NgClass.prototype._applyIterableChanges = function (changes) {
             var _this = this;
-            changes.forEachAddedItem(function (record) { return _this._toggleClass(record.item, true); });
+            changes.forEachAddedItem(function (record) {
+                if (typeof record.item === 'string') {
+                    _this._toggleClass(record.item, true);
+                }
+                else {
+                    throw new Error("NgClass can only toggle CSS classes expressed as strings, got " + stringify(record.item));
+                }
+            });
             changes.forEachRemovedItem(function (record) { return _this._toggleClass(record.item, false); });
         };
         NgClass.prototype._applyInitialClasses = function (isCleanup) {
@@ -1815,14 +1393,14 @@
     /**
      * Removes or recreates a portion of the DOM tree based on an {expression}.
      *
-     * If the expression assigned to `ngIf` evaluates to a false value then the element
+     * If the expression assigned to `ngIf` evaluates to a falsy value then the element
      * is removed from the DOM, otherwise a clone of the element is reinserted into the DOM.
      *
      * ### Example ([live demo](http://plnkr.co/edit/fe0kgemFBtmQOY31b4tw?p=preview)):
      *
      * ```
      * <div *ngIf="errorCount > 0" class="error">
-     *   <!-- Error message displayed when the errorCount property on the current context is greater
+     *   <!-- Error message displayed when the errorCount property in the current context is greater
      * than 0. -->
      *   {{errorCount}} errors detected
      * </div>
@@ -1870,14 +1448,28 @@
         return NgIf;
     }());
 
-    var _CASE_DEFAULT = new Object();
     var SwitchView = (function () {
         function SwitchView(_viewContainerRef, _templateRef) {
             this._viewContainerRef = _viewContainerRef;
             this._templateRef = _templateRef;
+            this._created = false;
         }
-        SwitchView.prototype.create = function () { this._viewContainerRef.createEmbeddedView(this._templateRef); };
-        SwitchView.prototype.destroy = function () { this._viewContainerRef.clear(); };
+        SwitchView.prototype.create = function () {
+            this._created = true;
+            this._viewContainerRef.createEmbeddedView(this._templateRef);
+        };
+        SwitchView.prototype.destroy = function () {
+            this._created = false;
+            this._viewContainerRef.clear();
+        };
+        SwitchView.prototype.enforceState = function (created) {
+            if (created && !this._created) {
+                this.create();
+            }
+            else if (!created && this._created) {
+                this.destroy();
+            }
+        };
         return SwitchView;
     }());
     /**
@@ -1897,7 +1489,7 @@
      *         <inner-element></inner-element>
      *         <inner-other-element></inner-other-element>
      *       </ng-container>
-     *       <some-element *ngSwitchDefault>...</p>
+     *       <some-element *ngSwitchDefault>...</some-element>
      *     </container-element>
      * ```
      * @description
@@ -1912,8 +1504,7 @@
      * root elements.
      *
      * Elements within `NgSwitch` but outside of a `NgSwitchCase` or `NgSwitchDefault` directives will
-     * be
-     * preserved at the location.
+     * be preserved at the location.
      *
      * The `ngSwitchCase` directive informs the parent `NgSwitch` of which view to display when the
      * expression is evaluated.
@@ -1924,87 +1515,49 @@
      */
     var NgSwitch = (function () {
         function NgSwitch() {
-            this._useDefault = false;
-            this._valueViews = new Map();
-            this._activeViews = [];
+            this._defaultUsed = false;
+            this._caseCount = 0;
+            this._lastCaseCheckIndex = 0;
+            this._lastCasesMatched = false;
         }
         Object.defineProperty(NgSwitch.prototype, "ngSwitch", {
-            set: function (value) {
-                // Empty the currently active ViewContainers
-                this._emptyAllActiveViews();
-                // Add the ViewContainers matching the value (with a fallback to default)
-                this._useDefault = false;
-                var views = this._valueViews.get(value);
-                if (!views) {
-                    this._useDefault = true;
-                    views = this._valueViews.get(_CASE_DEFAULT) || null;
+            set: function (newValue) {
+                this._ngSwitch = newValue;
+                if (this._caseCount === 0) {
+                    this._updateDefaultCases(true);
                 }
-                this._activateViews(views);
-                this._switchValue = value;
             },
             enumerable: true,
             configurable: true
         });
         /** @internal */
-        NgSwitch.prototype._onCaseValueChanged = function (oldCase, newCase, view) {
-            this._deregisterView(oldCase, view);
-            this._registerView(newCase, view);
-            if (oldCase === this._switchValue) {
-                view.destroy();
-                ListWrapper.remove(this._activeViews, view);
+        NgSwitch.prototype._addCase = function () { return this._caseCount++; };
+        /** @internal */
+        NgSwitch.prototype._addDefault = function (view) {
+            if (!this._defaultViews) {
+                this._defaultViews = [];
             }
-            else if (newCase === this._switchValue) {
-                if (this._useDefault) {
-                    this._useDefault = false;
-                    this._emptyAllActiveViews();
+            this._defaultViews.push(view);
+        };
+        /** @internal */
+        NgSwitch.prototype._matchCase = function (value) {
+            var matched = value == this._ngSwitch;
+            this._lastCasesMatched = this._lastCasesMatched || matched;
+            this._lastCaseCheckIndex++;
+            if (this._lastCaseCheckIndex === this._caseCount) {
+                this._updateDefaultCases(!this._lastCasesMatched);
+                this._lastCaseCheckIndex = 0;
+                this._lastCasesMatched = false;
+            }
+            return matched;
+        };
+        NgSwitch.prototype._updateDefaultCases = function (useDefault) {
+            if (this._defaultViews && useDefault !== this._defaultUsed) {
+                this._defaultUsed = useDefault;
+                for (var i = 0; i < this._defaultViews.length; i++) {
+                    var defaultView = this._defaultViews[i];
+                    defaultView.enforceState(useDefault);
                 }
-                view.create();
-                this._activeViews.push(view);
-            }
-            // Switch to default when there is no more active ViewContainers
-            if (this._activeViews.length === 0 && !this._useDefault) {
-                this._useDefault = true;
-                this._activateViews(this._valueViews.get(_CASE_DEFAULT));
-            }
-        };
-        /** @internal */
-        NgSwitch.prototype._emptyAllActiveViews = function () {
-            var activeContainers = this._activeViews;
-            for (var i = 0; i < activeContainers.length; i++) {
-                activeContainers[i].destroy();
-            }
-            this._activeViews = [];
-        };
-        /** @internal */
-        NgSwitch.prototype._activateViews = function (views) {
-            // TODO(vicb): assert(this._activeViews.length === 0);
-            if (views) {
-                for (var i = 0; i < views.length; i++) {
-                    views[i].create();
-                }
-                this._activeViews = views;
-            }
-        };
-        /** @internal */
-        NgSwitch.prototype._registerView = function (value, view) {
-            var views = this._valueViews.get(value);
-            if (!views) {
-                views = [];
-                this._valueViews.set(value, views);
-            }
-            views.push(view);
-        };
-        /** @internal */
-        NgSwitch.prototype._deregisterView = function (value, view) {
-            // `_CASE_DEFAULT` is used a marker for non-registered cases
-            if (value === _CASE_DEFAULT)
-                return;
-            var views = this._valueViews.get(value);
-            if (views.length == 1) {
-                this._valueViews.delete(value);
-            }
-            else {
-                ListWrapper.remove(views, view);
             }
         };
         NgSwitch.decorators = [
@@ -2025,10 +1578,11 @@
      *             expression.
      *
      * @howToUse
-     *     <container-element [ngSwitch]="switch_expression">
-     *       <some-element *ngSwitchCase="match_expression_1">...</some-element>
-     *     </container-element>
-     *
+     * ```
+     * <container-element [ngSwitch]="switch_expression">
+     *   <some-element *ngSwitchCase="match_expression_1">...</some-element>
+     * </container-element>
+     *```
      * @description
      *
      * Insert the sub-tree when the expression evaluates to the same value as the enclosing switch
@@ -2042,20 +1596,11 @@
      */
     var NgSwitchCase = (function () {
         function NgSwitchCase(viewContainer, templateRef, ngSwitch) {
-            // `_CASE_DEFAULT` is used as a marker for a not yet initialized value
-            /** @internal */
-            this._value = _CASE_DEFAULT;
-            this._switch = ngSwitch;
+            this.ngSwitch = ngSwitch;
+            ngSwitch._addCase();
             this._view = new SwitchView(viewContainer, templateRef);
         }
-        Object.defineProperty(NgSwitchCase.prototype, "ngSwitchCase", {
-            set: function (value) {
-                this._switch._onCaseValueChanged(this._value, value, this._view);
-                this._value = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        NgSwitchCase.prototype.ngDoCheck = function () { this._view.enforceState(this.ngSwitch._matchCase(this.ngSwitchCase)); };
         NgSwitchCase.decorators = [
             { type: _angular_core.Directive, args: [{ selector: '[ngSwitchCase]' },] },
         ];
@@ -2077,10 +1622,12 @@
      *             switch expression.
      *
      * @howToUse
-     *     <container-element [ngSwitch]="switch_expression">
-     *       <some-element *ngSwitchCase="match_expression_1">...</some-element>
-     *       <some-other-element *ngSwitchDefault>...</some-other-element>
-     *     </container-element>
+     * ```
+     * <container-element [ngSwitch]="switch_expression">
+     *   <some-element *ngSwitchCase="match_expression_1">...</some-element>
+     *   <some-other-element *ngSwitchDefault>...</some-other-element>
+     * </container-element>
+     * ```
      *
      * @description
      *
@@ -2092,8 +1639,8 @@
      * @stable
      */
     var NgSwitchDefault = (function () {
-        function NgSwitchDefault(viewContainer, templateRef, sswitch) {
-            sswitch._registerView(_CASE_DEFAULT, new SwitchView(viewContainer, templateRef));
+        function NgSwitchDefault(viewContainer, templateRef, ngSwitch) {
+            ngSwitch._addDefault(new SwitchView(viewContainer, templateRef));
         }
         NgSwitchDefault.decorators = [
             { type: _angular_core.Directive, args: [{ selector: '[ngSwitchDefault]' },] },
@@ -2153,19 +1700,16 @@
             configurable: true
         });
         NgPlural.prototype.addCase = function (value, switchView) { this._caseViews[value] = switchView; };
-        /** @internal */
         NgPlural.prototype._updateView = function () {
             this._clearViews();
             var cases = Object.keys(this._caseViews);
             var key = getPluralCategory(this._switchValue, cases, this._localization);
             this._activateView(this._caseViews[key]);
         };
-        /** @internal */
         NgPlural.prototype._clearViews = function () {
             if (this._activeView)
                 this._activeView.destroy();
         };
-        /** @internal */
         NgPlural.prototype._activateView = function (view) {
             if (view) {
                 this._activeView = view;
@@ -2191,10 +1735,12 @@
      *             given expression matches the plural expression according to CLDR rules.
      *
      * @howToUse
-     *     <some-element [ngPlural]="value">
-     *       <ng-container *ngPluralCase="'=0'">...</ng-container>
-     *       <ng-container *ngPluralCase="'other'">...</ng-container>
-     *     </some-element>
+     * ```
+     * <some-element [ngPlural]="value">
+     *   <ng-container *ngPluralCase="'=0'">...</ng-container>
+     *   <ng-container *ngPluralCase="'other'">...</ng-container>
+     * </some-element>
+     *```
      *
      * See {@link NgPlural} for more details and example.
      *
@@ -2235,7 +1781,7 @@
      * @description
      *
      * The styles are updated according to the value of the expression evaluation:
-     * - keys are style names with an option `.<unit>` suffix (ie 'top.px', 'font-style.em'),
+     * - keys are style names with an optional `.<unit>` suffix (ie 'top.px', 'font-style.em'),
      * - values are the values assigned to those properties (expressed in the given unit).
      *
      * @stable
@@ -2272,7 +1818,7 @@
         };
         NgStyle.prototype._setStyle = function (nameAndUnit, value) {
             var _a = nameAndUnit.split('.'), name = _a[0], unit = _a[1];
-            value = value !== null && value !== void (0) && unit ? "" + value + unit : value;
+            value = value && unit ? "" + value + unit : value;
             this._renderer.setElementStyle(this._ngEl.nativeElement, name, value);
         };
         NgStyle.decorators = [
@@ -2326,7 +1872,7 @@
             enumerable: true,
             configurable: true
         });
-        NgTemplateOutlet.prototype.ngOnChanges = function () {
+        NgTemplateOutlet.prototype.ngOnChanges = function (changes) {
             if (this._viewRef) {
                 this._viewContainerRef.remove(this._viewContainerRef.indexOf(this._viewRef));
             }
@@ -2364,6 +1910,8 @@
         NgPlural,
         NgPluralCase,
     ];
+
+    var isPromise = _angular_core.__core_private__.isPromise;
 
     /**
      * @license
@@ -2470,7 +2018,6 @@
     }());
     var _promiseStrategy = new PromiseStrategy();
     var _observableStrategy = new ObservableStrategy();
-    // avoid unused import when Promise union types are erased
     /**
      * @ngModule CommonModule
      * @whatItDoes Unwraps a value from an asynchronous primitive.
@@ -2498,25 +2045,21 @@
      */
     var AsyncPipe = (function () {
         function AsyncPipe(_ref) {
-            /** @internal */
+            this._ref = _ref;
             this._latestValue = null;
-            /** @internal */
             this._latestReturnedValue = null;
-            /** @internal */
             this._subscription = null;
-            /** @internal */
             this._obj = null;
             this._strategy = null;
-            this._ref = _ref;
         }
         AsyncPipe.prototype.ngOnDestroy = function () {
-            if (isPresent(this._subscription)) {
+            if (this._subscription) {
                 this._dispose();
             }
         };
         AsyncPipe.prototype.transform = function (obj) {
-            if (isBlank(this._obj)) {
-                if (isPresent(obj)) {
+            if (!this._obj) {
+                if (obj) {
                     this._subscribe(obj);
                 }
                 this._latestReturnedValue = this._latestValue;
@@ -2529,31 +2072,24 @@
             if (this._latestValue === this._latestReturnedValue) {
                 return this._latestReturnedValue;
             }
-            else {
-                this._latestReturnedValue = this._latestValue;
-                return _angular_core.WrappedValue.wrap(this._latestValue);
-            }
+            this._latestReturnedValue = this._latestValue;
+            return _angular_core.WrappedValue.wrap(this._latestValue);
         };
-        /** @internal */
         AsyncPipe.prototype._subscribe = function (obj) {
             var _this = this;
             this._obj = obj;
             this._strategy = this._selectStrategy(obj);
             this._subscription = this._strategy.createSubscription(obj, function (value) { return _this._updateLatestValue(obj, value); });
         };
-        /** @internal */
         AsyncPipe.prototype._selectStrategy = function (obj) {
             if (isPromise(obj)) {
                 return _promiseStrategy;
             }
-            else if (obj.subscribe) {
+            if (obj.subscribe) {
                 return _observableStrategy;
             }
-            else {
-                throw new InvalidPipeArgumentError(AsyncPipe, obj);
-            }
+            throw new InvalidPipeArgumentError(AsyncPipe, obj);
         };
-        /** @internal */
         AsyncPipe.prototype._dispose = function () {
             this._strategy.dispose(this._subscription);
             this._latestValue = null;
@@ -2561,7 +2097,6 @@
             this._subscription = null;
             this._obj = null;
         };
-        /** @internal */
         AsyncPipe.prototype._updateLatestValue = function (async, value) {
             if (async === this._obj) {
                 this._latestValue = value;
@@ -2612,7 +2147,7 @@
     }());
     var DATE_FORMATS_SPLIT = /((?:[^yMLdHhmsazZEwGjJ']+)|(?:'(?:[^']|'')*')|(?:E+|y+|M+|L+|d+|H+|h+|J+|j+|m+|s+|a|z|Z|G+|w+))(.*)/;
     var PATTERN_ALIASES = {
-        yMMMdjms: datePartGetterFactory(combine([
+        'yMMMdjms': datePartGetterFactory(combine([
             digitCondition('year', 1),
             nameCondition('month', 3),
             digitCondition('day', 1),
@@ -2620,19 +2155,19 @@
             digitCondition('minute', 1),
             digitCondition('second', 1),
         ])),
-        yMdjm: datePartGetterFactory(combine([
+        'yMdjm': datePartGetterFactory(combine([
             digitCondition('year', 1), digitCondition('month', 1), digitCondition('day', 1),
             digitCondition('hour', 1), digitCondition('minute', 1)
         ])),
-        yMMMMEEEEd: datePartGetterFactory(combine([
+        'yMMMMEEEEd': datePartGetterFactory(combine([
             digitCondition('year', 1), nameCondition('month', 4), nameCondition('weekday', 4),
             digitCondition('day', 1)
         ])),
-        yMMMMd: datePartGetterFactory(combine([digitCondition('year', 1), nameCondition('month', 4), digitCondition('day', 1)])),
-        yMMMd: datePartGetterFactory(combine([digitCondition('year', 1), nameCondition('month', 3), digitCondition('day', 1)])),
-        yMd: datePartGetterFactory(combine([digitCondition('year', 1), digitCondition('month', 1), digitCondition('day', 1)])),
-        jms: datePartGetterFactory(combine([digitCondition('hour', 1), digitCondition('second', 1), digitCondition('minute', 1)])),
-        jm: datePartGetterFactory(combine([digitCondition('hour', 1), digitCondition('minute', 1)]))
+        'yMMMMd': datePartGetterFactory(combine([digitCondition('year', 1), nameCondition('month', 4), digitCondition('day', 1)])),
+        'yMMMd': datePartGetterFactory(combine([digitCondition('year', 1), nameCondition('month', 3), digitCondition('day', 1)])),
+        'yMd': datePartGetterFactory(combine([digitCondition('year', 1), digitCondition('month', 1), digitCondition('day', 1)])),
+        'jms': datePartGetterFactory(combine([digitCondition('hour', 1), digitCondition('second', 1), digitCondition('minute', 1)])),
+        'jm': datePartGetterFactory(combine([digitCondition('hour', 1), digitCondition('minute', 1)]))
     };
     var DATE_FORMATS = {
         yyyy: datePartGetterFactory(digitCondition('year', 4)),
@@ -2643,12 +2178,13 @@
         MM: datePartGetterFactory(digitCondition('month', 2)),
         M: datePartGetterFactory(digitCondition('month', 1)),
         LLLL: datePartGetterFactory(nameCondition('month', 4)),
+        L: datePartGetterFactory(nameCondition('month', 1)),
         dd: datePartGetterFactory(digitCondition('day', 2)),
         d: datePartGetterFactory(digitCondition('day', 1)),
-        HH: digitModifier(hourExtracter(datePartGetterFactory(hour12Modify(digitCondition('hour', 2), false)))),
-        H: hourExtracter(datePartGetterFactory(hour12Modify(digitCondition('hour', 1), false))),
-        hh: digitModifier(hourExtracter(datePartGetterFactory(hour12Modify(digitCondition('hour', 2), true)))),
-        h: hourExtracter(datePartGetterFactory(hour12Modify(digitCondition('hour', 1), true))),
+        HH: digitModifier(hourExtractor(datePartGetterFactory(hour12Modify(digitCondition('hour', 2), false)))),
+        H: hourExtractor(datePartGetterFactory(hour12Modify(digitCondition('hour', 1), false))),
+        hh: digitModifier(hourExtractor(datePartGetterFactory(hour12Modify(digitCondition('hour', 2), true)))),
+        h: hourExtractor(datePartGetterFactory(hour12Modify(digitCondition('hour', 1), true))),
         jj: datePartGetterFactory(digitCondition('hour', 2)),
         j: datePartGetterFactory(digitCondition('hour', 1)),
         mm: digitModifier(datePartGetterFactory(digitCondition('minute', 2))),
@@ -2663,7 +2199,7 @@
         EEE: datePartGetterFactory(nameCondition('weekday', 3)),
         EE: datePartGetterFactory(nameCondition('weekday', 2)),
         E: datePartGetterFactory(nameCondition('weekday', 1)),
-        a: hourClockExtracter(datePartGetterFactory(hour12Modify(digitCondition('hour', 1), true))),
+        a: hourClockExtractor(datePartGetterFactory(hour12Modify(digitCondition('hour', 1), true))),
         Z: timeZoneGetter('short'),
         z: timeZoneGetter('long'),
         ww: datePartGetterFactory({}),
@@ -2681,17 +2217,11 @@
             return result.length == 1 ? '0' + result : result;
         };
     }
-    function hourClockExtracter(inner) {
-        return function (date, locale) {
-            var result = inner(date, locale);
-            return result.split(' ')[1];
-        };
+    function hourClockExtractor(inner) {
+        return function (date, locale) { return inner(date, locale).split(' ')[1]; };
     }
-    function hourExtracter(inner) {
-        return function (date, locale) {
-            var result = inner(date, locale);
-            return result.split(' ')[0];
-        };
+    function hourExtractor(inner) {
+        return function (date, locale) { return inner(date, locale).split(' ')[0]; };
     }
     function intlDateFormat(date, locale, options) {
         return new Intl.DateTimeFormat(locale, options).format(date).replace(/[\u200e\u200f]/g, '');
@@ -2711,40 +2241,40 @@
     }
     function digitCondition(prop, len) {
         var result = {};
-        result[prop] = len == 2 ? '2-digit' : 'numeric';
+        result[prop] = len === 2 ? '2-digit' : 'numeric';
         return result;
     }
     function nameCondition(prop, len) {
         var result = {};
-        result[prop] = len < 4 ? 'short' : 'long';
+        if (len < 4) {
+            result[prop] = len > 1 ? 'short' : 'narrow';
+        }
+        else {
+            result[prop] = 'long';
+        }
         return result;
     }
     function combine(options) {
-        var result = {};
-        options.forEach(function (option) { Object.assign(result, option); });
-        return result;
+        return (_a = Object).assign.apply(_a, [{}].concat(options));
+        var _a;
     }
     function datePartGetterFactory(ret) {
         return function (date, locale) { return intlDateFormat(date, locale, ret); };
     }
-    var datePartsFormatterCache = new Map();
+    var DATE_FORMATTER_CACHE = new Map();
     function dateFormatter(format, date, locale) {
-        var text = '';
-        var match;
-        var fn;
-        var parts = [];
-        if (PATTERN_ALIASES[format]) {
-            return PATTERN_ALIASES[format](date, locale);
-        }
-        if (datePartsFormatterCache.has(format)) {
-            parts = datePartsFormatterCache.get(format);
-        }
-        else {
-            var matches = DATE_FORMATS_SPLIT.exec(format);
+        var fn = PATTERN_ALIASES[format];
+        if (fn)
+            return fn(date, locale);
+        var parts = DATE_FORMATTER_CACHE.get(format);
+        if (!parts) {
+            parts = [];
+            var match = void 0;
+            DATE_FORMATS_SPLIT.exec(format);
             while (format) {
                 match = DATE_FORMATS_SPLIT.exec(format);
                 if (match) {
-                    parts = concat(parts, match, 1);
+                    parts = parts.concat(match.slice(1));
                     format = parts.pop();
                 }
                 else {
@@ -2752,18 +2282,15 @@
                     format = null;
                 }
             }
-            datePartsFormatterCache.set(format, parts);
+            DATE_FORMATTER_CACHE.set(format, parts);
         }
-        parts.forEach(function (part) {
-            fn = DATE_FORMATS[part];
-            text += fn ? fn(date, locale) :
-                part === '\'\'' ? '\'' : part.replace(/(^'|'$)/g, '').replace(/''/g, '\'');
-        });
-        return text;
+        return parts.reduce(function (text, part) {
+            var fn = DATE_FORMATS[part];
+            return text + (fn ? fn(date, locale) : partToTime(part));
+        }, '');
     }
-    var slice = [].slice;
-    function concat(array1 /** TODO #9100 */, array2 /** TODO #9100 */, index /** TODO #9100 */) {
-        return array1.concat(slice.call(array2, index));
+    function partToTime(part) {
+        return part === '\'\'' ? '\'' : part.replace(/(^'|'$)/g, '').replace(/''/g, '\'');
     }
     var DateFormatter = (function () {
         function DateFormatter() {
@@ -2795,26 +2322,29 @@
      *   - `'shortTime'`: equivalent to `'jm'` (e.g. `12:05 PM` for `en-US`)
      *
      *
-     *  | Component | Symbol | Short Form   | Long Form         | Numeric   | 2-digit   |
-     *  |-----------|:------:|--------------|-------------------|-----------|-----------|
-     *  | era       |   G    | G (AD)       | GGGG (Anno Domini)| -         | -         |
-     *  | year      |   y    | -            | -                 | y (2015)  | yy (15)   |
-     *  | month     |   M    | MMM (Sep)    | MMMM (September)  | M (9)     | MM (09)   |
-     *  | day       |   d    | -            | -                 | d (3)     | dd (03)   |
-     *  | weekday   |   E    | EEE (Sun)    | EEEE (Sunday)     | -         | -         |
-     *  | hour      |   j    | -            | -                 | j (13)    | jj (13)   |
-     *  | hour12    |   h    | -            | -                 | h (1 PM)  | hh (01 PM)|
-     *  | hour24    |   H    | -            | -                 | H (13)    | HH (13)   |
-     *  | minute    |   m    | -            | -                 | m (5)     | mm (05)   |
-     *  | second    |   s    | -            | -                 | s (9)     | ss (09)   |
-     *  | timezone  |   z    | -            | z (Pacific Standard Time)| -  | -         |
-     *  | timezone  |   Z    | Z (GMT-8:00) | -                 | -         | -         |
-     *  | timezone  |   a    | a (PM)       | -                 | -         | -         |
+     *  | Component | Symbol | Narrow | Short Form   | Long Form         | Numeric   | 2-digit   |
+     *  |-----------|:------:|--------|--------------|-------------------|-----------|-----------|
+     *  | era       |   G    | G (A)  | GGG (AD)     | GGGG (Anno Domini)| -         | -         |
+     *  | year      |   y    | -      | -            | -                 | y (2015)  | yy (15)   |
+     *  | month     |   M    | L (S)  | MMM (Sep)    | MMMM (September)  | M (9)     | MM (09)   |
+     *  | day       |   d    | -      | -            | -                 | d (3)     | dd (03)   |
+     *  | weekday   |   E    | E (S)  | EEE (Sun)    | EEEE (Sunday)     | -         | -         |
+     *  | hour      |   j    | -      | -            | -                 | j (13)    | jj (13)   |
+     *  | hour12    |   h    | -      | -            | -                 | h (1 PM)  | hh (01 PM)|
+     *  | hour24    |   H    | -      | -            | -                 | H (13)    | HH (13)   |
+     *  | minute    |   m    | -      | -            | -                 | m (5)     | mm (05)   |
+     *  | second    |   s    | -      | -            | -                 | s (9)     | ss (09)   |
+     *  | timezone  |   z    | -      | -            | z (Pacific Standard Time)| -  | -         |
+     *  | timezone  |   Z    | -      | Z (GMT-8:00) | -                 | -         | -         |
+     *  | timezone  |   a    | -      | a (PM)       | -                 | -         | -         |
      *
      * In javascript, only the components specified will be respected (not the ordering,
      * punctuations, ...) and details of the formatting will be dependent on the locale.
      *
      * Timezone of the formatted text will be the local system timezone of the end-user's machine.
+     *
+     * When the expression is a ISO string without time (e.g. 2016-09-19) the time zone offset is not
+     * applied and the formatted text will have the same day, month and year of the expression.
      *
      * WARNINGS:
      * - this pipe is marked as pure hence it will not be re-evaluated when the input is mutated.
@@ -2846,30 +2376,38 @@
         }
         DatePipe.prototype.transform = function (value, pattern) {
             if (pattern === void 0) { pattern = 'mediumDate'; }
-            if (isBlank(value))
+            var date;
+            if (isBlank$1(value))
                 return null;
-            if (!this.supports(value)) {
+            if (typeof value === 'string') {
+                value = value.trim();
+            }
+            if (isDate(value)) {
+                date = value;
+            }
+            else if (NumberWrapper.isNumeric(value)) {
+                date = new Date(parseFloat(value));
+            }
+            else if (typeof value === 'string' && /^(\d{4}-\d{1,2}-\d{1,2})$/.test(value)) {
+                /**
+                * For ISO Strings without time the day, month and year must be extracted from the ISO String
+                * before Date creation to avoid time offset and errors in the new Date.
+                * If we only replace '-' with ',' in the ISO String ("2015,01,01"), and try to create a new
+                * date, some browsers (e.g. IE 9) will throw an invalid Date error
+                * If we leave the '-' ("2015-01-01") and try to create a new Date("2015-01-01") the timeoffset
+                * is applied
+                * Note: ISO months are 0 for January, 1 for February, ...
+                */
+                var _a = value.split('-').map(function (val) { return parseInt(val, 10); }), y = _a[0], m = _a[1], d = _a[2];
+                date = new Date(y, m - 1, d);
+            }
+            else {
+                date = new Date(value);
+            }
+            if (!isDate(date)) {
                 throw new InvalidPipeArgumentError(DatePipe, value);
             }
-            if (NumberWrapper.isNumeric(value)) {
-                value = DateWrapper.fromMillis(parseFloat(value));
-            }
-            else if (isString(value)) {
-                value = DateWrapper.fromISOString(value);
-            }
-            if (StringMapWrapper.contains(DatePipe._ALIASES, pattern)) {
-                pattern = StringMapWrapper.get(DatePipe._ALIASES, pattern);
-            }
-            return DateFormatter.format(value, this._locale, pattern);
-        };
-        DatePipe.prototype.supports = function (obj) {
-            if (isDate(obj) || NumberWrapper.isNumeric(obj)) {
-                return true;
-            }
-            if (isString(obj) && isDate(DateWrapper.fromISOString(obj))) {
-                return true;
-            }
-            return false;
+            return DateFormatter.format(date, this._locale, DatePipe._ALIASES[pattern] || pattern);
         };
         /** @internal */
         DatePipe._ALIASES = {
@@ -2891,6 +2429,9 @@
         ];
         return DatePipe;
     }());
+    function isBlank$1(obj) {
+        return obj == null || obj === '';
+    }
 
     var _INTERPOLATION_REGEXP = /#/g;
     /**
@@ -2917,11 +2458,11 @@
         I18nPluralPipe.prototype.transform = function (value, pluralMap) {
             if (isBlank(value))
                 return '';
-            if (!isStringMap(pluralMap)) {
+            if (typeof pluralMap !== 'object' || pluralMap === null) {
                 throw new InvalidPipeArgumentError(I18nPluralPipe, pluralMap);
             }
             var key = getPluralCategory(value, Object.keys(pluralMap), this._localization);
-            return StringWrapper.replaceAll(pluralMap[key], _INTERPOLATION_REGEXP, value.toString());
+            return pluralMap[key].replace(_INTERPOLATION_REGEXP, value.toString());
         };
         I18nPluralPipe.decorators = [
             { type: _angular_core.Pipe, args: [{ name: 'i18nPlural', pure: true },] },
@@ -2939,9 +2480,10 @@
      * @howToUse `expression | i18nSelect:mapping`
      * @description
      *
-     *  Where:
-     *  - `mapping`: is an object that indicates the text that should be displayed
+     *  Where `mapping` is an object that indicates the text that should be displayed
      *  for different values of the provided `expression`.
+     *  If none of the keys of the mapping match the value of the `expression`, then the content
+     *  of the `other` key is returned when present, otherwise an empty string is returned.
      *
      *  ## Example
      *
@@ -2953,12 +2495,18 @@
         function I18nSelectPipe() {
         }
         I18nSelectPipe.prototype.transform = function (value, mapping) {
-            if (isBlank(value))
+            if (value == null)
                 return '';
-            if (!isStringMap(mapping)) {
+            if (typeof mapping !== 'object' || typeof value !== 'string') {
                 throw new InvalidPipeArgumentError(I18nSelectPipe, mapping);
             }
-            return mapping.hasOwnProperty(value) ? mapping[value] : '';
+            if (mapping.hasOwnProperty(value)) {
+                return mapping[value];
+            }
+            if (mapping.hasOwnProperty('other')) {
+                return mapping['other'];
+            }
+            return '';
         };
         I18nSelectPipe.decorators = [
             { type: _angular_core.Pipe, args: [{ name: 'i18nSelect', pure: true },] },
@@ -2984,7 +2532,7 @@
     var JsonPipe = (function () {
         function JsonPipe() {
         }
-        JsonPipe.prototype.transform = function (value) { return Json.stringify(value); };
+        JsonPipe.prototype.transform = function (value) { return JSON.stringify(value, null, 2); };
         JsonPipe.decorators = [
             { type: _angular_core.Pipe, args: [{ name: 'json', pure: false },] },
         ];
@@ -2999,7 +2547,7 @@
      * @howToUse `expression | lowercase`
      * @description
      *
-     * Converts value into lowercase string using `String.prototype.toLowerCase()`.
+     * Converts value into a lowercase string using `String.prototype.toLowerCase()`.
      *
      * ### Example
      *
@@ -3013,7 +2561,7 @@
         LowerCasePipe.prototype.transform = function (value) {
             if (isBlank(value))
                 return value;
-            if (!isString(value)) {
+            if (typeof value !== 'string') {
                 throw new InvalidPipeArgumentError(LowerCasePipe, value);
             }
             return value.toLowerCase();
@@ -3026,15 +2574,15 @@
         return LowerCasePipe;
     }());
 
-    var _NUMBER_FORMAT_REGEXP = /^(\d+)?\.((\d+)(\-(\d+))?)?$/;
+    var _NUMBER_FORMAT_REGEXP = /^(\d+)?\.((\d+)(-(\d+))?)?$/;
     function formatNumber(pipe, locale, value, style, digits, currency, currencyAsSymbol) {
         if (currency === void 0) { currency = null; }
         if (currencyAsSymbol === void 0) { currencyAsSymbol = false; }
         if (isBlank(value))
             return null;
         // Convert strings to numbers
-        value = isString(value) && NumberWrapper.isNumeric(value) ? +value : value;
-        if (!isNumber(value)) {
+        value = typeof value === 'string' && NumberWrapper.isNumeric(value) ? +value : value;
+        if (typeof value !== 'number') {
             throw new InvalidPipeArgumentError(pipe, value);
         }
         var minInt;
@@ -3046,7 +2594,7 @@
             minFraction = 0;
             maxFraction = 3;
         }
-        if (isPresent(digits)) {
+        if (digits) {
             var parts = digits.match(_NUMBER_FORMAT_REGEXP);
             if (parts === null) {
                 throw new Error(digits + " is not a valid digit info for number pipes");
@@ -3066,7 +2614,7 @@
             minimumFractionDigits: minFraction,
             maximumFractionDigits: maxFraction,
             currency: currency,
-            currencyAsSymbol: currencyAsSymbol
+            currencyAsSymbol: currencyAsSymbol,
         });
     }
     /**
@@ -3242,18 +2790,14 @@
         function SlicePipe() {
         }
         SlicePipe.prototype.transform = function (value, start, end) {
-            if (end === void 0) { end = null; }
             if (isBlank(value))
                 return value;
             if (!this.supports(value)) {
                 throw new InvalidPipeArgumentError(SlicePipe, value);
             }
-            if (isString(value)) {
-                return StringWrapper.slice(value, start, end);
-            }
-            return ListWrapper.slice(value, start, end);
+            return value.slice(start, end);
         };
-        SlicePipe.prototype.supports = function (obj) { return isString(obj) || isArray(obj); };
+        SlicePipe.prototype.supports = function (obj) { return typeof obj === 'string' || Array.isArray(obj); };
         SlicePipe.decorators = [
             { type: _angular_core.Pipe, args: [{ name: 'slice', pure: false },] },
         ];
@@ -3268,7 +2812,7 @@
      * @howToUse `expression | uppercase`
      * @description
      *
-     * Converts value into lowercase string using `String.prototype.toUpperCase()`.
+     * Converts value into an uppercase string using `String.prototype.toUpperCase()`.
      *
      * ### Example
      *
@@ -3282,7 +2826,7 @@
         UpperCasePipe.prototype.transform = function (value) {
             if (isBlank(value))
                 return value;
-            if (!isString(value)) {
+            if (typeof value !== 'string') {
                 throw new InvalidPipeArgumentError(UpperCasePipe, value);
             }
             return value.toUpperCase();

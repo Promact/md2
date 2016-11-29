@@ -6,8 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { Optional, SkipSelf } from '../../di';
-import { ListWrapper } from '../../facade/collection';
-import { getTypeNameForDebugging, isBlank, isPresent } from '../../facade/lang';
+import { getTypeNameForDebugging, isPresent } from '../../facade/lang';
 /**
  * A repository of different iterable diffing strategies used by NgFor, NgClass, and others.
  * @stable
@@ -18,7 +17,7 @@ export var IterableDiffers = (function () {
     }
     IterableDiffers.create = function (factories, parent) {
         if (isPresent(parent)) {
-            var copied = ListWrapper.clone(parent.factories);
+            var copied = parent.factories.slice();
             factories = factories.concat(copied);
             return new IterableDiffers(factories);
         }
@@ -49,7 +48,7 @@ export var IterableDiffers = (function () {
         return {
             provide: IterableDiffers,
             useFactory: function (parent) {
-                if (isBlank(parent)) {
+                if (!parent) {
                     // Typically would occur when calling IterableDiffers.extend inside of dependencies passed
                     // to
                     // bootstrap(), which would override default pipes instead of extending them.

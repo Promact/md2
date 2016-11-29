@@ -6,8 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { NgZone } from '@angular/core';
-import { ListWrapper } from './facade/collection';
-import { StringWrapper, global, isPresent, isString } from './facade/lang';
+import { global } from './facade/lang';
 import { getDOM } from './private_import_platform-browser';
 export var BrowserDetection = (function () {
     function BrowserDetection(ua) {
@@ -15,12 +14,10 @@ export var BrowserDetection = (function () {
     }
     Object.defineProperty(BrowserDetection.prototype, "_ua", {
         get: function () {
-            if (isPresent(this._overrideUa)) {
+            if (typeof this._overrideUa === 'string') {
                 return this._overrideUa;
             }
-            else {
-                return isPresent(getDOM()) ? getDOM().getUserAgent() : '';
-            }
+            return getDOM() ? getDOM().getUserAgent() : '';
         },
         enumerable: true,
         configurable: true
@@ -110,13 +107,24 @@ export function el(html) {
     return getDOM().firstChild(getDOM().content(getDOM().createTemplate(html)));
 }
 export function normalizeCSS(css) {
-    css = StringWrapper.replaceAll(css, /\s+/g, ' ');
-    css = StringWrapper.replaceAll(css, /:\s/g, ':');
-    css = StringWrapper.replaceAll(css, /'/g, '"');
-    css = StringWrapper.replaceAll(css, / }/g, '}');
-    css = StringWrapper.replaceAllMapped(css, /url\((\"|\s)(.+)(\"|\s)\)(\s*)/g, function (match /** TODO #9100 */) { return ("url(\"" + match[2] + "\")"); });
-    css = StringWrapper.replaceAllMapped(css, /\[(.+)=([^"\]]+)\]/g, function (match /** TODO #9100 */) { return ("[" + match[1] + "=\"" + match[2] + "\"]"); });
-    return css;
+    return css.replace(/\s+/g, ' ')
+        .replace(/:\s/g, ':')
+        .replace(/'/g, '"')
+        .replace(/ }/g, '}')
+        .replace(/url\((\"|\s)(.+)(\"|\s)\)(\s*)/g, function () {
+        var match = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            match[_i - 0] = arguments[_i];
+        }
+        return ("url(\"" + match[2] + "\")");
+    })
+        .replace(/\[(.+)=([^"\]]+)\]/g, function () {
+        var match = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            match[_i - 0] = arguments[_i];
+        }
+        return ("[" + match[1] + "=\"" + match[2] + "\"]");
+    });
 }
 var _singleTagWhitelist = ['br', 'hr', 'input'];
 export function stringifyElement(el /** TODO #9100 */) {
@@ -127,13 +135,11 @@ export function stringifyElement(el /** TODO #9100 */) {
         result += "<" + tagName;
         // Attributes in an ordered way
         var attributeMap = getDOM().attributeMap(el);
-        var keys = [];
-        attributeMap.forEach(function (v, k) { return keys.push(k); });
-        ListWrapper.sort(keys);
+        var keys = Array.from(attributeMap.keys()).sort();
         for (var i = 0; i < keys.length; i++) {
             var key = keys[i];
             var attValue = attributeMap.get(key);
-            if (!isString(attValue)) {
+            if (typeof attValue !== 'string') {
                 result += " " + key;
             }
             else {
@@ -143,12 +149,12 @@ export function stringifyElement(el /** TODO #9100 */) {
         result += '>';
         // Children
         var childrenRoot = getDOM().templateAwareRoot(el);
-        var children = isPresent(childrenRoot) ? getDOM().childNodes(childrenRoot) : [];
+        var children = childrenRoot ? getDOM().childNodes(childrenRoot) : [];
         for (var j = 0; j < children.length; j++) {
             result += stringifyElement(children[j]);
         }
         // Closing tag
-        if (!ListWrapper.contains(_singleTagWhitelist, tagName)) {
+        if (_singleTagWhitelist.indexOf(tagName) == -1) {
             result += "</" + tagName + ">";
         }
     }

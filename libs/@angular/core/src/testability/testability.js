@@ -6,7 +6,6 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { Injectable } from '../di';
-import { Map, MapWrapper } from '../facade/collection';
 import { scheduleMicroTask } from '../facade/lang';
 import { NgZone } from '../zone/ng_zone';
 /**
@@ -92,6 +91,7 @@ export var Testability = (function () {
         this._runCallbacksIfReady();
     };
     Testability.prototype.getPendingRequestCount = function () { return this._pendingCount; };
+    /** @deprecated use findProviders */
     Testability.prototype.findBindings = function (using, provider, exactMatch) {
         // TODO(juliemr): implement.
         return [];
@@ -123,8 +123,8 @@ export var TestabilityRegistry = (function () {
         this._applications.set(token, testability);
     };
     TestabilityRegistry.prototype.getTestability = function (elem) { return this._applications.get(elem); };
-    TestabilityRegistry.prototype.getAllTestabilities = function () { return MapWrapper.values(this._applications); };
-    TestabilityRegistry.prototype.getAllRootElements = function () { return MapWrapper.keys(this._applications); };
+    TestabilityRegistry.prototype.getAllTestabilities = function () { return Array.from(this._applications.values()); };
+    TestabilityRegistry.prototype.getAllRootElements = function () { return Array.from(this._applications.keys()); };
     TestabilityRegistry.prototype.findTestabilityInTree = function (elem, findInAncestors) {
         if (findInAncestors === void 0) { findInAncestors = true; }
         return _testabilityGetter.findTestabilityInTree(this, elem, findInAncestors);

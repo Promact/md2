@@ -7,7 +7,7 @@
  */
 import { Directive, ElementRef, Input, IterableDiffers, KeyValueDiffers, Renderer } from '@angular/core';
 import { isListLikeIterable } from '../facade/collection';
-import { isPresent } from '../facade/lang';
+import { isPresent, stringify } from '../facade/lang';
 /**
  * @ngModule CommonModule
  *
@@ -26,11 +26,11 @@ import { isPresent } from '../facade/lang';
  *
  * @description
  *
- * The CSS classes are updated as follow depending on the type of the expression evaluation:
- * - `string` - the CSS classes listed in a string (space delimited) are added,
- * - `Array` - the CSS classes (Array elements) are added,
- * - `Object` - keys are CSS class names that get added when the expression given in the value
- *              evaluates to a truthy value, otherwise class are removed.
+ * The CSS classes are updated as follows, depending on the type of the expression evaluation:
+ * - `string` - the CSS classes listed in the string (space delimited) are added,
+ * - `Array` - the CSS classes declared as Array elements are added,
+ * - `Object` - keys are CSS classes that get added when the expression given in the value
+ *              evaluates to a truthy value, otherwise they are removed.
  *
  * @stable
  */
@@ -100,7 +100,14 @@ export var NgClass = (function () {
     };
     NgClass.prototype._applyIterableChanges = function (changes) {
         var _this = this;
-        changes.forEachAddedItem(function (record) { return _this._toggleClass(record.item, true); });
+        changes.forEachAddedItem(function (record) {
+            if (typeof record.item === 'string') {
+                _this._toggleClass(record.item, true);
+            }
+            else {
+                throw new Error("NgClass can only toggle CSS classes expressed as strings, got " + stringify(record.item));
+            }
+        });
         changes.forEachRemovedItem(function (record) { return _this._toggleClass(record.item, false); });
     };
     NgClass.prototype._applyInitialClasses = function (isCleanup) {

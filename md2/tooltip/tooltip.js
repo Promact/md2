@@ -7,13 +7,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { ApplicationRef, ChangeDetectorRef, Component, ComponentFactoryResolver, Directive, ElementRef, HostListener, Input, ReflectiveInjector, ViewContainerRef, ViewEncapsulation, NgModule } from '@angular/core';
+import { ChangeDetectorRef, Component, Directive, ElementRef, HostListener, Input, ViewContainerRef, ViewEncapsulation, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Overlay, OverlayState, ComponentPortal, OVERLAY_PROVIDERS } from '../core';
 export var Md2Tooltip = (function () {
-    function Md2Tooltip(_componentFactory, _appRef, _viewContainer) {
-        this._componentFactory = _componentFactory;
-        this._appRef = _appRef;
+    function Md2Tooltip(_viewContainer, _overlay) {
         this._viewContainer = _viewContainer;
+        this._overlay = _overlay;
         this.visible = false;
         this.position = 'below';
         this.delay = 0;
@@ -31,14 +31,15 @@ export var Md2Tooltip = (function () {
         clearTimeout(this.timer);
         this.timer = setTimeout(function () {
             _this.timer = 0;
-            var app = _this._appRef;
-            var appContainer = app['_rootComponents'][0]['_hostElement'].vcRef;
-            var toastFactory = _this._componentFactory.resolveComponentFactory(Md2TooltipComponent);
-            var childInjector = ReflectiveInjector.fromResolvedProviders([], appContainer.parentInjector);
-            _this.tooltip = appContainer.createComponent(toastFactory, appContainer.length, childInjector);
-            _this.tooltip.instance.message = _this.message;
-            _this.tooltip.instance.position = _this.position;
-            _this.tooltip.instance.hostEl = _this._viewContainer.element;
+            var strategy = _this._overlay.position().global().fixed().top('0').left('0');
+            var config = new OverlayState();
+            config.positionStrategy = strategy;
+            _this._overlayRef = _this._overlay.create(config);
+            var portal = new ComponentPortal(Md2TooltipComponent);
+            _this._tooltipInstance = _this._overlayRef.attach(portal).instance;
+            _this._tooltipInstance.message = _this.message;
+            _this._tooltipInstance.position = _this.position;
+            _this._tooltipInstance.hostEl = _this._viewContainer.element;
         }, this.delay);
     };
     /**
@@ -51,9 +52,10 @@ export var Md2Tooltip = (function () {
             return;
         }
         this.visible = false;
-        if (this.tooltip) {
-            this.tooltip.destroy();
-            this.tooltip = null;
+        if (this._tooltipInstance) {
+            this._overlayRef.dispose();
+            this._overlayRef = null;
+            this._tooltipInstance = null;
         }
     };
     __decorate([
@@ -86,7 +88,7 @@ export var Md2Tooltip = (function () {
         Directive({
             selector: '[tooltip]'
         }), 
-        __metadata('design:paramtypes', [ComponentFactoryResolver, ApplicationRef, ViewContainerRef])
+        __metadata('design:paramtypes', [ViewContainerRef, Overlay])
     ], Md2Tooltip);
     return Md2Tooltip;
 }());
@@ -202,7 +204,7 @@ export var Md2TooltipModule = (function () {
     Md2TooltipModule.forRoot = function () {
         return {
             ngModule: Md2TooltipModule,
-            providers: []
+            providers: [OVERLAY_PROVIDERS]
         };
     };
     Md2TooltipModule = __decorate([

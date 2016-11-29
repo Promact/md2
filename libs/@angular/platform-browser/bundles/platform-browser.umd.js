@@ -1,5 +1,5 @@
 /**
- * @license Angular v2.0.0
+ * @license Angular v2.2.3
  * (c) 2010-2016 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -15,7 +15,8 @@
     var _NoOpAnimationDriver = (function () {
         function _NoOpAnimationDriver() {
         }
-        _NoOpAnimationDriver.prototype.animate = function (element, startingStyles, keyframes, duration, delay, easing) {
+        _NoOpAnimationDriver.prototype.animate = function (element, startingStyles, keyframes, duration, delay, easing, previousPlayers) {
+            if (previousPlayers === void 0) { previousPlayers = []; }
             return new NoOpAnimationPlayer();
         };
         return _NoOpAnimationDriver;
@@ -53,7 +54,6 @@
     // Need to declare a new variable for global here since TypeScript
     // exports the original value of the symbol.
     var global$1 = globalScope;
-    var Date = global$1.Date;
     // TODO: remove calls to assert in production environment
     // Note: Can't just export this and import in in other files
     // as `assert` is a reserved keyword in Dart
@@ -61,28 +61,16 @@
         // TODO: to be fixed properly via #2830, noop for now
     };
     function isPresent(obj) {
-        return obj !== undefined && obj !== null;
+        return obj != null;
     }
     function isBlank(obj) {
-        return obj === undefined || obj === null;
-    }
-    function isNumber(obj) {
-        return typeof obj === 'number';
-    }
-    function isString(obj) {
-        return typeof obj === 'string';
-    }
-    function isFunction(obj) {
-        return typeof obj === 'function';
-    }
-    function isArray(obj) {
-        return Array.isArray(obj);
+        return obj == null;
     }
     function stringify(token) {
         if (typeof token === 'string') {
             return token;
         }
-        if (token === undefined || token === null) {
+        if (token == null) {
             return '' + token;
         }
         if (token.overriddenName) {
@@ -93,157 +81,18 @@
         }
         var res = token.toString();
         var newLineIndex = res.indexOf('\n');
-        return (newLineIndex === -1) ? res : res.substring(0, newLineIndex);
+        return newLineIndex === -1 ? res : res.substring(0, newLineIndex);
     }
-    var StringWrapper = (function () {
-        function StringWrapper() {
-        }
-        StringWrapper.fromCharCode = function (code) { return String.fromCharCode(code); };
-        StringWrapper.charCodeAt = function (s, index) { return s.charCodeAt(index); };
-        StringWrapper.split = function (s, regExp) { return s.split(regExp); };
-        StringWrapper.equals = function (s, s2) { return s === s2; };
-        StringWrapper.stripLeft = function (s, charVal) {
-            if (s && s.length) {
-                var pos = 0;
-                for (var i = 0; i < s.length; i++) {
-                    if (s[i] != charVal)
-                        break;
-                    pos++;
-                }
-                s = s.substring(pos);
-            }
-            return s;
-        };
-        StringWrapper.stripRight = function (s, charVal) {
-            if (s && s.length) {
-                var pos = s.length;
-                for (var i = s.length - 1; i >= 0; i--) {
-                    if (s[i] != charVal)
-                        break;
-                    pos--;
-                }
-                s = s.substring(0, pos);
-            }
-            return s;
-        };
-        StringWrapper.replace = function (s, from, replace) {
-            return s.replace(from, replace);
-        };
-        StringWrapper.replaceAll = function (s, from, replace) {
-            return s.replace(from, replace);
-        };
-        StringWrapper.slice = function (s, from, to) {
-            if (from === void 0) { from = 0; }
-            if (to === void 0) { to = null; }
-            return s.slice(from, to === null ? undefined : to);
-        };
-        StringWrapper.replaceAllMapped = function (s, from, cb) {
-            return s.replace(from, function () {
-                var matches = [];
-                for (var _i = 0; _i < arguments.length; _i++) {
-                    matches[_i - 0] = arguments[_i];
-                }
-                // Remove offset & string from the result array
-                matches.splice(-2, 2);
-                // The callback receives match, p1, ..., pn
-                return cb(matches);
-            });
-        };
-        StringWrapper.contains = function (s, substr) { return s.indexOf(substr) != -1; };
-        StringWrapper.compare = function (a, b) {
-            if (a < b) {
-                return -1;
-            }
-            else if (a > b) {
-                return 1;
-            }
-            else {
-                return 0;
-            }
-        };
-        return StringWrapper;
-    }());
-    var NumberWrapper = (function () {
-        function NumberWrapper() {
-        }
-        NumberWrapper.toFixed = function (n, fractionDigits) { return n.toFixed(fractionDigits); };
-        NumberWrapper.equal = function (a, b) { return a === b; };
-        NumberWrapper.parseIntAutoRadix = function (text) {
-            var result = parseInt(text);
-            if (isNaN(result)) {
-                throw new Error('Invalid integer literal when parsing ' + text);
-            }
-            return result;
-        };
-        NumberWrapper.parseInt = function (text, radix) {
-            if (radix == 10) {
-                if (/^(\-|\+)?[0-9]+$/.test(text)) {
-                    return parseInt(text, radix);
-                }
-            }
-            else if (radix == 16) {
-                if (/^(\-|\+)?[0-9ABCDEFabcdef]+$/.test(text)) {
-                    return parseInt(text, radix);
-                }
-            }
-            else {
-                var result = parseInt(text, radix);
-                if (!isNaN(result)) {
-                    return result;
-                }
-            }
-            throw new Error('Invalid integer literal when parsing ' + text + ' in base ' + radix);
-        };
-        Object.defineProperty(NumberWrapper, "NaN", {
-            get: function () { return NaN; },
-            enumerable: true,
-            configurable: true
-        });
-        NumberWrapper.isNumeric = function (value) { return !isNaN(value - parseFloat(value)); };
-        NumberWrapper.isNaN = function (value) { return isNaN(value); };
-        NumberWrapper.isInteger = function (value) { return Number.isInteger(value); };
-        return NumberWrapper;
-    }());
-    // Can't be all uppercase as our transpiler would think it is a special directive...
-    var Json = (function () {
-        function Json() {
-        }
-        Json.parse = function (s) { return global$1.JSON.parse(s); };
-        Json.stringify = function (data) {
-            // Dart doesn't take 3 arguments
-            return global$1.JSON.stringify(data, null, 2);
-        };
-        return Json;
-    }());
-    var DateWrapper = (function () {
-        function DateWrapper() {
-        }
-        DateWrapper.create = function (year, month, day, hour, minutes, seconds, milliseconds) {
-            if (month === void 0) { month = 1; }
-            if (day === void 0) { day = 1; }
-            if (hour === void 0) { hour = 0; }
-            if (minutes === void 0) { minutes = 0; }
-            if (seconds === void 0) { seconds = 0; }
-            if (milliseconds === void 0) { milliseconds = 0; }
-            return new Date(year, month - 1, day, hour, minutes, seconds, milliseconds);
-        };
-        DateWrapper.fromISOString = function (str) { return new Date(str); };
-        DateWrapper.fromMillis = function (ms) { return new Date(ms); };
-        DateWrapper.toMillis = function (date) { return date.getTime(); };
-        DateWrapper.now = function () { return new Date(); };
-        DateWrapper.toJson = function (date) { return date.toJSON(); };
-        return DateWrapper;
-    }());
     function setValueOnPath(global, path, value) {
         var parts = path.split('.');
         var obj = global;
         while (parts.length > 1) {
-            var name = parts.shift();
-            if (obj.hasOwnProperty(name) && isPresent(obj[name])) {
-                obj = obj[name];
+            var name_1 = parts.shift();
+            if (obj.hasOwnProperty(name_1) && obj[name_1] != null) {
+                obj = obj[name_1];
             }
             else {
-                obj = obj[name] = {};
+                obj = obj[name_1] = {};
             }
         }
         if (obj === undefined || obj === null) {
@@ -252,307 +101,19 @@
         obj[parts.shift()] = value;
     }
 
-    var Map$1 = global$1.Map;
-    var Set$1 = global$1.Set;
-    // Safari and Internet Explorer do not support the iterable parameter to the
-    // Map constructor.  We work around that by manually adding the items.
-    var createMapFromPairs = (function () {
-        try {
-            if (new Map$1([[1, 2]]).size === 1) {
-                return function createMapFromPairs(pairs) { return new Map$1(pairs); };
-            }
-        }
-        catch (e) {
-        }
-        return function createMapAndPopulateFromPairs(pairs) {
-            var map = new Map$1();
-            for (var i = 0; i < pairs.length; i++) {
-                var pair = pairs[i];
-                map.set(pair[0], pair[1]);
-            }
-            return map;
-        };
-    })();
-    var createMapFromMap = (function () {
-        try {
-            if (new Map$1(new Map$1())) {
-                return function createMapFromMap(m) { return new Map$1(m); };
-            }
-        }
-        catch (e) {
-        }
-        return function createMapAndPopulateFromMap(m) {
-            var map = new Map$1();
-            m.forEach(function (v, k) { map.set(k, v); });
-            return map;
-        };
-    })();
-    var _clearValues = (function () {
-        if ((new Map$1()).keys().next) {
-            return function _clearValues(m) {
-                var keyIterator = m.keys();
-                var k;
-                while (!((k = keyIterator.next()).done)) {
-                    m.set(k.value, null);
-                }
-            };
-        }
-        else {
-            return function _clearValuesWithForeEach(m) {
-                m.forEach(function (v, k) { m.set(k, null); });
-            };
-        }
-    })();
-    // Safari doesn't implement MapIterator.next(), which is used is Traceur's polyfill of Array.from
-    // TODO(mlaval): remove the work around once we have a working polyfill of Array.from
-    var _arrayFromMap = (function () {
-        try {
-            if ((new Map$1()).values().next) {
-                return function createArrayFromMap(m, getValues) {
-                    return getValues ? Array.from(m.values()) : Array.from(m.keys());
-                };
-            }
-        }
-        catch (e) {
-        }
-        return function createArrayFromMapWithForeach(m, getValues) {
-            var res = ListWrapper.createFixedSize(m.size), i = 0;
-            m.forEach(function (v, k) {
-                res[i] = getValues ? v : k;
-                i++;
-            });
-            return res;
-        };
-    })();
     /**
-     * Wraps Javascript Objects
+     * @license
+     * Copyright Google Inc. All Rights Reserved.
+     *
+     * Use of this source code is governed by an MIT-style license that can be
+     * found in the LICENSE file at https://angular.io/license
      */
-    var StringMapWrapper = (function () {
-        function StringMapWrapper() {
-        }
-        StringMapWrapper.create = function () {
-            // Note: We are not using Object.create(null) here due to
-            // performance!
-            // http://jsperf.com/ng2-object-create-null
-            return {};
-        };
-        StringMapWrapper.contains = function (map, key) {
-            return map.hasOwnProperty(key);
-        };
-        StringMapWrapper.get = function (map, key) {
-            return map.hasOwnProperty(key) ? map[key] : undefined;
-        };
-        StringMapWrapper.set = function (map, key, value) { map[key] = value; };
-        StringMapWrapper.keys = function (map) { return Object.keys(map); };
-        StringMapWrapper.values = function (map) {
-            return Object.keys(map).map(function (k) { return map[k]; });
-        };
-        StringMapWrapper.isEmpty = function (map) {
-            for (var prop in map) {
-                return false;
-            }
-            return true;
-        };
-        StringMapWrapper.delete = function (map, key) { delete map[key]; };
-        StringMapWrapper.forEach = function (map, callback) {
-            for (var _i = 0, _a = Object.keys(map); _i < _a.length; _i++) {
-                var k = _a[_i];
-                callback(map[k], k);
-            }
-        };
-        StringMapWrapper.merge = function (m1, m2) {
-            var m = {};
-            for (var _i = 0, _a = Object.keys(m1); _i < _a.length; _i++) {
-                var k = _a[_i];
-                m[k] = m1[k];
-            }
-            for (var _b = 0, _c = Object.keys(m2); _b < _c.length; _b++) {
-                var k = _c[_b];
-                m[k] = m2[k];
-            }
-            return m;
-        };
-        StringMapWrapper.equals = function (m1, m2) {
-            var k1 = Object.keys(m1);
-            var k2 = Object.keys(m2);
-            if (k1.length != k2.length) {
-                return false;
-            }
-            for (var i = 0; i < k1.length; i++) {
-                var key = k1[i];
-                if (m1[key] !== m2[key]) {
-                    return false;
-                }
-            }
-            return true;
-        };
-        return StringMapWrapper;
-    }());
-    var ListWrapper = (function () {
-        function ListWrapper() {
-        }
-        // JS has no way to express a statically fixed size list, but dart does so we
-        // keep both methods.
-        ListWrapper.createFixedSize = function (size) { return new Array(size); };
-        ListWrapper.createGrowableSize = function (size) { return new Array(size); };
-        ListWrapper.clone = function (array) { return array.slice(0); };
-        ListWrapper.forEachWithIndex = function (array, fn) {
-            for (var i = 0; i < array.length; i++) {
-                fn(array[i], i);
-            }
-        };
-        ListWrapper.first = function (array) {
-            if (!array)
-                return null;
-            return array[0];
-        };
-        ListWrapper.last = function (array) {
-            if (!array || array.length == 0)
-                return null;
-            return array[array.length - 1];
-        };
-        ListWrapper.indexOf = function (array, value, startIndex) {
-            if (startIndex === void 0) { startIndex = 0; }
-            return array.indexOf(value, startIndex);
-        };
-        ListWrapper.contains = function (list, el) { return list.indexOf(el) !== -1; };
-        ListWrapper.reversed = function (array) {
-            var a = ListWrapper.clone(array);
-            return a.reverse();
-        };
-        ListWrapper.concat = function (a, b) { return a.concat(b); };
-        ListWrapper.insert = function (list, index, value) { list.splice(index, 0, value); };
-        ListWrapper.removeAt = function (list, index) {
-            var res = list[index];
-            list.splice(index, 1);
-            return res;
-        };
-        ListWrapper.removeAll = function (list, items) {
-            for (var i = 0; i < items.length; ++i) {
-                var index = list.indexOf(items[i]);
-                list.splice(index, 1);
-            }
-        };
-        ListWrapper.remove = function (list, el) {
-            var index = list.indexOf(el);
-            if (index > -1) {
-                list.splice(index, 1);
-                return true;
-            }
-            return false;
-        };
-        ListWrapper.clear = function (list) { list.length = 0; };
-        ListWrapper.isEmpty = function (list) { return list.length == 0; };
-        ListWrapper.fill = function (list, value, start, end) {
-            if (start === void 0) { start = 0; }
-            if (end === void 0) { end = null; }
-            list.fill(value, start, end === null ? list.length : end);
-        };
-        ListWrapper.equals = function (a, b) {
-            if (a.length != b.length)
-                return false;
-            for (var i = 0; i < a.length; ++i) {
-                if (a[i] !== b[i])
-                    return false;
-            }
-            return true;
-        };
-        ListWrapper.slice = function (l, from, to) {
-            if (from === void 0) { from = 0; }
-            if (to === void 0) { to = null; }
-            return l.slice(from, to === null ? undefined : to);
-        };
-        ListWrapper.splice = function (l, from, length) { return l.splice(from, length); };
-        ListWrapper.sort = function (l, compareFn) {
-            if (isPresent(compareFn)) {
-                l.sort(compareFn);
-            }
-            else {
-                l.sort();
-            }
-        };
-        ListWrapper.toString = function (l) { return l.toString(); };
-        ListWrapper.toJSON = function (l) { return JSON.stringify(l); };
-        ListWrapper.maximum = function (list, predicate) {
-            if (list.length == 0) {
-                return null;
-            }
-            var solution = null;
-            var maxValue = -Infinity;
-            for (var index = 0; index < list.length; index++) {
-                var candidate = list[index];
-                if (isBlank(candidate)) {
-                    continue;
-                }
-                var candidateValue = predicate(candidate);
-                if (candidateValue > maxValue) {
-                    solution = candidate;
-                    maxValue = candidateValue;
-                }
-            }
-            return solution;
-        };
-        ListWrapper.flatten = function (list) {
-            var target = [];
-            _flattenArray(list, target);
-            return target;
-        };
-        ListWrapper.addAll = function (list, source) {
-            for (var i = 0; i < source.length; i++) {
-                list.push(source[i]);
-            }
-        };
-        return ListWrapper;
-    }());
-    function _flattenArray(source, target) {
-        if (isPresent(source)) {
-            for (var i = 0; i < source.length; i++) {
-                var item = source[i];
-                if (isArray(item)) {
-                    _flattenArray(item, target);
-                }
-                else {
-                    target.push(item);
-                }
-            }
-        }
-        return target;
-    }
-    // Safari and Internet Explorer do not support the iterable parameter to the
-    // Set constructor.  We work around that by manually adding the items.
-    var createSetFromList = (function () {
-        var test = new Set$1([1, 2, 3]);
-        if (test.size === 3) {
-            return function createSetFromList(lst) { return new Set$1(lst); };
-        }
-        else {
-            return function createSetAndPopulateFromList(lst) {
-                var res = new Set$1(lst);
-                if (res.size !== lst.length) {
-                    for (var i = 0; i < lst.length; i++) {
-                        res.add(lst[i]);
-                    }
-                }
-                return res;
-            };
-        }
-    })();
-
-    var CAMEL_CASE_REGEXP = /([A-Z])/g;
-    var DASH_CASE_REGEXP = /-([a-z])/g;
-    function camelCaseToDashCase(input) {
-        return StringWrapper.replaceAllMapped(input, CAMEL_CASE_REGEXP, function (m /** TODO #9100 */) { return '-' + m[1].toLowerCase(); });
-    }
-    function dashCaseToCamelCase(input) {
-        return StringWrapper.replaceAllMapped(input, DASH_CASE_REGEXP, function (m /** TODO #9100 */) { return m[1].toUpperCase(); });
-    }
-
     var _DOM = null;
     function getDOM() {
         return _DOM;
     }
     function setRootDomAdapter(adapter) {
-        if (isBlank(_DOM)) {
+        if (!_DOM) {
             _DOM = adapter;
         }
     }
@@ -583,24 +144,29 @@
     }());
 
     var WebAnimationsPlayer = (function () {
-        function WebAnimationsPlayer(element, keyframes, options) {
+        function WebAnimationsPlayer(element, keyframes, options, previousPlayers) {
+            var _this = this;
+            if (previousPlayers === void 0) { previousPlayers = []; }
             this.element = element;
             this.keyframes = keyframes;
             this.options = options;
             this._onDoneFns = [];
             this._onStartFns = [];
-            this._finished = false;
             this._initialized = false;
+            this._finished = false;
             this._started = false;
+            this._destroyed = false;
             this.parentPlayer = null;
             this._duration = options['duration'];
+            this.previousStyles = {};
+            previousPlayers.forEach(function (player) {
+                var styles = player._captureStyles();
+                Object.keys(styles).forEach(function (prop) { return _this.previousStyles[prop] = styles[prop]; });
+            });
         }
         WebAnimationsPlayer.prototype._onFinish = function () {
             if (!this._finished) {
                 this._finished = true;
-                if (!isPresent(this.parentPlayer)) {
-                    this.destroy();
-                }
                 this._onDoneFns.forEach(function (fn) { return fn(); });
                 this._onDoneFns = [];
             }
@@ -612,20 +178,41 @@
             this._initialized = true;
             var keyframes = this.keyframes.map(function (styles) {
                 var formattedKeyframe = {};
-                StringMapWrapper.forEach(styles, function (value, prop) {
-                    formattedKeyframe[prop] = value == _angular_core.AUTO_STYLE ? _computeStyle(_this.element, prop) : value;
+                Object.keys(styles).forEach(function (prop, index) {
+                    var value = styles[prop];
+                    if (value == _angular_core.AUTO_STYLE) {
+                        value = _computeStyle(_this.element, prop);
+                    }
+                    if (value != undefined) {
+                        formattedKeyframe[prop] = value;
+                    }
                 });
                 return formattedKeyframe;
             });
+            var previousStyleProps = Object.keys(this.previousStyles);
+            if (previousStyleProps.length) {
+                var startingKeyframe_1 = findStartingKeyframe(keyframes);
+                previousStyleProps.forEach(function (prop) {
+                    if (isPresent(startingKeyframe_1[prop])) {
+                        startingKeyframe_1[prop] = _this.previousStyles[prop];
+                    }
+                });
+            }
             this._player = this._triggerWebAnimation(this.element, keyframes, this.options);
+            this._finalKeyframe = _copyKeyframeStyles(keyframes[keyframes.length - 1]);
             // this is required so that the player doesn't start to animate right away
-            this.reset();
-            this._player.onfinish = function () { return _this._onFinish(); };
+            this._resetDomPlayerState();
+            this._player.addEventListener('finish', function () { return _this._onFinish(); });
         };
         /** @internal */
         WebAnimationsPlayer.prototype._triggerWebAnimation = function (element, keyframes, options) {
             return element.animate(keyframes, options);
         };
+        Object.defineProperty(WebAnimationsPlayer.prototype, "domPlayer", {
+            get: function () { return this._player; },
+            enumerable: true,
+            configurable: true
+        });
         WebAnimationsPlayer.prototype.onStart = function (fn) { this._onStartFns.push(fn); };
         WebAnimationsPlayer.prototype.onDone = function (fn) { this._onDoneFns.push(fn); };
         WebAnimationsPlayer.prototype.play = function () {
@@ -646,15 +233,24 @@
             this._onFinish();
             this._player.finish();
         };
-        WebAnimationsPlayer.prototype.reset = function () { this._player.cancel(); };
+        WebAnimationsPlayer.prototype.reset = function () {
+            this._resetDomPlayerState();
+            this._destroyed = false;
+            this._finished = false;
+            this._started = false;
+        };
+        WebAnimationsPlayer.prototype._resetDomPlayerState = function () { this._player.cancel(); };
         WebAnimationsPlayer.prototype.restart = function () {
             this.reset();
             this.play();
         };
         WebAnimationsPlayer.prototype.hasStarted = function () { return this._started; };
         WebAnimationsPlayer.prototype.destroy = function () {
-            this.reset();
-            this._onFinish();
+            if (!this._destroyed) {
+                this._resetDomPlayerState();
+                this._onFinish();
+                this._destroyed = true;
+            }
         };
         Object.defineProperty(WebAnimationsPlayer.prototype, "totalTime", {
             get: function () { return this._duration; },
@@ -663,25 +259,61 @@
         });
         WebAnimationsPlayer.prototype.setPosition = function (p) { this._player.currentTime = p * this.totalTime; };
         WebAnimationsPlayer.prototype.getPosition = function () { return this._player.currentTime / this.totalTime; };
+        WebAnimationsPlayer.prototype._captureStyles = function () {
+            var _this = this;
+            var styles = {};
+            if (this.hasStarted()) {
+                Object.keys(this._finalKeyframe).forEach(function (prop) {
+                    if (prop != 'offset') {
+                        styles[prop] =
+                            _this._finished ? _this._finalKeyframe[prop] : _computeStyle(_this.element, prop);
+                    }
+                });
+            }
+            return styles;
+        };
         return WebAnimationsPlayer;
     }());
     function _computeStyle(element, prop) {
         return getDOM().getComputedStyle(element)[prop];
     }
+    function _copyKeyframeStyles(styles) {
+        var newStyles = {};
+        Object.keys(styles).forEach(function (prop) {
+            if (prop != 'offset') {
+                newStyles[prop] = styles[prop];
+            }
+        });
+        return newStyles;
+    }
+    function findStartingKeyframe(keyframes) {
+        var startingKeyframe = keyframes[0];
+        // it's important that we find the LAST keyframe
+        // to ensure that style overidding is final.
+        for (var i = 1; i < keyframes.length; i++) {
+            var kf = keyframes[i];
+            var offset = kf['offset'];
+            if (offset !== 0)
+                break;
+            startingKeyframe = kf;
+        }
+        return startingKeyframe;
+    }
 
     var WebAnimationsDriver = (function () {
         function WebAnimationsDriver() {
         }
-        WebAnimationsDriver.prototype.animate = function (element, startingStyles, keyframes, duration, delay, easing) {
+        WebAnimationsDriver.prototype.animate = function (element, startingStyles, keyframes, duration, delay, easing, previousPlayers) {
+            if (previousPlayers === void 0) { previousPlayers = []; }
             var formattedSteps = [];
             var startingStyleLookup = {};
             if (isPresent(startingStyles) && startingStyles.styles.length > 0) {
-                startingStyleLookup = _populateStyles(element, startingStyles, {});
+                startingStyleLookup = _populateStyles(startingStyles, {});
                 startingStyleLookup['offset'] = 0;
                 formattedSteps.push(startingStyleLookup);
             }
             keyframes.forEach(function (keyframe) {
-                var data = _populateStyles(element, keyframe.styles, startingStyleLookup);
+                var data = _populateStyles(keyframe.styles, startingStyleLookup);
                 data['offset'] = keyframe.offset;
                 formattedSteps.push(data);
             });
@@ -704,84 +336,25 @@
             if (easing) {
                 playerOptions['easing'] = easing;
             }
-            return new WebAnimationsPlayer(element, formattedSteps, playerOptions);
+            // there may be a chance a NoOp player is returned depending
+            // on when the previous animation was cancelled
+            previousPlayers = previousPlayers.filter(filterWebAnimationPlayerFn);
+            return new WebAnimationsPlayer(element, formattedSteps, playerOptions, previousPlayers);
         };
         return WebAnimationsDriver;
     }());
-    function _populateStyles(element, styles, defaultStyles) {
+    function _populateStyles(styles, defaultStyles) {
         var data = {};
-        styles.styles.forEach(function (entry) {
-            StringMapWrapper.forEach(entry, function (val, prop) {
-                var formattedProp = dashCaseToCamelCase(prop);
-                data[formattedProp] =
-                    val == _angular_core.AUTO_STYLE ? val : val.toString() + _resolveStyleUnit(val, prop, formattedProp);
-            });
-        });
-        StringMapWrapper.forEach(defaultStyles, function (value, prop) {
+        styles.styles.forEach(function (entry) { Object.keys(entry).forEach(function (prop) { data[prop] = entry[prop]; }); });
+        Object.keys(defaultStyles).forEach(function (prop) {
             if (!isPresent(data[prop])) {
-                data[prop] = value;
+                data[prop] = defaultStyles[prop];
             }
         });
         return data;
     }
-    function _resolveStyleUnit(val, userProvidedProp, formattedProp) {
-        var unit = '';
-        if (_isPixelDimensionStyle(formattedProp) && val != 0 && val != '0') {
-            if (isNumber(val)) {
-                unit = 'px';
-            }
-            else if (_findDimensionalSuffix(val.toString()).length == 0) {
-                throw new Error('Please provide a CSS unit value for ' + userProvidedProp + ':' + val);
-            }
-        }
-        return unit;
-    }
-    var _$0 = 48;
-    var _$9 = 57;
-    var _$PERIOD = 46;
-    function _findDimensionalSuffix(value) {
-        for (var i = 0; i < value.length; i++) {
-            var c = StringWrapper.charCodeAt(value, i);
-            if ((c >= _$0 && c <= _$9) || c == _$PERIOD)
-                continue;
-            return value.substring(i, value.length);
-        }
-        return '';
-    }
-    function _isPixelDimensionStyle(prop) {
-        switch (prop) {
-            case 'width':
-            case 'height':
-            case 'minWidth':
-            case 'minHeight':
-            case 'maxWidth':
-            case 'maxHeight':
-            case 'left':
-            case 'top':
-            case 'bottom':
-            case 'right':
-            case 'fontSize':
-            case 'outlineWidth':
-            case 'outlineOffset':
-            case 'paddingTop':
-            case 'paddingLeft':
-            case 'paddingBottom':
-            case 'paddingRight':
-            case 'marginTop':
-            case 'marginLeft':
-            case 'marginBottom':
-            case 'marginRight':
-            case 'borderRadius':
-            case 'borderWidth':
-            case 'borderTopWidth':
-            case 'borderLeftWidth':
-            case 'borderRightWidth':
-            case 'borderBottomWidth':
-            case 'textIndent':
-                return true;
-            default:
-                return false;
-        }
+    function filterWebAnimationPlayerFn(player) {
+        return player instanceof WebAnimationsPlayer;
     }
 
     /**
@@ -810,28 +383,28 @@
             this._animationPrefix = null;
             this._transitionEnd = null;
             try {
-                var element = this.createElement('div', this.defaultDoc());
-                if (isPresent(this.getStyle(element, 'animationName'))) {
+                var element_1 = this.createElement('div', this.defaultDoc());
+                if (isPresent(this.getStyle(element_1, 'animationName'))) {
                     this._animationPrefix = '';
                 }
                 else {
                     var domPrefixes = ['Webkit', 'Moz', 'O', 'ms'];
                     for (var i = 0; i < domPrefixes.length; i++) {
-                        if (isPresent(this.getStyle(element, domPrefixes[i] + 'AnimationName'))) {
+                        if (isPresent(this.getStyle(element_1, domPrefixes[i] + 'AnimationName'))) {
                             this._animationPrefix = '-' + domPrefixes[i].toLowerCase() + '-';
                             break;
                         }
                     }
                 }
-                var transEndEventNames = {
+                var transEndEventNames_1 = {
                     WebkitTransition: 'webkitTransitionEnd',
                     MozTransition: 'transitionend',
                     OTransition: 'oTransitionEnd otransitionend',
                     transition: 'transitionend'
                 };
-                StringMapWrapper.forEach(transEndEventNames, function (value, key) {
-                    if (isPresent(_this.getStyle(element, key))) {
-                        _this._transitionEnd = value;
+                Object.keys(transEndEventNames_1).forEach(function (key) {
+                    if (isPresent(_this.getStyle(element_1, key))) {
+                        _this._transitionEnd = transEndEventNames_1[key];
                     }
                 });
             }
@@ -846,12 +419,10 @@
         };
         GenericBrowserDomAdapter.prototype.supportsDOMEvents = function () { return true; };
         GenericBrowserDomAdapter.prototype.supportsNativeShadowDOM = function () {
-            return isFunction(this.defaultDoc().body.createShadowRoot);
+            return typeof this.defaultDoc().body.createShadowRoot === 'function';
         };
-        GenericBrowserDomAdapter.prototype.getAnimationPrefix = function () {
-            return isPresent(this._animationPrefix) ? this._animationPrefix : '';
-        };
-        GenericBrowserDomAdapter.prototype.getTransitionEnd = function () { return isPresent(this._transitionEnd) ? this._transitionEnd : ''; };
+        GenericBrowserDomAdapter.prototype.getAnimationPrefix = function () { return this._animationPrefix ? this._animationPrefix : ''; };
+        GenericBrowserDomAdapter.prototype.getTransitionEnd = function () { return this._transitionEnd ? this._transitionEnd : ''; };
         GenericBrowserDomAdapter.prototype.supportsAnimation = function () {
             return isPresent(this._animationPrefix) && isPresent(this._transitionEnd);
         };
@@ -874,7 +445,7 @@
         'class': 'className',
         'innerHtml': 'innerHTML',
         'readonly': 'readOnly',
-        'tabindex': 'tabIndex'
+        'tabindex': 'tabIndex',
     };
     var DOM_KEY_LOCATION_NUMPAD = 3;
     // Map to convert some key or keyIdentifier values to what will be returned by getEventKey
@@ -930,34 +501,30 @@
         }
         BrowserDomAdapter.prototype.parse = function (templateHtml) { throw new Error('parse not implemented'); };
         BrowserDomAdapter.makeCurrent = function () { setRootDomAdapter(new BrowserDomAdapter()); };
-        BrowserDomAdapter.prototype.hasProperty = function (element /** TODO #9100 */, name) { return name in element; };
+        BrowserDomAdapter.prototype.hasProperty = function (element, name) { return name in element; };
         BrowserDomAdapter.prototype.setProperty = function (el, name, value) { el[name] = value; };
         BrowserDomAdapter.prototype.getProperty = function (el, name) { return el[name]; };
-        BrowserDomAdapter.prototype.invoke = function (el, methodName, args) {
-            el[methodName].apply(el, args);
-        };
+        BrowserDomAdapter.prototype.invoke = function (el, methodName, args) { (_a = el)[methodName].apply(_a, args); var _a; };
         // TODO(tbosch): move this into a separate environment class once we have it
-        BrowserDomAdapter.prototype.logError = function (error /** TODO #9100 */) {
-            if (window.console.error) {
-                window.console.error(error);
-            }
-            else {
-                window.console.log(error);
+        BrowserDomAdapter.prototype.logError = function (error) {
+            if (window.console) {
+                (window.console.error || window.console.log)(error);
             }
         };
-        BrowserDomAdapter.prototype.log = function (error /** TODO #9100 */) { window.console.log(error); };
-        BrowserDomAdapter.prototype.logGroup = function (error /** TODO #9100 */) {
-            if (window.console.group) {
-                window.console.group(error);
-                this.logError(error);
+        BrowserDomAdapter.prototype.log = function (error) {
+            if (window.console) {
+                window.console.log && window.console.log(error);
             }
-            else {
-                window.console.log(error);
+        };
+        BrowserDomAdapter.prototype.logGroup = function (error) {
+            if (window.console) {
+                window.console.group && window.console.group(error);
+                this.logError(error);
             }
         };
         BrowserDomAdapter.prototype.logGroupEnd = function () {
-            if (window.console.groupEnd) {
-                window.console.groupEnd();
+            if (window.console) {
+                window.console.groupEnd && window.console.groupEnd();
             }
         };
         Object.defineProperty(BrowserDomAdapter.prototype, "attrToPropMap", {
@@ -966,28 +533,24 @@
             configurable: true
         });
         BrowserDomAdapter.prototype.query = function (selector) { return document.querySelector(selector); };
-        BrowserDomAdapter.prototype.querySelector = function (el /** TODO #9100 */, selector) {
+        BrowserDomAdapter.prototype.querySelector = function (el, selector) {
             return el.querySelector(selector);
         };
-        BrowserDomAdapter.prototype.querySelectorAll = function (el /** TODO #9100 */, selector) {
-            return el.querySelectorAll(selector);
-        };
-        BrowserDomAdapter.prototype.on = function (el /** TODO #9100 */, evt /** TODO #9100 */, listener /** TODO #9100 */) {
-            el.addEventListener(evt, listener, false);
-        };
-        BrowserDomAdapter.prototype.onAndCancel = function (el /** TODO #9100 */, evt /** TODO #9100 */, listener /** TODO #9100 */) {
+        BrowserDomAdapter.prototype.querySelectorAll = function (el, selector) { return el.querySelectorAll(selector); };
+        BrowserDomAdapter.prototype.on = function (el, evt, listener) { el.addEventListener(evt, listener, false); };
+        BrowserDomAdapter.prototype.onAndCancel = function (el, evt, listener) {
             el.addEventListener(evt, listener, false);
             // Needed to follow Dart's subscription semantic, until fix of
             // https://code.google.com/p/dart/issues/detail?id=17406
             return function () { el.removeEventListener(evt, listener, false); };
         };
-        BrowserDomAdapter.prototype.dispatchEvent = function (el /** TODO #9100 */, evt /** TODO #9100 */) { el.dispatchEvent(evt); };
+        BrowserDomAdapter.prototype.dispatchEvent = function (el, evt) { el.dispatchEvent(evt); };
         BrowserDomAdapter.prototype.createMouseEvent = function (eventType) {
             var evt = document.createEvent('MouseEvent');
             evt.initEvent(eventType, true, true);
             return evt;
         };
-        BrowserDomAdapter.prototype.createEvent = function (eventType /** TODO #9100 */) {
+        BrowserDomAdapter.prototype.createEvent = function (eventType) {
             var evt = document.createEvent('Event');
             evt.initEvent(eventType, true, true);
             return evt;
@@ -999,11 +562,11 @@
         BrowserDomAdapter.prototype.isPrevented = function (evt) {
             return evt.defaultPrevented || isPresent(evt.returnValue) && !evt.returnValue;
         };
-        BrowserDomAdapter.prototype.getInnerHTML = function (el /** TODO #9100 */) { return el.innerHTML; };
-        BrowserDomAdapter.prototype.getTemplateContent = function (el /** TODO #9100 */) {
+        BrowserDomAdapter.prototype.getInnerHTML = function (el) { return el.innerHTML; };
+        BrowserDomAdapter.prototype.getTemplateContent = function (el) {
             return 'content' in el && el instanceof HTMLTemplateElement ? el.content : null;
         };
-        BrowserDomAdapter.prototype.getOuterHTML = function (el /** TODO #9100 */) { return el.outerHTML; };
+        BrowserDomAdapter.prototype.getOuterHTML = function (el) { return el.outerHTML; };
         BrowserDomAdapter.prototype.nodeName = function (node) { return node.nodeName; };
         BrowserDomAdapter.prototype.nodeValue = function (node) { return node.nodeValue; };
         BrowserDomAdapter.prototype.type = function (node) { return node.type; };
@@ -1015,62 +578,55 @@
                 return node;
             }
         };
-        BrowserDomAdapter.prototype.firstChild = function (el /** TODO #9100 */) { return el.firstChild; };
-        BrowserDomAdapter.prototype.nextSibling = function (el /** TODO #9100 */) { return el.nextSibling; };
-        BrowserDomAdapter.prototype.parentElement = function (el /** TODO #9100 */) { return el.parentNode; };
-        BrowserDomAdapter.prototype.childNodes = function (el /** TODO #9100 */) { return el.childNodes; };
-        BrowserDomAdapter.prototype.childNodesAsList = function (el /** TODO #9100 */) {
+        BrowserDomAdapter.prototype.firstChild = function (el) { return el.firstChild; };
+        BrowserDomAdapter.prototype.nextSibling = function (el) { return el.nextSibling; };
+        BrowserDomAdapter.prototype.parentElement = function (el) { return el.parentNode; };
+        BrowserDomAdapter.prototype.childNodes = function (el) { return el.childNodes; };
+        BrowserDomAdapter.prototype.childNodesAsList = function (el) {
             var childNodes = el.childNodes;
-            var res = ListWrapper.createFixedSize(childNodes.length);
+            var res = new Array(childNodes.length);
             for (var i = 0; i < childNodes.length; i++) {
                 res[i] = childNodes[i];
             }
             return res;
         };
-        BrowserDomAdapter.prototype.clearNodes = function (el /** TODO #9100 */) {
+        BrowserDomAdapter.prototype.clearNodes = function (el) {
             while (el.firstChild) {
                 el.removeChild(el.firstChild);
             }
         };
-        BrowserDomAdapter.prototype.appendChild = function (el /** TODO #9100 */, node /** TODO #9100 */) { el.appendChild(node); };
-        BrowserDomAdapter.prototype.removeChild = function (el /** TODO #9100 */, node /** TODO #9100 */) { el.removeChild(node); };
-        BrowserDomAdapter.prototype.replaceChild = function (el, newChild /** TODO #9100 */, oldChild /** TODO #9100 */) {
-            el.replaceChild(newChild, oldChild);
-        };
-        BrowserDomAdapter.prototype.remove = function (node /** TODO #9100 */) {
+        BrowserDomAdapter.prototype.appendChild = function (el, node) { el.appendChild(node); };
+        BrowserDomAdapter.prototype.removeChild = function (el, node) { el.removeChild(node); };
+        BrowserDomAdapter.prototype.replaceChild = function (el, newChild, oldChild) { el.replaceChild(newChild, oldChild); };
+        BrowserDomAdapter.prototype.remove = function (node) {
             if (node.parentNode) {
                 node.parentNode.removeChild(node);
             }
             return node;
         };
-        BrowserDomAdapter.prototype.insertBefore = function (el /** TODO #9100 */, node /** TODO #9100 */) {
-            el.parentNode.insertBefore(node, el);
+        BrowserDomAdapter.prototype.insertBefore = function (el, node) { el.parentNode.insertBefore(node, el); };
+        BrowserDomAdapter.prototype.insertAllBefore = function (el, nodes) {
+            nodes.forEach(function (n) { return el.parentNode.insertBefore(n, el); });
         };
-        BrowserDomAdapter.prototype.insertAllBefore = function (el /** TODO #9100 */, nodes /** TODO #9100 */) {
-            nodes.forEach(function (n /** TODO #9100 */) { return el.parentNode.insertBefore(n, el); });
-        };
-        BrowserDomAdapter.prototype.insertAfter = function (el /** TODO #9100 */, node /** TODO #9100 */) {
-            el.parentNode.insertBefore(node, el.nextSibling);
-        };
-        BrowserDomAdapter.prototype.setInnerHTML = function (el /** TODO #9100 */, value /** TODO #9100 */) { el.innerHTML = value; };
-        BrowserDomAdapter.prototype.getText = function (el /** TODO #9100 */) { return el.textContent; };
-        // TODO(vicb): removed Element type because it does not support StyleElement
-        BrowserDomAdapter.prototype.setText = function (el /** TODO #9100 */, value) { el.textContent = value; };
-        BrowserDomAdapter.prototype.getValue = function (el /** TODO #9100 */) { return el.value; };
-        BrowserDomAdapter.prototype.setValue = function (el /** TODO #9100 */, value) { el.value = value; };
-        BrowserDomAdapter.prototype.getChecked = function (el /** TODO #9100 */) { return el.checked; };
-        BrowserDomAdapter.prototype.setChecked = function (el /** TODO #9100 */, value) { el.checked = value; };
+        BrowserDomAdapter.prototype.insertAfter = function (el, node) { el.parentNode.insertBefore(node, el.nextSibling); };
+        BrowserDomAdapter.prototype.setInnerHTML = function (el, value) { el.innerHTML = value; };
+        BrowserDomAdapter.prototype.getText = function (el) { return el.textContent; };
+        BrowserDomAdapter.prototype.setText = function (el, value) { el.textContent = value; };
+        BrowserDomAdapter.prototype.getValue = function (el) { return el.value; };
+        BrowserDomAdapter.prototype.setValue = function (el, value) { el.value = value; };
+        BrowserDomAdapter.prototype.getChecked = function (el) { return el.checked; };
+        BrowserDomAdapter.prototype.setChecked = function (el, value) { el.checked = value; };
         BrowserDomAdapter.prototype.createComment = function (text) { return document.createComment(text); };
-        BrowserDomAdapter.prototype.createTemplate = function (html /** TODO #9100 */) {
+        BrowserDomAdapter.prototype.createTemplate = function (html) {
             var t = document.createElement('template');
             t.innerHTML = html;
             return t;
         };
-        BrowserDomAdapter.prototype.createElement = function (tagName /* TODO #9100 */, doc) {
+        BrowserDomAdapter.prototype.createElement = function (tagName, doc) {
             if (doc === void 0) { doc = document; }
             return doc.createElement(tagName);
         };
-        BrowserDomAdapter.prototype.createElementNS = function (ns /* TODO #9100 */, tagName /* TODO #9100 */, doc) {
+        BrowserDomAdapter.prototype.createElementNS = function (ns, tagName, doc) {
             if (doc === void 0) { doc = document; }
             return doc.createElementNS(ns, tagName);
         };
@@ -1094,38 +650,34 @@
         BrowserDomAdapter.prototype.getShadowRoot = function (el) { return el.shadowRoot; };
         BrowserDomAdapter.prototype.getHost = function (el) { return el.host; };
         BrowserDomAdapter.prototype.clone = function (node) { return node.cloneNode(true); };
-        BrowserDomAdapter.prototype.getElementsByClassName = function (element /** TODO #9100 */, name) {
+        BrowserDomAdapter.prototype.getElementsByClassName = function (element, name) {
             return element.getElementsByClassName(name);
         };
-        BrowserDomAdapter.prototype.getElementsByTagName = function (element /** TODO #9100 */, name) {
+        BrowserDomAdapter.prototype.getElementsByTagName = function (element, name) {
             return element.getElementsByTagName(name);
         };
-        BrowserDomAdapter.prototype.classList = function (element /** TODO #9100 */) {
-            return Array.prototype.slice.call(element.classList, 0);
-        };
-        BrowserDomAdapter.prototype.addClass = function (element /** TODO #9100 */, className) { element.classList.add(className); };
-        BrowserDomAdapter.prototype.removeClass = function (element /** TODO #9100 */, className) {
-            element.classList.remove(className);
-        };
-        BrowserDomAdapter.prototype.hasClass = function (element /** TODO #9100 */, className) {
+        BrowserDomAdapter.prototype.classList = function (element) { return Array.prototype.slice.call(element.classList, 0); };
+        BrowserDomAdapter.prototype.addClass = function (element, className) { element.classList.add(className); };
+        BrowserDomAdapter.prototype.removeClass = function (element, className) { element.classList.remove(className); };
+        BrowserDomAdapter.prototype.hasClass = function (element, className) {
             return element.classList.contains(className);
         };
-        BrowserDomAdapter.prototype.setStyle = function (element /** TODO #9100 */, styleName, styleValue) {
+        BrowserDomAdapter.prototype.setStyle = function (element, styleName, styleValue) {
             element.style[styleName] = styleValue;
         };
-        BrowserDomAdapter.prototype.removeStyle = function (element /** TODO #9100 */, stylename) {
-            element.style[stylename] = null;
+        BrowserDomAdapter.prototype.removeStyle = function (element, stylename) {
+            // IE requires '' instead of null
+            // see https://github.com/angular/angular/issues/7916
+            element.style[stylename] = '';
         };
-        BrowserDomAdapter.prototype.getStyle = function (element /** TODO #9100 */, stylename) {
-            return element.style[stylename];
-        };
-        BrowserDomAdapter.prototype.hasStyle = function (element /** TODO #9100 */, styleName, styleValue) {
+        BrowserDomAdapter.prototype.getStyle = function (element, stylename) { return element.style[stylename]; };
+        BrowserDomAdapter.prototype.hasStyle = function (element, styleName, styleValue) {
             if (styleValue === void 0) { styleValue = null; }
             var value = this.getStyle(element, styleName) || '';
             return styleValue ? value == styleValue : value.length > 0;
         };
-        BrowserDomAdapter.prototype.tagName = function (element /** TODO #9100 */) { return element.tagName; };
-        BrowserDomAdapter.prototype.attributeMap = function (element /** TODO #9100 */) {
+        BrowserDomAdapter.prototype.tagName = function (element) { return element.tagName; };
+        BrowserDomAdapter.prototype.attributeMap = function (element) {
             var res = new Map();
             var elAttrs = element.attributes;
             for (var i = 0; i < elAttrs.length; i++) {
@@ -1134,38 +686,32 @@
             }
             return res;
         };
-        BrowserDomAdapter.prototype.hasAttribute = function (element /** TODO #9100 */, attribute) {
+        BrowserDomAdapter.prototype.hasAttribute = function (element, attribute) {
             return element.hasAttribute(attribute);
         };
-        BrowserDomAdapter.prototype.hasAttributeNS = function (element /** TODO #9100 */, ns, attribute) {
+        BrowserDomAdapter.prototype.hasAttributeNS = function (element, ns, attribute) {
             return element.hasAttributeNS(ns, attribute);
         };
-        BrowserDomAdapter.prototype.getAttribute = function (element /** TODO #9100 */, attribute) {
+        BrowserDomAdapter.prototype.getAttribute = function (element, attribute) {
             return element.getAttribute(attribute);
         };
-        BrowserDomAdapter.prototype.getAttributeNS = function (element /** TODO #9100 */, ns, name) {
+        BrowserDomAdapter.prototype.getAttributeNS = function (element, ns, name) {
             return element.getAttributeNS(ns, name);
         };
-        BrowserDomAdapter.prototype.setAttribute = function (element /** TODO #9100 */, name, value) {
-            element.setAttribute(name, value);
-        };
-        BrowserDomAdapter.prototype.setAttributeNS = function (element /** TODO #9100 */, ns, name, value) {
+        BrowserDomAdapter.prototype.setAttribute = function (element, name, value) { element.setAttribute(name, value); };
+        BrowserDomAdapter.prototype.setAttributeNS = function (element, ns, name, value) {
             element.setAttributeNS(ns, name, value);
         };
-        BrowserDomAdapter.prototype.removeAttribute = function (element /** TODO #9100 */, attribute) {
-            element.removeAttribute(attribute);
-        };
-        BrowserDomAdapter.prototype.removeAttributeNS = function (element /** TODO #9100 */, ns, name) {
+        BrowserDomAdapter.prototype.removeAttribute = function (element, attribute) { element.removeAttribute(attribute); };
+        BrowserDomAdapter.prototype.removeAttributeNS = function (element, ns, name) {
             element.removeAttributeNS(ns, name);
         };
-        BrowserDomAdapter.prototype.templateAwareRoot = function (el /** TODO #9100 */) {
-            return this.isTemplateElement(el) ? this.content(el) : el;
-        };
+        BrowserDomAdapter.prototype.templateAwareRoot = function (el) { return this.isTemplateElement(el) ? this.content(el) : el; };
         BrowserDomAdapter.prototype.createHtmlDocument = function () {
             return document.implementation.createHTMLDocument('fakeTitle');
         };
         BrowserDomAdapter.prototype.defaultDoc = function () { return document; };
-        BrowserDomAdapter.prototype.getBoundingClientRect = function (el /** TODO #9100 */) {
+        BrowserDomAdapter.prototype.getBoundingClientRect = function (el) {
             try {
                 return el.getBoundingClientRect();
             }
@@ -1175,20 +721,13 @@
         };
         BrowserDomAdapter.prototype.getTitle = function () { return document.title; };
         BrowserDomAdapter.prototype.setTitle = function (newTitle) { document.title = newTitle || ''; };
-        BrowserDomAdapter.prototype.elementMatches = function (n /** TODO #9100 */, selector) {
-            var matches = false;
+        BrowserDomAdapter.prototype.elementMatches = function (n, selector) {
             if (n instanceof HTMLElement) {
-                if (n.matches) {
-                    matches = n.matches(selector);
-                }
-                else if (n.msMatchesSelector) {
-                    matches = n.msMatchesSelector(selector);
-                }
-                else if (n.webkitMatchesSelector) {
-                    matches = n.webkitMatchesSelector(selector);
-                }
+                return n.matches && n.matches(selector) ||
+                    n.msMatchesSelector && n.msMatchesSelector(selector) ||
+                    n.webkitMatchesSelector && n.webkitMatchesSelector(selector);
             }
-            return matches;
+            return false;
         };
         BrowserDomAdapter.prototype.isTemplateElement = function (el) {
             return el instanceof HTMLElement && el.nodeName == 'TEMPLATE';
@@ -1196,26 +735,19 @@
         BrowserDomAdapter.prototype.isTextNode = function (node) { return node.nodeType === Node.TEXT_NODE; };
         BrowserDomAdapter.prototype.isCommentNode = function (node) { return node.nodeType === Node.COMMENT_NODE; };
         BrowserDomAdapter.prototype.isElementNode = function (node) { return node.nodeType === Node.ELEMENT_NODE; };
-        BrowserDomAdapter.prototype.hasShadowRoot = function (node /** TODO #9100 */) {
+        BrowserDomAdapter.prototype.hasShadowRoot = function (node) {
             return isPresent(node.shadowRoot) && node instanceof HTMLElement;
         };
-        BrowserDomAdapter.prototype.isShadowRoot = function (node /** TODO #9100 */) { return node instanceof DocumentFragment; };
-        BrowserDomAdapter.prototype.importIntoDoc = function (node) {
-            var toImport = node;
-            if (this.isTemplateElement(node)) {
-                toImport = this.content(node);
-            }
-            return document.importNode(toImport, true);
-        };
+        BrowserDomAdapter.prototype.isShadowRoot = function (node) { return node instanceof DocumentFragment; };
+        BrowserDomAdapter.prototype.importIntoDoc = function (node) { return document.importNode(this.templateAwareRoot(node), true); };
         BrowserDomAdapter.prototype.adoptNode = function (node) { return document.adoptNode(node); };
         BrowserDomAdapter.prototype.getHref = function (el) { return el.href; };
-        BrowserDomAdapter.prototype.getEventKey = function (event /** TODO #9100 */) {
+        BrowserDomAdapter.prototype.getEventKey = function (event) {
             var key = event.key;
             if (isBlank(key)) {
                 key = event.keyIdentifier;
                 // keyIdentifier is defined in the old draft of DOM Level 3 Events implemented by Chrome and
-                // Safari
-                // cf
+                // Safari cf
                 // http://www.w3.org/TR/2007/WD-DOM-Level-3-Events-20071221/events.html#Events-KeyboardEvents-Interfaces
                 if (isBlank(key)) {
                     return 'Unidentified';
@@ -1230,19 +762,16 @@
                     }
                 }
             }
-            if (_keyMap.hasOwnProperty(key)) {
-                key = _keyMap[key];
-            }
-            return key;
+            return _keyMap[key] || key;
         };
         BrowserDomAdapter.prototype.getGlobalEventTarget = function (target) {
-            if (target == 'window') {
+            if (target === 'window') {
                 return window;
             }
-            else if (target == 'document') {
+            if (target === 'document') {
                 return document;
             }
-            else if (target == 'body') {
+            if (target === 'body') {
                 return document.body;
             }
         };
@@ -1250,32 +779,27 @@
         BrowserDomAdapter.prototype.getLocation = function () { return window.location; };
         BrowserDomAdapter.prototype.getBaseHref = function () {
             var href = getBaseElementHref();
-            if (isBlank(href)) {
-                return null;
-            }
-            return relativePath(href);
+            return isBlank(href) ? null : relativePath(href);
         };
         BrowserDomAdapter.prototype.resetBaseElement = function () { baseElement = null; };
         BrowserDomAdapter.prototype.getUserAgent = function () { return window.navigator.userAgent; };
-        BrowserDomAdapter.prototype.setData = function (element /** TODO #9100 */, name, value) {
+        BrowserDomAdapter.prototype.setData = function (element, name, value) {
             this.setAttribute(element, 'data-' + name, value);
         };
-        BrowserDomAdapter.prototype.getData = function (element /** TODO #9100 */, name) {
+        BrowserDomAdapter.prototype.getData = function (element, name) {
             return this.getAttribute(element, 'data-' + name);
         };
-        BrowserDomAdapter.prototype.getComputedStyle = function (element /** TODO #9100 */) { return getComputedStyle(element); };
+        BrowserDomAdapter.prototype.getComputedStyle = function (element) { return getComputedStyle(element); };
         // TODO(tbosch): move this into a separate environment class once we have it
         BrowserDomAdapter.prototype.setGlobalVar = function (path, value) { setValueOnPath(global$1, path, value); };
-        BrowserDomAdapter.prototype.supportsWebAnimation = function () { return isFunction(Element.prototype['animate']); };
+        BrowserDomAdapter.prototype.supportsWebAnimation = function () {
+            return typeof Element.prototype['animate'] === 'function';
+        };
         BrowserDomAdapter.prototype.performanceNow = function () {
             // performance.now() is not available in all browsers, see
             // http://caniuse.com/#search=performance.now
-            if (isPresent(window.performance) && isPresent(window.performance.now)) {
-                return window.performance.now();
-            }
-            else {
-                return DateWrapper.toMillis(DateWrapper.now());
-            }
+            return window.performance && window.performance.now ? window.performance.now() :
+                new Date().getTime();
         };
         BrowserDomAdapter.prototype.supportsCookies = function () { return true; };
         BrowserDomAdapter.prototype.getCookie = function (name) { return parseCookieValue(document.cookie, name); };
@@ -1288,18 +812,18 @@
     }(GenericBrowserDomAdapter));
     var baseElement = null;
     function getBaseElementHref() {
-        if (isBlank(baseElement)) {
+        if (!baseElement) {
             baseElement = document.querySelector('base');
-            if (isBlank(baseElement)) {
+            if (!baseElement) {
                 return null;
             }
         }
         return baseElement.getAttribute('href');
     }
     // based on urlUtils.js in AngularJS 1
-    var urlParsingNode = null;
-    function relativePath(url /** TODO #9100 */) {
-        if (isBlank(urlParsingNode)) {
+    var urlParsingNode;
+    function relativePath(url) {
+        if (!urlParsingNode) {
             urlParsingNode = document.createElement('a');
         }
         urlParsingNode.setAttribute('href', url);
@@ -1444,7 +968,7 @@
                 });
             };
             if (!global$1['frameworkStabilizers']) {
-                global$1['frameworkStabilizers'] = ListWrapper.createGrowableSize(0);
+                global$1['frameworkStabilizers'] = [];
             }
             global$1['frameworkStabilizers'].push(whenAllStable);
         };
@@ -1494,6 +1018,41 @@
     }());
 
     /**
+     * Wraps Javascript Objects
+     */
+    var StringMapWrapper = (function () {
+        function StringMapWrapper() {
+        }
+        StringMapWrapper.merge = function (m1, m2) {
+            var m = {};
+            for (var _i = 0, _a = Object.keys(m1); _i < _a.length; _i++) {
+                var k = _a[_i];
+                m[k] = m1[k];
+            }
+            for (var _b = 0, _c = Object.keys(m2); _b < _c.length; _b++) {
+                var k = _c[_b];
+                m[k] = m2[k];
+            }
+            return m;
+        };
+        StringMapWrapper.equals = function (m1, m2) {
+            var k1 = Object.keys(m1);
+            var k2 = Object.keys(m2);
+            if (k1.length != k2.length) {
+                return false;
+            }
+            for (var i = 0; i < k1.length; i++) {
+                var key = k1[i];
+                if (m1[key] !== m2[key]) {
+                    return false;
+                }
+            }
+            return true;
+        };
+        return StringMapWrapper;
+    }());
+
+    /**
      * A DI Token representing the main rendering context. In a browser this is the DOM Document.
      *
      * Note: Document might not be available in the Application Context when Application and Rendering
@@ -1514,6 +1073,7 @@
         function EventManager(plugins, _zone) {
             var _this = this;
             this._zone = _zone;
+            this._eventNameToPlugin = new Map();
             plugins.forEach(function (p) { return p.manager = _this; });
             this._plugins = plugins.slice().reverse();
         }
@@ -1528,11 +1088,16 @@
         EventManager.prototype.getZone = function () { return this._zone; };
         /** @internal */
         EventManager.prototype._findPluginFor = function (eventName) {
+            var plugin = this._eventNameToPlugin.get(eventName);
+            if (plugin) {
+                return plugin;
+            }
             var plugins = this._plugins;
             for (var i = 0; i < plugins.length; i++) {
-                var plugin = plugins[i];
-                if (plugin.supports(eventName)) {
-                    return plugin;
+                var plugin_1 = plugins[i];
+                if (plugin_1.supports(eventName)) {
+                    this._eventNameToPlugin.set(eventName, plugin_1);
+                    return plugin_1;
                 }
             }
             throw new Error("No event manager plugin found for event " + eventName);
@@ -1550,14 +1115,14 @@
     var EventManagerPlugin = (function () {
         function EventManagerPlugin() {
         }
-        // That is equivalent to having supporting $event.target
-        EventManagerPlugin.prototype.supports = function (eventName) { return false; };
-        EventManagerPlugin.prototype.addEventListener = function (element, eventName, handler) {
-            throw 'not implemented';
-        };
         EventManagerPlugin.prototype.addGlobalEventListener = function (element, eventName, handler) {
-            throw 'not implemented';
+            var target = getDOM().getGlobalEventTarget(element);
+            if (!target) {
+                throw new Error("Unsupported event target " + target + " for event " + eventName);
+            }
+            return this.addEventListener(target, eventName, handler);
         };
+        ;
         return EventManagerPlugin;
     }());
 
@@ -1611,8 +1176,9 @@
         /** @internal */
         DomSharedStylesHost.prototype._addStylesToHost = function (styles, host) {
             for (var i = 0; i < styles.length; i++) {
-                var style = styles[i];
-                getDOM().appendChild(host, getDOM().createStyleElement(style));
+                var styleEl = document.createElement('style');
+                styleEl.textContent = styles[i];
+                host.appendChild(styleEl);
             }
         };
         DomSharedStylesHost.prototype.addHost = function (hostNode) {
@@ -1654,17 +1220,18 @@
     var TEMPLATE_COMMENT_TEXT = 'template bindings={}';
     var TEMPLATE_BINDINGS_EXP = /^template bindings=(.*)$/;
     var DomRootRenderer = (function () {
-        function DomRootRenderer(document, eventManager, sharedStylesHost, animationDriver) {
+        function DomRootRenderer(document, eventManager, sharedStylesHost, animationDriver, appId) {
             this.document = document;
             this.eventManager = eventManager;
             this.sharedStylesHost = sharedStylesHost;
             this.animationDriver = animationDriver;
+            this.appId = appId;
             this.registeredComponents = new Map();
         }
         DomRootRenderer.prototype.renderComponent = function (componentProto) {
             var renderer = this.registeredComponents.get(componentProto.id);
-            if (isBlank(renderer)) {
-                renderer = new DomRenderer(this, componentProto, this.animationDriver);
+            if (!renderer) {
+                renderer = new DomRenderer(this, componentProto, this.animationDriver, this.appId + "-" + componentProto.id);
                 this.registeredComponents.set(componentProto.id, renderer);
             }
             return renderer;
@@ -1673,8 +1240,8 @@
     }());
     var DomRootRenderer_ = (function (_super) {
         __extends$3(DomRootRenderer_, _super);
-        function DomRootRenderer_(_document, _eventManager, sharedStylesHost, animationDriver) {
-            _super.call(this, _document, _eventManager, sharedStylesHost, animationDriver);
+        function DomRootRenderer_(_document, _eventManager, sharedStylesHost, animationDriver, appId) {
+            _super.call(this, _document, _eventManager, sharedStylesHost, animationDriver, appId);
         }
         DomRootRenderer_.decorators = [
             { type: _angular_core.Injectable },
@@ -1685,21 +1252,34 @@
             { type: EventManager, },
             { type: DomSharedStylesHost, },
             { type: AnimationDriver, },
+            { type: undefined, decorators: [{ type: _angular_core.Inject, args: [_angular_core.APP_ID,] },] },
         ];
         return DomRootRenderer_;
     }(DomRootRenderer));
+    var DIRECT_DOM_RENDERER = {
+        remove: function (node) {
+            if (node.parentNode) {
+                node.parentNode.removeChild(node);
+            }
+        },
+        appendChild: function (node, parent) { parent.appendChild(node); },
+        insertBefore: function (node, refNode) { refNode.parentNode.insertBefore(node, refNode); },
+        nextSibling: function (node) { return node.nextSibling; },
+        parentElement: function (node) { return node.parentNode; }
+    };
     var DomRenderer = (function () {
-        function DomRenderer(_rootRenderer, componentProto, _animationDriver) {
+        function DomRenderer(_rootRenderer, componentProto, _animationDriver, styleShimId) {
             this._rootRenderer = _rootRenderer;
             this.componentProto = componentProto;
             this._animationDriver = _animationDriver;
-            this._styles = _flattenStyles(componentProto.id, componentProto.styles, []);
+            this.directRenderer = DIRECT_DOM_RENDERER;
+            this._styles = flattenStyles(styleShimId, componentProto.styles, []);
             if (componentProto.encapsulation !== _angular_core.ViewEncapsulation.Native) {
                 this._rootRenderer.sharedStylesHost.addStyles(this._styles);
             }
             if (this.componentProto.encapsulation === _angular_core.ViewEncapsulation.Emulated) {
-                this._contentAttr = _shimContentAttribute(componentProto.id);
-                this._hostAttr = _shimHostAttribute(componentProto.id);
+                this._contentAttr = shimContentAttribute(styleShimId);
+                this._hostAttr = shimHostAttribute(styleShimId);
             }
             else {
                 this._contentAttr = null;
@@ -1708,76 +1288,87 @@
         }
         DomRenderer.prototype.selectRootElement = function (selectorOrNode, debugInfo) {
             var el;
-            if (isString(selectorOrNode)) {
-                el = getDOM().querySelector(this._rootRenderer.document, selectorOrNode);
-                if (isBlank(el)) {
+            if (typeof selectorOrNode === 'string') {
+                el = this._rootRenderer.document.querySelector(selectorOrNode);
+                if (!el) {
                     throw new Error("The selector \"" + selectorOrNode + "\" did not match any elements");
                 }
             }
             else {
                 el = selectorOrNode;
             }
-            getDOM().clearNodes(el);
+            while (el.firstChild) {
+                el.removeChild(el.firstChild);
+            }
             return el;
         };
         DomRenderer.prototype.createElement = function (parent, name, debugInfo) {
-            var nsAndName = splitNamespace(name);
-            var el = isPresent(nsAndName[0]) ?
-                getDOM().createElementNS(NAMESPACE_URIS[nsAndName[0]], nsAndName[1]) :
-                getDOM().createElement(nsAndName[1]);
-            if (isPresent(this._contentAttr)) {
-                getDOM().setAttribute(el, this._contentAttr, '');
+            var el;
+            if (isNamespaced(name)) {
+                var nsAndName = splitNamespace(name);
+                el = document.createElementNS((NAMESPACE_URIS)[nsAndName[0]], nsAndName[1]);
             }
-            if (isPresent(parent)) {
-                getDOM().appendChild(parent, el);
+            else {
+                el = document.createElement(name);
+            }
+            if (this._contentAttr) {
+                el.setAttribute(this._contentAttr, '');
+            }
+            if (parent) {
+                parent.appendChild(el);
             }
             return el;
         };
         DomRenderer.prototype.createViewRoot = function (hostElement) {
             var nodesParent;
             if (this.componentProto.encapsulation === _angular_core.ViewEncapsulation.Native) {
-                nodesParent = getDOM().createShadowRoot(hostElement);
+                nodesParent = hostElement.createShadowRoot();
                 this._rootRenderer.sharedStylesHost.addHost(nodesParent);
                 for (var i = 0; i < this._styles.length; i++) {
-                    getDOM().appendChild(nodesParent, getDOM().createStyleElement(this._styles[i]));
+                    var styleEl = document.createElement('style');
+                    styleEl.textContent = this._styles[i];
+                    nodesParent.appendChild(styleEl);
                 }
             }
             else {
-                if (isPresent(this._hostAttr)) {
-                    getDOM().setAttribute(hostElement, this._hostAttr, '');
+                if (this._hostAttr) {
+                    hostElement.setAttribute(this._hostAttr, '');
                 }
                 nodesParent = hostElement;
             }
             return nodesParent;
         };
         DomRenderer.prototype.createTemplateAnchor = function (parentElement, debugInfo) {
-            var comment = getDOM().createComment(TEMPLATE_COMMENT_TEXT);
-            if (isPresent(parentElement)) {
-                getDOM().appendChild(parentElement, comment);
+            var comment = document.createComment(TEMPLATE_COMMENT_TEXT);
+            if (parentElement) {
+                parentElement.appendChild(comment);
             }
             return comment;
         };
         DomRenderer.prototype.createText = function (parentElement, value, debugInfo) {
-            var node = getDOM().createTextNode(value);
-            if (isPresent(parentElement)) {
-                getDOM().appendChild(parentElement, node);
+            var node = document.createTextNode(value);
+            if (parentElement) {
+                parentElement.appendChild(node);
             }
             return node;
         };
         DomRenderer.prototype.projectNodes = function (parentElement, nodes) {
-            if (isBlank(parentElement))
+            if (!parentElement)
                 return;
             appendNodes(parentElement, nodes);
         };
         DomRenderer.prototype.attachViewAfter = function (node, viewRootNodes) { moveNodesAfterSibling(node, viewRootNodes); };
         DomRenderer.prototype.detachView = function (viewRootNodes) {
             for (var i = 0; i < viewRootNodes.length; i++) {
-                getDOM().remove(viewRootNodes[i]);
+                var node = viewRootNodes[i];
+                if (node.parentNode) {
+                    node.parentNode.removeChild(node);
+                }
             }
         };
         DomRenderer.prototype.destroyView = function (hostElement, viewAllNodes) {
-            if (this.componentProto.encapsulation === _angular_core.ViewEncapsulation.Native && isPresent(hostElement)) {
-                this._rootRenderer.sharedStylesHost.removeHost(getDOM().getShadowRoot(hostElement));
+            if (this.componentProto.encapsulation === _angular_core.ViewEncapsulation.Native && hostElement) {
+                this._rootRenderer.sharedStylesHost.removeHost(hostElement.shadowRoot);
             }
         };
         DomRenderer.prototype.listen = function (renderElement, name, callback) {
@@ -1787,40 +1378,41 @@
             return this._rootRenderer.eventManager.addGlobalEventListener(target, name, decoratePreventDefault(callback));
         };
         DomRenderer.prototype.setElementProperty = function (renderElement, propertyName, propertyValue) {
-            getDOM().setProperty(renderElement, propertyName, propertyValue);
+            renderElement[propertyName] = propertyValue;
         };
         DomRenderer.prototype.setElementAttribute = function (renderElement, attributeName, attributeValue) {
             var attrNs;
-            var nsAndName = splitNamespace(attributeName);
-            if (isPresent(nsAndName[0])) {
+            var attrNameWithoutNs = attributeName;
+            if (isNamespaced(attributeName)) {
+                var nsAndName = splitNamespace(attributeName);
+                attrNameWithoutNs = nsAndName[1];
                 attributeName = nsAndName[0] + ':' + nsAndName[1];
                 attrNs = NAMESPACE_URIS[nsAndName[0]];
             }
             if (isPresent(attributeValue)) {
-                if (isPresent(attrNs)) {
-                    getDOM().setAttributeNS(renderElement, attrNs, attributeName, attributeValue);
+                if (attrNs) {
+                    renderElement.setAttributeNS(attrNs, attributeName, attributeValue);
                 }
                 else {
-                    getDOM().setAttribute(renderElement, attributeName, attributeValue);
+                    renderElement.setAttribute(attributeName, attributeValue);
                 }
             }
             else {
                 if (isPresent(attrNs)) {
-                    getDOM().removeAttributeNS(renderElement, attrNs, nsAndName[1]);
+                    renderElement.removeAttributeNS(attrNs, attrNameWithoutNs);
                 }
                 else {
-                    getDOM().removeAttribute(renderElement, attributeName);
+                    renderElement.removeAttribute(attributeName);
                 }
             }
         };
         DomRenderer.prototype.setBindingDebugInfo = function (renderElement, propertyName, propertyValue) {
-            var dashCasedPropertyName = camelCaseToDashCase(propertyName);
-            if (getDOM().isCommentNode(renderElement)) {
-                var existingBindings = StringWrapper.replaceAll(getDOM().getText(renderElement), /\n/g, '')
-                    .match(TEMPLATE_BINDINGS_EXP);
-                var parsedBindings = Json.parse(existingBindings[1]);
-                parsedBindings[dashCasedPropertyName] = propertyValue;
-                getDOM().setText(renderElement, StringWrapper.replace(TEMPLATE_COMMENT_TEXT, '{}', Json.stringify(parsedBindings)));
+            if (renderElement.nodeType === Node.COMMENT_NODE) {
+                var existingBindings = renderElement.nodeValue.replace(/\n/g, '').match(TEMPLATE_BINDINGS_EXP);
+                var parsedBindings = JSON.parse(existingBindings[1]);
+                parsedBindings[propertyName] = propertyValue;
+                renderElement.nodeValue =
+                    TEMPLATE_COMMENT_TEXT.replace('{}', JSON.stringify(parsedBindings, null, 2));
             }
             else {
                 this.setElementAttribute(renderElement, propertyName, propertyValue);
@@ -1828,56 +1420,60 @@
         };
         DomRenderer.prototype.setElementClass = function (renderElement, className, isAdd) {
             if (isAdd) {
-                getDOM().addClass(renderElement, className);
+                renderElement.classList.add(className);
             }
             else {
-                getDOM().removeClass(renderElement, className);
+                renderElement.classList.remove(className);
             }
         };
         DomRenderer.prototype.setElementStyle = function (renderElement, styleName, styleValue) {
             if (isPresent(styleValue)) {
-                getDOM().setStyle(renderElement, styleName, stringify(styleValue));
+                renderElement.style[styleName] = stringify(styleValue);
             }
             else {
-                getDOM().removeStyle(renderElement, styleName);
+                // IE requires '' instead of null
+                // see https://github.com/angular/angular/issues/7916
+                renderElement.style[styleName] = '';
             }
         };
         DomRenderer.prototype.invokeElementMethod = function (renderElement, methodName, args) {
-            getDOM().invoke(renderElement, methodName, args);
+            renderElement[methodName].apply(renderElement, args);
         };
-        DomRenderer.prototype.setText = function (renderNode, text) { getDOM().setText(renderNode, text); };
-        DomRenderer.prototype.animate = function (element, startingStyles, keyframes, duration, delay, easing) {
-            return this._animationDriver.animate(element, startingStyles, keyframes, duration, delay, easing);
+        DomRenderer.prototype.setText = function (renderNode, text) { renderNode.nodeValue = text; };
+        DomRenderer.prototype.animate = function (element, startingStyles, keyframes, duration, delay, easing, previousPlayers) {
+            if (previousPlayers === void 0) { previousPlayers = []; }
+            return this._animationDriver.animate(element, startingStyles, keyframes, duration, delay, easing, previousPlayers);
         };
         return DomRenderer;
     }());
-    function moveNodesAfterSibling(sibling /** TODO #9100 */, nodes /** TODO #9100 */) {
-        var parent = getDOM().parentElement(sibling);
-        if (nodes.length > 0 && isPresent(parent)) {
-            var nextSibling = getDOM().nextSibling(sibling);
-            if (isPresent(nextSibling)) {
+    function moveNodesAfterSibling(sibling, nodes) {
+        var parent = sibling.parentNode;
+        if (nodes.length > 0 && parent) {
+            var nextSibling = sibling.nextSibling;
+            if (nextSibling) {
                 for (var i = 0; i < nodes.length; i++) {
-                    getDOM().insertBefore(nextSibling, nodes[i]);
+                    parent.insertBefore(nodes[i], nextSibling);
                 }
             }
             else {
                 for (var i = 0; i < nodes.length; i++) {
-                    getDOM().appendChild(parent, nodes[i]);
+                    parent.appendChild(nodes[i]);
                 }
             }
         }
     }
-    function appendNodes(parent /** TODO #9100 */, nodes /** TODO #9100 */) {
+    function appendNodes(parent, nodes) {
         for (var i = 0; i < nodes.length; i++) {
-            getDOM().appendChild(parent, nodes[i]);
+            parent.appendChild(nodes[i]);
         }
     }
     function decoratePreventDefault(eventHandler) {
-        return function (event /** TODO #9100 */) {
+        return function (event) {
             var allowDefaultBehavior = eventHandler(event);
             if (allowDefaultBehavior === false) {
                 // TODO(tbosch): move preventDefault into event plugins...
-                getDOM().preventDefault(event);
+                event.preventDefault();
+                event.returnValue = false;
             }
         };
     }
@@ -1885,30 +1481,30 @@
     var COMPONENT_VARIABLE = '%COMP%';
     var HOST_ATTR = "_nghost-" + COMPONENT_VARIABLE;
     var CONTENT_ATTR = "_ngcontent-" + COMPONENT_VARIABLE;
-    function _shimContentAttribute(componentShortId) {
-        return StringWrapper.replaceAll(CONTENT_ATTR, COMPONENT_REGEX, componentShortId);
+    function shimContentAttribute(componentShortId) {
+        return CONTENT_ATTR.replace(COMPONENT_REGEX, componentShortId);
     }
-    function _shimHostAttribute(componentShortId) {
-        return StringWrapper.replaceAll(HOST_ATTR, COMPONENT_REGEX, componentShortId);
+    function shimHostAttribute(componentShortId) {
+        return HOST_ATTR.replace(COMPONENT_REGEX, componentShortId);
     }
-    function _flattenStyles(compId, styles, target) {
+    function flattenStyles(compId, styles, target) {
         for (var i = 0; i < styles.length; i++) {
             var style = styles[i];
-            if (isArray(style)) {
-                _flattenStyles(compId, style, target);
+            if (Array.isArray(style)) {
+                flattenStyles(compId, style, target);
             }
             else {
-                style = StringWrapper.replaceAll(style, COMPONENT_REGEX, compId);
+                style = style.replace(COMPONENT_REGEX, compId);
                 target.push(style);
             }
         }
         return target;
     }
     var NS_PREFIX_RE = /^:([^:]+):(.+)$/;
+    function isNamespaced(name) {
+        return name[0] === ':';
+    }
     function splitNamespace(name) {
-        if (name[0] != ':') {
-            return [null, name];
-        }
         var match = name.match(NS_PREFIX_RE);
         return [match[1], match[2]];
     }
@@ -1986,15 +1582,8 @@
         // events.
         DomEventsPlugin.prototype.supports = function (eventName) { return true; };
         DomEventsPlugin.prototype.addEventListener = function (element, eventName, handler) {
-            var zone = this.manager.getZone();
-            var outsideHandler = function (event /** TODO #9100 */) { return zone.runGuarded(function () { return handler(event); }); };
-            return this.manager.getZone().runOutsideAngular(function () { return getDOM().onAndCancel(element, eventName, outsideHandler); });
-        };
-        DomEventsPlugin.prototype.addGlobalEventListener = function (target, eventName, handler) {
-            var element = getDOM().getGlobalEventTarget(target);
-            var zone = this.manager.getZone();
-            var outsideHandler = function (event /** TODO #9100 */) { return zone.runGuarded(function () { return handler(event); }); };
-            return this.manager.getZone().runOutsideAngular(function () { return getDOM().onAndCancel(element, eventName, outsideHandler); });
+            element.addEventListener(eventName, handler, false);
+            return function () { return element.removeEventListener(eventName, handler, false); };
         };
         DomEventsPlugin.decorators = [
             { type: _angular_core.Injectable },
@@ -2011,12 +1600,12 @@
      * Use of this source code is governed by an MIT-style license that can be
      * found in the LICENSE file at https://angular.io/license
      */
-    var __extends$7 = (this && this.__extends) || function (d, b) {
+    var __extends$6 = (this && this.__extends) || function (d, b) {
         for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
-    var _eventNames = {
+    var EVENT_NAMES = {
         // pan
         'pan': true,
         'panstart': true,
@@ -2052,30 +1641,6 @@
         'swipedown': true,
         // tap
         'tap': true,
-    };
-    var HammerGesturesPluginCommon = (function (_super) {
-        __extends$7(HammerGesturesPluginCommon, _super);
-        function HammerGesturesPluginCommon() {
-            _super.call(this);
-        }
-        HammerGesturesPluginCommon.prototype.supports = function (eventName) {
-            eventName = eventName.toLowerCase();
-            return StringMapWrapper.contains(_eventNames, eventName);
-        };
-        return HammerGesturesPluginCommon;
-    }(EventManagerPlugin));
-
-    /**
-     * @license
-     * Copyright Google Inc. All Rights Reserved.
-     *
-     * Use of this source code is governed by an MIT-style license that can be
-     * found in the LICENSE file at https://angular.io/license
-     */
-    var __extends$6 = (this && this.__extends) || function (d, b) {
-        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
     /**
      * A DI token that you can use to provide{@link HammerGestureConfig} to Angular. Use it to configure
@@ -2115,9 +1680,10 @@
             this._config = _config;
         }
         HammerGesturesPlugin.prototype.supports = function (eventName) {
-            if (!_super.prototype.supports.call(this, eventName) && !this.isCustomEvent(eventName))
+            if (!EVENT_NAMES.hasOwnProperty(eventName.toLowerCase()) && !this.isCustomEvent(eventName)) {
                 return false;
-            if (!isPresent(window['Hammer'])) {
+            }
+            if (!window.Hammer) {
                 throw new Error("Hammer.js is not loaded, can not bind " + eventName + " event");
             }
             return true;
@@ -2129,11 +1695,11 @@
             return zone.runOutsideAngular(function () {
                 // Creating the manager bind events, must be done outside of angular
                 var mc = _this._config.buildHammer(element);
-                var callback = function (eventObj /** TODO #???? */) {
+                var callback = function (eventObj) {
                     zone.runGuarded(function () { handler(eventObj); });
                 };
                 mc.on(eventName, callback);
-                return function () { mc.off(eventName, callback); };
+                return function () { return mc.off(eventName, callback); };
             });
         };
         HammerGesturesPlugin.prototype.isCustomEvent = function (eventName) { return this._config.events.indexOf(eventName) > -1; };
@@ -2145,7 +1711,7 @@
             { type: HammerGestureConfig, decorators: [{ type: _angular_core.Inject, args: [HAMMER_GESTURE_CONFIG,] },] },
         ];
         return HammerGesturesPlugin;
-    }(HammerGesturesPluginCommon));
+    }(EventManagerPlugin));
 
     /**
      * @license
@@ -2154,13 +1720,13 @@
      * Use of this source code is governed by an MIT-style license that can be
      * found in the LICENSE file at https://angular.io/license
      */
-    var __extends$8 = (this && this.__extends) || function (d, b) {
+    var __extends$7 = (this && this.__extends) || function (d, b) {
         for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
-    var modifierKeys = ['alt', 'control', 'meta', 'shift'];
-    var modifierKeyGetters = {
+    var MODIFIER_KEYS = ['alt', 'control', 'meta', 'shift'];
+    var MODIFIER_KEY_GETTERS = {
         'alt': function (event) { return event.altKey; },
         'control': function (event) { return event.ctrlKey; },
         'meta': function (event) { return event.metaKey; },
@@ -2170,33 +1736,30 @@
      * @experimental
      */
     var KeyEventsPlugin = (function (_super) {
-        __extends$8(KeyEventsPlugin, _super);
+        __extends$7(KeyEventsPlugin, _super);
         function KeyEventsPlugin() {
             _super.call(this);
         }
-        KeyEventsPlugin.prototype.supports = function (eventName) {
-            return isPresent(KeyEventsPlugin.parseEventName(eventName));
-        };
+        KeyEventsPlugin.prototype.supports = function (eventName) { return KeyEventsPlugin.parseEventName(eventName) != null; };
         KeyEventsPlugin.prototype.addEventListener = function (element, eventName, handler) {
             var parsedEvent = KeyEventsPlugin.parseEventName(eventName);
-            var outsideHandler = KeyEventsPlugin.eventCallback(element, StringMapWrapper.get(parsedEvent, 'fullKey'), handler, this.manager.getZone());
+            var outsideHandler = KeyEventsPlugin.eventCallback(parsedEvent['fullKey'], handler, this.manager.getZone());
             return this.manager.getZone().runOutsideAngular(function () {
-                return getDOM().onAndCancel(element, StringMapWrapper.get(parsedEvent, 'domEventName'), outsideHandler);
+                return getDOM().onAndCancel(element, parsedEvent['domEventName'], outsideHandler);
             });
         };
         KeyEventsPlugin.parseEventName = function (eventName) {
             var parts = eventName.toLowerCase().split('.');
             var domEventName = parts.shift();
-            if ((parts.length === 0) ||
-                !(StringWrapper.equals(domEventName, 'keydown') ||
-                    StringWrapper.equals(domEventName, 'keyup'))) {
+            if ((parts.length === 0) || !(domEventName === 'keydown' || domEventName === 'keyup')) {
                 return null;
             }
             var key = KeyEventsPlugin._normalizeKey(parts.pop());
             var fullKey = '';
-            modifierKeys.forEach(function (modifierName) {
-                if (ListWrapper.contains(parts, modifierName)) {
-                    ListWrapper.remove(parts, modifierName);
+            MODIFIER_KEYS.forEach(function (modifierName) {
+                var index = parts.indexOf(modifierName);
+                if (index > -1) {
+                    parts.splice(index, 1);
                     fullKey += modifierName + '.';
                 }
             });
@@ -2205,24 +1768,24 @@
                 // returning null instead of throwing to let another plugin process the event
                 return null;
             }
-            var result = StringMapWrapper.create();
-            StringMapWrapper.set(result, 'domEventName', domEventName);
-            StringMapWrapper.set(result, 'fullKey', fullKey);
+            var result = {};
+            result['domEventName'] = domEventName;
+            result['fullKey'] = fullKey;
             return result;
         };
         KeyEventsPlugin.getEventFullKey = function (event) {
             var fullKey = '';
             var key = getDOM().getEventKey(event);
             key = key.toLowerCase();
-            if (StringWrapper.equals(key, ' ')) {
+            if (key === ' ') {
                 key = 'space'; // for readability
             }
-            else if (StringWrapper.equals(key, '.')) {
+            else if (key === '.') {
                 key = 'dot'; // because '.' is used as a separator in event names
             }
-            modifierKeys.forEach(function (modifierName) {
+            MODIFIER_KEYS.forEach(function (modifierName) {
                 if (modifierName != key) {
-                    var modifierGetter = StringMapWrapper.get(modifierKeyGetters, modifierName);
+                    var modifierGetter = MODIFIER_KEY_GETTERS[modifierName];
                     if (modifierGetter(event)) {
                         fullKey += modifierName + '.';
                     }
@@ -2231,16 +1794,16 @@
             fullKey += key;
             return fullKey;
         };
-        KeyEventsPlugin.eventCallback = function (element, fullKey, handler, zone) {
+        KeyEventsPlugin.eventCallback = function (fullKey, handler, zone) {
             return function (event /** TODO #9100 */) {
-                if (StringWrapper.equals(KeyEventsPlugin.getEventFullKey(event), fullKey)) {
+                if (KeyEventsPlugin.getEventFullKey(event) === fullKey) {
                     zone.runGuarded(function () { return handler(event); });
                 }
             };
         };
         /** @internal */
         KeyEventsPlugin._normalizeKey = function (keyName) {
-            // TODO: switch to a StringMap if the mapping grows too much
+            // TODO: switch to a Map if the mapping grows too much
             switch (keyName) {
                 case 'esc':
                     return 'escape';
@@ -2642,7 +2205,7 @@
      * Use of this source code is governed by an MIT-style license that can be
      * found in the LICENSE file at https://angular.io/license
      */
-    var __extends$9 = (this && this.__extends) || function (d, b) {
+    var __extends$8 = (this && this.__extends) || function (d, b) {
         for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -2684,7 +2247,7 @@
         return DomSanitizer;
     }());
     var DomSanitizerImpl = (function (_super) {
-        __extends$9(DomSanitizerImpl, _super);
+        __extends$8(DomSanitizerImpl, _super);
         function DomSanitizerImpl() {
             _super.apply(this, arguments);
         }
@@ -2758,7 +2321,7 @@
         return SafeValueImpl;
     }());
     var SafeHtmlImpl = (function (_super) {
-        __extends$9(SafeHtmlImpl, _super);
+        __extends$8(SafeHtmlImpl, _super);
         function SafeHtmlImpl() {
             _super.apply(this, arguments);
         }
@@ -2766,7 +2329,7 @@
         return SafeHtmlImpl;
     }(SafeValueImpl));
     var SafeStyleImpl = (function (_super) {
-        __extends$9(SafeStyleImpl, _super);
+        __extends$8(SafeStyleImpl, _super);
         function SafeStyleImpl() {
             _super.apply(this, arguments);
         }
@@ -2774,7 +2337,7 @@
         return SafeStyleImpl;
     }(SafeValueImpl));
     var SafeScriptImpl = (function (_super) {
-        __extends$9(SafeScriptImpl, _super);
+        __extends$8(SafeScriptImpl, _super);
         function SafeScriptImpl() {
             _super.apply(this, arguments);
         }
@@ -2782,7 +2345,7 @@
         return SafeScriptImpl;
     }(SafeValueImpl));
     var SafeUrlImpl = (function (_super) {
-        __extends$9(SafeUrlImpl, _super);
+        __extends$8(SafeUrlImpl, _super);
         function SafeUrlImpl() {
             _super.apply(this, arguments);
         }
@@ -2790,7 +2353,7 @@
         return SafeUrlImpl;
     }(SafeValueImpl));
     var SafeResourceUrlImpl = (function (_super) {
-        __extends$9(SafeResourceUrlImpl, _super);
+        __extends$8(SafeResourceUrlImpl, _super);
         function SafeResourceUrlImpl() {
             _super.apply(this, arguments);
         }
@@ -2922,7 +2485,7 @@
          * ```
          */
         AngularProfiler.prototype.timeChangeDetection = function (config) {
-            var record = isPresent(config) && config['record'];
+            var record = config && config['record'];
             var profileName = 'Change Detection';
             // Profiler is not available in Android browsers, nor in IE 9 without dev tools opened
             var isProfilerAvailable = isPresent(win.console.profile);
@@ -2945,7 +2508,7 @@
             }
             var msPerTick = (end - start) / numTicks;
             win.console.log("ran " + numTicks + " change detection cycles");
-            win.console.log(NumberWrapper.toFixed(msPerTick, 2) + " ms per check");
+            win.console.log(msPerTick.toFixed(2) + " ms per check");
             return new ChangeDetectionPerfRecord(msPerTick, numTicks);
         };
         return AngularProfiler;
@@ -2966,7 +2529,7 @@
      * @experimental All debugging apis are currently experimental.
      */
     function enableDebugTools(ref) {
-        context.ng = new AngularTools(ref);
+        Object.assign(context.ng, new AngularTools(ref));
         return ref;
     }
     /**
@@ -2975,7 +2538,9 @@
      * @experimental All debugging apis are currently experimental.
      */
     function disableDebugTools() {
-        delete context.ng;
+        if (context.ng) {
+            delete context.ng.profiler;
+        }
     }
 
     /**
@@ -3030,6 +2595,12 @@
         setRootDomAdapter: setRootDomAdapter,
         DomRootRenderer_: DomRootRenderer_,
         DomRootRenderer: DomRootRenderer,
+        NAMESPACE_URIS: NAMESPACE_URIS,
+        shimContentAttribute: shimContentAttribute,
+        shimHostAttribute: shimHostAttribute,
+        flattenStyles: flattenStyles,
+        splitNamespace: splitNamespace,
+        isNamespaced: isNamespaced,
         DomSharedStylesHost: DomSharedStylesHost,
         SharedStylesHost: SharedStylesHost,
         ELEMENT_PROBE_PROVIDERS: ELEMENT_PROBE_PROVIDERS,
@@ -3038,7 +2609,8 @@
         HammerGesturesPlugin: HammerGesturesPlugin,
         initDomAdapter: initDomAdapter,
         INTERNAL_BROWSER_PLATFORM_PROVIDERS: INTERNAL_BROWSER_PLATFORM_PROVIDERS,
-        BROWSER_SANITIZATION_PROVIDERS: BROWSER_SANITIZATION_PROVIDERS
+        BROWSER_SANITIZATION_PROVIDERS: BROWSER_SANITIZATION_PROVIDERS,
+        WebAnimationsDriver: WebAnimationsDriver
     };
 
     exports.BrowserModule = BrowserModule;

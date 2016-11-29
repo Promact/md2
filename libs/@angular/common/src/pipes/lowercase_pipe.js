@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { Pipe } from '@angular/core';
-import { isBlank, isString } from '../facade/lang';
+import { isBlank } from '../facade/lang';
 import { InvalidPipeArgumentError } from './invalid_pipe_argument_error';
 /**
  * @ngModule CommonModule
@@ -14,7 +14,7 @@ import { InvalidPipeArgumentError } from './invalid_pipe_argument_error';
  * @howToUse `expression | lowercase`
  * @description
  *
- * Converts value into lowercase string using `String.prototype.toLowerCase()`.
+ * Converts value into a lowercase string using `String.prototype.toLowerCase()`.
  *
  * ### Example
  *
@@ -28,7 +28,7 @@ export var LowerCasePipe = (function () {
     LowerCasePipe.prototype.transform = function (value) {
         if (isBlank(value))
             return value;
-        if (!isString(value)) {
+        if (typeof value !== 'string') {
             throw new InvalidPipeArgumentError(LowerCasePipe, value);
         }
         return value.toLowerCase();

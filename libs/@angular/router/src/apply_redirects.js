@@ -15,9 +15,9 @@ import { map } from 'rxjs/operator/map';
 import { mergeMap } from 'rxjs/operator/mergeMap';
 import { EmptyError } from 'rxjs/util/EmptyError';
 import { LoadedRouterConfig } from './router_config_loader';
-import { NavigationCancelingError, PRIMARY_OUTLET } from './shared';
-import { UrlSegment, UrlSegmentGroup, UrlTree } from './url_tree';
-import { andObservables, merge, waitForMap, wrapIntoObservable } from './utils/collection';
+import { NavigationCancelingError, PRIMARY_OUTLET, defaultUrlMatcher } from './shared';
+import { UrlSegmentGroup, UrlTree } from './url_tree';
+import { andObservables, forEach, merge, waitForMap, wrapIntoObservable } from './utils/collection';
 var NoMatch = (function () {
     function NoMatch(segmentGroup) {
         if (segmentGroup === void 0) { segmentGroup = null; }
@@ -26,27 +26,31 @@ var NoMatch = (function () {
     return NoMatch;
 }());
 var AbsoluteRedirect = (function () {
-    function AbsoluteRedirect(segments) {
-        this.segments = segments;
+    function AbsoluteRedirect(urlTree) {
+        this.urlTree = urlTree;
     }
     return AbsoluteRedirect;
 }());
 function noMatch(segmentGroup) {
     return new Observable(function (obs) { return obs.error(new NoMatch(segmentGroup)); });
 }
-function absoluteRedirect(segments) {
-    return new Observable(function (obs) { return obs.error(new AbsoluteRedirect(segments)); });
+function absoluteRedirect(newTree) {
+    return new Observable(function (obs) { return obs.error(new AbsoluteRedirect(newTree)); });
+}
+function namedOutletsRedirect(redirectTo) {
+    return new Observable(function (obs) { return obs.error(new Error("Only absolute redirects can have named outlets. redirectTo: '" + redirectTo + "'")); });
 }
 function canLoadFails(route) {
     return new Observable(function (obs) { return obs.error(new NavigationCancelingError("Cannot load children because the guard of the route \"path: '" + route.path + "'\" returned false")); });
 }
-export function applyRedirects(injector, configLoader, urlTree, config) {
-    return new ApplyRedirects(injector, configLoader, urlTree, config).apply();
+export function applyRedirects(injector, configLoader, urlSerializer, urlTree, config) {
+    return new ApplyRedirects(injector, configLoader, urlSerializer, urlTree, config).apply();
 }
 var ApplyRedirects = (function () {
-    function ApplyRedirects(injector, configLoader, urlTree, config) {
+    function ApplyRedirects(injector, configLoader, urlSerializer, urlTree, config) {
         this.injector = injector;
         this.configLoader = configLoader;
+        this.urlSerializer = urlSerializer;
         this.urlTree = urlTree;
         this.config = config;
         this.allowRedirects = true;
@@ -54,14 +58,13 @@ var ApplyRedirects = (function () {
     ApplyRedirects.prototype.apply = function () {
         var _this = this;
         var expanded$ = this.expandSegmentGroup(this.injector, this.config, this.urlTree.root, PRIMARY_OUTLET);
-        var urlTrees$ = map.call(expanded$, function (rootSegmentGroup) { return _this.createUrlTree(rootSegmentGroup); });
+        var urlTrees$ = map.call(expanded$, function (rootSegmentGroup) { return _this.createUrlTree(rootSegmentGroup, _this.urlTree.queryParams, _this.urlTree.fragment); });
         return _catch.call(urlTrees$, function (e) {
             if (e instanceof AbsoluteRedirect) {
                 // after an absolute redirect we do not apply any more redirects!
                 _this.allowRedirects = false;
-                var group = new UrlSegmentGroup([], (_a = {}, _a[PRIMARY_OUTLET] = new UrlSegmentGroup(e.segments, {}), _a));
                 // we need to run matching, so we can fetch all lazy-loaded modules
-                return _this.match(group);
+                return _this.match(e.urlTree);
             }
             else if (e instanceof NoMatch) {
                 throw _this.noMatchError(e);
@@ -69,13 +72,14 @@ var ApplyRedirects = (function () {
             else {
                 throw e;
             }
-            var _a;
         });
     };
-    ApplyRedirects.prototype.match = function (segmentGroup) {
+    ApplyRedirects.prototype.match = function (tree) {
         var _this = this;
-        var expanded$ = this.expandSegmentGroup(this.injector, this.config, segmentGroup, PRIMARY_OUTLET);
-        var mapped$ = map.call(expanded$, function (rootSegmentGroup) { return _this.createUrlTree(rootSegmentGroup); });
+        var expanded$ = this.expandSegmentGroup(this.injector, this.config, tree.root, PRIMARY_OUTLET);
+        var mapped$ = map.call(expanded$, function (rootSegmentGroup) {
+            return _this.createUrlTree(rootSegmentGroup, tree.queryParams, tree.fragment);
+        });
         return _catch.call(mapped$, function (e) {
             if (e instanceof NoMatch) {
                 throw _this.noMatchError(e);
@@ -86,13 +90,13 @@ var ApplyRedirects = (function () {
         });
     };
     ApplyRedirects.prototype.noMatchError = function (e) {
-        return new Error("Cannot match any routes: '" + e.segmentGroup + "'");
+        return new Error("Cannot match any routes. URL Segment: '" + e.segmentGroup + "'");
     };
-    ApplyRedirects.prototype.createUrlTree = function (rootCandidate) {
+    ApplyRedirects.prototype.createUrlTree = function (rootCandidate, queryParams, fragment) {
         var root = rootCandidate.segments.length > 0 ?
             new UrlSegmentGroup([], (_a = {}, _a[PRIMARY_OUTLET] = rootCandidate, _a)) :
             rootCandidate;
-        return new UrlTree(root, this.urlTree.queryParams, this.urlTree.fragment);
+        return new UrlTree(root, queryParams, fragment);
         var _a;
     };
     ApplyRedirects.prototype.expandSegmentGroup = function (injector, routes, segmentGroup, outlet) {
@@ -123,12 +127,20 @@ var ApplyRedirects = (function () {
         var first$ = first.call(concattedProcessedRoutes$, function (s) { return !!s; });
         return _catch.call(first$, function (e, _) {
             if (e instanceof EmptyError) {
-                throw new NoMatch(segmentGroup);
+                if (_this.noLeftoversInUrl(segmentGroup, segments, outlet)) {
+                    return of(new UrlSegmentGroup([], {}));
+                }
+                else {
+                    throw new NoMatch(segmentGroup);
+                }
             }
             else {
                 throw e;
             }
         });
+    };
+    ApplyRedirects.prototype.noLeftoversInUrl = function (segmentGroup, segments, outlet) {
+        return segments.length === 0 && !segmentGroup.children[outlet];
     };
     ApplyRedirects.prototype.expandSegmentAgainstRoute = function (injector, segmentGroup, routes, route, paths, outlet, allowRedirects) {
         if (getOutlet(route) !== outlet)
@@ -144,37 +156,52 @@ var ApplyRedirects = (function () {
     };
     ApplyRedirects.prototype.expandSegmentAgainstRouteUsingRedirect = function (injector, segmentGroup, routes, route, segments, outlet) {
         if (route.path === '**') {
-            return this.expandWildCardWithParamsAgainstRouteUsingRedirect(route);
+            return this.expandWildCardWithParamsAgainstRouteUsingRedirect(injector, routes, route, outlet);
         }
         else {
             return this.expandRegularSegmentAgainstRouteUsingRedirect(injector, segmentGroup, routes, route, segments, outlet);
         }
     };
-    ApplyRedirects.prototype.expandWildCardWithParamsAgainstRouteUsingRedirect = function (route) {
-        var newSegments = applyRedirectCommands([], route.redirectTo, {});
+    ApplyRedirects.prototype.expandWildCardWithParamsAgainstRouteUsingRedirect = function (injector, routes, route, outlet) {
+        var _this = this;
+        var newTree = this.applyRedirectCommands([], route.redirectTo, {});
         if (route.redirectTo.startsWith('/')) {
-            return absoluteRedirect(newSegments);
+            return absoluteRedirect(newTree);
         }
         else {
-            return of(new UrlSegmentGroup(newSegments, {}));
+            return mergeMap.call(this.lineralizeSegments(route, newTree), function (newSegments) {
+                var group = new UrlSegmentGroup(newSegments, {});
+                return _this.expandSegment(injector, group, routes, newSegments, outlet, false);
+            });
         }
     };
     ApplyRedirects.prototype.expandRegularSegmentAgainstRouteUsingRedirect = function (injector, segmentGroup, routes, route, segments, outlet) {
+        var _this = this;
         var _a = match(segmentGroup, route, segments), matched = _a.matched, consumedSegments = _a.consumedSegments, lastChild = _a.lastChild, positionalParamSegments = _a.positionalParamSegments;
         if (!matched)
             return noMatch(segmentGroup);
-        var newSegments = applyRedirectCommands(consumedSegments, route.redirectTo, positionalParamSegments);
+        var newTree = this.applyRedirectCommands(consumedSegments, route.redirectTo, positionalParamSegments);
         if (route.redirectTo.startsWith('/')) {
-            return absoluteRedirect(newSegments);
+            return absoluteRedirect(newTree);
         }
         else {
-            return this.expandSegment(injector, segmentGroup, routes, newSegments.concat(segments.slice(lastChild)), outlet, false);
+            return mergeMap.call(this.lineralizeSegments(route, newTree), function (newSegments) {
+                return _this.expandSegment(injector, segmentGroup, routes, newSegments.concat(segments.slice(lastChild)), outlet, false);
+            });
         }
     };
     ApplyRedirects.prototype.matchSegmentAgainstRoute = function (injector, rawSegmentGroup, route, segments) {
         var _this = this;
         if (route.path === '**') {
-            return of(new UrlSegmentGroup(segments, {}));
+            if (route.loadChildren) {
+                return map.call(this.configLoader.load(injector, route.loadChildren), function (r) {
+                    route._loadedConfig = r;
+                    return of(new UrlSegmentGroup(segments, {}));
+                });
+            }
+            else {
+                return of(new UrlSegmentGroup(segments, {}));
+            }
         }
         else {
             var _a = match(rawSegmentGroup, route, segments), matched = _a.matched, consumedSegments_1 = _a.consumedSegments, lastChild = _a.lastChild;
@@ -203,7 +230,7 @@ var ApplyRedirects = (function () {
     ApplyRedirects.prototype.getChildConfig = function (injector, route) {
         var _this = this;
         if (route.children) {
-            return of(new LoadedRouterConfig(route.children, injector, null));
+            return of(new LoadedRouterConfig(route.children, injector, null, null));
         }
         else if (route.loadChildren) {
             return mergeMap.call(runGuards(injector, route), function (shouldLoad) {
@@ -224,8 +251,76 @@ var ApplyRedirects = (function () {
             });
         }
         else {
-            return of(new LoadedRouterConfig([], injector, null));
+            return of(new LoadedRouterConfig([], injector, null, null));
         }
+    };
+    ApplyRedirects.prototype.lineralizeSegments = function (route, urlTree) {
+        var res = [];
+        var c = urlTree.root;
+        while (true) {
+            res = res.concat(c.segments);
+            if (c.numberOfChildren === 0) {
+                return of(res);
+            }
+            else if (c.numberOfChildren > 1 || !c.children[PRIMARY_OUTLET]) {
+                return namedOutletsRedirect(route.redirectTo);
+            }
+            else {
+                c = c.children[PRIMARY_OUTLET];
+            }
+        }
+    };
+    ApplyRedirects.prototype.applyRedirectCommands = function (segments, redirectTo, posParams) {
+        var t = this.urlSerializer.parse(redirectTo);
+        return this.applyRedirectCreatreUrlTree(redirectTo, this.urlSerializer.parse(redirectTo), segments, posParams);
+    };
+    ApplyRedirects.prototype.applyRedirectCreatreUrlTree = function (redirectTo, urlTree, segments, posParams) {
+        var newRoot = this.createSegmentGroup(redirectTo, urlTree.root, segments, posParams);
+        return new UrlTree(newRoot, this.createQueryParams(urlTree.queryParams, this.urlTree.queryParams), urlTree.fragment);
+    };
+    ApplyRedirects.prototype.createQueryParams = function (redirectToParams, actualParams) {
+        var res = {};
+        forEach(redirectToParams, function (v, k) {
+            if (v.startsWith(':')) {
+                res[k] = actualParams[v.substring(1)];
+            }
+            else {
+                res[k] = v;
+            }
+        });
+        return res;
+    };
+    ApplyRedirects.prototype.createSegmentGroup = function (redirectTo, group, segments, posParams) {
+        var _this = this;
+        var updatedSegments = this.createSegments(redirectTo, group.segments, segments, posParams);
+        var children = {};
+        forEach(group.children, function (child, name) {
+            children[name] = _this.createSegmentGroup(redirectTo, child, segments, posParams);
+        });
+        return new UrlSegmentGroup(updatedSegments, children);
+    };
+    ApplyRedirects.prototype.createSegments = function (redirectTo, redirectToSegments, actualSegments, posParams) {
+        var _this = this;
+        return redirectToSegments.map(function (s) { return s.path.startsWith(':') ? _this.findPosParam(redirectTo, s, posParams) :
+            _this.findOrReturn(s, actualSegments); });
+    };
+    ApplyRedirects.prototype.findPosParam = function (redirectTo, redirectToUrlSegment, posParams) {
+        var pos = posParams[redirectToUrlSegment.path.substring(1)];
+        if (!pos)
+            throw new Error("Cannot redirect to '" + redirectTo + "'. Cannot find '" + redirectToUrlSegment.path + "'.");
+        return pos;
+    };
+    ApplyRedirects.prototype.findOrReturn = function (redirectToUrlSegment, actualSegments) {
+        var idx = 0;
+        for (var _i = 0, actualSegments_1 = actualSegments; _i < actualSegments_1.length; _i++) {
+            var s = actualSegments_1[_i];
+            if (s.path === redirectToUrlSegment.path) {
+                actualSegments.splice(idx);
+                return s;
+            }
+            idx++;
+        }
+        return redirectToUrlSegment;
     };
     return ApplyRedirects;
 }());
@@ -254,62 +349,16 @@ function match(segmentGroup, route, segments) {
             return { matched: true, consumedSegments: [], lastChild: 0, positionalParamSegments: {} };
         }
     }
-    var path = route.path;
-    var parts = path.split('/');
-    var positionalParamSegments = {};
-    var consumedSegments = [];
-    var currentIndex = 0;
-    for (var i = 0; i < parts.length; ++i) {
-        if (currentIndex >= segments.length)
-            return noMatch;
-        var current = segments[currentIndex];
-        var p = parts[i];
-        var isPosParam = p.startsWith(':');
-        if (!isPosParam && p !== current.path)
-            return noMatch;
-        if (isPosParam) {
-            positionalParamSegments[p.substring(1)] = current;
-        }
-        consumedSegments.push(current);
-        currentIndex++;
-    }
-    if (route.pathMatch === 'full' &&
-        (segmentGroup.hasChildren() || currentIndex < segments.length)) {
-        return { matched: false, consumedSegments: [], lastChild: 0, positionalParamSegments: {} };
-    }
-    return { matched: true, consumedSegments: consumedSegments, lastChild: currentIndex, positionalParamSegments: positionalParamSegments };
-}
-function applyRedirectCommands(segments, redirectTo, posParams) {
-    var r = redirectTo.startsWith('/') ? redirectTo.substring(1) : redirectTo;
-    if (r === '') {
-        return [];
-    }
-    else {
-        return createSegments(redirectTo, r.split('/'), segments, posParams);
-    }
-}
-function createSegments(redirectTo, parts, segments, posParams) {
-    return parts.map(function (p) { return p.startsWith(':') ? findPosParam(p, posParams, redirectTo) :
-        findOrCreateSegment(p, segments); });
-}
-function findPosParam(part, posParams, redirectTo) {
-    var paramName = part.substring(1);
-    var pos = posParams[paramName];
-    if (!pos)
-        throw new Error("Cannot redirect to '" + redirectTo + "'. Cannot find '" + part + "'.");
-    return pos;
-}
-function findOrCreateSegment(part, segments) {
-    var idx = 0;
-    for (var _i = 0, segments_1 = segments; _i < segments_1.length; _i++) {
-        var s = segments_1[_i];
-        if (s.path === part) {
-            segments.splice(idx);
-            return s;
-        }
-        idx++;
-    }
-    return new UrlSegment(part, {});
+    var matcher = route.matcher || defaultUrlMatcher;
+    var res = matcher(segments, segmentGroup, route);
+    if (!res)
+        return noMatch;
+    return {
+        matched: true,
+        consumedSegments: res.consumed,
+        lastChild: res.consumed.length,
+        positionalParamSegments: res.posParams
+    };
 }
 function split(segmentGroup, consumedSegments, slicedSegments, config) {
     if (slicedSegments.length > 0 &&

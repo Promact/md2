@@ -5,30 +5,19 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { APP_ID } from '../application_tokens';
 import { devModeEqual } from '../change_detection/change_detection';
 import { UNINITIALIZED } from '../change_detection/change_detection_util';
-import { Inject, Injectable } from '../di';
-import { ListWrapper } from '../facade/collection';
-import { isBlank, isPresent, looseIdentical } from '../facade/lang';
+import { Injectable } from '../di';
+import { isPresent, looseIdentical } from '../facade/lang';
 import { RenderComponentType, RootRenderer } from '../render/api';
 import { Sanitizer } from '../security';
-import { AppElement } from './element';
 import { ExpressionChangedAfterItHasBeenCheckedError } from './errors';
 export var ViewUtils = (function () {
-    function ViewUtils(_renderer, _appId, sanitizer) {
+    function ViewUtils(_renderer, sanitizer) {
         this._renderer = _renderer;
-        this._appId = _appId;
         this._nextCompTypeId = 0;
         this.sanitizer = sanitizer;
     }
-    /**
-     * Used by the generated code
-     */
-    // TODO (matsko): add typing for the animation function
-    ViewUtils.prototype.createRenderComponentType = function (templateUrl, slotCount, encapsulation, styles, animations) {
-        return new RenderComponentType(this._appId + "-" + this._nextCompTypeId++, templateUrl, slotCount, encapsulation, styles, animations);
-    };
     /** @internal */
     ViewUtils.prototype.renderComponent = function (renderComponentType) {
         return this._renderer.renderComponent(renderComponentType);
@@ -39,52 +28,25 @@ export var ViewUtils = (function () {
     /** @nocollapse */
     ViewUtils.ctorParameters = [
         { type: RootRenderer, },
-        { type: undefined, decorators: [{ type: Inject, args: [APP_ID,] },] },
         { type: Sanitizer, },
     ];
     return ViewUtils;
 }());
-export function flattenNestedViewRenderNodes(nodes) {
-    return _flattenNestedViewRenderNodes(nodes, []);
+var nextRenderComponentTypeId = 0;
+export function createRenderComponentType(templateUrl, slotCount, encapsulation, styles, animations) {
+    return new RenderComponentType("" + nextRenderComponentTypeId++, templateUrl, slotCount, encapsulation, styles, animations);
 }
-function _flattenNestedViewRenderNodes(nodes, renderNodes) {
-    for (var i = 0; i < nodes.length; i++) {
-        var node = nodes[i];
-        if (node instanceof AppElement) {
-            var appEl = node;
-            renderNodes.push(appEl.nativeElement);
-            if (isPresent(appEl.nestedViews)) {
-                for (var k = 0; k < appEl.nestedViews.length; k++) {
-                    _flattenNestedViewRenderNodes(appEl.nestedViews[k].rootNodesOrAppElements, renderNodes);
-                }
-            }
-        }
-        else {
-            renderNodes.push(node);
-        }
-    }
-    return renderNodes;
+export function addToArray(e, array) {
+    array.push(e);
 }
-var EMPTY_ARR = [];
-export function ensureSlotCount(projectableNodes, expectedSlotCount) {
-    var res;
-    if (isBlank(projectableNodes)) {
-        res = EMPTY_ARR;
+export function interpolate(valueCount, constAndInterp) {
+    var result = '';
+    for (var i = 0; i < valueCount * 2; i = i + 2) {
+        result = result + constAndInterp[i] + _toStringWithNull(constAndInterp[i + 1]);
     }
-    else if (projectableNodes.length < expectedSlotCount) {
-        var givenSlotCount = projectableNodes.length;
-        res = ListWrapper.createFixedSize(expectedSlotCount);
-        for (var i = 0; i < expectedSlotCount; i++) {
-            res[i] = (i < givenSlotCount) ? projectableNodes[i] : EMPTY_ARR;
-        }
-    }
-    else {
-        res = projectableNodes;
-    }
-    return res;
+    return result + constAndInterp[valueCount * 2];
 }
-export var MAX_INTERPOLATION_VALUES = 9;
-export function interpolate(valueCount, c0, a1, c1, a2, c2, a3, c3, a4, c4, a5, c5, a6, c6, a7, c7, a8, c8, a9, c9) {
+export function inlineInterpolate(valueCount, c0, a1, c1, a2, c2, a3, c3, a4, c4, a5, c5, a6, c6, a7, c7, a8, c8, a9, c9) {
     switch (valueCount) {
         case 1:
             return c0 + _toStringWithNull(a1) + c1;
@@ -314,4 +276,356 @@ export function pureProxy10(fn) {
         return result;
     };
 }
+export function setBindingDebugInfoForChanges(renderer, el, changes) {
+    Object.keys(changes).forEach(function (propName) {
+        setBindingDebugInfo(renderer, el, propName, changes[propName].currentValue);
+    });
+}
+export function setBindingDebugInfo(renderer, el, propName, value) {
+    try {
+        renderer.setBindingDebugInfo(el, "ng-reflect-" + camelCaseToDashCase(propName), value ? value.toString() : null);
+    }
+    catch (e) {
+        renderer.setBindingDebugInfo(el, "ng-reflect-" + camelCaseToDashCase(propName), '[ERROR] Exception while trying to serialize the value');
+    }
+}
+var CAMEL_CASE_REGEXP = /([A-Z])/g;
+function camelCaseToDashCase(input) {
+    return input.replace(CAMEL_CASE_REGEXP, function () {
+        var m = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            m[_i - 0] = arguments[_i];
+        }
+        return '-' + m[1].toLowerCase();
+    });
+}
+export function createRenderElement(renderer, parentElement, name, attrs, debugInfo) {
+    var el = renderer.createElement(parentElement, name, debugInfo);
+    for (var i = 0; i < attrs.length; i += 2) {
+        renderer.setElementAttribute(el, attrs.get(i), attrs.get(i + 1));
+    }
+    return el;
+}
+export function selectOrCreateRenderHostElement(renderer, elementName, attrs, rootSelectorOrNode, debugInfo) {
+    var hostElement;
+    if (isPresent(rootSelectorOrNode)) {
+        hostElement = renderer.selectRootElement(rootSelectorOrNode, debugInfo);
+        for (var i = 0; i < attrs.length; i += 2) {
+            renderer.setElementAttribute(hostElement, attrs.get(i), attrs.get(i + 1));
+        }
+    }
+    else {
+        hostElement = createRenderElement(renderer, null, elementName, attrs, debugInfo);
+    }
+    return hostElement;
+}
+export function subscribeToRenderElement(view, element, eventNamesAndTargets, listener) {
+    var disposables = createEmptyInlineArray(eventNamesAndTargets.length / 2);
+    for (var i = 0; i < eventNamesAndTargets.length; i += 2) {
+        var eventName = eventNamesAndTargets.get(i);
+        var eventTarget = eventNamesAndTargets.get(i + 1);
+        var disposable = void 0;
+        if (eventTarget) {
+            disposable = view.renderer.listenGlobal(eventTarget, eventName, listener.bind(view, eventTarget + ":" + eventName));
+        }
+        else {
+            disposable = view.renderer.listen(element, eventName, listener.bind(view, eventName));
+        }
+        disposables.set(i / 2, disposable);
+    }
+    return disposeInlineArray.bind(null, disposables);
+}
+function disposeInlineArray(disposables) {
+    for (var i = 0; i < disposables.length; i++) {
+        disposables.get(i)();
+    }
+}
+export function noop() { }
+function createEmptyInlineArray(length) {
+    var ctor;
+    if (length <= 2) {
+        ctor = InlineArray2;
+    }
+    else if (length <= 4) {
+        ctor = InlineArray4;
+    }
+    else if (length <= 8) {
+        ctor = InlineArray8;
+    }
+    else if (length <= 16) {
+        ctor = InlineArray16;
+    }
+    else {
+        ctor = InlineArrayDynamic;
+    }
+    return new ctor(length);
+}
+var InlineArray0 = (function () {
+    function InlineArray0() {
+        this.length = 0;
+    }
+    InlineArray0.prototype.get = function (index) { return undefined; };
+    InlineArray0.prototype.set = function (index, value) { };
+    return InlineArray0;
+}());
+export var InlineArray2 = (function () {
+    function InlineArray2(length, _v0, _v1) {
+        this.length = length;
+        this._v0 = _v0;
+        this._v1 = _v1;
+    }
+    InlineArray2.prototype.get = function (index) {
+        switch (index) {
+            case 0:
+                return this._v0;
+            case 1:
+                return this._v1;
+            default:
+                return undefined;
+        }
+    };
+    InlineArray2.prototype.set = function (index, value) {
+        switch (index) {
+            case 0:
+                this._v0 = value;
+                break;
+            case 1:
+                this._v1 = value;
+                break;
+        }
+    };
+    return InlineArray2;
+}());
+export var InlineArray4 = (function () {
+    function InlineArray4(length, _v0, _v1, _v2, _v3) {
+        this.length = length;
+        this._v0 = _v0;
+        this._v1 = _v1;
+        this._v2 = _v2;
+        this._v3 = _v3;
+    }
+    InlineArray4.prototype.get = function (index) {
+        switch (index) {
+            case 0:
+                return this._v0;
+            case 1:
+                return this._v1;
+            case 2:
+                return this._v2;
+            case 3:
+                return this._v3;
+            default:
+                return undefined;
+        }
+    };
+    InlineArray4.prototype.set = function (index, value) {
+        switch (index) {
+            case 0:
+                this._v0 = value;
+                break;
+            case 1:
+                this._v1 = value;
+                break;
+            case 2:
+                this._v2 = value;
+                break;
+            case 3:
+                this._v3 = value;
+                break;
+        }
+    };
+    return InlineArray4;
+}());
+export var InlineArray8 = (function () {
+    function InlineArray8(length, _v0, _v1, _v2, _v3, _v4, _v5, _v6, _v7) {
+        this.length = length;
+        this._v0 = _v0;
+        this._v1 = _v1;
+        this._v2 = _v2;
+        this._v3 = _v3;
+        this._v4 = _v4;
+        this._v5 = _v5;
+        this._v6 = _v6;
+        this._v7 = _v7;
+    }
+    InlineArray8.prototype.get = function (index) {
+        switch (index) {
+            case 0:
+                return this._v0;
+            case 1:
+                return this._v1;
+            case 2:
+                return this._v2;
+            case 3:
+                return this._v3;
+            case 4:
+                return this._v4;
+            case 5:
+                return this._v5;
+            case 6:
+                return this._v6;
+            case 7:
+                return this._v7;
+            default:
+                return undefined;
+        }
+    };
+    InlineArray8.prototype.set = function (index, value) {
+        switch (index) {
+            case 0:
+                this._v0 = value;
+                break;
+            case 1:
+                this._v1 = value;
+                break;
+            case 2:
+                this._v2 = value;
+                break;
+            case 3:
+                this._v3 = value;
+                break;
+            case 4:
+                this._v4 = value;
+                break;
+            case 5:
+                this._v5 = value;
+                break;
+            case 6:
+                this._v6 = value;
+                break;
+            case 7:
+                this._v7 = value;
+                break;
+        }
+    };
+    return InlineArray8;
+}());
+export var InlineArray16 = (function () {
+    function InlineArray16(length, _v0, _v1, _v2, _v3, _v4, _v5, _v6, _v7, _v8, _v9, _v10, _v11, _v12, _v13, _v14, _v15) {
+        this.length = length;
+        this._v0 = _v0;
+        this._v1 = _v1;
+        this._v2 = _v2;
+        this._v3 = _v3;
+        this._v4 = _v4;
+        this._v5 = _v5;
+        this._v6 = _v6;
+        this._v7 = _v7;
+        this._v8 = _v8;
+        this._v9 = _v9;
+        this._v10 = _v10;
+        this._v11 = _v11;
+        this._v12 = _v12;
+        this._v13 = _v13;
+        this._v14 = _v14;
+        this._v15 = _v15;
+    }
+    InlineArray16.prototype.get = function (index) {
+        switch (index) {
+            case 0:
+                return this._v0;
+            case 1:
+                return this._v1;
+            case 2:
+                return this._v2;
+            case 3:
+                return this._v3;
+            case 4:
+                return this._v4;
+            case 5:
+                return this._v5;
+            case 6:
+                return this._v6;
+            case 7:
+                return this._v7;
+            case 8:
+                return this._v8;
+            case 9:
+                return this._v9;
+            case 10:
+                return this._v10;
+            case 11:
+                return this._v11;
+            case 12:
+                return this._v12;
+            case 13:
+                return this._v13;
+            case 14:
+                return this._v14;
+            case 15:
+                return this._v15;
+            default:
+                return undefined;
+        }
+    };
+    InlineArray16.prototype.set = function (index, value) {
+        switch (index) {
+            case 0:
+                this._v0 = value;
+                break;
+            case 1:
+                this._v1 = value;
+                break;
+            case 2:
+                this._v2 = value;
+                break;
+            case 3:
+                this._v3 = value;
+                break;
+            case 4:
+                this._v4 = value;
+                break;
+            case 5:
+                this._v5 = value;
+                break;
+            case 6:
+                this._v6 = value;
+                break;
+            case 7:
+                this._v7 = value;
+                break;
+            case 8:
+                this._v8 = value;
+                break;
+            case 9:
+                this._v9 = value;
+                break;
+            case 10:
+                this._v10 = value;
+                break;
+            case 11:
+                this._v11 = value;
+                break;
+            case 12:
+                this._v12 = value;
+                break;
+            case 13:
+                this._v13 = value;
+                break;
+            case 14:
+                this._v14 = value;
+                break;
+            case 15:
+                this._v15 = value;
+                break;
+        }
+    };
+    return InlineArray16;
+}());
+export var InlineArrayDynamic = (function () {
+    // Note: We still take the length argument so this class can be created
+    // in the same ways as the other classes!
+    function InlineArrayDynamic(length) {
+        var values = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            values[_i - 1] = arguments[_i];
+        }
+        this.length = length;
+        this._values = values;
+    }
+    InlineArrayDynamic.prototype.get = function (index) { return this._values[index]; };
+    InlineArrayDynamic.prototype.set = function (index, value) { this._values[index] = value; };
+    return InlineArrayDynamic;
+}());
+export var EMPTY_INLINE_ARRAY = new InlineArray0();
 //# sourceMappingURL=view_utils.js.map

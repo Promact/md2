@@ -5,18 +5,27 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { isString } from '../src/facade/lang';
 import { RequestMethod } from './enums';
 export function normalizeMethodName(method) {
-    if (isString(method)) {
-        var originalMethod = method;
-        method = method
-            .replace(/(\w)(\w*)/g, function (g0, g1, g2) { return g1.toUpperCase() + g2.toLowerCase(); });
-        method = RequestMethod[method];
-        if (typeof method !== 'number')
-            throw new Error("Invalid request method. The method \"" + originalMethod + "\" is not supported.");
+    if (typeof method !== 'string')
+        return method;
+    switch (method.toUpperCase()) {
+        case 'GET':
+            return RequestMethod.Get;
+        case 'POST':
+            return RequestMethod.Post;
+        case 'PUT':
+            return RequestMethod.Put;
+        case 'DELETE':
+            return RequestMethod.Delete;
+        case 'OPTIONS':
+            return RequestMethod.Options;
+        case 'HEAD':
+            return RequestMethod.Head;
+        case 'PATCH':
+            return RequestMethod.Patch;
     }
-    return method;
+    throw new Error("Invalid request method. The method \"" + method + "\" is not supported.");
 }
 export var isSuccess = function (status) { return (status >= 200 && status < 300); };
 export function getResponseURL(xhr) {
@@ -35,5 +44,4 @@ export function stringToArrayBuffer(input) {
     }
     return view.buffer;
 }
-export { isJsObject } from '../src/facade/lang';
 //# sourceMappingURL=http_utils.js.map

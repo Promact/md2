@@ -7,7 +7,7 @@
  */
 import { Injectable } from '@angular/core';
 import * as chars from '../chars';
-import { NumberWrapper, StringJoiner, StringWrapper, isPresent } from '../facade/lang';
+import { NumberWrapper, isPresent } from '../facade/lang';
 export var TokenType;
 (function (TokenType) {
     TokenType[TokenType["Character"] = 0] = "Character";
@@ -84,7 +84,7 @@ export var Token = (function () {
     return Token;
 }());
 function newCharacterToken(index, code) {
-    return new Token(index, TokenType.Character, code, StringWrapper.fromCharCode(code));
+    return new Token(index, TokenType.Character, code, String.fromCharCode(code));
 }
 function newIdentifierToken(index, text) {
     return new Token(index, TokenType.Identifier, 0, text);
@@ -114,11 +114,11 @@ var _Scanner = (function () {
         this.advance();
     }
     _Scanner.prototype.advance = function () {
-        this.peek =
-            ++this.index >= this.length ? chars.$EOF : StringWrapper.charCodeAt(this.input, this.index);
+        this.peek = ++this.index >= this.length ? chars.$EOF : this.input.charCodeAt(this.index);
     };
     _Scanner.prototype.scanToken = function () {
-        var input = this.input, length = this.length, peek = this.peek, index = this.index;
+        var input = this.input, length = this.length;
+        var peek = this.peek, index = this.index;
         // Skip whitespace.
         while (peek <= chars.$SPACE) {
             if (++index >= length) {
@@ -126,7 +126,7 @@ var _Scanner = (function () {
                 break;
             }
             else {
-                peek = StringWrapper.charCodeAt(input, index);
+                peek = input.charCodeAt(index);
             }
         }
         this.peek = peek;
@@ -165,15 +165,15 @@ var _Scanner = (function () {
             case chars.$SLASH:
             case chars.$PERCENT:
             case chars.$CARET:
-                return this.scanOperator(start, StringWrapper.fromCharCode(peek));
+                return this.scanOperator(start, String.fromCharCode(peek));
             case chars.$QUESTION:
                 return this.scanComplexOperator(start, '?', chars.$PERIOD, '.');
             case chars.$LT:
             case chars.$GT:
-                return this.scanComplexOperator(start, StringWrapper.fromCharCode(peek), chars.$EQ, '=');
+                return this.scanComplexOperator(start, String.fromCharCode(peek), chars.$EQ, '=');
             case chars.$BANG:
             case chars.$EQ:
-                return this.scanComplexOperator(start, StringWrapper.fromCharCode(peek), chars.$EQ, '=', chars.$EQ, '=');
+                return this.scanComplexOperator(start, String.fromCharCode(peek), chars.$EQ, '=', chars.$EQ, '=');
             case chars.$AMPERSAND:
                 return this.scanComplexOperator(start, '&', chars.$AMPERSAND, '&');
             case chars.$BAR:
@@ -184,7 +184,7 @@ var _Scanner = (function () {
                 return this.scanToken();
         }
         this.advance();
-        return this.error("Unexpected character [" + StringWrapper.fromCharCode(peek) + "]", 0);
+        return this.error("Unexpected character [" + String.fromCharCode(peek) + "]", 0);
     };
     _Scanner.prototype.scanCharacter = function (start, code) {
         this.advance();
@@ -257,23 +257,21 @@ var _Scanner = (function () {
         var start = this.index;
         var quote = this.peek;
         this.advance(); // Skip initial quote.
-        var buffer;
+        var buffer = '';
         var marker = this.index;
         var input = this.input;
         while (this.peek != quote) {
             if (this.peek == chars.$BACKSLASH) {
-                if (buffer == null)
-                    buffer = new StringJoiner();
-                buffer.add(input.substring(marker, this.index));
+                buffer += input.substring(marker, this.index);
                 this.advance();
-                var unescapedCode;
+                var unescapedCode = void 0;
                 if (this.peek == chars.$u) {
                     // 4 character hex code for unicode character.
                     var hex = input.substring(this.index + 1, this.index + 5);
-                    try {
-                        unescapedCode = NumberWrapper.parseInt(hex, 16);
+                    if (/^[0-9a-f]+$/i.test(hex)) {
+                        unescapedCode = parseInt(hex, 16);
                     }
-                    catch (e) {
+                    else {
                         return this.error("Invalid unicode escape [\\u" + hex + "]", 0);
                     }
                     for (var i = 0; i < 5; i++) {
@@ -284,7 +282,7 @@ var _Scanner = (function () {
                     unescapedCode = unescape(this.peek);
                     this.advance();
                 }
-                buffer.add(StringWrapper.fromCharCode(unescapedCode));
+                buffer += String.fromCharCode(unescapedCode);
                 marker = this.index;
             }
             else if (this.peek == chars.$EOF) {
@@ -296,13 +294,7 @@ var _Scanner = (function () {
         }
         var last = input.substring(marker, this.index);
         this.advance(); // Skip terminating quote.
-        // Compute the unescaped string value.
-        var unescaped = last;
-        if (buffer != null) {
-            buffer.add(last);
-            unescaped = buffer.toString();
-        }
-        return newStringToken(start, unescaped);
+        return newStringToken(start, buffer + last);
     };
     _Scanner.prototype.error = function (message, offset) {
         var position = this.index + offset;

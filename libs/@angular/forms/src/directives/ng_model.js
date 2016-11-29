@@ -26,6 +26,23 @@ export var formControlBinding = {
     provide: NgControl,
     useExisting: forwardRef(function () { return NgModel; })
 };
+/**
+ * `ngModel` forces an additional change detection run when its inputs change:
+ * E.g.:
+ * ```
+ * <div>{{myModel.valid}}</div>
+ * <input [(ngModel)]="myValue" #myModel="ngModel">
+ * ```
+ * I.e. `ngModel` can export itself on the element and then be used in the template.
+ * Normally, this would result in expressions before the `input` that use the exported directive
+ * to have and old value as they have been
+ * dirty checked before. As this is a very common case for `ngModel`, we added this second change
+ * detection run.
+ *
+ * Notes:
+ * - this is just one extra run no matter how many `ngModel` have been changed.
+ * - this is a general problem when using `exportAs` for directives!
+ */
 var resolvedPromise = Promise.resolve(null);
 /**
  * @whatItDoes Creates a {@link FormControl} instance from a domain model and binds it
@@ -73,6 +90,11 @@ var resolvedPromise = Promise.resolve(null);
  * Take a look at an example of using `ngModel` within a form:
  *
  * {@example forms/ts/simpleForm/simple_form_example.ts region='Component'}
+ *
+ * To see `ngModel` examples with different form control types, see:
+ *
+ * * Radio buttons: {@link RadioControlValueAccessor}
+ * * Selects: {@link SelectControlValueAccessor}
  *
  * **npm package**: `@angular/forms`
  *
@@ -181,7 +203,7 @@ export var NgModel = (function (_super) {
     NgModel.prototype._updateDisabled = function (changes) {
         var _this = this;
         var disabledValue = changes['isDisabled'].currentValue;
-        var isDisabled = disabledValue != null && disabledValue != false;
+        var isDisabled = disabledValue === '' || (disabledValue && disabledValue !== 'false');
         resolvedPromise.then(function () {
             if (isDisabled && !_this.control.disabled) {
                 _this.control.disable();

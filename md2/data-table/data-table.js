@@ -10,11 +10,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { Component, Directive, Input, EventEmitter, Optional, NgModule, ViewEncapsulation } from '@angular/core';
+import { Component, Directive, Input, Output, EventEmitter, Optional, NgModule, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 export var Md2DataTable = (function () {
     function Md2DataTable() {
         this.dataLength = 0;
+        this._activePage = 1;
         this.onDataChange = new EventEmitter();
         this.onSortChange = new EventEmitter();
         this.onPageChange = new EventEmitter();
@@ -23,8 +24,17 @@ export var Md2DataTable = (function () {
         this.isDataChanged = false;
         this.inputData = [];
         this.pageLength = 1000;
-        this.activePage = 1;
+        this.activePageChange = new EventEmitter();
     }
+    Object.defineProperty(Md2DataTable.prototype, "activePage", {
+        get: function () { return this._activePage; },
+        set: function (value) {
+            this._activePage = value;
+            this.activePageChange.emit(value);
+        },
+        enumerable: true,
+        configurable: true
+    });
     Md2DataTable.prototype.getSort = function () {
         return { sortField: this.sortField, sortOrder: this.sortOrder };
     };
@@ -64,13 +74,15 @@ export var Md2DataTable = (function () {
     Md2DataTable.prototype.ngOnChanges = function (changes) {
         if (changes['inputData']) {
             this.inputData = changes['inputData'].currentValue || [];
-            this.recalculatePage();
-            this.onPageChange.emit({
-                activePage: this.activePage,
-                pageLength: this.pageLength,
-                dataLength: this.inputData.length
-            });
-            this.isDataChanged = true;
+            if (this.inputData.length > 0) {
+                this.recalculatePage();
+                this.onPageChange.emit({
+                    activePage: this.activePage,
+                    pageLength: this.pageLength,
+                    dataLength: this.inputData.length
+                });
+                this.isDataChanged = true;
+            }
         }
     };
     Md2DataTable.prototype.ngDoCheck = function () {
@@ -117,9 +129,13 @@ export var Md2DataTable = (function () {
         __metadata('design:type', Object)
     ], Md2DataTable.prototype, "pageLength", void 0);
     __decorate([
-        Input('md2-active-page'), 
+        Input(), 
+        __metadata('design:type', Number)
+    ], Md2DataTable.prototype, "activePage", null);
+    __decorate([
+        Output(), 
         __metadata('design:type', Object)
-    ], Md2DataTable.prototype, "activePage", void 0);
+    ], Md2DataTable.prototype, "activePageChange", void 0);
     Md2DataTable = __decorate([
         Directive({
             selector: 'table[md2-data]',

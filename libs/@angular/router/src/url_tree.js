@@ -12,11 +12,16 @@ export function createEmptyUrlTree() {
 }
 export function containsTree(container, containee, exact) {
     if (exact) {
-        return equalSegmentGroups(container.root, containee.root);
+        return equalQueryParams(container.queryParams, containee.queryParams) &&
+            equalSegmentGroups(container.root, containee.root);
     }
     else {
-        return containsSegmentGroup(container.root, containee.root);
+        return containsQueryParams(container.queryParams, containee.queryParams) &&
+            containsSegmentGroup(container.root, containee.root);
     }
+}
+function equalQueryParams(container, containee) {
+    return shallowEqual(container, containee);
 }
 function equalSegmentGroups(container, containee) {
     if (!equalPath(container.segments, containee.segments))
@@ -30,6 +35,10 @@ function equalSegmentGroups(container, containee) {
             return false;
     }
     return true;
+}
+function containsQueryParams(container, containee) {
+    return Object.keys(containee) <= Object.keys(container) &&
+        Object.keys(containee).every(function (key) { return containee[key] === container[key]; });
 }
 function containsSegmentGroup(container, containee) {
     return containsSegmentGroupHelper(container, containee, containee.segments);
@@ -192,7 +201,7 @@ export var UrlSegmentGroup = (function () {
 export var UrlSegment = (function () {
     function UrlSegment(
         /**
-         * The part part of a URL segment.
+         * The path part of a URL segment.
          */
         path, 
         /**

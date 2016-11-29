@@ -304,9 +304,7 @@ export var Md2Select = (function () {
                 _this.isOpenable = true;
             }, 200);
         }
-        else {
-            this._onTouched();
-        }
+        this._onTouched();
     };
     Md2Select.prototype.touch = function () {
         if (this._onTouched) {

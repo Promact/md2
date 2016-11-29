@@ -80,8 +80,7 @@ export var FocusTrap = (function () {
     ], FocusTrap.prototype, "trappedContent", void 0);
     FocusTrap = __decorate([
         Component({selector: 'focus-trap',
-            // TODO(jelbourn): move this to a separate file.
-            template: "\n  <div tabindex=\"0\" (focus)=\"focusLastTabbableElement()\"></div>\n  <div #trappedContent><ng-content></ng-content></div>\n  <div tabindex=\"0\" (focus)=\"focusFirstTabbableElement()\"></div>",
+            template: "<div tabindex=\"0\" (focus)=\"focusLastTabbableElement()\"></div> <div #trappedContent><ng-content></ng-content></div> <div tabindex=\"0\" (focus)=\"focusFirstTabbableElement()\"></div> ",
             encapsulation: ViewEncapsulation.None,
         }), 
         __metadata('design:paramtypes', [InteractivityChecker])

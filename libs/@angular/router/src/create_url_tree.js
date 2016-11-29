@@ -160,6 +160,8 @@ function createPositionApplyingDoubleDots(group, index, numberOfDoubleDots) {
     return new Position(g, false, ci - dd);
 }
 function getPath(command) {
+    if (typeof command === 'object' && command.outlets)
+        return command.outlets[PRIMARY_OUTLET];
     return "" + command;
 }
 function getOutlets(commands) {
@@ -178,8 +180,14 @@ function updateSegmentGroup(segmentGroup, startIndex, commands) {
         return updateSegmentGroupChildren(segmentGroup, startIndex, commands);
     }
     var m = prefixedWith(segmentGroup, startIndex, commands);
-    var slicedCommands = commands.slice(m.lastIndex);
-    if (m.match && slicedCommands.length === 0) {
+    var slicedCommands = commands.slice(m.commandIndex);
+    if (m.match && m.pathIndex < segmentGroup.segments.length) {
+        var g = new UrlSegmentGroup(segmentGroup.segments.slice(0, m.pathIndex), {});
+        g.children[PRIMARY_OUTLET] =
+            new UrlSegmentGroup(segmentGroup.segments.slice(m.pathIndex), segmentGroup.children);
+        return updateSegmentGroupChildren(g, 0, slicedCommands);
+    }
+    else if (m.match && slicedCommands.length === 0) {
         return new UrlSegmentGroup(segmentGroup.segments, {});
     }
     else if (m.match && !segmentGroup.hasChildren()) {
@@ -215,13 +223,15 @@ function updateSegmentGroupChildren(segmentGroup, startIndex, commands) {
 function prefixedWith(segmentGroup, startIndex, commands) {
     var currentCommandIndex = 0;
     var currentPathIndex = startIndex;
-    var noMatch = { match: false, lastIndex: 0 };
+    var noMatch = { match: false, pathIndex: 0, commandIndex: 0 };
     while (currentPathIndex < segmentGroup.segments.length) {
         if (currentCommandIndex >= commands.length)
             return noMatch;
         var path = segmentGroup.segments[currentPathIndex];
         var curr = getPath(commands[currentCommandIndex]);
         var next = currentCommandIndex < commands.length - 1 ? commands[currentCommandIndex + 1] : null;
+        if (currentPathIndex > 0 && curr === undefined)
+            break;
         if (curr && next && (typeof next === 'object') && next.outlets === undefined) {
             if (!compare(curr, next, path))
                 return noMatch;
@@ -234,7 +244,7 @@ function prefixedWith(segmentGroup, startIndex, commands) {
         }
         currentPathIndex++;
     }
-    return { match: true, lastIndex: currentCommandIndex };
+    return { match: true, pathIndex: currentPathIndex, commandIndex: currentCommandIndex };
 }
 function createNewSegmentGroup(segmentGroup, startIndex, commands) {
     var paths = segmentGroup.segments.slice(0, startIndex);

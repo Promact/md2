@@ -1,5 +1,5 @@
 /**
- * @license Angular v2.0.0
+ * @license Angular v2.2.3
  * (c) 2010-2016 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -105,52 +105,14 @@
         return Zone.current.runGuarded(fn);
     }
 
-    /**
-     * @license
-     * Copyright Google Inc. All Rights Reserved.
-     *
-     * Use of this source code is governed by an MIT-style license that can be
-     * found in the LICENSE file at https://angular.io/license
-     */
-    var globalScope;
-    if (typeof window === 'undefined') {
-        if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
-            // TODO: Replace any with WorkerGlobalScope from lib.webworker.d.ts #3492
-            globalScope = self;
-        }
-        else {
-            globalScope = global;
-        }
-    }
-    else {
-        globalScope = window;
-    }
     function scheduleMicroTask(fn) {
         Zone.current.scheduleMicroTask('scheduleMicrotask', fn);
-    }
-    // Need to declare a new variable for global here since TypeScript
-    // exports the original value of the symbol.
-    var global$1 = globalScope;
-    // TODO: remove calls to assert in production environment
-    // Note: Can't just export this and import in in other files
-    // as `assert` is a reserved keyword in Dart
-    global$1.assert = function assert(condition) {
-        // TODO: to be fixed properly via #2830, noop for now
-    };
-    function isPresent(obj) {
-        return obj !== undefined && obj !== null;
-    }
-    function isBlank(obj) {
-        return obj === undefined || obj === null;
-    }
-    function isArray(obj) {
-        return Array.isArray(obj);
     }
     function stringify(token) {
         if (typeof token === 'string') {
             return token;
         }
-        if (token === undefined || token === null) {
+        if (token == null) {
             return '' + token;
         }
         if (token.overriddenName) {
@@ -161,56 +123,8 @@
         }
         var res = token.toString();
         var newLineIndex = res.indexOf('\n');
-        return (newLineIndex === -1) ? res : res.substring(0, newLineIndex);
+        return newLineIndex === -1 ? res : res.substring(0, newLineIndex);
     }
-    var NumberWrapper = (function () {
-        function NumberWrapper() {
-        }
-        NumberWrapper.toFixed = function (n, fractionDigits) { return n.toFixed(fractionDigits); };
-        NumberWrapper.equal = function (a, b) { return a === b; };
-        NumberWrapper.parseIntAutoRadix = function (text) {
-            var result = parseInt(text);
-            if (isNaN(result)) {
-                throw new Error('Invalid integer literal when parsing ' + text);
-            }
-            return result;
-        };
-        NumberWrapper.parseInt = function (text, radix) {
-            if (radix == 10) {
-                if (/^(\-|\+)?[0-9]+$/.test(text)) {
-                    return parseInt(text, radix);
-                }
-            }
-            else if (radix == 16) {
-                if (/^(\-|\+)?[0-9ABCDEFabcdef]+$/.test(text)) {
-                    return parseInt(text, radix);
-                }
-            }
-            else {
-                var result = parseInt(text, radix);
-                if (!isNaN(result)) {
-                    return result;
-                }
-            }
-            throw new Error('Invalid integer literal when parsing ' + text + ' in base ' + radix);
-        };
-        Object.defineProperty(NumberWrapper, "NaN", {
-            get: function () { return NaN; },
-            enumerable: true,
-            configurable: true
-        });
-        NumberWrapper.isNumeric = function (value) { return !isNaN(value - parseFloat(value)); };
-        NumberWrapper.isNaN = function (value) { return isNaN(value); };
-        NumberWrapper.isInteger = function (value) { return Number.isInteger(value); };
-        return NumberWrapper;
-    }());
-    var FunctionWrapper = (function () {
-        function FunctionWrapper() {
-        }
-        FunctionWrapper.apply = function (fn, posArgs) { return fn.apply(null, posArgs); };
-        FunctionWrapper.bind = function (fn, scope) { return fn.bind(scope); };
-        return FunctionWrapper;
-    }());
 
     /**
      * Fixture for debugging and testing a component.
@@ -515,228 +429,6 @@
         return AsyncTestCompleter;
     }());
 
-    var Map$1 = global$1.Map;
-    var Set = global$1.Set;
-    // Safari and Internet Explorer do not support the iterable parameter to the
-    // Map constructor.  We work around that by manually adding the items.
-    var createMapFromPairs = (function () {
-        try {
-            if (new Map$1([[1, 2]]).size === 1) {
-                return function createMapFromPairs(pairs) { return new Map$1(pairs); };
-            }
-        }
-        catch (e) {
-        }
-        return function createMapAndPopulateFromPairs(pairs) {
-            var map = new Map$1();
-            for (var i = 0; i < pairs.length; i++) {
-                var pair = pairs[i];
-                map.set(pair[0], pair[1]);
-            }
-            return map;
-        };
-    })();
-    var createMapFromMap = (function () {
-        try {
-            if (new Map$1(new Map$1())) {
-                return function createMapFromMap(m) { return new Map$1(m); };
-            }
-        }
-        catch (e) {
-        }
-        return function createMapAndPopulateFromMap(m) {
-            var map = new Map$1();
-            m.forEach(function (v, k) { map.set(k, v); });
-            return map;
-        };
-    })();
-    var _clearValues = (function () {
-        if ((new Map$1()).keys().next) {
-            return function _clearValues(m) {
-                var keyIterator = m.keys();
-                var k;
-                while (!((k = keyIterator.next()).done)) {
-                    m.set(k.value, null);
-                }
-            };
-        }
-        else {
-            return function _clearValuesWithForeEach(m) {
-                m.forEach(function (v, k) { m.set(k, null); });
-            };
-        }
-    })();
-    // Safari doesn't implement MapIterator.next(), which is used is Traceur's polyfill of Array.from
-    // TODO(mlaval): remove the work around once we have a working polyfill of Array.from
-    var _arrayFromMap = (function () {
-        try {
-            if ((new Map$1()).values().next) {
-                return function createArrayFromMap(m, getValues) {
-                    return getValues ? Array.from(m.values()) : Array.from(m.keys());
-                };
-            }
-        }
-        catch (e) {
-        }
-        return function createArrayFromMapWithForeach(m, getValues) {
-            var res = ListWrapper.createFixedSize(m.size), i = 0;
-            m.forEach(function (v, k) {
-                res[i] = getValues ? v : k;
-                i++;
-            });
-            return res;
-        };
-    })();
-    var ListWrapper = (function () {
-        function ListWrapper() {
-        }
-        // JS has no way to express a statically fixed size list, but dart does so we
-        // keep both methods.
-        ListWrapper.createFixedSize = function (size) { return new Array(size); };
-        ListWrapper.createGrowableSize = function (size) { return new Array(size); };
-        ListWrapper.clone = function (array) { return array.slice(0); };
-        ListWrapper.forEachWithIndex = function (array, fn) {
-            for (var i = 0; i < array.length; i++) {
-                fn(array[i], i);
-            }
-        };
-        ListWrapper.first = function (array) {
-            if (!array)
-                return null;
-            return array[0];
-        };
-        ListWrapper.last = function (array) {
-            if (!array || array.length == 0)
-                return null;
-            return array[array.length - 1];
-        };
-        ListWrapper.indexOf = function (array, value, startIndex) {
-            if (startIndex === void 0) { startIndex = 0; }
-            return array.indexOf(value, startIndex);
-        };
-        ListWrapper.contains = function (list, el) { return list.indexOf(el) !== -1; };
-        ListWrapper.reversed = function (array) {
-            var a = ListWrapper.clone(array);
-            return a.reverse();
-        };
-        ListWrapper.concat = function (a, b) { return a.concat(b); };
-        ListWrapper.insert = function (list, index, value) { list.splice(index, 0, value); };
-        ListWrapper.removeAt = function (list, index) {
-            var res = list[index];
-            list.splice(index, 1);
-            return res;
-        };
-        ListWrapper.removeAll = function (list, items) {
-            for (var i = 0; i < items.length; ++i) {
-                var index = list.indexOf(items[i]);
-                list.splice(index, 1);
-            }
-        };
-        ListWrapper.remove = function (list, el) {
-            var index = list.indexOf(el);
-            if (index > -1) {
-                list.splice(index, 1);
-                return true;
-            }
-            return false;
-        };
-        ListWrapper.clear = function (list) { list.length = 0; };
-        ListWrapper.isEmpty = function (list) { return list.length == 0; };
-        ListWrapper.fill = function (list, value, start, end) {
-            if (start === void 0) { start = 0; }
-            if (end === void 0) { end = null; }
-            list.fill(value, start, end === null ? list.length : end);
-        };
-        ListWrapper.equals = function (a, b) {
-            if (a.length != b.length)
-                return false;
-            for (var i = 0; i < a.length; ++i) {
-                if (a[i] !== b[i])
-                    return false;
-            }
-            return true;
-        };
-        ListWrapper.slice = function (l, from, to) {
-            if (from === void 0) { from = 0; }
-            if (to === void 0) { to = null; }
-            return l.slice(from, to === null ? undefined : to);
-        };
-        ListWrapper.splice = function (l, from, length) { return l.splice(from, length); };
-        ListWrapper.sort = function (l, compareFn) {
-            if (isPresent(compareFn)) {
-                l.sort(compareFn);
-            }
-            else {
-                l.sort();
-            }
-        };
-        ListWrapper.toString = function (l) { return l.toString(); };
-        ListWrapper.toJSON = function (l) { return JSON.stringify(l); };
-        ListWrapper.maximum = function (list, predicate) {
-            if (list.length == 0) {
-                return null;
-            }
-            var solution = null;
-            var maxValue = -Infinity;
-            for (var index = 0; index < list.length; index++) {
-                var candidate = list[index];
-                if (isBlank(candidate)) {
-                    continue;
-                }
-                var candidateValue = predicate(candidate);
-                if (candidateValue > maxValue) {
-                    solution = candidate;
-                    maxValue = candidateValue;
-                }
-            }
-            return solution;
-        };
-        ListWrapper.flatten = function (list) {
-            var target = [];
-            _flattenArray(list, target);
-            return target;
-        };
-        ListWrapper.addAll = function (list, source) {
-            for (var i = 0; i < source.length; i++) {
-                list.push(source[i]);
-            }
-        };
-        return ListWrapper;
-    }());
-    function _flattenArray(source, target) {
-        if (isPresent(source)) {
-            for (var i = 0; i < source.length; i++) {
-                var item = source[i];
-                if (isArray(item)) {
-                    _flattenArray(item, target);
-                }
-                else {
-                    target.push(item);
-                }
-            }
-        }
-        return target;
-    }
-    // Safari and Internet Explorer do not support the iterable parameter to the
-    // Set constructor.  We work around that by manually adding the items.
-    var createSetFromList = (function () {
-        var test = new Set([1, 2, 3]);
-        if (test.size === 3) {
-            return function createSetFromList(lst) { return new Set(lst); };
-        }
-        else {
-            return function createSetAndPopulateFromList(lst) {
-                var res = new Set(lst);
-                if (res.size !== lst.length) {
-                    for (var i = 0; i < lst.length; i++) {
-                        res.add(lst[i]);
-                    }
-                }
-                return res;
-            };
-        }
-    })();
-
     /**
      * @license
      * Copyright Google Inc. All Rights Reserved.
@@ -877,7 +569,13 @@
      */
     var ComponentFixtureNoNgZone = new _angular_core.OpaqueToken('ComponentFixtureNoNgZone');
     /**
-     * @experimental
+     * @whatItDoes Configures and initializes environment for unit testing and provides methods for
+     * creating components and services in unit tests.
+     * @description
+     *
+     * TestBed is the primary api for writing unit tests for Angular applications and libraries.
+     *
+     * @stable
      */
     var TestBed = (function () {
         function TestBed() {
@@ -913,7 +611,7 @@
          */
         TestBed.initTestEnvironment = function (ngModule, platform) {
             var testBed = getTestBed();
-            getTestBed().initTestEnvironment(ngModule, platform);
+            testBed.initTestEnvironment(ngModule, platform);
             return testBed;
         };
         /**
@@ -1025,17 +723,18 @@
         TestBed.prototype.configureTestingModule = function (moduleDef) {
             this._assertNotInstantiated('TestBed.configureTestingModule', 'configure the test module');
             if (moduleDef.providers) {
-                this._providers = ListWrapper.concat(this._providers, moduleDef.providers);
+                (_a = this._providers).push.apply(_a, moduleDef.providers);
             }
             if (moduleDef.declarations) {
-                this._declarations = ListWrapper.concat(this._declarations, moduleDef.declarations);
+                (_b = this._declarations).push.apply(_b, moduleDef.declarations);
             }
             if (moduleDef.imports) {
-                this._imports = ListWrapper.concat(this._imports, moduleDef.imports);
+                (_c = this._imports).push.apply(_c, moduleDef.imports);
             }
             if (moduleDef.schemas) {
-                this._schemas = ListWrapper.concat(this._schemas, moduleDef.schemas);
+                (_d = this._schemas).push.apply(_d, moduleDef.schemas);
             }
+            var _a, _b, _c, _d;
         };
         TestBed.prototype.compileComponents = function () {
             var _this = this;
@@ -1118,7 +817,7 @@
             var _this = this;
             this._initIfNeeded();
             var params = tokens.map(function (t) { return _this.get(t); });
-            return FunctionWrapper.apply(fn, params);
+            return fn.apply(void 0, params);
         };
         TestBed.prototype.overrideModule = function (ngModule, override) {
             this._assertNotInstantiated('overrideModule', 'override module metadata');
@@ -1153,7 +852,7 @@
                 var componentRef = componentFactory.create(_this, [], "#" + rootElId);
                 return new ComponentFixture(componentRef, ngZone, autoDetect);
             };
-            var fixture = ngZone == null ? initComponent() : ngZone.run(initComponent);
+            var fixture = !ngZone ? initComponent() : ngZone.run(initComponent);
             this._activeFixtures.push(fixture);
             return fixture;
         };
@@ -1164,10 +863,7 @@
      * @experimental
      */
     function getTestBed() {
-        if (_testBed == null) {
-            _testBed = new TestBed();
-        }
-        return _testBed;
+        return _testBed = _testBed || new TestBed();
     }
     /**
      * Allows injecting dependencies in `beforeEach()` and `it()`.
@@ -1247,10 +943,10 @@
         return new InjectSetupWrapper(function () { return moduleDef; });
     }
 
-    var _global$1 = (typeof window === 'undefined' ? global : window);
+    var _global$2 = (typeof window === 'undefined' ? global : window);
     // Reset the test providers and the fake async zone before each test.
-    if (_global$1.beforeEach) {
-        _global$1.beforeEach(function () {
+    if (_global$2.beforeEach) {
+        _global$2.beforeEach(function () {
             TestBed.resetTestingModule();
             resetFakeAsyncZone();
         });
@@ -1268,14 +964,27 @@
      */
 
     var MockAnimationPlayer = (function () {
-        function MockAnimationPlayer() {
+        function MockAnimationPlayer(startingStyles, keyframes, previousPlayers) {
+            var _this = this;
+            if (startingStyles === void 0) { startingStyles = {}; }
+            if (keyframes === void 0) { keyframes = []; }
+            if (previousPlayers === void 0) { previousPlayers = []; }
+            this.startingStyles = startingStyles;
+            this.keyframes = keyframes;
             this._onDoneFns = [];
             this._onStartFns = [];
             this._finished = false;
             this._destroyed = false;
             this._started = false;
             this.parentPlayer = null;
+            this.previousStyles = {};
             this.log = [];
+            previousPlayers.forEach(function (player) {
+                if (player instanceof MockAnimationPlayer) {
+                    var styles_1 = player._captureStyles();
+                    Object.keys(styles_1).forEach(function (prop) { return _this.previousStyles[prop] = styles_1[prop]; });
+                }
+            });
         }
         MockAnimationPlayer.prototype._onFinish = function () {
             if (!this._finished) {
@@ -1283,9 +992,6 @@
                 this.log.push('finish');
                 this._onDoneFns.forEach(function (fn) { return fn(); });
                 this._onDoneFns = [];
-                if (!isPresent(this.parentPlayer)) {
-                    this.destroy();
-                }
             }
         };
         MockAnimationPlayer.prototype.init = function () { this.log.push('init'); };
@@ -1303,7 +1009,12 @@
         MockAnimationPlayer.prototype.pause = function () { this.log.push('pause'); };
         MockAnimationPlayer.prototype.restart = function () { this.log.push('restart'); };
         MockAnimationPlayer.prototype.finish = function () { this._onFinish(); };
-        MockAnimationPlayer.prototype.reset = function () { this.log.push('reset'); };
+        MockAnimationPlayer.prototype.reset = function () {
+            this.log.push('reset');
+            this._destroyed = false;
+            this._finished = false;
+            this._started = false;
+        };
         MockAnimationPlayer.prototype.destroy = function () {
             if (!this._destroyed) {
                 this._destroyed = true;
@@ -1311,8 +1022,29 @@
                 this.log.push('destroy');
             }
         };
-        MockAnimationPlayer.prototype.setPosition = function (p /** TODO #9100 */) { };
+        MockAnimationPlayer.prototype.setPosition = function (p) { };
         MockAnimationPlayer.prototype.getPosition = function () { return 0; };
+        MockAnimationPlayer.prototype._captureStyles = function () {
+            var _this = this;
+            var captures = {};
+            if (this.hasStarted()) {
+                // when assembling the captured styles, it's important that
+                // we build the keyframe styles in the following order:
+                // {startingStyles, ... other styles within keyframes, ... previousStyles }
+                Object.keys(this.startingStyles).forEach(function (prop) {
+                    captures[prop] = _this.startingStyles[prop];
+                });
+                this.keyframes.forEach(function (kf) {
+                    var offset = kf[0], styles = kf[1];
+                    var newStyles = {};
+                    Object.keys(styles).forEach(function (prop) { captures[prop] = _this._finished ? styles[prop] : _angular_core.AUTO_STYLE; });
+                });
+            }
+            Object.keys(this.previousStyles).forEach(function (prop) {
+                captures[prop] = _this.previousStyles[prop];
+            });
+            return captures;
+        };
         return MockAnimationPlayer;
     }());
 

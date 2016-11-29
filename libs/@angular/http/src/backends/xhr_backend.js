@@ -10,7 +10,6 @@ import { __platform_browser_private__ } from '@angular/platform-browser';
 import { Observable } from 'rxjs/Observable';
 import { ResponseOptions } from '../base_response_options';
 import { ContentType, RequestMethod, ResponseContentType, ResponseType } from '../enums';
-import { isPresent, isString } from '../facade/lang';
 import { Headers } from '../headers';
 import { getResponseURL, isSuccess } from '../http_utils';
 import { XSRFStrategy } from '../interfaces';
@@ -34,32 +33,37 @@ export var XHRConnection = (function () {
         this.response = new Observable(function (responseObserver) {
             var _xhr = browserXHR.build();
             _xhr.open(RequestMethod[req.method].toUpperCase(), req.url);
-            if (isPresent(req.withCredentials)) {
+            if (req.withCredentials != null) {
                 _xhr.withCredentials = req.withCredentials;
             }
             // load event handler
             var onLoad = function () {
-                // responseText is the old-school way of retrieving response (supported by IE8 & 9)
-                // response/responseType properties were introduced in ResourceLoader Level2 spec (supported
-                // by
-                // IE10)
-                var body = isPresent(_xhr.response) ? _xhr.response : _xhr.responseText;
-                // Implicitly strip a potential XSSI prefix.
-                if (isString(body))
-                    body = body.replace(XSSI_PREFIX, '');
-                var headers = Headers.fromResponseHeaderString(_xhr.getAllResponseHeaders());
-                var url = getResponseURL(_xhr);
                 // normalize IE9 bug (http://bugs.jquery.com/ticket/1450)
                 var status = _xhr.status === 1223 ? 204 : _xhr.status;
+                var body = null;
+                // HTTP 204 means no content
+                if (status !== 204) {
+                    // responseText is the old-school way of retrieving response (supported by IE8 & 9)
+                    // response/responseType properties were introduced in ResourceLoader Level2 spec
+                    // (supported by IE10)
+                    body = _xhr.response == null ? _xhr.responseText : _xhr.response;
+                    // Implicitly strip a potential XSSI prefix.
+                    if (typeof body === 'string') {
+                        body = body.replace(XSSI_PREFIX, '');
+                    }
+                }
                 // fix status code when it is 0 (0 status is undocumented).
                 // Occurs when accessing file resources or on Android 4.1 stock browser
                 // while retrieving files from application cache.
                 if (status === 0) {
                     status = body ? 200 : 0;
                 }
+                var headers = Headers.fromResponseHeaderString(_xhr.getAllResponseHeaders());
+                // IE 9 does not provide the way to get URL of response
+                var url = getResponseURL(_xhr) || req.url;
                 var statusText = _xhr.statusText || 'OK';
                 var responseOptions = new ResponseOptions({ body: body, status: status, headers: headers, statusText: statusText, url: url });
-                if (isPresent(baseResponseOptions)) {
+                if (baseResponseOptions != null) {
                     responseOptions = baseResponseOptions.merge(responseOptions);
                 }
                 var response = new Response(responseOptions);
@@ -80,17 +84,17 @@ export var XHRConnection = (function () {
                     status: _xhr.status,
                     statusText: _xhr.statusText,
                 });
-                if (isPresent(baseResponseOptions)) {
+                if (baseResponseOptions != null) {
                     responseOptions = baseResponseOptions.merge(responseOptions);
                 }
                 responseObserver.error(new Response(responseOptions));
             };
             _this.setDetectedContentType(req, _xhr);
-            if (isPresent(req.headers)) {
+            if (req.headers != null) {
                 req.headers.forEach(function (values, name) { return _xhr.setRequestHeader(name, values.join(',')); });
             }
             // Select the correct buffer type to store the response
-            if (isPresent(req.responseType) && isPresent(_xhr.responseType)) {
+            if (req.responseType != null && _xhr.responseType != null) {
                 switch (req.responseType) {
                     case ResponseContentType.ArrayBuffer:
                         _xhr.responseType = 'arraybuffer';
@@ -118,9 +122,9 @@ export var XHRConnection = (function () {
             };
         });
     }
-    XHRConnection.prototype.setDetectedContentType = function (req /** TODO #9100 */, _xhr /** TODO #9100 */) {
+    XHRConnection.prototype.setDetectedContentType = function (req /** TODO Request */, _xhr /** XMLHttpRequest */) {
         // Skip if a custom Content-Type header is provided
-        if (isPresent(req.headers) && isPresent(req.headers.get('Content-Type'))) {
+        if (req.headers != null && req.headers.get('Content-Type') != null) {
             return;
         }
         // Set the detected content type
@@ -166,7 +170,7 @@ export var CookieXSRFStrategy = (function () {
     }
     CookieXSRFStrategy.prototype.configureRequest = function (req) {
         var xsrfToken = __platform_browser_private__.getDOM().getCookie(this._cookieName);
-        if (xsrfToken && !req.headers.has(this._headerName)) {
+        if (xsrfToken) {
             req.headers.set(this._headerName, xsrfToken);
         }
     };

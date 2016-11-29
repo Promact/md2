@@ -8,7 +8,7 @@ Data Table is a arrange data in ordering searching and paginate it.
 | --- | --- | --- |
 | `md2-data` | `Array<any>` | List of array data assign for datatable |
 | `md2-page-length` | `number` | Number of rows per page |
-| `md2-active-page` | `number` | Number of active page |
+| `activePage` | `number` | Number of active page |
 
 ### Examples
 A Datatable would have the following markup.
@@ -16,7 +16,8 @@ A Datatable would have the following markup.
 <table class="table table-striped"
        [md2-data]="data"
        #md2="Md2DataTable"
-       [md2-page-length]="10">
+       [md2-page-length]="10"
+       [(activePage)]="activePage">
   ...
 </table>
 ```
@@ -51,7 +52,10 @@ A pagination would have the following markup.
 ### Examples
 A data-table would have the following markup.
 ```html
-<table [md2-data]="data" #md2="Md2DataTable" [md2-page-length]="10">
+<table [md2-data]="data"
+       #md2="Md2DataTable"
+       [md2-page-length]="10"
+       [(activePage)]="activePage">
   <thead>
     <tr>
       <th md2-sort-field="name">Name</th>

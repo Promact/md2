@@ -1,4 +1,5 @@
-import { ApplicationRef, ComponentFactoryResolver, ComponentRef, ModuleWithProviders } from '@angular/core';
+import { ModuleWithProviders } from '@angular/core';
+import { Overlay, OverlayRef } from '../core';
 export declare class Toast {
     message: string;
     id: number;
@@ -6,12 +7,12 @@ export declare class Toast {
     constructor(message: string);
 }
 export declare class Md2Toast {
-    private _componentFactory;
-    private _appRef;
+    private _overlay;
     private delay;
     private index;
-    container: ComponentRef<any>;
-    constructor(_componentFactory: ComponentFactoryResolver, _appRef: ApplicationRef);
+    _overlayRef: OverlayRef;
+    _toastInstance: Md2ToastComponent;
+    constructor(_overlay: Overlay);
     /**
      * toast message
      * @param toast string or object with message and other properties of toast
@@ -51,6 +52,30 @@ export declare class Md2Toast {
      * dispose all toasts
      */
     dispose(): void;
+}
+export declare class Md2ToastComponent {
+    toasts: Toast[];
+    maxShown: number;
+    /**
+     * add toast
+     * @param toast toast object with all parameters
+     */
+    add(toast: Toast): void;
+    /**
+     * remove toast
+     * @param toastId number of toast id
+     */
+    remove(toastId: number): void;
+    /**
+     * remove all toasts
+     * @param toastId number of toast id
+     */
+    removeAll(): void;
+    /**
+     * check has any toast
+     * @return boolean
+     */
+    hasToast(): boolean;
 }
 export declare const MD2_TOAST_DIRECTIVES: any[];
 export declare class Md2ToastModule {

@@ -5,7 +5,6 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { ListWrapper } from '../facade/collection';
 import { isPresent } from '../facade/lang';
 import * as o from './output_ast';
 import { debugOutputAstAsTypeScript } from './ts_emitter';
@@ -82,7 +81,7 @@ function createDynamicClass(_classStmt, _ctx, _visitor) {
         _classStmt.fields.forEach(function (field) { _this[field.name] = undefined; });
         _executeFunctionStatements(ctorParamNames, args, _classStmt.constructorMethod.body, instanceCtx, _visitor);
     };
-    var superClass = _classStmt.parent.visitExpression(_visitor, _ctx);
+    var superClass = _classStmt.parent ? _classStmt.parent.visitExpression(_visitor, _ctx) : Object;
     ctor.prototype = Object.create(superClass.prototype, propertyDescriptors);
     return ctor;
 }
@@ -153,13 +152,13 @@ var StatementInterpreter = (function () {
         if (isPresent(expr.builtin)) {
             switch (expr.builtin) {
                 case o.BuiltinMethod.ConcatArray:
-                    result = ListWrapper.concat(receiver, args[0]);
+                    result = receiver.concat.apply(receiver, args);
                     break;
                 case o.BuiltinMethod.SubscribeObservable:
                     result = receiver.subscribe({ next: args[0] });
                     break;
                 case o.BuiltinMethod.Bind:
-                    result = receiver.bind(args[0]);
+                    result = receiver.bind.apply(receiver, args);
                     break;
                 default:
                     throw new Error("Unknown builtin method " + expr.builtin);

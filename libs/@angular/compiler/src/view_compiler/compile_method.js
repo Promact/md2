@@ -5,7 +5,6 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { ListWrapper } from '../facade/collection';
 import { isPresent } from '../facade/lang';
 import * as o from '../output/output_ast';
 var _DebugState = (function () {
@@ -49,10 +48,17 @@ export var CompileMethod = (function () {
     };
     CompileMethod.prototype.resetDebugInfoExpr = function (nodeIndex, templateAst) {
         var res = this._updateDebugContext(new _DebugState(nodeIndex, templateAst));
-        return isPresent(res) ? res : o.NULL_EXPR;
+        return res || o.NULL_EXPR;
     };
     CompileMethod.prototype.resetDebugInfo = function (nodeIndex, templateAst) {
         this._newState = new _DebugState(nodeIndex, templateAst);
+    };
+    CompileMethod.prototype.push = function () {
+        var stmts = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            stmts[_i - 0] = arguments[_i];
+        }
+        this.addStmts(stmts);
     };
     CompileMethod.prototype.addStmt = function (stmt) {
         this._updateDebugContextIfNeeded();
@@ -60,7 +66,8 @@ export var CompileMethod = (function () {
     };
     CompileMethod.prototype.addStmts = function (stmts) {
         this._updateDebugContextIfNeeded();
-        ListWrapper.addAll(this._bodyStatements, stmts);
+        (_a = this._bodyStatements).push.apply(_a, stmts);
+        var _a;
     };
     CompileMethod.prototype.finish = function () { return this._bodyStatements; };
     CompileMethod.prototype.isEmpty = function () { return this._bodyStatements.length === 0; };

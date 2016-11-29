@@ -882,8 +882,8 @@ var DomPortalHost = (function (_super) {
         }
         else {
             componentRef = componentFactory.create(portal.injector || this._defaultInjector);
-            // ApplicationRef's attachView and detachView methods are in Angular ^2.2.1 but not before.
-            // The `else` clause here can be removed once 2.2.1 is released.
+            // ApplicationRef's attachView and detachView methods are in Angular ^2.3.0 but not before.
+            // The `else` clause here can be removed once 2.3.0 is released.
             if (this._appRef['attachView']) {
                 this._appRef.attachView(componentRef.hostView);
                 this.setDisposeFn(function () {
@@ -894,7 +894,7 @@ var DomPortalHost = (function (_super) {
             else {
                 // When creating a component outside of a ViewContainer, we need to manually register
                 // its ChangeDetector with the application. This API is unfortunately not published
-                // in Angular <= 2.2.0. The change detector must also be deregistered when the component
+                // in Angular < 2.3.0. The change detector must also be deregistered when the component
                 // is destroyed to prevent memory leaks.
                 var changeDetectorRef_1 = componentRef.changeDetectorRef;
                 this._appRef.registerChangeDetector(changeDetectorRef_1);
@@ -2063,8 +2063,7 @@ var FocusTrap = (function () {
     ], FocusTrap.prototype, "trappedContent", void 0);
     FocusTrap = __decorate$10([
         _angular_core.Component({selector: 'focus-trap',
-            // TODO(jelbourn): move this to a separate file.
-            template: "\n  <div tabindex=\"0\" (focus)=\"focusLastTabbableElement()\"></div>\n  <div #trappedContent><ng-content></ng-content></div>\n  <div tabindex=\"0\" (focus)=\"focusFirstTabbableElement()\"></div>",
+            template: "<div tabindex=\"0\" (focus)=\"focusLastTabbableElement()\"></div> <div #trappedContent><ng-content></ng-content></div> <div tabindex=\"0\" (focus)=\"focusFirstTabbableElement()\"></div> ",
             encapsulation: _angular_core.ViewEncapsulation.None,
         }), 
         __metadata$10('design:paramtypes', [InteractivityChecker])
@@ -4385,6 +4384,7 @@ var __param$2 = (this && this.__param) || function (paramIndex, decorator) {
 var Md2DataTable = (function () {
     function Md2DataTable() {
         this.dataLength = 0;
+        this._activePage = 1;
         this.onDataChange = new _angular_core.EventEmitter();
         this.onSortChange = new _angular_core.EventEmitter();
         this.onPageChange = new _angular_core.EventEmitter();
@@ -4393,8 +4393,17 @@ var Md2DataTable = (function () {
         this.isDataChanged = false;
         this.inputData = [];
         this.pageLength = 1000;
-        this.activePage = 1;
+        this.activePageChange = new _angular_core.EventEmitter();
     }
+    Object.defineProperty(Md2DataTable.prototype, "activePage", {
+        get: function () { return this._activePage; },
+        set: function (value) {
+            this._activePage = value;
+            this.activePageChange.emit(value);
+        },
+        enumerable: true,
+        configurable: true
+    });
     Md2DataTable.prototype.getSort = function () {
         return { sortField: this.sortField, sortOrder: this.sortOrder };
     };
@@ -4434,13 +4443,15 @@ var Md2DataTable = (function () {
     Md2DataTable.prototype.ngOnChanges = function (changes) {
         if (changes['inputData']) {
             this.inputData = changes['inputData'].currentValue || [];
-            this.recalculatePage();
-            this.onPageChange.emit({
-                activePage: this.activePage,
-                pageLength: this.pageLength,
-                dataLength: this.inputData.length
-            });
-            this.isDataChanged = true;
+            if (this.inputData.length > 0) {
+                this.recalculatePage();
+                this.onPageChange.emit({
+                    activePage: this.activePage,
+                    pageLength: this.pageLength,
+                    dataLength: this.inputData.length
+                });
+                this.isDataChanged = true;
+            }
         }
     };
     Md2DataTable.prototype.ngDoCheck = function () {
@@ -4487,9 +4498,13 @@ var Md2DataTable = (function () {
         __metadata$26('design:type', Object)
     ], Md2DataTable.prototype, "pageLength", void 0);
     __decorate$26([
-        _angular_core.Input('md2-active-page'), 
+        _angular_core.Input(), 
+        __metadata$26('design:type', Number)
+    ], Md2DataTable.prototype, "activePage", null);
+    __decorate$26([
+        _angular_core.Output(), 
         __metadata$26('design:type', Object)
-    ], Md2DataTable.prototype, "activePage", void 0);
+    ], Md2DataTable.prototype, "activePageChange", void 0);
     Md2DataTable = __decorate$26([
         _angular_core.Directive({
             selector: 'table[md2-data]',
@@ -6922,9 +6937,7 @@ var Md2Select = (function () {
                 _this.isOpenable = true;
             }, 200);
         }
-        else {
-            this._onTouched();
-        }
+        this._onTouched();
     };
     Md2Select.prototype.touch = function () {
         if (this._onTouched) {
@@ -8047,15 +8060,124 @@ var Md2TagsModule = (function () {
     return Md2TagsModule;
 }());
 
-var __decorate$36 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$35 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$36 = (this && this.__metadata) || function (k, v) {
+var __metadata$35 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var Toast = (function () {
+    function Toast(message) {
+        this.message = message;
+    }
+    return Toast;
+}());
+var Md2Toast = (function () {
+    function Md2Toast(_overlay) {
+        this._overlay = _overlay;
+        this.delay = 3000;
+        this.index = 0;
+    }
+    /**
+     * toast message
+     * @param toast string or object with message and other properties of toast
+     */
+    Md2Toast.prototype.toast = function (toast) {
+        this.show(toast);
+    };
+    /**
+     * show toast
+     * @param toastObj string or object with message and other properties of toast
+     */
+    Md2Toast.prototype.show = function (toastObj) {
+        var toast;
+        if (typeof toastObj === 'string') {
+            toast = new Toast(toastObj);
+        }
+        else if (typeof toastObj === 'object') {
+            toast = new Toast(toastObj.message);
+            this.delay = toastObj.hideDelay;
+        }
+        if (toast) {
+            if (!this._toastInstance) {
+                var strategy = this._overlay.position().global().fixed().top('0').right('0');
+                var config = new OverlayState();
+                config.positionStrategy = strategy;
+                this._overlayRef = this._overlay.create(config);
+                var portal = new ComponentPortal(Md2ToastComponent);
+                this._toastInstance = this._overlayRef.attach(portal).instance;
+                this.setupToast(toast);
+            }
+            else {
+                this.setupToast(toast);
+            }
+        }
+    };
+    /**
+     * toast timeout
+     * @param toastId
+     */
+    Md2Toast.prototype.startTimeout = function (toastId) {
+        var _this = this;
+        setTimeout(function () {
+            _this.clear(toastId);
+        }, this.delay);
+    };
+    /**
+     * setup toast
+     * @param toast
+     */
+    Md2Toast.prototype.setupToast = function (toast) {
+        toast.id = ++this.index;
+        this._toastInstance.add(toast);
+        this.startTimeout(toast.id);
+    };
+    /**
+     * clear specific toast
+     * @param toastId
+     */
+    Md2Toast.prototype.clear = function (toastId) {
+        var _this = this;
+        if (this._toastInstance) {
+            this._toastInstance.remove(toastId);
+            setTimeout(function () {
+                if (!_this._toastInstance.hasToast()) {
+                    _this.dispose();
+                }
+            }, 250);
+        }
+    };
+    /**
+     * clear all toasts
+     */
+    Md2Toast.prototype.clearAll = function () {
+        var _this = this;
+        if (this._toastInstance) {
+            this._toastInstance.removeAll();
+            setTimeout(function () {
+                if (!_this._toastInstance.hasToast()) {
+                    _this.dispose();
+                }
+            }, 250);
+        }
+    };
+    /**
+     * dispose all toasts
+     */
+    Md2Toast.prototype.dispose = function () {
+        this._overlayRef.dispose();
+        this._overlayRef = null;
+        this._toastInstance = null;
+    };
+    Md2Toast = __decorate$35([
+        _angular_core.Injectable(), 
+        __metadata$35('design:paramtypes', [Overlay])
+    ], Md2Toast);
+    return Md2Toast;
+}());
 var Md2ToastComponent = (function () {
     function Md2ToastComponent() {
         this.toasts = [];
@@ -8107,137 +8229,16 @@ var Md2ToastComponent = (function () {
      * @return boolean
      */
     Md2ToastComponent.prototype.hasToast = function () { return this.toasts.length > 0; };
-    Md2ToastComponent = __decorate$36([
+    Md2ToastComponent = __decorate$35([
         _angular_core.Component({
             selector: 'md2-toast',
-            template: "\n    <div class=\"md2-toast-wrapper\">\n      <div *ngFor=\"let toast of toasts\" class=\"md2-toast\" [class.in]=\"toast.isVisible\" (click)=\"remove(toast.id)\">{{toast.message}}</div>\n    </div>\n  ",
-            styles: [".md2-toast-wrapper { position: fixed; top: 0; right: 0; z-index: 1060; box-sizing: border-box; cursor: default; overflow: hidden; min-width: 304px; max-width: 100%; padding: 8px; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } .md2-toast { position: relative; padding: 14px 24px; margin-bottom: 5px; display: block; margin-top: -53px; opacity: 0; background-color: #323232; color: #fafafa; box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26); border-radius: 2px; font-size: 14px; overflow: hidden; -ms-word-wrap: break-word; word-wrap: break-word; transition: all 250ms linear; } .md2-toast.in { margin-top: 0; opacity: 1; } /*# sourceMappingURL=toast.css.map */ "],
+            template: "\n    <div *ngFor=\"let toast of toasts\" class=\"md2-toast\" [class.in]=\"toast.isVisible\" (click)=\"remove(toast.id)\">{{toast.message}}</div>\n  ",
+            styles: ["md2-toast { display: block; box-sizing: border-box; cursor: default; overflow: hidden; min-width: 304px; max-width: 100%; padding: 8px; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } .md2-toast { position: relative; padding: 14px 24px; margin-bottom: 5px; display: block; margin-top: -53px; opacity: 0; background-color: #323232; color: #fafafa; box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26); border-radius: 2px; font-size: 14px; overflow: hidden; word-wrap: break-word; transition: all 250ms linear; } .md2-toast.in { margin-top: 0; opacity: 1; } /*# sourceMappingURL=toast.css.map */ "],
             encapsulation: _angular_core.ViewEncapsulation.None,
         }), 
-        __metadata$36('design:paramtypes', [])
+        __metadata$35('design:paramtypes', [])
     ], Md2ToastComponent);
     return Md2ToastComponent;
-}());
-
-var __decorate$35 = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata$35 = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var Toast = (function () {
-    function Toast(message) {
-        this.message = message;
-    }
-    return Toast;
-}());
-var Md2Toast = (function () {
-    function Md2Toast(_componentFactory, _appRef) {
-        this._componentFactory = _componentFactory;
-        this._appRef = _appRef;
-        this.delay = 3000;
-        this.index = 0;
-    }
-    /**
-     * toast message
-     * @param toast string or object with message and other properties of toast
-     */
-    Md2Toast.prototype.toast = function (toast) {
-        this.show(toast);
-    };
-    /**
-     * show toast
-     * @param toastObj string or object with message and other properties of toast
-     */
-    Md2Toast.prototype.show = function (toastObj) {
-        var toast;
-        if (typeof toastObj === 'string') {
-            toast = new Toast(toastObj);
-        }
-        else if (typeof toastObj === 'object') {
-            toast = new Toast(toastObj.message);
-            this.delay = toastObj.hideDelay;
-        }
-        if (toast) {
-            if (!this.container) {
-                var app = this._appRef;
-                var appContainer = app['_rootComponents'][0]['_hostElement'].vcRef;
-                var providers = _angular_core.ReflectiveInjector.resolve([]);
-                var toastFactory = this._componentFactory.resolveComponentFactory(Md2ToastComponent);
-                var childInjector = _angular_core.ReflectiveInjector.fromResolvedProviders(providers, appContainer.parentInjector);
-                this.container = appContainer.createComponent(toastFactory, appContainer.length, childInjector);
-                this.setupToast(toast);
-            }
-            else {
-                this.setupToast(toast);
-            }
-        }
-    };
-    /**
-     * toast timeout
-     * @param toastId
-     */
-    Md2Toast.prototype.startTimeout = function (toastId) {
-        var _this = this;
-        setTimeout(function () {
-            _this.clear(toastId);
-        }, this.delay);
-    };
-    /**
-     * setup toast
-     * @param toast
-     */
-    Md2Toast.prototype.setupToast = function (toast) {
-        toast.id = ++this.index;
-        this.container.instance.add(toast);
-        this.startTimeout(toast.id);
-    };
-    /**
-     * clear specific toast
-     * @param toastId
-     */
-    Md2Toast.prototype.clear = function (toastId) {
-        var _this = this;
-        if (this.container) {
-            var instance_1 = this.container.instance;
-            instance_1.remove(toastId);
-            setTimeout(function () {
-                if (!instance_1.hasToast()) {
-                    _this.dispose();
-                }
-            }, 250);
-        }
-    };
-    /**
-     * clear all toasts
-     */
-    Md2Toast.prototype.clearAll = function () {
-        var _this = this;
-        if (this.container) {
-            var instance_2 = this.container.instance;
-            instance_2.removeAll();
-            setTimeout(function () {
-                if (!instance_2.hasToast()) {
-                    _this.dispose();
-                }
-            }, 250);
-        }
-    };
-    /**
-     * dispose all toasts
-     */
-    Md2Toast.prototype.dispose = function () {
-        this.container.destroy();
-        this.container = null;
-    };
-    Md2Toast = __decorate$35([
-        _angular_core.Injectable(), 
-        __metadata$35('design:paramtypes', [_angular_core.ComponentFactoryResolver, _angular_core.ApplicationRef])
-    ], Md2Toast);
-    return Md2Toast;
 }());
 var MD2_TOAST_DIRECTIVES = [Md2ToastComponent];
 var Md2ToastModule = (function () {
@@ -8246,7 +8247,7 @@ var Md2ToastModule = (function () {
     Md2ToastModule.forRoot = function () {
         return {
             ngModule: Md2ToastModule,
-            providers: []
+            providers: [Md2Toast, OVERLAY_PROVIDERS]
         };
     };
     Md2ToastModule = __decorate$35([
@@ -8254,7 +8255,6 @@ var Md2ToastModule = (function () {
             imports: [_angular_common.CommonModule],
             exports: MD2_TOAST_DIRECTIVES,
             declarations: MD2_TOAST_DIRECTIVES,
-            providers: [Md2Toast],
             entryComponents: MD2_TOAST_DIRECTIVES
         }), 
         __metadata$35('design:paramtypes', [])
@@ -8262,20 +8262,19 @@ var Md2ToastModule = (function () {
     return Md2ToastModule;
 }());
 
-var __decorate$37 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$36 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$37 = (this && this.__metadata) || function (k, v) {
+var __metadata$36 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var Md2Tooltip = (function () {
-    function Md2Tooltip(_componentFactory, _appRef, _viewContainer) {
-        this._componentFactory = _componentFactory;
-        this._appRef = _appRef;
+    function Md2Tooltip(_viewContainer, _overlay) {
         this._viewContainer = _viewContainer;
+        this._overlay = _overlay;
         this.visible = false;
         this.position = 'below';
         this.delay = 0;
@@ -8293,14 +8292,15 @@ var Md2Tooltip = (function () {
         clearTimeout(this.timer);
         this.timer = setTimeout(function () {
             _this.timer = 0;
-            var app = _this._appRef;
-            var appContainer = app['_rootComponents'][0]['_hostElement'].vcRef;
-            var toastFactory = _this._componentFactory.resolveComponentFactory(Md2TooltipComponent);
-            var childInjector = _angular_core.ReflectiveInjector.fromResolvedProviders([], appContainer.parentInjector);
-            _this.tooltip = appContainer.createComponent(toastFactory, appContainer.length, childInjector);
-            _this.tooltip.instance.message = _this.message;
-            _this.tooltip.instance.position = _this.position;
-            _this.tooltip.instance.hostEl = _this._viewContainer.element;
+            var strategy = _this._overlay.position().global().fixed().top('0').left('0');
+            var config = new OverlayState();
+            config.positionStrategy = strategy;
+            _this._overlayRef = _this._overlay.create(config);
+            var portal = new ComponentPortal(Md2TooltipComponent);
+            _this._tooltipInstance = _this._overlayRef.attach(portal).instance;
+            _this._tooltipInstance.message = _this.message;
+            _this._tooltipInstance.position = _this.position;
+            _this._tooltipInstance.hostEl = _this._viewContainer.element;
         }, this.delay);
     };
     /**
@@ -8313,42 +8313,43 @@ var Md2Tooltip = (function () {
             return;
         }
         this.visible = false;
-        if (this.tooltip) {
-            this.tooltip.destroy();
-            this.tooltip = null;
+        if (this._tooltipInstance) {
+            this._overlayRef.dispose();
+            this._overlayRef = null;
+            this._tooltipInstance = null;
         }
     };
-    __decorate$37([
+    __decorate$36([
         _angular_core.Input('tooltip'), 
-        __metadata$37('design:type', String)
+        __metadata$36('design:type', String)
     ], Md2Tooltip.prototype, "message", void 0);
-    __decorate$37([
+    __decorate$36([
         _angular_core.Input('tooltip-position'), 
-        __metadata$37('design:type', String)
+        __metadata$36('design:type', String)
     ], Md2Tooltip.prototype, "position", void 0);
-    __decorate$37([
+    __decorate$36([
         _angular_core.Input('tooltip-delay'), 
-        __metadata$37('design:type', Number)
+        __metadata$36('design:type', Number)
     ], Md2Tooltip.prototype, "delay", void 0);
-    __decorate$37([
+    __decorate$36([
         _angular_core.HostListener('focusin', ['$event']),
         _angular_core.HostListener('mouseenter', ['$event']), 
-        __metadata$37('design:type', Function), 
-        __metadata$37('design:paramtypes', [Event]), 
-        __metadata$37('design:returntype', void 0)
+        __metadata$36('design:type', Function), 
+        __metadata$36('design:paramtypes', [Event]), 
+        __metadata$36('design:returntype', void 0)
     ], Md2Tooltip.prototype, "show", null);
-    __decorate$37([
+    __decorate$36([
         _angular_core.HostListener('focusout', ['$event']),
         _angular_core.HostListener('mouseleave', ['$event']), 
-        __metadata$37('design:type', Function), 
-        __metadata$37('design:paramtypes', [Event]), 
-        __metadata$37('design:returntype', void 0)
+        __metadata$36('design:type', Function), 
+        __metadata$36('design:paramtypes', [Event]), 
+        __metadata$36('design:returntype', void 0)
     ], Md2Tooltip.prototype, "hide", null);
-    Md2Tooltip = __decorate$37([
+    Md2Tooltip = __decorate$36([
         _angular_core.Directive({
             selector: '[tooltip]'
         }), 
-        __metadata$37('design:paramtypes', [_angular_core.ComponentFactoryResolver, _angular_core.ApplicationRef, _angular_core.ViewContainerRef])
+        __metadata$36('design:paramtypes', [_angular_core.ViewContainerRef, Overlay])
     ], Md2Tooltip);
     return Md2Tooltip;
 }());
@@ -8444,7 +8445,7 @@ var Md2TooltipComponent = (function () {
         enumerable: true,
         configurable: true
     });
-    Md2TooltipComponent = __decorate$37([
+    Md2TooltipComponent = __decorate$36([
         _angular_core.Component({selector: 'md2-tooltip',
             template: "\n    <div class=\"md2-tooltip-container\" [ngStyle]=\"{top: top, left: left}\">\n      <div class=\"md2-tooltip {{position}}\" [class.visible]=\"_isVisible\">{{message}}</div>\n    </div>\n  ",
             styles: ["md2-tooltip { pointer-events: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } md2-tooltip .md2-tooltip-container { position: fixed; display: block; overflow: hidden; z-index: 1070; } md2-tooltip .md2-tooltip { max-width: 200px; margin: 14px; padding: 4px 12px; font-family: \"\"; color: white; font-size: 10px; word-wrap: break-word; background-color: rgba(97, 97, 97, 0.9); border-radius: 2px; line-height: 1.5; opacity: 0; transition: all 200ms cubic-bezier(0.25, 0.8, 0.25, 1); transform-origin: center top; transform: scale(0); } md2-tooltip .md2-tooltip.before { transform-origin: center right; } md2-tooltip .md2-tooltip.after { transform-origin: center left; } md2-tooltip .md2-tooltip.above { transform-origin: center bottom; } md2-tooltip .md2-tooltip.visible { opacity: 1; transform: scale(1); } /*# sourceMappingURL=tooltip.css.map */ "],
@@ -8453,7 +8454,7 @@ var Md2TooltipComponent = (function () {
             },
             encapsulation: _angular_core.ViewEncapsulation.None
         }), 
-        __metadata$37('design:paramtypes', [_angular_core.ElementRef, _angular_core.ChangeDetectorRef])
+        __metadata$36('design:paramtypes', [_angular_core.ElementRef, _angular_core.ChangeDetectorRef])
     ], Md2TooltipComponent);
     return Md2TooltipComponent;
 }());
@@ -8464,17 +8465,17 @@ var Md2TooltipModule = (function () {
     Md2TooltipModule.forRoot = function () {
         return {
             ngModule: Md2TooltipModule,
-            providers: []
+            providers: [OVERLAY_PROVIDERS]
         };
     };
-    Md2TooltipModule = __decorate$37([
+    Md2TooltipModule = __decorate$36([
         _angular_core.NgModule({
             imports: [_angular_common.CommonModule],
             exports: MD2_TOOLTIP_DIRECTIVES,
             declarations: MD2_TOOLTIP_DIRECTIVES,
             entryComponents: [Md2TooltipComponent]
         }), 
-        __metadata$37('design:paramtypes', [])
+        __metadata$36('design:paramtypes', [])
     ], Md2TooltipModule);
     return Md2TooltipModule;
 }());
@@ -8692,6 +8693,7 @@ exports.MD2_TAGS_DIRECTIVES = MD2_TAGS_DIRECTIVES;
 exports.Md2TagsModule = Md2TagsModule;
 exports.Toast = Toast;
 exports.Md2Toast = Md2Toast;
+exports.Md2ToastComponent = Md2ToastComponent;
 exports.MD2_TOAST_DIRECTIVES = MD2_TOAST_DIRECTIVES;
 exports.Md2ToastModule = Md2ToastModule;
 exports.Md2Tooltip = Md2Tooltip;

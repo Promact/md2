@@ -10,7 +10,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-import { isBlank, isPresent, isString } from '../facade/lang';
+import { isPresent } from '../facade/lang';
 //// Types
 export var TypeModifier;
 (function (TypeModifier) {
@@ -20,7 +20,7 @@ export var Type = (function () {
     function Type(modifiers) {
         if (modifiers === void 0) { modifiers = null; }
         this.modifiers = modifiers;
-        if (isBlank(modifiers)) {
+        if (!modifiers) {
             this.modifiers = [];
         }
     }
@@ -35,6 +35,7 @@ export var BuiltinTypeName;
     BuiltinTypeName[BuiltinTypeName["Int"] = 3] = "Int";
     BuiltinTypeName[BuiltinTypeName["Number"] = 4] = "Number";
     BuiltinTypeName[BuiltinTypeName["Function"] = 5] = "Function";
+    BuiltinTypeName[BuiltinTypeName["Null"] = 6] = "Null";
 })(BuiltinTypeName || (BuiltinTypeName = {}));
 export var BuiltinType = (function (_super) {
     __extends(BuiltinType, _super);
@@ -90,6 +91,7 @@ export var INT_TYPE = new BuiltinType(BuiltinTypeName.Int);
 export var NUMBER_TYPE = new BuiltinType(BuiltinTypeName.Number);
 export var STRING_TYPE = new BuiltinType(BuiltinTypeName.String);
 export var FUNCTION_TYPE = new BuiltinType(BuiltinTypeName.Function);
+export var NULL_TYPE = new BuiltinType(BuiltinTypeName.Null);
 ///// Expressions
 export var BinaryOperator;
 (function (BinaryOperator) {
@@ -177,7 +179,8 @@ export var Expression = (function () {
     };
     Expression.prototype.isBlank = function () {
         // Note: We use equals by purpose here to compare to null and undefined in JS.
-        return this.equals(NULL_EXPR);
+        // We use the typed null to allow strictNullChecks to narrow types.
+        return this.equals(TYPED_NULL_EXPR);
     };
     Expression.prototype.cast = function (type) { return new CastExpr(this, type); };
     Expression.prototype.toStmt = function () { return new ExpressionStatement(this); };
@@ -195,7 +198,7 @@ export var ReadVarExpr = (function (_super) {
     function ReadVarExpr(name, type) {
         if (type === void 0) { type = null; }
         _super.call(this, type);
-        if (isString(name)) {
+        if (typeof name === 'string') {
             this.name = name;
             this.builtin = null;
         }
@@ -214,7 +217,7 @@ export var WriteVarExpr = (function (_super) {
     __extends(WriteVarExpr, _super);
     function WriteVarExpr(name, value, type) {
         if (type === void 0) { type = null; }
-        _super.call(this, isPresent(type) ? type : value.type);
+        _super.call(this, type || value.type);
         this.name = name;
         this.value = value;
     }
@@ -232,7 +235,7 @@ export var WriteKeyExpr = (function (_super) {
     __extends(WriteKeyExpr, _super);
     function WriteKeyExpr(receiver, index, value, type) {
         if (type === void 0) { type = null; }
-        _super.call(this, isPresent(type) ? type : value.type);
+        _super.call(this, type || value.type);
         this.receiver = receiver;
         this.index = index;
         this.value = value;
@@ -246,7 +249,7 @@ export var WritePropExpr = (function (_super) {
     __extends(WritePropExpr, _super);
     function WritePropExpr(receiver, name, value, type) {
         if (type === void 0) { type = null; }
-        _super.call(this, isPresent(type) ? type : value.type);
+        _super.call(this, type || value.type);
         this.receiver = receiver;
         this.name = name;
         this.value = value;
@@ -269,7 +272,7 @@ export var InvokeMethodExpr = (function (_super) {
         _super.call(this, type);
         this.receiver = receiver;
         this.args = args;
-        if (isString(method)) {
+        if (typeof method === 'string') {
             this.name = method;
             this.builtin = null;
         }
@@ -339,7 +342,7 @@ export var ConditionalExpr = (function (_super) {
     function ConditionalExpr(condition, trueCase, falseCase, type) {
         if (falseCase === void 0) { falseCase = null; }
         if (type === void 0) { type = null; }
-        _super.call(this, isPresent(type) ? type : trueCase.type);
+        _super.call(this, type || trueCase.type);
         this.condition = condition;
         this.falseCase = falseCase;
         this.trueCase = trueCase;
@@ -400,7 +403,7 @@ export var BinaryOperatorExpr = (function (_super) {
     __extends(BinaryOperatorExpr, _super);
     function BinaryOperatorExpr(operator, lhs, rhs, type) {
         if (type === void 0) { type = null; }
-        _super.call(this, isPresent(type) ? type : lhs.type);
+        _super.call(this, type || lhs.type);
         this.operator = operator;
         this.rhs = rhs;
         this.lhs = lhs;
@@ -475,6 +478,7 @@ export var SUPER_EXPR = new ReadVarExpr(BuiltinVar.Super);
 export var CATCH_ERROR_VAR = new ReadVarExpr(BuiltinVar.CatchError);
 export var CATCH_STACK_VAR = new ReadVarExpr(BuiltinVar.CatchStack);
 export var NULL_EXPR = new LiteralExpr(null, null);
+export var TYPED_NULL_EXPR = new LiteralExpr(null, NULL_TYPE);
 //// Statements
 export var StmtModifier;
 (function (StmtModifier) {
@@ -485,7 +489,7 @@ export var Statement = (function () {
     function Statement(modifiers) {
         if (modifiers === void 0) { modifiers = null; }
         this.modifiers = modifiers;
-        if (isBlank(modifiers)) {
+        if (!modifiers) {
             this.modifiers = [];
         }
     }
@@ -500,7 +504,7 @@ export var DeclareVarStmt = (function (_super) {
         _super.call(this, modifiers);
         this.name = name;
         this.value = value;
-        this.type = isPresent(type) ? type : value.type;
+        this.type = type || value.type;
     }
     DeclareVarStmt.prototype.visitStatement = function (visitor, context) {
         return visitor.visitDeclareVarStmt(this, context);
@@ -550,7 +554,7 @@ export var AbstractClassPart = (function () {
         if (type === void 0) { type = null; }
         this.type = type;
         this.modifiers = modifiers;
-        if (isBlank(modifiers)) {
+        if (!modifiers) {
             this.modifiers = [];
         }
     }
@@ -669,7 +673,7 @@ export var ExpressionTransformer = (function () {
         return new WritePropExpr(expr.receiver.visitExpression(this, context), expr.name, expr.value.visitExpression(this, context));
     };
     ExpressionTransformer.prototype.visitInvokeMethodExpr = function (ast, context) {
-        var method = isPresent(ast.builtin) ? ast.builtin : ast.name;
+        var method = ast.builtin || ast.name;
         return new InvokeMethodExpr(ast.receiver.visitExpression(this, context), method, this.visitAllExpressions(ast.args, context), ast.type);
     };
     ExpressionTransformer.prototype.visitInvokeFunctionExpr = function (ast, context) {
@@ -707,7 +711,8 @@ export var ExpressionTransformer = (function () {
     };
     ExpressionTransformer.prototype.visitLiteralMapExpr = function (ast, context) {
         var _this = this;
-        return new LiteralMapExpr(ast.entries.map(function (entry) { return [entry[0], entry[1].visitExpression(_this, context)]; }));
+        var entries = ast.entries.map(function (entry) { return [entry[0], entry[1].visitExpression(_this, context),]; });
+        return new LiteralMapExpr(entries);
     };
     ExpressionTransformer.prototype.visitAllExpressions = function (exprs, context) {
         var _this = this;

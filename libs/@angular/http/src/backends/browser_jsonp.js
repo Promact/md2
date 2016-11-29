@@ -6,13 +6,13 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { Injectable } from '@angular/core';
-import { global } from '../facade/lang';
 var _nextRequestId = 0;
 export var JSONP_HOME = '__ng_jsonp__';
 var _jsonpConnections = null;
 function _getJsonpConnections() {
+    var w = typeof window == 'object' ? window : {};
     if (_jsonpConnections === null) {
-        _jsonpConnections = global[JSONP_HOME] = {};
+        _jsonpConnections = w[JSONP_HOME] = {};
     }
     return _jsonpConnections;
 }

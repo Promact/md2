@@ -7,40 +7,15 @@
  */
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
-import { ActivatedRouteSnapshot, InheritedResolve, RouterStateSnapshot } from './router_state';
-import { PRIMARY_OUTLET } from './shared';
+import { ActivatedRouteSnapshot, RouterStateSnapshot, inheritedParamsDataResolve } from './router_state';
+import { PRIMARY_OUTLET, defaultUrlMatcher } from './shared';
 import { UrlSegmentGroup, mapChildrenIntoArray } from './url_tree';
-import { last, merge } from './utils/collection';
+import { forEach, last, merge } from './utils/collection';
 import { TreeNode } from './utils/tree';
 var NoMatch = (function () {
     function NoMatch() {
     }
     return NoMatch;
-}());
-var InheritedFromParent = (function () {
-    function InheritedFromParent(parent, snapshot, params, data, resolve) {
-        this.parent = parent;
-        this.snapshot = snapshot;
-        this.params = params;
-        this.data = data;
-        this.resolve = resolve;
-    }
-    Object.defineProperty(InheritedFromParent.prototype, "allParams", {
-        get: function () {
-            return this.parent ? merge(this.parent.allParams, this.params) : this.params;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(InheritedFromParent.prototype, "allData", {
-        get: function () { return this.parent ? merge(this.parent.allData, this.data) : this.data; },
-        enumerable: true,
-        configurable: true
-    });
-    InheritedFromParent.empty = function (snapshot) {
-        return new InheritedFromParent(null, snapshot, {}, {}, new InheritedResolve(null, {}));
-    };
-    return InheritedFromParent;
 }());
 export function recognize(rootComponentType, config, urlTree, url) {
     return new Recognizer(rootComponentType, config, urlTree, url).recognize();
@@ -55,71 +30,85 @@ var Recognizer = (function () {
     Recognizer.prototype.recognize = function () {
         try {
             var rootSegmentGroup = split(this.urlTree.root, [], [], this.config).segmentGroup;
-            var children = this.processSegmentGroup(this.config, rootSegmentGroup, InheritedFromParent.empty(null), PRIMARY_OUTLET);
-            var root = new ActivatedRouteSnapshot([], Object.freeze({}), Object.freeze(this.urlTree.queryParams), this.urlTree.fragment, {}, PRIMARY_OUTLET, this.rootComponentType, null, this.urlTree.root, -1, InheritedResolve.empty);
+            var children = this.processSegmentGroup(this.config, rootSegmentGroup, PRIMARY_OUTLET);
+            var root = new ActivatedRouteSnapshot([], Object.freeze({}), Object.freeze(this.urlTree.queryParams), this.urlTree.fragment, {}, PRIMARY_OUTLET, this.rootComponentType, null, this.urlTree.root, -1, {});
             var rootNode = new TreeNode(root, children);
-            return of(new RouterStateSnapshot(this.url, rootNode));
+            var routeState = new RouterStateSnapshot(this.url, rootNode);
+            this.inheriteParamsAndData(routeState._root);
+            return of(routeState);
         }
         catch (e) {
             return new Observable(function (obs) { return obs.error(e); });
         }
     };
-    Recognizer.prototype.processSegmentGroup = function (config, segmentGroup, inherited, outlet) {
+    Recognizer.prototype.inheriteParamsAndData = function (routeNode) {
+        var _this = this;
+        var route = routeNode.value;
+        var i = inheritedParamsDataResolve(route);
+        route.params = Object.freeze(i.params);
+        route.data = Object.freeze(i.data);
+        routeNode.children.forEach(function (n) { return _this.inheriteParamsAndData(n); });
+    };
+    Recognizer.prototype.processSegmentGroup = function (config, segmentGroup, outlet) {
         if (segmentGroup.segments.length === 0 && segmentGroup.hasChildren()) {
-            return this.processChildren(config, segmentGroup, inherited);
+            return this.processChildren(config, segmentGroup);
         }
         else {
-            return this.processSegment(config, segmentGroup, 0, segmentGroup.segments, inherited, outlet);
+            return this.processSegment(config, segmentGroup, 0, segmentGroup.segments, outlet);
         }
     };
-    Recognizer.prototype.processChildren = function (config, segmentGroup, inherited) {
+    Recognizer.prototype.processChildren = function (config, segmentGroup) {
         var _this = this;
-        var children = mapChildrenIntoArray(segmentGroup, function (child, childOutlet) { return _this.processSegmentGroup(config, child, inherited, childOutlet); });
+        var children = mapChildrenIntoArray(segmentGroup, function (child, childOutlet) { return _this.processSegmentGroup(config, child, childOutlet); });
         checkOutletNameUniqueness(children);
         sortActivatedRouteSnapshots(children);
         return children;
     };
-    Recognizer.prototype.processSegment = function (config, segmentGroup, pathIndex, segments, inherited, outlet) {
+    Recognizer.prototype.processSegment = function (config, segmentGroup, pathIndex, segments, outlet) {
         for (var _i = 0, config_1 = config; _i < config_1.length; _i++) {
             var r = config_1[_i];
             try {
-                return this.processSegmentAgainstRoute(r, segmentGroup, pathIndex, segments, inherited, outlet);
+                return this.processSegmentAgainstRoute(r, segmentGroup, pathIndex, segments, outlet);
             }
             catch (e) {
                 if (!(e instanceof NoMatch))
                     throw e;
             }
         }
-        throw new NoMatch();
+        if (this.noLeftoversInUrl(segmentGroup, segments, outlet)) {
+            return [];
+        }
+        else {
+            throw new NoMatch();
+        }
     };
-    Recognizer.prototype.processSegmentAgainstRoute = function (route, rawSegment, pathIndex, segments, inherited, outlet) {
+    Recognizer.prototype.noLeftoversInUrl = function (segmentGroup, segments, outlet) {
+        return segments.length === 0 && !segmentGroup.children[outlet];
+    };
+    Recognizer.prototype.processSegmentAgainstRoute = function (route, rawSegment, pathIndex, segments, outlet) {
         if (route.redirectTo)
             throw new NoMatch();
         if ((route.outlet ? route.outlet : PRIMARY_OUTLET) !== outlet)
             throw new NoMatch();
-        var newInheritedResolve = new InheritedResolve(inherited.resolve, getResolve(route));
         if (route.path === '**') {
             var params = segments.length > 0 ? last(segments).parameters : {};
-            var snapshot_1 = new ActivatedRouteSnapshot(segments, Object.freeze(merge(inherited.allParams, params)), Object.freeze(this.urlTree.queryParams), this.urlTree.fragment, merge(inherited.allData, getData(route)), outlet, route.component, route, getSourceSegmentGroup(rawSegment), getPathIndexShift(rawSegment) + segments.length, newInheritedResolve);
+            var snapshot_1 = new ActivatedRouteSnapshot(segments, params, Object.freeze(this.urlTree.queryParams), this.urlTree.fragment, getData(route), outlet, route.component, route, getSourceSegmentGroup(rawSegment), getPathIndexShift(rawSegment) + segments.length, getResolve(route));
             return [new TreeNode(snapshot_1, [])];
         }
-        var _a = match(rawSegment, route, segments, inherited.snapshot), consumedSegments = _a.consumedSegments, parameters = _a.parameters, lastChild = _a.lastChild;
+        var _a = match(rawSegment, route, segments), consumedSegments = _a.consumedSegments, parameters = _a.parameters, lastChild = _a.lastChild;
         var rawSlicedSegments = segments.slice(lastChild);
         var childConfig = getChildConfig(route);
         var _b = split(rawSegment, consumedSegments, rawSlicedSegments, childConfig), segmentGroup = _b.segmentGroup, slicedSegments = _b.slicedSegments;
-        var snapshot = new ActivatedRouteSnapshot(consumedSegments, Object.freeze(merge(inherited.allParams, parameters)), Object.freeze(this.urlTree.queryParams), this.urlTree.fragment, merge(inherited.allData, getData(route)), outlet, route.component, route, getSourceSegmentGroup(rawSegment), getPathIndexShift(rawSegment) + consumedSegments.length, newInheritedResolve);
-        var newInherited = route.component ?
-            InheritedFromParent.empty(snapshot) :
-            new InheritedFromParent(inherited, snapshot, parameters, getData(route), newInheritedResolve);
+        var snapshot = new ActivatedRouteSnapshot(consumedSegments, parameters, Object.freeze(this.urlTree.queryParams), this.urlTree.fragment, getData(route), outlet, route.component, route, getSourceSegmentGroup(rawSegment), getPathIndexShift(rawSegment) + consumedSegments.length, getResolve(route));
         if (slicedSegments.length === 0 && segmentGroup.hasChildren()) {
-            var children = this.processChildren(childConfig, segmentGroup, newInherited);
+            var children = this.processChildren(childConfig, segmentGroup);
             return [new TreeNode(snapshot, children)];
         }
         else if (childConfig.length === 0 && slicedSegments.length === 0) {
             return [new TreeNode(snapshot, [])];
         }
         else {
-            var children = this.processSegment(childConfig, segmentGroup, pathIndex + lastChild, slicedSegments, newInherited, PRIMARY_OUTLET);
+            var children = this.processSegment(childConfig, segmentGroup, pathIndex + lastChild, slicedSegments, PRIMARY_OUTLET);
             return [new TreeNode(snapshot, children)];
         }
     };
@@ -145,41 +134,23 @@ function getChildConfig(route) {
         return [];
     }
 }
-function match(segmentGroup, route, segments, parent) {
+function match(segmentGroup, route, segments) {
     if (route.path === '') {
         if (route.pathMatch === 'full' && (segmentGroup.hasChildren() || segments.length > 0)) {
             throw new NoMatch();
         }
         else {
-            var params = parent ? parent.params : {};
-            return { consumedSegments: [], lastChild: 0, parameters: params };
+            return { consumedSegments: [], lastChild: 0, parameters: {} };
         }
     }
-    var path = route.path;
-    var parts = path.split('/');
-    var posParameters = {};
-    var consumedSegments = [];
-    var currentIndex = 0;
-    for (var i = 0; i < parts.length; ++i) {
-        if (currentIndex >= segments.length)
-            throw new NoMatch();
-        var current = segments[currentIndex];
-        var p = parts[i];
-        var isPosParam = p.startsWith(':');
-        if (!isPosParam && p !== current.path)
-            throw new NoMatch();
-        if (isPosParam) {
-            posParameters[p.substring(1)] = current.path;
-        }
-        consumedSegments.push(current);
-        currentIndex++;
-    }
-    if (route.pathMatch === 'full' &&
-        (segmentGroup.hasChildren() || currentIndex < segments.length)) {
+    var matcher = route.matcher || defaultUrlMatcher;
+    var res = matcher(segments, segmentGroup, route);
+    if (!res)
         throw new NoMatch();
-    }
-    var parameters = merge(posParameters, consumedSegments[consumedSegments.length - 1].parameters);
-    return { consumedSegments: consumedSegments, lastChild: currentIndex, parameters: parameters };
+    var posParams = {};
+    forEach(res.posParams, function (v, k) { posParams[k] = v.path; });
+    var parameters = merge(posParams, res.consumed[res.consumed.length - 1].parameters);
+    return { consumedSegments: res.consumed, lastChild: res.consumed.length, parameters: parameters };
 }
 function checkOutletNameUniqueness(nodes) {
     var names = {};

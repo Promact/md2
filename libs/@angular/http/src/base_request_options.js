@@ -11,7 +11,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 import { Injectable } from '@angular/core';
-import { isPresent, isString } from '../src/facade/lang';
 import { RequestMethod } from './enums';
 import { Headers } from './headers';
 import { normalizeMethodName } from './http_utils';
@@ -45,15 +44,14 @@ import { URLSearchParams } from './url_search_params';
 export var RequestOptions = (function () {
     function RequestOptions(_a) {
         var _b = _a === void 0 ? {} : _a, method = _b.method, headers = _b.headers, body = _b.body, url = _b.url, search = _b.search, withCredentials = _b.withCredentials, responseType = _b.responseType;
-        this.method = isPresent(method) ? normalizeMethodName(method) : null;
-        this.headers = isPresent(headers) ? headers : null;
-        this.body = isPresent(body) ? body : null;
-        this.url = isPresent(url) ? url : null;
-        this.search = isPresent(search) ?
-            (isString(search) ? new URLSearchParams((search)) : (search)) :
-            null;
-        this.withCredentials = isPresent(withCredentials) ? withCredentials : null;
-        this.responseType = isPresent(responseType) ? responseType : null;
+        this.method = method != null ? normalizeMethodName(method) : null;
+        this.headers = headers != null ? headers : null;
+        this.body = body != null ? body : null;
+        this.url = url != null ? url : null;
+        this.search =
+            search != null ? (typeof search === 'string' ? new URLSearchParams(search) : search) : null;
+        this.withCredentials = withCredentials != null ? withCredentials : null;
+        this.responseType = responseType != null ? responseType : null;
     }
     /**
      * Creates a copy of the `RequestOptions` instance, using the optional input as values to override
@@ -82,18 +80,17 @@ export var RequestOptions = (function () {
      */
     RequestOptions.prototype.merge = function (options) {
         return new RequestOptions({
-            method: isPresent(options) && isPresent(options.method) ? options.method : this.method,
-            headers: isPresent(options) && isPresent(options.headers) ? options.headers : this.headers,
-            body: isPresent(options) && isPresent(options.body) ? options.body : this.body,
-            url: isPresent(options) && isPresent(options.url) ? options.url : this.url,
-            search: isPresent(options) && isPresent(options.search) ?
-                (isString(options.search) ? new URLSearchParams((options.search)) :
-                    (options.search).clone()) :
+            method: options && options.method != null ? options.method : this.method,
+            headers: options && options.headers != null ? options.headers : this.headers,
+            body: options && options.body != null ? options.body : this.body,
+            url: options && options.url != null ? options.url : this.url,
+            search: options && options.search != null ?
+                (typeof options.search === 'string' ? new URLSearchParams(options.search) :
+                    options.search.clone()) :
                 this.search,
-            withCredentials: isPresent(options) && isPresent(options.withCredentials) ?
-                options.withCredentials :
+            withCredentials: options && options.withCredentials != null ? options.withCredentials :
                 this.withCredentials,
-            responseType: isPresent(options) && isPresent(options.responseType) ? options.responseType :
+            responseType: options && options.responseType != null ? options.responseType :
                 this.responseType
         });
     };

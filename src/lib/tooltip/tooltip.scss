@@ -49,21 +49,3 @@ md2-tooltip {
     }
   }
 }
-
-
-.md-overlay-container {
-  position: fixed;
-  pointer-events: none;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  z-index: 1000;
-}
-
-.md-overlay-pane {
-  position: absolute;
-  pointer-events: auto;
-  box-sizing: border-box;
-  z-index: 1000;
-}

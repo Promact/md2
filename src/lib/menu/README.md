@@ -1,44 +1,171 @@
-# Md2Menu
-Menu is a list of options that displays when triggered.
+# md-menu
 
-## `[md2-menu]`
-### Directives
+`md-menu` is a list of options that displays when triggered.  You can read more about menus in the 
+[Material Design spec](https://material.google.com/components/menus.html).
 
-| Name | Description |
-| --- | --- |
-| `md2-menu` | Menu directive |
-| `md2-menu-open` | Trigger event on to open menu using the directive |
-| `md2-menu-not-closable` | Prevent trigger event to close the menu using the directive |
+### Not yet implemented
 
-### Examples
-A menu would have the following markup.
+- `prevent-close` option, to turn off automatic menu close when clicking outside the menu
+- Custom offset support
+- Menu groupings (which menus are allowed to open together)
+
+## Usage
+
+### Simple menu
+
+In your template, create an `md-menu` element. You can use either `<button>` or `<anchor>` tags for 
+your menu items, as long as each is tagged with an `md-menu-item` attribute. Note that you can 
+disable items by adding the `disabled` boolean attribute or binding to it.
+
+*my-comp.html*
 ```html
-<div md2-menu>
-  <a md2-menu-open>Default Menu</a>
-  <ul class="md2-menu-content">
-    <li><a class="md2-menu-item">Badman</a></li>
-    <li><a class="md2-menu-item">Sadman</a></li>
-    <li><a class="md2-menu-item">Lieman</a></li>
-    <li md2-menu>
-      <a class="md2-menu-item" md2-menu-not-closable md2-menu-open>2nd Level Menu</a>
-      <ul class="md2-menu-content">
-        <li><a class="md2-menu-item">Badman</a></li>
-        <li><a class="md2-menu-item">Sadman</a></li>
-        <li><a class="md2-menu-item">Lieman</a></li>
-      </ul>
-    </li>
-  </ul>
-</div>
+<!-- this menu starts as hidden by default -->
+<md-menu>
+    <button md-menu-item> Refresh </button>
+    <button md-menu-item> Settings </button>
+    <button md-menu-item> Help </button>
+    <button md-menu-item disabled> Sign Out </button>
+</md-menu>
 ```
-### Add Style in your code for design
-```css
-[md2-menu] { position: relative; display: inline-block; }
-[md2-menu] .md2-menu-content { position: absolute; top: 0; left: 0; display: inline-block; background: #fff; list-style: none; min-width: 100px; padding: 8px 0; margin: 0; -moz-transform: scale(0); -ms-transform: scale(0); -o-transform: scale(0); -webkit-transform: scale(0); transform: scale(0); -moz-transform-origin: left top; -ms-transform-origin: left top; -o-transform-origin: left top; -webkit-transform-origin: left top; transform-origin: left top; -moz-transition: all .4s linear; -o-transition: all .4s linear; -webkit-transition: all .4s linear; transition: all .4s linear; -moz-transition-duration: 0.2s; -o-transition-duration: 0.2s; -webkit-transition-duration: 0.2s; transition-duration: 0.2s; box-shadow: 0 2px 4px -1px rgba(0,0,0,.2),0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12); z-index: 1; border-radius: 2px; }
-[md2-menu] .md2-menu-content.right { left: auto; right: 0; -moz-transform-origin: right top; -ms-transform-origin: right top; -o-transform-origin: right top; -webkit-transform-origin: right top; transform-origin: right top; }
-[md2-menu] .md2-menu-content.top { top: auto; bottom: 0; -moz-transform-origin: left bottom; -ms-transform-origin: left bottom; -o-transform-origin: left bottom; -webkit-transform-origin: left bottom; transform-origin: left bottom; }
-[md2-menu] .md2-menu-content.top.right { -moz-transform-origin: right bottom; -ms-transform-origin: right bottom; -o-transform-origin: right bottom; -webkit-transform-origin: right bottom; transform-origin: right bottom; }
-[md2-menu].open > .md2-menu-content { -moz-transform: scale(1); -ms-transform: scale(1); -o-transform: scale(1); -webkit-transform: scale(1); transform: scale(1); }
-[md2-menu] li { position: relative; display: block; }
-[md2-menu] .md2-menu-item { position: relative; display: block; padding: 0 16px; line-height: 36px; color: rgba(0,0,0,.87); cursor: pointer; text-decoration: none; white-space: nowrap; -moz-transition: 0.3s; -o-transition: 0.3s; -webkit-transition: 0.3s; transition: 0.3s; }
-[md2-menu] .md2-menu-item:hover { background-color: rgba(158,158,158,0.2); }
+
+Menus are hidden by default, so you'll want to connect up a menu trigger that can open your menu.  
+You can do so by adding a button tag with an `md-menu-trigger-for` attribute and passing in the menu 
+instance.  You can create a local reference to your menu instance by adding `#menu="mdMenu"` to  
+your menu element.
+
+*my-comp.html*
+```html
+<!-- menu opens when trigger button is clicked -->
+<button md-icon-button [md-menu-trigger-for]="menu">
+   <md-icon>more_vert</md-icon>
+</button>
+
+<md-menu #menu="mdMenu">
+    <button md-menu-item> Refresh </button>
+    <button md-menu-item> Settings </button>
+    <button md-menu-item> Help </button>
+    <button md-menu-item disabled> Sign Out </button>
+</md-menu>
 ```
+
+Output:
+
+<img src="https://material.angularjs.org/material2_assets/menu/default_closed.png">
+<img src="https://material.angularjs.org/material2_assets/menu/default_open.png">
+
+### Toggling the menu programmatically
+
+You can also use the menu's API to open or close the menu programmatically from your class. Please 
+note that in this case, an `md-menu-trigger-for` attribute is still necessary to connect 
+the menu to its trigger element in the DOM.
+  
+*my-comp.component.ts*
+```ts
+class MyComp {
+  @ViewChild(MdMenuTrigger) trigger: MdMenuTrigger;
+
+  someMethod() {
+    this.trigger.openMenu();
+  }
+}
+```
+
+*my-comp.html*
+```html
+<button md-icon-button [md-menu-trigger-for]="menu">
+   <md-icon>more_vert</md-icon>
+</button>
+
+<md-menu #menu="mdMenu">
+    <button md-menu-item> Refresh </button>
+    <button md-menu-item> Settings </button>
+    <button md-menu-item> Help </button>
+    <button md-menu-item disabled> Sign Out </button>
+</md-menu>
+```
+
+### Adding an icon
+
+Menus also support displaying `md-icon` elements before the menu item text.
+
+*my-comp.html*
+```html
+<md-menu #menu="mdMenu">
+  <button md-menu-item> 
+    <md-icon> dialpad </md-icon>
+    <span> Redial </span>
+  </button>
+  <button md-menu-item disabled> 
+    <md-icon> voicemail </md-icon>
+    <span> Check voicemail </span>
+  </button>
+  <button md-menu-item> 
+    <md-icon> notifications_off </md-icon>
+    <span> Disable alerts </span>
+  </button>
+</md-menu>
+```
+
+Output:
+
+<img src="https://material.angularjs.org/material2_assets/menu/icon_menu_closed.png">
+<img src="https://material.angularjs.org/material2_assets/menu/icon_menu_open.png">
+
+
+### Customizing menu position
+
+By default, the menu will display after and below its trigger.  You can change this display position 
+using the `x-position` (`before | after`) and `y-position` (`above | below`) attributes.  
+
+*my-comp.html*
+```html
+<md-menu x-position="before" #menu="mdMenu">
+    <button md-menu-item> Refresh </button>
+    <button md-menu-item> Settings </button>
+    <button md-menu-item> Help </button>
+    <button md-menu-item disabled> Sign Out </button>
+</md-menu>
+```
+
+Output:
+
+<img src="https://material.angularjs.org/material2_assets/menu/before_closed.png">
+<img src="https://material.angularjs.org/material2_assets/menu/before_open.png">
+
+### Accessibility
+
+The menu adds `role="menu"` to the main menu element and `role="menuitem"` to each menu item. It 
+also adds `aria-hasPopup="true"` to the trigger element.
+
+#### Keyboard events:
+- <kbd>DOWN_ARROW</kbd>: Focus next menu item
+- <kbd>UP_ARROW</kbd>: Focus previous menu item
+- <kbd>ENTER</kbd>: Select focused item
+
+### Menu attributes
+
+| Signature | Values | Description |
+| --- | --- | --- |
+| `x-position` | `before | after` | The horizontal position of the menu in relation to the trigger. Defaults to `after`. | 
+| `y-position` | `above | below` | The vertical position of the menu in relation to the trigger. Defaults to `below`. |
+ 
+### Trigger Programmatic API
+
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `menuOpen` | `Boolean` | Property that is true when the menu is open. It is not settable (use methods below). | 
+| `onMenuOpen` | `Observable<void>` | Observable that emits when the menu opens. | 
+| `onMenuClose` | `Observable<void>` | Observable that emits when the menu closes. | 
+
+**Methods**
+
+| Method | Returns | Description |
+| --- | --- | --- |
+| `openMenu()` | `Promise<void>` | Opens the menu. Returns a promise that will resolve when the menu has opened. |
+| `closeMenu()` | `Promise<void>` | Closes the menu. Returns a promise that will resolve when the menu has closed. |
+| `toggleMenu()` | `Promise<void>` | Toggles the menu. Returns a promise that will resolve when the menu has completed opening or closing. |  
+| `destroyMenu()` | `Promise<void>` | Destroys the menu overlay completely. 
+  
+

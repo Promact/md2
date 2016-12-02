@@ -15,7 +15,9 @@ script:
   - bash ./scripts/deploy/deploy.sh
 
 before_deploy:
-  - gulp build:devapp
+  - gulp clean
+  - gulp :build:components:ngc
+  - gulp :build:release:clean-spec
   - cd dist
   - cd md2
 

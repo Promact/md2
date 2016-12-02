@@ -92,7 +92,7 @@ export class Md2Tooltip {
   moduleId: module.id,
   selector: 'md2-tooltip',
   template: `
-    <div class="md2-tooltip-container" [ngStyle]="{top: top, left: left}">
+    <div class="md2-tooltip-container" [ngStyle]="{top: _top, left: _left}">
       <div class="md2-tooltip {{position}}" [class.visible]="_isVisible">{{message}}</div>
     </div>
   `,
@@ -103,9 +103,9 @@ export class Md2Tooltip {
   encapsulation: ViewEncapsulation.None
 })
 export class Md2TooltipComponent implements AfterViewInit {
-  private _isVisible: boolean;
-  private top: string = '-1000px';
-  private left: string = '-1000px';
+  _isVisible: boolean;
+  _top: string = '-1000px';
+  _left: string = '-1000px';
   message: string;
   position: string;
   hostEl: ElementRef;
@@ -116,8 +116,8 @@ export class Md2TooltipComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     let _position = this.positionElements(this.hostEl.nativeElement, this._element.nativeElement.children[0], this.position);
-    this.top = _position.top + 'px';
-    this.left = _position.left + 'px';
+    this._top = _position.top + 'px';
+    this._left = _position.left + 'px';
     this._isVisible = true;
     this._changeDetector.detectChanges();
   }

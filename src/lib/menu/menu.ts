@@ -52,16 +52,16 @@ export class Md2Menu {
     if (this.trigger && this.menu) {
       this.trigger.onMenuOpen.subscribe(() => {
         if (!this._menuInstance) {
-          let strategy = this._overlay.position().connectedTo(this._element, { originX: 'end', originY: 'bottom' }, { overlayX: 'end', overlayY: 'bottom' })
+          let strategy = this._overlay.position().connectedTo(this._element, { originX: 'start', originY: 'top' }, { overlayX: 'start', overlayY: 'top' })
             .withFallbackPosition(
-            { originX: 'start', originY: 'top' },
-            { overlayX: 'start', overlayY: 'top' })
-            .withFallbackPosition(
-            { originX: 'end', originY: 'bottom' },
-            { overlayX: 'end', overlayY: 'bottom' })
+            { originX: 'end', originY: 'top' },
+            { overlayX: 'end', overlayY: 'top' })
             .withFallbackPosition(
             { originX: 'start', originY: 'bottom' },
-            { overlayX: 'start', overlayY: 'bottom' });
+            { overlayX: 'start', overlayY: 'bottom' })
+            .withFallbackPosition(
+            { originX: 'end', originY: 'bottom' },
+            { overlayX: 'end', overlayY: 'bottom' });
           let config = new OverlayState();
           config.positionStrategy = strategy;
           config.hasBackdrop = true;

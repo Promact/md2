@@ -14,7 +14,7 @@ $md2-menu-vertical-padding: 8px !default;
   .md2-menu-panel {
     position: absolute;
     top: 0;
-    right: 100%;
+    left: 100%;
     display: none;
   }
 }
@@ -46,6 +46,7 @@ $md2-menu-vertical-padding: 8px !default;
   text-decoration: none;
   background: transparent;
   color: rgba(0, 0, 0, 0.87);
+  box-sizing: border-box;
 
   &[disabled] {
     color: rgba(0, 0, 0, 0.38);

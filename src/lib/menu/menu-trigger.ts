@@ -1,52 +1,82 @@
 import {
   Directive,
-  EventEmitter,
-  Output,
-  ViewContainerRef,
+  ElementRef,
 } from '@angular/core';
 
 @Directive({
   selector: '[md2-menu-trigger]',
   host: {
     'aria-haspopup': 'true',
-    '(click)': 'toggleMenu()',
+    '(click)': '_toggleMenu()',
   },
   exportAs: 'md2MenuTrigger'
 })
 export class Md2MenuTrigger {
-  private _menuOpen: boolean = false;
 
-  @Output() onMenuOpen = new EventEmitter<void>();
-  @Output() onMenuClose = new EventEmitter<void>();
+  constructor(private _element: ElementRef) { }
 
-  toggleMenu(): void {
-    return this._menuOpen ? this.closeMenu() : this.openMenu();
+  ngOnDestroy() {
+    this._closeMenu();
   }
 
-  openMenu(): void {
-    console.log('open');
-    if (!this._menuOpen) {
-      this._setIsMenuOpen(true);
-      //  this._createOverlay();
-      //  this._overlayRef.attach(this._portal);
-      //  this._subscribeToBackdrop();
-      //  this._initMenu();
+  private close = (event: any) => {
+    if (event.target !== this._getHostElement() && !this._getParentElement().contains(event.target)) {
+      this._closeMenu();
+    }
+  };
+
+
+  _toggleMenu() {
+    if (this._hasClass(this._getParentElement(), 'open')) {
+      this._closeMenu();
+    } else {
+      this._openMenu();
     }
   }
 
-  closeMenu(): void {
-    console.log('close');
-    this._setIsMenuOpen(false);
-    //if (this._overlayRef) {
-    //  this._overlayRef.detach();
-    //  this._backdropSubscription.unsubscribe();
-    //  this._resetMenu();
-    //}
+  _openMenu() {
+    this._getParentElement().classList.add('open');
+    document.addEventListener('click', this.close, true);
+    let siblingElements = this._getSiblingElements(this._getParentElement());
+    siblingElements.forEach((el: Element) => {
+      el.classList.remove('open');
+      this._closeChildrenMenu(el);
+    });
   }
 
-  private _setIsMenuOpen(isOpen: boolean): void {
-    this._menuOpen = isOpen;
-    this._menuOpen ? this.onMenuOpen.emit() : this.onMenuClose.emit();
+  _closeMenu() {
+    console.log('ttt');
+    document.removeEventListener('click', this.close);
+    this._getParentElement().classList.remove('open');
+    this._closeChildrenMenu(this._getParentElement());
   }
 
+  _closeChildrenMenu(element: Element) {
+    [].forEach.call(element.querySelectorAll('.open'), (el: Element) => {
+      el.classList.remove('open');
+    });
+  }
+
+  _getHostElement(): HTMLElement {
+    return this._element.nativeElement;
+  }
+
+  _getParentElement(): HTMLElement {
+    return this._element.nativeElement.parentNode;
+  }
+
+  _getSiblingElements(element: Element) {
+    let siblingElements: Array<Node> = [];
+    let el = element.parentNode.firstChild;
+    for (; el; el = el.nextSibling) {
+      if (el.nodeType == 1 && el !== element) {
+        siblingElements.push(el);
+      }
+    }
+    return siblingElements;
+  }
+
+  _hasClass(element: Element, className: string) {
+    return (' ' + element.className + ' ').indexOf(' ' + className + ' ') > -1;
+  }
 }

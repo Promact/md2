@@ -9,10 +9,8 @@ import {
   moduleId: module.id,
   selector: '[md2-menu-content]',
   host: { 'role': 'menu' },
-  templateUrl: 'menu-content.html',
+  template: '<ng-content></ng-content>',
   styleUrls: ['menu.css'],
   encapsulation: ViewEncapsulation.None,
 })
-export class Md2MenuContent {
-  @ViewChild(TemplateRef) templateRef: TemplateRef<any>;
-}
+export class Md2MenuContent { }

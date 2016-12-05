@@ -1,6 +1,7 @@
 import {
   Directive,
   ElementRef,
+  Renderer,
 } from '@angular/core';
 
 @Directive({
@@ -13,18 +14,21 @@ import {
 })
 export class Md2MenuTrigger {
 
-  constructor(private _element: ElementRef) { }
+  private _documentClickHandler: any;
 
-  ngOnDestroy() {
-    this._closeMenu();
+  constructor(private _element: ElementRef, private _renderer: Renderer) { }
+
+  ngAfterViewInit() {
+    this._documentClickHandler = this._renderer.listenGlobal('document', 'click', (event: Event) => {
+      if (!this._hasChildMenu(event)) {
+        this._closeMenu();
+      }
+    });
   }
 
-  private close = (event: any) => {
-    if (event.target !== this._getHostElement() && !this._getParentElement().contains(event.target)) {
-      this._closeMenu();
-    }
-  };
-
+  ngOnDestroy() {
+    this._documentClickHandler = null;
+  }
 
   _toggleMenu() {
     if (this._hasClass(this._getParentElement(), 'open')) {
@@ -36,7 +40,6 @@ export class Md2MenuTrigger {
 
   _openMenu() {
     this._getParentElement().classList.add('open');
-    document.addEventListener('click', this.close, true);
     let siblingElements = this._getSiblingElements(this._getParentElement());
     siblingElements.forEach((el: Element) => {
       el.classList.remove('open');
@@ -46,7 +49,6 @@ export class Md2MenuTrigger {
 
   _closeMenu() {
     console.log('ttt');
-    document.removeEventListener('click', this.close);
     this._getParentElement().classList.remove('open');
     this._closeChildrenMenu(this._getParentElement());
   }
@@ -76,7 +78,39 @@ export class Md2MenuTrigger {
     return siblingElements;
   }
 
+  _getClosestElement(element: Element, target: string): Element {
+    if (element.hasAttribute(target)) {
+      return element;
+    }
+
+    let parentEl: Element;
+    while (element) {
+      parentEl = element.parentElement;
+      if (parentEl && parentEl.hasAttribute(target)) {
+        return parentEl;
+      }
+      element = parentEl;
+    }
+    return null;
+  }
+
   _hasClass(element: Element, className: string) {
     return (' ' + element.className + ' ').indexOf(' ' + className + ' ') > -1;
   }
+
+  _hasChildMenu(event: any) {
+    if (event.target === this._getHostElement()) {
+      return true;
+    } else if (this._getParentElement().contains(event.target)) {
+      let el = this._getClosestElement(event.target, 'md2-menu-item')
+      if (el && el.querySelectorAll('[md2-menu-content]').length > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
 }

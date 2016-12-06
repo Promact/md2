@@ -35,7 +35,7 @@ export interface DataEvent {
 })
 export class Md2DataTable implements OnChanges, DoCheck {
 
-  private dataLength = 0;
+  private _dataLength = 0;
   private _activePage: number = 1;
 
   public data: any[];
@@ -116,8 +116,8 @@ export class Md2DataTable implements OnChanges, DoCheck {
   }
 
   public ngDoCheck(): any {
-    if (this.dataLength !== this.inputData.length) {
-      this.dataLength = this.inputData.length;
+    if (this._dataLength !== this.inputData.length) {
+      this._dataLength = this.inputData.length;
       this.fillData();
       this.recalculatePage();
       this.onPageChange.emit({

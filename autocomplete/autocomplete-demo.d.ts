@@ -1,5 +1,5 @@
 export declare class AutocompleteDemo {
-    private items;
-    private item;
-    private change(value);
+    items: Array<any>;
+    item: any;
+    handleChange(value: any): void;
 }

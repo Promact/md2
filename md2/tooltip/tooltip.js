@@ -96,14 +96,14 @@ export var Md2TooltipComponent = (function () {
     function Md2TooltipComponent(_element, _changeDetector) {
         this._element = _element;
         this._changeDetector = _changeDetector;
-        this.top = '-1000px';
-        this.left = '-1000px';
+        this._top = '-1000px';
+        this._left = '-1000px';
         this._isVisible = false;
     }
     Md2TooltipComponent.prototype.ngAfterViewInit = function () {
         var _position = this.positionElements(this.hostEl.nativeElement, this._element.nativeElement.children[0], this.position);
-        this.top = _position.top + 'px';
-        this.left = _position.left + 'px';
+        this._top = _position.top + 'px';
+        this._left = _position.left + 'px';
         this._isVisible = true;
         this._changeDetector.detectChanges();
     };
@@ -186,7 +186,7 @@ export var Md2TooltipComponent = (function () {
     });
     Md2TooltipComponent = __decorate([
         Component({selector: 'md2-tooltip',
-            template: "\n    <div class=\"md2-tooltip-container\" [ngStyle]=\"{top: top, left: left}\">\n      <div class=\"md2-tooltip {{position}}\" [class.visible]=\"_isVisible\">{{message}}</div>\n    </div>\n  ",
+            template: "\n    <div class=\"md2-tooltip-container\" [ngStyle]=\"{top: _top, left: _left}\">\n      <div class=\"md2-tooltip {{position}}\" [class.visible]=\"_isVisible\">{{message}}</div>\n    </div>\n  ",
             styles: ["md2-tooltip { pointer-events: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } md2-tooltip .md2-tooltip-container { position: fixed; display: block; overflow: hidden; z-index: 1070; } md2-tooltip .md2-tooltip { max-width: 200px; margin: 14px; padding: 4px 12px; font-family: \"\"; color: white; font-size: 10px; word-wrap: break-word; background-color: rgba(97, 97, 97, 0.9); border-radius: 2px; line-height: 1.5; opacity: 0; transition: all 200ms cubic-bezier(0.25, 0.8, 0.25, 1); transform-origin: center top; transform: scale(0); } md2-tooltip .md2-tooltip.before { transform-origin: center right; } md2-tooltip .md2-tooltip.after { transform-origin: center left; } md2-tooltip .md2-tooltip.above { transform-origin: center bottom; } md2-tooltip .md2-tooltip.visible { opacity: 1; transform: scale(1); } /*# sourceMappingURL=tooltip.css.map */ "],
             host: {
                 'role': 'tooltip',

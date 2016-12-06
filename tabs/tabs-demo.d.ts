@@ -1,4 +1,4 @@
 export declare class TabsDemo {
-    private tabs;
-    private change(tab);
+    tabs: Array<any>;
+    handleChange(tab: Event): void;
 }

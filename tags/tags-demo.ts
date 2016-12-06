@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
   templateUrl: 'tags-demo.html'
 })
 export class TagsDemo {
-  private tags: Array<any> =
+  tags: Array<any> =
   [
     { name: 'Vadodara', value: '1' },
     { name: 'Rajkot', value: '2' },
@@ -15,11 +15,11 @@ export class TagsDemo {
     { name: 'Mumbai', value: '5' },
     { name: 'Goa', value: '6' }
   ];
-  private tag: Array<any> = [
+  tag: Array<any> = [
     { name: 'Vadodara', value: '1' },
     { name: 'Delhi', value: '3' }
   ];
-  private change(value: any) {
+  handleChange(value: any) {
     console.log('Changed data: ', value);
   }
 }

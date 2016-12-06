@@ -26,9 +26,9 @@ export declare class Md2Tooltip {
 export declare class Md2TooltipComponent implements AfterViewInit {
     private _element;
     private _changeDetector;
-    private _isVisible;
-    private top;
-    private left;
+    _isVisible: boolean;
+    _top: string;
+    _left: string;
     message: string;
     position: string;
     hostEl: ElementRef;

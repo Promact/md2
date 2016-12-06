@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   moduleId: module.id,
@@ -6,23 +6,23 @@ import {Component} from '@angular/core';
   templateUrl: 'dialog-demo.html'
 })
 export class DialogDemo {
-  private dialogHeader: string = 'Lorum Ipsum';
+  dialogHeader: string = 'Lorum Ipsum';
 
-  private launchDialog(dialog: any) {
+  launchDialog(dialog: any) {
     dialog.show();
   }
 
-  private show(dialog: any) {
+  show(dialog: any) {
     dialog.show();
   }
 
-  private close(dialog: any) {
+  close(dialog: any) {
     dialog.close();
   }
 
-  private showAlert(event: Event) { }
-  private showConfirm(event: Event) { }
-  private showPrompt(event: Event) { }
-  private showAdvanced(event: Event) { }
-  private showTabDialog(event: Event) { }
+  showAlert(event: Event) { }
+  showConfirm(event: Event) { }
+  showPrompt(event: Event) { }
+  showAdvanced(event: Event) { }
+  showTabDialog(event: Event) { }
 }

@@ -1,4 +1,4 @@
-import {Component, ViewEncapsulation} from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 
 @Component({
   moduleId: module.id,
@@ -12,6 +12,6 @@ import {Component, ViewEncapsulation} from '@angular/core';
   encapsulation: ViewEncapsulation.None
 })
 export class CollapseDemo {
-  private isCollapsedContent: boolean = false;
-  private isCollapsedImage: boolean = true;
+  isCollapsedContent: boolean = false;
+  isCollapsedImage: boolean = true;
 }

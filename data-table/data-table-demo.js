@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var http_1 = require("@angular/http");
+var http_1 = require('@angular/http');
 var DataTablePipe = (function () {
     function DataTablePipe() {
     }
@@ -20,7 +20,7 @@ var DataTablePipe = (function () {
         return array;
     };
     DataTablePipe = __decorate([
-        core_1.Pipe({ name: "dataPipe" }), 
+        core_1.Pipe({ name: 'dataPipe' }), 
         __metadata('design:paramtypes', [])
     ], DataTablePipe);
     return DataTablePipe;
@@ -32,7 +32,7 @@ var DataTableDemo = (function () {
         this.http = http;
         this.data = null;
         this.search = null;
-        http.get("./data-table/data.json")
+        this.http.get('./data-table/data.json')
             .subscribe(function (data) {
             _this.data = data.json();
         });

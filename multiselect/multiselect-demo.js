@@ -21,7 +21,7 @@ var MultiselectDemo = (function () {
         ];
         this.item = [{ name: 'Birmingham', value: '2' }, { name: 'Dortmund', value: '3' }];
     }
-    MultiselectDemo.prototype.change = function (value) {
+    MultiselectDemo.prototype.handleChange = function (value) {
         console.log('Changed data: ', value);
     };
     MultiselectDemo = __decorate([

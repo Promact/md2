@@ -20,7 +20,7 @@ var AutocompleteDemo = (function () {
             { name: 'Goa', value: '6' }
         ];
     }
-    AutocompleteDemo.prototype.change = function (value) {
+    AutocompleteDemo.prototype.handleChange = function (value) {
         console.log('Changed data: ', value);
     };
     AutocompleteDemo = __decorate([

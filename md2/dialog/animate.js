@@ -123,8 +123,6 @@ export var Animate = (function () {
             if (saveDuration !== -1) {
                 Animate.setTransitionDuration(element, saveDuration);
             }
-            else {
-            }
             resolve();
         });
     };

@@ -17,7 +17,7 @@ var TabsDemo = (function () {
             { title: 'Dynamic Title 3', content: 'Dynamic content 3' }
         ];
     }
-    TabsDemo.prototype.change = function (tab) {
+    TabsDemo.prototype.handleChange = function (tab) {
         console.log('Tab Changed');
     };
     ;

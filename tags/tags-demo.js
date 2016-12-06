@@ -24,7 +24,7 @@ var TagsDemo = (function () {
             { name: 'Delhi', value: '3' }
         ];
     }
-    TagsDemo.prototype.change = function (value) {
+    TagsDemo.prototype.handleChange = function (value) {
         console.log('Changed data: ', value);
     };
     TagsDemo = __decorate([

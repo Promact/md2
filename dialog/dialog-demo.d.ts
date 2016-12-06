@@ -1,11 +1,11 @@
 export declare class DialogDemo {
-    private dialogHeader;
-    private launchDialog(dialog);
-    private show(dialog);
-    private close(dialog);
-    private showAlert(event);
-    private showConfirm(event);
-    private showPrompt(event);
-    private showAdvanced(event);
-    private showTabDialog(event);
+    dialogHeader: string;
+    launchDialog(dialog: any): void;
+    show(dialog: any): void;
+    close(dialog: any): void;
+    showAlert(event: Event): void;
+    showConfirm(event: Event): void;
+    showPrompt(event: Event): void;
+    showAdvanced(event: Event): void;
+    showTabDialog(event: Event): void;
 }

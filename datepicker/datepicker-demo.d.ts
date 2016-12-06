@@ -1,10 +1,10 @@
 export declare class DatepickerDemo {
-    private disabled;
-    private datetime;
-    private datetime1;
-    private date;
-    private time;
-    private minDate;
-    private maxDate;
-    private change(value);
+    disabled: boolean;
+    datetime: any;
+    datetime1: any;
+    date: any;
+    time: any;
+    minDate: any;
+    maxDate: any;
+    handleChange(value: any): void;
 }

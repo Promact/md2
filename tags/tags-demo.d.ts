@@ -1,5 +1,5 @@
 export declare class TagsDemo {
-    private tags;
-    private tag;
-    private change(value);
+    tags: Array<any>;
+    tag: Array<any>;
+    handleChange(value: any): void;
 }

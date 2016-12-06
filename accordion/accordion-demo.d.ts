@@ -1,4 +1,4 @@
 export declare class AccordionDemo {
-    private accordions;
+    accordions: Array<any>;
     multiple: boolean;
 }

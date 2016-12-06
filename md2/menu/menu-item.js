@@ -1,4 +1,3 @@
-"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8,30 +7,20 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require('@angular/core');
-var DatepickerDemo = (function () {
-    function DatepickerDemo() {
-        this.disabled = true;
-        this.datetime = '';
-        this.datetime1 = '2016-09-15 12:10';
-        this.date = '2016-09-15';
-        this.time = '12:10';
-        this.minDate = '2016-07-15';
-        this.maxDate = '2016-12-15';
+import { Component } from '@angular/core';
+export var Md2MenuItem = (function () {
+    function Md2MenuItem() {
     }
-    DatepickerDemo.prototype.handleChange = function (value) {
-        console.log('Changed data: ', value);
-    };
-    DatepickerDemo = __decorate([
-        core_1.Component({
-            moduleId: module.id,
-            selector: 'datepicker-demo',
-            templateUrl: 'datepicker-demo.html',
+    Md2MenuItem = __decorate([
+        Component({selector: '[md2-menu-item]',
+            host: {
+                'role': 'menuitem'
+            },
+            template: '<ng-content></ng-content>'
         }), 
         __metadata('design:paramtypes', [])
-    ], DatepickerDemo);
-    return DatepickerDemo;
+    ], Md2MenuItem);
+    return Md2MenuItem;
 }());
-exports.DatepickerDemo = DatepickerDemo;
 
-//# sourceMappingURL=datepicker-demo.js.map
+//# sourceMappingURL=menu-item.js.map

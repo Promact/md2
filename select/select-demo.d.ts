@@ -1,6 +1,6 @@
 export declare class SelectDemo {
     constructor();
-    private items;
-    private item;
-    private change(value);
+    items: Array<any>;
+    item: string;
+    handleChange(value: any): void;
 }

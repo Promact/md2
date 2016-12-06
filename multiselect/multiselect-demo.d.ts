@@ -1,5 +1,5 @@
 export declare class MultiselectDemo {
-    private items;
-    private item;
-    private change(value);
+    items: Array<any>;
+    item: Array<any>;
+    handleChange(value: any): void;
 }

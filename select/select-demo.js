@@ -27,11 +27,8 @@ var SelectDemo = (function () {
             _this.items.push({ name: 'Vasna', value: '9', disabled: false });
             _this.items.push({ name: 'Gorva', value: '10', disabled: false });
         }, 3000);
-        //setTimeout(() => {
-        //  this.item = '8';
-        //}, 5000);
     }
-    SelectDemo.prototype.change = function (value) {
+    SelectDemo.prototype.handleChange = function (value) {
         console.log('Changed data: ', value);
     };
     SelectDemo = __decorate([

@@ -22,7 +22,7 @@ export class Toast {
 
 @Injectable()
 export class Md2Toast {
-  private delay: number = 3000;
+  private duration: number = 3000;
   private index: number = 0;
 
   _overlayRef: OverlayRef;
@@ -34,22 +34,19 @@ export class Md2Toast {
    * toast message
    * @param toast string or object with message and other properties of toast
    */
-  toast(toast: string | { message: string, hideDelay: number }) {
-    this.show(toast);
+  toast(message: string, duration?: number) {
+    this.show(message, duration);
   }
 
   /**
    * show toast
    * @param toastObj string or object with message and other properties of toast
    */
-  show(toastObj: string | { message: string, hideDelay: number }) {
+  show(message: string, duration?: number) {
     let toast: Toast;
-    if (typeof toastObj === 'string') {
-      toast = new Toast(toastObj);
-    } else if (typeof toastObj === 'object') {
-      toast = new Toast(toastObj.message);
-      this.delay = toastObj.hideDelay;
-    }
+    toast = new Toast(message);
+    if (duration) { this.duration = duration; }
+
     if (toast) {
       if (!this._toastInstance) {
         let strategy = this._overlay.position().global().fixed().top('0').right('0');
@@ -75,7 +72,7 @@ export class Md2Toast {
   startTimeout(toastId: number) {
     setTimeout(() => {
       this.clear(toastId);
-    }, this.delay);
+    }, this.duration);
   }
 
   /**

@@ -5,7 +5,7 @@ Toast is a service, which show notifications in the view.
 
 | Name | Description |
 | --- | --- |
-| `toast(message: string)`/`show(message: string)` | Creates and show a simple toast noticiation. |
+| `toast(message: string, duration?: number)`/`show(message: string, duration?: number)` | Creates and show a simple toast noticiation. |
 
 
 ### Examples
@@ -27,7 +27,7 @@ export class ... {
 
     ---  or  ---
 
-    this.toast.show({ message: 'Toast message...', hideDelay: 1000 });
+    this.toast.show('Toast message...', 1000);
   }
 
   ...

@@ -17,19 +17,19 @@ $md2-menu-vertical-padding: 8px !default;
   max-height: calc(100vh + 48px);
   padding: $md2-menu-vertical-padding 0;
   margin: 0;
-  z-index: 1;
+  z-index: 1001;
   border-radius: 2px;
   transform: scale(0);
   transform-origin: left top;
-  transition: all .2s linear;
-  box-shadow: 0px 2px 6px 1px rgba(0, 0, 0, 0.34);
+  transition: all 200ms linear;
+  box-shadow: 0 2px 6px 1px rgba(0, 0, 0, 0.34);
 
   [md2-menu-item] & {
     left: 100%;
     margin: -8px 0;
   }
 
-  &[x-position="before"] {
+  &[x-position='before'] {
     right: 0;
     left: auto;
     transform-origin: right top;
@@ -39,12 +39,12 @@ $md2-menu-vertical-padding: 8px !default;
     }
   }
 
-  &[y-position="above"] {
+  &[y-position='above'] {
     top: auto;
     bottom: 0;
     transform-origin: left bottom;
 
-    &[x-position="before"] {
+    &[x-position='before'] {
       transform-origin: right bottom;
     }
   }

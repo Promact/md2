@@ -102,7 +102,7 @@ export class Md2MenuTrigger {
     if (event.target === this._getHostElement()) {
       return true;
     } else if (this._getParentElement().contains(event.target)) {
-      let el = this._getClosestElement(event.target, 'md2-menu-item')
+      let el = this._getClosestElement(event.target, 'md2-menu-item');
       if (el && el.querySelectorAll('[md2-menu-content]').length > 0) {
         return true;
       } else {

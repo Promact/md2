@@ -1,10 +1,6 @@
 import {
   Component,
-  ContentChild,
-  ElementRef,
-  ViewChild,
   ViewEncapsulation,
-  ViewContainerRef,
   NgModule,
   ModuleWithProviders
 } from '@angular/core';

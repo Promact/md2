@@ -1,7 +1,5 @@
 import {
   Component,
-  TemplateRef,
-  ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
 

@@ -1,11 +1,6 @@
 import {
   Component,
-  ContentChild,
-  ElementRef,
-  ViewContainerRef,
 } from '@angular/core';
-import { Md2MenuContent } from './menu-content';
-import { Md2MenuTrigger } from './menu-trigger';
 
 @Component({
   moduleId: module.id,

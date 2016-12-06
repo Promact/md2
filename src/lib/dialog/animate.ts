@@ -133,8 +133,6 @@ export class Animate {
       if (saveDuration !== -1) {
         Animate.setTransitionDuration(element, saveDuration);
       }
-      else {
-      }
       resolve();
     });
   }

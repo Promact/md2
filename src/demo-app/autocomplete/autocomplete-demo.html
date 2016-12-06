@@ -7,7 +7,7 @@
                       item-text="name"
                       [(ngModel)]="item"
                       required
-                      (change)="change($event)"
+                      (change)="handleChange($event)"
                       placeholder="Select city">
     </md2-autocomplete>
   </div>
@@ -17,7 +17,6 @@
                       item-text="name"
                       [(ngModel)]="item"
                       disabled
-                      (change)="change($event)"
                       placeholder="Select city">
     </md2-autocomplete>
   </div>

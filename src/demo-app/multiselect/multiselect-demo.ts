@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
   templateUrl: 'multiselect-demo.html'
 })
 export class MultiselectDemo {
-  private items: Array<any> =
+  items: Array<any> =
   [
     { name: 'Vadodara', value: '1', disabled: false },
     { name: 'Rajkot', value: '2', disabled: false },
@@ -15,8 +15,8 @@ export class MultiselectDemo {
     { name: 'Mumbai', value: '5', disabled: false },
     { name: 'Goa', value: '6', disabled: true }
   ];
-  private item: Array<any> = [{ name: 'Birmingham', value: '2' }, { name: 'Dortmund', value: '3' }];
-  private change(value: any) {
+  item: Array<any> = [{ name: 'Birmingham', value: '2' }, { name: 'Dortmund', value: '3' }];
+  handleChange(value: any) {
     console.log('Changed data: ', value);
   }
 }

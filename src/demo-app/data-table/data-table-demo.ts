@@ -3,9 +3,9 @@ import {
   Pipe,
   PipeTransform
 } from '@angular/core';
-import { Http } from "@angular/http";
+import { Http } from '@angular/http';
 
-@Pipe({ name: "dataPipe" })
+@Pipe({ name: 'dataPipe' })
 export class DataTablePipe implements PipeTransform {
   transform(array: any[], query: string): any {
     if (query) {
@@ -21,11 +21,11 @@ export class DataTablePipe implements PipeTransform {
   templateUrl: 'data-table-demo.html'
 })
 export class DataTableDemo {
-  private data: any = null;
-  private search: string = null;
+  data: any = null;
+  search: string = null;
 
   constructor(private http: Http) {
-    http.get("./data-table/data.json")
+    this.http.get('./data-table/data.json')
       .subscribe((data) => {
         this.data = data.json();
       });

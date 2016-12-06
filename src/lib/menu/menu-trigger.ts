@@ -99,10 +99,11 @@ export class Md2MenuTrigger {
   }
 
   _hasChildMenu(event: any) {
-    if (event.target === this._getHostElement()) {
+    let el = this._getClosestElement(event.target, 'md2-menu-trigger');
+    if (el && el === this._getHostElement()) {
       return true;
     } else if (this._getParentElement().contains(event.target)) {
-      let el = this._getClosestElement(event.target, 'md2-menu-item');
+      el = this._getClosestElement(event.target, 'md2-menu-item');
       if (el && el.querySelectorAll('[md2-menu-content]').length > 0) {
         return true;
       } else {

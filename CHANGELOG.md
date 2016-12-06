@@ -1,5 +1,20 @@
+<a name="0.0.10-3"></a>
+## [0.0.10-3](https://github.com/Promact/md2/compare/v0.0.10-2...v0.0.10-3) (2016-12-06)
+
+
+### Bug Fixes
+
+* fix: AoT issue
+* chore(tooltip) position and display variables should be public
+
+
+### Breaking Changes
+
+* Reimplement Menu component and changed its APIs, refer [docs](https://github.com/Promact/md2/blob/master/src/lib/menu/README.md).
+
+
 <a name="0.0.10-2"></a>
-## [0.0.11](https://github.com/Promact/md2/compare/v0.0.8...v0.0.11) (2016-11-29)
+## [0.0.10-2](https://github.com/Promact/md2/compare/v0.0.10...v0.0.10-2) (2016-11-29)
 
 
 ### Bug Fixes
@@ -24,7 +39,7 @@
 
 
 <a name="0.0.10"></a>
-## [0.0.10](https://github.com/Promact/md2/compare/v0.0.8...v0.0.10) (2016-11-24)
+## [0.0.10](https://github.com/Promact/md2/compare/v0.0.9...v0.0.10) (2016-11-24)
 
 
 ### Bug Fixes
@@ -39,7 +54,7 @@
 
 
 <a name="0.0.9"></a>
-## [0.0.9](https://github.com/Promact/md2/compare/0.0.7...v0.0.9) (2016-11-18)
+## [0.0.9](https://github.com/Promact/md2/compare/0.0.8...v0.0.9) (2016-11-18)
 
 
 ### Bug Fixes

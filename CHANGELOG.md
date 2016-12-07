@@ -1,3 +1,11 @@
+<a name="0.0.10-5"></a>
+## [0.0.10-5](https://github.com/Promact/md2/compare/v0.0.10-4...v0.0.10-5) (2016-12-07)
+
+
+### Features
+* feat(toast) added toast config service for set toast duration globally
+
+
 <a name="0.0.10-4"></a>
 ## [0.0.10-4](https://github.com/Promact/md2/compare/v0.0.10-3...v0.0.10-4) (2016-12-07)
 
@@ -60,12 +68,6 @@
 ### Bug Fixes
 
 * style linting issues. ([da1b927](https://github.com/Promact/md2/commit/da1b927))
-
-
-### Reverts
-
-* select ([694e2b8](https://github.com/Promact/md2/commit/694e2b8))
-
 
 
 <a name="0.0.9"></a>

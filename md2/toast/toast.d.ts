@@ -6,13 +6,16 @@ export declare class Toast {
     isVisible: boolean;
     constructor(message: string);
 }
+export declare class Md2ToastConfig {
+    duration: number;
+}
 export declare class Md2Toast {
     private _overlay;
-    private duration;
+    private _config;
     private index;
     _overlayRef: OverlayRef;
     _toastInstance: Md2ToastComponent;
-    constructor(_overlay: Overlay);
+    constructor(_overlay: Overlay, _config: Md2ToastConfig);
     /**
      * toast message
      * @param toast string or object with message and other properties of toast

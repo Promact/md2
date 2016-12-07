@@ -16,10 +16,16 @@ export var Toast = (function () {
     }
     return Toast;
 }());
-export var Md2Toast = (function () {
-    function Md2Toast(_overlay) {
-        this._overlay = _overlay;
+export var Md2ToastConfig = (function () {
+    function Md2ToastConfig() {
         this.duration = 3000;
+    }
+    return Md2ToastConfig;
+}());
+export var Md2Toast = (function () {
+    function Md2Toast(_overlay, _config) {
+        this._overlay = _overlay;
+        this._config = _config;
         this.index = 0;
     }
     /**
@@ -37,7 +43,7 @@ export var Md2Toast = (function () {
         var toast;
         toast = new Toast(message);
         if (duration) {
-            this.duration = duration;
+            this._config.duration = duration;
         }
         if (toast) {
             if (!this._toastInstance) {
@@ -62,7 +68,7 @@ export var Md2Toast = (function () {
         var _this = this;
         setTimeout(function () {
             _this.clear(toastId);
-        }, this.duration);
+        }, this._config.duration);
     };
     /**
      * setup toast
@@ -112,7 +118,7 @@ export var Md2Toast = (function () {
     };
     Md2Toast = __decorate([
         Injectable(), 
-        __metadata('design:paramtypes', [Overlay])
+        __metadata('design:paramtypes', [Overlay, Md2ToastConfig])
     ], Md2Toast);
     return Md2Toast;
 }());
@@ -185,7 +191,7 @@ export var Md2ToastModule = (function () {
     Md2ToastModule.forRoot = function () {
         return {
             ngModule: Md2ToastModule,
-            providers: [Md2Toast, OVERLAY_PROVIDERS]
+            providers: [Md2Toast, Md2ToastConfig, OVERLAY_PROVIDERS]
         };
     };
     Md2ToastModule = __decorate([

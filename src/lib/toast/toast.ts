@@ -20,15 +20,18 @@ export class Toast {
   constructor(public message: string) { }
 }
 
+export class Md2ToastConfig {
+  duration: number = 3000;
+}
+
 @Injectable()
 export class Md2Toast {
-  private duration: number = 3000;
   private index: number = 0;
 
   _overlayRef: OverlayRef;
   _toastInstance: Md2ToastComponent;
 
-  constructor(private _overlay: Overlay) { }
+  constructor(private _overlay: Overlay, private _config: Md2ToastConfig) { }
 
   /**
    * toast message
@@ -45,7 +48,7 @@ export class Md2Toast {
   show(message: string, duration?: number) {
     let toast: Toast;
     toast = new Toast(message);
-    if (duration) { this.duration = duration; }
+    if (duration) { this._config.duration = duration; }
 
     if (toast) {
       if (!this._toastInstance) {
@@ -72,7 +75,7 @@ export class Md2Toast {
   startTimeout(toastId: number) {
     setTimeout(() => {
       this.clear(toastId);
-    }, this.duration);
+    }, this._config.duration);
   }
 
   /**
@@ -194,7 +197,7 @@ export class Md2ToastModule {
   static forRoot(): ModuleWithProviders {
     return {
       ngModule: Md2ToastModule,
-      providers: [Md2Toast, OVERLAY_PROVIDERS]
+      providers: [Md2Toast, Md2ToastConfig, OVERLAY_PROVIDERS]
     };
   }
 }

@@ -19,28 +19,25 @@ export var Toast = (function () {
 export var Md2Toast = (function () {
     function Md2Toast(_overlay) {
         this._overlay = _overlay;
-        this.delay = 3000;
+        this.duration = 3000;
         this.index = 0;
     }
     /**
      * toast message
      * @param toast string or object with message and other properties of toast
      */
-    Md2Toast.prototype.toast = function (toast) {
-        this.show(toast);
+    Md2Toast.prototype.toast = function (message, duration) {
+        this.show(message, duration);
     };
     /**
      * show toast
      * @param toastObj string or object with message and other properties of toast
      */
-    Md2Toast.prototype.show = function (toastObj) {
+    Md2Toast.prototype.show = function (message, duration) {
         var toast;
-        if (typeof toastObj === 'string') {
-            toast = new Toast(toastObj);
-        }
-        else if (typeof toastObj === 'object') {
-            toast = new Toast(toastObj.message);
-            this.delay = toastObj.hideDelay;
+        toast = new Toast(message);
+        if (duration) {
+            this.duration = duration;
         }
         if (toast) {
             if (!this._toastInstance) {
@@ -65,7 +62,7 @@ export var Md2Toast = (function () {
         var _this = this;
         setTimeout(function () {
             _this.clear(toastId);
-        }, this.delay);
+        }, this.duration);
     };
     /**
      * setup toast

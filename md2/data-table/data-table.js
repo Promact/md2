@@ -14,7 +14,7 @@ import { Component, Directive, Input, Output, EventEmitter, Optional, NgModule, 
 import { CommonModule } from '@angular/common';
 export var Md2DataTable = (function () {
     function Md2DataTable() {
-        this.dataLength = 0;
+        this._dataLength = 0;
         this._activePage = 1;
         this.onDataChange = new EventEmitter();
         this.onSortChange = new EventEmitter();
@@ -86,8 +86,8 @@ export var Md2DataTable = (function () {
         }
     };
     Md2DataTable.prototype.ngDoCheck = function () {
-        if (this.dataLength !== this.inputData.length) {
-            this.dataLength = this.inputData.length;
+        if (this._dataLength !== this.inputData.length) {
+            this._dataLength = this.inputData.length;
             this.fillData();
             this.recalculatePage();
             this.onPageChange.emit({

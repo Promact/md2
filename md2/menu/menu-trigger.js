@@ -85,11 +85,12 @@ export var Md2MenuTrigger = (function () {
         return (' ' + element.className + ' ').indexOf(' ' + className + ' ') > -1;
     };
     Md2MenuTrigger.prototype._hasChildMenu = function (event) {
-        if (event.target === this._getHostElement()) {
+        var el = this._getClosestElement(event.target, 'md2-menu-trigger');
+        if (el && el === this._getHostElement()) {
             return true;
         }
         else if (this._getParentElement().contains(event.target)) {
-            var el = this._getClosestElement(event.target, 'md2-menu-item');
+            el = this._getClosestElement(event.target, 'md2-menu-item');
             if (el && el.querySelectorAll('[md2-menu-content]').length > 0) {
                 return true;
             }

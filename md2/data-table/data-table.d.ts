@@ -12,7 +12,7 @@ export interface DataEvent {
     length: number;
 }
 export declare class Md2DataTable implements OnChanges, DoCheck {
-    private dataLength;
+    private _dataLength;
     private _activePage;
     data: any[];
     onDataChange: EventEmitter<DataEvent>;

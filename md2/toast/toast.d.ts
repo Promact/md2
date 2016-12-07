@@ -8,7 +8,7 @@ export declare class Toast {
 }
 export declare class Md2Toast {
     private _overlay;
-    private delay;
+    private duration;
     private index;
     _overlayRef: OverlayRef;
     _toastInstance: Md2ToastComponent;
@@ -17,18 +17,12 @@ export declare class Md2Toast {
      * toast message
      * @param toast string or object with message and other properties of toast
      */
-    toast(toast: string | {
-        message: string;
-        hideDelay: number;
-    }): void;
+    toast(message: string, duration?: number): void;
     /**
      * show toast
      * @param toastObj string or object with message and other properties of toast
      */
-    show(toastObj: string | {
-        message: string;
-        hideDelay: number;
-    }): void;
+    show(message: string, duration?: number): void;
     /**
      * toast timeout
      * @param toastId

@@ -78,7 +78,7 @@ export const MD2_DATEPICKER_CONTROL_VALUE_ACCESSOR: any = {
 export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
 
   constructor(private _dateUtil: Md2DateUtil, private _element: ElementRef) {
-    this.getYears();
+    this._getYears();
     this._generateClock();
     // this.mouseMoveListener = (event: MouseEvent) => { this.onMouseMoveClock(event); };
     // this.mouseUpListener = (event: MouseEvent) => { this.onMouseUpClock(event); };
@@ -161,12 +161,12 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   @Input() set min(value: string) {
     this._minDate = new Date(value);
     this._minDate.setHours(0, 0, 0, 0);
-    this.getYears();
+    this._getYears();
   }
   @Input() set max(value: string) {
     this._maxDate = new Date(value);
     this._maxDate.setHours(0, 0, 0, 0);
-    this.getYears();
+    this._getYears();
   }
 
   @Input()
@@ -333,7 +333,7 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
     this._scrollToSelectedYear();
   }
 
-  private getYears() {
+  private _getYears() {
     let startYear = this._minDate ? this._minDate.getFullYear() : 1900,
       endYear = this._maxDate ? this._maxDate.getFullYear() : this._today.getFullYear() + 100;
     this._years = [];

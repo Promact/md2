@@ -1,3 +1,18 @@
+<a name="0.0.10-4"></a>
+## [0.0.10-4](https://github.com/Promact/md2/compare/v0.0.10-3...v0.0.10-4) (2016-12-07)
+
+
+### Bug Fixes
+
+* fix(menu) trigger to open menu
+
+
+### Breaking Changes
+
+* refactor(toast) open/toast api changes
+
+
+
 <a name="0.0.10-3"></a>
 ## [0.0.10-3](https://github.com/Promact/md2/compare/v0.0.10-2...v0.0.10-3) (2016-12-06)
 

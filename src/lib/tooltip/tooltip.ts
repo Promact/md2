@@ -44,7 +44,7 @@ export class Md2Tooltip {
    */
   @HostListener('focusin', ['$event'])
   @HostListener('mouseenter', ['$event'])
-  public show(event: Event): void {
+  show(event: Event): void {
     if (this.visible) {
       return;
     }
@@ -74,7 +74,7 @@ export class Md2Tooltip {
    */
   @HostListener('focusout', ['$event'])
   @HostListener('mouseleave', ['$event'])
-  public hide(event: Event): void {
+  hide(event: Event): void {
     clearTimeout(this.timer);
     if (!this.visible) {
       return;

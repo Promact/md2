@@ -85,8 +85,8 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   private _isInitialized: boolean = false;
 
   private isOpenable: boolean = true;
-  private isMenuVisible: boolean = false;
-  private selectedValue: string = '';
+  _isMenuVisible: boolean = false;
+  _selectedValue: string = '';
 
   private focusIndex: number = 0;
 
@@ -143,8 +143,8 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
     if (selected) {
       this.value = selected.value;
       if (!selected.selected) { selected.selected = true; }
-      this.selectedValue = selected.text;
-    } else { this.selectedValue = ''; }
+      this._selectedValue = selected.text;
+    } else { this._selectedValue = ''; }
   }
 
   ngAfterContentInit() { this._isInitialized = true; }
@@ -152,10 +152,10 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   ngAfterContentChecked() {
     let opt = this.options.filter(o => this.equals(o.value, this.value))[0];
     if (opt && !this.equals(this.selected, opt)) {
-      this.selectedValue = opt.text;
+      this._selectedValue = opt.text;
     }
-    if (this.selected && this.selectedValue !== this.selected.text) {
-      this.selectedValue = this.selected.text;
+    if (this.selected && this._selectedValue !== this.selected.text) {
+      this._selectedValue = this.selected.text;
     }
   }
 
@@ -242,13 +242,13 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
       return;
     }
     if (this.isOpenable) {
-      if (!this.isMenuVisible) {
+      if (!this._isMenuVisible) {
         this.options.forEach(o => {
           o.focused = false;
           if (o.selected) { o.focused = true; }
         });
         this.focusIndex = this.getFocusIndex();
-        this.isMenuVisible = true;
+        this._isMenuVisible = true;
         setTimeout(() => {
           this.updateScroll();
         }, 0);
@@ -262,7 +262,7 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   private _handleKeydown(event: any) {
     if (this.disabled) { return; }
 
-    if (this.isMenuVisible) {
+    if (this._isMenuVisible) {
       event.preventDefault();
       event.stopPropagation();
 
@@ -291,8 +291,8 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
 
   @HostListener('blur')
   _onBlur() {
-    if (this.isMenuVisible) {
-      this.isMenuVisible = false;
+    if (this._isMenuVisible) {
+      this._isMenuVisible = false;
       this.isOpenable = false;
       setTimeout(() => {
         this.isOpenable = true;
@@ -447,7 +447,7 @@ export class Md2Option implements OnInit {
    * on click to select option
    * @param event
    */
-  public onOptionClick(event: Event) {
+  onOptionClick(event: Event) {
     if (this.disabled) {
       event.preventDefault();
       event.stopPropagation();

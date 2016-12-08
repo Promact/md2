@@ -22,9 +22,9 @@ import {
   KeyCodes
 } from '../core/core';
 
-class Option {
-  public text: string;
-  public value: string;
+export class Option {
+  text: string;
+  value: string;
 
   constructor(source: any, textKey: string, valueKey: string) {
     if (typeof source === 'string') {
@@ -52,12 +52,12 @@ export const MD2_MULTISELECT_CONTROL_VALUE_ACCESSOR: any = {
   selector: 'md2-multiselect',
   template: `
     <div class="md2-multiselect-container">
-      <span class="md2-multiselect-placeholder" [class.has-value]="items.length">
+      <span class="md2-multiselect-placeholder" [class.has-value]="_items.length">
         {{placeholder}}
         <span class="md2-placeholder-required" *ngIf="required">*</span>
       </span>
       <div class="md2-multiselect-value">
-        <div *ngFor="let v of items; let last = last" class="md2-multiselect-value-item">
+        <div *ngFor="let v of _items; let last = last" class="md2-multiselect-value-item">
           <span class="md2-multiselect-text">{{v.text}}</span><span *ngIf="!last">,&nbsp;</span>
         </div>
       </div>
@@ -66,7 +66,7 @@ export const MD2_MULTISELECT_CONTROL_VALUE_ACCESSOR: any = {
       </svg>
     </div>
     <ul *ngIf="isMenuVisible" class="md2-multiselect-menu">
-      <li class="md2-option" *ngFor="let l of list; let i = index;" [class.active]="_isActive(i)" [class.focus]="focusedOption === i" (click)="toggleOption($event, i)">
+      <li class="md2-option" *ngFor="let l of _list; let i = index;" [class.active]="_isActive(i)" [class.focus]="focusedOption === i" (click)="_handleOptionClick($event, i)">
         <div class="md2-option-icon"></div>
         <div class="md2-option-text" [innerHtml]="l.text"></div>
       </li>
@@ -101,10 +101,10 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
   private _onChangeCallback: (_: any) => void = noop;
 
   private _options: Array<any> = [];
-  private list: Array<Option> = [];
-  private items: Array<Option> = [];
+  _list: Array<Option> = [];
+  _items: Array<Option> = [];
 
-  private focusedOption: number = 0;
+  _focusedOption: number = 0;
   private isFocused: boolean = false;
 
   @Input() id: string = 'md2-multiselect-' + (++nextId);
@@ -139,11 +139,11 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
   private setValue(value: any) {
     if (value !== this._value) {
       this._value = value;
-      this.items = [];
+      this._items = [];
       if (value && value.length && typeof value === 'object' && Array.isArray(value)) {
         for (let i = 0; i < value.length; i++) {
           let selItm = this._options.find((itm: any) => this.equals(this.valueKey ? itm[this.valueKey] : itm, value[i]));
-          if (selItm) { this.items.push(new Option(selItm, this.textKey, this.valueKey)); }
+          if (selItm) { this._items.push(new Option(selItm, this.textKey, this.valueKey)); }
         }
       }
       if (this._isInitialized) {
@@ -179,21 +179,21 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
   }
 
   get isMenuVisible(): boolean {
-    return (this.isFocused && this.list && this.list.length) && !this.readonly ? true : false;
+    return (this.isFocused && this._list && this._list.length) && !this.readonly ? true : false;
   }
 
   /**
    * to update scroll of options
    */
   private updateScroll() {
-    if (this.focusedOption < 0) { return; }
+    if (this._focusedOption < 0) { return; }
     let menuContainer = this.element.nativeElement.querySelector('.md2-multiselect-menu');
     if (!menuContainer) { return; }
 
     let choices = menuContainer.querySelectorAll('.md2-option');
     if (choices.length < 1) { return; }
 
-    let highlighted: any = choices[this.focusedOption];
+    let highlighted: any = choices[this._focusedOption];
     if (!highlighted) { return; }
 
     let top: number = highlighted.offsetTop + highlighted.clientHeight - menuContainer.scrollTop;
@@ -229,14 +229,14 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
         case KeyCodes.TAB:
         case KeyCodes.ESCAPE: this.onBlur(); break;
         case KeyCodes.ENTER:
-        case KeyCodes.SPACE: this.toggleOption(event, this.focusedOption); break;
+        case KeyCodes.SPACE: this._handleOptionClick(event, this._focusedOption); break;
 
         case KeyCodes.DOWN_ARROW:
-          this.focusedOption = (this.focusedOption === this.list.length - 1) ? 0 : Math.min(this.focusedOption + 1, this.list.length - 1);
+          this._focusedOption = (this._focusedOption === this._list.length - 1) ? 0 : Math.min(this._focusedOption + 1, this._list.length - 1);
           this.updateScroll();
           break;
         case KeyCodes.UP_ARROW:
-          this.focusedOption = (this.focusedOption === 0) ? this.list.length - 1 : Math.max(0, this.focusedOption - 1);
+          this._focusedOption = (this._focusedOption === 0) ? this._list.length - 1 : Math.max(0, this._focusedOption - 1);
           this.updateScroll();
           break;
       }
@@ -259,7 +259,7 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
    */
   private onFocus() {
     this.isFocused = true;
-    this.focusedOption = 0;
+    this._focusedOption = 0;
   }
 
   @HostListener('blur')
@@ -270,8 +270,8 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
    * @param index
    * @return boolean the item is active or not
    */
-  private _isActive(index: number): boolean {
-    return this.items.map(i => i.text).indexOf(this.list[index].text) < 0 ? false : true;
+  _isActive(index: number): boolean {
+    return this._items.map(i => i.text).indexOf(this._list[index].text) < 0 ? false : true;
   }
 
   /**
@@ -279,21 +279,21 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
    * @param event
    * @param index
    */
-  private toggleOption(event: Event, index: number) {
+  _handleOptionClick(event: Event, index: number) {
     event.preventDefault();
     event.stopPropagation();
 
-    let ind = this.items.map(i => i.text).indexOf(this.list[index].text);
+    let ind = this._items.map(i => i.text).indexOf(this._list[index].text);
     if (ind < 0) {
-      this.items.push(this.list[index]);
-      this.items = this.items.sort((a, b) => { return this.list.findIndex((i: any) => i.text === a.text) - this.list.findIndex((i: any) => i.text === b.text); });
+      this._items.push(this._list[index]);
+      this._items = this._items.sort((a, b) => { return this._list.findIndex((i: any) => i.text === a.text) - this._list.findIndex((i: any) => i.text === b.text); });
     } else {
-      this.items.splice(ind, 1);
+      this._items.splice(ind, 1);
     }
 
     this._value = new Array<any>();
-    for (let i = 0; i < this.items.length; i++) {
-      this._value.push(this.items[i].value);
+    for (let i = 0; i < this._items.length; i++) {
+      this._value.push(this._items[i].value);
     }
     this._onChangeCallback(this._value);
     this.change.emit(this._value);
@@ -303,8 +303,8 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
    * update options
    */
   private updateOptions() {
-    this.list = this._options.map((item: any) => new Option(item, this.textKey, this.valueKey));
-    if (this.list.length > 0) {
+    this._list = this._options.map((item: any) => new Option(item, this.textKey, this.valueKey));
+    if (this._list.length > 0) {
       this.onFocus();
     }
   }
@@ -316,11 +316,11 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
   writeValue(value: any) {
     if (value !== this._value) {
       this._value = value;
-      this.items = [];
+      this._items = [];
       if (value && value.length && typeof value === 'object' && Array.isArray(value)) {
         for (let i = 0; i < value.length; i++) {
           let selItm = this._options.find((itm: any) => this.equals(this.valueKey ? itm[this.valueKey] : itm, value[i]));
-          if (selItm) { this.items.push(new Option(selItm, this.textKey, this.valueKey)); }
+          if (selItm) { this._items.push(new Option(selItm, this.textKey, this.valueKey)); }
         }
       }
     }

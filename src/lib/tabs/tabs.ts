@@ -29,15 +29,12 @@ export class Md2Transclude {
   constructor(public viewRef: ViewContainerRef) { }
 
   @Input()
-  private set md2Transclude(templateRef: TemplateRef<any>) {
+  get md2Transclude() { return this._md2Transclude; }
+  set md2Transclude(templateRef: TemplateRef<any>) {
     this._md2Transclude = templateRef;
     if (templateRef) {
       this.viewRef.createEmbeddedView(templateRef);
     }
-  }
-
-  private get md2Transclude() {
-    return this._md2Transclude;
   }
 
 }
@@ -61,7 +58,7 @@ export class Md2Tab {
 
   @Input() class: string;
 
-  public labelRef: TemplateRef<any>;
+  labelRef: TemplateRef<any>;
 
 }
 
@@ -77,13 +74,13 @@ export class Md2TabLabel {
   selector: 'md2-tabs',
   template: `
     <div class="md2-tabs-header-wrapper">
-      <div role="button" class="md2-prev-button" [class.disabled]="!canPageBack()" *ngIf="shouldPaginate" (click)="previousPage()">
+      <div role="button" class="md2-prev-button" [class.disabled]="!canPageBack()" *ngIf="_shouldPaginate" (click)="previousPage()">
         <em class="prev-icon">Prev</em>
       </div>
-      <div role="button" class="md2-next-button" [class.disabled]="!canPageForward()" *ngIf="shouldPaginate" (click)="nextPage()">
+      <div role="button" class="md2-next-button" [class.disabled]="!canPageForward()" *ngIf="_shouldPaginate" (click)="nextPage()">
         <em class="next-icon">Next</em>
       </div>
-      <div class="md2-tabs-canvas" [class.md2-paginated]="shouldPaginate" role="tablist" tabindex="0" (keydown.arrowRight)="focusNextTab()" (keydown.arrowLeft)="focusPreviousTab()" (keydown.enter)="selectedIndex = focusIndex" (mousewheel)="scroll($event)">
+      <div class="md2-tabs-canvas" [class.md2-paginated]="_shouldPaginate" role="tablist" tabindex="0" (keydown.arrowRight)="focusNextTab()" (keydown.arrowLeft)="focusPreviousTab()" (keydown.enter)="selectedIndex = focusIndex" (mousewheel)="scroll($event)">
         <div class="md2-tabs-header" [style.marginLeft]="-offsetLeft + 'px'">
           <div class="md2-tab-label" role="tab" *ngFor="let tab of tabs; let i = index" [class.focus]="focusIndex === i" [class.active]="selectedIndex === i" [class.disabled]="tab.disabled" (click)="focusIndex = selectedIndex = i">
             <span [md2Transclude]="tab.labelRef">{{tab.label}}</span>
@@ -110,7 +107,7 @@ export class Md2Tabs implements AfterContentInit {
   private _isInitialized: boolean = false;
   private _focusIndex: number = 0;
   private _selectedIndex: number = 0;
-  private shouldPaginate: boolean = false;
+  _shouldPaginate: boolean = false;
   private offsetLeft: number = 0;
   private inkBarLeft: string = '0';
   private inkBarWidth: string = '0';
@@ -223,7 +220,7 @@ export class Md2Tabs implements AfterContentInit {
    * @param event
    */
   scroll(event: any) {
-    if (!this.shouldPaginate) { return; }
+    if (!this._shouldPaginate) { return; }
     event.preventDefault();
     this.offsetLeft = this.fixOffset(this.offsetLeft - event.wheelDelta);
   }
@@ -288,7 +285,7 @@ export class Md2Tabs implements AfterContentInit {
     this.element.tabs.forEach((tab: any) => {
       canvasWidth -= tab.offsetWidth;
     });
-    this.shouldPaginate = canvasWidth < 0;
+    this._shouldPaginate = canvasWidth < 0;
   }
 
   /**
@@ -327,7 +324,7 @@ export class Md2Tabs implements AfterContentInit {
    */
   fixOffset(value: any) {
     let elements = this.element;
-    if (!elements.tabs.length || !this.shouldPaginate) { return 0; }
+    if (!elements.tabs.length || !this._shouldPaginate) { return 0; }
     let lastTab = elements.tabs[elements.tabs.length - 1],
       totalWidth = lastTab.offsetLeft + lastTab.offsetWidth;
     value = Math.max(0, value);

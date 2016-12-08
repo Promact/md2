@@ -47,7 +47,7 @@ export class Md2DialogFooter { }
   encapsulation: ViewEncapsulation.None,
 })
 export class Md2Dialog implements OnDestroy {
-  constructor(private overlay: Overlay) { }
+  constructor(private _overlay: Overlay) { }
 
   @Output() onShow: EventEmitter<Md2Dialog> = new EventEmitter<Md2Dialog>();
   @Output() onClose: EventEmitter<any> = new EventEmitter<any>();
@@ -57,7 +57,7 @@ export class Md2Dialog implements OnDestroy {
   @ViewChild(Md2DialogPortal) private portal: Md2DialogPortal;
 
   /** Is the dialog active? */
-  private isOpened: boolean = false;
+  _isOpened: boolean = false;
 
   @Input('title') dialogTitle: string;
 
@@ -65,7 +65,7 @@ export class Md2Dialog implements OnDestroy {
   @Input() config = new OverlayState();
 
   /** @internal */
-  private overlayRef: OverlayRef = null;
+  private _overlayRef: OverlayRef = null;
 
   ngOnDestroy(): any {
     return this.close();
@@ -79,14 +79,14 @@ export class Md2Dialog implements OnDestroy {
   /** Open the dialog */
   open(): Promise<Md2Dialog> {
     return this.close()
-      .then(() => this.overlay.create(this.config))
+      .then(() => this._overlay.create(this.config))
       .then((ref: OverlayRef) => {
-        this.overlayRef = ref;
+        this._overlayRef = ref;
         return ref.attach(this.portal);
       })
       .then(() => Animate.wait())
       .then(() => {
-        this.isOpened = true;
+        this._isOpened = true;
         this.onShow.emit(this);
         return this;
       });
@@ -94,16 +94,16 @@ export class Md2Dialog implements OnDestroy {
 
   /** Close the dialog */
   close(result: any = true, cancel: boolean = false): Promise<Md2Dialog> {
-    if (!this.overlayRef) {
+    if (!this._overlayRef) {
       return Promise.resolve<Md2Dialog>(this);
     }
-    this.isOpened = false;
+    this._isOpened = false;
     // TODO(jd): this is terrible, use animate states
     return Animate.wait(100)
-      .then(() => this.overlayRef.detach())
+      .then(() => this._overlayRef.detach())
       .then(() => {
-        this.overlayRef.dispose();
-        this.overlayRef = null;
+        this._overlayRef.dispose();
+        this._overlayRef = null;
         if (cancel) {
           this.onCancel.emit(result);
         } else {
@@ -113,7 +113,7 @@ export class Md2Dialog implements OnDestroy {
       });
   }
 
-  private _handleDocumentKeydown(event: KeyboardEvent) {
+  _handleDocumentKeydown(event: KeyboardEvent) {
     if (event.keyCode == 27) {
       this.close();
     }

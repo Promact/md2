@@ -27,8 +27,8 @@ import {
 } from '../core/core';
 
 export class Item {
-  public text: string;
-  public value: string;
+  text: string;
+  value: string;
 
   constructor(source: any, textKey: string, valueKey: string) {
     if (typeof source === 'string') {

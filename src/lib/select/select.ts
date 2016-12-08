@@ -90,7 +90,7 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
 
   private focusIndex: number = 0;
 
-  _onChange: (value: any) => void;
+  _onChange = (value: any) => { };
   _onTouched = () => { };
 
   @Output() change: EventEmitter<Md2SelectChange> = new EventEmitter<Md2SelectChange>();

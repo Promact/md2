@@ -153,25 +153,25 @@ export class ColorpickerSliderDirective {
   encapsulation: ViewEncapsulation.None
 })
 export class Md2Colorpicker implements OnInit, ControlValueAccessor {
-  private _innerValue: string = '';
+  _innerValue: string = '';
   private _onTouchedCallback: () => void = noop;
   private _onChangeCallback: (_: any) => void = noop;
   private _created: boolean;
   private _defalutColor: string = '#000000';
-  private _isColorpickerVisible: boolean;
-  private _hueSliderColor: string;
+  _isColorpickerVisible: boolean;
+  _hueSliderColor: string;
   private _initialColor: string;
 
-  private slider: SliderPosition;
+  slider: SliderPosition;
   private sliderDim: SliderDimension;
   private hsva: Hsva;
-  private rgbaText: Rgba;
-  private hslaText: Hsla;
+  rgbaText: Rgba;
+  hslaText: Hsla;
 
-  private outputColor: string;
-  private alphaColor: string;
-  private hexText: string;
-  private format: number;
+  outputColor: string;
+  alphaColor: string;
+  hexText: string;
+  format: number;
 
   @Input('format') cFormat: string = 'hex';
   @Output('colorpickerChange') colorpickerChange = new EventEmitter<string>();
@@ -226,13 +226,13 @@ export class Md2Colorpicker implements OnInit, ControlValueAccessor {
   /**
   * Show Colorpicker dialog
   */
-  private _showColorpicker() {
+  _showColorpicker() {
     if (this.disabled) { return; }
     if (!this._isColorpickerVisible) {
       this.update();
       this._initialColor = this._innerValue;
       this._isColorpickerVisible = true;
-    }    else {
+    } else {
       this._isColorpickerVisible = false;
     }
     if (this._innerValue != this._initialColor) {
@@ -388,19 +388,6 @@ export class Md2Colorpicker implements OnInit, ControlValueAccessor {
   closeColorpicker() {
     this._isColorpickerVisible = false;
     this.setColorFromString(this._innerValue);
-  }
-  /**
-   * create color box
-   * @param element
-   * @param offset
-   */
-  createBox(element: any, offset: any) {
-    return {
-      top: element.getBoundingClientRect().top + (offset ? window.pageYOffset : 0),
-      left: element.getBoundingClientRect().left + (offset ? window.pageXOffset : 0),
-      width: element.offsetWidth,
-      height: element.offsetHeight
-    };
   }
 
   writeValue(value: any): void { this.value = value; }

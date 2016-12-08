@@ -25,7 +25,7 @@ import { KeyCodes } from '../core/core';
 
 const noop = () => { };
 
-class Chip {
+export class Chip {
   public text: string;
   public value: string;
 
@@ -111,6 +111,7 @@ export const MD2_CHIPS_CONTROL_VALUE_ACCESSOR: any = {
 })
 
 export class Md2Chips implements ControlValueAccessor, AfterContentInit {
+  @Input() tabindex: number = 0;
   @Input() addOnBlur: boolean = true;
   @Input() addOnComma: boolean = true;
   @Input() addOnEnter: boolean = true;
@@ -136,14 +137,14 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
 
   private onTouchedCallback: () => void = noop;
   private onChangeCallback: (_: any) => void = noop;
-  private chipItemList: Array<Chip> = [];
+  chipItemList: Array<Chip> = [];
   public inputValue: string = '';
   private _value: any = '';
   public selectedChip: number = -1;
   private splitRegExp: RegExp;
   private templateHtmlString: any;
   private item: any;
-  private inputFocused: boolean = false;
+  inputFocused: boolean = false;
   private isEmptyAutoComplete: boolean = true;
   private isObject: boolean;
 
@@ -264,7 +265,7 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
   }
 
   @HostListener('focus')
-  private _handleFocus() {
+  _handleFocus() {
     if (this.readonly) { return; }
     if (!this.isAutoComplete) {
       this.elementRef.nativeElement.querySelector('input.chip-input').focus();

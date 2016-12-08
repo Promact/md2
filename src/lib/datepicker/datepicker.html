@@ -103,15 +103,15 @@
         <div class="md2-clock-hours" [class.active]="_isHoursVisible">
           <div *ngFor="let h of _hours"
                class="md2-clock-hour"
-               [style.top]="h.top + 'px'"
-               [style.left]="h.left + 'px'"
+               [style.top.px]="h.top"
+               [style.left.px]="h.left"
                (click)="_onClickHour($event,h.hour)">{{h.hour}}</div>
         </div>
         <div class="md2-clock-minutes" [class.active]="!_isHoursVisible">
           <div *ngFor="let m of _minutes"
                class="md2-clock-minute"
-               [style.top]="m.top + 'px'"
-               [style.left]="m.left + 'px'"
+               [style.top.px]="m.top"
+               [style.left.px]="m.left"
                (click)="_onClickMinute($event,m.minute)">{{m.minute}}</div>
         </div>
       </div>

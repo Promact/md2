@@ -81,11 +81,11 @@ export class Md2TabLabel {
         <em class="next-icon">Next</em>
       </div>
       <div class="md2-tabs-canvas" [class.md2-paginated]="_shouldPaginate" role="tablist" tabindex="0" (keydown.arrowRight)="focusNextTab()" (keydown.arrowLeft)="focusPreviousTab()" (keydown.enter)="selectedIndex = focusIndex" (mousewheel)="scroll($event)">
-        <div class="md2-tabs-header" [style.marginLeft]="-offsetLeft + 'px'">
+        <div class="md2-tabs-header" [style.marginLeft]="-_offsetLeft + 'px'">
           <div class="md2-tab-label" role="tab" *ngFor="let tab of tabs; let i = index" [class.focus]="focusIndex === i" [class.active]="selectedIndex === i" [class.disabled]="tab.disabled" (click)="focusIndex = selectedIndex = i">
             <span [md2Transclude]="tab.labelRef">{{tab.label}}</span>
           </div>
-          <div class="md2-tab-ink-bar" [style.left]="inkBarLeft" [style.width]="inkBarWidth"></div>
+          <div class="md2-tab-ink-bar" [style.left]="_inkBarLeft" [style.width]="_inkBarWidth"></div>
         </div>
       </div>
     </div>
@@ -108,9 +108,9 @@ export class Md2Tabs implements AfterContentInit {
   private _focusIndex: number = 0;
   private _selectedIndex: number = 0;
   _shouldPaginate: boolean = false;
-  private offsetLeft: number = 0;
-  private inkBarLeft: string = '0';
-  private inkBarWidth: string = '0';
+  _offsetLeft: number = 0;
+  _inkBarLeft: string = '0';
+  _inkBarWidth: string = '0';
 
   @Input() class: string;
 
@@ -187,8 +187,8 @@ export class Md2Tabs implements AfterContentInit {
     let elements = this.element;
     if (!elements.tabs[this.selectedIndex]) { return; }
     let tab = elements.tabs[this.selectedIndex];
-    this.inkBarLeft = tab.offsetLeft + 'px';
-    this.inkBarWidth = tab.offsetWidth + 'px';
+    this._inkBarLeft = tab.offsetLeft + 'px';
+    this._inkBarWidth = tab.offsetWidth + 'px';
   }
 
   /**
@@ -222,7 +222,7 @@ export class Md2Tabs implements AfterContentInit {
   scroll(event: any) {
     if (!this._shouldPaginate) { return; }
     event.preventDefault();
-    this.offsetLeft = this.fixOffset(this.offsetLeft - event.wheelDelta);
+    this._offsetLeft = this.fixOffset(this._offsetLeft - event.wheelDelta);
   }
 
   /**
@@ -231,13 +231,13 @@ export class Md2Tabs implements AfterContentInit {
   nextPage() {
     let elements = this.element;
     let viewportWidth = elements.canvas.clientWidth,
-      totalWidth = viewportWidth + this.offsetLeft,
+      totalWidth = viewportWidth + this._offsetLeft,
       i: number, tab: any;
     for (i = 0; i < elements.tabs.length; i++) {
       tab = elements.tabs[i];
       if (tab.offsetLeft + tab.offsetWidth > totalWidth) { break; }
     }
-    this.offsetLeft = this.fixOffset(tab.offsetLeft);
+    this._offsetLeft = this.fixOffset(tab.offsetLeft);
   }
 
   /**
@@ -248,9 +248,9 @@ export class Md2Tabs implements AfterContentInit {
 
     for (i = 0; i < elements.tabs.length; i++) {
       tab = elements.tabs[i];
-      if (tab.offsetLeft + tab.offsetWidth >= this.offsetLeft) { break; }
+      if (tab.offsetLeft + tab.offsetWidth >= this._offsetLeft) { break; }
     }
-    this.offsetLeft = this.fixOffset(tab.offsetLeft + tab.offsetWidth - elements.canvas.clientWidth);
+    this._offsetLeft = this.fixOffset(tab.offsetLeft + tab.offsetWidth - elements.canvas.clientWidth);
   }
 
   /**
@@ -258,14 +258,14 @@ export class Md2Tabs implements AfterContentInit {
    * @param event
    */
   onWindowResize(event: Event) {
-    this.offsetLeft = this.fixOffset(this.offsetLeft);
+    this._offsetLeft = this.fixOffset(this._offsetLeft);
     this.updatePagination();
   }
 
   /**
    * Can page Back
    */
-  canPageBack() { return this.offsetLeft > 0; }
+  canPageBack() { return this._offsetLeft > 0; }
 
   /**
    * Can page Previous
@@ -274,7 +274,7 @@ export class Md2Tabs implements AfterContentInit {
     let elements = this.element;
     let lastTab = elements.tabs[elements.tabs.length - 1];
     return lastTab && lastTab.offsetLeft + lastTab.offsetWidth > elements.canvas.clientWidth +
-      this.offsetLeft;
+      this._offsetLeft;
   }
 
   /**
@@ -313,8 +313,8 @@ export class Md2Tabs implements AfterContentInit {
     let tab = elements.tabs[index],
       left = tab.offsetLeft,
       right = tab.offsetWidth + left;
-    this.offsetLeft = Math.max(this.offsetLeft, this.fixOffset(right - elements.canvas.clientWidth + 32 * 2));
-    this.offsetLeft = Math.min(this.offsetLeft, this.fixOffset(left));
+    this._offsetLeft = Math.max(this._offsetLeft, this.fixOffset(right - elements.canvas.clientWidth + 32 * 2));
+    this._offsetLeft = Math.min(this._offsetLeft, this.fixOffset(left));
   }
 
   /**

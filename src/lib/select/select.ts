@@ -235,7 +235,7 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   }
 
   @HostListener('click', ['$event'])
-  private onClick(e: any) {
+  _handleClick(e: any) {
     if (this.disabled || this.readonly) {
       e.stopPropagation();
       e.preventDefault();
@@ -259,7 +259,7 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   }
 
   @HostListener('keydown', ['$event'])
-  private _handleKeydown(event: any) {
+  _handleKeydown(event: any) {
     if (this.disabled) { return; }
 
     if (this._isMenuVisible) {
@@ -283,7 +283,7 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
         case KeyCodes.UP_ARROW:
           event.preventDefault();
           event.stopPropagation();
-          this.onClick(event);
+          this._handleClick(event);
           break;
       }
     }

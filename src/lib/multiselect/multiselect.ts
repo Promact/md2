@@ -207,7 +207,7 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
   }
 
   @HostListener('click', ['$event'])
-  private _handleClick(event: MouseEvent) {
+  _handleClick(event: MouseEvent) {
     if (this.disabled) {
       event.stopPropagation();
       event.preventDefault();
@@ -218,7 +218,7 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
   }
 
   @HostListener('keydown', ['$event'])
-  private _handleKeydown(event: KeyboardEvent) {
+  _handleKeydown(event: KeyboardEvent) {
     if (this.disabled) { return; }
 
     if (this.isMenuVisible) {
@@ -227,7 +227,7 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
 
       switch (event.keyCode) {
         case KeyCodes.TAB:
-        case KeyCodes.ESCAPE: this.onBlur(); break;
+        case KeyCodes.ESCAPE: this._onBlur(); break;
         case KeyCodes.ENTER:
         case KeyCodes.SPACE: this._handleOptionClick(event, this._focusedOption); break;
 
@@ -263,7 +263,7 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
   }
 
   @HostListener('blur')
-  private onBlur() { this.isFocused = false; }
+  _onBlur() { this.isFocused = false; }
 
   /**
    * to check current option is active or not

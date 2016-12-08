@@ -227,7 +227,7 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   }
 
   @HostListener('click', ['$event'])
-  private _handleClick(event: MouseEvent) {
+  _handleClick(event: MouseEvent) {
     if (this.disabled) {
       event.stopPropagation();
       event.preventDefault();
@@ -236,7 +236,7 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   }
 
   @HostListener('keydown', ['$event'])
-  private _handleKeydown(event: KeyboardEvent) {
+  _handleKeydown(event: KeyboardEvent) {
     if (this.disabled) { return; }
 
     if (this._isDatepickerVisible) {

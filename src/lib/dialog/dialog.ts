@@ -54,7 +54,7 @@ export class Md2Dialog implements OnDestroy {
   @Output() onCancel: EventEmitter<any> = new EventEmitter<any>();
 
   /** The portal to send the dialog content through */
-  @ViewChild(Md2DialogPortal) private portal: Md2DialogPortal;
+  @ViewChild(Md2DialogPortal) _portal: Md2DialogPortal;
 
   /** Is the dialog active? */
   _isOpened: boolean = false;
@@ -82,7 +82,7 @@ export class Md2Dialog implements OnDestroy {
       .then(() => this._overlay.create(this.config))
       .then((ref: OverlayRef) => {
         this._overlayRef = ref;
-        return ref.attach(this.portal);
+        return ref.attach(this._portal);
       })
       .then(() => Animate.wait())
       .then(() => {

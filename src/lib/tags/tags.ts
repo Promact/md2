@@ -246,7 +246,7 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
       event.stopPropagation();
       event.preventDefault();
       if (this._inputValue) { this._inputValue = ''; }
-      if (this._selectedTag >= 0) { this.onFocus(); }
+      if (this._selectedTag >= 0) { this._handleFocus(); }
       return;
     }
     // reset selected tag
@@ -258,7 +258,7 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
   }
 
   @HostListener('keydown', ['$event'])
-  private _handleKeydown(event: KeyboardEvent) {
+  _handleKeydown(event: KeyboardEvent) {
     if (this.disabled || this._inputValue) { return; }
     switch (event.keyCode) {
       case KeyCodes.BACKSPACE:
@@ -272,7 +272,7 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
       case KeyCodes.ESCAPE:
         if (this._selectedTag < 0) { return; }
         event.preventDefault();
-        this.onFocus();
+        this._handleFocus();
         break;
 
       case KeyCodes.LEFT_ARROW:
@@ -319,7 +319,7 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
 
   _removeTagAndFocusInput(index: number) {
     this.removeTag(index);
-    this.onFocus();
+    this._handleFocus();
   }
 
   /**
@@ -366,7 +366,7 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
   }
 
   @HostListener('focus')
-  private onFocus() {
+  _handleFocus() {
     this._element.nativeElement.querySelector('input').focus();
     this.resetselectedTag();
   }

@@ -27,7 +27,7 @@ export class Md2Accordion {
 
   @Output() open: EventEmitter<any> = new EventEmitter<any>();
 
-  public tabs: Md2AccordionTab[] = [];
+  tabs: Md2AccordionTab[] = [];
 
   /**
    * Add or append tab in accordion

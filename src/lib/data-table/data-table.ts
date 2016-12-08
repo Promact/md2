@@ -38,10 +38,10 @@ export class Md2DataTable implements OnChanges, DoCheck {
   private _dataLength = 0;
   private _activePage: number = 1;
 
-  public data: any[];
-  public onDataChange = new EventEmitter<DataEvent>();
-  public onSortChange = new EventEmitter<SortEvent>();
-  public onPageChange = new EventEmitter<PageEvent>();
+  data: any[];
+  onDataChange = new EventEmitter<DataEvent>();
+  onSortChange = new EventEmitter<SortEvent>();
+  onPageChange = new EventEmitter<PageEvent>();
 
   private sortField: string | string[] = '';
   private sortOrder = 'asc';
@@ -58,11 +58,11 @@ export class Md2DataTable implements OnChanges, DoCheck {
 
   @Output() activePageChange = new EventEmitter();
 
-  public getSort(): SortEvent {
+  getSort(): SortEvent {
     return { sortField: this.sortField, sortOrder: this.sortOrder };
   }
 
-  public setSort(sortField: string | string[], sortOrder: string): void {
+  setSort(sortField: string | string[], sortOrder: string): void {
     if (this.sortField !== sortField || this.sortOrder !== sortOrder) {
       this.sortField = sortField;
       this.sortOrder = sortOrder;
@@ -71,11 +71,11 @@ export class Md2DataTable implements OnChanges, DoCheck {
     }
   }
 
-  public getPage(): PageEvent {
+  getPage(): PageEvent {
     return { activePage: this.activePage, pageLength: this.pageLength, dataLength: this.inputData.length };
   }
 
-  public setPage(activePage: number, pageLength: number): void {
+  setPage(activePage: number, pageLength: number): void {
     if (this.pageLength !== pageLength || this.activePage !== activePage) {
       this.activePage = this.activePage !== activePage ? activePage : this.calculateNewActivePage(this.pageLength, pageLength);
       this.pageLength = pageLength;
@@ -100,7 +100,7 @@ export class Md2DataTable implements OnChanges, DoCheck {
     this.activePage = this.activePage || 1;
   }
 
-  public ngOnChanges(changes: { [key: string]: SimpleChange }): any {
+  ngOnChanges(changes: { [key: string]: SimpleChange }): any {
     if (changes['inputData']) {
       this.inputData = changes['inputData'].currentValue || [];
       if (this.inputData.length > 0) {
@@ -115,7 +115,7 @@ export class Md2DataTable implements OnChanges, DoCheck {
     }
   }
 
-  public ngDoCheck(): any {
+  ngDoCheck(): any {
     if (this._dataLength !== this.inputData.length) {
       this._dataLength = this.inputData.length;
       this.fillData();
@@ -151,15 +151,6 @@ export class Md2DataTable implements OnChanges, DoCheck {
     this.data = data.slice(offset, offset + this.pageLength);
   }
 
-  // private caseInsensitiveIteratee(sortField: string) {
-  //  return (row: any): any => {
-  //    let value = row[sortField];
-  //    if (value && typeof value === 'string' || value instanceof String) {
-  //      return value.toLowerCase();
-  //    }
-  //    return value;
-  //  };
-  // }
 }
 
 @Component({
@@ -167,13 +158,13 @@ export class Md2DataTable implements OnChanges, DoCheck {
   template: `
     <span (click)="_sort()">
       <ng-content></ng-content>
-      <svg *ngIf="isAsc" width="24"height="24" viewBox="0 0 24 24">
+      <svg *ngIf="_isAsc" width="24"height="24" viewBox="0 0 24 24">
         <path d="M7 14l5-5 5 5z"/>
       </svg>
-      <svg *ngIf="isDesc" width="24"height="24" viewBox="0 0 24 24">
+      <svg *ngIf="_isDesc" width="24"height="24" viewBox="0 0 24 24">
         <path d="M7 10l5 5 5-5z"/>
       </svg>
-      <svg *ngIf="!isAsc && !isDesc" width="24"height="24" viewBox="0 0 24 24">
+      <svg *ngIf="!_isAsc && !_isDesc" width="24"height="24" viewBox="0 0 24 24">
         <path d="M7,10.5l5-5l5,5H7z"/>
         <path d="M7,12.5l5,5l5-5H7z"/>
       </svg>
@@ -186,20 +177,20 @@ export class Md2DataTable implements OnChanges, DoCheck {
   encapsulation: ViewEncapsulation.None
 })
 export class Md2DataTableSortField {
-  private isAsc: boolean = false;
-  private isDesc: boolean = false;
+  _isAsc: boolean = false;
+  _isDesc: boolean = false;
 
-  @Input('md2-sort-field') private sortField: string;
+  @Input('md2-sort-field') sortField: string;
 
-  public constructor(private _md2Table: Md2DataTable) {
+  constructor(private _md2Table: Md2DataTable) {
     _md2Table.onSortChange.subscribe((event: SortEvent) => {
-      this.isAsc = (event.sortField === this.sortField && event.sortOrder === 'asc');
-      this.isDesc = (event.sortField === this.sortField && event.sortOrder === 'desc');
+      this._isAsc = (event.sortField === this.sortField && event.sortOrder === 'asc');
+      this._isDesc = (event.sortField === this.sortField && event.sortOrder === 'desc');
     });
   }
 
-  private _sort() {
-    if (this.isAsc) {
+  _sort() {
+    if (this._isAsc) {
       this._md2Table.setSort(this.sortField, 'desc');
     } else {
       this._md2Table.setSort(this.sortField, 'asc');
@@ -210,7 +201,7 @@ export class Md2DataTableSortField {
 @Component({
   selector: 'md2-pagination',
   template: `
-    <ul class="md2-pagination" *ngIf="dataLength > _rows">
+    <ul class="md2-pagination" *ngIf="_dataLength > _rows">
       <li [class.disabled]="_activePage <= 1" (click)="_setPage(1)">
         <svg width="24" height="24" viewBox="0 0 24 24">
           <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
@@ -259,41 +250,41 @@ export class Md2DataTableSortField {
 export class Md2Pagination implements OnChanges {
 
   private _md2Table: Md2DataTable;
-  private _activePage: number;
-  private _rows: number;
-  private _lastPage: number;
-  private dataLength: number = 0;
+  _activePage: number;
+  _rows: number;
+  _lastPage: number;
+  _dataLength: number = 0;
 
   @Input('md2-rows') rows: any = [];
   @Input('md2-table') md2InputTable: Md2DataTable;
 
-  constructor( @Optional() private injectMd2Table: Md2DataTable) { }
+  constructor( @Optional() private _injectMd2Table: Md2DataTable) { }
 
   ngAfterViewInit() {
-    this._md2Table = this.md2InputTable || this.injectMd2Table;
+    this._md2Table = this.md2InputTable || this._injectMd2Table;
     this._onPageChange(this._md2Table.getPage());
     this._md2Table.onPageChange.subscribe(this._onPageChange);
   }
 
   ngOnChanges(changes: any): any {
-    this._md2Table = this.md2InputTable || this.injectMd2Table;
+    this._md2Table = this.md2InputTable || this._injectMd2Table;
     this._onPageChange(this._md2Table.getPage());
     this._md2Table.onPageChange.subscribe(this._onPageChange);
   }
 
-  private _setPage(page: number): void {
+  _setPage(page: number): void {
     this._md2Table.setPage(page, this._rows);
   }
 
-  private _setRows(rows: number): void {
+  _setRows(rows: number): void {
     this._md2Table.setPage(this._activePage, rows);
   }
 
   private _onPageChange = (event: PageEvent) => {
     this._activePage = event.activePage;
     this._rows = event.pageLength;
-    this.dataLength = event.dataLength;
-    this._lastPage = Math.ceil(this.dataLength / this._rows);
+    this._dataLength = event.dataLength;
+    this._lastPage = Math.ceil(this._dataLength / this._rows);
   }
 }
 

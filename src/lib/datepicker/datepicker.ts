@@ -5,6 +5,7 @@ import {
   HostListener,
   Input,
   Output,
+  Optional,
   EventEmitter,
   forwardRef,
   ViewEncapsulation,
@@ -12,9 +13,8 @@ import {
   ModuleWithProviders
 } from '@angular/core';
 import {
-  NG_VALUE_ACCESSOR,
   ControlValueAccessor,
-  FormsModule
+  NgControl
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Md2DateUtil } from './dateUtil';
@@ -49,39 +49,36 @@ export interface IWeek {
   disabled: boolean;
 }
 
-const noop = () => { };
-
 let nextId = 0;
-
-export const MD2_DATEPICKER_CONTROL_VALUE_ACCESSOR: any = {
-  provide: NG_VALUE_ACCESSOR,
-  useExisting: forwardRef(() => Md2Datepicker),
-  multi: true
-};
 
 @Component({
   moduleId: module.id,
   selector: 'md2-datepicker',
   templateUrl: 'datepicker.html',
   styleUrls: ['datepicker.css'],
-  providers: [MD2_DATEPICKER_CONTROL_VALUE_ACCESSOR],
   host: {
     'role': 'datepicker',
     '[id]': 'id',
     '[class]': 'class',
     '[class.md2-datepicker-disabled]': 'disabled',
     '[tabindex]': 'disabled ? -1 : tabindex',
-    '[attr.aria-disabled]': 'disabled'
+    '[attr.aria-label]': 'placeholder',
+    '[attr.aria-required]': 'required.toString()',
+    '[attr.aria-disabled]': 'disabled.toString()',
+    '[attr.aria-invalid]': '_control?.invalid || "false"',
   },
   encapsulation: ViewEncapsulation.None
 })
 export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
 
-  constructor(private _dateUtil: Md2DateUtil, private element: ElementRef) {
+  constructor(private _dateUtil: Md2DateUtil, private element: ElementRef, @Optional() public _control: NgControl) {
     this.getYears();
     this.generateClock();
     // this.mouseMoveListener = (event: MouseEvent) => { this.onMouseMoveClock(event); };
     // this.mouseUpListener = (event: MouseEvent) => { this.onMouseUpClock(event); };
+    if (this._control) {
+      this._control.valueAccessor = this;
+    }
   }
 
   ngAfterContentInit() {
@@ -93,12 +90,12 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   // private mouseUpListener: any;
 
   private _value: Date = null;
-  private _readonly: boolean;
-  private _required: boolean;
+  private _readonly: boolean = false;
+  private _required: boolean = false;
   private _disabled: boolean = false;
   private _isInitialized: boolean = false;
-  private _onTouchedCallback: () => void = noop;
-  private _onChangeCallback: (_: any) => void = noop;
+  _onChange = (value: any) => { };
+  _onTouched = () => { };
 
   _isDatepickerVisible: boolean;
   _isYearsVisible: boolean;
@@ -194,7 +191,9 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
         date += this._value.getHours() + ':' + this._value.getMinutes();
       }
       if (this._isInitialized) {
-        this._onChangeCallback(date);
+        if (this._control) {
+          this._onChange(date);
+        }
         this.change.emit(date);
       }
     }
@@ -323,6 +322,7 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
     this._isYearsVisible = false;
     this._isCalendarVisible = this.type !== 'time' ? true : false;
     this._isHoursVisible = true;
+    this._onTouched();
   }
   /**
    * Display Years
@@ -828,16 +828,16 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
     }
   }
 
-  registerOnChange(fn: any) { this._onChangeCallback = fn; }
+  registerOnChange(fn: (value: any) => void): void { this._onChange = fn; }
 
-  registerOnTouched(fn: any) { this._onTouchedCallback = fn; }
+  registerOnTouched(fn: () => {}): void { this._onTouched = fn; }
 
 }
 
 export const MD2_DATEPICKER_DIRECTIVES = [Md2Datepicker];
 
 @NgModule({
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule],
   exports: MD2_DATEPICKER_DIRECTIVES,
   declarations: MD2_DATEPICKER_DIRECTIVES,
 })

@@ -1,5 +1,10 @@
 import { AfterContentInit, ElementRef, EventEmitter, ModuleWithProviders } from '@angular/core';
 import { ControlValueAccessor } from '@angular/forms';
+export declare class Option {
+    text: string;
+    value: string;
+    constructor(source: any, textKey: string, valueKey: string);
+}
 export declare const MD2_MULTISELECT_CONTROL_VALUE_ACCESSOR: any;
 export declare class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
     private element;
@@ -14,9 +19,9 @@ export declare class Md2Multiselect implements AfterContentInit, ControlValueAcc
     private _onTouchedCallback;
     private _onChangeCallback;
     private _options;
-    private list;
-    private items;
-    private focusedOption;
+    _list: Array<Option>;
+    _items: Array<Option>;
+    _focusedOption: number;
     private isFocused;
     id: string;
     tabindex: number;
@@ -45,25 +50,25 @@ export declare class Md2Multiselect implements AfterContentInit, ControlValueAcc
      * to update scroll of options
      */
     private updateScroll();
-    private _handleClick(event);
-    private _handleKeydown(event);
+    _handleClick(event: MouseEvent): void;
+    _handleKeydown(event: KeyboardEvent): void;
     /**
      * on focus current component
      */
     private onFocus();
-    private onBlur();
+    _onBlur(): void;
     /**
      * to check current option is active or not
      * @param index
      * @return boolean the item is active or not
      */
-    private _isActive(index);
+    _isActive(index: number): boolean;
     /**
      * to toggle option to select/deselect option
      * @param event
      * @param index
      */
-    private toggleOption(event, index);
+    _handleOptionClick(event: Event, index: number): void;
     /**
      * update options
      */

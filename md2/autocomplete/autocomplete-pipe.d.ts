@@ -12,5 +12,5 @@ export declare class HighlightPipe implements PipeTransform {
      * @param queryToEscape
      * @return queryToEscape with replace string
      */
-    private escapeRegexp(queryToEscape);
+    private _escapeRegexp(queryToEscape);
 }

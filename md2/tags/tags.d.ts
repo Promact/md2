@@ -1,9 +1,14 @@
 import { AfterContentInit, ElementRef, EventEmitter, ModuleWithProviders } from '@angular/core';
 import { ControlValueAccessor } from '@angular/forms';
+export declare class Tag {
+    text: string;
+    value: string;
+    constructor(source: any, textKey: string, valueKey: string);
+}
 export declare const MD2_TAGS_CONTROL_VALUE_ACCESSOR: any;
 export declare class Md2Tags implements AfterContentInit, ControlValueAccessor {
-    private element;
-    constructor(element: ElementRef);
+    private _element;
+    constructor(_element: ElementRef);
     ngAfterContentInit(): void;
     change: EventEmitter<any>;
     private _value;
@@ -12,12 +17,12 @@ export declare class Md2Tags implements AfterContentInit, ControlValueAccessor {
     private _onTouchedCallback;
     private _onChangeCallback;
     private _tags;
-    private list;
-    private items;
-    private focusedTag;
-    private selectedTag;
-    private tagBuffer;
-    private inputFocused;
+    _list: Array<Tag>;
+    _items: Array<Tag>;
+    _focusedTag: number;
+    _selectedTag: number;
+    _inputValue: string;
+    _inputFocused: boolean;
     private noBlur;
     id: string;
     tabindex: number;
@@ -48,8 +53,8 @@ export declare class Md2Tags implements AfterContentInit, ControlValueAccessor {
      * input key listener
      * @param event
      */
-    private _handleInputKeydown(event);
-    private _handleKeydown(event);
+    _handleInputKeydown(event: KeyboardEvent): void;
+    _handleKeydown(event: KeyboardEvent): void;
     private removeAndSelectAdjacentTag(index);
     private resetselectedTag();
     private getAdjacentTagIndex(index);
@@ -58,8 +63,8 @@ export declare class Md2Tags implements AfterContentInit, ControlValueAccessor {
      * @param event
      * @param index index of the specific tag
      */
-    private addTag(event, index);
-    private _removeTagAndFocusInput(index);
+    _addTag(event: Event, index: number): void;
+    _removeTagAndFocusInput(index: number): void;
     /**
      * remove tag
      * @param index
@@ -74,12 +79,12 @@ export declare class Md2Tags implements AfterContentInit, ControlValueAccessor {
      * select tag
      * @param index of select tag
      */
-    private _selectTag(index);
-    private onFocus();
-    private _onInputFocus();
-    private _onInputBlur();
-    private _listEnter();
-    private _listLeave();
+    _selectTag(index: number): void;
+    _handleFocus(): void;
+    _onInputFocus(): void;
+    _onInputBlur(): void;
+    _listEnter(): void;
+    _listLeave(): void;
     /**
      * update suggestion menu with filter
      * @param query

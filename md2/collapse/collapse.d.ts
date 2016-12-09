@@ -1,7 +1,7 @@
 import { ModuleWithProviders } from '@angular/core';
 export declare class Md2Collapse {
-    private isExpanded;
-    private isCollapsing;
+    _isExpanded: boolean;
+    _isCollapsing: boolean;
     collapse: boolean;
     /**
      * toggle collapse

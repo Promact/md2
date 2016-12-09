@@ -1,10 +1,10 @@
 <div class="md2-select-container">
-    <span class="md2-select-placeholder" [class.has-value]="selectedValue">    {{placeholder}}  </span>
-    <span *ngIf="selectedValue" class="md2-select-value" [innerHtml]="selectedValue"></span>
-    <svg width="24" height="24" viewBox="0 0 24 24">
-        <path d="M7 10l5 5 5-5z" />
-    </svg>
+  <span class="md2-select-placeholder" [class.has-value]="_selectedValue">{{placeholder}}</span>
+  <span *ngIf="_selectedValue" class="md2-select-value" [innerHtml]="_selectedValue"></span>
+  <svg width="24" height="24" viewBox="0 0 24 24">
+    <path d="M7 10l5 5 5-5z" />
+  </svg>
 </div>
-<div class="md2-select-menu" [class.open]="isMenuVisible">
-    <ng-content></ng-content>
+<div class="md2-select-menu" [class.open]="_isMenuVisible">
+  <ng-content></ng-content>
 </div>

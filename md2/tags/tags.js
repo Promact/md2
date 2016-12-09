@@ -14,7 +14,7 @@ import { coerceBooleanProperty, KeyCodes } from '../core/core';
 import { Md2AutocompleteModule } from '../autocomplete/autocomplete';
 var noop = function () { };
 var nextId = 0;
-var Tag = (function () {
+export var Tag = (function () {
     function Tag(source, textKey, valueKey) {
         if (typeof source === 'string') {
             this.text = this.value = source;
@@ -32,8 +32,8 @@ export var MD2_TAGS_CONTROL_VALUE_ACCESSOR = {
     multi: true
 };
 export var Md2Tags = (function () {
-    function Md2Tags(element) {
-        this.element = element;
+    function Md2Tags(_element) {
+        this._element = _element;
         this.change = new EventEmitter();
         this._value = '';
         this._disabled = false;
@@ -41,12 +41,12 @@ export var Md2Tags = (function () {
         this._onTouchedCallback = noop;
         this._onChangeCallback = noop;
         this._tags = [];
-        this.list = [];
-        this.items = [];
-        this.focusedTag = 0;
-        this.selectedTag = -1;
-        this.tagBuffer = '';
-        this.inputFocused = false;
+        this._list = [];
+        this._items = [];
+        this._focusedTag = 0;
+        this._selectedTag = -1;
+        this._inputValue = '';
+        this._inputFocused = false;
         this.noBlur = true;
         this.id = 'md2-tags-' + (++nextId);
         this.tabindex = 0;
@@ -54,16 +54,16 @@ export var Md2Tags = (function () {
         this.textKey = 'text';
         this.valueKey = null;
         this.selectAndFocusTagSafe = function (index) {
-            if (!this.items.length) {
+            if (!this._items.length) {
                 this._selectTag(-1);
                 this.onFocus();
                 return;
             }
-            if (index === this.items.length) {
+            if (index === this._items.length) {
                 return this.onFocus();
             }
             index = Math.max(index, 0);
-            index = Math.min(index, this.items.length - 1);
+            index = Math.min(index, this._items.length - 1);
             this._selectTag(index);
         };
     }
@@ -93,12 +93,12 @@ export var Md2Tags = (function () {
         var _this = this;
         if (value !== this._value) {
             this._value = value;
-            this.items = [];
+            this._items = [];
             if (value && value.length && typeof value === 'object' && Array.isArray(value)) {
                 var _loop_1 = function(i) {
                     var selItm = this_1._tags.find(function (t) { return _this.equals(_this.valueKey ? t[_this.valueKey] : t, value[i]); });
                     if (selItm) {
-                        this_1.items.push(new Tag(selItm, this_1.textKey, this_1.valueKey));
+                        this_1._items.push(new Tag(selItm, this_1.textKey, this_1.valueKey));
                     }
                 };
                 var this_1 = this;
@@ -148,7 +148,7 @@ export var Md2Tags = (function () {
     };
     Object.defineProperty(Md2Tags.prototype, "isMenuVisible", {
         get: function () {
-            return ((this.inputFocused || this.noBlur) && this.tagBuffer && this.list && this.list.length) ? true : false;
+            return ((this._inputFocused || this.noBlur) && this._inputValue && this._list && this._list.length) ? true : false;
         },
         enumerable: true,
         configurable: true
@@ -157,10 +157,10 @@ export var Md2Tags = (function () {
      * update scroll of tags suggestion menu
      */
     Md2Tags.prototype.updateScroll = function () {
-        if (this.focusedTag < 0) {
+        if (this._focusedTag < 0) {
             return;
         }
-        var menuContainer = this.element.nativeElement.querySelector('.md2-tags-menu');
+        var menuContainer = this._element.nativeElement.querySelector('.md2-tags-menu');
         if (!menuContainer) {
             return;
         }
@@ -168,7 +168,7 @@ export var Md2Tags = (function () {
         if (choices.length < 1) {
             return;
         }
-        var highlighted = choices[this.focusedTag];
+        var highlighted = choices[this._focusedTag];
         if (!highlighted) {
             return;
         }
@@ -188,23 +188,23 @@ export var Md2Tags = (function () {
     Md2Tags.prototype._handleInputKeydown = function (event) {
         var _this = this;
         // Backspace
-        if (event.keyCode === 8 && !this.tagBuffer) {
+        if (event.keyCode === 8 && !this._inputValue) {
             event.preventDefault();
             event.stopPropagation();
-            if (this.items.length && this.selectedTag < 0) {
-                this.selectAndFocusTagSafe(this.items.length - 1);
+            if (this._items.length && this._selectedTag < 0) {
+                this.selectAndFocusTagSafe(this._items.length - 1);
             }
-            if (this.items.length && this.selectedTag > -1) {
-                this.removeAndSelectAdjacentTag(this.selectedTag);
+            if (this._items.length && this._selectedTag > -1) {
+                this.removeAndSelectAdjacentTag(this._selectedTag);
             }
             return;
         }
         // Del Key
-        if (event.keyCode === 46 && !this.tagBuffer) {
+        if (event.keyCode === 46 && !this._inputValue) {
             return;
         }
         // Left / Right Arrow
-        if ((event.keyCode === 37 || event.keyCode === 39) && !this.tagBuffer) {
+        if ((event.keyCode === 37 || event.keyCode === 39) && !this._inputValue) {
             return;
         }
         // Down Arrow
@@ -214,7 +214,7 @@ export var Md2Tags = (function () {
             }
             event.stopPropagation();
             event.preventDefault();
-            this.focusedTag = (this.focusedTag === this.list.length - 1) ? 0 : Math.min(this.focusedTag + 1, this.list.length - 1);
+            this._focusedTag = (this._focusedTag === this._list.length - 1) ? 0 : Math.min(this._focusedTag + 1, this._list.length - 1);
             this.updateScroll();
             return;
         }
@@ -225,7 +225,7 @@ export var Md2Tags = (function () {
             }
             event.stopPropagation();
             event.preventDefault();
-            this.focusedTag = (this.focusedTag === 0) ? this.list.length - 1 : Math.max(0, this.focusedTag - 1);
+            this._focusedTag = (this._focusedTag === 0) ? this._list.length - 1 : Math.max(0, this._focusedTag - 1);
             this.updateScroll();
             return;
         }
@@ -235,71 +235,71 @@ export var Md2Tags = (function () {
         }
         // Enter / Space
         if (event.keyCode === 13 || event.keyCode === 32) {
-            if (!this.tagBuffer || !this.isMenuVisible) {
+            if (!this._inputValue || !this.isMenuVisible) {
                 event.preventDefault();
                 return;
             }
             event.preventDefault();
-            this.addTag(event, this.focusedTag);
+            this._addTag(event, this._focusedTag);
             return;
         }
         // Escape Key
         if (event.keyCode === 27) {
             event.stopPropagation();
             event.preventDefault();
-            if (this.tagBuffer) {
-                this.tagBuffer = '';
+            if (this._inputValue) {
+                this._inputValue = '';
             }
-            if (this.selectedTag >= 0) {
-                this.onFocus();
+            if (this._selectedTag >= 0) {
+                this._handleFocus();
             }
             return;
         }
         // reset selected tag
-        if (this.selectedTag >= 0) {
+        if (this._selectedTag >= 0) {
             this.resetselectedTag();
         }
         // filter
         setTimeout(function () {
-            _this.filterMatches(new RegExp(_this.tagBuffer, 'ig'));
+            _this.filterMatches(new RegExp(_this._inputValue, 'ig'));
         }, 10);
     };
     Md2Tags.prototype._handleKeydown = function (event) {
-        if (this.disabled || this.tagBuffer) {
+        if (this.disabled || this._inputValue) {
             return;
         }
         switch (event.keyCode) {
             case KeyCodes.BACKSPACE:
             case KeyCodes.DELETE:
-                if (this.selectedTag < 0) {
+                if (this._selectedTag < 0) {
                     return;
                 }
                 event.preventDefault();
-                this.removeAndSelectAdjacentTag(this.selectedTag);
+                this.removeAndSelectAdjacentTag(this._selectedTag);
                 break;
             case KeyCodes.TAB:
             case KeyCodes.ESCAPE:
-                if (this.selectedTag < 0) {
+                if (this._selectedTag < 0) {
                     return;
                 }
                 event.preventDefault();
-                this.onFocus();
+                this._handleFocus();
                 break;
             case KeyCodes.LEFT_ARROW:
                 event.preventDefault();
-                if (this.selectedTag < 0) {
-                    this.selectedTag = this.items.length;
+                if (this._selectedTag < 0) {
+                    this._selectedTag = this._items.length;
                 }
-                if (this.items.length) {
-                    this.selectAndFocusTagSafe(this.selectedTag - 1);
+                if (this._items.length) {
+                    this.selectAndFocusTagSafe(this._selectedTag - 1);
                 }
                 break;
             case KeyCodes.RIGHT_ARROW:
                 event.preventDefault();
-                if (this.selectedTag >= this.items.length) {
-                    this.selectedTag = -1;
+                if (this._selectedTag >= this._items.length) {
+                    this._selectedTag = -1;
                 }
-                this.selectAndFocusTagSafe(this.selectedTag + 1);
+                this.selectAndFocusTagSafe(this._selectedTag + 1);
                 break;
         }
     };
@@ -309,10 +309,10 @@ export var Md2Tags = (function () {
         this.selectAndFocusTagSafe(selIndex);
     };
     Md2Tags.prototype.resetselectedTag = function () {
-        this.selectedTag = -1;
+        this._selectedTag = -1;
     };
     Md2Tags.prototype.getAdjacentTagIndex = function (index) {
-        var len = this.items.length - 1;
+        var len = this._items.length - 1;
         return (len === 0) ? -1 :
             (index === len) ? index - 1 : index;
     };
@@ -321,23 +321,23 @@ export var Md2Tags = (function () {
      * @param event
      * @param index index of the specific tag
      */
-    Md2Tags.prototype.addTag = function (event, index) {
+    Md2Tags.prototype._addTag = function (event, index) {
         event.preventDefault();
         event.stopPropagation();
-        this.items.push(this.list[index]);
-        this.tagBuffer = '';
+        this._items.push(this._list[index]);
+        this._inputValue = '';
         this.updateValue();
     };
     Md2Tags.prototype._removeTagAndFocusInput = function (index) {
         this.removeTag(index);
-        this.onFocus();
+        this._handleFocus();
     };
     /**
      * remove tag
      * @param index
      */
     Md2Tags.prototype.removeTag = function (index) {
-        this.items.splice(index, 1);
+        this._items.splice(index, 1);
         this.updateValue();
     };
     /**
@@ -345,8 +345,8 @@ export var Md2Tags = (function () {
      */
     Md2Tags.prototype.updateValue = function () {
         this._value = new Array();
-        for (var i = 0; i < this.items.length; i++) {
-            this._value.push(this.items[i].value);
+        for (var i = 0; i < this._items.length; i++) {
+            this._value.push(this._items[i].value);
         }
         this._onChangeCallback(this._value);
         this.change.emit(this._value);
@@ -356,20 +356,20 @@ export var Md2Tags = (function () {
      * @param index of select tag
      */
     Md2Tags.prototype._selectTag = function (index) {
-        if (index >= -1 && index <= this.items.length) {
-            this.selectedTag = index;
+        if (index >= -1 && index <= this._items.length) {
+            this._selectedTag = index;
         }
     };
-    Md2Tags.prototype.onFocus = function () {
-        this.element.nativeElement.querySelector('input').focus();
+    Md2Tags.prototype._handleFocus = function () {
+        this._element.nativeElement.querySelector('input').focus();
         this.resetselectedTag();
     };
     Md2Tags.prototype._onInputFocus = function () {
-        this.inputFocused = true;
+        this._inputFocused = true;
         this.resetselectedTag();
     };
     Md2Tags.prototype._onInputBlur = function () {
-        this.inputFocused = false;
+        this._inputFocused = false;
     };
     Md2Tags.prototype._listEnter = function () { this.noBlur = true; };
     Md2Tags.prototype._listLeave = function () { this.noBlur = false; };
@@ -380,21 +380,21 @@ export var Md2Tags = (function () {
     Md2Tags.prototype.filterMatches = function (query) {
         var _this = this;
         var tempList = this._tags.map(function (tag) { return new Tag(tag, _this.textKey, _this.valueKey); });
-        this.list = tempList.filter(function (t) { return (query.test(t.text) && !_this.items.find(function (i) { return t.text === i.text; })); });
-        if (this.list.length > 0) {
-            this.focusedTag = 0;
+        this._list = tempList.filter(function (t) { return (query.test(t.text) && !_this._items.find(function (i) { return t.text === i.text; })); });
+        if (this._list.length > 0) {
+            this._focusedTag = 0;
         }
     };
     Md2Tags.prototype.writeValue = function (value) {
         var _this = this;
         if (value !== this._value) {
             this._value = value;
-            this.items = [];
+            this._items = [];
             if (value && value.length && typeof value === 'object' && Array.isArray(value)) {
                 var _loop_2 = function(i) {
                     var selItm = this_2._tags.find(function (t) { return _this.equals(_this.valueKey ? t[_this.valueKey] : t, value[i]); });
                     if (selItm) {
-                        this_2.items.push(new Tag(selItm, this_2.textKey, this_2.valueKey));
+                        this_2._items.push(new Tag(selItm, this_2.textKey, this_2.valueKey));
                     }
                 };
                 var this_2 = this;
@@ -454,15 +454,15 @@ export var Md2Tags = (function () {
         __metadata('design:type', Function), 
         __metadata('design:paramtypes', []), 
         __metadata('design:returntype', void 0)
-    ], Md2Tags.prototype, "onFocus", null);
+    ], Md2Tags.prototype, "_handleFocus", null);
     Md2Tags = __decorate([
         Component({selector: 'md2-tags',
-            template: "\n    <div class=\"md2-tags-container\">\n      <span *ngFor=\"let t of items; let i = index;\" class=\"md2-tag\" [class.active]=\"selectedTag === i\" (click)=\"_selectTag(i)\">\n        <span class=\"md2-tag-text\">{{t.text}}</span>\n        <svg (click)=\"_removeTagAndFocusInput(i)\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\">\n          <path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\" />\n        </svg>\n      </span>\n      <span class=\"md2-tag-add\">\n        <input [(ngModel)]=\"tagBuffer\" type=\"text\" tabs=\"false\" autocomplete=\"off\" tabindex=\"-1\" [disabled]=\"disabled\" class=\"md2-tags-input\" [placeholder]=\"placeholder\" (focus)=\"_onInputFocus()\" (blur)=\"_onInputBlur()\" (keydown)=\"_handleInputKeydown($event)\" (change)=\"$event.stopPropagation()\" />\n        <ul *ngIf=\"isMenuVisible\" class=\"md2-tags-menu\" (mouseenter)=\"_listEnter()\" (mouseleave)=\"_listLeave()\">\n          <li class=\"md2-option\" *ngFor=\"let l of list; let i = index;\" [class.focused]=\"focusedTag === i\" (click)=\"addTag($event, i)\">\n            <span class=\"md2-option-text\" [innerHtml]=\"l.text | highlight:tagBuffer\"></span>\n          </li>\n        </ul>\n      </span>\n    </div>\n  ",
+            template: "\n    <div class=\"md2-tags-container\">\n      <span *ngFor=\"let t of _items; let i = index;\" class=\"md2-tag\" [class.active]=\"_selectedTag === i\" (click)=\"_selectTag(i)\">\n        <span class=\"md2-tag-text\">{{t.text}}</span>\n        <svg (click)=\"_removeTagAndFocusInput(i)\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\">\n          <path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\" />\n        </svg>\n      </span>\n      <span class=\"md2-tag-add\">\n        <input [(ngModel)]=\"_inputValue\" type=\"text\" tabs=\"false\" autocomplete=\"off\" tabindex=\"-1\" [disabled]=\"disabled\" class=\"md2-tags-input\" [placeholder]=\"placeholder\" (focus)=\"_onInputFocus()\" (blur)=\"_onInputBlur()\" (keydown)=\"_handleInputKeydown($event)\" (change)=\"$event.stopPropagation()\" />\n        <ul *ngIf=\"isMenuVisible\" class=\"md2-tags-menu\" (mouseenter)=\"_listEnter()\" (mouseleave)=\"_listLeave()\">\n          <li class=\"md2-option\" *ngFor=\"let l of _list; let i = index;\" [class.focused]=\"_focusedTag === i\" (click)=\"_addTag($event, i)\">\n            <span class=\"md2-option-text\" [innerHtml]=\"l.text | highlight:_inputValue\"></span>\n          </li>\n        </ul>\n      </span>\n    </div>\n  ",
             styles: ["md2-tags { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } md2-tags:focus { outline: none; } md2-tags .md2-tags-container { position: relative; display: block; max-width: 100%; padding: 2px 3px 8px; border-bottom: 1px solid rgba(0, 0, 0, 0.38); box-sizing: content-box; min-width: 64px; min-height: 26px; cursor: text; } md2-tags .md2-tags-container::before, md2-tags .md2-tags-container::after { display: table; content: ' '; } md2-tags .md2-tags-container::after { clear: both; } md2-tags.focus .md2-tags-container { padding-bottom: 7px; border-bottom: 2px solid #106cc8; } md2-tags.md2-tags-disabled .md2-tags-container { color: rgba(0, 0, 0, 0.38); cursor: default; } md2-tags.md2-tags-disabled.focus .md2-tags-container { padding-bottom: 8px; border-bottom: 1px solid rgba(0, 0, 0, 0.38); } md2-tags .md2-tags-container .md2-tag { position: relative; cursor: default; border-radius: 16px; display: block; height: 32px; line-height: 32px; margin: 8px 8px 0 0; padding: 0 26px 0 12px; float: left; box-sizing: border-box; max-width: 100%; background: #e0e0e0; color: #424242; white-space: nowrap; overflow: hidden; -ms-text-overflow: ellipsis; text-overflow: ellipsis; } md2-tags .md2-tags-container .md2-tag.active { background: #106cc8; color: rgba(255, 255, 255, 0.87); } md2-tags .md2-tags-container .md2-tag svg { position: absolute; top: 4px; right: 2px; cursor: pointer; display: inline-block; overflow: hidden; fill: currentColor; color: rgba(0, 0, 0, 0.54); } md2-tags .md2-tag.active svg { color: rgba(255, 255, 255, 0.87); } md2-tags .md2-tag-add { position: relative; display: inline-block; } md2-tags input { border: 0; outline: 0; margin-top: 8px; height: 32px; line-height: 32px; padding: 0; color: rgba(0, 0, 0, 0.87); background: 0 0; } md2-tags .md2-tags-container .md2-tags-placeholder { color: rgba(0, 0, 0, 0.38); } md2-tags .md2-tags-menu { position: absolute; left: 0; top: 100%; display: block; z-index: 10; flex-direction: column; width: 100%; margin: 6px 0 0; padding: 8px 0; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12); max-height: 256px; min-height: 48px; overflow-y: auto; transform: scale(1); background: #fff; } md2-tags .md2-tags-menu .md2-option { cursor: pointer; position: relative; display: block; color: #212121; align-items: center; width: auto; transition: background 150ms linear; padding: 0 16px; height: 48px; line-height: 48px; } md2-tags .md2-tags-menu .md2-option:hover, md2-tags .md2-tags-menu .md2-option.focused { background: #eeeeee; } md2-tags .md2-tags-menu .md2-option .md2-option-text { width: auto; white-space: nowrap; overflow: hidden; -ms-text-overflow: ellipsis; text-overflow: ellipsis; font-size: 16px; } md2-tags .highlight { color: #757575; } /*# sourceMappingURL=tags.css.map */ "],
             host: {
                 'role': 'tags',
                 '[id]': 'id',
-                '[class.focus]': 'inputFocused || selectedTag >= 0',
+                '[class.focus]': '_inputFocused || _selectedTag >= 0',
                 '[class.md2-tags-disabled]': 'disabled',
                 '[tabindex]': 'disabled ? -1 : tabindex',
                 '[attr.aria-disabled]': 'disabled'

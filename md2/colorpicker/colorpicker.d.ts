@@ -50,23 +50,23 @@ export declare class ColorpickerSliderDirective {
 export declare class Md2Colorpicker implements OnInit, ControlValueAccessor {
     private service;
     private el;
-    private _innerValue;
+    _innerValue: string;
     private _onTouchedCallback;
     private _onChangeCallback;
     private _created;
     private _defalutColor;
-    private _isColorpickerVisible;
-    private _hueSliderColor;
+    _isColorpickerVisible: boolean;
+    _hueSliderColor: string;
     private _initialColor;
-    private slider;
+    slider: SliderPosition;
     private sliderDim;
     private hsva;
-    private rgbaText;
-    private hslaText;
-    private outputColor;
-    private alphaColor;
-    private hexText;
-    private format;
+    rgbaText: Rgba;
+    hslaText: Hsla;
+    outputColor: string;
+    alphaColor: string;
+    hexText: string;
+    format: number;
     cFormat: string;
     colorpickerChange: EventEmitter<string>;
     change: EventEmitter<string>;
@@ -82,7 +82,7 @@ export declare class Md2Colorpicker implements OnInit, ControlValueAccessor {
     /**
     * Show Colorpicker dialog
     */
-    private _showColorpicker();
+    _showColorpicker(): void;
     /**
     * input event listner
     * @param event
@@ -152,17 +152,6 @@ export declare class Md2Colorpicker implements OnInit, ControlValueAccessor {
     * close color picker
     */
     closeColorpicker(): void;
-    /**
-     * create color box
-     * @param element
-     * @param offset
-     */
-    createBox(element: any, offset: any): {
-        top: any;
-        left: any;
-        width: any;
-        height: any;
-    };
     writeValue(value: any): void;
     registerOnChange(fn: any): void;
     registerOnTouched(fn: any): void;

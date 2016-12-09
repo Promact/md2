@@ -13,7 +13,7 @@ import { CommonModule } from '@angular/common';
 import { Md2AutocompleteModule } from '../autocomplete/autocomplete';
 import { KeyCodes } from '../core/core';
 var noop = function () { };
-var Chip = (function () {
+export var Chip = (function () {
     function Chip(source, textKey, valueKey) {
         if (typeof source === 'string') {
             this.text = this.value = source;
@@ -34,6 +34,7 @@ export var MD2_CHIPS_CONTROL_VALUE_ACCESSOR = {
 export var Md2Chips = (function () {
     function Md2Chips(elementRef) {
         this.elementRef = elementRef;
+        this.tabindex = 0;
         this.addOnBlur = true;
         this.addOnComma = true;
         this.addOnEnter = true;
@@ -342,6 +343,10 @@ export var Md2Chips = (function () {
     };
     Md2Chips.prototype.registerOnChange = function (fn) { this.onChangeCallback = fn; };
     Md2Chips.prototype.registerOnTouched = function (fn) { this.onTouchedCallback = fn; };
+    __decorate([
+        Input(), 
+        __metadata('design:type', Number)
+    ], Md2Chips.prototype, "tabindex", void 0);
     __decorate([
         Input(), 
         __metadata('design:type', Boolean)

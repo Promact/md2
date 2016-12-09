@@ -116,14 +116,16 @@ export var ColorpickerSliderDirective = (function () {
      * @param event
      */
     ColorpickerSliderDirective.prototype.getX = function (event) {
-        return (event.pageX !== undefined ? event.pageX : event.touches[0].pageX) - this.el.nativeElement.getBoundingClientRect().left - window.pageXOffset;
+        var boundingClientRect = this.el.nativeElement.getBoundingClientRect();
+        return (event.pageX !== undefined ? event.pageX : event.touches[0].pageX) - boundingClientRect.left - window.pageXOffset;
     };
     /**
      * get y
      * @param event
      */
     ColorpickerSliderDirective.prototype.getY = function (event) {
-        return (event.pageY !== undefined ? event.pageY : event.touches[0].pageY) - this.el.nativeElement.getBoundingClientRect().top - window.pageYOffset;
+        var boundingClientRect = this.el.nativeElement.getBoundingClientRect();
+        return (event.pageY !== undefined ? event.pageY : event.touches[0].pageY) - boundingClientRect.top - window.pageYOffset;
     };
     __decorate([
         Input('colorpicker-slider'), 
@@ -365,19 +367,6 @@ export var Md2Colorpicker = (function () {
     Md2Colorpicker.prototype.closeColorpicker = function () {
         this._isColorpickerVisible = false;
         this.setColorFromString(this._innerValue);
-    };
-    /**
-     * create color box
-     * @param element
-     * @param offset
-     */
-    Md2Colorpicker.prototype.createBox = function (element, offset) {
-        return {
-            top: element.getBoundingClientRect().top + (offset ? window.pageYOffset : 0),
-            left: element.getBoundingClientRect().left + (offset ? window.pageXOffset : 0),
-            width: element.offsetWidth,
-            height: element.offsetHeight
-        };
     };
     Md2Colorpicker.prototype.writeValue = function (value) { this.value = value; };
     Md2Colorpicker.prototype.registerOnChange = function (fn) { this._onChangeCallback = fn; };

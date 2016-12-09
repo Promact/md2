@@ -21,14 +21,14 @@ export var HighlightPipe = (function () {
         if (query.length < 1) {
             return value;
         }
-        return query ? value.replace(new RegExp(this.escapeRegexp(query), 'gi'), '<span class="highlight">$&</span>') : value;
+        return query ? value.replace(new RegExp(this._escapeRegexp(query), 'gi'), '<span class="highlight">$&</span>') : value;
     };
     /**
      * filter pipe
      * @param queryToEscape
      * @return queryToEscape with replace string
      */
-    HighlightPipe.prototype.escapeRegexp = function (queryToEscape) {
+    HighlightPipe.prototype._escapeRegexp = function (queryToEscape) {
         return queryToEscape.replace(/([.?*+^$[\]\\(){}|-])/g, '\\$1');
     };
     HighlightPipe = __decorate([

@@ -1,10 +1,15 @@
 import { AfterContentInit, ElementRef, EventEmitter, ModuleWithProviders } from '@angular/core';
 import { ControlValueAccessor } from '@angular/forms';
 import { HighlightPipe } from './autocomplete-pipe';
+export declare class Item {
+    text: string;
+    value: string;
+    constructor(source: any, textKey: string, valueKey: string);
+}
 export declare const MD2_AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR: any;
 export declare class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
-    private element;
-    constructor(element: ElementRef);
+    private _element;
+    constructor(_element: ElementRef);
     ngAfterContentInit(): void;
     change: EventEmitter<any>;
     textChange: EventEmitter<{}>;
@@ -16,12 +21,12 @@ export declare class Md2Autocomplete implements AfterContentInit, ControlValueAc
     private _onTouchedCallback;
     private _onChangeCallback;
     private _items;
-    private list;
-    private focusedOption;
-    private inputBuffer;
+    _list: Array<Item>;
     private selectedItem;
-    private inputFocused;
     private noBlur;
+    _focusedOption: number;
+    _inputValue: string;
+    _inputFocused: boolean;
     id: string;
     tabindex: number;
     placeholder: string;
@@ -49,17 +54,17 @@ export declare class Md2Autocomplete implements AfterContentInit, ControlValueAc
      * input event listner
      * @param event
      */
-    private _handleKeydown(event);
+    _handleKeydown(event: KeyboardEvent): void;
     /**
      * select option
      * @param event
      * @param index of selected item
      */
-    private select(event, index);
+    _selectOption(event: Event, index: number): void;
     /**
      * clear selected suggestion
      */
-    private onClear();
+    _onClear(): void;
     /**
      * update value
      */
@@ -71,19 +76,19 @@ export declare class Md2Autocomplete implements AfterContentInit, ControlValueAc
     /**
      * input focus listener
      */
-    private _handleFocus();
+    _handleFocus(): void;
     /**
      * input blur listener
      */
-    private _handleBlur();
+    _handleBlur(): void;
     /**
      * suggestion menu mouse enter listener
      */
-    private _handleMouseEnter();
+    _handleMouseEnter(): void;
     /**
      * suggestion menu mouse leave listener
      */
-    private _handleMouseLeave();
+    _handleMouseLeave(): void;
     /**
      * Update suggestion to filter the query
      * @param query

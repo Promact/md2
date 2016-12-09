@@ -15,7 +15,7 @@
       {{placeholder}}
       <span class="md2-placeholder-required" *ngIf="required">*</span>
     </span>
-    <span class="md2-datepicker-input-text">{{_displayInputDate}}</span>
+    <span class="md2-datepicker-input-text">{{_viewValue}}</span>
     <svg width="24" height="24" viewBox="0 0 24 24">
       <path d="M7 10l5 5 5-5z" />
     </svg>
@@ -26,19 +26,19 @@
     <span class="md2-datepicker-year"
           [class.active]="_isYearsVisible"
           [class.hidden]="type==='time'"
-          (click)="_showYear()">{{_displayDay.year}}</span>
+          (click)="_showYear()">{{_viewDay.year}}</span>
     <span class="md2-datepicker-date"
           [class.active]="_isCalendarVisible && !_isYearsVisible"
           [class.hidden]="type==='time'"
-          (click)="_showCalendar()">{{_displayDay.day.substr(0, 3)}},&nbsp;{{_displayDay.month.substr(0, 3)}}&nbsp;{{_displayDay.date}}</span>
+          (click)="_showCalendar()">{{_viewDay.day.substr(0, 3)}},&nbsp;{{_viewDay.month.substr(0, 3)}}&nbsp;{{_viewDay.date}}</span>
     <span class="md2-datepicker-time"
           [class.active]="!_isCalendarVisible"
           [class.hidden]="type==='date'">
       <span class="md2-datepicker-hour"
             [class.active]="_isHoursVisible"
-            (click)="_toggleHours(true)">{{_displayDay.hour}}</span>:<span class="md2-datepicker-minute"
-                                                                          [class.active]="!_isHoursVisible"
-                                                                          (click)="_toggleHours(false)">{{_displayDay.minute}}</span>
+            (click)="_toggleHours(true)">{{_viewDay.hour}}</span>:<span class="md2-datepicker-minute"
+                                                                        [class.active]="!_isHoursVisible"
+                                                                        (click)="_toggleHours(false)">{{_viewDay.minute}}</span>
     </span>
   </div>
   <div class="md2-datepicker-body">
@@ -46,7 +46,7 @@
       <div class="md2-years-wrapper">
         <div *ngFor="let y of _years"
              class="md2-year"
-             [class.selected]="y === _displayDay.year"
+             [class.selected]="y === _viewDay.year"
              (click)="_setYear(y)">{{y}}</div>
       </div>
     </div>
@@ -67,7 +67,7 @@
               <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path>
             </svg>
           </div>
-          <div class="md2-calendar-header">{{_displayDay.month}} {{_displayDay.year}}</div>
+          <div class="md2-calendar-header">{{_viewDay.month}} {{_viewDay.year}}</div>
         </div>
         <table class="md2-calendar-month">
           <thead><tr><th *ngFor="let d of _days">{{d.substr(0, 1)}}</th></tr></thead>
@@ -103,15 +103,15 @@
         <div class="md2-clock-hours" [class.active]="_isHoursVisible">
           <div *ngFor="let h of _hours"
                class="md2-clock-hour"
-               [style.top]="h.top + 'px'"
-               [style.left]="h.left + 'px'"
+               [style.top.px]="h.top"
+               [style.left.px]="h.left"
                (click)="_onClickHour($event,h.hour)">{{h.hour}}</div>
         </div>
         <div class="md2-clock-minutes" [class.active]="!_isHoursVisible">
           <div *ngFor="let m of _minutes"
                class="md2-clock-minute"
-               [style.top]="m.top + 'px'"
-               [style.left]="m.left + 'px'"
+               [style.top.px]="m.top"
+               [style.left.px]="m.left"
                (click)="_onClickMinute($event,m.minute)">{{m.minute}}</div>
         </div>
       </div>

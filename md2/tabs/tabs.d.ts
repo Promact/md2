@@ -7,7 +7,7 @@ export declare class Md2Transclude {
     viewRef: ViewContainerRef;
     private _md2Transclude;
     constructor(viewRef: ViewContainerRef);
-    private md2Transclude;
+    md2Transclude: TemplateRef<any>;
 }
 export declare class Md2Tab {
     label: string;
@@ -26,10 +26,10 @@ export declare class Md2Tabs implements AfterContentInit {
     private _isInitialized;
     private _focusIndex;
     private _selectedIndex;
-    private shouldPaginate;
-    private offsetLeft;
-    private inkBarLeft;
-    private inkBarWidth;
+    _shouldPaginate: boolean;
+    _offsetLeft: number;
+    _inkBarLeft: string;
+    _inkBarWidth: string;
     class: string;
     selectedIndex: any;
     focusIndex: number;

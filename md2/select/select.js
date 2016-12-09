@@ -52,9 +52,10 @@ export var Md2Select = (function () {
         this._selected = null;
         this._isInitialized = false;
         this.isOpenable = true;
-        this.isMenuVisible = false;
-        this.selectedValue = '';
+        this._isMenuVisible = false;
+        this._selectedValue = '';
         this.focusIndex = 0;
+        this._onChange = function (value) { };
         this._onTouched = function () { };
         this.change = new EventEmitter();
         this.options = null;
@@ -117,10 +118,10 @@ export var Md2Select = (function () {
                 if (!selected.selected) {
                     selected.selected = true;
                 }
-                this.selectedValue = selected.text;
+                this._selectedValue = selected.text;
             }
             else {
-                this.selectedValue = '';
+                this._selectedValue = '';
             }
         },
         enumerable: true,
@@ -131,10 +132,10 @@ export var Md2Select = (function () {
         var _this = this;
         var opt = this.options.filter(function (o) { return _this.equals(o.value, _this.value); })[0];
         if (opt && !this.equals(this.selected, opt)) {
-            this.selectedValue = opt.text;
+            this._selectedValue = opt.text;
         }
-        if (this.selected && this.selectedValue !== this.selected.text) {
-            this.selectedValue = this.selected.text;
+        if (this.selected && this._selectedValue !== this.selected.text) {
+            this._selectedValue = this.selected.text;
         }
     };
     /**
@@ -233,7 +234,7 @@ export var Md2Select = (function () {
         }
         this.updateScroll();
     };
-    Md2Select.prototype.onClick = function (e) {
+    Md2Select.prototype._handleClick = function (e) {
         var _this = this;
         if (this.disabled || this.readonly) {
             e.stopPropagation();
@@ -241,7 +242,7 @@ export var Md2Select = (function () {
             return;
         }
         if (this.isOpenable) {
-            if (!this.isMenuVisible) {
+            if (!this._isMenuVisible) {
                 this.options.forEach(function (o) {
                     o.focused = false;
                     if (o.selected) {
@@ -249,7 +250,7 @@ export var Md2Select = (function () {
                     }
                 });
                 this.focusIndex = this.getFocusIndex();
-                this.isMenuVisible = true;
+                this._isMenuVisible = true;
                 setTimeout(function () {
                     _this.updateScroll();
                 }, 0);
@@ -262,7 +263,7 @@ export var Md2Select = (function () {
         if (this.disabled) {
             return;
         }
-        if (this.isMenuVisible) {
+        if (this._isMenuVisible) {
             event.preventDefault();
             event.stopPropagation();
             switch (event.keyCode) {
@@ -290,15 +291,15 @@ export var Md2Select = (function () {
                 case KeyCodes.UP_ARROW:
                     event.preventDefault();
                     event.stopPropagation();
-                    this.onClick(event);
+                    this._handleClick(event);
                     break;
             }
         }
     };
     Md2Select.prototype._onBlur = function () {
         var _this = this;
-        if (this.isMenuVisible) {
-            this.isMenuVisible = false;
+        if (this._isMenuVisible) {
+            this._isMenuVisible = false;
             this.isOpenable = false;
             setTimeout(function () {
                 _this.isOpenable = true;
@@ -403,7 +404,7 @@ export var Md2Select = (function () {
         __metadata('design:type', Function), 
         __metadata('design:paramtypes', [Object]), 
         __metadata('design:returntype', void 0)
-    ], Md2Select.prototype, "onClick", null);
+    ], Md2Select.prototype, "_handleClick", null);
     __decorate([
         HostListener('keydown', ['$event']), 
         __metadata('design:type', Function), 
@@ -418,7 +419,7 @@ export var Md2Select = (function () {
     ], Md2Select.prototype, "_onBlur", null);
     Md2Select = __decorate([
         Component({selector: 'md2-select',
-            template: "<div class=\"md2-select-container\"> <span class=\"md2-select-placeholder\" [class.has-value]=\"selectedValue\">    {{placeholder}}  </span> <span *ngIf=\"selectedValue\" class=\"md2-select-value\" [innerHtml]=\"selectedValue\"></span> <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M7 10l5 5 5-5z\" /> </svg> </div> <div class=\"md2-select-menu\" [class.open]=\"isMenuVisible\"> <ng-content></ng-content> </div>",
+            template: "<div class=\"md2-select-container\"> <span class=\"md2-select-placeholder\" [class.has-value]=\"_selectedValue\">{{placeholder}}</span> <span *ngIf=\"_selectedValue\" class=\"md2-select-value\" [innerHtml]=\"_selectedValue\"></span> <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M7 10l5 5 5-5z\" /> </svg> </div> <div class=\"md2-select-menu\" [class.open]=\"_isMenuVisible\"> <ng-content></ng-content> </div>",
             styles: ["md2-select { position: relative; display: block; margin: 18px 0; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } md2-select:focus { outline: none; } md2-select.md2-select-disabled { pointer-events: none; cursor: default; } md2-select .md2-select-container { position: relative; width: 100%; min-width: 64px; min-height: 30px; align-items: center; padding: 2px 26px 1px 2px; border-bottom: 1px solid rgba(0, 0, 0, 0.12); box-sizing: border-box; cursor: pointer; } md2-select:focus .md2-select-container { padding-bottom: 0; border-bottom: 2px solid #106cc8; } md2-select.md2-select-disabled .md2-select-container { color: rgba(0, 0, 0, 0.38); border-color: transparent; background-image: linear-gradient(to right, rgba(0, 0, 0, 0.38) 0%, rgba(0, 0, 0, 0.38) 33%, transparent 0%); background-position: bottom -1px left 0; background-size: 4px 1px; background-repeat: repeat-x; cursor: default; } md2-select.md2-select-disabled:focus .md2-select-container { padding-bottom: 1px; border-bottom: 1px solid transparent; } md2-select .md2-select-container .md2-select-placeholder { position: absolute; right: 26px; bottom: 100%; left: 0; color: rgba(0, 0, 0, 0.38); max-width: 100%; padding-left: 3px; padding-right: 0; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; z-index: 1; transform: translate3d(0, 26px, 0) scale(1); transition: transform 400ms cubic-bezier(0.25, 0.8, 0.25, 1); transform-origin: left top; } [aria-required=true] .md2-select-placeholder::after { content: '*'; } /*md2-select:focus:not(.md-select-disabled) { color: $primary; border-bottom: 1px solid $primary; } .ng-invalid.ng-touched:not(.md2-select-disabled) { color: $warn; border-bottom: 1px solid $warn; }*/ md2-select:focus .md2-select-placeholder { color: #2196f3; } md2-select:focus .md2-select-placeholder, md2-select .md2-select-placeholder.has-value { transform: translate3d(0, 6px, 0) scale(0.75); } md2-select.md2-select-disabled:focus .md2-select-placeholder, md2-select .md2-select-container .md2-select-value { display: block; font-size: 15px; line-height: 26px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } md2-select .md2-select-container svg { position: absolute; right: 0; top: 2px; display: block; fill: currentColor; color: rgba(0, 0, 0, 0.54); } md2-select .md2-select-menu { position: absolute; left: 0; top: 0; display: none; z-index: 10; flex-direction: column; width: 100%; margin: 0; padding: 8px 0; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4); max-height: 256px; min-height: 48px; overflow-y: auto; transform: scale(1); background: #fff; } md2-select .md2-select-menu.open { display: block; } /*# sourceMappingURL=select.css.map */ "],
             host: {
                 'role': 'select',

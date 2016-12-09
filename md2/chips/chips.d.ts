@@ -1,8 +1,14 @@
 import { ElementRef, ModuleWithProviders, EventEmitter, AfterContentInit } from '@angular/core';
 import { ControlValueAccessor, NgForm } from '@angular/forms';
+export declare class Chip {
+    text: string;
+    value: string;
+    constructor(source: any, textKey: string, valueKey: string);
+}
 export declare const MD2_CHIPS_CONTROL_VALUE_ACCESSOR: any;
 export declare class Md2Chips implements ControlValueAccessor, AfterContentInit {
     private elementRef;
+    tabindex: number;
     addOnBlur: boolean;
     addOnComma: boolean;
     addOnEnter: boolean;
@@ -26,14 +32,14 @@ export declare class Md2Chips implements ControlValueAccessor, AfterContentInit 
     chipInputForm: NgForm;
     private onTouchedCallback;
     private onChangeCallback;
-    private chipItemList;
+    chipItemList: Array<Chip>;
     inputValue: string;
     private _value;
     selectedChip: number;
     private splitRegExp;
     private templateHtmlString;
     private item;
-    private inputFocused;
+    inputFocused: boolean;
     private isEmptyAutoComplete;
     private isObject;
     constructor(elementRef: ElementRef);
@@ -52,7 +58,7 @@ export declare class Md2Chips implements ControlValueAccessor, AfterContentInit 
      * @param event
      */
     inputChanged(event: KeyboardEvent): void;
-    private _handleFocus();
+    _handleFocus(): void;
     inputBlurred(event: Event): void;
     inputFocus(event: Event): void;
     inputPaste(event: any): void;

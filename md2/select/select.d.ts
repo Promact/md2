@@ -22,8 +22,8 @@ export declare class Md2Select implements AfterContentInit, AfterContentChecked,
     private _selected;
     private _isInitialized;
     private isOpenable;
-    private isMenuVisible;
-    private selectedValue;
+    _isMenuVisible: boolean;
+    _selectedValue: string;
     private focusIndex;
     _onChange: (value: any) => void;
     _onTouched: () => void;
@@ -59,8 +59,8 @@ export declare class Md2Select implements AfterContentInit, AfterContentChecked,
      * @param inc
      */
     private updateFocus(inc);
-    private onClick(e);
-    private _handleKeydown(event);
+    _handleClick(e: any): void;
+    _handleKeydown(event: any): void;
     _onBlur(): void;
     touch(): void;
     private _updateOptions();

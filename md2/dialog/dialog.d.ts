@@ -8,15 +8,15 @@ export declare class Md2DialogTitle {
 export declare class Md2DialogFooter {
 }
 export declare class Md2Dialog implements OnDestroy {
-    private overlay;
-    constructor(overlay: Overlay);
+    private _overlay;
+    constructor(_overlay: Overlay);
     onShow: EventEmitter<Md2Dialog>;
     onClose: EventEmitter<any>;
     onCancel: EventEmitter<any>;
     /** The portal to send the dialog content through */
-    private portal;
+    _portal: Md2DialogPortal;
     /** Is the dialog active? */
-    private isOpened;
+    _isOpened: boolean;
     dialogTitle: string;
     /** Overlay configuration for positioning the dialog */
     config: OverlayState;
@@ -27,7 +27,7 @@ export declare class Md2Dialog implements OnDestroy {
     open(): Promise<Md2Dialog>;
     /** Close the dialog */
     close(result?: any, cancel?: boolean): Promise<Md2Dialog>;
-    private _handleDocumentKeydown(event);
+    _handleDocumentKeydown(event: KeyboardEvent): void;
 }
 export declare const MD2_DIALOG_DIRECTIVES: any[];
 export declare const MD2_DIALOG_PROVIDERS: any[];

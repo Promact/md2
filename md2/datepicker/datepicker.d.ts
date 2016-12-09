@@ -1,5 +1,5 @@
 import { AfterContentInit, ElementRef, EventEmitter, ModuleWithProviders } from '@angular/core';
-import { ControlValueAccessor } from '@angular/forms';
+import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { Md2DateUtil } from './dateUtil';
 export interface IDay {
     year: number;
@@ -23,38 +23,38 @@ export interface IWeek {
     today: boolean;
     disabled: boolean;
 }
-export declare const MD2_DATEPICKER_CONTROL_VALUE_ACCESSOR: any;
 export declare class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
     private _dateUtil;
-    private _element;
-    constructor(_dateUtil: Md2DateUtil, _element: ElementRef);
+    private element;
+    _control: NgControl;
+    constructor(_dateUtil: Md2DateUtil, element: ElementRef, _control: NgControl);
     ngAfterContentInit(): void;
     private _value;
     private _readonly;
     private _required;
     private _disabled;
     private _isInitialized;
-    private _onTouchedCallback;
-    private _onChangeCallback;
-    private _isDatepickerVisible;
-    private _isYearsVisible;
-    private _isCalendarVisible;
-    private _isHoursVisible;
-    private _months;
-    private _days;
-    private _hours;
-    private _minutes;
-    private _prevMonth;
-    private _currMonth;
-    private _nextMonth;
-    private _years;
-    private _dates;
-    private _today;
+    _onChange: (value: any) => void;
+    _onTouched: () => void;
+    _isDatepickerVisible: boolean;
+    _isYearsVisible: boolean;
+    _isCalendarVisible: boolean;
+    _isHoursVisible: boolean;
+    private months;
+    _days: Array<string>;
+    _hours: Array<Object>;
+    _minutes: Array<Object>;
+    _prevMonth: number;
+    _currMonth: number;
+    _nextMonth: number;
+    _years: Array<number>;
+    _dates: Array<Object>;
+    private today;
     private _displayDate;
-    private _selectedDate;
-    private _displayDay;
-    private _displayInputDate;
-    private _clock;
+    _selectedDate: Date;
+    _viewDay: IDay;
+    _viewValue: string;
+    _clock: any;
     private _minDate;
     private _maxDate;
     change: EventEmitter<any>;
@@ -72,62 +72,62 @@ export declare class Md2Datepicker implements AfterContentInit, ControlValueAcce
     max: string;
     value: any;
     displayDate: Date;
-    private _handleClick(event);
-    private _handleKeydown(event);
-    private _onBlur();
+    _handleClick(event: MouseEvent): void;
+    _handleKeydown(event: KeyboardEvent): void;
+    _onBlur(): void;
     /**
      * Display Years
      */
-    private _showYear();
-    private _getYears();
+    _showYear(): void;
+    private getYears();
     private _scrollToSelectedYear();
     /**
      * select year
      * @param year
      */
-    private _setYear(year);
+    _setYear(year: number): void;
     /**
      * Display Datepicker
      */
-    private _showDatepicker();
+    _showDatepicker(): void;
     /**
      * Display Calendar
      */
-    private _showCalendar();
+    _showCalendar(): void;
     /**
      * Toggle Hour visiblity
      */
-    private _toggleHours(value);
+    _toggleHours(value: boolean): void;
     /**
      * Ok Button Event
      */
-    private _onClickOk();
+    _onClickOk(): void;
     /**
      * Date Selection Event
      * @param event Event Object
      * @param date Date Object
      */
-    private _onClickDate(event, date);
+    _onClickDate(event: Event, date: any): void;
     /**
      * Set Date
      * @param date Date Object
      */
-    private _setDate(date);
+    private setDate(date);
     /**
      * Update Month
      * @param noOfMonths increment number of months
      */
-    private _updateMonth(noOfMonths);
+    _updateMonth(noOfMonths: number): void;
     /**
      * Check is Before month enabled or not
      * @return boolean
      */
-    private _isBeforeMonth();
+    _isBeforeMonth(): boolean;
     /**
      * Check is After month enabled or not
      * @return boolean
      */
-    private _isAfterMonth();
+    _isAfterMonth(): boolean;
     /**
      * Check the date is enabled or not
      * @param date Date Object
@@ -137,29 +137,29 @@ export declare class Md2Datepicker implements AfterContentInit, ControlValueAcce
     /**
      * Generate Month Calendar
      */
-    private _generateCalendar();
+    private generateCalendar();
     /**
      * Select Hour
      * @param event Event Object
      * @param hour number of hours
      */
-    private _onClickHour(event, hour);
+    _onClickHour(event: Event, hour: number): void;
     /**
      * Select Minute
      * @param event Event Object
      * @param minute number of minutes
      */
-    private _onClickMinute(event, minute);
+    _onClickMinute(event: Event, minute: number): void;
     /**
      * Set hours
      * @param hour number of hours
      */
-    private _setHour(hour);
+    private setHour(hour);
     /**
      * Set minutes
      * @param minute number of minutes
      */
-    private _setMinute(minute);
+    private setMinute(minute);
     /**
      * reser clock hands
      */
@@ -173,7 +173,7 @@ export declare class Md2Datepicker implements AfterContentInit, ControlValueAcce
     /**
      * render Click
      */
-    private _generateClock();
+    private generateClock();
     /**
      * format date
      * @param date Date Object
@@ -193,8 +193,8 @@ export declare class Md2Datepicker implements AfterContentInit, ControlValueAcce
      */
     private _offset(element);
     writeValue(value: any): void;
-    registerOnChange(fn: any): void;
-    registerOnTouched(fn: any): void;
+    registerOnChange(fn: (value: any) => void): void;
+    registerOnTouched(fn: () => {}): void;
 }
 export declare const MD2_DATEPICKER_DIRECTIVES: typeof Md2Datepicker[];
 export declare class Md2DatepickerModule {

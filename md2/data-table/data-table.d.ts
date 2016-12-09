@@ -39,26 +39,26 @@ export declare class Md2DataTable implements OnChanges, DoCheck {
 }
 export declare class Md2DataTableSortField {
     private _md2Table;
-    private isAsc;
-    private isDesc;
-    private sortField;
+    _isAsc: boolean;
+    _isDesc: boolean;
+    sortField: string;
     constructor(_md2Table: Md2DataTable);
-    private _sort();
+    _sort(): void;
 }
 export declare class Md2Pagination implements OnChanges {
-    private injectMd2Table;
+    private _injectMd2Table;
     private _md2Table;
-    private _activePage;
-    private _rows;
-    private _lastPage;
-    private dataLength;
+    _activePage: number;
+    _rows: number;
+    _lastPage: number;
+    _dataLength: number;
     rows: any;
     md2InputTable: Md2DataTable;
-    constructor(injectMd2Table: Md2DataTable);
+    constructor(_injectMd2Table: Md2DataTable);
     ngAfterViewInit(): void;
     ngOnChanges(changes: any): any;
-    private _setPage(page);
-    private _setRows(rows);
+    _setPage(page: number): void;
+    _setRows(rows: number): void;
     private _onPageChange;
 }
 export declare const MD2_DATA_TABLE_DIRECTIVES: any[];

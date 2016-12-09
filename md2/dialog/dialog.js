@@ -46,17 +46,17 @@ export var Md2DialogFooter = (function () {
     return Md2DialogFooter;
 }());
 export var Md2Dialog = (function () {
-    function Md2Dialog(overlay) {
-        this.overlay = overlay;
+    function Md2Dialog(_overlay) {
+        this._overlay = _overlay;
         this.onShow = new EventEmitter();
         this.onClose = new EventEmitter();
         this.onCancel = new EventEmitter();
         /** Is the dialog active? */
-        this.isOpened = false;
+        this._isOpened = false;
         /** Overlay configuration for positioning the dialog */
         this.config = new OverlayState();
         /** @internal */
-        this.overlayRef = null;
+        this._overlayRef = null;
     }
     Md2Dialog.prototype.ngOnDestroy = function () {
         return this.close();
@@ -69,14 +69,14 @@ export var Md2Dialog = (function () {
     Md2Dialog.prototype.open = function () {
         var _this = this;
         return this.close()
-            .then(function () { return _this.overlay.create(_this.config); })
+            .then(function () { return _this._overlay.create(_this.config); })
             .then(function (ref) {
-            _this.overlayRef = ref;
-            return ref.attach(_this.portal);
+            _this._overlayRef = ref;
+            return ref.attach(_this._portal);
         })
             .then(function () { return Animate.wait(); })
             .then(function () {
-            _this.isOpened = true;
+            _this._isOpened = true;
             _this.onShow.emit(_this);
             return _this;
         });
@@ -86,16 +86,16 @@ export var Md2Dialog = (function () {
         var _this = this;
         if (result === void 0) { result = true; }
         if (cancel === void 0) { cancel = false; }
-        if (!this.overlayRef) {
+        if (!this._overlayRef) {
             return Promise.resolve(this);
         }
-        this.isOpened = false;
+        this._isOpened = false;
         // TODO(jd): this is terrible, use animate states
         return Animate.wait(100)
-            .then(function () { return _this.overlayRef.detach(); })
+            .then(function () { return _this._overlayRef.detach(); })
             .then(function () {
-            _this.overlayRef.dispose();
-            _this.overlayRef = null;
+            _this._overlayRef.dispose();
+            _this._overlayRef = null;
             if (cancel) {
                 _this.onCancel.emit(result);
             }
@@ -125,7 +125,7 @@ export var Md2Dialog = (function () {
     __decorate([
         ViewChild(Md2DialogPortal), 
         __metadata('design:type', Md2DialogPortal)
-    ], Md2Dialog.prototype, "portal", void 0);
+    ], Md2Dialog.prototype, "_portal", void 0);
     __decorate([
         Input('title'), 
         __metadata('design:type', String)
@@ -136,7 +136,7 @@ export var Md2Dialog = (function () {
     ], Md2Dialog.prototype, "config", void 0);
     Md2Dialog = __decorate([
         Component({selector: 'md2-dialog',
-            template: "<template md2DialogPortal> <div class=\"md2-dialog\" [class.open]=\"isOpened\"> <div class=\"md2-dialog-container\"> <div class=\"md2-dialog-header\"> <button type=\"button\" class=\"close\" aria-label=\"Close\" (click)=\"close()\">&times;</button> <h2 *ngIf=\"dialogTitle\" class=\"md2-dialog-title\" id=\"myDialogLabel\" [innerHtml]=\"dialogTitle\"></h2> <ng-content select=\"md2-dialog-title\"></ng-content> </div> <div class=\"md2-dialog-body\"> <ng-content></ng-content> </div> <ng-content select=\"md2-dialog-footer\"></ng-content> </div> </div> </template> ",
+            template: "<template md2DialogPortal> <div class=\"md2-dialog\" [class.open]=\"_isOpened\"> <div class=\"md2-dialog-container\"> <div class=\"md2-dialog-header\"> <button type=\"button\" class=\"close\" aria-label=\"Close\" (click)=\"close()\">&times;</button> <h2 *ngIf=\"dialogTitle\" class=\"md2-dialog-title\" id=\"myDialogLabel\" [innerHtml]=\"dialogTitle\"></h2> <ng-content select=\"md2-dialog-title\"></ng-content> </div> <div class=\"md2-dialog-body\"> <ng-content></ng-content> </div> <ng-content select=\"md2-dialog-footer\"></ng-content> </div> </div> </template> ",
             styles: [".md2-dialog-open { overflow-y: hidden; } .md2-dialog { position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 1050; background-color: rgba(33, 33, 33, 0.48); display: none; overflow-x: hidden; overflow-y: scroll; -webkit-overflow-scrolling: touch; outline: 0; } .md2-dialog.open { display: block; } .md2-dialog .md2-dialog-container { position: relative; width: auto; margin: 15px; background-color: #fff; background-clip: padding-box; border-radius: 0 0 4px 4px; outline: 0; box-shadow: 0 7px 8px -4px rgba(0, 0, 0, 0.2), 0 13px 19px 2px rgba(0, 0, 0, 0.14), 0 5px 24px 4px rgba(0, 0, 0, 0.12); transition: 300ms; transform: scale(0.1); } .md2-dialog.open .md2-dialog-container { transform: scale(1); } @media (min-width: 768px) { .md2-dialog .md2-dialog-container { width: 600px; margin: 30px auto; } } .md2-dialog-header { background: #2196f3; color: #fff; font-size: 25px; line-height: 1.1; font-weight: 500; padding: 0 48px 0 16px; border-bottom: 1px solid #e5e5e5; word-wrap: break-word; } .md2-dialog-header .close { position: absolute; top: 21px; right: 16px; display: inline-block; width: 18px; height: 18px; overflow: hidden; -webkit-appearance: none; padding: 0; cursor: pointer; background: 0 0; border: 0; outline: 0; opacity: 0.8; font-size: 0; z-index: 1; min-width: initial; box-shadow: none; margin: 0; } .md2-dialog-header .close::before, .md2-dialog-header .close::after { content: ''; position: absolute; top: 50%; left: 0; width: 100%; height: 2px; margin-top: -1px; background: #ccc; border-radius: 2px; } .md2-dialog-header .close::before { transform: rotate(45deg); } .md2-dialog-header .close::after { transform: rotate(-45deg); } .md2-dialog-header .close:hover { opacity: 1; } .md2-dialog-header md2-dialog-title, .md2-dialog-header .md2-dialog-title { display: block; margin: 0; padding: 16px 0; font-size: 25px; font-weight: 500; } .md2-dialog-header dialog-header { line-height: 33px; } .md2-dialog-body { position: relative; padding: 16px; } .md2-dialog-footer, md2-dialog-footer { display: block; padding: 16px; text-align: right; border-top: 1px solid rgba(0, 0, 0, 0.12); } /*# sourceMappingURL=dialog.css.map */ "],
             host: {
                 'tabindex': '0',

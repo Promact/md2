@@ -11,13 +11,13 @@ import { Directive, Input, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 export var Md2Collapse = (function () {
     function Md2Collapse() {
-        this.isExpanded = true;
-        this.isCollapsing = false;
+        this._isExpanded = true;
+        this._isCollapsing = false;
     }
     Object.defineProperty(Md2Collapse.prototype, "collapse", {
-        get: function () { return this.isExpanded; },
+        get: function () { return this._isExpanded; },
         set: function (value) {
-            this.isExpanded = value;
+            this._isExpanded = value;
             this.toggle();
         },
         enumerable: true,
@@ -27,7 +27,7 @@ export var Md2Collapse = (function () {
      * toggle collapse
      */
     Md2Collapse.prototype.toggle = function () {
-        if (this.isExpanded) {
+        if (this._isExpanded) {
             this.hide();
         }
         else {
@@ -39,10 +39,10 @@ export var Md2Collapse = (function () {
      */
     Md2Collapse.prototype.hide = function () {
         var _this = this;
-        this.isCollapsing = true;
-        this.isExpanded = false;
+        this._isCollapsing = true;
+        this._isExpanded = false;
         setTimeout(function () {
-            _this.isCollapsing = false;
+            _this._isCollapsing = false;
         }, 4);
     };
     /**
@@ -50,10 +50,10 @@ export var Md2Collapse = (function () {
      */
     Md2Collapse.prototype.show = function () {
         var _this = this;
-        this.isCollapsing = true;
-        this.isExpanded = true;
+        this._isCollapsing = true;
+        this._isExpanded = true;
         setTimeout(function () {
-            _this.isCollapsing = false;
+            _this._isCollapsing = false;
         }, 4);
     };
     __decorate([
@@ -64,11 +64,11 @@ export var Md2Collapse = (function () {
         Directive({
             selector: '[collapse]',
             host: {
-                '[class.in]': 'isExpanded',
+                '[class.in]': '_isExpanded',
                 '[class.collapse]': 'true',
-                '[class.collapsing]': 'isCollapsing',
-                '[attr.aria-expanded]': 'isExpanded',
-                '[attr.aria-hidden]': '!isExpanded',
+                '[class.collapsing]': '_isCollapsing',
+                '[attr.aria-expanded]': '_isExpanded',
+                '[attr.aria-hidden]': '!_isExpanded',
             }
         }), 
         __metadata('design:paramtypes', [])

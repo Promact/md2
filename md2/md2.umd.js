@@ -2542,16 +2542,16 @@ var Md2AccordionHeader = (function () {
     return Md2AccordionHeader;
 }());
 var Md2AccordionTab = (function () {
-    function Md2AccordionTab(accordion) {
-        this.accordion = accordion;
-        this.accordion.addTab(this);
+    function Md2AccordionTab(_accordion) {
+        this._accordion = _accordion;
+        this._accordion.addTab(this);
     }
     /**
      * Toggle the accordion
      * @param event
      * @return if it is disabled
      */
-    Md2AccordionTab.prototype.toggle = function (event) {
+    Md2AccordionTab.prototype._handleClick = function (event) {
         if (this.disabled) {
             event.preventDefault();
             return;
@@ -2559,18 +2559,18 @@ var Md2AccordionTab = (function () {
         var index = this.findTabIndex();
         if (this.active) {
             this.active = !this.active;
-            this.accordion.close.emit({ originalEvent: event, index: index });
+            this._accordion.close.emit({ originalEvent: event, index: index });
         }
-        else if (!this.accordion.multiple) {
-            for (var i = 0; i < this.accordion.tabs.length; i++) {
-                this.accordion.tabs[i].active = false;
+        else if (!this._accordion.multiple) {
+            for (var i = 0; i < this._accordion.tabs.length; i++) {
+                this._accordion.tabs[i].active = false;
             }
             this.active = true;
-            this.accordion.open.emit({ originalEvent: event, index: index });
+            this._accordion.open.emit({ originalEvent: event, index: index });
         }
         else {
             this.active = true;
-            this.accordion.open.emit({ originalEvent: event, index: index });
+            this._accordion.open.emit({ originalEvent: event, index: index });
         }
         event.preventDefault();
     };
@@ -2580,8 +2580,8 @@ var Md2AccordionTab = (function () {
      */
     Md2AccordionTab.prototype.findTabIndex = function () {
         var index = -1;
-        for (var i = 0; i < this.accordion.tabs.length; i++) {
-            if (this.accordion.tabs[i] === this) {
+        for (var i = 0; i < this._accordion.tabs.length; i++) {
+            if (this._accordion.tabs[i] === this) {
                 index = i;
                 break;
             }
@@ -2602,7 +2602,7 @@ var Md2AccordionTab = (function () {
     ], Md2AccordionTab.prototype, "disabled", void 0);
     Md2AccordionTab = __decorate$19([
         _angular_core.Component({selector: 'md2-accordion-tab',
-            template: "\n    <div class=\"md2-accordion-header\" (click)=\"toggle($event)\">\n      <span>{{header}}</span>\n      <ng-content select=\"md2-accordion-header\"></ng-content>\n      <span class=\"md2-accordion-header-icon\"></span>\n    </div>\n    <div class=\"md2-accordion-tab-content\">\n      <ng-content></ng-content>\n    </div>\n  ",
+            template: "\n    <div class=\"md2-accordion-header\" (click)=\"_handleClick($event)\">\n      <span>{{header}}</span>\n      <ng-content select=\"md2-accordion-header\"></ng-content>\n      <span class=\"md2-accordion-header-icon\"></span>\n    </div>\n    <div class=\"md2-accordion-tab-content\">\n      <ng-content></ng-content>\n    </div>\n  ",
             styles: [".md2-accordion { display: block; } md2-accordion-tab { position: relative; display: block; outline: 0; border: 0; border-width: 0 0 1px; border-style: solid; border-color: rgba(0, 0, 0, 0.12); box-sizing: border-box; } md2-accordion-tab[hidden] { display: none; } md2-accordion-tab.md2-accordion-tab-active { border-color: rgba(0, 0, 0, 0.12); } md2-accordion-tab .md2-accordion-header { position: relative; border-radius: 0; color: rgba(0, 0, 0, 0.85); font-weight: 500; cursor: pointer; display: block; align-items: inherit; line-height: 40px; margin: 0; max-height: 40px; overflow: hidden; padding: 0 35px 0 16px; text-align: left; text-decoration: none; white-space: nowrap; width: 100%; box-sizing: border-box; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-user-drag: none; } md2-accordion-tab.md2-accordion-tab-active .md2-accordion-header { color: #106cc8; } md2-accordion-tab.md2-accordion-tab-disabled .md2-accordion-header { pointer-events: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-user-drag: none; opacity: 0.5; cursor: default; } md2-accordion-tab .md2-accordion-header-icon { position: absolute; top: 12px; right: 17px; width: 8px; height: 8px; overflow: hidden; display: inline-block; border-width: 0 2px 2px 0; border-style: solid; border-color: rgba(0, 0, 0, 0.54); transform: rotate(45deg); transition: 300ms ease-in-out; } md2-accordion-tab.md2-accordion-tab-active .md2-accordion-header-icon { transform: rotate(225deg); top: 16px; } md2-accordion-tab .md2-accordion-tab-content { position: relative; display: none; padding: 16px; } md2-accordion-tab.md2-accordion-tab-active .md2-accordion-tab-content { display: block; } /*# sourceMappingURL=accordion.css.map */ "],
             host: {
                 'role': 'accordion-tab',
@@ -2668,14 +2668,14 @@ var HighlightPipe = (function () {
         if (query.length < 1) {
             return value;
         }
-        return query ? value.replace(new RegExp(this.escapeRegexp(query), 'gi'), '<span class="highlight">$&</span>') : value;
+        return query ? value.replace(new RegExp(this._escapeRegexp(query), 'gi'), '<span class="highlight">$&</span>') : value;
     };
     /**
      * filter pipe
      * @param queryToEscape
      * @return queryToEscape with replace string
      */
-    HighlightPipe.prototype.escapeRegexp = function (queryToEscape) {
+    HighlightPipe.prototype._escapeRegexp = function (queryToEscape) {
         return queryToEscape.replace(/([.?*+^$[\]\\(){}|-])/g, '\\$1');
     };
     HighlightPipe = __decorate$21([
@@ -2714,8 +2714,8 @@ var MD2_AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR = {
     multi: true
 };
 var Md2Autocomplete = (function () {
-    function Md2Autocomplete(element) {
-        this.element = element;
+    function Md2Autocomplete(_element) {
+        this._element = _element;
         this.change = new _angular_core.EventEmitter();
         this.textChange = new _angular_core.EventEmitter();
         this._value = '';
@@ -2724,12 +2724,12 @@ var Md2Autocomplete = (function () {
         this._onTouchedCallback = noop;
         this._onChangeCallback = noop;
         this._items = [];
-        this.list = [];
-        this.focusedOption = 0;
-        this.inputBuffer = '';
+        this._list = [];
         this.selectedItem = null;
-        this.inputFocused = false;
         this.noBlur = true;
+        this._focusedOption = 0;
+        this._inputValue = '';
+        this._inputFocused = false;
         this.id = 'md2-autocomplete-' + (++nextId);
         this.tabindex = 0;
         this.placeholder = '';
@@ -2767,16 +2767,16 @@ var Md2Autocomplete = (function () {
             var _this = this;
             if (value !== this._value) {
                 this._value = value;
-                this.inputBuffer = '';
+                this._inputValue = '';
                 if (value) {
                     var selItm = this._items.find(function (i) { return _this.equals(_this.valueKey ? i[_this.valueKey] : i, value); });
                     this.selectedItem = new Item(selItm, this.textKey, this.valueKey);
                     if (this.selectedItem) {
-                        this.inputBuffer = this.selectedItem.text;
+                        this._inputValue = this.selectedItem.text;
                     }
                 }
-                if (!this.inputBuffer) {
-                    this.inputBuffer = '';
+                if (!this._inputValue) {
+                    this._inputValue = '';
                 }
                 if (this._isInitialized) {
                     this._onChangeCallback(value);
@@ -2823,7 +2823,7 @@ var Md2Autocomplete = (function () {
     };
     Object.defineProperty(Md2Autocomplete.prototype, "isMenuVisible", {
         get: function () {
-            return ((this.inputFocused || this.noBlur) && this.list && this.list.length && !this.selectedItem) && !this.readonly ? true : false;
+            return ((this._inputFocused || this.noBlur) && this._list && this._list.length && !this.selectedItem) && !this.readonly ? true : false;
         },
         enumerable: true,
         configurable: true
@@ -2832,10 +2832,10 @@ var Md2Autocomplete = (function () {
      * update scroll of suggestion menu
      */
     Md2Autocomplete.prototype.updateScroll = function () {
-        if (this.focusedOption < 0) {
+        if (this._focusedOption < 0) {
             return;
         }
-        var menuContainer = this.element.nativeElement.querySelector('.md2-autocomplete-menu');
+        var menuContainer = this._element.nativeElement.querySelector('.md2-autocomplete-menu');
         if (!menuContainer) {
             return;
         }
@@ -2843,7 +2843,7 @@ var Md2Autocomplete = (function () {
         if (choices.length < 1) {
             return;
         }
-        var highlighted = choices[this.focusedOption];
+        var highlighted = choices[this._focusedOption];
         if (!highlighted) {
             return;
         }
@@ -2865,7 +2865,7 @@ var Md2Autocomplete = (function () {
         if (this.disabled) {
             return;
         }
-        this.textChange.emit(this.inputBuffer);
+        this.textChange.emit(this._inputValue);
         switch (event.keyCode) {
             case TAB:
                 this._handleMouseLeave();
@@ -2873,22 +2873,22 @@ var Md2Autocomplete = (function () {
             case ESCAPE:
                 event.stopPropagation();
                 event.preventDefault();
-                if (this.inputBuffer) {
-                    this.onClear();
+                if (this._inputValue) {
+                    this._onClear();
                 }
                 break;
             case ENTER:
                 event.preventDefault();
                 event.stopPropagation();
                 if (this.isMenuVisible) {
-                    this.select(event, this.focusedOption);
+                    this._selectOption(event, this._focusedOption);
                 }
                 break;
             case DOWN_ARROW:
                 event.preventDefault();
                 event.stopPropagation();
                 if (this.isMenuVisible) {
-                    this.focusedOption = (this.focusedOption === this.list.length - 1) ? 0 : Math.min(this.focusedOption + 1, this.list.length - 1);
+                    this._focusedOption = (this._focusedOption === this._list.length - 1) ? 0 : Math.min(this._focusedOption + 1, this._list.length - 1);
                     this.updateScroll();
                 }
                 break;
@@ -2896,13 +2896,13 @@ var Md2Autocomplete = (function () {
                 event.preventDefault();
                 event.stopPropagation();
                 if (this.isMenuVisible) {
-                    this.focusedOption = (this.focusedOption === 0) ? this.list.length - 1 : Math.max(0, this.focusedOption - 1);
+                    this._focusedOption = (this._focusedOption === 0) ? this._list.length - 1 : Math.max(0, this._focusedOption - 1);
                     this.updateScroll();
                 }
                 break;
             default:
                 setTimeout(function () {
-                    _this.updateItems(new RegExp(_this.inputBuffer, 'ig'));
+                    _this.updateItems(new RegExp(_this._inputValue, 'ig'));
                 }, 10);
         }
     };
@@ -2911,23 +2911,23 @@ var Md2Autocomplete = (function () {
      * @param event
      * @param index of selected item
      */
-    Md2Autocomplete.prototype.select = function (event, index) {
+    Md2Autocomplete.prototype._selectOption = function (event, index) {
         event.preventDefault();
         event.stopPropagation();
-        this.selectedItem = this.list[index];
-        this.inputBuffer = this.list[index].text;
+        this.selectedItem = this._list[index];
+        this._inputValue = this._list[index].text;
         this.updateValue();
     };
     /**
      * clear selected suggestion
      */
-    Md2Autocomplete.prototype.onClear = function () {
+    Md2Autocomplete.prototype._onClear = function () {
         if (this.disabled) {
             return;
         }
-        this.inputBuffer = '';
+        this._inputValue = '';
         this.selectedItem = null;
-        this.updateItems(new RegExp(this.inputBuffer, 'ig'));
+        this.updateItems(new RegExp(this._inputValue, 'ig'));
         this._value = this.selectedItem ? this.selectedItem.value : this.selectedItem;
         this.updateValue();
     };
@@ -2947,21 +2947,21 @@ var Md2Autocomplete = (function () {
         if (this.disabled) {
             return;
         }
-        this.element.nativeElement.querySelector('input').focus();
+        this._element.nativeElement.querySelector('input').focus();
     };
     /**
      * input focus listener
      */
     Md2Autocomplete.prototype._handleFocus = function () {
-        this.inputFocused = true;
-        this.updateItems(new RegExp(this.inputBuffer, 'ig'));
-        this.focusedOption = 0;
+        this._inputFocused = true;
+        this.updateItems(new RegExp(this._inputValue, 'ig'));
+        this._focusedOption = 0;
     };
     /**
      * input blur listener
      */
     Md2Autocomplete.prototype._handleBlur = function () {
-        this.inputFocused = false;
+        this._inputFocused = false;
     };
     /**
      * suggestion menu mouse enter listener
@@ -2977,12 +2977,12 @@ var Md2Autocomplete = (function () {
      */
     Md2Autocomplete.prototype.updateItems = function (query) {
         var _this = this;
-        if (this.inputBuffer.length < this.minLength) {
-            this.list = [];
+        if (this._inputValue.length < this.minLength) {
+            this._list = [];
         }
         else {
-            this.list = this._items.map(function (i) { return new Item(i, _this.textKey, _this.valueKey); }).filter(function (i) { return query.test(i.text); });
-            if (this.list.length && this.list[0].text !== this.inputBuffer) {
+            this._list = this._items.map(function (i) { return new Item(i, _this.textKey, _this.valueKey); }).filter(function (i) { return query.test(i.text); });
+            if (this._list.length && this._list[0].text !== this._inputValue) {
                 this.selectedItem = null;
             }
         }
@@ -2991,16 +2991,16 @@ var Md2Autocomplete = (function () {
         var _this = this;
         if (value !== this._value) {
             this._value = value;
-            this.inputBuffer = '';
+            this._inputValue = '';
             if (value) {
                 var selItm = this._items.find(function (i) { return _this.equals(_this.valueKey ? i[_this.valueKey] : i, value); });
                 this.selectedItem = new Item(selItm, this.textKey, this.valueKey);
                 if (this.selectedItem) {
-                    this.inputBuffer = this.selectedItem.text;
+                    this._inputValue = this.selectedItem.text;
                 }
             }
-            if (!this.inputBuffer) {
-                this.inputBuffer = '';
+            if (!this._inputValue) {
+                this._inputValue = '';
             }
         }
     };
@@ -3061,7 +3061,7 @@ var Md2Autocomplete = (function () {
     ], Md2Autocomplete.prototype, "value", null);
     Md2Autocomplete = __decorate$20([
         _angular_core.Component({selector: 'md2-autocomplete',
-            template: "\n    <div class=\"md2-autocomplete-wrap\" [class.is-focused]=\"inputFocused || isMenuVisible\">\n      <input [(ngModel)]=\"inputBuffer\" type=\"text\" tabs=\"false\" autocomplete=\"off\" [readonly]=\"readonly\" [tabindex]=\"disabled ? -1 : tabindex\" [disabled]=\"disabled\" class=\"md2-autocomplete-input\" (focus)=\"_handleFocus()\" (blur)=\"_handleBlur()\" (keydown)=\"_handleKeydown($event)\" (change)=\"$event.stopPropagation()\" />\n      <span class=\"md2-autocomplete-placeholder\" [class.has-value]=\"inputBuffer\">\n        {{placeholder}}\n        <span class=\"md2-placeholder-required\" *ngIf=\"required\">*</span>\n      </span>\n      <svg *ngIf=\"inputBuffer\" (click)=\"onClear()\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\">\n        <path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\" />\n      </svg>\n    </div>\n    <ul *ngIf=\"isMenuVisible\" class=\"md2-autocomplete-menu\" (mouseenter)=\"_handleMouseEnter()\" (mouseleave)=\"_handleMouseLeave()\">\n      <li class=\"md2-option\" *ngFor=\"let l of list; let i = index;\" [class.focus]=\"focusedOption === i\" (click)=\"select($event, i)\">\n        <div class=\"md2-text\" [innerHtml]=\"l.text | highlight:inputBuffer\"></div>\n      </li>\n    </ul>\n  ",
+            template: "\n    <div class=\"md2-autocomplete-wrap\" [class.is-focused]=\"_inputFocused || isMenuVisible\">\n      <input [(ngModel)]=\"_inputValue\" type=\"text\" tabs=\"false\" autocomplete=\"off\" [readonly]=\"readonly\" [tabindex]=\"disabled ? -1 : tabindex\" [disabled]=\"disabled\" class=\"md2-autocomplete-input\" (focus)=\"_handleFocus()\" (blur)=\"_handleBlur()\" (keydown)=\"_handleKeydown($event)\" (change)=\"$event.stopPropagation()\" />\n      <span class=\"md2-autocomplete-placeholder\" [class.has-value]=\"_inputValue\">\n        {{placeholder}}\n        <span class=\"md2-placeholder-required\" *ngIf=\"required\">*</span>\n      </span>\n      <svg *ngIf=\"_inputValue\" (click)=\"_onClear()\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\">\n        <path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\" />\n      </svg>\n    </div>\n    <ul *ngIf=\"isMenuVisible\" class=\"md2-autocomplete-menu\" (mouseenter)=\"_handleMouseEnter()\" (mouseleave)=\"_handleMouseLeave()\">\n      <li class=\"md2-option\" *ngFor=\"let l of _list; let i = index;\" [class.focus]=\"_focusedOption === i\" (click)=\"_selectOption($event, i)\">\n        <div class=\"md2-text\" [innerHtml]=\"l.text | highlight:_inputValue\"></div>\n      </li>\n    </ul>\n  ",
             styles: ["\n    md2-autocomplete { position: relative; display: block; margin: 18px 0; outline: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -moz-backface-visibility: hidden; -webkit-backface-visibility: hidden; backface-visibility: hidden; }\n    md2-autocomplete.md2-autocomplete-disabled { pointer-events: none; cursor: default; }\n    md2-autocomplete .md2-autocomplete-wrap { position: relative; display: block; width: 100%; padding: 2px 2px 1px; border-bottom: 1px solid rgba(0, 0, 0, 0.12); box-sizing: border-box; min-width: 64px; min-height: 26px; cursor: pointer; }\n    .md2-autocomplete-wrap.is-focused { padding-bottom: 0; border-bottom: 2px solid #106cc8; }\n    md2-autocomplete.md2-autocomplete-disabled .md2-autocomplete-wrap { color: rgba(0,0,0,0.38); border-color: transparent; background-image: linear-gradient(to right, rgba(0,0,0,0.38) 0%, rgba(0,0,0,0.38) 33%, transparent 0%); background-position: bottom -1px left 0; background-size: 4px 1px; background-repeat: repeat-x; cursor: default; cursor: default; }\n    md2-autocomplete.md2-autocomplete-disabled .md2-autocomplete-wrap.is-focused { padding-bottom: 1px; border-bottom: 1px solid transparent; }\n    .md2-autocomplete-wrap .md2-autocomplete-input { width: 100%; height: 26px; font-size: 15px; outline: none; background: transparent; border: 0; box-sizing: border-box; }\n    md2-autocomplete.md2-autocomplete-disabled .md2-autocomplete-input { color: rgba(0,0,0,0.38); }\n    md2-autocomplete .md2-autocomplete-placeholder { color: rgba(0, 0, 0, 0.38); position: absolute; right: 26px; bottom: 100%; left: 0; color: rgba(0,0,0,0.38); max-width: 100%; padding-left: 3px; padding-right: 0; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; z-index: 1; transform: translate3d(0,26px,0) scale(1); transition: transform .4s cubic-bezier(.25,.8,.25,1); transform-origin: left top; color: rgba(0, 0, 0, 0.38); }\n    .md2-autocomplete-wrap.is-focused .md2-autocomplete-placeholder { color: #2196f3; }\n    .md2-autocomplete-wrap.is-focused .md2-autocomplete-placeholder .md2-placeholder-required { color: #f00; }\n    .md2-autocomplete-wrap.is-focused .md2-autocomplete-placeholder,\n    md2-autocomplete .md2-autocomplete-placeholder.has-value { transform: translate3d(0,6px,0) scale(.75); }\n    .md2-autocomplete-wrap svg { position: absolute; right: 0; top: 0; display: block; height: 100%; background: #fff; fill: currentColor; color: rgba(0,0,0,0.54); }\n    .md2-autocomplete-menu { position: absolute; left: 0; top: 100%; display: block; z-index: 10; width: 100%; margin: 0; padding: 8px 0; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12); max-height: 256px; min-height: 48px; overflow-y: auto; background: #fff; }\n    .md2-autocomplete-menu .md2-option { position: relative; display: block; color: #212121; cursor: pointer; width: auto; padding: 0 16px; height: 48px; line-height: 48px; -moz-transition: background 0.15s linear; -o-transition: background 0.15s linear; -webkit-transition: background 0.15s linear; transition: background 0.15s linear; }\n    .md2-autocomplete-menu .md2-option:hover,\n    .md2-autocomplete-menu .md2-option.focus { background: #eeeeee; }\n    .md2-autocomplete-menu .md2-option .md2-text { width: auto; white-space: nowrap; overflow: hidden; -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; font-size: 16px; }\n    .md2-autocomplete-menu .highlight { color: #757575; }\n  "],
             providers: [MD2_AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR],
             host: {
@@ -3128,6 +3128,7 @@ var MD2_CHIPS_CONTROL_VALUE_ACCESSOR = {
 var Md2Chips = (function () {
     function Md2Chips(elementRef) {
         this.elementRef = elementRef;
+        this.tabindex = 0;
         this.addOnBlur = true;
         this.addOnComma = true;
         this.addOnEnter = true;
@@ -3438,6 +3439,10 @@ var Md2Chips = (function () {
     Md2Chips.prototype.registerOnTouched = function (fn) { this.onTouchedCallback = fn; };
     __decorate$22([
         _angular_core.Input(), 
+        __metadata$22('design:type', Number)
+    ], Md2Chips.prototype, "tabindex", void 0);
+    __decorate$22([
+        _angular_core.Input(), 
         __metadata$22('design:type', Boolean)
     ], Md2Chips.prototype, "addOnBlur", void 0);
     __decorate$22([
@@ -3580,13 +3585,13 @@ var __metadata$23 = (this && this.__metadata) || function (k, v) {
 };
 var Md2Collapse = (function () {
     function Md2Collapse() {
-        this.isExpanded = true;
-        this.isCollapsing = false;
+        this._isExpanded = true;
+        this._isCollapsing = false;
     }
     Object.defineProperty(Md2Collapse.prototype, "collapse", {
-        get: function () { return this.isExpanded; },
+        get: function () { return this._isExpanded; },
         set: function (value) {
-            this.isExpanded = value;
+            this._isExpanded = value;
             this.toggle();
         },
         enumerable: true,
@@ -3596,7 +3601,7 @@ var Md2Collapse = (function () {
      * toggle collapse
      */
     Md2Collapse.prototype.toggle = function () {
-        if (this.isExpanded) {
+        if (this._isExpanded) {
             this.hide();
         }
         else {
@@ -3608,10 +3613,10 @@ var Md2Collapse = (function () {
      */
     Md2Collapse.prototype.hide = function () {
         var _this = this;
-        this.isCollapsing = true;
-        this.isExpanded = false;
+        this._isCollapsing = true;
+        this._isExpanded = false;
         setTimeout(function () {
-            _this.isCollapsing = false;
+            _this._isCollapsing = false;
         }, 4);
     };
     /**
@@ -3619,10 +3624,10 @@ var Md2Collapse = (function () {
      */
     Md2Collapse.prototype.show = function () {
         var _this = this;
-        this.isCollapsing = true;
-        this.isExpanded = true;
+        this._isCollapsing = true;
+        this._isExpanded = true;
         setTimeout(function () {
-            _this.isCollapsing = false;
+            _this._isCollapsing = false;
         }, 4);
     };
     __decorate$23([
@@ -3633,11 +3638,11 @@ var Md2Collapse = (function () {
         _angular_core.Directive({
             selector: '[collapse]',
             host: {
-                '[class.in]': 'isExpanded',
+                '[class.in]': '_isExpanded',
                 '[class.collapse]': 'true',
-                '[class.collapsing]': 'isCollapsing',
-                '[attr.aria-expanded]': 'isExpanded',
-                '[attr.aria-hidden]': '!isExpanded',
+                '[class.collapsing]': '_isCollapsing',
+                '[attr.aria-expanded]': '_isExpanded',
+                '[attr.aria-hidden]': '!_isExpanded',
             }
         }), 
         __metadata$23('design:paramtypes', [])
@@ -3996,14 +4001,16 @@ var ColorpickerSliderDirective = (function () {
      * @param event
      */
     ColorpickerSliderDirective.prototype.getX = function (event) {
-        return (event.pageX !== undefined ? event.pageX : event.touches[0].pageX) - this.el.nativeElement.getBoundingClientRect().left - window.pageXOffset;
+        var boundingClientRect = this.el.nativeElement.getBoundingClientRect();
+        return (event.pageX !== undefined ? event.pageX : event.touches[0].pageX) - boundingClientRect.left - window.pageXOffset;
     };
     /**
      * get y
      * @param event
      */
     ColorpickerSliderDirective.prototype.getY = function (event) {
-        return (event.pageY !== undefined ? event.pageY : event.touches[0].pageY) - this.el.nativeElement.getBoundingClientRect().top - window.pageYOffset;
+        var boundingClientRect = this.el.nativeElement.getBoundingClientRect();
+        return (event.pageY !== undefined ? event.pageY : event.touches[0].pageY) - boundingClientRect.top - window.pageYOffset;
     };
     __decorate$24([
         _angular_core.Input('colorpicker-slider'), 
@@ -4245,19 +4252,6 @@ var Md2Colorpicker = (function () {
     Md2Colorpicker.prototype.closeColorpicker = function () {
         this._isColorpickerVisible = false;
         this.setColorFromString(this._innerValue);
-    };
-    /**
-     * create color box
-     * @param element
-     * @param offset
-     */
-    Md2Colorpicker.prototype.createBox = function (element, offset) {
-        return {
-            top: element.getBoundingClientRect().top + (offset ? window.pageYOffset : 0),
-            left: element.getBoundingClientRect().left + (offset ? window.pageXOffset : 0),
-            width: element.offsetWidth,
-            height: element.offsetHeight
-        };
     };
     Md2Colorpicker.prototype.writeValue = function (value) { this.value = value; };
     Md2Colorpicker.prototype.registerOnChange = function (fn) { this._onChangeCallback = fn; };
@@ -4518,15 +4512,15 @@ var Md2DataTableSortField = (function () {
     function Md2DataTableSortField(_md2Table) {
         var _this = this;
         this._md2Table = _md2Table;
-        this.isAsc = false;
-        this.isDesc = false;
+        this._isAsc = false;
+        this._isDesc = false;
         _md2Table.onSortChange.subscribe(function (event) {
-            _this.isAsc = (event.sortField === _this.sortField && event.sortOrder === 'asc');
-            _this.isDesc = (event.sortField === _this.sortField && event.sortOrder === 'desc');
+            _this._isAsc = (event.sortField === _this.sortField && event.sortOrder === 'asc');
+            _this._isDesc = (event.sortField === _this.sortField && event.sortOrder === 'desc');
         });
     }
     Md2DataTableSortField.prototype._sort = function () {
-        if (this.isAsc) {
+        if (this._isAsc) {
             this._md2Table.setSort(this.sortField, 'desc');
         }
         else {
@@ -4540,7 +4534,7 @@ var Md2DataTableSortField = (function () {
     Md2DataTableSortField = __decorate$26([
         _angular_core.Component({
             selector: '[md2-sort-field]',
-            template: "\n    <span (click)=\"_sort()\">\n      <ng-content></ng-content>\n      <svg *ngIf=\"isAsc\" width=\"24\"height=\"24\" viewBox=\"0 0 24 24\">\n        <path d=\"M7 14l5-5 5 5z\"/>\n      </svg>\n      <svg *ngIf=\"isDesc\" width=\"24\"height=\"24\" viewBox=\"0 0 24 24\">\n        <path d=\"M7 10l5 5 5-5z\"/>\n      </svg>\n      <svg *ngIf=\"!isAsc && !isDesc\" width=\"24\"height=\"24\" viewBox=\"0 0 24 24\">\n        <path d=\"M7,10.5l5-5l5,5H7z\"/>\n        <path d=\"M7,12.5l5,5l5-5H7z\"/>\n      </svg>\n    </span>\n  ",
+            template: "\n    <span (click)=\"_sort()\">\n      <ng-content></ng-content>\n      <svg *ngIf=\"_isAsc\" width=\"24\"height=\"24\" viewBox=\"0 0 24 24\">\n        <path d=\"M7 14l5-5 5 5z\"/>\n      </svg>\n      <svg *ngIf=\"_isDesc\" width=\"24\"height=\"24\" viewBox=\"0 0 24 24\">\n        <path d=\"M7 10l5 5 5-5z\"/>\n      </svg>\n      <svg *ngIf=\"!_isAsc && !_isDesc\" width=\"24\"height=\"24\" viewBox=\"0 0 24 24\">\n        <path d=\"M7,10.5l5-5l5,5H7z\"/>\n        <path d=\"M7,12.5l5,5l5-5H7z\"/>\n      </svg>\n    </span>\n  ",
             styles: ["\n    [md2-sort-field] span { position: relative; display: block; line-height: 24px; white-space: nowrap; cursor: pointer; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }\n    [md2-sort-field] span svg { display: inline-block; vertical-align: middle; fill: currentColor; }\n  "],
             encapsulation: _angular_core.ViewEncapsulation.None
         }), 
@@ -4549,25 +4543,25 @@ var Md2DataTableSortField = (function () {
     return Md2DataTableSortField;
 }());
 var Md2Pagination = (function () {
-    function Md2Pagination(injectMd2Table) {
+    function Md2Pagination(_injectMd2Table) {
         var _this = this;
-        this.injectMd2Table = injectMd2Table;
-        this.dataLength = 0;
+        this._injectMd2Table = _injectMd2Table;
+        this._dataLength = 0;
         this.rows = [];
         this._onPageChange = function (event) {
             _this._activePage = event.activePage;
             _this._rows = event.pageLength;
-            _this.dataLength = event.dataLength;
-            _this._lastPage = Math.ceil(_this.dataLength / _this._rows);
+            _this._dataLength = event.dataLength;
+            _this._lastPage = Math.ceil(_this._dataLength / _this._rows);
         };
     }
     Md2Pagination.prototype.ngAfterViewInit = function () {
-        this._md2Table = this.md2InputTable || this.injectMd2Table;
+        this._md2Table = this.md2InputTable || this._injectMd2Table;
         this._onPageChange(this._md2Table.getPage());
         this._md2Table.onPageChange.subscribe(this._onPageChange);
     };
     Md2Pagination.prototype.ngOnChanges = function (changes) {
-        this._md2Table = this.md2InputTable || this.injectMd2Table;
+        this._md2Table = this.md2InputTable || this._injectMd2Table;
         this._onPageChange(this._md2Table.getPage());
         this._md2Table.onPageChange.subscribe(this._onPageChange);
     };
@@ -4588,7 +4582,7 @@ var Md2Pagination = (function () {
     Md2Pagination = __decorate$26([
         _angular_core.Component({
             selector: 'md2-pagination',
-            template: "\n    <ul class=\"md2-pagination\" *ngIf=\"dataLength > _rows\">\n      <li [class.disabled]=\"_activePage <= 1\" (click)=\"_setPage(1)\">\n        <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\">\n          <path d=\"M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z\"/>\n        </svg>\n      </li>\n      <li *ngIf=\"_activePage > 4 && _activePage + 1 > _lastPage\" (click)=\"_setPage(_activePage - 4)\">{{_activePage-4}}</li>\n      <li *ngIf=\"_activePage > 3 && _activePage + 2 > _lastPage\" (click)=\"_setPage(_activePage - 3)\">{{_activePage-3}}</li>\n      <li *ngIf=\"_activePage > 2\" (click)=\"_setPage(_activePage - 2)\">{{_activePage-2}}</li>\n      <li *ngIf=\"_activePage > 1\" (click)=\"_setPage(_activePage - 1)\">{{_activePage-1}}</li>\n      <li class=\"active\">{{_activePage}}</li>\n      <li *ngIf=\"_activePage + 1 <= _lastPage\" (click)=\"_setPage(_activePage + 1)\">{{_activePage+1}}</li>\n      <li *ngIf=\"_activePage + 2 <= _lastPage\" (click)=\"_setPage(_activePage + 2)\">{{_activePage+2}}</li>\n      <li *ngIf=\"_activePage + 3 <= _lastPage && _activePage < 3\" (click)=\"_setPage(_activePage + 3)\">{{_activePage+3}}</li>\n      <li *ngIf=\"_activePage + 4 <= _lastPage && _activePage < 2\" (click)=\"_setPage(_activePage + 4)\">{{_activePage+4}}</li>\n      <li [class.disabled]=\"_activePage >= _lastPage\" (click)=\"_setPage(_lastPage)\">\n        <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\">\n          <path d=\"M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z\"/>\n        </svg>\n      </li>\n    </ul>\n    <div class=\"md2-rows-select\" *ngIf=\"rows.length > 0\">\n      Rows per page:\n      <select (change)=\"_setRows($event.target.value)\">\n        <option *ngFor=\"let row of rows\" [selected]=\"_rows===row\">{{row}}</option>\n      </select>\n    </div>\n  ",
+            template: "\n    <ul class=\"md2-pagination\" *ngIf=\"_dataLength > _rows\">\n      <li [class.disabled]=\"_activePage <= 1\" (click)=\"_setPage(1)\">\n        <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\">\n          <path d=\"M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z\"/>\n        </svg>\n      </li>\n      <li *ngIf=\"_activePage > 4 && _activePage + 1 > _lastPage\" (click)=\"_setPage(_activePage - 4)\">{{_activePage-4}}</li>\n      <li *ngIf=\"_activePage > 3 && _activePage + 2 > _lastPage\" (click)=\"_setPage(_activePage - 3)\">{{_activePage-3}}</li>\n      <li *ngIf=\"_activePage > 2\" (click)=\"_setPage(_activePage - 2)\">{{_activePage-2}}</li>\n      <li *ngIf=\"_activePage > 1\" (click)=\"_setPage(_activePage - 1)\">{{_activePage-1}}</li>\n      <li class=\"active\">{{_activePage}}</li>\n      <li *ngIf=\"_activePage + 1 <= _lastPage\" (click)=\"_setPage(_activePage + 1)\">{{_activePage+1}}</li>\n      <li *ngIf=\"_activePage + 2 <= _lastPage\" (click)=\"_setPage(_activePage + 2)\">{{_activePage+2}}</li>\n      <li *ngIf=\"_activePage + 3 <= _lastPage && _activePage < 3\" (click)=\"_setPage(_activePage + 3)\">{{_activePage+3}}</li>\n      <li *ngIf=\"_activePage + 4 <= _lastPage && _activePage < 2\" (click)=\"_setPage(_activePage + 4)\">{{_activePage+4}}</li>\n      <li [class.disabled]=\"_activePage >= _lastPage\" (click)=\"_setPage(_lastPage)\">\n        <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\">\n          <path d=\"M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z\"/>\n        </svg>\n      </li>\n    </ul>\n    <div class=\"md2-rows-select\" *ngIf=\"rows.length > 0\">\n      Rows per page:\n      <select (change)=\"_setRows($event.target.value)\">\n        <option *ngFor=\"let row of rows\" [selected]=\"_rows===row\">{{row}}</option>\n      </select>\n    </div>\n  ",
             styles: ["\n    md2-pagination { display: block; color: #0e59a5; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }\n    md2-pagination:before,\n    md2-pagination:after { display: table; content: ''; }\n    md2-pagination:after { clear: both; }\n    md2-pagination .md2-pagination { display: inline-block; margin: .5rem 0; padding: 0; }\n    md2-pagination .md2-pagination li { position: relative; display: inline-block; width: 36px; vertical-align: top; text-align: center; line-height: 36px; border-radius: 100px; cursor: pointer; box-sizing: border-box; }\n    md2-pagination .md2-pagination li:hover { background: rgba(0,0,0,0.12); }\n    md2-pagination .md2-pagination li.disabled,\n    md2-pagination .md2-pagination li.disabled:hover { pointer-events: none; background: transparent; cursor: default; opacity: .5; }\n    md2-pagination .md2-pagination li.active,\n    md2-pagination .md2-pagination li.active:hover { background: #106CC8; color: #fff; cursor: default; }\n    md2-pagination .md2-pagination li svg { fill: currentColor; margin-bottom: -7px; }\n    md2-pagination .md2-rows-select { display: inline-block; margin: .5rem 0; padding: 0; float: right; color: rgba(0,0,0,.54); line-height: 36px; }\n    md2-pagination .md2-rows-select select { border: 0; outline: 0; }\n  "],
             encapsulation: _angular_core.ViewEncapsulation.None
         }),
@@ -4917,26 +4911,26 @@ var __decorate$27 = (this && this.__decorate) || function (decorators, target, k
 var __metadata$27 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var noop$3 = function () { };
-var nextId$3 = 0;
-var MD2_DATEPICKER_CONTROL_VALUE_ACCESSOR = {
-    provide: _angular_forms.NG_VALUE_ACCESSOR,
-    useExisting: _angular_core.forwardRef(function () { return Md2Datepicker; }),
-    multi: true
+var __param$3 = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
 };
+var nextId$3 = 0;
 var Md2Datepicker = (function () {
-    function Md2Datepicker(_dateUtil, _element) {
+    function Md2Datepicker(_dateUtil, element, _control) {
         this._dateUtil = _dateUtil;
-        this._element = _element;
+        this.element = element;
+        this._control = _control;
         // private mouseMoveListener: any;
         // private mouseUpListener: any;
         this._value = null;
+        this._readonly = false;
+        this._required = false;
         this._disabled = false;
         this._isInitialized = false;
-        this._onTouchedCallback = noop$3;
-        this._onChangeCallback = noop$3;
+        this._onChange = function (value) { };
+        this._onTouched = function () { };
         this._isHoursVisible = true;
-        this._months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        this.months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
         this._days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         this._hours = [];
         this._minutes = [];
@@ -4945,11 +4939,11 @@ var Md2Datepicker = (function () {
         this._nextMonth = 3;
         this._years = [];
         this._dates = [];
-        this._today = new Date();
+        this.today = new Date();
         this._displayDate = null;
         this._selectedDate = null;
-        this._displayDay = { year: 0, month: '', date: '', day: '', hour: '', minute: '' };
-        this._displayInputDate = '';
+        this._viewDay = { year: 0, month: '', date: '', day: '', hour: '', minute: '' };
+        this._viewValue = '';
         this._clock = {
             dialRadius: 120,
             outerRadius: 99,
@@ -4968,10 +4962,13 @@ var Md2Datepicker = (function () {
         this.id = 'md2-datepicker-' + (++nextId$3);
         this.format = this.type === 'date' ? 'DD/MM/YYYY' : this.type === 'time' ? 'HH:mm' : this.type === 'datetime' ? 'DD/MM/YYYY HH:mm' : 'DD/MM/YYYY';
         this.tabindex = 0;
-        this._getYears();
-        this._generateClock();
+        this.getYears();
+        this.generateClock();
         // this.mouseMoveListener = (event: MouseEvent) => { this.onMouseMoveClock(event); };
         // this.mouseUpListener = (event: MouseEvent) => { this.onMouseUpClock(event); };
+        if (this._control) {
+            this._control.valueAccessor = this;
+        }
     }
     Md2Datepicker.prototype.ngAfterContentInit = function () {
         this._isInitialized = true;
@@ -4999,7 +4996,7 @@ var Md2Datepicker = (function () {
         set: function (value) {
             this._minDate = new Date(value);
             this._minDate.setHours(0, 0, 0, 0);
-            this._getYears();
+            this.getYears();
         },
         enumerable: true,
         configurable: true
@@ -5008,7 +5005,7 @@ var Md2Datepicker = (function () {
         set: function (value) {
             this._maxDate = new Date(value);
             this._maxDate.setHours(0, 0, 0, 0);
-            this._getYears();
+            this.getYears();
         },
         enumerable: true,
         configurable: true
@@ -5028,7 +5025,7 @@ var Md2Datepicker = (function () {
                         this._value = new Date(value);
                     }
                 }
-                this._displayInputDate = this._formatDate(this._value);
+                this._viewValue = this._formatDate(this._value);
                 var date = '';
                 if (this.type !== 'time') {
                     date += this._value.getFullYear() + '-' + (this._value.getMonth() + 1) + '-' + this._value.getDate();
@@ -5040,7 +5037,9 @@ var Md2Datepicker = (function () {
                     date += this._value.getHours() + ':' + this._value.getMinutes();
                 }
                 if (this._isInitialized) {
-                    this._onChangeCallback(date);
+                    if (this._control) {
+                        this._onChange(date);
+                    }
                     this.change.emit(date);
                 }
             }
@@ -5054,7 +5053,7 @@ var Md2Datepicker = (function () {
                 return this._displayDate;
             }
             else {
-                return this._today;
+                return this.today;
             }
         },
         set: function (date) {
@@ -5066,9 +5065,9 @@ var Md2Datepicker = (function () {
                     date = this._maxDate;
                 }
                 this._displayDate = date;
-                this._displayDay = {
+                this._viewDay = {
                     year: date.getFullYear(),
-                    month: this._months[date.getMonth()],
+                    month: this.months[date.getMonth()],
                     date: this._prependZero(date.getDate() + ''),
                     day: this._days[date.getDay()],
                     hour: this._prependZero(date.getHours() + ''),
@@ -5107,7 +5106,7 @@ var Md2Datepicker = (function () {
                         this._onClickOk();
                         break;
                     case exports.KeyCodes.DOWN_ARROW:
-                        if (this.displayDate.getFullYear() < (this._today.getFullYear() + 100)) {
+                        if (this.displayDate.getFullYear() < (this.today.getFullYear() + 100)) {
                             this.displayDate = this._dateUtil.incrementYears(displayDate, 1);
                             this._scrollToSelectedYear();
                         }
@@ -5124,7 +5123,7 @@ var Md2Datepicker = (function () {
                 switch (event.keyCode) {
                     case exports.KeyCodes.ENTER:
                     case exports.KeyCodes.SPACE:
-                        this._setDate(this.displayDate);
+                        this.setDate(this.displayDate);
                         break;
                     case exports.KeyCodes.RIGHT_ARROW:
                         this.displayDate = this._dateUtil.incrementDays(displayDate, 1);
@@ -5152,14 +5151,14 @@ var Md2Datepicker = (function () {
                         break;
                 }
                 if (!this._dateUtil.isSameMonthAndYear(displayDate, this.displayDate)) {
-                    this._generateCalendar();
+                    this.generateCalendar();
                 }
             }
             else if (this._isHoursVisible) {
                 switch (event.keyCode) {
                     case exports.KeyCodes.ENTER:
                     case exports.KeyCodes.SPACE:
-                        this._setHour(this.displayDate.getHours());
+                        this.setHour(this.displayDate.getHours());
                         break;
                     case exports.KeyCodes.UP_ARROW:
                         this.displayDate = this._dateUtil.incrementHours(displayDate, 1);
@@ -5175,7 +5174,7 @@ var Md2Datepicker = (function () {
                 switch (event.keyCode) {
                     case exports.KeyCodes.ENTER:
                     case exports.KeyCodes.SPACE:
-                        this._setMinute(this.displayDate.getMinutes());
+                        this.setMinute(this.displayDate.getMinutes());
                         break;
                     case exports.KeyCodes.UP_ARROW:
                         this.displayDate = this._dateUtil.incrementMinutes(displayDate, 1);
@@ -5204,6 +5203,7 @@ var Md2Datepicker = (function () {
         this._isYearsVisible = false;
         this._isCalendarVisible = this.type !== 'time' ? true : false;
         this._isHoursVisible = true;
+        this._onTouched();
     };
     /**
      * Display Years
@@ -5213,8 +5213,8 @@ var Md2Datepicker = (function () {
         this._isCalendarVisible = true;
         this._scrollToSelectedYear();
     };
-    Md2Datepicker.prototype._getYears = function () {
-        var startYear = this._minDate ? this._minDate.getFullYear() : 1900, endYear = this._maxDate ? this._maxDate.getFullYear() : this._today.getFullYear() + 100;
+    Md2Datepicker.prototype.getYears = function () {
+        var startYear = this._minDate ? this._minDate.getFullYear() : 1900, endYear = this._maxDate ? this._maxDate.getFullYear() : this.today.getFullYear() + 100;
         this._years = [];
         for (var i = startYear; i <= endYear; i++) {
             this._years.push(i);
@@ -5223,7 +5223,7 @@ var Md2Datepicker = (function () {
     Md2Datepicker.prototype._scrollToSelectedYear = function () {
         var _this = this;
         setTimeout(function () {
-            var yearContainer = _this._element.nativeElement.querySelector('.md2-years'), selectedYear = _this._element.nativeElement.querySelector('.md2-year.selected');
+            var yearContainer = _this.element.nativeElement.querySelector('.md2-years'), selectedYear = _this.element.nativeElement.querySelector('.md2-year.selected');
             yearContainer.scrollTop = (selectedYear.offsetTop + 20) - yearContainer.clientHeight / 2;
         }, 0);
     };
@@ -5234,7 +5234,7 @@ var Md2Datepicker = (function () {
     Md2Datepicker.prototype._setYear = function (year) {
         var date = this.displayDate;
         this.displayDate = new Date(year, date.getMonth(), date.getDate(), date.getHours(), date.getMinutes());
-        this._generateCalendar();
+        this.generateCalendar();
         this._isYearsVisible = false;
         // this.isCalendarVisible = true;
     };
@@ -5247,10 +5247,10 @@ var Md2Datepicker = (function () {
         }
         this._isDatepickerVisible = true;
         this._selectedDate = this.value || new Date(1, 0, 1);
-        this.displayDate = this.value || this._today;
-        this._generateCalendar();
+        this.displayDate = this.value || this.today;
+        this.generateCalendar();
         this._resetClock();
-        this._element.nativeElement.focus();
+        this.element.nativeElement.focus();
     };
     /**
      * Display Calendar
@@ -5274,12 +5274,12 @@ var Md2Datepicker = (function () {
      */
     Md2Datepicker.prototype._onClickOk = function () {
         if (this._isYearsVisible) {
-            this._generateCalendar();
+            this.generateCalendar();
             this._isYearsVisible = false;
             this._isCalendarVisible = true;
         }
         else if (this._isCalendarVisible) {
-            this._setDate(this.displayDate);
+            this.setDate(this.displayDate);
         }
         else if (this._isHoursVisible) {
             this._isHoursVisible = false;
@@ -5305,7 +5305,7 @@ var Md2Datepicker = (function () {
             this._updateMonth(-1);
         }
         else if (date.calMonth === this._currMonth) {
-            this._setDate(new Date(date.dateObj.year, date.dateObj.month, date.dateObj.day, this.displayDate.getHours(), this.displayDate.getMinutes()));
+            this.setDate(new Date(date.dateObj.year, date.dateObj.month, date.dateObj.day, this.displayDate.getHours(), this.displayDate.getMinutes()));
         }
         else if (date.calMonth === this._nextMonth) {
             this._updateMonth(1);
@@ -5315,7 +5315,7 @@ var Md2Datepicker = (function () {
      * Set Date
      * @param date Date Object
      */
-    Md2Datepicker.prototype._setDate = function (date) {
+    Md2Datepicker.prototype.setDate = function (date) {
         if (this.type === 'date') {
             this.value = date;
             this._onBlur();
@@ -5334,7 +5334,7 @@ var Md2Datepicker = (function () {
      */
     Md2Datepicker.prototype._updateMonth = function (noOfMonths) {
         this.displayDate = this._dateUtil.incrementMonths(this.displayDate, noOfMonths);
-        this._generateCalendar();
+        this.generateCalendar();
     };
     /**
      * Check is Before month enabled or not
@@ -5379,7 +5379,7 @@ var Md2Datepicker = (function () {
     /**
      * Generate Month Calendar
      */
-    Md2Datepicker.prototype._generateCalendar = function () {
+    Md2Datepicker.prototype.generateCalendar = function () {
         var year = this.displayDate.getFullYear();
         var month = this.displayDate.getMonth();
         this._dates.length = 0;
@@ -5399,7 +5399,7 @@ var Md2Datepicker = (function () {
                         date: date,
                         dateObj: iDate,
                         calMonth: calMonth,
-                        today: this._dateUtil.isSameDay(this._today, date),
+                        today: this._dateUtil.isSameDay(this.today, date),
                         disabled: this._isDisabledDate(date)
                     });
                 }
@@ -5412,7 +5412,7 @@ var Md2Datepicker = (function () {
                         date: date,
                         dateObj: iDate,
                         calMonth: calMonth,
-                        today: this._dateUtil.isSameDay(this._today, date),
+                        today: this._dateUtil.isSameDay(this.today, date),
                         disabled: this._isDisabledDate(date)
                     });
                     dayNbr++;
@@ -5430,7 +5430,7 @@ var Md2Datepicker = (function () {
                         date: date,
                         dateObj: iDate,
                         calMonth: calMonth,
-                        today: this._dateUtil.isSameDay(this._today, date),
+                        today: this._dateUtil.isSameDay(this.today, date),
                         disabled: this._isDisabledDate(date)
                     });
                     dayNbr++;
@@ -5447,7 +5447,7 @@ var Md2Datepicker = (function () {
     Md2Datepicker.prototype._onClickHour = function (event, hour) {
         event.preventDefault();
         event.stopPropagation();
-        this._setHour(hour);
+        this.setHour(hour);
     };
     /**
      * Select Minute
@@ -5457,13 +5457,13 @@ var Md2Datepicker = (function () {
     Md2Datepicker.prototype._onClickMinute = function (event, minute) {
         event.preventDefault();
         event.stopPropagation();
-        this._setMinute(minute);
+        this.setMinute(minute);
     };
     /**
      * Set hours
      * @param hour number of hours
      */
-    Md2Datepicker.prototype._setHour = function (hour) {
+    Md2Datepicker.prototype.setHour = function (hour) {
         var date = this.displayDate;
         this._isHoursVisible = false;
         this.displayDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), hour, date.getMinutes());
@@ -5473,7 +5473,7 @@ var Md2Datepicker = (function () {
      * Set minutes
      * @param minute number of minutes
      */
-    Md2Datepicker.prototype._setMinute = function (minute) {
+    Md2Datepicker.prototype.setMinute = function (minute) {
         var date = this.displayDate;
         this.displayDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), minute);
         this._selectedDate = this.displayDate;
@@ -5516,10 +5516,10 @@ var Md2Datepicker = (function () {
     //   // let space = false;
     //   let x = event.pageX - this._clock.x,
     //     y = event.pageY - this._clock.y;
-    //   if ((space || this.clockEvent.moved) && x === this.clockEvent.dx && y === this.clockEvent.dy) {
+    //   if ((space || this._clockEvent.moved) && x === this._clockEvent.dx && y === this._clockEvent.dy) {
     //     this.setClockHand(x, y);
     //   }
-    //   // if (this.isHoursVisible) {
+    //   // if (this._isHoursVisible) {
     //   //   // self.toggleView('minutes', duration / 2);
     //   // } else {
     //   //   // if (options.autoclose) {
@@ -5587,7 +5587,7 @@ var Md2Datepicker = (function () {
     /**
      * render Click
      */
-    Md2Datepicker.prototype._generateClock = function () {
+    Md2Datepicker.prototype.generateClock = function () {
         this._hours.length = 0;
         for (var i = 0; i < 24; i++) {
             var radian = i / 6 * Math.PI;
@@ -5659,7 +5659,7 @@ var Md2Datepicker = (function () {
                     this._value = new Date(value);
                 }
             }
-            this._displayInputDate = this._formatDate(this._value);
+            this._viewValue = this._formatDate(this._value);
             var date = '';
             if (this.type !== 'time') {
                 date += this._value.getFullYear() + '-' + (this._value.getMonth() + 1) + '-' + this._value.getDate();
@@ -5672,8 +5672,8 @@ var Md2Datepicker = (function () {
             }
         }
     };
-    Md2Datepicker.prototype.registerOnChange = function (fn) { this._onChangeCallback = fn; };
-    Md2Datepicker.prototype.registerOnTouched = function (fn) { this._onTouchedCallback = fn; };
+    Md2Datepicker.prototype.registerOnChange = function (fn) { this._onChange = fn; };
+    Md2Datepicker.prototype.registerOnTouched = function (fn) { this._onTouched = fn; };
     __decorate$27([
         _angular_core.Output(), 
         __metadata$27('design:type', _angular_core.EventEmitter)
@@ -5752,20 +5752,23 @@ var Md2Datepicker = (function () {
     ], Md2Datepicker.prototype, "_onBlur", null);
     Md2Datepicker = __decorate$27([
         _angular_core.Component({selector: 'md2-datepicker',
-            template: "<div class=\"md2-datepicker-input-container\" (click)=\"_showDatepicker()\"> <div class=\"md2-datepicker-calendar-icon\"> <svg *ngIf=\"type==='date'\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z\"></path> </svg> <svg *ngIf=\"type==='time'\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z\"></path> </svg> <svg *ngIf=\"type==='datetime'\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M15,13H16.5V15.82L18.94,17.23L18.19,18.53L15,16.69V13M19,8H5V19H9.67C9.24,18.09 9,17.07 9,16A7,7 0 0,1 16,9C17.07,9 18.09,9.24 19,9.67V8M5,21C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H6V1H8V3H16V1H18V3H19A2,2 0 0,1 21,5V11.1C22.24,12.36 23,14.09 23,16A7,7 0 0,1 16,23C14.09,23 12.36,22.24 11.1,21H5M16,11.15A4.85,4.85 0 0,0 11.15,16C11.15,18.68 13.32,20.85 16,20.85A4.85,4.85 0 0,0 20.85,16C20.85,13.32 18.68,11.15 16,11.15Z\"></path> </svg> </div> <div class=\"md2-datepicker-input\"> <span class=\"md2-datepicker-placeholder\" [class.has-value]=\"value\"> {{placeholder}} <span class=\"md2-placeholder-required\" *ngIf=\"required\">*</span> </span> <span class=\"md2-datepicker-input-text\">{{_displayInputDate}}</span> <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M7 10l5 5 5-5z\" /> </svg> </div> </div> <div class=\"md2-datepicker-wrapper\" [class.active]=\"_isDatepickerVisible\"> <div class=\"md2-datepicker-header\"> <span class=\"md2-datepicker-year\" [class.active]=\"_isYearsVisible\" [class.hidden]=\"type==='time'\" (click)=\"_showYear()\">{{_displayDay.year}}</span> <span class=\"md2-datepicker-date\" [class.active]=\"_isCalendarVisible && !_isYearsVisible\" [class.hidden]=\"type==='time'\" (click)=\"_showCalendar()\">{{_displayDay.day.substr(0, 3)}},&nbsp;{{_displayDay.month.substr(0, 3)}}&nbsp;{{_displayDay.date}}</span> <span class=\"md2-datepicker-time\" [class.active]=\"!_isCalendarVisible\" [class.hidden]=\"type==='date'\"> <span class=\"md2-datepicker-hour\" [class.active]=\"_isHoursVisible\" (click)=\"_toggleHours(true)\">{{_displayDay.hour}}</span>:<span class=\"md2-datepicker-minute\" [class.active]=\"!_isHoursVisible\" (click)=\"_toggleHours(false)\">{{_displayDay.minute}}</span> </span> </div> <div class=\"md2-datepicker-body\"> <div class=\"md2-years\" [class.active]=\"_isYearsVisible\"> <div class=\"md2-years-wrapper\"> <div *ngFor=\"let y of _years\" class=\"md2-year\" [class.selected]=\"y === _displayDay.year\" (click)=\"_setYear(y)\">{{y}}</div> </div> </div> <div class=\"md2-datepicker-container\" [class.active]=\"!_isYearsVisible\"> <div class=\"md2-calendar\" [class.active]=\"_isCalendarVisible\"> <div class=\"md2-calendar-controls\"> <div class=\"md2-calendar-prev-month\" [class.disabled]=\"!_isBeforeMonth()\" (click)=\"_isBeforeMonth() && _updateMonth(-1)\"> <svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\"> <path d=\"M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z\"></path> </svg> </div> <div class=\"md2-calendar-next-month\" [class.disabled]=\"!_isAfterMonth()\" (click)=\"_isAfterMonth() && _updateMonth(1)\"> <svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\"> <path d=\"M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z\"></path> </svg> </div> <div class=\"md2-calendar-header\">{{_displayDay.month}} {{_displayDay.year}}</div> </div> <table class=\"md2-calendar-month\"> <thead><tr><th *ngFor=\"let d of _days\">{{d.substr(0, 1)}}</th></tr></thead> <tbody> <tr *ngFor=\"let w of _dates\"> <td *ngFor=\"let d of w\"> <div class=\"md2-calendar-day\" [class.today]=\"d.today\" [class.focus]=\"_dateUtil.isSameDay(displayDate, d.date)\" [class.selected]=\"_dateUtil.isSameDay(_selectedDate, d.date)\" [class.disabled]=\"d.disabled\" [class.prev-month]=\"d.calMonth===_prevMonth\" [class.curr-month]=\"d.calMonth===_currMonth\" [class.next-month]=\"d.calMonth===_nextMonth\" (click)=\"_onClickDate($event,d)\">{{d.dateObj.day}}</div> </td> </tr> </tbody> </table> </div> <div class=\"md2-clock\" [class.active]=\"!_isCalendarVisible\"> <!-- (mousedown)=\"onMouseDownClock($event)\"--> <div class=\"md2-clock-hand\"> <svg class=\"md2-clock-svg\" width=\"240\" height=\"240\"> <g transform=\"translate(120,120)\"> <line x1=\"0\" y1=\"0\" [attr.x2]=\"_clock.hand.x\" [attr.y2]=\"_clock.hand.y\"></line> <circle class=\"md2-clock-bg\" r=\"17\" [attr.cx]=\"_clock.hand.x\" [attr.cy]=\"_clock.hand.y\"></circle> <circle class=\"md2-clock-fg\" r=\"3.5\" [attr.cx]=\"_clock.hand.x\" [attr.cy]=\"_clock.hand.y\"></circle> <circle class=\"md2-clock-center\" cx=\"0\" cy=\"0\" r=\"2\"></circle> </g> </svg> </div> <div class=\"md2-clock-hours\" [class.active]=\"_isHoursVisible\"> <div *ngFor=\"let h of _hours\" class=\"md2-clock-hour\" [style.top]=\"h.top + 'px'\" [style.left]=\"h.left + 'px'\" (click)=\"_onClickHour($event,h.hour)\">{{h.hour}}</div> </div> <div class=\"md2-clock-minutes\" [class.active]=\"!_isHoursVisible\"> <div *ngFor=\"let m of _minutes\" class=\"md2-clock-minute\" [style.top]=\"m.top + 'px'\" [style.left]=\"m.left + 'px'\" (click)=\"_onClickMinute($event,m.minute)\">{{m.minute}}</div> </div> </div> </div> </div> <div class=\"md2-datepicker-footer\"> <div class=\"md2-button\" (click)=\"_onBlur()\">Cancel</div> <div class=\"md2-button\" (click)=\"_onClickOk()\">Ok</div> </div> </div> ",
+            template: "<div class=\"md2-datepicker-input-container\" (click)=\"_showDatepicker()\"> <div class=\"md2-datepicker-calendar-icon\"> <svg *ngIf=\"type==='date'\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z\"></path> </svg> <svg *ngIf=\"type==='time'\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z\"></path> </svg> <svg *ngIf=\"type==='datetime'\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M15,13H16.5V15.82L18.94,17.23L18.19,18.53L15,16.69V13M19,8H5V19H9.67C9.24,18.09 9,17.07 9,16A7,7 0 0,1 16,9C17.07,9 18.09,9.24 19,9.67V8M5,21C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H6V1H8V3H16V1H18V3H19A2,2 0 0,1 21,5V11.1C22.24,12.36 23,14.09 23,16A7,7 0 0,1 16,23C14.09,23 12.36,22.24 11.1,21H5M16,11.15A4.85,4.85 0 0,0 11.15,16C11.15,18.68 13.32,20.85 16,20.85A4.85,4.85 0 0,0 20.85,16C20.85,13.32 18.68,11.15 16,11.15Z\"></path> </svg> </div> <div class=\"md2-datepicker-input\"> <span class=\"md2-datepicker-placeholder\" [class.has-value]=\"value\"> {{placeholder}} <span class=\"md2-placeholder-required\" *ngIf=\"required\">*</span> </span> <span class=\"md2-datepicker-input-text\">{{_viewValue}}</span> <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M7 10l5 5 5-5z\" /> </svg> </div> </div> <div class=\"md2-datepicker-wrapper\" [class.active]=\"_isDatepickerVisible\"> <div class=\"md2-datepicker-header\"> <span class=\"md2-datepicker-year\" [class.active]=\"_isYearsVisible\" [class.hidden]=\"type==='time'\" (click)=\"_showYear()\">{{_viewDay.year}}</span> <span class=\"md2-datepicker-date\" [class.active]=\"_isCalendarVisible && !_isYearsVisible\" [class.hidden]=\"type==='time'\" (click)=\"_showCalendar()\">{{_viewDay.day.substr(0, 3)}},&nbsp;{{_viewDay.month.substr(0, 3)}}&nbsp;{{_viewDay.date}}</span> <span class=\"md2-datepicker-time\" [class.active]=\"!_isCalendarVisible\" [class.hidden]=\"type==='date'\"> <span class=\"md2-datepicker-hour\" [class.active]=\"_isHoursVisible\" (click)=\"_toggleHours(true)\">{{_viewDay.hour}}</span>:<span class=\"md2-datepicker-minute\" [class.active]=\"!_isHoursVisible\" (click)=\"_toggleHours(false)\">{{_viewDay.minute}}</span> </span> </div> <div class=\"md2-datepicker-body\"> <div class=\"md2-years\" [class.active]=\"_isYearsVisible\"> <div class=\"md2-years-wrapper\"> <div *ngFor=\"let y of _years\" class=\"md2-year\" [class.selected]=\"y === _viewDay.year\" (click)=\"_setYear(y)\">{{y}}</div> </div> </div> <div class=\"md2-datepicker-container\" [class.active]=\"!_isYearsVisible\"> <div class=\"md2-calendar\" [class.active]=\"_isCalendarVisible\"> <div class=\"md2-calendar-controls\"> <div class=\"md2-calendar-prev-month\" [class.disabled]=\"!_isBeforeMonth()\" (click)=\"_isBeforeMonth() && _updateMonth(-1)\"> <svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\"> <path d=\"M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z\"></path> </svg> </div> <div class=\"md2-calendar-next-month\" [class.disabled]=\"!_isAfterMonth()\" (click)=\"_isAfterMonth() && _updateMonth(1)\"> <svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\"> <path d=\"M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z\"></path> </svg> </div> <div class=\"md2-calendar-header\">{{_viewDay.month}} {{_viewDay.year}}</div> </div> <table class=\"md2-calendar-month\"> <thead><tr><th *ngFor=\"let d of _days\">{{d.substr(0, 1)}}</th></tr></thead> <tbody> <tr *ngFor=\"let w of _dates\"> <td *ngFor=\"let d of w\"> <div class=\"md2-calendar-day\" [class.today]=\"d.today\" [class.focus]=\"_dateUtil.isSameDay(displayDate, d.date)\" [class.selected]=\"_dateUtil.isSameDay(_selectedDate, d.date)\" [class.disabled]=\"d.disabled\" [class.prev-month]=\"d.calMonth===_prevMonth\" [class.curr-month]=\"d.calMonth===_currMonth\" [class.next-month]=\"d.calMonth===_nextMonth\" (click)=\"_onClickDate($event,d)\">{{d.dateObj.day}}</div> </td> </tr> </tbody> </table> </div> <div class=\"md2-clock\" [class.active]=\"!_isCalendarVisible\"> <!-- (mousedown)=\"onMouseDownClock($event)\"--> <div class=\"md2-clock-hand\"> <svg class=\"md2-clock-svg\" width=\"240\" height=\"240\"> <g transform=\"translate(120,120)\"> <line x1=\"0\" y1=\"0\" [attr.x2]=\"_clock.hand.x\" [attr.y2]=\"_clock.hand.y\"></line> <circle class=\"md2-clock-bg\" r=\"17\" [attr.cx]=\"_clock.hand.x\" [attr.cy]=\"_clock.hand.y\"></circle> <circle class=\"md2-clock-fg\" r=\"3.5\" [attr.cx]=\"_clock.hand.x\" [attr.cy]=\"_clock.hand.y\"></circle> <circle class=\"md2-clock-center\" cx=\"0\" cy=\"0\" r=\"2\"></circle> </g> </svg> </div> <div class=\"md2-clock-hours\" [class.active]=\"_isHoursVisible\"> <div *ngFor=\"let h of _hours\" class=\"md2-clock-hour\" [style.top.px]=\"h.top\" [style.left.px]=\"h.left\" (click)=\"_onClickHour($event,h.hour)\">{{h.hour}}</div> </div> <div class=\"md2-clock-minutes\" [class.active]=\"!_isHoursVisible\"> <div *ngFor=\"let m of _minutes\" class=\"md2-clock-minute\" [style.top.px]=\"m.top\" [style.left.px]=\"m.left\" (click)=\"_onClickMinute($event,m.minute)\">{{m.minute}}</div> </div> </div> </div> </div> <div class=\"md2-datepicker-footer\"> <div class=\"md2-button\" (click)=\"_onBlur()\">Cancel</div> <div class=\"md2-button\" (click)=\"_onClickOk()\">Ok</div> </div> </div> ",
             styles: ["md2-datepicker { position: relative; display: block; max-width: 200px; outline: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } md2-datepicker.md2-datepicker-disabled { pointer-events: none; cursor: default; } .md2-datepicker-input-container { display: block; padding: 18px 0 18px 32px; white-space: nowrap; cursor: pointer; } .md2-datepicker-calendar-icon { position: absolute; top: 21px; left: 0; display: block; height: 24px; width: 24px; vertical-align: middle; fill: currentColor; color: rgba(0, 0, 0, 0.54); } .md2-datepicker-input { position: relative; display: block; height: 30px; padding: 2px 26px 1px 2px; margin: 0; line-height: 26px; color: rgba(0, 0, 0, 0.87); vertical-align: middle; box-sizing: border-box; border-bottom: 1px solid rgba(0, 0, 0, 0.12); } .md2-datepicker-input svg { position: absolute; right: 0; top: 2px; fill: currentColor; color: rgba(0, 0, 0, 0.54); } md2-datepicker.md2-datepicker-disabled .md2-datepicker-input { color: rgba(0, 0, 0, 0.38); border-color: transparent; background-image: linear-gradient(to right, rgba(0, 0, 0, 0.38) 0%, rgba(0, 0, 0, 0.38) 33%, transparent 0%); background-position: bottom -1px left 0; background-size: 4px 1px; background-repeat: repeat-x; } .md2-datepicker-placeholder { position: absolute; right: 26px; bottom: 100%; left: 0; color: rgba(0, 0, 0, 0.38); max-width: 100%; padding-left: 3px; padding-right: 0; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; z-index: 1; transform: translate3d(0, 26px, 0) scale(1); transition: transform 400ms cubic-bezier(0.25, 0.8, 0.25, 1); transform-origin: left top; } .md2-datepicker-placeholder.has-value, md2-datepicker:focus .md2-datepicker-placeholder { transform: translate3d(0, 6px, 0) scale(0.75); } md2-datepicker:focus .md2-datepicker-placeholder { color: #2196f3; } md2-datepicker:focus .md2-datepicker-placeholder .md2-placeholder-required { color: #f00; } md2-datepicker.md2-datepicker-disabled:focus .md2-datepicker-placeholder, md2-datepicker.md2-datepicker-disabled:focus .md2-datepicker-placeholder .md2-placeholder-required { color: rgba(0, 0, 0, 0.38); } .md2-datepicker-input-text { display: block; font-size: 15px; line-height: 26px; } .md2-datepicker-wrapper { position: absolute; top: 0; left: 0; display: inline-block; width: 300px; border-radius: 2px; background-color: #fff; z-index: 10; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); transform: scale(0); transform-origin: left top; transition: 150ms; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } .md2-datepicker-wrapper.active { transform: scale(1); } .md2-datepicker-header { display: block; padding: 20px; color: #fff; font-size: 28px; line-height: 28px; font-weight: 500; background: #2196f3; box-sizing: border-box; } .md2-datepicker-year { display: block; height: 16px; margin: 0 0 10px; font-size: 16px; line-height: 16px; opacity: 0.7; cursor: pointer; } .md2-datepicker-year.active { opacity: 1; pointer-events: none; } .md2-datepicker-year.hidden { display: none; } .md2-datepicker-date { cursor: pointer; opacity: 0.7; } .md2-datepicker-date.active { opacity: 1; pointer-events: none; } .md2-datepicker-date.hidden { display: none; } .md2-datepicker-time { display: inline-block; padding-left: 10px; cursor: pointer; opacity: 0.7; } .md2-datepicker-time.active { opacity: 1; } .md2-datepicker-time.hidden { display: none; } .md2-datepicker-hour, .md2-datepicker-minute { opacity: 1; } .md2-datepicker-time.active .md2-datepicker-hour, .md2-datepicker-time.active .md2-datepicker-minute { opacity: 0.7; } .md2-datepicker-time.active .md2-datepicker-hour.active, .md2-datepicker-time.active .md2-datepicker-minute.active { opacity: 1; pointer-events: none; } .md2-datepicker-body { position: relative; width: 100%; height: 300px; overflow: hidden; } .md2-datepicker-footer { text-align: right; } .md2-datepicker-footer .md2-button { display: inline-block; min-width: 64px; margin: 4px 8px 8px 0; padding: 0 12px; font-size: 14px; color: #2196f3; line-height: 36px; text-align: center; text-transform: uppercase; border-radius: 2px; cursor: pointer; box-sizing: border-box; transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1); } .md2-datepicker-footer .md2-button:hover { background: #ebebeb; } .md2-years { position: absolute; top: 10px; right: 100%; bottom: 10px; display: block; width: 100%; line-height: 40px; background: #fff; overflow-x: hidden; overflow-y: auto; transition: 300ms; } .md2-years.active { right: 0; } .md2-years .md2-years-wrapper { display: flex; flex-direction: column; justify-content: center; min-height: 100%; } .md2-years .md2-year { position: relative; display: block; margin: 0 auto; padding: 0; font-size: 17px; font-weight: 400; text-align: center; cursor: pointer; } .md2-years .md2-year.selected { color: #2196f3; font-size: 26px; font-weight: 500; } .md2-datepicker-container { position: absolute; top: 0; left: 100%; display: block; width: 100%; transition: 300ms; } .md2-datepicker-container.active { left: 0; } .md2-calendar { position: absolute; right: 100%; display: block; width: 100%; font-size: 12px; font-weight: 400; text-align: center; transition: 300ms; } .md2-calendar.active { right: 0; } .md2-calendar-controls { position: relative; display: block; height: 48px; text-align: left; } .md2-calendar-header { height: 48px; line-height: 48px; font-size: 14px; font-weight: 500; text-align: center; } .md2-calendar-prev-month, .md2-calendar-next-month { position: absolute; display: inline-block; width: 48px; height: 48px; padding: 12px; margin: 0 12px; box-sizing: border-box; cursor: pointer; } .md2-calendar-next-month { right: 0; } .md2-calendar-prev-month.disabled, .md2-calendar-next-month.disabled { opacity: 0.25; cursor: default; pointer-events: none; } .md2-calendar-month { margin: 0 20px; } .md2-calendar-month th { width: 35px; height: 20px; font-weight: 500; line-height: 15px; opacity: 0.5; } .md2-calendar-month td { padding: 0; } .md2-calendar-day { position: relative; display: inline-block; width: 35px; height: 35px; border-radius: 50%; text-align: center; cursor: pointer; line-height: 35px; box-sizing: border-box; } .md2-calendar-day.today { color: #2196f3; } .md2-calendar-day:hover, .md2-calendar-day.focus { background: #e0e0e0; } .md2-calendar-day.selected, .md2-calendar-day.selected:hover { color: #fff; background: #2196f3; } .md2-calendar-day.disabled, .md2-calendar-day.disabled:hover { color: rgba(0, 0, 0, 0.45); background: transparent; pointer-events: none; } .md2-calendar-day.prev-month, .md2-calendar-day.next-month { visibility: hidden; } .md2-clock { position: absolute; left: 100%; display: block; width: 240px; height: 240px; margin: 30px; font-size: 14px; font-weight: 400; text-align: center; background-color: #e0e0e0; border-radius: 50%; transition: 300ms; } .md2-clock.active { left: 0; } .md2-clock-hours, .md2-clock-minutes { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; visibility: hidden; transition: 350ms; transform: scale(1.2); } .md2-clock-minutes { transform: scale(0.8); } .md2-clock-hours.active, .md2-clock-minutes.active { opacity: 1; visibility: visible; transform: scale(1); } .md2-clock-hour, .md2-clock-minute { position: absolute; width: 34px; height: 34px; line-height: 34px; text-align: center; border-radius: 50%; cursor: pointer; } .md2-clock-hour:hover, .md2-clock-minute:hover { background: #5aaced; } .md2-clock-hand { position: absolute; top: 0; left: 0; width: 100%; height: 100%; } .md2-clock-hand line { stroke: #2196f3; stroke-width: 1; stroke-linecap: round; } .md2-clock-bg { fill: #5aaced; } .md2-clock-fg { stroke: none; fill: #2196f3; } .md2-clock-center { stroke: none; fill: #2196f3; } /*# sourceMappingURL=datepicker.css.map */ "],
-            providers: [MD2_DATEPICKER_CONTROL_VALUE_ACCESSOR],
             host: {
                 'role': 'datepicker',
                 '[id]': 'id',
                 '[class]': 'class',
                 '[class.md2-datepicker-disabled]': 'disabled',
                 '[tabindex]': 'disabled ? -1 : tabindex',
-                '[attr.aria-disabled]': 'disabled'
+                '[attr.aria-label]': 'placeholder',
+                '[attr.aria-required]': 'required.toString()',
+                '[attr.aria-disabled]': 'disabled.toString()',
+                '[attr.aria-invalid]': '_control?.invalid || "false"',
             },
             encapsulation: _angular_core.ViewEncapsulation.None
-        }), 
-        __metadata$27('design:paramtypes', [Md2DateUtil, _angular_core.ElementRef])
+        }),
+        __param$3(2, _angular_core.Optional()), 
+        __metadata$27('design:paramtypes', [Md2DateUtil, _angular_core.ElementRef, _angular_forms.NgControl])
     ], Md2Datepicker);
     return Md2Datepicker;
 }());
@@ -5781,7 +5784,7 @@ var Md2DatepickerModule = (function () {
     };
     Md2DatepickerModule = __decorate$27([
         _angular_core.NgModule({
-            imports: [_angular_common.CommonModule, _angular_forms.FormsModule],
+            imports: [_angular_common.CommonModule],
             exports: MD2_DATEPICKER_DIRECTIVES,
             declarations: MD2_DATEPICKER_DIRECTIVES,
         }), 
@@ -5980,17 +5983,17 @@ var Md2DialogFooter = (function () {
     return Md2DialogFooter;
 }());
 var Md2Dialog = (function () {
-    function Md2Dialog(overlay) {
-        this.overlay = overlay;
+    function Md2Dialog(_overlay) {
+        this._overlay = _overlay;
         this.onShow = new _angular_core.EventEmitter();
         this.onClose = new _angular_core.EventEmitter();
         this.onCancel = new _angular_core.EventEmitter();
         /** Is the dialog active? */
-        this.isOpened = false;
+        this._isOpened = false;
         /** Overlay configuration for positioning the dialog */
         this.config = new OverlayState();
         /** @internal */
-        this.overlayRef = null;
+        this._overlayRef = null;
     }
     Md2Dialog.prototype.ngOnDestroy = function () {
         return this.close();
@@ -6003,14 +6006,14 @@ var Md2Dialog = (function () {
     Md2Dialog.prototype.open = function () {
         var _this = this;
         return this.close()
-            .then(function () { return _this.overlay.create(_this.config); })
+            .then(function () { return _this._overlay.create(_this.config); })
             .then(function (ref) {
-            _this.overlayRef = ref;
-            return ref.attach(_this.portal);
+            _this._overlayRef = ref;
+            return ref.attach(_this._portal);
         })
             .then(function () { return Animate.wait(); })
             .then(function () {
-            _this.isOpened = true;
+            _this._isOpened = true;
             _this.onShow.emit(_this);
             return _this;
         });
@@ -6020,16 +6023,16 @@ var Md2Dialog = (function () {
         var _this = this;
         if (result === void 0) { result = true; }
         if (cancel === void 0) { cancel = false; }
-        if (!this.overlayRef) {
+        if (!this._overlayRef) {
             return Promise.resolve(this);
         }
-        this.isOpened = false;
+        this._isOpened = false;
         // TODO(jd): this is terrible, use animate states
         return Animate.wait(100)
-            .then(function () { return _this.overlayRef.detach(); })
+            .then(function () { return _this._overlayRef.detach(); })
             .then(function () {
-            _this.overlayRef.dispose();
-            _this.overlayRef = null;
+            _this._overlayRef.dispose();
+            _this._overlayRef = null;
             if (cancel) {
                 _this.onCancel.emit(result);
             }
@@ -6059,7 +6062,7 @@ var Md2Dialog = (function () {
     __decorate$29([
         _angular_core.ViewChild(Md2DialogPortal), 
         __metadata$29('design:type', Md2DialogPortal)
-    ], Md2Dialog.prototype, "portal", void 0);
+    ], Md2Dialog.prototype, "_portal", void 0);
     __decorate$29([
         _angular_core.Input('title'), 
         __metadata$29('design:type', String)
@@ -6070,7 +6073,7 @@ var Md2Dialog = (function () {
     ], Md2Dialog.prototype, "config", void 0);
     Md2Dialog = __decorate$29([
         _angular_core.Component({selector: 'md2-dialog',
-            template: "<template md2DialogPortal> <div class=\"md2-dialog\" [class.open]=\"isOpened\"> <div class=\"md2-dialog-container\"> <div class=\"md2-dialog-header\"> <button type=\"button\" class=\"close\" aria-label=\"Close\" (click)=\"close()\">&times;</button> <h2 *ngIf=\"dialogTitle\" class=\"md2-dialog-title\" id=\"myDialogLabel\" [innerHtml]=\"dialogTitle\"></h2> <ng-content select=\"md2-dialog-title\"></ng-content> </div> <div class=\"md2-dialog-body\"> <ng-content></ng-content> </div> <ng-content select=\"md2-dialog-footer\"></ng-content> </div> </div> </template> ",
+            template: "<template md2DialogPortal> <div class=\"md2-dialog\" [class.open]=\"_isOpened\"> <div class=\"md2-dialog-container\"> <div class=\"md2-dialog-header\"> <button type=\"button\" class=\"close\" aria-label=\"Close\" (click)=\"close()\">&times;</button> <h2 *ngIf=\"dialogTitle\" class=\"md2-dialog-title\" id=\"myDialogLabel\" [innerHtml]=\"dialogTitle\"></h2> <ng-content select=\"md2-dialog-title\"></ng-content> </div> <div class=\"md2-dialog-body\"> <ng-content></ng-content> </div> <ng-content select=\"md2-dialog-footer\"></ng-content> </div> </div> </template> ",
             styles: [".md2-dialog-open { overflow-y: hidden; } .md2-dialog { position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 1050; background-color: rgba(33, 33, 33, 0.48); display: none; overflow-x: hidden; overflow-y: scroll; -webkit-overflow-scrolling: touch; outline: 0; } .md2-dialog.open { display: block; } .md2-dialog .md2-dialog-container { position: relative; width: auto; margin: 15px; background-color: #fff; background-clip: padding-box; border-radius: 0 0 4px 4px; outline: 0; box-shadow: 0 7px 8px -4px rgba(0, 0, 0, 0.2), 0 13px 19px 2px rgba(0, 0, 0, 0.14), 0 5px 24px 4px rgba(0, 0, 0, 0.12); transition: 300ms; transform: scale(0.1); } .md2-dialog.open .md2-dialog-container { transform: scale(1); } @media (min-width: 768px) { .md2-dialog .md2-dialog-container { width: 600px; margin: 30px auto; } } .md2-dialog-header { background: #2196f3; color: #fff; font-size: 25px; line-height: 1.1; font-weight: 500; padding: 0 48px 0 16px; border-bottom: 1px solid #e5e5e5; word-wrap: break-word; } .md2-dialog-header .close { position: absolute; top: 21px; right: 16px; display: inline-block; width: 18px; height: 18px; overflow: hidden; -webkit-appearance: none; padding: 0; cursor: pointer; background: 0 0; border: 0; outline: 0; opacity: 0.8; font-size: 0; z-index: 1; min-width: initial; box-shadow: none; margin: 0; } .md2-dialog-header .close::before, .md2-dialog-header .close::after { content: ''; position: absolute; top: 50%; left: 0; width: 100%; height: 2px; margin-top: -1px; background: #ccc; border-radius: 2px; } .md2-dialog-header .close::before { transform: rotate(45deg); } .md2-dialog-header .close::after { transform: rotate(-45deg); } .md2-dialog-header .close:hover { opacity: 1; } .md2-dialog-header md2-dialog-title, .md2-dialog-header .md2-dialog-title { display: block; margin: 0; padding: 16px 0; font-size: 25px; font-weight: 500; } .md2-dialog-header dialog-header { line-height: 33px; } .md2-dialog-body { position: relative; padding: 16px; } .md2-dialog-footer, md2-dialog-footer { display: block; padding: 16px; text-align: right; border-top: 1px solid rgba(0, 0, 0, 0.12); } /*# sourceMappingURL=dialog.css.map */ "],
             host: {
                 'tabindex': '0',
@@ -6331,7 +6334,7 @@ var Option = (function () {
     }
     return Option;
 }());
-var noop$4 = function () { };
+var noop$3 = function () { };
 var nextId$4 = 0;
 var MD2_MULTISELECT_CONTROL_VALUE_ACCESSOR = {
     provide: _angular_forms.NG_VALUE_ACCESSOR,
@@ -6343,12 +6346,12 @@ var Md2Multiselect = (function () {
         this.element = element;
         this.change = new _angular_core.EventEmitter();
         this._value = '';
-        this._onTouchedCallback = noop$4;
-        this._onChangeCallback = noop$4;
+        this._onTouchedCallback = noop$3;
+        this._onChangeCallback = noop$3;
         this._options = [];
-        this.list = [];
-        this.items = [];
-        this.focusedOption = 0;
+        this._list = [];
+        this._items = [];
+        this._focusedOption = 0;
         this.isFocused = false;
         this.id = 'md2-multiselect-' + (++nextId$4);
         this.tabindex = 0;
@@ -6394,12 +6397,12 @@ var Md2Multiselect = (function () {
         var _this = this;
         if (value !== this._value) {
             this._value = value;
-            this.items = [];
+            this._items = [];
             if (value && value.length && typeof value === 'object' && Array.isArray(value)) {
                 var _loop_1 = function(i) {
                     var selItm = this_1._options.find(function (itm) { return _this.equals(_this.valueKey ? itm[_this.valueKey] : itm, value[i]); });
                     if (selItm) {
-                        this_1.items.push(new Option(selItm, this_1.textKey, this_1.valueKey));
+                        this_1._items.push(new Option(selItm, this_1.textKey, this_1.valueKey));
                     }
                 };
                 var this_1 = this;
@@ -6449,7 +6452,7 @@ var Md2Multiselect = (function () {
     };
     Object.defineProperty(Md2Multiselect.prototype, "isMenuVisible", {
         get: function () {
-            return (this.isFocused && this.list && this.list.length) && !this.readonly ? true : false;
+            return (this.isFocused && this._list && this._list.length) && !this.readonly ? true : false;
         },
         enumerable: true,
         configurable: true
@@ -6458,7 +6461,7 @@ var Md2Multiselect = (function () {
      * to update scroll of options
      */
     Md2Multiselect.prototype.updateScroll = function () {
-        if (this.focusedOption < 0) {
+        if (this._focusedOption < 0) {
             return;
         }
         var menuContainer = this.element.nativeElement.querySelector('.md2-multiselect-menu');
@@ -6469,7 +6472,7 @@ var Md2Multiselect = (function () {
         if (choices.length < 1) {
             return;
         }
-        var highlighted = choices[this.focusedOption];
+        var highlighted = choices[this._focusedOption];
         if (!highlighted) {
             return;
         }
@@ -6501,18 +6504,18 @@ var Md2Multiselect = (function () {
             switch (event.keyCode) {
                 case exports.KeyCodes.TAB:
                 case exports.KeyCodes.ESCAPE:
-                    this.onBlur();
+                    this._onBlur();
                     break;
                 case exports.KeyCodes.ENTER:
                 case exports.KeyCodes.SPACE:
-                    this.toggleOption(event, this.focusedOption);
+                    this._handleOptionClick(event, this._focusedOption);
                     break;
                 case exports.KeyCodes.DOWN_ARROW:
-                    this.focusedOption = (this.focusedOption === this.list.length - 1) ? 0 : Math.min(this.focusedOption + 1, this.list.length - 1);
+                    this._focusedOption = (this._focusedOption === this._list.length - 1) ? 0 : Math.min(this._focusedOption + 1, this._list.length - 1);
                     this.updateScroll();
                     break;
                 case exports.KeyCodes.UP_ARROW:
-                    this.focusedOption = (this.focusedOption === 0) ? this.list.length - 1 : Math.max(0, this.focusedOption - 1);
+                    this._focusedOption = (this._focusedOption === 0) ? this._list.length - 1 : Math.max(0, this._focusedOption - 1);
                     this.updateScroll();
                     break;
             }
@@ -6535,37 +6538,37 @@ var Md2Multiselect = (function () {
      */
     Md2Multiselect.prototype.onFocus = function () {
         this.isFocused = true;
-        this.focusedOption = 0;
+        this._focusedOption = 0;
     };
-    Md2Multiselect.prototype.onBlur = function () { this.isFocused = false; };
+    Md2Multiselect.prototype._onBlur = function () { this.isFocused = false; };
     /**
      * to check current option is active or not
      * @param index
      * @return boolean the item is active or not
      */
     Md2Multiselect.prototype._isActive = function (index) {
-        return this.items.map(function (i) { return i.text; }).indexOf(this.list[index].text) < 0 ? false : true;
+        return this._items.map(function (i) { return i.text; }).indexOf(this._list[index].text) < 0 ? false : true;
     };
     /**
      * to toggle option to select/deselect option
      * @param event
      * @param index
      */
-    Md2Multiselect.prototype.toggleOption = function (event, index) {
+    Md2Multiselect.prototype._handleOptionClick = function (event, index) {
         var _this = this;
         event.preventDefault();
         event.stopPropagation();
-        var ind = this.items.map(function (i) { return i.text; }).indexOf(this.list[index].text);
+        var ind = this._items.map(function (i) { return i.text; }).indexOf(this._list[index].text);
         if (ind < 0) {
-            this.items.push(this.list[index]);
-            this.items = this.items.sort(function (a, b) { return _this.list.findIndex(function (i) { return i.text === a.text; }) - _this.list.findIndex(function (i) { return i.text === b.text; }); });
+            this._items.push(this._list[index]);
+            this._items = this._items.sort(function (a, b) { return _this._list.findIndex(function (i) { return i.text === a.text; }) - _this._list.findIndex(function (i) { return i.text === b.text; }); });
         }
         else {
-            this.items.splice(ind, 1);
+            this._items.splice(ind, 1);
         }
         this._value = new Array();
-        for (var i = 0; i < this.items.length; i++) {
-            this._value.push(this.items[i].value);
+        for (var i = 0; i < this._items.length; i++) {
+            this._value.push(this._items[i].value);
         }
         this._onChangeCallback(this._value);
         this.change.emit(this._value);
@@ -6575,8 +6578,8 @@ var Md2Multiselect = (function () {
      */
     Md2Multiselect.prototype.updateOptions = function () {
         var _this = this;
-        this.list = this._options.map(function (item) { return new Option(item, _this.textKey, _this.valueKey); });
-        if (this.list.length > 0) {
+        this._list = this._options.map(function (item) { return new Option(item, _this.textKey, _this.valueKey); });
+        if (this._list.length > 0) {
             this.onFocus();
         }
     };
@@ -6588,12 +6591,12 @@ var Md2Multiselect = (function () {
         var _this = this;
         if (value !== this._value) {
             this._value = value;
-            this.items = [];
+            this._items = [];
             if (value && value.length && typeof value === 'object' && Array.isArray(value)) {
                 var _loop_2 = function(i) {
                     var selItm = this_2._options.find(function (itm) { return _this.equals(_this.valueKey ? itm[_this.valueKey] : itm, value[i]); });
                     if (selItm) {
-                        this_2.items.push(new Option(selItm, this_2.textKey, this_2.valueKey));
+                        this_2._items.push(new Option(selItm, this_2.textKey, this_2.valueKey));
                     }
                 };
                 var this_2 = this;
@@ -6675,10 +6678,10 @@ var Md2Multiselect = (function () {
         __metadata$34('design:type', Function), 
         __metadata$34('design:paramtypes', []), 
         __metadata$34('design:returntype', void 0)
-    ], Md2Multiselect.prototype, "onBlur", null);
+    ], Md2Multiselect.prototype, "_onBlur", null);
     Md2Multiselect = __decorate$34([
         _angular_core.Component({selector: 'md2-multiselect',
-            template: "\n    <div class=\"md2-multiselect-container\">\n      <span class=\"md2-multiselect-placeholder\" [class.has-value]=\"items.length\">\n        {{placeholder}}\n        <span class=\"md2-placeholder-required\" *ngIf=\"required\">*</span>\n      </span>\n      <div class=\"md2-multiselect-value\">\n        <div *ngFor=\"let v of items; let last = last\" class=\"md2-multiselect-value-item\">\n          <span class=\"md2-multiselect-text\">{{v.text}}</span><span *ngIf=\"!last\">,&nbsp;</span>\n        </div>\n      </div>\n      <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\">\n        <path d=\"M7 10l5 5 5-5z\" />\n      </svg>\n    </div>\n    <ul *ngIf=\"isMenuVisible\" class=\"md2-multiselect-menu\">\n      <li class=\"md2-option\" *ngFor=\"let l of list; let i = index;\" [class.active]=\"_isActive(i)\" [class.focus]=\"focusedOption === i\" (click)=\"toggleOption($event, i)\">\n        <div class=\"md2-option-icon\"></div>\n        <div class=\"md2-option-text\" [innerHtml]=\"l.text\"></div>\n      </li>\n    </ul>\n  ",
+            template: "\n    <div class=\"md2-multiselect-container\">\n      <span class=\"md2-multiselect-placeholder\" [class.has-value]=\"_items.length\">\n        {{placeholder}}\n        <span class=\"md2-placeholder-required\" *ngIf=\"required\">*</span>\n      </span>\n      <div class=\"md2-multiselect-value\">\n        <div *ngFor=\"let v of _items; let last = last\" class=\"md2-multiselect-value-item\">\n          <span class=\"md2-multiselect-text\">{{v.text}}</span><span *ngIf=\"!last\">,&nbsp;</span>\n        </div>\n      </div>\n      <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\">\n        <path d=\"M7 10l5 5 5-5z\" />\n      </svg>\n    </div>\n    <ul *ngIf=\"isMenuVisible\" class=\"md2-multiselect-menu\">\n      <li class=\"md2-option\" *ngFor=\"let l of _list; let i = index;\" [class.active]=\"_isActive(i)\" [class.focus]=\"focusedOption === i\" (click)=\"_handleOptionClick($event, i)\">\n        <div class=\"md2-option-icon\"></div>\n        <div class=\"md2-option-text\" [innerHtml]=\"l.text\"></div>\n      </li>\n    </ul>\n  ",
             styles: ["md2-multiselect { position: relative; display: block; margin: 18px 0; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } md2-multiselect:focus { outline: none; } md2-multiselect.md2-multiselect-disabled { pointer-events: none; cursor: default; } md2-multiselect .md2-multiselect-container { position: relative; width: 100%; min-width: 64px; min-height: 30px; align-items: center; padding: 2px 2px 1px; border-bottom: 1px solid rgba(0, 0, 0, 0.12); box-sizing: border-box; cursor: pointer; } md2-multiselect:focus .md2-multiselect-container { padding-bottom: 0; border-bottom: 2px solid #106cc8; } md2-multiselect.md2-multiselect-disabled .md2-multiselect-container { color: rgba(0, 0, 0, 0.38); border-color: transparent; background-image: linear-gradient(to right, rgba(0, 0, 0, 0.38) 0%, rgba(0, 0, 0, 0.38) 33%, transparent 0%); background-position: bottom -1px left 0; background-size: 4px 1px; background-repeat: repeat-x; cursor: default; } md2-multiselect.md2-multiselect-disabled:focus .md2-multiselect-container { padding-bottom: 1px; border-bottom: 1px solid transparent; } md2-multiselect .md2-multiselect-placeholder { position: absolute; right: 26px; bottom: 100%; left: 0; color: rgba(0, 0, 0, 0.38); max-width: 100%; padding-left: 3px; padding-right: 0; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; z-index: 1; transform: translate3d(0, 26px, 0) scale(1); transition: transform 400ms cubic-bezier(0.25, 0.8, 0.25, 1); transform-origin: left top; } md2-multiselect:focus .md2-multiselect-placeholder { color: #2196f3; } md2-multiselect:focus .md2-multiselect-placeholder .md2-placeholder-required { color: #f00; } md2-multiselect:focus .md2-multiselect-placeholder, md2-multiselect .md2-multiselect-placeholder.has-value { transform: translate3d(0, 6px, 0) scale(0.75); } md2-multiselect.md2-multiselect-disabled:focus .md2-multiselect-placeholder, md2-multiselect.md2-multiselect-disabled:focus .md2-multiselect-placeholder .md2-placeholder-required { color: rgba(0, 0, 0, 0.38); } md2-multiselect .md2-multiselect-container .md2-multiselect-value { display: block; max-height: 80px; padding-right: 26px; overflow-y: auto; font-size: 15px; line-height: 26px; } md2-multiselect .md2-multiselect-container .md2-multiselect-value-item { word-wrap: break-word; } md2-multiselect .md2-multiselect-container svg { position: absolute; right: 0; top: 0; display: block; height: 100%; background: #fff; fill: currentColor; color: rgba(0, 0, 0, 0.54); } md2-multiselect .md2-multiselect-menu { position: absolute; left: 0; top: 0; display: block; z-index: 10; width: 100%; margin: 0; padding: 8px 0; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12); max-height: 256px; min-height: 48px; overflow-y: auto; transform: scale(1); background: #fff; } md2-multiselect .md2-multiselect-menu .md2-option { position: relative; display: block; cursor: pointer; width: auto; transition: background 150ms linear; padding: 0 16px 0 40px; height: 48px; line-height: 48px; } md2-multiselect .md2-multiselect-menu .md2-option.active { color: #106cc8; } md2-multiselect .md2-multiselect-menu .md2-option:hover, .md2-multiselect .md2-multiselect-menu .md2-option.focus { background: #eeeeee; } md2-multiselect .md2-multiselect-menu .md2-option .md2-option-text { width: auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 16px; } md2-multiselect .md2-option .md2-option-icon { position: absolute; top: 14px; left: 12px; width: 16px; height: 16px; border: 2px solid rgba(0, 0, 0, 0.54); border-radius: 2px; box-sizing: border-box; transition: 240ms; } md2-multiselect .md2-option.active .md2-option-icon { transform: rotate(-45deg); height: 8px; top: 17px; border-color: #106cc8; border-top-style: none; border-right-style: none; } /*# sourceMappingURL=multiselect.css.map */ "],
             providers: [MD2_MULTISELECT_CONTROL_VALUE_ACCESSOR],
             host: {
@@ -6724,7 +6727,7 @@ var __decorate$35 = (this && this.__decorate) || function (decorators, target, k
 var __metadata$35 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __param$3 = (this && this.__param) || function (paramIndex, decorator) {
+var __param$4 = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 var _uniqueIdCounter = 0;
@@ -6765,9 +6768,10 @@ var Md2Select = (function () {
         this._selected = null;
         this._isInitialized = false;
         this.isOpenable = true;
-        this.isMenuVisible = false;
-        this.selectedValue = '';
+        this._isMenuVisible = false;
+        this._selectedValue = '';
         this.focusIndex = 0;
+        this._onChange = function (value) { };
         this._onTouched = function () { };
         this.change = new _angular_core.EventEmitter();
         this.options = null;
@@ -6830,10 +6834,10 @@ var Md2Select = (function () {
                 if (!selected.selected) {
                     selected.selected = true;
                 }
-                this.selectedValue = selected.text;
+                this._selectedValue = selected.text;
             }
             else {
-                this.selectedValue = '';
+                this._selectedValue = '';
             }
         },
         enumerable: true,
@@ -6844,10 +6848,10 @@ var Md2Select = (function () {
         var _this = this;
         var opt = this.options.filter(function (o) { return _this.equals(o.value, _this.value); })[0];
         if (opt && !this.equals(this.selected, opt)) {
-            this.selectedValue = opt.text;
+            this._selectedValue = opt.text;
         }
-        if (this.selected && this.selectedValue !== this.selected.text) {
-            this.selectedValue = this.selected.text;
+        if (this.selected && this._selectedValue !== this.selected.text) {
+            this._selectedValue = this.selected.text;
         }
     };
     /**
@@ -6946,7 +6950,7 @@ var Md2Select = (function () {
         }
         this.updateScroll();
     };
-    Md2Select.prototype.onClick = function (e) {
+    Md2Select.prototype._handleClick = function (e) {
         var _this = this;
         if (this.disabled || this.readonly) {
             e.stopPropagation();
@@ -6954,7 +6958,7 @@ var Md2Select = (function () {
             return;
         }
         if (this.isOpenable) {
-            if (!this.isMenuVisible) {
+            if (!this._isMenuVisible) {
                 this.options.forEach(function (o) {
                     o.focused = false;
                     if (o.selected) {
@@ -6962,7 +6966,7 @@ var Md2Select = (function () {
                     }
                 });
                 this.focusIndex = this.getFocusIndex();
-                this.isMenuVisible = true;
+                this._isMenuVisible = true;
                 setTimeout(function () {
                     _this.updateScroll();
                 }, 0);
@@ -6975,7 +6979,7 @@ var Md2Select = (function () {
         if (this.disabled) {
             return;
         }
-        if (this.isMenuVisible) {
+        if (this._isMenuVisible) {
             event.preventDefault();
             event.stopPropagation();
             switch (event.keyCode) {
@@ -7003,15 +7007,15 @@ var Md2Select = (function () {
                 case exports.KeyCodes.UP_ARROW:
                     event.preventDefault();
                     event.stopPropagation();
-                    this.onClick(event);
+                    this._handleClick(event);
                     break;
             }
         }
     };
     Md2Select.prototype._onBlur = function () {
         var _this = this;
-        if (this.isMenuVisible) {
-            this.isMenuVisible = false;
+        if (this._isMenuVisible) {
+            this._isMenuVisible = false;
             this.isOpenable = false;
             setTimeout(function () {
                 _this.isOpenable = true;
@@ -7116,7 +7120,7 @@ var Md2Select = (function () {
         __metadata$35('design:type', Function), 
         __metadata$35('design:paramtypes', [Object]), 
         __metadata$35('design:returntype', void 0)
-    ], Md2Select.prototype, "onClick", null);
+    ], Md2Select.prototype, "_handleClick", null);
     __decorate$35([
         _angular_core.HostListener('keydown', ['$event']), 
         __metadata$35('design:type', Function), 
@@ -7131,7 +7135,7 @@ var Md2Select = (function () {
     ], Md2Select.prototype, "_onBlur", null);
     Md2Select = __decorate$35([
         _angular_core.Component({selector: 'md2-select',
-            template: "<div class=\"md2-select-container\"> <span class=\"md2-select-placeholder\" [class.has-value]=\"selectedValue\">    {{placeholder}}  </span> <span *ngIf=\"selectedValue\" class=\"md2-select-value\" [innerHtml]=\"selectedValue\"></span> <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M7 10l5 5 5-5z\" /> </svg> </div> <div class=\"md2-select-menu\" [class.open]=\"isMenuVisible\"> <ng-content></ng-content> </div>",
+            template: "<div class=\"md2-select-container\"> <span class=\"md2-select-placeholder\" [class.has-value]=\"_selectedValue\">{{placeholder}}</span> <span *ngIf=\"_selectedValue\" class=\"md2-select-value\" [innerHtml]=\"_selectedValue\"></span> <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M7 10l5 5 5-5z\" /> </svg> </div> <div class=\"md2-select-menu\" [class.open]=\"_isMenuVisible\"> <ng-content></ng-content> </div>",
             styles: ["md2-select { position: relative; display: block; margin: 18px 0; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } md2-select:focus { outline: none; } md2-select.md2-select-disabled { pointer-events: none; cursor: default; } md2-select .md2-select-container { position: relative; width: 100%; min-width: 64px; min-height: 30px; align-items: center; padding: 2px 26px 1px 2px; border-bottom: 1px solid rgba(0, 0, 0, 0.12); box-sizing: border-box; cursor: pointer; } md2-select:focus .md2-select-container { padding-bottom: 0; border-bottom: 2px solid #106cc8; } md2-select.md2-select-disabled .md2-select-container { color: rgba(0, 0, 0, 0.38); border-color: transparent; background-image: linear-gradient(to right, rgba(0, 0, 0, 0.38) 0%, rgba(0, 0, 0, 0.38) 33%, transparent 0%); background-position: bottom -1px left 0; background-size: 4px 1px; background-repeat: repeat-x; cursor: default; } md2-select.md2-select-disabled:focus .md2-select-container { padding-bottom: 1px; border-bottom: 1px solid transparent; } md2-select .md2-select-container .md2-select-placeholder { position: absolute; right: 26px; bottom: 100%; left: 0; color: rgba(0, 0, 0, 0.38); max-width: 100%; padding-left: 3px; padding-right: 0; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; z-index: 1; transform: translate3d(0, 26px, 0) scale(1); transition: transform 400ms cubic-bezier(0.25, 0.8, 0.25, 1); transform-origin: left top; } [aria-required=true] .md2-select-placeholder::after { content: '*'; } /*md2-select:focus:not(.md-select-disabled) { color: $primary; border-bottom: 1px solid $primary; } .ng-invalid.ng-touched:not(.md2-select-disabled) { color: $warn; border-bottom: 1px solid $warn; }*/ md2-select:focus .md2-select-placeholder { color: #2196f3; } md2-select:focus .md2-select-placeholder, md2-select .md2-select-placeholder.has-value { transform: translate3d(0, 6px, 0) scale(0.75); } md2-select.md2-select-disabled:focus .md2-select-placeholder, md2-select .md2-select-container .md2-select-value { display: block; font-size: 15px; line-height: 26px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } md2-select .md2-select-container svg { position: absolute; right: 0; top: 2px; display: block; fill: currentColor; color: rgba(0, 0, 0, 0.54); } md2-select .md2-select-menu { position: absolute; left: 0; top: 0; display: none; z-index: 10; flex-direction: column; width: 100%; margin: 0; padding: 8px 0; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4); max-height: 256px; min-height: 48px; overflow-y: auto; transform: scale(1); background: #fff; } md2-select .md2-select-menu.open { display: block; } /*# sourceMappingURL=select.css.map */ "],
             host: {
                 'role': 'select',
@@ -7143,7 +7147,7 @@ var Md2Select = (function () {
             },
             encapsulation: _angular_core.ViewEncapsulation.None
         }),
-        __param$3(1, _angular_core.Optional()), 
+        __param$4(1, _angular_core.Optional()), 
         __metadata$35('design:paramtypes', [_angular_core.ElementRef, _angular_forms.NgControl])
     ], Md2Select);
     return Md2Select;
@@ -7304,9 +7308,7 @@ var Md2Transclude = (function () {
         this.viewRef = viewRef;
     }
     Object.defineProperty(Md2Transclude.prototype, "md2Transclude", {
-        get: function () {
-            return this._md2Transclude;
-        },
+        get: function () { return this._md2Transclude; },
         set: function (templateRef) {
             this._md2Transclude = templateRef;
             if (templateRef) {
@@ -7318,8 +7320,7 @@ var Md2Transclude = (function () {
     });
     __decorate$36([
         _angular_core.Input(), 
-        __metadata$36('design:type', _angular_core.TemplateRef), 
-        __metadata$36('design:paramtypes', [_angular_core.TemplateRef])
+        __metadata$36('design:type', Object)
     ], Md2Transclude.prototype, "md2Transclude", null);
     Md2Transclude = __decorate$36([
         _angular_core.Directive({ selector: '[md2Transclude]' }), 
@@ -7375,10 +7376,10 @@ var Md2Tabs = (function () {
         this._isInitialized = false;
         this._focusIndex = 0;
         this._selectedIndex = 0;
-        this.shouldPaginate = false;
-        this.offsetLeft = 0;
-        this.inkBarLeft = '0';
-        this.inkBarWidth = '0';
+        this._shouldPaginate = false;
+        this._offsetLeft = 0;
+        this._inkBarLeft = '0';
+        this._inkBarWidth = '0';
         this.change = new _angular_core.EventEmitter();
     }
     Object.defineProperty(Md2Tabs.prototype, "selectedIndex", {
@@ -7464,8 +7465,8 @@ var Md2Tabs = (function () {
             return;
         }
         var tab = elements.tabs[this.selectedIndex];
-        this.inkBarLeft = tab.offsetLeft + 'px';
-        this.inkBarWidth = tab.offsetWidth + 'px';
+        this._inkBarLeft = tab.offsetLeft + 'px';
+        this._inkBarWidth = tab.offsetWidth + 'px';
     };
     /**
      * Create Change Event
@@ -7493,25 +7494,25 @@ var Md2Tabs = (function () {
      * @param event
      */
     Md2Tabs.prototype.scroll = function (event) {
-        if (!this.shouldPaginate) {
+        if (!this._shouldPaginate) {
             return;
         }
         event.preventDefault();
-        this.offsetLeft = this.fixOffset(this.offsetLeft - event.wheelDelta);
+        this._offsetLeft = this.fixOffset(this._offsetLeft - event.wheelDelta);
     };
     /**
      * Next Page
      */
     Md2Tabs.prototype.nextPage = function () {
         var elements = this.element;
-        var viewportWidth = elements.canvas.clientWidth, totalWidth = viewportWidth + this.offsetLeft, i, tab;
+        var viewportWidth = elements.canvas.clientWidth, totalWidth = viewportWidth + this._offsetLeft, i, tab;
         for (i = 0; i < elements.tabs.length; i++) {
             tab = elements.tabs[i];
             if (tab.offsetLeft + tab.offsetWidth > totalWidth) {
                 break;
             }
         }
-        this.offsetLeft = this.fixOffset(tab.offsetLeft);
+        this._offsetLeft = this.fixOffset(tab.offsetLeft);
     };
     /**
      * Previous Page
@@ -7520,24 +7521,24 @@ var Md2Tabs = (function () {
         var i, tab, elements = this.element;
         for (i = 0; i < elements.tabs.length; i++) {
             tab = elements.tabs[i];
-            if (tab.offsetLeft + tab.offsetWidth >= this.offsetLeft) {
+            if (tab.offsetLeft + tab.offsetWidth >= this._offsetLeft) {
                 break;
             }
         }
-        this.offsetLeft = this.fixOffset(tab.offsetLeft + tab.offsetWidth - elements.canvas.clientWidth);
+        this._offsetLeft = this.fixOffset(tab.offsetLeft + tab.offsetWidth - elements.canvas.clientWidth);
     };
     /**
      * On Window Resize
      * @param event
      */
     Md2Tabs.prototype.onWindowResize = function (event) {
-        this.offsetLeft = this.fixOffset(this.offsetLeft);
+        this._offsetLeft = this.fixOffset(this._offsetLeft);
         this.updatePagination();
     };
     /**
      * Can page Back
      */
-    Md2Tabs.prototype.canPageBack = function () { return this.offsetLeft > 0; };
+    Md2Tabs.prototype.canPageBack = function () { return this._offsetLeft > 0; };
     /**
      * Can page Previous
      */
@@ -7545,7 +7546,7 @@ var Md2Tabs = (function () {
         var elements = this.element;
         var lastTab = elements.tabs[elements.tabs.length - 1];
         return lastTab && lastTab.offsetLeft + lastTab.offsetWidth > elements.canvas.clientWidth +
-            this.offsetLeft;
+            this._offsetLeft;
     };
     /**
      * Update Pagination
@@ -7555,7 +7556,7 @@ var Md2Tabs = (function () {
         this.element.tabs.forEach(function (tab) {
             canvasWidth -= tab.offsetWidth;
         });
-        this.shouldPaginate = canvasWidth < 0;
+        this._shouldPaginate = canvasWidth < 0;
     };
     /**
      * Increment Focus Tab
@@ -7578,8 +7579,8 @@ var Md2Tabs = (function () {
             return;
         }
         var tab = elements.tabs[index], left = tab.offsetLeft, right = tab.offsetWidth + left;
-        this.offsetLeft = Math.max(this.offsetLeft, this.fixOffset(right - elements.canvas.clientWidth + 32 * 2));
-        this.offsetLeft = Math.min(this.offsetLeft, this.fixOffset(left));
+        this._offsetLeft = Math.max(this._offsetLeft, this.fixOffset(right - elements.canvas.clientWidth + 32 * 2));
+        this._offsetLeft = Math.min(this._offsetLeft, this.fixOffset(left));
     };
     /**
      * Fix Offset of Tab
@@ -7588,7 +7589,7 @@ var Md2Tabs = (function () {
      */
     Md2Tabs.prototype.fixOffset = function (value) {
         var elements = this.element;
-        if (!elements.tabs.length || !this.shouldPaginate) {
+        if (!elements.tabs.length || !this._shouldPaginate) {
             return 0;
         }
         var lastTab = elements.tabs[elements.tabs.length - 1], totalWidth = lastTab.offsetLeft + lastTab.offsetWidth;
@@ -7615,7 +7616,7 @@ var Md2Tabs = (function () {
     ], Md2Tabs.prototype, "change", void 0);
     Md2Tabs = __decorate$36([
         _angular_core.Component({selector: 'md2-tabs',
-            template: "\n    <div class=\"md2-tabs-header-wrapper\">\n      <div role=\"button\" class=\"md2-prev-button\" [class.disabled]=\"!canPageBack()\" *ngIf=\"shouldPaginate\" (click)=\"previousPage()\">\n        <em class=\"prev-icon\">Prev</em>\n      </div>\n      <div role=\"button\" class=\"md2-next-button\" [class.disabled]=\"!canPageForward()\" *ngIf=\"shouldPaginate\" (click)=\"nextPage()\">\n        <em class=\"next-icon\">Next</em>\n      </div>\n      <div class=\"md2-tabs-canvas\" [class.md2-paginated]=\"shouldPaginate\" role=\"tablist\" tabindex=\"0\" (keydown.arrowRight)=\"focusNextTab()\" (keydown.arrowLeft)=\"focusPreviousTab()\" (keydown.enter)=\"selectedIndex = focusIndex\" (mousewheel)=\"scroll($event)\">\n        <div class=\"md2-tabs-header\" [style.marginLeft]=\"-offsetLeft + 'px'\">\n          <div class=\"md2-tab-label\" role=\"tab\" *ngFor=\"let tab of tabs; let i = index\" [class.focus]=\"focusIndex === i\" [class.active]=\"selectedIndex === i\" [class.disabled]=\"tab.disabled\" (click)=\"focusIndex = selectedIndex = i\">\n            <span [md2Transclude]=\"tab.labelRef\">{{tab.label}}</span>\n          </div>\n          <div class=\"md2-tab-ink-bar\" [style.left]=\"inkBarLeft\" [style.width]=\"inkBarWidth\"></div>\n        </div>\n      </div>\n    </div>\n    <div class=\"md2-tabs-body-wrapper\">\n      <ng-content></ng-content>\n    </div>\n  ",
+            template: "\n    <div class=\"md2-tabs-header-wrapper\">\n      <div role=\"button\" class=\"md2-prev-button\" [class.disabled]=\"!canPageBack()\" *ngIf=\"_shouldPaginate\" (click)=\"previousPage()\">\n        <em class=\"prev-icon\">Prev</em>\n      </div>\n      <div role=\"button\" class=\"md2-next-button\" [class.disabled]=\"!canPageForward()\" *ngIf=\"_shouldPaginate\" (click)=\"nextPage()\">\n        <em class=\"next-icon\">Next</em>\n      </div>\n      <div class=\"md2-tabs-canvas\" [class.md2-paginated]=\"_shouldPaginate\" role=\"tablist\" tabindex=\"0\" (keydown.arrowRight)=\"focusNextTab()\" (keydown.arrowLeft)=\"focusPreviousTab()\" (keydown.enter)=\"selectedIndex = focusIndex\" (mousewheel)=\"scroll($event)\">\n        <div class=\"md2-tabs-header\" [style.marginLeft]=\"-_offsetLeft + 'px'\">\n          <div class=\"md2-tab-label\" role=\"tab\" *ngFor=\"let tab of tabs; let i = index\" [class.focus]=\"focusIndex === i\" [class.active]=\"selectedIndex === i\" [class.disabled]=\"tab.disabled\" (click)=\"focusIndex = selectedIndex = i\">\n            <span [md2Transclude]=\"tab.labelRef\">{{tab.label}}</span>\n          </div>\n          <div class=\"md2-tab-ink-bar\" [style.left]=\"_inkBarLeft\" [style.width]=\"_inkBarWidth\"></div>\n        </div>\n      </div>\n    </div>\n    <div class=\"md2-tabs-body-wrapper\">\n      <ng-content></ng-content>\n    </div>\n  ",
             styles: ["md2-tabs { position: relative; overflow: hidden; display: block; margin: 0; border: 1px solid #e1e1e1; border-radius: 2px; } .md2-tabs-header-wrapper { position: relative; display: block; height: 48px; background: white; border-width: 0 0 1px; border-style: solid; border-color: rgba(0, 0, 0, 0.12); margin: 0; padding: 0; list-style: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } .md2-tabs-header-wrapper::after { content: ''; display: table; clear: both; } .md2-prev-button, .md2-next-button { position: absolute; top: 0; height: 100%; width: 32px; padding: 8px 0; z-index: 2; cursor: pointer; } .md2-prev-button.disabled, .md2-next-button.disabled { opacity: 0.25; cursor: default; } .md2-prev-button { left: 0; } .md2-next-button { right: 0; } .md2-prev-button .prev-icon, .md2-next-button .next-icon { display: block; width: 12px; height: 12px; font-size: 0; border-width: 0 0 2px 2px; border-style: solid; border-color: #757575; border-radius: 1px; transform: rotate(45deg); margin: 10px; } .md2-next-button .next-icon { border-width: 2px 2px 0 0; } .md2-tabs-canvas { position: relative; height: 100%; overflow: hidden; display: block; outline: none; } .md2-tabs-canvas.md2-paginated { margin: 0 32px; } .md2-tabs-header { position: relative; display: inline-block; height: 100%; white-space: nowrap; transition: 500ms cubic-bezier(0.35, 0, 0.25, 1); } .md2-tab-label { position: relative; height: 100%; color: rgba(0, 0, 0, 0.54); font-size: 14px; text-align: center; line-height: 24px; padding: 12px 24px; transition: background-color 350ms cubic-bezier(0.35, 0, 0.25, 1); cursor: pointer; white-space: nowrap; text-transform: uppercase; display: inline-block; font-weight: 500; box-sizing: border-box; overflow: hidden; -ms-text-overflow: ellipsis; text-overflow: ellipsis; } .md2-tab-label.active { color: #106cc8; } .md2-tabs-canvas:focus .md2-tab-label.focus { background: rgba(0, 0, 0, 0.05); } .md2-tab-label.disabled { color: rgba(0, 0, 0, 0.26); pointer-events: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-user-drag: none; opacity: 0.5; cursor: default; } .md2-tab-ink-bar { position: absolute; bottom: 0; height: 2px; background: #ff5252; transition: 250ms cubic-bezier(0.35, 0, 0.25, 1); } .md2-tabs-body-wrapper { position: relative; min-height: 0; display: block; clear: both; } md2-tab { padding: 16px; display: none; position: relative; } md2-tab.active { display: block; position: relative; } /*# sourceMappingURL=tabs.css.map */ "],
             host: {
                 '[class]': 'class',
@@ -7657,7 +7658,7 @@ var __decorate$37 = (this && this.__decorate) || function (decorators, target, k
 var __metadata$37 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var noop$5 = function () { };
+var noop$4 = function () { };
 var nextId$5 = 0;
 var Tag = (function () {
     function Tag(source, textKey, valueKey) {
@@ -7677,21 +7678,21 @@ var MD2_TAGS_CONTROL_VALUE_ACCESSOR = {
     multi: true
 };
 var Md2Tags = (function () {
-    function Md2Tags(element) {
-        this.element = element;
+    function Md2Tags(_element) {
+        this._element = _element;
         this.change = new _angular_core.EventEmitter();
         this._value = '';
         this._disabled = false;
         this._isInitialized = false;
-        this._onTouchedCallback = noop$5;
-        this._onChangeCallback = noop$5;
+        this._onTouchedCallback = noop$4;
+        this._onChangeCallback = noop$4;
         this._tags = [];
-        this.list = [];
-        this.items = [];
-        this.focusedTag = 0;
-        this.selectedTag = -1;
-        this.tagBuffer = '';
-        this.inputFocused = false;
+        this._list = [];
+        this._items = [];
+        this._focusedTag = 0;
+        this._selectedTag = -1;
+        this._inputValue = '';
+        this._inputFocused = false;
         this.noBlur = true;
         this.id = 'md2-tags-' + (++nextId$5);
         this.tabindex = 0;
@@ -7699,16 +7700,16 @@ var Md2Tags = (function () {
         this.textKey = 'text';
         this.valueKey = null;
         this.selectAndFocusTagSafe = function (index) {
-            if (!this.items.length) {
+            if (!this._items.length) {
                 this._selectTag(-1);
                 this.onFocus();
                 return;
             }
-            if (index === this.items.length) {
+            if (index === this._items.length) {
                 return this.onFocus();
             }
             index = Math.max(index, 0);
-            index = Math.min(index, this.items.length - 1);
+            index = Math.min(index, this._items.length - 1);
             this._selectTag(index);
         };
     }
@@ -7738,12 +7739,12 @@ var Md2Tags = (function () {
         var _this = this;
         if (value !== this._value) {
             this._value = value;
-            this.items = [];
+            this._items = [];
             if (value && value.length && typeof value === 'object' && Array.isArray(value)) {
                 var _loop_1 = function(i) {
                     var selItm = this_1._tags.find(function (t) { return _this.equals(_this.valueKey ? t[_this.valueKey] : t, value[i]); });
                     if (selItm) {
-                        this_1.items.push(new Tag(selItm, this_1.textKey, this_1.valueKey));
+                        this_1._items.push(new Tag(selItm, this_1.textKey, this_1.valueKey));
                     }
                 };
                 var this_1 = this;
@@ -7793,7 +7794,7 @@ var Md2Tags = (function () {
     };
     Object.defineProperty(Md2Tags.prototype, "isMenuVisible", {
         get: function () {
-            return ((this.inputFocused || this.noBlur) && this.tagBuffer && this.list && this.list.length) ? true : false;
+            return ((this._inputFocused || this.noBlur) && this._inputValue && this._list && this._list.length) ? true : false;
         },
         enumerable: true,
         configurable: true
@@ -7802,10 +7803,10 @@ var Md2Tags = (function () {
      * update scroll of tags suggestion menu
      */
     Md2Tags.prototype.updateScroll = function () {
-        if (this.focusedTag < 0) {
+        if (this._focusedTag < 0) {
             return;
         }
-        var menuContainer = this.element.nativeElement.querySelector('.md2-tags-menu');
+        var menuContainer = this._element.nativeElement.querySelector('.md2-tags-menu');
         if (!menuContainer) {
             return;
         }
@@ -7813,7 +7814,7 @@ var Md2Tags = (function () {
         if (choices.length < 1) {
             return;
         }
-        var highlighted = choices[this.focusedTag];
+        var highlighted = choices[this._focusedTag];
         if (!highlighted) {
             return;
         }
@@ -7833,23 +7834,23 @@ var Md2Tags = (function () {
     Md2Tags.prototype._handleInputKeydown = function (event) {
         var _this = this;
         // Backspace
-        if (event.keyCode === 8 && !this.tagBuffer) {
+        if (event.keyCode === 8 && !this._inputValue) {
             event.preventDefault();
             event.stopPropagation();
-            if (this.items.length && this.selectedTag < 0) {
-                this.selectAndFocusTagSafe(this.items.length - 1);
+            if (this._items.length && this._selectedTag < 0) {
+                this.selectAndFocusTagSafe(this._items.length - 1);
             }
-            if (this.items.length && this.selectedTag > -1) {
-                this.removeAndSelectAdjacentTag(this.selectedTag);
+            if (this._items.length && this._selectedTag > -1) {
+                this.removeAndSelectAdjacentTag(this._selectedTag);
             }
             return;
         }
         // Del Key
-        if (event.keyCode === 46 && !this.tagBuffer) {
+        if (event.keyCode === 46 && !this._inputValue) {
             return;
         }
         // Left / Right Arrow
-        if ((event.keyCode === 37 || event.keyCode === 39) && !this.tagBuffer) {
+        if ((event.keyCode === 37 || event.keyCode === 39) && !this._inputValue) {
             return;
         }
         // Down Arrow
@@ -7859,7 +7860,7 @@ var Md2Tags = (function () {
             }
             event.stopPropagation();
             event.preventDefault();
-            this.focusedTag = (this.focusedTag === this.list.length - 1) ? 0 : Math.min(this.focusedTag + 1, this.list.length - 1);
+            this._focusedTag = (this._focusedTag === this._list.length - 1) ? 0 : Math.min(this._focusedTag + 1, this._list.length - 1);
             this.updateScroll();
             return;
         }
@@ -7870,7 +7871,7 @@ var Md2Tags = (function () {
             }
             event.stopPropagation();
             event.preventDefault();
-            this.focusedTag = (this.focusedTag === 0) ? this.list.length - 1 : Math.max(0, this.focusedTag - 1);
+            this._focusedTag = (this._focusedTag === 0) ? this._list.length - 1 : Math.max(0, this._focusedTag - 1);
             this.updateScroll();
             return;
         }
@@ -7880,71 +7881,71 @@ var Md2Tags = (function () {
         }
         // Enter / Space
         if (event.keyCode === 13 || event.keyCode === 32) {
-            if (!this.tagBuffer || !this.isMenuVisible) {
+            if (!this._inputValue || !this.isMenuVisible) {
                 event.preventDefault();
                 return;
             }
             event.preventDefault();
-            this.addTag(event, this.focusedTag);
+            this._addTag(event, this._focusedTag);
             return;
         }
         // Escape Key
         if (event.keyCode === 27) {
             event.stopPropagation();
             event.preventDefault();
-            if (this.tagBuffer) {
-                this.tagBuffer = '';
+            if (this._inputValue) {
+                this._inputValue = '';
             }
-            if (this.selectedTag >= 0) {
-                this.onFocus();
+            if (this._selectedTag >= 0) {
+                this._handleFocus();
             }
             return;
         }
         // reset selected tag
-        if (this.selectedTag >= 0) {
+        if (this._selectedTag >= 0) {
             this.resetselectedTag();
         }
         // filter
         setTimeout(function () {
-            _this.filterMatches(new RegExp(_this.tagBuffer, 'ig'));
+            _this.filterMatches(new RegExp(_this._inputValue, 'ig'));
         }, 10);
     };
     Md2Tags.prototype._handleKeydown = function (event) {
-        if (this.disabled || this.tagBuffer) {
+        if (this.disabled || this._inputValue) {
             return;
         }
         switch (event.keyCode) {
             case exports.KeyCodes.BACKSPACE:
             case exports.KeyCodes.DELETE:
-                if (this.selectedTag < 0) {
+                if (this._selectedTag < 0) {
                     return;
                 }
                 event.preventDefault();
-                this.removeAndSelectAdjacentTag(this.selectedTag);
+                this.removeAndSelectAdjacentTag(this._selectedTag);
                 break;
             case exports.KeyCodes.TAB:
             case exports.KeyCodes.ESCAPE:
-                if (this.selectedTag < 0) {
+                if (this._selectedTag < 0) {
                     return;
                 }
                 event.preventDefault();
-                this.onFocus();
+                this._handleFocus();
                 break;
             case exports.KeyCodes.LEFT_ARROW:
                 event.preventDefault();
-                if (this.selectedTag < 0) {
-                    this.selectedTag = this.items.length;
+                if (this._selectedTag < 0) {
+                    this._selectedTag = this._items.length;
                 }
-                if (this.items.length) {
-                    this.selectAndFocusTagSafe(this.selectedTag - 1);
+                if (this._items.length) {
+                    this.selectAndFocusTagSafe(this._selectedTag - 1);
                 }
                 break;
             case exports.KeyCodes.RIGHT_ARROW:
                 event.preventDefault();
-                if (this.selectedTag >= this.items.length) {
-                    this.selectedTag = -1;
+                if (this._selectedTag >= this._items.length) {
+                    this._selectedTag = -1;
                 }
-                this.selectAndFocusTagSafe(this.selectedTag + 1);
+                this.selectAndFocusTagSafe(this._selectedTag + 1);
                 break;
         }
     };
@@ -7954,10 +7955,10 @@ var Md2Tags = (function () {
         this.selectAndFocusTagSafe(selIndex);
     };
     Md2Tags.prototype.resetselectedTag = function () {
-        this.selectedTag = -1;
+        this._selectedTag = -1;
     };
     Md2Tags.prototype.getAdjacentTagIndex = function (index) {
-        var len = this.items.length - 1;
+        var len = this._items.length - 1;
         return (len === 0) ? -1 :
             (index === len) ? index - 1 : index;
     };
@@ -7966,23 +7967,23 @@ var Md2Tags = (function () {
      * @param event
      * @param index index of the specific tag
      */
-    Md2Tags.prototype.addTag = function (event, index) {
+    Md2Tags.prototype._addTag = function (event, index) {
         event.preventDefault();
         event.stopPropagation();
-        this.items.push(this.list[index]);
-        this.tagBuffer = '';
+        this._items.push(this._list[index]);
+        this._inputValue = '';
         this.updateValue();
     };
     Md2Tags.prototype._removeTagAndFocusInput = function (index) {
         this.removeTag(index);
-        this.onFocus();
+        this._handleFocus();
     };
     /**
      * remove tag
      * @param index
      */
     Md2Tags.prototype.removeTag = function (index) {
-        this.items.splice(index, 1);
+        this._items.splice(index, 1);
         this.updateValue();
     };
     /**
@@ -7990,8 +7991,8 @@ var Md2Tags = (function () {
      */
     Md2Tags.prototype.updateValue = function () {
         this._value = new Array();
-        for (var i = 0; i < this.items.length; i++) {
-            this._value.push(this.items[i].value);
+        for (var i = 0; i < this._items.length; i++) {
+            this._value.push(this._items[i].value);
         }
         this._onChangeCallback(this._value);
         this.change.emit(this._value);
@@ -8001,20 +8002,20 @@ var Md2Tags = (function () {
      * @param index of select tag
      */
     Md2Tags.prototype._selectTag = function (index) {
-        if (index >= -1 && index <= this.items.length) {
-            this.selectedTag = index;
+        if (index >= -1 && index <= this._items.length) {
+            this._selectedTag = index;
         }
     };
-    Md2Tags.prototype.onFocus = function () {
-        this.element.nativeElement.querySelector('input').focus();
+    Md2Tags.prototype._handleFocus = function () {
+        this._element.nativeElement.querySelector('input').focus();
         this.resetselectedTag();
     };
     Md2Tags.prototype._onInputFocus = function () {
-        this.inputFocused = true;
+        this._inputFocused = true;
         this.resetselectedTag();
     };
     Md2Tags.prototype._onInputBlur = function () {
-        this.inputFocused = false;
+        this._inputFocused = false;
     };
     Md2Tags.prototype._listEnter = function () { this.noBlur = true; };
     Md2Tags.prototype._listLeave = function () { this.noBlur = false; };
@@ -8025,21 +8026,21 @@ var Md2Tags = (function () {
     Md2Tags.prototype.filterMatches = function (query) {
         var _this = this;
         var tempList = this._tags.map(function (tag) { return new Tag(tag, _this.textKey, _this.valueKey); });
-        this.list = tempList.filter(function (t) { return (query.test(t.text) && !_this.items.find(function (i) { return t.text === i.text; })); });
-        if (this.list.length > 0) {
-            this.focusedTag = 0;
+        this._list = tempList.filter(function (t) { return (query.test(t.text) && !_this._items.find(function (i) { return t.text === i.text; })); });
+        if (this._list.length > 0) {
+            this._focusedTag = 0;
         }
     };
     Md2Tags.prototype.writeValue = function (value) {
         var _this = this;
         if (value !== this._value) {
             this._value = value;
-            this.items = [];
+            this._items = [];
             if (value && value.length && typeof value === 'object' && Array.isArray(value)) {
                 var _loop_2 = function(i) {
                     var selItm = this_2._tags.find(function (t) { return _this.equals(_this.valueKey ? t[_this.valueKey] : t, value[i]); });
                     if (selItm) {
-                        this_2.items.push(new Tag(selItm, this_2.textKey, this_2.valueKey));
+                        this_2._items.push(new Tag(selItm, this_2.textKey, this_2.valueKey));
                     }
                 };
                 var this_2 = this;
@@ -8099,15 +8100,15 @@ var Md2Tags = (function () {
         __metadata$37('design:type', Function), 
         __metadata$37('design:paramtypes', []), 
         __metadata$37('design:returntype', void 0)
-    ], Md2Tags.prototype, "onFocus", null);
+    ], Md2Tags.prototype, "_handleFocus", null);
     Md2Tags = __decorate$37([
         _angular_core.Component({selector: 'md2-tags',
-            template: "\n    <div class=\"md2-tags-container\">\n      <span *ngFor=\"let t of items; let i = index;\" class=\"md2-tag\" [class.active]=\"selectedTag === i\" (click)=\"_selectTag(i)\">\n        <span class=\"md2-tag-text\">{{t.text}}</span>\n        <svg (click)=\"_removeTagAndFocusInput(i)\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\">\n          <path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\" />\n        </svg>\n      </span>\n      <span class=\"md2-tag-add\">\n        <input [(ngModel)]=\"tagBuffer\" type=\"text\" tabs=\"false\" autocomplete=\"off\" tabindex=\"-1\" [disabled]=\"disabled\" class=\"md2-tags-input\" [placeholder]=\"placeholder\" (focus)=\"_onInputFocus()\" (blur)=\"_onInputBlur()\" (keydown)=\"_handleInputKeydown($event)\" (change)=\"$event.stopPropagation()\" />\n        <ul *ngIf=\"isMenuVisible\" class=\"md2-tags-menu\" (mouseenter)=\"_listEnter()\" (mouseleave)=\"_listLeave()\">\n          <li class=\"md2-option\" *ngFor=\"let l of list; let i = index;\" [class.focused]=\"focusedTag === i\" (click)=\"addTag($event, i)\">\n            <span class=\"md2-option-text\" [innerHtml]=\"l.text | highlight:tagBuffer\"></span>\n          </li>\n        </ul>\n      </span>\n    </div>\n  ",
+            template: "\n    <div class=\"md2-tags-container\">\n      <span *ngFor=\"let t of _items; let i = index;\" class=\"md2-tag\" [class.active]=\"_selectedTag === i\" (click)=\"_selectTag(i)\">\n        <span class=\"md2-tag-text\">{{t.text}}</span>\n        <svg (click)=\"_removeTagAndFocusInput(i)\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\">\n          <path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\" />\n        </svg>\n      </span>\n      <span class=\"md2-tag-add\">\n        <input [(ngModel)]=\"_inputValue\" type=\"text\" tabs=\"false\" autocomplete=\"off\" tabindex=\"-1\" [disabled]=\"disabled\" class=\"md2-tags-input\" [placeholder]=\"placeholder\" (focus)=\"_onInputFocus()\" (blur)=\"_onInputBlur()\" (keydown)=\"_handleInputKeydown($event)\" (change)=\"$event.stopPropagation()\" />\n        <ul *ngIf=\"isMenuVisible\" class=\"md2-tags-menu\" (mouseenter)=\"_listEnter()\" (mouseleave)=\"_listLeave()\">\n          <li class=\"md2-option\" *ngFor=\"let l of _list; let i = index;\" [class.focused]=\"_focusedTag === i\" (click)=\"_addTag($event, i)\">\n            <span class=\"md2-option-text\" [innerHtml]=\"l.text | highlight:_inputValue\"></span>\n          </li>\n        </ul>\n      </span>\n    </div>\n  ",
             styles: ["md2-tags { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } md2-tags:focus { outline: none; } md2-tags .md2-tags-container { position: relative; display: block; max-width: 100%; padding: 2px 3px 8px; border-bottom: 1px solid rgba(0, 0, 0, 0.38); box-sizing: content-box; min-width: 64px; min-height: 26px; cursor: text; } md2-tags .md2-tags-container::before, md2-tags .md2-tags-container::after { display: table; content: ' '; } md2-tags .md2-tags-container::after { clear: both; } md2-tags.focus .md2-tags-container { padding-bottom: 7px; border-bottom: 2px solid #106cc8; } md2-tags.md2-tags-disabled .md2-tags-container { color: rgba(0, 0, 0, 0.38); cursor: default; } md2-tags.md2-tags-disabled.focus .md2-tags-container { padding-bottom: 8px; border-bottom: 1px solid rgba(0, 0, 0, 0.38); } md2-tags .md2-tags-container .md2-tag { position: relative; cursor: default; border-radius: 16px; display: block; height: 32px; line-height: 32px; margin: 8px 8px 0 0; padding: 0 26px 0 12px; float: left; box-sizing: border-box; max-width: 100%; background: #e0e0e0; color: #424242; white-space: nowrap; overflow: hidden; -ms-text-overflow: ellipsis; text-overflow: ellipsis; } md2-tags .md2-tags-container .md2-tag.active { background: #106cc8; color: rgba(255, 255, 255, 0.87); } md2-tags .md2-tags-container .md2-tag svg { position: absolute; top: 4px; right: 2px; cursor: pointer; display: inline-block; overflow: hidden; fill: currentColor; color: rgba(0, 0, 0, 0.54); } md2-tags .md2-tag.active svg { color: rgba(255, 255, 255, 0.87); } md2-tags .md2-tag-add { position: relative; display: inline-block; } md2-tags input { border: 0; outline: 0; margin-top: 8px; height: 32px; line-height: 32px; padding: 0; color: rgba(0, 0, 0, 0.87); background: 0 0; } md2-tags .md2-tags-container .md2-tags-placeholder { color: rgba(0, 0, 0, 0.38); } md2-tags .md2-tags-menu { position: absolute; left: 0; top: 100%; display: block; z-index: 10; flex-direction: column; width: 100%; margin: 6px 0 0; padding: 8px 0; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12); max-height: 256px; min-height: 48px; overflow-y: auto; transform: scale(1); background: #fff; } md2-tags .md2-tags-menu .md2-option { cursor: pointer; position: relative; display: block; color: #212121; align-items: center; width: auto; transition: background 150ms linear; padding: 0 16px; height: 48px; line-height: 48px; } md2-tags .md2-tags-menu .md2-option:hover, md2-tags .md2-tags-menu .md2-option.focused { background: #eeeeee; } md2-tags .md2-tags-menu .md2-option .md2-option-text { width: auto; white-space: nowrap; overflow: hidden; -ms-text-overflow: ellipsis; text-overflow: ellipsis; font-size: 16px; } md2-tags .highlight { color: #757575; } /*# sourceMappingURL=tags.css.map */ "],
             host: {
                 'role': 'tags',
                 '[id]': 'id',
-                '[class.focus]': 'inputFocused || selectedTag >= 0',
+                '[class.focus]': '_inputFocused || _selectedTag >= 0',
                 '[class.md2-tags-disabled]': 'disabled',
                 '[tabindex]': 'disabled ? -1 : tabindex',
                 '[attr.aria-disabled]': 'disabled'
@@ -8710,10 +8711,12 @@ exports.Md2AccordionModule = Md2AccordionModule;
 exports.Md2Accordion = Md2Accordion;
 exports.Md2AccordionHeader = Md2AccordionHeader;
 exports.Md2AccordionTab = Md2AccordionTab;
+exports.Item = Item;
 exports.MD2_AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR = MD2_AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR;
 exports.Md2Autocomplete = Md2Autocomplete;
 exports.MD2_AUTOCOMPLETE_DIRECTIVES = MD2_AUTOCOMPLETE_DIRECTIVES;
 exports.Md2AutocompleteModule = Md2AutocompleteModule;
+exports.Chip = Chip;
 exports.MD2_CHIPS_CONTROL_VALUE_ACCESSOR = MD2_CHIPS_CONTROL_VALUE_ACCESSOR;
 exports.Md2Chips = Md2Chips;
 exports.MD2_CHIPS_DIRECTIVES = MD2_CHIPS_DIRECTIVES;
@@ -8737,7 +8740,6 @@ exports.Md2DataTableSortField = Md2DataTableSortField;
 exports.Md2Pagination = Md2Pagination;
 exports.MD2_DATA_TABLE_DIRECTIVES = MD2_DATA_TABLE_DIRECTIVES;
 exports.Md2DataTableModule = Md2DataTableModule;
-exports.MD2_DATEPICKER_CONTROL_VALUE_ACCESSOR = MD2_DATEPICKER_CONTROL_VALUE_ACCESSOR;
 exports.Md2Datepicker = Md2Datepicker;
 exports.MD2_DATEPICKER_DIRECTIVES = MD2_DATEPICKER_DIRECTIVES;
 exports.Md2DatepickerModule = Md2DatepickerModule;
@@ -8753,6 +8755,7 @@ exports.Md2MenuModule = Md2MenuModule;
 exports.Md2MenuContent = Md2MenuContent;
 exports.Md2MenuItem = Md2MenuItem;
 exports.Md2MenuTrigger = Md2MenuTrigger;
+exports.Option = Option;
 exports.MD2_MULTISELECT_CONTROL_VALUE_ACCESSOR = MD2_MULTISELECT_CONTROL_VALUE_ACCESSOR;
 exports.Md2Multiselect = Md2Multiselect;
 exports.MD2_MULTISELECT_DIRECTIVES = MD2_MULTISELECT_DIRECTIVES;
@@ -8770,6 +8773,7 @@ exports.Md2TabLabel = Md2TabLabel;
 exports.Md2Tabs = Md2Tabs;
 exports.MD2_TABS_DIRECTIVES = MD2_TABS_DIRECTIVES;
 exports.Md2TabsModule = Md2TabsModule;
+exports.Tag = Tag;
 exports.MD2_TAGS_CONTROL_VALUE_ACCESSOR = MD2_TAGS_CONTROL_VALUE_ACCESSOR;
 exports.Md2Tags = Md2Tags;
 exports.MD2_TAGS_DIRECTIVES = MD2_TAGS_DIRECTIVES;

@@ -19,9 +19,7 @@ export var Md2Transclude = (function () {
         this.viewRef = viewRef;
     }
     Object.defineProperty(Md2Transclude.prototype, "md2Transclude", {
-        get: function () {
-            return this._md2Transclude;
-        },
+        get: function () { return this._md2Transclude; },
         set: function (templateRef) {
             this._md2Transclude = templateRef;
             if (templateRef) {
@@ -33,8 +31,7 @@ export var Md2Transclude = (function () {
     });
     __decorate([
         Input(), 
-        __metadata('design:type', TemplateRef), 
-        __metadata('design:paramtypes', [TemplateRef])
+        __metadata('design:type', Object)
     ], Md2Transclude.prototype, "md2Transclude", null);
     Md2Transclude = __decorate([
         Directive({ selector: '[md2Transclude]' }), 
@@ -90,10 +87,10 @@ export var Md2Tabs = (function () {
         this._isInitialized = false;
         this._focusIndex = 0;
         this._selectedIndex = 0;
-        this.shouldPaginate = false;
-        this.offsetLeft = 0;
-        this.inkBarLeft = '0';
-        this.inkBarWidth = '0';
+        this._shouldPaginate = false;
+        this._offsetLeft = 0;
+        this._inkBarLeft = '0';
+        this._inkBarWidth = '0';
         this.change = new EventEmitter();
     }
     Object.defineProperty(Md2Tabs.prototype, "selectedIndex", {
@@ -179,8 +176,8 @@ export var Md2Tabs = (function () {
             return;
         }
         var tab = elements.tabs[this.selectedIndex];
-        this.inkBarLeft = tab.offsetLeft + 'px';
-        this.inkBarWidth = tab.offsetWidth + 'px';
+        this._inkBarLeft = tab.offsetLeft + 'px';
+        this._inkBarWidth = tab.offsetWidth + 'px';
     };
     /**
      * Create Change Event
@@ -208,25 +205,25 @@ export var Md2Tabs = (function () {
      * @param event
      */
     Md2Tabs.prototype.scroll = function (event) {
-        if (!this.shouldPaginate) {
+        if (!this._shouldPaginate) {
             return;
         }
         event.preventDefault();
-        this.offsetLeft = this.fixOffset(this.offsetLeft - event.wheelDelta);
+        this._offsetLeft = this.fixOffset(this._offsetLeft - event.wheelDelta);
     };
     /**
      * Next Page
      */
     Md2Tabs.prototype.nextPage = function () {
         var elements = this.element;
-        var viewportWidth = elements.canvas.clientWidth, totalWidth = viewportWidth + this.offsetLeft, i, tab;
+        var viewportWidth = elements.canvas.clientWidth, totalWidth = viewportWidth + this._offsetLeft, i, tab;
         for (i = 0; i < elements.tabs.length; i++) {
             tab = elements.tabs[i];
             if (tab.offsetLeft + tab.offsetWidth > totalWidth) {
                 break;
             }
         }
-        this.offsetLeft = this.fixOffset(tab.offsetLeft);
+        this._offsetLeft = this.fixOffset(tab.offsetLeft);
     };
     /**
      * Previous Page
@@ -235,24 +232,24 @@ export var Md2Tabs = (function () {
         var i, tab, elements = this.element;
         for (i = 0; i < elements.tabs.length; i++) {
             tab = elements.tabs[i];
-            if (tab.offsetLeft + tab.offsetWidth >= this.offsetLeft) {
+            if (tab.offsetLeft + tab.offsetWidth >= this._offsetLeft) {
                 break;
             }
         }
-        this.offsetLeft = this.fixOffset(tab.offsetLeft + tab.offsetWidth - elements.canvas.clientWidth);
+        this._offsetLeft = this.fixOffset(tab.offsetLeft + tab.offsetWidth - elements.canvas.clientWidth);
     };
     /**
      * On Window Resize
      * @param event
      */
     Md2Tabs.prototype.onWindowResize = function (event) {
-        this.offsetLeft = this.fixOffset(this.offsetLeft);
+        this._offsetLeft = this.fixOffset(this._offsetLeft);
         this.updatePagination();
     };
     /**
      * Can page Back
      */
-    Md2Tabs.prototype.canPageBack = function () { return this.offsetLeft > 0; };
+    Md2Tabs.prototype.canPageBack = function () { return this._offsetLeft > 0; };
     /**
      * Can page Previous
      */
@@ -260,7 +257,7 @@ export var Md2Tabs = (function () {
         var elements = this.element;
         var lastTab = elements.tabs[elements.tabs.length - 1];
         return lastTab && lastTab.offsetLeft + lastTab.offsetWidth > elements.canvas.clientWidth +
-            this.offsetLeft;
+            this._offsetLeft;
     };
     /**
      * Update Pagination
@@ -270,7 +267,7 @@ export var Md2Tabs = (function () {
         this.element.tabs.forEach(function (tab) {
             canvasWidth -= tab.offsetWidth;
         });
-        this.shouldPaginate = canvasWidth < 0;
+        this._shouldPaginate = canvasWidth < 0;
     };
     /**
      * Increment Focus Tab
@@ -293,8 +290,8 @@ export var Md2Tabs = (function () {
             return;
         }
         var tab = elements.tabs[index], left = tab.offsetLeft, right = tab.offsetWidth + left;
-        this.offsetLeft = Math.max(this.offsetLeft, this.fixOffset(right - elements.canvas.clientWidth + 32 * 2));
-        this.offsetLeft = Math.min(this.offsetLeft, this.fixOffset(left));
+        this._offsetLeft = Math.max(this._offsetLeft, this.fixOffset(right - elements.canvas.clientWidth + 32 * 2));
+        this._offsetLeft = Math.min(this._offsetLeft, this.fixOffset(left));
     };
     /**
      * Fix Offset of Tab
@@ -303,7 +300,7 @@ export var Md2Tabs = (function () {
      */
     Md2Tabs.prototype.fixOffset = function (value) {
         var elements = this.element;
-        if (!elements.tabs.length || !this.shouldPaginate) {
+        if (!elements.tabs.length || !this._shouldPaginate) {
             return 0;
         }
         var lastTab = elements.tabs[elements.tabs.length - 1], totalWidth = lastTab.offsetLeft + lastTab.offsetWidth;
@@ -330,7 +327,7 @@ export var Md2Tabs = (function () {
     ], Md2Tabs.prototype, "change", void 0);
     Md2Tabs = __decorate([
         Component({selector: 'md2-tabs',
-            template: "\n    <div class=\"md2-tabs-header-wrapper\">\n      <div role=\"button\" class=\"md2-prev-button\" [class.disabled]=\"!canPageBack()\" *ngIf=\"shouldPaginate\" (click)=\"previousPage()\">\n        <em class=\"prev-icon\">Prev</em>\n      </div>\n      <div role=\"button\" class=\"md2-next-button\" [class.disabled]=\"!canPageForward()\" *ngIf=\"shouldPaginate\" (click)=\"nextPage()\">\n        <em class=\"next-icon\">Next</em>\n      </div>\n      <div class=\"md2-tabs-canvas\" [class.md2-paginated]=\"shouldPaginate\" role=\"tablist\" tabindex=\"0\" (keydown.arrowRight)=\"focusNextTab()\" (keydown.arrowLeft)=\"focusPreviousTab()\" (keydown.enter)=\"selectedIndex = focusIndex\" (mousewheel)=\"scroll($event)\">\n        <div class=\"md2-tabs-header\" [style.marginLeft]=\"-offsetLeft + 'px'\">\n          <div class=\"md2-tab-label\" role=\"tab\" *ngFor=\"let tab of tabs; let i = index\" [class.focus]=\"focusIndex === i\" [class.active]=\"selectedIndex === i\" [class.disabled]=\"tab.disabled\" (click)=\"focusIndex = selectedIndex = i\">\n            <span [md2Transclude]=\"tab.labelRef\">{{tab.label}}</span>\n          </div>\n          <div class=\"md2-tab-ink-bar\" [style.left]=\"inkBarLeft\" [style.width]=\"inkBarWidth\"></div>\n        </div>\n      </div>\n    </div>\n    <div class=\"md2-tabs-body-wrapper\">\n      <ng-content></ng-content>\n    </div>\n  ",
+            template: "\n    <div class=\"md2-tabs-header-wrapper\">\n      <div role=\"button\" class=\"md2-prev-button\" [class.disabled]=\"!canPageBack()\" *ngIf=\"_shouldPaginate\" (click)=\"previousPage()\">\n        <em class=\"prev-icon\">Prev</em>\n      </div>\n      <div role=\"button\" class=\"md2-next-button\" [class.disabled]=\"!canPageForward()\" *ngIf=\"_shouldPaginate\" (click)=\"nextPage()\">\n        <em class=\"next-icon\">Next</em>\n      </div>\n      <div class=\"md2-tabs-canvas\" [class.md2-paginated]=\"_shouldPaginate\" role=\"tablist\" tabindex=\"0\" (keydown.arrowRight)=\"focusNextTab()\" (keydown.arrowLeft)=\"focusPreviousTab()\" (keydown.enter)=\"selectedIndex = focusIndex\" (mousewheel)=\"scroll($event)\">\n        <div class=\"md2-tabs-header\" [style.marginLeft]=\"-_offsetLeft + 'px'\">\n          <div class=\"md2-tab-label\" role=\"tab\" *ngFor=\"let tab of tabs; let i = index\" [class.focus]=\"focusIndex === i\" [class.active]=\"selectedIndex === i\" [class.disabled]=\"tab.disabled\" (click)=\"focusIndex = selectedIndex = i\">\n            <span [md2Transclude]=\"tab.labelRef\">{{tab.label}}</span>\n          </div>\n          <div class=\"md2-tab-ink-bar\" [style.left]=\"_inkBarLeft\" [style.width]=\"_inkBarWidth\"></div>\n        </div>\n      </div>\n    </div>\n    <div class=\"md2-tabs-body-wrapper\">\n      <ng-content></ng-content>\n    </div>\n  ",
             styles: ["md2-tabs { position: relative; overflow: hidden; display: block; margin: 0; border: 1px solid #e1e1e1; border-radius: 2px; } .md2-tabs-header-wrapper { position: relative; display: block; height: 48px; background: white; border-width: 0 0 1px; border-style: solid; border-color: rgba(0, 0, 0, 0.12); margin: 0; padding: 0; list-style: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } .md2-tabs-header-wrapper::after { content: ''; display: table; clear: both; } .md2-prev-button, .md2-next-button { position: absolute; top: 0; height: 100%; width: 32px; padding: 8px 0; z-index: 2; cursor: pointer; } .md2-prev-button.disabled, .md2-next-button.disabled { opacity: 0.25; cursor: default; } .md2-prev-button { left: 0; } .md2-next-button { right: 0; } .md2-prev-button .prev-icon, .md2-next-button .next-icon { display: block; width: 12px; height: 12px; font-size: 0; border-width: 0 0 2px 2px; border-style: solid; border-color: #757575; border-radius: 1px; transform: rotate(45deg); margin: 10px; } .md2-next-button .next-icon { border-width: 2px 2px 0 0; } .md2-tabs-canvas { position: relative; height: 100%; overflow: hidden; display: block; outline: none; } .md2-tabs-canvas.md2-paginated { margin: 0 32px; } .md2-tabs-header { position: relative; display: inline-block; height: 100%; white-space: nowrap; transition: 500ms cubic-bezier(0.35, 0, 0.25, 1); } .md2-tab-label { position: relative; height: 100%; color: rgba(0, 0, 0, 0.54); font-size: 14px; text-align: center; line-height: 24px; padding: 12px 24px; transition: background-color 350ms cubic-bezier(0.35, 0, 0.25, 1); cursor: pointer; white-space: nowrap; text-transform: uppercase; display: inline-block; font-weight: 500; box-sizing: border-box; overflow: hidden; -ms-text-overflow: ellipsis; text-overflow: ellipsis; } .md2-tab-label.active { color: #106cc8; } .md2-tabs-canvas:focus .md2-tab-label.focus { background: rgba(0, 0, 0, 0.05); } .md2-tab-label.disabled { color: rgba(0, 0, 0, 0.26); pointer-events: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-user-drag: none; opacity: 0.5; cursor: default; } .md2-tab-ink-bar { position: absolute; bottom: 0; height: 2px; background: #ff5252; transition: 250ms cubic-bezier(0.35, 0, 0.25, 1); } .md2-tabs-body-wrapper { position: relative; min-height: 0; display: block; clear: both; } md2-tab { padding: 16px; display: none; position: relative; } md2-tab.active { display: block; position: relative; } /*# sourceMappingURL=tabs.css.map */ "],
             host: {
                 '[class]': 'class',

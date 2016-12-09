@@ -1,3 +1,12 @@
+<a name="0.0.10-6"></a>
+## [0.0.10-6](https://github.com/Promact/md2/compare/v0.0.10-5...v0.0.10-6) (2016-12-09)
+
+
+### Bug Fixes
+
+* updated performance and fixed bugs
+
+
 <a name="0.0.10-5"></a>
 ## [0.0.10-5](https://github.com/Promact/md2/compare/v0.0.10-4...v0.0.10-5) (2016-12-07)
 

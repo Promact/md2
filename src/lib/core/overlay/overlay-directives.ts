@@ -67,50 +67,21 @@ export class ConnectedOverlayDirective implements OnDestroy {
   private _hasBackdrop = false;
   private _backdropSubscription: Subscription;
   private _positionSubscription: Subscription;
-  private _offsetX: number = 0;
-  private _offsetY: number = 0;
-  private _position: ConnectedPositionStrategy;
 
   @Input() origin: OverlayOrigin;
   @Input() positions: ConnectionPositionPair[];
 
   /** The offset in pixels for the overlay connection point on the x-axis */
-  @Input()
-  get offsetX(): number {
-    return this._offsetX;
-  }
-
-  set offsetX(offsetX: number) {
-    this._offsetX = offsetX;
-    if (this._position) {
-      this._position.withOffsetX(offsetX);
-    }
-  }
+  @Input() offsetX: number = 0;
 
   /** The offset in pixels for the overlay connection point on the y-axis */
-  @Input()
-  get offsetY() {
-    return this._offsetY;
-  }
-
-  set offsetY(offsetY: number) {
-    this._offsetY = offsetY;
-    if (this._position) {
-      this._position.withOffsetY(offsetY);
-    }
-  }
+  @Input() offsetY: number = 0;
 
   /** The width of the overlay panel. */
   @Input() width: number | string;
 
   /** The height of the overlay panel. */
   @Input() height: number | string;
-
-  /** The min width of the overlay panel. */
-  @Input() minWidth: number | string;
-
-  /** The min height of the overlay panel. */
-  @Input() minHeight: number | string;
 
   /** The custom class to be set on the backdrop element. */
   @Input() backdropClass: string;
@@ -139,8 +110,6 @@ export class ConnectedOverlayDirective implements OnDestroy {
   /** Event emitted when the backdrop is clicked. */
   @Output() backdropClick = new EventEmitter<void>();
   @Output() positionChange = new EventEmitter<ConnectedOverlayPositionChange>();
-  @Output() attach = new EventEmitter<void>();
-  @Output() detach = new EventEmitter<void>();
 
   // TODO(jelbourn): inputs for size, scroll behavior, animation, etc.
 
@@ -186,22 +155,13 @@ export class ConnectedOverlayDirective implements OnDestroy {
       overlayConfig.height = this.height;
     }
 
-    if (this.minWidth || this.minWidth === 0) {
-      overlayConfig.minWidth = this.minWidth;
-    }
-
-    if (this.minHeight || this.minHeight === 0) {
-      overlayConfig.minHeight = this.minHeight;
-    }
-
     overlayConfig.hasBackdrop = this.hasBackdrop;
 
     if (this.backdropClass) {
       overlayConfig.backdropClass = this.backdropClass;
     }
 
-    this._position = this._createPositionStrategy() as ConnectedPositionStrategy;
-    overlayConfig.positionStrategy = this._position;
+    overlayConfig.positionStrategy = this._createPositionStrategy();
 
     overlayConfig.direction = this.dir;
 
@@ -245,7 +205,6 @@ export class ConnectedOverlayDirective implements OnDestroy {
 
     if (!this._overlayRef.hasAttached()) {
       this._overlayRef.attach(this._templatePortal);
-      this.attach.emit();
     }
 
     if (this.hasBackdrop) {
@@ -259,7 +218,6 @@ export class ConnectedOverlayDirective implements OnDestroy {
   private _detachOverlay() {
     if (this._overlayRef) {
       this._overlayRef.detach();
-      this.detach.emit();
     }
 
     if (this._backdropSubscription) {

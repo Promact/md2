@@ -19,11 +19,6 @@ export class OverlayRef implements PortalHost {
       private _state: OverlayState,
       private _ngZone: NgZone) { }
 
-  /** The overlay's HTML element */
-  get overlayElement(): HTMLElement {
-    return this._pane;
-  }
-
   attach(portal: Portal<any>): any {
     if (this._state.hasBackdrop) {
       this._attachBackdrop();
@@ -43,10 +38,6 @@ export class OverlayRef implements PortalHost {
   }
 
   dispose(): void {
-    if (this._state.positionStrategy) {
-      this._state.positionStrategy.dispose();
-    }
-
     this._detachBackdrop();
     this._portalHost.dispose();
   }
@@ -84,14 +75,6 @@ export class OverlayRef implements PortalHost {
 
     if (this._state.height || this._state.height === 0) {
       this._pane.style.height = formatCssUnit(this._state.height);
-    }
-
-    if (this._state.minWidth || this._state.minWidth === 0) {
-      this._pane.style.minWidth = formatCssUnit(this._state.minWidth);
-    }
-
-    if (this._state.minHeight || this._state.minHeight === 0) {
-      this._pane.style.minHeight = formatCssUnit(this._state.minHeight);
     }
   }
 

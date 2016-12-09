@@ -1,6 +1,7 @@
 import {PositionStrategy} from './position-strategy';
 import {ElementRef} from '@angular/core';
 import {ViewportRuler} from './viewport-ruler';
+import {applyCssTransform} from '../../style/apply-transform';
 import {
     ConnectionPositionPair,
     OriginConnectionPosition,
@@ -57,11 +58,6 @@ export class ConnectedPositionStrategy implements PositionStrategy {
   get positions() {
     return this._preferredPositions;
   }
-
-  /**
-   * To be used to for any cleanup after the element gets destroyed.
-   */
-  dispose() { }
 
   /**
    * Updates the position of the overlay element, using whichever preferred position relative
@@ -231,11 +227,18 @@ export class ConnectedPositionStrategy implements PositionStrategy {
    * @param overlayPoint
    */
   private _setElementPosition(element: HTMLElement, overlayPoint: Point) {
-    element.style.left = overlayPoint.x + 'px';
-    element.style.top = overlayPoint.y + 'px';
+    // Round the values to prevent blurry overlays due to subpixel rendering.
+    let x = Math.round(overlayPoint.x);
+    let y = Math.round(overlayPoint.y);
+
+    // TODO(jelbourn): we don't want to always overwrite the transform property here,
+    // because it will need to be used for animations.
+    applyCssTransform(element, `translateX(${x}px) translateY(${y}px)`);
   }
 }
 
 
 /** A simple (x, y) coordinate. */
 type Point = {x: number, y: number};
+
+

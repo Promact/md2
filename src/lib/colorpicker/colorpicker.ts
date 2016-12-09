@@ -126,7 +126,8 @@ export class ColorpickerSliderDirective {
    * @param event
    */
   getX(event: any) {
-    return (event.pageX !== undefined ? event.pageX : event.touches[0].pageX) - this.el.nativeElement.getBoundingClientRect().left - window.pageXOffset;
+    let boundingClientRect = this.el.nativeElement.getBoundingClientRect();
+    return (event.pageX !== undefined ? event.pageX : event.touches[0].pageX) - boundingClientRect.left - window.pageXOffset;
   }
 
   /**
@@ -134,7 +135,8 @@ export class ColorpickerSliderDirective {
    * @param event
    */
   getY(event: any) {
-    return (event.pageY !== undefined ? event.pageY : event.touches[0].pageY) - this.el.nativeElement.getBoundingClientRect().top - window.pageYOffset;
+    let boundingClientRect = this.el.nativeElement.getBoundingClientRect();
+    return (event.pageY !== undefined ? event.pageY : event.touches[0].pageY) - boundingClientRect.top - window.pageYOffset;
   }
 }
 

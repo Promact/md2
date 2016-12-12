@@ -66,7 +66,7 @@ export class ColorpickerSliderDirective {
   private listenerMove: any;
   private listenerStop: any;
 
-  constructor(private el: ElementRef) {
+  constructor(private _element: ElementRef) {
     this.listenerMove = (event: any) => { this.move(event); };
     this.listenerStop = () => { this.stop(); };
   }
@@ -76,8 +76,8 @@ export class ColorpickerSliderDirective {
    * @param event
    */
   setCursor(event: any) {
-    let height = this.el.nativeElement.offsetHeight;
-    let width = this.el.nativeElement.offsetWidth;
+    let height = this._getNativeElement().offsetHeight;
+    let width = this._getNativeElement().offsetWidth;
     let x = Math.max(0, Math.min(this.getX(event), width));
     let y = Math.max(0, Math.min(this.getY(event), height));
 
@@ -126,7 +126,7 @@ export class ColorpickerSliderDirective {
    * @param event
    */
   getX(event: any) {
-    let boundingClientRect = this.el.nativeElement.getBoundingClientRect();
+    let boundingClientRect = this._getNativeElement().getBoundingClientRect();
     return (event.pageX !== undefined ? event.pageX : event.touches[0].pageX) - boundingClientRect.left - window.pageXOffset;
   }
 
@@ -135,8 +135,12 @@ export class ColorpickerSliderDirective {
    * @param event
    */
   getY(event: any) {
-    let boundingClientRect = this.el.nativeElement.getBoundingClientRect();
+    let boundingClientRect = this._getNativeElement().getBoundingClientRect();
     return (event.pageY !== undefined ? event.pageY : event.touches[0].pageY) - boundingClientRect.top - window.pageYOffset;
+  }
+
+  _getNativeElement(): HTMLElement {
+    return this._element.nativeElement;
   }
 }
 
@@ -198,7 +202,7 @@ export class Md2Colorpicker implements OnInit, ControlValueAccessor {
     }
   }
 
-  constructor(private service: ColorpickerService, private el: ElementRef) {
+  constructor(private service: ColorpickerService) {
     this._created = false;
   }
 

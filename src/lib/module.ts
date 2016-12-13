@@ -6,7 +6,7 @@ import {
   OverlayModule,
   A11yModule,
   ProjectionModule,
-  StyleCompatibilityModule,
+  DefaultStyleCompatibilityModeModule,
 } from './core/index';
 
 import { Md2AccordionModule } from './accordion/index';
@@ -24,6 +24,8 @@ import { Md2TabsModule } from './tabs/index';
 import { Md2TagsModule } from './tags/index';
 import { Md2ToastModule } from './toast/index';
 import { Md2TooltipModule } from './tooltip/index';
+
+import { PlatformModule } from './core/platform/index';
 
 
 const MD2_MODULES = [
@@ -46,8 +48,9 @@ const MD2_MODULES = [
   PortalModule,
   RtlModule,
   A11yModule,
+  PlatformModule,
   ProjectionModule,
-  StyleCompatibilityModule,
+  DefaultStyleCompatibilityModeModule,
 ];
 
 @NgModule({
@@ -71,8 +74,9 @@ const MD2_MODULES = [
     ProjectionModule.forRoot(),
     RtlModule.forRoot(),
     A11yModule.forRoot(),
+    PlatformModule.forRoot(),
     OverlayModule.forRoot(),
-    StyleCompatibilityModule.forRoot(),
+    DefaultStyleCompatibilityModeModule.forRoot(),
   ],
   exports: MD2_MODULES,
 })

@@ -29,6 +29,10 @@ export {DomPortalHost} from './portal/dom-portal-host';
 // Projection
 export * from './projection/projection';
 
+// Platform
+export * from './platform/platform';
+export * from './platform/features';
+
 // Overlay
 export {Overlay, OVERLAY_PROVIDERS} from './overlay/overlay';
 export {OverlayContainer} from './overlay/overlay-container';
@@ -77,7 +81,7 @@ export {ComponentType} from './overlay/generic-component-type';
 // Keybindings
 export * from './keyboard/keycodes';
 
-export * from './compatibility/style-compatibility';
+export * from './compatibility/default-mode';
 
 // Animation
 export * from './animation/animation';
@@ -85,6 +89,10 @@ export * from './animation/animation';
 // Coersion
 export {coerceBooleanProperty} from './coersion/boolean-property';
 export {coerceNumberProperty} from './coersion/number-property';
+
+// Compatibility
+export {DefaultStyleCompatibilityModeModule} from './compatibility/default-mode';
+export {NoConflictStyleCompatibilityMode} from './compatibility/no-conflict-mode';
 
 
 @NgModule({

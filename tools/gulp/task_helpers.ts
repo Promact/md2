@@ -67,13 +67,11 @@ export function tsBuildTask(tsConfigPath: string, tsConfigName = 'tsconfig.json'
 
 
 /** Create a SASS Build Task. */
-export function sassBuildTask(dest: string, root: string, includePaths: string[]) {
-  const sassOptions = { includePaths };
-
+export function sassBuildTask(dest: string, root: string) {
   return () => {
     return gulp.src(_globify(root, '**/*.scss'))
       .pipe(gulpSourcemaps.init())
-      .pipe(gulpSass(sassOptions).on('error', gulpSass.logError))
+      .pipe(gulpSass().on('error', gulpSass.logError))
       .pipe(gulpAutoprefixer(SASS_AUTOPREFIXER_OPTIONS))
       .pipe(gulpSourcemaps.write('.'))
       .pipe(gulp.dest(dest));
@@ -181,7 +179,7 @@ export function vendorTask() {
   return () => gulpMerge(
     NPM_VENDOR_FILES.map(root => {
       const glob = path.join(PROJECT_ROOT, 'node_modules', root, '**/*.+(js|js.map)');
-      return gulp.src(glob).pipe(gulp.dest(path.join(DIST_ROOT, 'libs', root)));
+      return gulp.src(glob).pipe(gulp.dest(path.join(DIST_ROOT, 'vendor', root)));
     }));
 }
 

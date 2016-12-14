@@ -20,6 +20,8 @@ export const SPACE = 32;
 export const TAB = 9;
 
 export const ESCAPE = 27;
+export const BACKSPACE = 8;
+export const DELETE = 46;
 
 export enum KeyCodes {
   UP_ARROW = 38,

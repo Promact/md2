@@ -54,7 +54,7 @@ export class Md2Tooltip {
     this.timer = setTimeout(() => {
       this.timer = 0;
 
-      let strategy = this._overlay.position().global().fixed().top('0').left('0');
+      let strategy = this._overlay.position().global().top('0').left('0');
       let config = new OverlayState();
       config.positionStrategy = strategy;
 

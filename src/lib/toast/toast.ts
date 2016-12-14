@@ -52,7 +52,7 @@ export class Md2Toast {
 
     if (toast) {
       if (!this._toastInstance) {
-        let strategy = this._overlay.position().global().fixed().top('0').right('0');
+        let strategy = this._overlay.position().global().top('0').right('0');
         let config = new OverlayState();
         config.positionStrategy = strategy;
 

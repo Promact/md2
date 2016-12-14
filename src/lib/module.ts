@@ -1,6 +1,7 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
 
 import {
+  MdRippleModule,
   RtlModule,
   PortalModule,
   OverlayModule,
@@ -39,6 +40,7 @@ const MD2_MODULES = [
   Md2DialogModule,
   Md2MenuModule,
   Md2MultiselectModule,
+  MdRippleModule,
   Md2SelectModule,
   Md2TabsModule,
   Md2TagsModule,
@@ -65,17 +67,19 @@ const MD2_MODULES = [
     Md2DialogModule.forRoot(),
     Md2MenuModule.forRoot(),
     Md2MultiselectModule.forRoot(),
+    MdRippleModule.forRoot(),
     Md2SelectModule.forRoot(),
     Md2TabsModule.forRoot(),
     Md2TagsModule.forRoot(),
     Md2ToastModule.forRoot(),
     Md2TooltipModule.forRoot(),
+
+    A11yModule.forRoot(),
+    OverlayModule.forRoot(),
+    PlatformModule.forRoot(),
     PortalModule.forRoot(),
     ProjectionModule.forRoot(),
     RtlModule.forRoot(),
-    A11yModule.forRoot(),
-    PlatformModule.forRoot(),
-    OverlayModule.forRoot(),
     DefaultStyleCompatibilityModeModule.forRoot(),
   ],
   exports: MD2_MODULES,

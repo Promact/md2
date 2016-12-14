@@ -179,7 +179,7 @@ export function vendorTask() {
   return () => gulpMerge(
     NPM_VENDOR_FILES.map(root => {
       const glob = path.join(PROJECT_ROOT, 'node_modules', root, '**/*.+(js|js.map)');
-      return gulp.src(glob).pipe(gulp.dest(path.join(DIST_ROOT, 'vendor', root)));
+      return gulp.src(glob).pipe(gulp.dest(path.join(DIST_ROOT, 'libs', root)));
     }));
 }
 

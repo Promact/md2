@@ -23,6 +23,8 @@
 # IDEs
 /.idea
 /.vscode
+/.vs
+/*.sln
 
 # misc
 .DS_Store

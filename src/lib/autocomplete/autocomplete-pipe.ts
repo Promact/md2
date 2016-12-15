@@ -13,7 +13,8 @@ export class HighlightPipe implements PipeTransform {
    */
   transform(value: string, query: string) {
     if (query.length < 1) { return value; }
-    return query ? value.replace(new RegExp(this._escapeRegexp(query), 'gi'), '<span class="highlight">$&</span>') : value;
+    return query ? value.replace(new RegExp(this._escapeRegexp(query), 'gi'),
+      '<span class="highlight">$&</span>') : value;
   }
 
   /**

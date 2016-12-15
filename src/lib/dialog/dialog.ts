@@ -123,7 +123,12 @@ export class Md2Dialog implements OnDestroy {
   }
 }
 
-export const MD2_DIALOG_DIRECTIVES: any[] = [Md2Dialog, Md2DialogTitle, Md2DialogFooter, Md2DialogPortal];
+export const MD2_DIALOG_DIRECTIVES: any[] = [
+  Md2Dialog,
+  Md2DialogTitle,
+  Md2DialogFooter,
+  Md2DialogPortal
+];
 
 export const MD2_DIALOG_PROVIDERS: any[] = [Overlay, OVERLAY_PROVIDERS];
 

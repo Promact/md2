@@ -20,6 +20,9 @@ import {
   OverlayRef,
   TemplatePortal
 } from '../core/core';
+
+import 'rxjs/add/operator/first';
+
 import { Animate } from './animate';
 
 @Directive({ selector: '[md2DialogPortal]' })

@@ -211,7 +211,9 @@ export class Md2Select implements AfterContentInit, AfterContentChecked, Control
   /**
    * get index of focused option
    */
-  private getFocusIndex(): number { return this.options.toArray().findIndex((o: any) => o.focused); }
+  private getFocusIndex(): number {
+    return this.options.toArray().findIndex((o: any) => o.focused);
+  }
 
   /**
    * update focused option
@@ -424,7 +426,8 @@ export class Md2Option implements OnInit {
   get disabled(): boolean { return this._disabled || this.select.disabled; }
   set disabled(value) { this._disabled = coerceBooleanProperty(value); }
 
-  constructor(select: Md2Select, private selectDispatcher: Md2SelectDispatcher, private _elementRef: ElementRef) {
+  constructor(select: Md2Select, private selectDispatcher: Md2SelectDispatcher,
+    private _elementRef: ElementRef) {
     this.select = select;
     selectDispatcher.listen((id: string, name: string) => {
       if (id !== this.id && name === this.name) {

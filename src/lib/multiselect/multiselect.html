@@ -1,0 +1,20 @@
+<div class="md2-multiselect-container">
+  <span class="md2-multiselect-placeholder" [class.has-value]="_items.length">
+    {{placeholder}}
+    <span class="md2-placeholder-required" *ngIf="required">*</span>
+  </span>
+  <div class="md2-multiselect-value">
+    <div *ngFor="let v of _items; let last = last" class="md2-multiselect-value-item">
+      <span class="md2-multiselect-text">{{v.text}}</span><span *ngIf="!last">,&nbsp;</span>
+    </div>
+  </div>
+  <svg width="24" height="24" viewBox="0 0 24 24">
+    <path d="M7 10l5 5 5-5z" />
+  </svg>
+</div>
+<ul *ngIf="isMenuVisible" class="md2-multiselect-menu">
+  <li class="md2-option" *ngFor="let l of _list; let i = index;" [class.active]="_isActive(i)" [class.focus]="focusedOption === i" (click)="_handleOptionClick($event, i)">
+    <div class="md2-option-icon"></div>
+    <div class="md2-option-text" [innerHtml]="l.text"></div>
+  </li>
+</ul>

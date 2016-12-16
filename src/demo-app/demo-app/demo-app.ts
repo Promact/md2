@@ -6,6 +6,7 @@ import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 
 @Component({
+  moduleId: module.id,
   selector: 'home',
   templateUrl: 'home.html',
 })

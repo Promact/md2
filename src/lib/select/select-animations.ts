@@ -8,10 +8,10 @@ import {
 } from '@angular/core';
 
 /**
- * The following are all the animations for the md-select component, with each
+ * The following are all the animations for the md2-select component, with each
  * const containing the metadata for one animation.
  *
- * The values below match the implementation of the Material 1 md-select animation.
+ * The values below match the implementation of the Material 1 md2-select animation.
  */
 
 /**
@@ -20,14 +20,15 @@ import {
  * depending on the text direction of the application.
  */
 export const transformPlaceholder: AnimationEntryMetadata = trigger('transformPlaceholder', [
-  state('normal', style({
-    transform: `translate3d(0, 0, 0) scale(1)`
-  })),
   state('floating-ltr', style({
-    transform: `translate3d(-2px, -22px, 0) scale(0.75)`
+    top: '-22px',
+    left: '-2px',
+    transform: `scale(0.75)`
   })),
   state('floating-rtl', style({
-    transform: `translate3d(2px, -22px, 0) scale(0.75)`
+    top: '-22px',
+    left: '2px',
+    transform: `scale(0.75)`
   })),
   transition('* => *', animate(`400ms cubic-bezier(0.25, 0.8, 0.25, 1)`))
 ]);
@@ -42,30 +43,15 @@ export const transformPlaceholder: AnimationEntryMetadata = trigger('transformPl
  * When the panel is removed from the DOM, it simply fades out linearly.
  */
 export const transformPanel: AnimationEntryMetadata = trigger('transformPanel', [
-  state('top-ltr', style({
+  state('showing', style({
     opacity: 1,
-    width: 'calc(100% + 32px)',
-    transform: `translate3d(-16px, -9px, 0) scaleY(1)`
-  })),
-  state('top-rtl', style({
-    opacity: 1,
-    width: 'calc(100% + 32px)',
-    transform: `translate3d(16px, -9px, 0) scaleY(1)`
-  })),
-  state('bottom-ltr', style({
-    opacity: 1,
-    width: 'calc(100% + 32px)',
-    transform: `translate3d(-16px, 8px, 0) scaleY(1)`
-  })),
-  state('bottom-rtl', style({
-    opacity: 1,
-    width: 'calc(100% + 32px)',
-    transform: `translate3d(16px, 8px, 0) scaleY(1)`
+    minWidth: 'calc(100% + 32px)',
+    transform: `translate3d(0,0,0) scaleY(1)`
   })),
   transition('void => *', [
     style({
       opacity: 0,
-      width: '100%',
+      minWidth: '100%',
       transform: `translate3d(0, 0, 0) scaleY(0)`
     }),
     animate(`150ms cubic-bezier(0.25, 0.8, 0.25, 1)`)

@@ -102,15 +102,6 @@ export var Compiler = (function () {
         throw _throwError();
     };
     /**
-     *  Exposes the CSS-style selectors that have been used in `ngContent` directives within
-      * the template of the given component.
-      * This is used by the `upgrade` library to compile the appropriate transclude content
-      * in the Angular 1 wrapper component.
-     * @param {?} component
-     * @return {?}
-     */
-    Compiler.prototype.getNgContentSelectors = function (component) { throw _throwError(); };
-    /**
      *  Clears all caches.
      * @return {?}
      */

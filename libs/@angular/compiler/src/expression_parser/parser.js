@@ -493,7 +493,7 @@ export var _ParseAST = (function () {
                 while (this.optionalCharacter(chars.$COLON)) {
                     args.push(this.parseExpression());
                 }
-                result = new BindingPipe(this.span(result.span.start), result, name_1, args);
+                result = new BindingPipe(this.span(result.span.start - this.offset), result, name_1, args);
             } while (this.optionalOperator('|'));
         }
         return result;

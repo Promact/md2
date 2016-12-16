@@ -233,9 +233,8 @@ var _AnimationBuilder = (function () {
         var /** @type {?} */ statements = [];
         statements.push(_PREVIOUS_ANIMATION_PLAYERS
             .set(_ANIMATION_FACTORY_VIEW_CONTEXT.callMethod('getAnimationPlayers', [
-            _ANIMATION_FACTORY_ELEMENT_VAR,
+            _ANIMATION_FACTORY_ELEMENT_VAR, o.literal(this.animationName),
             _ANIMATION_NEXT_STATE_VAR.equals(o.literal(EMPTY_STATE))
-                .conditional(o.NULL_EXPR, o.literal(this.animationName))
         ]))
             .toDeclStmt());
         statements.push(_ANIMATION_COLLECTED_STYLES.set(_EMPTY_MAP).toDeclStmt());

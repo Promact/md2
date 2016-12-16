@@ -10,6 +10,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+import { triggerQueuedAnimations } from '../animation/animation_queue';
 import { ChangeDetectorRef } from '../change_detection/change_detector_ref';
 import { ChangeDetectorStatus } from '../change_detection/constants';
 import { unimplemented } from '../facade/errors';
@@ -124,11 +125,9 @@ export var EmbeddedViewRef = (function (_super) {
 export var ViewRef_ = (function () {
     /**
      * @param {?} _view
-     * @param {?} animationQueue
      */
-    function ViewRef_(_view, animationQueue) {
+    function ViewRef_(_view) {
         this._view = _view;
-        this.animationQueue = animationQueue;
         this._view = _view;
         this._originalMode = this._view.cdMode;
     }
@@ -177,7 +176,7 @@ export var ViewRef_ = (function () {
      */
     ViewRef_.prototype.detectChanges = function () {
         this._view.detectChanges(false);
-        this.animationQueue.flush();
+        triggerQueuedAnimations();
     };
     /**
      * @return {?}
@@ -211,7 +210,5 @@ function ViewRef__tsickle_Closure_declarations() {
     ViewRef_.prototype._originalMode;
     /** @type {?} */
     ViewRef_.prototype._view;
-    /** @type {?} */
-    ViewRef_.prototype.animationQueue;
 }
 //# sourceMappingURL=view_ref.js.map

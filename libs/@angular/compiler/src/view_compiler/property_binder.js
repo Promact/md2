@@ -35,12 +35,11 @@ export function bindRenderText(boundText, compileNode, view) {
 }
 /**
  * @param {?} boundProps
- * @param {?} boundOutputs
  * @param {?} hasEvents
  * @param {?} compileElement
  * @return {?}
  */
-export function bindRenderInputs(boundProps, boundOutputs, hasEvents, compileElement) {
+export function bindRenderInputs(boundProps, hasEvents, compileElement) {
     var /** @type {?} */ view = compileElement.view;
     var /** @type {?} */ renderNode = compileElement.renderNode;
     boundProps.forEach(function (boundProp) {
@@ -61,7 +60,7 @@ export function bindRenderInputs(boundProps, boundOutputs, hasEvents, compileEle
                 break;
             case PropertyBindingType.Animation:
                 compileMethod = view.animationBindingsMethod;
-                var _a = triggerAnimation(o.THIS_EXPR, o.THIS_EXPR, boundProp, boundOutputs, (hasEvents ? o.THIS_EXPR.prop(getHandleEventMethodName(compileElement.nodeIndex)) :
+                var _a = triggerAnimation(o.THIS_EXPR, o.THIS_EXPR, boundProp, (hasEvents ? o.THIS_EXPR.prop(getHandleEventMethodName(compileElement.nodeIndex)) :
                     o.importExpr(createIdentifier(Identifiers.noop)))
                     .callMethod(o.BuiltinMethod.Bind, [o.THIS_EXPR]), compileElement.renderNode, evalResult.currValExpr, bindingField.expression), updateStmts = _a.updateStmts, detachStmts = _a.detachStmts;
                 checkBindingStmts.push.apply(checkBindingStmts, updateStmts);

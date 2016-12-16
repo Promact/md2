@@ -1,5 +1,5 @@
 /**
- * @license Angular v2.3.1
+ * @license Angular v2.3.0
  * (c) 2010-2016 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -111,7 +111,7 @@
     /**
      *  `LocationStrategy` is responsible for representing and reading route state
       * from the browser's URL. Angular provides two strategies:
-      * {@link HashLocationStrategy} and {@link PathLocationStrategy}.
+      * {@link HashLocationStrategy} and {@link PathLocationStrategy} (default).
       * *
       * This is used under the hood of the {@link Location} service.
       * *
@@ -275,10 +275,10 @@
             return '' + token;
         }
         if (token.overriddenName) {
-            return "" + token.overriddenName;
+            return token.overriddenName;
         }
         if (token.name) {
-            return "" + token.name;
+            return token.name;
         }
         var /** @type {?} */ res = token.toString();
         var /** @type {?} */ newLineIndex = res.indexOf('\n');
@@ -337,7 +337,8 @@
     }
 
     /**
-     *  Depending on which {@link LocationStrategy} is used, `Location` will either persist
+     *  `Location` is a service that applications can use to interact with a browser's URL.
+      * Depending on which {@link LocationStrategy} is used, `Location` will either persist
       * to the URL's path or the URL's hash segment.
       * *
       * Note: it's better to use {@link Router#navigate} service to trigger route changes. Use
@@ -352,7 +353,18 @@
       * - `/my/app/user/123/` **is not** normalized
       * *
       * ### Example
-      * {@example common/location/ts/path_location_component.ts region='LocationComponent'}
+      * *
+      * ```
+      * import {Component} from '@angular/core';
+      * import {Location} from '@angular/common';
+      * *
+      * class AppCmp {
+      * constructor(location: Location) {
+      * location.go('/foo');
+      * }
+      * }
+      * ```
+      * *
      */
     var Location = (function () {
         /**
@@ -549,7 +561,17 @@
       * *
       * ### Example
       * *
-      * {@example common/location/ts/hash_location_component.ts region='LocationComponent'}
+      * ```
+      * import {Component, NgModule} from '@angular/core';
+      * import {
+      * LocationStrategy,
+      * HashLocationStrategy
+      * } from '@angular/common';
+      * *
+      * providers: [{provide: LocationStrategy, useClass: HashLocationStrategy}]
+      * })
+      * class AppModule {}
+      * ```
       * *
      */
     var HashLocationStrategy = (function (_super) {
@@ -664,6 +686,9 @@
       * [path](https://en.wikipedia.org/wiki/Uniform_Resource_Locator#Syntax) of the
       * browser's URL.
       * *
+      * `PathLocationStrategy` is the default binding for {@link LocationStrategy}
+      * provided in {@link ROUTER_PROVIDERS}.
+      * *
       * If you're using `PathLocationStrategy`, you must provide a {@link APP_BASE_HREF}
       * or add a base element to the document. This URL prefix that will be preserved
       * when generating and recognizing URLs.
@@ -675,10 +700,6 @@
       * Similarly, if you add `<base href='/my/app'/>` to the document and call
       * `location.go('/foo')`, the browser's URL will become
       * `example.com/my/app/foo`.
-      * *
-      * ### Example
-      * *
-      * {@example common/location/ts/path_location_component.ts region='LocationComponent'}
       * *
      */
     var PathLocationStrategy = (function (_super) {
@@ -2330,12 +2351,9 @@
          * @param {?} message
          */
         function BaseError(message) {
-            _super.call(this, message);
             // Errors don't use current this, instead they create a new instance.
             // We have to do forward all of our api to the nativeInstance.
-            // TODO(bradfordcsmith): Remove this hack when
-            //     google/closure-compiler/issues/2102 is fixed.
-            var nativeError = new Error(message);
+            var nativeError = _super.call(this, message);
             this._nativeError = nativeError;
         }
         Object.defineProperty(BaseError.prototype, "message", {
@@ -3460,7 +3478,7 @@
     /**
      * @stable
      */
-    var /** @type {?} */ VERSION = new _angular_core.Version('2.3.1');
+    var /** @type {?} */ VERSION = new _angular_core.Version('2.3.0');
 
     exports.NgLocalization = NgLocalization;
     exports.CommonModule = CommonModule;

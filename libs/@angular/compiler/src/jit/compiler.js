@@ -94,17 +94,6 @@ export var JitCompiler = (function () {
         return this._compileModuleAndAllComponents(moduleType, false).asyncResult;
     };
     /**
-     * @param {?} component
-     * @return {?}
-     */
-    JitCompiler.prototype.getNgContentSelectors = function (component) {
-        var /** @type {?} */ template = this._compiledTemplateCache.get(component);
-        if (!template) {
-            throw new Error("The component " + stringify(component) + " is not yet compiled!");
-        }
-        return template.compMeta.template.ngContentSelectors;
-    };
-    /**
      * @param {?} moduleType
      * @param {?} isSync
      * @return {?}
@@ -267,9 +256,17 @@ export var JitCompiler = (function () {
         if (!compiledTemplate) {
             var /** @type {?} */ compMeta = this._metadataResolver.getDirectiveMetadata(compType);
             assertComponent(compMeta);
-            var /** @type {?} */ HostClass = function HostClass() { };
-            ((HostClass)).overriddenName = identifierName(compMeta.type) + "_Host";
-            var /** @type {?} */ hostMeta = createHostComponentMeta(HostClass, compMeta);
+            var HostClass_1 = (function () {
+                function HostClass_1() {
+                }
+                HostClass_1.overriddenName = identifierName(compMeta.type) + "_Host";
+                return HostClass_1;
+            }());
+            function HostClass_tsickle_Closure_declarations() {
+                /** @type {?} */
+                HostClass_1.overriddenName;
+            }
+            var /** @type {?} */ hostMeta = createHostComponentMeta(HostClass_1, compMeta);
             compiledTemplate = new CompiledTemplate(true, compMeta.selector, compMeta.type, hostMeta, ngModule, [compMeta.type]);
             this._compiledHostTemplateCache.set(compType, compiledTemplate);
         }
@@ -403,7 +400,7 @@ export var JitCompiler = (function () {
             return interpretStatements(result.statements, result.stylesVar);
         }
         else {
-            return jitStatements("/" + result.meta.moduleUrl + ".ngstyle.js", result.statements, result.stylesVar);
+            return jitStatements("/" + result.meta.moduleUrl + ".css.js", result.statements, result.stylesVar);
         }
     };
     JitCompiler.decorators = [
@@ -575,13 +572,6 @@ var ModuleBoundCompiler = (function () {
      */
     ModuleBoundCompiler.prototype.compileModuleAndAllComponentsAsync = function (moduleType) {
         return this._delegate.compileModuleAndAllComponentsAsync(moduleType);
-    };
-    /**
-     * @param {?} component
-     * @return {?}
-     */
-    ModuleBoundCompiler.prototype.getNgContentSelectors = function (component) {
-        return this._delegate.getNgContentSelectors(component);
     };
     /**
      *  Clears all caches

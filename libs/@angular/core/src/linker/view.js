@@ -56,7 +56,7 @@ export var AppView = (function () {
         this.cdMode = cdMode;
         this.declaredViewContainer = declaredViewContainer;
         this.numberOfChecks = 0;
-        this.ref = new ViewRef_(this, viewUtils.animationQueue);
+        this.ref = new ViewRef_(this);
         if (type === ViewType.COMPONENT || type === ViewType.HOST) {
             this.renderer = viewUtils.renderComponent(componentType);
         }
@@ -71,7 +71,7 @@ export var AppView = (function () {
          */
         get: function () {
             if (!this._animationContext) {
-                this._animationContext = new AnimationViewContext(this.viewUtils.animationQueue);
+                this._animationContext = new AnimationViewContext();
             }
             return this._animationContext;
         },
@@ -232,8 +232,7 @@ export var AppView = (function () {
         else {
             this._renderDetach();
         }
-        if (this.declaredViewContainer && this.declaredViewContainer !== this.viewContainer &&
-            this.declaredViewContainer.projectedViews) {
+        if (this.declaredViewContainer && this.declaredViewContainer !== this.viewContainer) {
             var /** @type {?} */ projectedViews = this.declaredViewContainer.projectedViews;
             var /** @type {?} */ index = projectedViews.indexOf(this);
             // perf: pop is faster than splice!
@@ -405,19 +404,11 @@ export var AppView = (function () {
      * @param {?} throwOnChange
      * @return {?}
      */
-    AppView.prototype.internalDetectChanges = function (throwOnChange) {
-        if (this.cdMode !== ChangeDetectorStatus.Detached) {
-            this.detectChanges(throwOnChange);
-        }
-    };
-    /**
-     * @param {?} throwOnChange
-     * @return {?}
-     */
     AppView.prototype.detectChanges = function (throwOnChange) {
         var /** @type {?} */ s = _scope_check(this.clazz);
         if (this.cdMode === ChangeDetectorStatus.Checked ||
-            this.cdMode === ChangeDetectorStatus.Errored)
+            this.cdMode === ChangeDetectorStatus.Errored ||
+            this.cdMode === ChangeDetectorStatus.Detached)
             return;
         if (this.cdMode === ChangeDetectorStatus.Destroyed) {
             this.throwDestroyedError('detectChanges');

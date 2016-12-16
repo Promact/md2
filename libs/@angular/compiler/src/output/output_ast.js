@@ -973,28 +973,6 @@ function LiteralArrayExpr_tsickle_Closure_declarations() {
     /** @type {?} */
     LiteralArrayExpr.prototype.entries;
 }
-export var LiteralMapEntry = (function () {
-    /**
-     * @param {?} key
-     * @param {?} value
-     * @param {?=} quoted
-     */
-    function LiteralMapEntry(key, value, quoted) {
-        if (quoted === void 0) { quoted = false; }
-        this.key = key;
-        this.value = value;
-        this.quoted = quoted;
-    }
-    return LiteralMapEntry;
-}());
-function LiteralMapEntry_tsickle_Closure_declarations() {
-    /** @type {?} */
-    LiteralMapEntry.prototype.key;
-    /** @type {?} */
-    LiteralMapEntry.prototype.value;
-    /** @type {?} */
-    LiteralMapEntry.prototype.quoted;
-}
 export var LiteralMapExpr = (function (_super) {
     __extends(LiteralMapExpr, _super);
     /**
@@ -1574,7 +1552,7 @@ export var ExpressionTransformer = (function () {
      */
     ExpressionTransformer.prototype.visitLiteralMapExpr = function (ast, context) {
         var _this = this;
-        var /** @type {?} */ entries = ast.entries.map(function (entry) { return new LiteralMapEntry(entry.key, entry.value.visitExpression(_this, context), entry.quoted); });
+        var /** @type {?} */ entries = ast.entries.map(function (entry) { return [entry[0], entry[1].visitExpression(_this, context),]; });
         return new LiteralMapExpr(entries);
     };
     /**
@@ -1830,7 +1808,7 @@ export var RecursiveExpressionVisitor = (function () {
      */
     RecursiveExpressionVisitor.prototype.visitLiteralMapExpr = function (ast, context) {
         var _this = this;
-        ast.entries.forEach(function (entry) { return entry.value.visitExpression(_this, context); });
+        ast.entries.forEach(function (entry) { return ((entry[1])).visitExpression(_this, context); });
         return ast;
     };
     /**
@@ -2057,7 +2035,7 @@ export function literalArr(values, type) {
  */
 export function literalMap(values, type) {
     if (type === void 0) { type = null; }
-    return new LiteralMapExpr(values.map(function (entry) { return new LiteralMapEntry(entry[0], entry[1]); }), type);
+    return new LiteralMapExpr(values, type);
 }
 /**
  * @param {?} expr

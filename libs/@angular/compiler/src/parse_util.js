@@ -1,4 +1,3 @@
-import * as chars from './chars';
 import { isPresent } from './facade/lang';
 export var ParseLocation = (function () {
     /**
@@ -18,43 +17,6 @@ export var ParseLocation = (function () {
      */
     ParseLocation.prototype.toString = function () {
         return isPresent(this.offset) ? this.file.url + "@" + this.line + ":" + this.col : this.file.url;
-    };
-    /**
-     * @param {?} delta
-     * @return {?}
-     */
-    ParseLocation.prototype.moveBy = function (delta) {
-        var /** @type {?} */ source = this.file.content;
-        var /** @type {?} */ len = source.length;
-        var /** @type {?} */ offset = this.offset;
-        var /** @type {?} */ line = this.line;
-        var /** @type {?} */ col = this.col;
-        while (offset > 0 && delta < 0) {
-            offset--;
-            delta++;
-            var /** @type {?} */ ch = source.charCodeAt(offset);
-            if (ch == chars.$LF) {
-                line--;
-                var /** @type {?} */ priorLine = source.substr(0, offset - 1).lastIndexOf(String.fromCharCode(chars.$LF));
-                col = priorLine > 0 ? offset - priorLine : offset;
-            }
-            else {
-                col--;
-            }
-        }
-        while (offset < len && delta > 0) {
-            var /** @type {?} */ ch = source.charCodeAt(offset);
-            offset++;
-            delta--;
-            if (ch == chars.$LF) {
-                line++;
-                col = 0;
-            }
-            else {
-                col++;
-            }
-        }
-        return new ParseLocation(this.file, offset, line, col);
     };
     return ParseLocation;
 }());

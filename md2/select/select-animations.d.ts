@@ -1,9 +1,9 @@
 import { AnimationEntryMetadata } from '@angular/core';
 /**
- * The following are all the animations for the md-select component, with each
+ * The following are all the animations for the md2-select component, with each
  * const containing the metadata for one animation.
  *
- * The values below match the implementation of the Material 1 md-select animation.
+ * The values below match the implementation of the Material 1 md2-select animation.
  */
 /**
  * This animation shrinks the placeholder text to 75% of its normal size and translates

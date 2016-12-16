@@ -23,7 +23,4 @@ exports.Extractor = extractor_1.Extractor;
 __export(require('@angular/tsc-wrapped'));
 var version_1 = require('./src/version');
 exports.VERSION = version_1.VERSION;
-// TODO(hansl): moving to Angular 4 need to update this API.
-var ngtools_api_1 = require('./src/ngtools_api');
-exports.__NGTOOLS_PRIVATE_API_2 = ngtools_api_1.NgTools_InternalApi_NG_2;
 //# sourceMappingURL=index.js.map

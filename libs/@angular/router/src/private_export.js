@@ -11,6 +11,6 @@ import { flatten } from './utils/collection';
 export var /** @type {?} */ __router_private__ = {
     ROUTER_PROVIDERS: ROUTER_PROVIDERS,
     ROUTES: ROUTES,
-    flatten: flatten,
+    flatten: flatten
 };
 //# sourceMappingURL=private_export.js.map

@@ -79,16 +79,12 @@ export var SelectMultipleControlValueAccessor = (function () {
     SelectMultipleControlValueAccessor.prototype.writeValue = function (value) {
         var _this = this;
         this.value = value;
-        var /** @type {?} */ optionSelectedStateSetter;
-        if (Array.isArray(value)) {
-            // convert values to ids
-            var /** @type {?} */ ids_1 = value.map(function (v) { return _this._getOptionId(v); });
-            optionSelectedStateSetter = function (opt, o) { opt._setSelected(ids_1.indexOf(o.toString()) > -1); };
-        }
-        else {
-            optionSelectedStateSetter = function (opt, o) { opt._setSelected(false); };
-        }
-        this._optionMap.forEach(optionSelectedStateSetter);
+        if (value == null)
+            return;
+        var /** @type {?} */ values = (value);
+        // convert values to ids
+        var /** @type {?} */ ids = values.map(function (v) { return _this._getOptionId(v); });
+        this._optionMap.forEach(function (opt, o) { opt._setSelected(ids.indexOf(o.toString()) > -1); });
     };
     /**
      * @param {?} fn
@@ -116,7 +112,6 @@ export var SelectMultipleControlValueAccessor = (function () {
                     }
                 }
             }
-            _this.value = selected;
             fn(selected);
         };
     };

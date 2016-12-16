@@ -1,1 +1,1 @@
-{"version":3,"sources":["data-table/index.ts"],"names":[],"mappings":"AAAA,cAAc,cAAc,CAAC","file":"index.js","sourcesContent":["export * from './data-table';\n"]}
+{"version":3,"sources":["data-table/index.ts"],"names":[],"mappings":"AAAA,cAAc,cAAc,CAAC","file":"data-table/index.js","sourcesContent":["export * from './data-table';\r\n"],"sourceRoot":"/source/"}

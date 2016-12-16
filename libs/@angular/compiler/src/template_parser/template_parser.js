@@ -747,7 +747,7 @@ var TemplateParseVisitor = (function () {
             this._reportError("Components on an embedded template: " + componentTypeNames.join(','), sourceSpan);
         }
         elementProps.forEach(function (prop) {
-            _this._reportError("Property binding " + prop.name + " not used by any directive on an embedded template. Make sure that the property name is spelled correctly and all directives are listed in the \"@NgModule.declarations\".", sourceSpan);
+            _this._reportError("Property binding " + prop.name + " not used by any directive on an embedded template. Make sure that the property name is spelled correctly and all directives are listed in the \"directives\" section.", sourceSpan);
         });
     };
     /**
@@ -766,7 +766,7 @@ var TemplateParseVisitor = (function () {
         });
         events.forEach(function (event) {
             if (isPresent(event.target) || !allDirectiveEvents.has(event.name)) {
-                _this._reportError("Event binding " + event.fullName + " not emitted by any directive on an embedded template. Make sure that the event name is spelled correctly and all directives are listed in the \"@NgModule.declarations\".", event.sourceSpan);
+                _this._reportError("Event binding " + event.fullName + " not emitted by any directive on an embedded template. Make sure that the event name is spelled correctly and all directives are listed in the \"directives\" section.", event.sourceSpan);
             }
         });
     };
@@ -976,7 +976,7 @@ function ElementContext_tsickle_Closure_declarations() {
  * @param {?} matchableAttrs
  * @return {?}
  */
-export function createElementCssSelector(elementName, matchableAttrs) {
+function createElementCssSelector(elementName, matchableAttrs) {
     var /** @type {?} */ cssSelector = new CssSelector();
     var /** @type {?} */ elNameNoNs = splitNsName(elementName)[1];
     cssSelector.setElement(elNameNoNs);

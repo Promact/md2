@@ -12,7 +12,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 import { Attribute, Component, ContentChild, ContentChildren, Directive, Host, HostBinding, HostListener, Inject, Injectable, Input, NgModule, Optional, Output, Pipe, Self, SkipSelf, ViewChild, ViewChildren, animate, group, keyframes, sequence, state, style, transition, trigger } from '@angular/core';
 import { StaticSymbol } from './static_symbol';
-var /** @type {?} */ SUPPORTED_SCHEMA_VERSION = 3;
+var /** @type {?} */ SUPPORTED_SCHEMA_VERSION = 2;
 var /** @type {?} */ ANGULAR_IMPORT_LOCATIONS = {
     coreDecorators: '@angular/core/src/metadata',
     diDecorators: '@angular/core/src/di/metadata',
@@ -21,7 +21,6 @@ var /** @type {?} */ ANGULAR_IMPORT_LOCATIONS = {
     animationMetadata: '@angular/core/src/animation/metadata',
     provider: '@angular/core/src/di/provider'
 };
-var /** @type {?} */ HIDDEN_KEY = /^\$.*\$$/;
 /**
  *  A cache of static symbol used by the StaticReflector to return the same symbol for the
   * same symbol values.
@@ -702,9 +701,6 @@ export var StaticReflector = (function () {
                                     return simplifyInContext(selectContext, selectTarget[member], depth + 1);
                                 return null;
                             case 'reference':
-                                if (!expression['name']) {
-                                    return context;
-                                }
                                 if (!expression.module) {
                                     var /** @type {?} */ name_1 = expression['name'];
                                     var /** @type {?} */ localValue = scope.resolve(name_1);
@@ -812,10 +808,7 @@ export var StaticReflector = (function () {
                     { __symbolic: 'module', version: SUPPORTED_SCHEMA_VERSION, module: module, metadata: {} };
             }
             if (moduleMetadata['version'] != SUPPORTED_SCHEMA_VERSION) {
-                var /** @type {?} */ errorMessage = moduleMetadata['version'] == 2 ?
-                    "Unsupported metadata version " + moduleMetadata['version'] + " for module " + module + ". This module should be compiled with a newer version of ngc" :
-                    "Metadata version mismatch for module " + module + ", found version " + moduleMetadata['version'] + ", expected " + SUPPORTED_SCHEMA_VERSION;
-                this.reportError(new Error(errorMessage), null);
+                this.reportError(new Error("Metadata version mismatch for module " + module + ", found version " + moduleMetadata['version'] + ", expected " + SUPPORTED_SCHEMA_VERSION), null);
             }
             this.metadataCache.set(module, moduleMetadata);
         }
@@ -906,12 +899,7 @@ function mapStringMap(input, transform) {
     Object.keys(input).forEach(function (key) {
         var /** @type {?} */ value = transform(input[key], key);
         if (!shouldIgnore(value)) {
-            if (HIDDEN_KEY.test(key)) {
-                Object.defineProperty(result, key, { enumerable: false, configurable: true, value: value });
-            }
-            else {
-                result[key] = value;
-            }
+            result[key] = value;
         }
     });
     return result;

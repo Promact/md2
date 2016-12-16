@@ -21,7 +21,7 @@ import { FormGroupDirective } from './directives/reactive_directives/form_group_
 import { FormArrayName, FormGroupName } from './directives/reactive_directives/form_group_name';
 import { NgSelectOption, SelectControlValueAccessor } from './directives/select_control_value_accessor';
 import { NgSelectMultipleOption, SelectMultipleControlValueAccessor } from './directives/select_multiple_control_value_accessor';
-import { CheckboxRequiredValidator, MaxLengthValidator, MinLengthValidator, PatternValidator, RequiredValidator } from './directives/validators';
+import { MaxLengthValidator, MinLengthValidator, PatternValidator, RequiredValidator } from './directives/validators';
 export { CheckboxControlValueAccessor } from './directives/checkbox_value_accessor';
 export { DefaultValueAccessor } from './directives/default_value_accessor';
 export { NgControl } from './directives/ng_control';
@@ -38,23 +38,12 @@ export { FormGroupDirective } from './directives/reactive_directives/form_group_
 export { FormArrayName, FormGroupName } from './directives/reactive_directives/form_group_name';
 export { NgSelectOption, SelectControlValueAccessor } from './directives/select_control_value_accessor';
 export { NgSelectMultipleOption, SelectMultipleControlValueAccessor } from './directives/select_multiple_control_value_accessor';
+export { MaxLengthValidator, MinLengthValidator, PatternValidator, RequiredValidator } from './directives/validators';
 export var /** @type {?} */ SHARED_FORM_DIRECTIVES = [
-    NgSelectOption,
-    NgSelectMultipleOption,
-    DefaultValueAccessor,
-    NumberValueAccessor,
-    RangeValueAccessor,
-    CheckboxControlValueAccessor,
-    SelectControlValueAccessor,
-    SelectMultipleControlValueAccessor,
-    RadioControlValueAccessor,
-    NgControlStatus,
-    NgControlStatusGroup,
-    RequiredValidator,
-    MinLengthValidator,
-    MaxLengthValidator,
-    PatternValidator,
-    CheckboxRequiredValidator,
+    NgSelectOption, NgSelectMultipleOption, DefaultValueAccessor, NumberValueAccessor,
+    RangeValueAccessor, CheckboxControlValueAccessor, SelectControlValueAccessor,
+    SelectMultipleControlValueAccessor, RadioControlValueAccessor, NgControlStatus,
+    NgControlStatusGroup, RequiredValidator, MinLengthValidator, MaxLengthValidator, PatternValidator
 ];
 export var /** @type {?} */ TEMPLATE_DRIVEN_DIRECTIVES = [NgModel, NgModelGroup, NgForm];
 export var /** @type {?} */ REACTIVE_DRIVEN_DIRECTIVES = [FormControlDirective, FormGroupDirective, FormControlName, FormGroupName, FormArrayName];

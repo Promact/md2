@@ -6,8 +6,8 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { Inject, LOCALE_ID, Pipe } from '@angular/core';
+import { NumberFormatStyle, NumberFormatter } from '../facade/intl';
 import { NumberWrapper, isBlank, isPresent } from '../facade/lang';
-import { NumberFormatStyle, NumberFormatter } from './intl';
 import { InvalidPipeArgumentError } from './invalid_pipe_argument_error';
 var /** @type {?} */ _NUMBER_FORMAT_REGEXP = /^(\d+)?\.((\d+)(-(\d+))?)?$/;
 /**

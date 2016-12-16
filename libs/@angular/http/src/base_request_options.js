@@ -85,7 +85,7 @@ export var RequestOptions = (function () {
     RequestOptions.prototype.merge = function (options) {
         return new RequestOptions({
             method: options && options.method != null ? options.method : this.method,
-            headers: options && options.headers != null ? options.headers : new Headers(this.headers),
+            headers: options && options.headers != null ? options.headers : this.headers,
             body: options && options.body != null ? options.body : this.body,
             url: options && options.url != null ? options.url : this.url,
             search: options && options.search != null ?

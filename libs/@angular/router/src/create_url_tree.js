@@ -7,7 +7,7 @@
  */
 import { PRIMARY_OUTLET } from './shared';
 import { UrlSegment, UrlSegmentGroup, UrlTree } from './url_tree';
-import { forEach, last, shallowEqual } from './utils/collection';
+import { forEach, shallowEqual } from './utils/collection';
 /**
  * @param {?} route
  * @param {?} urlTree
@@ -20,22 +20,37 @@ export function createUrlTree(route, urlTree, commands, queryParams, fragment) {
     if (commands.length === 0) {
         return tree(urlTree.root, urlTree.root, urlTree, queryParams, fragment);
     }
-    var /** @type {?} */ nav = computeNavigation(commands);
-    if (nav.toRoot()) {
+    var /** @type {?} */ normalizedCommands = normalizeCommands(commands);
+    validateCommands(normalizedCommands);
+    if (navigateToRoot(normalizedCommands)) {
         return tree(urlTree.root, new UrlSegmentGroup([], {}), urlTree, queryParams, fragment);
     }
-    var /** @type {?} */ startingPosition = findStartingPosition(nav, urlTree, route);
+    var /** @type {?} */ startingPosition = findStartingPosition(normalizedCommands, urlTree, route);
     var /** @type {?} */ segmentGroup = startingPosition.processChildren ?
-        updateSegmentGroupChildren(startingPosition.segmentGroup, startingPosition.index, nav.commands) :
-        updateSegmentGroup(startingPosition.segmentGroup, startingPosition.index, nav.commands);
+        updateSegmentGroupChildren(startingPosition.segmentGroup, startingPosition.index, normalizedCommands.commands) :
+        updateSegmentGroup(startingPosition.segmentGroup, startingPosition.index, normalizedCommands.commands);
     return tree(startingPosition.segmentGroup, segmentGroup, urlTree, queryParams, fragment);
+}
+/**
+ * @param {?} n
+ * @return {?}
+ */
+function validateCommands(n) {
+    if (n.isAbsolute && n.commands.length > 0 && isMatrixParams(n.commands[0])) {
+        throw new Error('Root segment cannot have matrix parameters');
+    }
+    var /** @type {?} */ c = n.commands.filter(function (c) { return typeof c === 'object' && c.outlets !== undefined; });
+    if (c.length > 0 && c[0] !== n.commands[n.commands.length - 1]) {
+        throw new Error('{outlets:{}} has to be the last command');
+    }
 }
 /**
  * @param {?} command
  * @return {?}
  */
 function isMatrixParams(command) {
-    return typeof command === 'object' && !command.outlets && !command.segmentPath;
+    return typeof command === 'object' && command.outlets === undefined &&
+        command.segmentPath === undefined;
 }
 /**
  * @param {?} oldSegmentGroup
@@ -49,7 +64,9 @@ function tree(oldSegmentGroup, newSegmentGroup, urlTree, queryParams, fragment) 
     if (urlTree.root === oldSegmentGroup) {
         return new UrlTree(newSegmentGroup, stringify(queryParams), fragment);
     }
-    return new UrlTree(replaceSegment(urlTree.root, oldSegmentGroup, newSegmentGroup), stringify(queryParams), fragment);
+    else {
+        return new UrlTree(replaceSegment(urlTree.root, oldSegmentGroup, newSegmentGroup), stringify(queryParams), fragment);
+    }
 }
 /**
  * @param {?} current
@@ -69,86 +86,94 @@ function replaceSegment(current, oldSegment, newSegment) {
     });
     return new UrlSegmentGroup(current.segments, children);
 }
-var Navigation = (function () {
+/**
+ * @param {?} normalizedChange
+ * @return {?}
+ */
+function navigateToRoot(normalizedChange) {
+    return normalizedChange.isAbsolute && normalizedChange.commands.length === 1 &&
+        normalizedChange.commands[0] == '/';
+}
+var NormalizedNavigationCommands = (function () {
     /**
      * @param {?} isAbsolute
      * @param {?} numberOfDoubleDots
      * @param {?} commands
      */
-    function Navigation(isAbsolute, numberOfDoubleDots, commands) {
+    function NormalizedNavigationCommands(isAbsolute, numberOfDoubleDots, commands) {
         this.isAbsolute = isAbsolute;
         this.numberOfDoubleDots = numberOfDoubleDots;
         this.commands = commands;
-        if (isAbsolute && commands.length > 0 && isMatrixParams(commands[0])) {
-            throw new Error('Root segment cannot have matrix parameters');
-        }
-        var cmdWithOutlet = commands.find(function (c) { return typeof c === 'object' && c.outlets; });
-        if (cmdWithOutlet && cmdWithOutlet !== last(commands)) {
-            throw new Error('{outlets:{}} has to be the last command');
-        }
     }
-    /**
-     * @return {?}
-     */
-    Navigation.prototype.toRoot = function () {
-        return this.isAbsolute && this.commands.length === 1 && this.commands[0] == '/';
-    };
-    return Navigation;
+    return NormalizedNavigationCommands;
 }());
-function Navigation_tsickle_Closure_declarations() {
+function NormalizedNavigationCommands_tsickle_Closure_declarations() {
     /** @type {?} */
-    Navigation.prototype.isAbsolute;
+    NormalizedNavigationCommands.prototype.isAbsolute;
     /** @type {?} */
-    Navigation.prototype.numberOfDoubleDots;
+    NormalizedNavigationCommands.prototype.numberOfDoubleDots;
     /** @type {?} */
-    Navigation.prototype.commands;
+    NormalizedNavigationCommands.prototype.commands;
 }
 /**
- *  Transforms commands to a normalized `Navigation`
  * @param {?} commands
  * @return {?}
  */
-function computeNavigation(commands) {
-    if ((typeof commands[0] === 'string') && commands.length === 1 && commands[0] === '/') {
-        return new Navigation(true, 0, commands);
+function normalizeCommands(commands) {
+    if ((typeof commands[0] === 'string') && commands.length === 1 && commands[0] == '/') {
+        return new NormalizedNavigationCommands(true, 0, commands);
     }
     var /** @type {?} */ numberOfDoubleDots = 0;
     var /** @type {?} */ isAbsolute = false;
-    var /** @type {?} */ res = commands.reduce(function (res, cmd, cmdIdx) {
-        if (typeof cmd === 'object') {
-            if (cmd.outlets) {
-                var /** @type {?} */ outlets_1 = {};
-                forEach(cmd.outlets, function (commands, name) {
-                    outlets_1[name] = typeof commands === 'string' ? commands.split('/') : commands;
-                });
-                return res.concat([{ outlets: outlets_1 }]);
-            }
-            if (cmd.segmentPath) {
-                return res.concat([cmd.segmentPath]);
-            }
-        }
-        if (!(typeof cmd === 'string')) {
-            return res.concat([cmd]);
-        }
-        if (cmdIdx === 0) {
-            cmd.split('/').forEach(function (urlPart, partIndex) {
-                if (partIndex == 0 && urlPart === '.') {
+    var /** @type {?} */ res = [];
+    var _loop_1 = function(i) {
+        var /** @type {?} */ c = commands[i];
+        if (typeof c === 'object' && c.outlets !== undefined) {
+            var /** @type {?} */ r_1 = {};
+            forEach(c.outlets, function (commands, name) {
+                if (typeof commands === 'string') {
+                    r_1[name] = commands.split('/');
                 }
-                else if (partIndex == 0 && urlPart === '') {
-                    isAbsolute = true;
-                }
-                else if (urlPart === '..') {
-                    numberOfDoubleDots++;
-                }
-                else if (urlPart != '') {
-                    res.push(urlPart);
+                else {
+                    r_1[name] = commands;
                 }
             });
-            return res;
+            res.push({ outlets: r_1 });
+            return "continue";
         }
-        return res.concat([cmd]);
-    }, []);
-    return new Navigation(isAbsolute, numberOfDoubleDots, res);
+        if (typeof c === 'object' && c.segmentPath !== undefined) {
+            res.push(c.segmentPath);
+            return "continue";
+        }
+        if (!(typeof c === 'string')) {
+            res.push(c);
+            return "continue";
+        }
+        if (i === 0) {
+            var /** @type {?} */ parts = c.split('/');
+            for (var /** @type {?} */ j = 0; j < parts.length; ++j) {
+                var /** @type {?} */ cc = parts[j];
+                if (j == 0 && cc == '.') {
+                }
+                else if (j == 0 && cc == '') {
+                    isAbsolute = true;
+                }
+                else if (cc == '..') {
+                    numberOfDoubleDots++;
+                }
+                else if (cc != '') {
+                    res.push(cc);
+                }
+            }
+        }
+        else {
+            res.push(c);
+        }
+    };
+    for (var /** @type {?} */ i = 0; i < commands.length; ++i) {
+        _loop_1(i);
+    }
+    return new NormalizedNavigationCommands(isAbsolute, numberOfDoubleDots, res);
 }
 var Position = (function () {
     /**
@@ -172,21 +197,23 @@ function Position_tsickle_Closure_declarations() {
     Position.prototype.index;
 }
 /**
- * @param {?} nav
- * @param {?} tree
+ * @param {?} normalizedChange
+ * @param {?} urlTree
  * @param {?} route
  * @return {?}
  */
-function findStartingPosition(nav, tree, route) {
-    if (nav.isAbsolute) {
-        return new Position(tree.root, true, 0);
+function findStartingPosition(normalizedChange, urlTree, route) {
+    if (normalizedChange.isAbsolute) {
+        return new Position(urlTree.root, true, 0);
     }
-    if (route.snapshot._lastPathIndex === -1) {
+    else if (route.snapshot._lastPathIndex === -1) {
         return new Position(route.snapshot._urlSegment, true, 0);
     }
-    var /** @type {?} */ modifier = isMatrixParams(nav.commands[0]) ? 0 : 1;
-    var /** @type {?} */ index = route.snapshot._lastPathIndex + modifier;
-    return createPositionApplyingDoubleDots(route.snapshot._urlSegment, index, nav.numberOfDoubleDots);
+    else {
+        var /** @type {?} */ modifier = isMatrixParams(normalizedChange.commands[0]) ? 0 : 1;
+        var /** @type {?} */ index = route.snapshot._lastPathIndex + modifier;
+        return createPositionApplyingDoubleDots(route.snapshot._urlSegment, index, normalizedChange.numberOfDoubleDots);
+    }
 }
 /**
  * @param {?} group
@@ -274,15 +301,15 @@ function updateSegmentGroupChildren(segmentGroup, startIndex, commands) {
         return new UrlSegmentGroup(segmentGroup.segments, {});
     }
     else {
-        var /** @type {?} */ outlets_2 = getOutlets(commands);
+        var /** @type {?} */ outlets_1 = getOutlets(commands);
         var /** @type {?} */ children_1 = {};
-        forEach(outlets_2, function (commands, outlet) {
+        forEach(outlets_1, function (commands, outlet) {
             if (commands !== null) {
                 children_1[outlet] = updateSegmentGroup(segmentGroup.children[outlet], startIndex, commands);
             }
         });
         forEach(segmentGroup.children, function (child, childOutlet) {
-            if (outlets_2[childOutlet] === undefined) {
+            if (outlets_1[childOutlet] === undefined) {
                 children_1[childOutlet] = child;
             }
         });
@@ -332,7 +359,7 @@ function createNewSegmentGroup(segmentGroup, startIndex, commands) {
     var /** @type {?} */ i = 0;
     while (i < commands.length) {
         if (typeof commands[i] === 'object' && commands[i].outlets !== undefined) {
-            var /** @type {?} */ children = createNewSegmentChildren(commands[i].outlets);
+            var /** @type {?} */ children = createNewSegmentChldren(commands[i].outlets);
             return new UrlSegmentGroup(paths, children);
         }
         // if we start with an object literal, we need to reuse the path part from the segment
@@ -359,7 +386,7 @@ function createNewSegmentGroup(segmentGroup, startIndex, commands) {
  * @param {?} outlets
  * @return {?}
  */
-function createNewSegmentChildren(outlets) {
+function createNewSegmentChldren(outlets) {
     var /** @type {?} */ children = {};
     forEach(outlets, function (commands, outlet) {
         if (commands !== null) {

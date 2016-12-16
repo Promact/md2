@@ -8,7 +8,8 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { LocationStrategy } from './location_strategy';
 /**
- *  Depending on which {@link LocationStrategy} is used, `Location` will either persist
+ *  `Location` is a service that applications can use to interact with a browser's URL.
+  * Depending on which {@link LocationStrategy} is used, `Location` will either persist
   * to the URL's path or the URL's hash segment.
   * *
   * Note: it's better to use {@link Router#navigate} service to trigger route changes. Use
@@ -23,7 +24,18 @@ import { LocationStrategy } from './location_strategy';
   * - `/my/app/user/123/` **is not** normalized
   * *
   * ### Example
-  * {@example common/location/ts/path_location_component.ts region='LocationComponent'}
+  * *
+  * ```
+  * import {Component} from '@angular/core';
+  * import {Location} from '@angular/common';
+  * *
+  * class AppCmp {
+  * constructor(location: Location) {
+  * location.go('/foo');
+  * }
+  * }
+  * ```
+  * *
  */
 export var Location = (function () {
     /**

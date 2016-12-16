@@ -589,8 +589,8 @@ export var AbstractEmitterVisitor = (function () {
         ctx.print("{", useNewLine);
         ctx.incIndent();
         this.visitAllObjects(function (entry) {
-            ctx.print(escapeIdentifier(entry.key, _this._escapeDollarInStrings, entry.quoted) + ": ");
-            entry.value.visitExpression(_this, ctx);
+            ctx.print(escapeIdentifier(entry[0], _this._escapeDollarInStrings, false) + ": ");
+            entry[1].visitExpression(_this, ctx);
         }, ast.entries, ctx, ',', useNewLine);
         ctx.decIndent();
         ctx.print("}", useNewLine);

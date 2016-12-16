@@ -1,26 +1,6 @@
-/**
-* @license
-* Copyright Google Inc. All Rights Reserved.
-*
-* Use of this source code is governed by an MIT-style license that can be
-* found in the LICENSE file at https://angular.io/license
-*/
-(function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    (factory());
-}(this, (function () { 'use strict';
-
-/**
- * @license
- * Copyright Google Inc. All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
 (function (global) {
-    
-    
+    ;
+    ;
     // Detect and setup WTF.
     var wtfTrace = null;
     var wtfEvents = null;
@@ -47,8 +27,8 @@
         WtfZoneSpec.prototype.onInvoke = function (parentZoneDelegate, currentZone, targetZone, delegate, applyThis, applyArgs, source) {
             var scope = WtfZoneSpec.invokeScope[source];
             if (!scope) {
-                scope = WtfZoneSpec.invokeScope[source] =
-                    wtfEvents.createScope("Zone:invoke:" + source + "(ascii zone)");
+                scope = WtfZoneSpec.invokeScope[source]
+                    = wtfEvents.createScope("Zone:invoke:" + source + "(ascii zone)");
             }
             return wtfTrace.leaveScope(scope(zonePathName(targetZone)), parentZoneDelegate.invoke(targetZone, delegate, applyThis, applyArgs, source));
         };
@@ -59,8 +39,8 @@
             var key = task.type + ':' + task.source;
             var instance = WtfZoneSpec.scheduleInstance[key];
             if (!instance) {
-                instance = WtfZoneSpec.scheduleInstance[key] =
-                    wtfEvents.createInstance("Zone:schedule:" + key + "(ascii zone, any data)");
+                instance = WtfZoneSpec.scheduleInstance[key]
+                    = wtfEvents.createInstance("Zone:schedule:" + key + "(ascii zone, any data)");
             }
             var retValue = parentZoneDelegate.scheduleTask(targetZone, task);
             instance(zonePathName(targetZone), shallowObj(task.data, 2));
@@ -70,8 +50,8 @@
             var source = task.source;
             var scope = WtfZoneSpec.invokeTaskScope[source];
             if (!scope) {
-                scope = WtfZoneSpec.invokeTaskScope[source] =
-                    wtfEvents.createScope("Zone:invokeTask:" + source + "(ascii zone)");
+                scope = WtfZoneSpec.invokeTaskScope[source]
+                    = wtfEvents.createScope("Zone:invokeTask:" + source + "(ascii zone)");
             }
             return wtfTrace.leaveScope(scope(zonePathName(targetZone)), parentZoneDelegate.invokeTask(targetZone, task, applyThis, applyArgs));
         };
@@ -79,14 +59,14 @@
             var key = task.source;
             var instance = WtfZoneSpec.cancelInstance[key];
             if (!instance) {
-                instance = WtfZoneSpec.cancelInstance[key] =
-                    wtfEvents.createInstance("Zone:cancel:" + key + "(ascii zone, any options)");
+                instance = WtfZoneSpec.cancelInstance[key]
+                    = wtfEvents.createInstance("Zone:cancel:" + key + "(ascii zone, any options)");
             }
             var retValue = parentZoneDelegate.cancelTask(targetZone, task);
             instance(zonePathName(targetZone), shallowObj(task.data, 2));
             return retValue;
         };
-        
+        ;
         WtfZoneSpec.forkInstance = wtfEnabled && wtfEvents.createInstance('Zone:fork(ascii zone, ascii newZone)');
         WtfZoneSpec.scheduleInstance = {};
         WtfZoneSpec.cancelInstance = {};
@@ -126,5 +106,3 @@
     }
     Zone['wtfZoneSpec'] = !wtfEnabled ? null : new WtfZoneSpec();
 })(typeof window === 'object' && window || typeof self === 'object' && self || global);
-
-})));

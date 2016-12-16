@@ -1,10 +1,17 @@
-<div class="md2-select-container">
-  <span class="md2-select-placeholder" [class.has-value]="_selectedValue">{{placeholder}}</span>
-  <span *ngIf="_selectedValue" class="md2-select-value" [innerHtml]="_selectedValue"></span>
-  <svg width="24" height="24" viewBox="0 0 24 24">
-    <path d="M7 10l5 5 5-5z" />
-  </svg>
+<div class="md2-select-trigger" overlay-origin (click)="toggle()" #origin="overlayOrigin" #trigger>
+  <span class="md2-select-placeholder" [class.md2-floating-placeholder]="this.selected"
+   [@transformPlaceholder]="_placeholderState" [style.width.px]="_selectedValueWidth"> {{ placeholder }} </span>
+  <span class="md2-select-value" *ngIf="selected"> {{ selected?.viewValue }} </span>
+  <span class="md2-select-arrow"></span>
 </div>
-<div class="md2-select-menu" [class.open]="_isMenuVisible">
-  <ng-content></ng-content>
-</div>
+
+<template connected-overlay [origin]="origin"  [open]="panelOpen" hasBackdrop (backdropClick)="close()"
+  backdropClass="md2-overlay-transparent-backdrop" [positions]="_positions" [minWidth]="_triggerWidth"
+  [offsetY]="_offsetY" [offsetX]="_offsetX" (attach)="_setScrollTop()">
+  <div class="md2-select-panel" [@transformPanel]="'showing'" (@transformPanel.done)="_onPanelDone()"
+    (keydown)="_keyManager.onKeydown($event)" [style.transformOrigin]="_transformOrigin">
+    <div class="md2-select-content" [@fadeInContent]="'showing'">
+      <ng-content></ng-content>
+    </div>
+  </div>
+</template>

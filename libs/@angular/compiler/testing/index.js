@@ -73,9 +73,6 @@ export var TestingCompilerImpl = (function () {
     TestingCompilerImpl.prototype.compileModuleAndAllComponentsAsync = function (moduleType) {
         return this._compiler.compileModuleAndAllComponentsAsync(moduleType);
     };
-    TestingCompilerImpl.prototype.getNgContentSelectors = function (component) {
-        return this._compiler.getNgContentSelectors(component);
-    };
     TestingCompilerImpl.prototype.overrideModule = function (ngModule, override) {
         var oldMetadata = this._moduleResolver.resolve(ngModule, false);
         this._moduleResolver.setNgModule(ngModule, this._overrider.overrideMetadata(NgModule, oldMetadata, override));

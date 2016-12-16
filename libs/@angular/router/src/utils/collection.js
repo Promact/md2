@@ -80,7 +80,7 @@ export function last(a) {
  * @return {?}
  */
 export function and(bools) {
-    return !bools.some(function (v) { return !v; });
+    return bools.reduce(function (a, b) { return a && b; }, true);
 }
 /**
  * @param {?} m1
@@ -142,7 +142,9 @@ export function waitForMap(obj, fn) {
         var /** @type {?} */ last$ = l.last.call(concatted$);
         return map.call(last$, function () { return res; });
     }
-    return of(res);
+    else {
+        return of(res);
+    }
 }
 /**
  * @param {?} observables
@@ -160,9 +162,11 @@ export function wrapIntoObservable(value) {
     if (value instanceof Observable) {
         return value;
     }
-    if (value instanceof Promise) {
+    else if (value instanceof Promise) {
         return fromPromise(value);
     }
-    return of(value);
+    else {
+        return of(value);
+    }
 }
 //# sourceMappingURL=collection.js.map

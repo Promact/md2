@@ -56,21 +56,17 @@ export var ViewAnimationMap = (function () {
     /**
      * @param {?} element
      * @param {?} animationName
-     * @param {?=} targetPlayer
      * @return {?}
      */
-    ViewAnimationMap.prototype.remove = function (element, animationName, targetPlayer) {
-        if (targetPlayer === void 0) { targetPlayer = null; }
+    ViewAnimationMap.prototype.remove = function (element, animationName) {
         var /** @type {?} */ playersByAnimation = this._map.get(element);
         if (playersByAnimation) {
             var /** @type {?} */ player = playersByAnimation[animationName];
-            if (!targetPlayer || player === targetPlayer) {
-                delete playersByAnimation[animationName];
-                var /** @type {?} */ index = this._allPlayers.indexOf(player);
-                this._allPlayers.splice(index, 1);
-                if (Object.keys(playersByAnimation).length === 0) {
-                    this._map.delete(element);
-                }
+            delete playersByAnimation[animationName];
+            var /** @type {?} */ index = this._allPlayers.indexOf(player);
+            this._allPlayers.splice(index, 1);
+            if (Object.keys(playersByAnimation).length === 0) {
+                this._map.delete(element);
             }
         }
     };

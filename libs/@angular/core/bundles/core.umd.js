@@ -1,5 +1,5 @@
 /**
- * @license Angular v2.3.1
+ * @license Angular v2.3.0
  * (c) 2010-2016 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -78,10 +78,10 @@
             return '' + token;
         }
         if (token.overriddenName) {
-            return "" + token.overriddenName;
+            return token.overriddenName;
         }
         if (token.name) {
-            return "" + token.name;
+            return token.name;
         }
         var /** @type {?} */ res = token.toString();
         var /** @type {?} */ newLineIndex = res.indexOf('\n');
@@ -1149,7 +1149,7 @@
     /**
      * @stable
      */
-    var /** @type {?} */ VERSION = new Version('2.3.1');
+    var /** @type {?} */ VERSION = new Version('2.3.0');
 
     /**
      *  Allows to refer to references which are not yet defined.
@@ -1217,12 +1217,9 @@
          * @param {?} message
          */
         function BaseError(message) {
-            _super.call(this, message);
             // Errors don't use current this, instead they create a new instance.
             // We have to do forward all of our api to the nativeInstance.
-            // TODO(bradfordcsmith): Remove this hack when
-            //     google/closure-compiler/issues/2102 is fixed.
-            var nativeError = new Error(message);
+            var nativeError = _super.call(this, message);
             this._nativeError = nativeError;
         }
         Object.defineProperty(BaseError.prototype, "message", {
@@ -3952,15 +3949,6 @@
             throw _throwError();
         };
         /**
-         *  Exposes the CSS-style selectors that have been used in `ngContent` directives within
-          * the template of the given component.
-          * This is used by the `upgrade` library to compile the appropriate transclude content
-          * in the Angular 1 wrapper component.
-         * @param {?} component
-         * @return {?}
-         */
-        Compiler.prototype.getNgContentSelectors = function (component) { throw _throwError(); };
-        /**
          *  Clears all caches.
          * @return {?}
          */
@@ -4026,503 +4014,6 @@
             this.nativeElement = nativeElement;
         }
         return ElementRef;
-    }());
-
-    /**
-     * @license
-     * Copyright Google Inc. All Rights Reserved.
-     *
-     * Use of this source code is governed by an MIT-style license that can be
-     * found in the LICENSE file at https://angular.io/license
-     */
-    var __extends$6 = (this && this.__extends) || function (d, b) {
-        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-    /**
-     *  Use by directives and components to emit custom Events.
-      * *
-      * ### Examples
-      * *
-      * In the following example, `Zippy` alternatively emits `open` and `close` events when its
-      * title gets clicked:
-      * *
-      * ```
-      * selector: 'zippy',
-      * template: `
-      * <div class="zippy">
-      * <div (click)="toggle()">Toggle</div>
-      * <div [hidden]="!visible">
-      * <ng-content></ng-content>
-      * </div>
-      * </div>`})
-      * export class Zippy {
-      * visible: boolean = true;
-      * @Output() open: EventEmitter<any> = new EventEmitter();
-      * @Output() close: EventEmitter<any> = new EventEmitter();
-      * *
-      * toggle() {
-      * this.visible = !this.visible;
-      * if (this.visible) {
-      * this.open.emit(null);
-      * } else {
-      * this.close.emit(null);
-      * }
-      * }
-      * }
-      * ```
-      * *
-      * The events payload can be accessed by the parameter `$event` on the components output event
-      * handler:
-      * *
-      * ```
-      * <zippy (open)="onOpen($event)" (close)="onClose($event)"></zippy>
-      * ```
-      * *
-      * Uses Rx.Observable but provides an adapter to make it work as specified here:
-      * https://github.com/jhusain/observable-spec
-      * *
-      * Once a reference implementation of the spec is available, switch to it.
-     */
-    var EventEmitter = (function (_super) {
-        __extends$6(EventEmitter, _super);
-        /**
-         *  Creates an instance of [EventEmitter], which depending on [isAsync],
-          * delivers events synchronously or asynchronously.
-         * @param {?=} isAsync
-         */
-        function EventEmitter(isAsync) {
-            if (isAsync === void 0) { isAsync = false; }
-            _super.call(this);
-            this.__isAsync = isAsync;
-        }
-        /**
-         * @param {?=} value
-         * @return {?}
-         */
-        EventEmitter.prototype.emit = function (value) { _super.prototype.next.call(this, value); };
-        /**
-         * @param {?=} generatorOrNext
-         * @param {?=} error
-         * @param {?=} complete
-         * @return {?}
-         */
-        EventEmitter.prototype.subscribe = function (generatorOrNext, error, complete) {
-            var /** @type {?} */ schedulerFn;
-            var /** @type {?} */ errorFn = function (err) { return null; };
-            var /** @type {?} */ completeFn = function () { return null; };
-            if (generatorOrNext && typeof generatorOrNext === 'object') {
-                schedulerFn = this.__isAsync ? function (value) {
-                    setTimeout(function () { return generatorOrNext.next(value); });
-                } : function (value) { generatorOrNext.next(value); };
-                if (generatorOrNext.error) {
-                    errorFn = this.__isAsync ? function (err) { setTimeout(function () { return generatorOrNext.error(err); }); } :
-                        function (err) { generatorOrNext.error(err); };
-                }
-                if (generatorOrNext.complete) {
-                    completeFn = this.__isAsync ? function () { setTimeout(function () { return generatorOrNext.complete(); }); } :
-                        function () { generatorOrNext.complete(); };
-                }
-            }
-            else {
-                schedulerFn = this.__isAsync ? function (value) { setTimeout(function () { return generatorOrNext(value); }); } :
-                    function (value) { generatorOrNext(value); };
-                if (error) {
-                    errorFn =
-                        this.__isAsync ? function (err) { setTimeout(function () { return error(err); }); } : function (err) { error(err); };
-                }
-                if (complete) {
-                    completeFn =
-                        this.__isAsync ? function () { setTimeout(function () { return complete(); }); } : function () { complete(); };
-                }
-            }
-            return _super.prototype.subscribe.call(this, schedulerFn, errorFn, completeFn);
-        };
-        return EventEmitter;
-    }(rxjs_Subject.Subject));
-
-    /**
-     *  An injectable service for executing work inside or outside of the Angular zone.
-      * *
-      * The most common use of this service is to optimize performance when starting a work consisting of
-      * one or more asynchronous tasks that don't require UI updates or error handling to be handled by
-      * Angular. Such tasks can be kicked off via {@link runOutsideAngular} and if needed, these tasks
-      * can reenter the Angular zone via {@link run}.
-      * *
-      * <!-- TODO: add/fix links to:
-      * - docs explaining zones and the use of zones in Angular and change-detection
-      * - link to runOutsideAngular/run (throughout this file!)
-      * -->
-      * *
-      * ### Example
-      * ```
-      * import {Component, NgZone} from '@angular/core';
-      * import {NgIf} from '@angular/common';
-      * *
-      * selector: 'ng-zone-demo'.
-      * template: `
-      * <h2>Demo: NgZone</h2>
-      * *
-      * <p>Progress: {{progress}}%</p>
-      * <p *ngIf="progress >= 100">Done processing {{label}} of Angular zone!</p>
-      * *
-      * <button (click)="processWithinAngularZone()">Process within Angular zone</button>
-      * <button (click)="processOutsideOfAngularZone()">Process outside of Angular zone</button>
-      * `,
-      * })
-      * export class NgZoneDemo {
-      * progress: number = 0;
-      * label: string;
-      * *
-      * constructor(private _ngZone: NgZone) {}
-      * *
-      * // Loop inside the Angular zone
-      * // so the UI DOES refresh after each setTimeout cycle
-      * processWithinAngularZone() {
-      * this.label = 'inside';
-      * this.progress = 0;
-      * this._increaseProgress(() => console.log('Inside Done!'));
-      * }
-      * *
-      * // Loop outside of the Angular zone
-      * // so the UI DOES NOT refresh after each setTimeout cycle
-      * processOutsideOfAngularZone() {
-      * this.label = 'outside';
-      * this.progress = 0;
-      * this._ngZone.runOutsideAngular(() => {
-      * this._increaseProgress(() => {
-      * // reenter the Angular zone and display done
-      * this._ngZone.run(() => {console.log('Outside Done!') });
-      * }}));
-      * }
-      * *
-      * _increaseProgress(doneCallback: () => void) {
-      * this.progress += 1;
-      * console.log(`Current progress: ${this.progress}%`);
-      * *
-      * if (this.progress < 100) {
-      * window.setTimeout(() => this._increaseProgress(doneCallback)), 10)
-      * } else {
-      * doneCallback();
-      * }
-      * }
-      * }
-      * ```
-     */
-    var NgZone = (function () {
-        /**
-         * @param {?} __0
-         */
-        function NgZone(_a) {
-            var _b = _a.enableLongStackTrace, enableLongStackTrace = _b === void 0 ? false : _b;
-            this._hasPendingMicrotasks = false;
-            this._hasPendingMacrotasks = false;
-            this._isStable = true;
-            this._nesting = 0;
-            this._onUnstable = new EventEmitter(false);
-            this._onMicrotaskEmpty = new EventEmitter(false);
-            this._onStable = new EventEmitter(false);
-            this._onErrorEvents = new EventEmitter(false);
-            if (typeof Zone == 'undefined') {
-                throw new Error('Angular requires Zone.js prolyfill.');
-            }
-            Zone.assertZonePatched();
-            this.outer = this.inner = Zone.current;
-            if (Zone['wtfZoneSpec']) {
-                this.inner = this.inner.fork(Zone['wtfZoneSpec']);
-            }
-            if (enableLongStackTrace && Zone['longStackTraceZoneSpec']) {
-                this.inner = this.inner.fork(Zone['longStackTraceZoneSpec']);
-            }
-            this.forkInnerZoneWithAngularBehavior();
-        }
-        /**
-         * @return {?}
-         */
-        NgZone.isInAngularZone = function () { return Zone.current.get('isAngularZone') === true; };
-        /**
-         * @return {?}
-         */
-        NgZone.assertInAngularZone = function () {
-            if (!NgZone.isInAngularZone()) {
-                throw new Error('Expected to be in Angular Zone, but it is not!');
-            }
-        };
-        /**
-         * @return {?}
-         */
-        NgZone.assertNotInAngularZone = function () {
-            if (NgZone.isInAngularZone()) {
-                throw new Error('Expected to not be in Angular Zone, but it is!');
-            }
-        };
-        /**
-         *  Executes the `fn` function synchronously within the Angular zone and returns value returned by
-          * the function.
-          * *
-          * Running functions via `run` allows you to reenter Angular zone from a task that was executed
-          * outside of the Angular zone (typically started via {@link runOutsideAngular}).
-          * *
-          * Any future tasks or microtasks scheduled from within this function will continue executing from
-          * within the Angular zone.
-          * *
-          * If a synchronous error happens it will be rethrown and not reported via `onError`.
-         * @param {?} fn
-         * @return {?}
-         */
-        NgZone.prototype.run = function (fn) { return this.inner.run(fn); };
-        /**
-         *  Same as `run`, except that synchronous errors are caught and forwarded via `onError` and not
-          * rethrown.
-         * @param {?} fn
-         * @return {?}
-         */
-        NgZone.prototype.runGuarded = function (fn) { return this.inner.runGuarded(fn); };
-        /**
-         *  Executes the `fn` function synchronously in Angular's parent zone and returns value returned by
-          * the function.
-          * *
-          * Running functions via `runOutsideAngular` allows you to escape Angular's zone and do work that
-          * doesn't trigger Angular change-detection or is subject to Angular's error handling.
-          * *
-          * Any future tasks or microtasks scheduled from within this function will continue executing from
-          * outside of the Angular zone.
-          * *
-          * Use {@link run} to reenter the Angular zone and do work that updates the application model.
-         * @param {?} fn
-         * @return {?}
-         */
-        NgZone.prototype.runOutsideAngular = function (fn) { return this.outer.run(fn); };
-        Object.defineProperty(NgZone.prototype, "onUnstable", {
-            /**
-             *  Notifies when code enters Angular Zone. This gets fired first on VM Turn.
-             * @return {?}
-             */
-            get: function () { return this._onUnstable; },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(NgZone.prototype, "onMicrotaskEmpty", {
-            /**
-             *  Notifies when there is no more microtasks enqueue in the current VM Turn.
-              * This is a hint for Angular to do change detection, which may enqueue more microtasks.
-              * For this reason this event can fire multiple times per VM Turn.
-             * @return {?}
-             */
-            get: function () { return this._onMicrotaskEmpty; },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(NgZone.prototype, "onStable", {
-            /**
-             *  Notifies when the last `onMicrotaskEmpty` has run and there are no more microtasks, which
-              * implies we are about to relinquish VM turn.
-              * This event gets called just once.
-             * @return {?}
-             */
-            get: function () { return this._onStable; },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(NgZone.prototype, "onError", {
-            /**
-             *  Notify that an error has been delivered.
-             * @return {?}
-             */
-            get: function () { return this._onErrorEvents; },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(NgZone.prototype, "isStable", {
-            /**
-             *  Whether there are no outstanding microtasks or macrotasks.
-             * @return {?}
-             */
-            get: function () { return this._isStable; },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(NgZone.prototype, "hasPendingMicrotasks", {
-            /**
-             * @return {?}
-             */
-            get: function () { return this._hasPendingMicrotasks; },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(NgZone.prototype, "hasPendingMacrotasks", {
-            /**
-             * @return {?}
-             */
-            get: function () { return this._hasPendingMacrotasks; },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * @return {?}
-         */
-        NgZone.prototype.checkStable = function () {
-            var _this = this;
-            if (this._nesting == 0 && !this._hasPendingMicrotasks && !this._isStable) {
-                try {
-                    this._nesting++;
-                    this._onMicrotaskEmpty.emit(null);
-                }
-                finally {
-                    this._nesting--;
-                    if (!this._hasPendingMicrotasks) {
-                        try {
-                            this.runOutsideAngular(function () { return _this._onStable.emit(null); });
-                        }
-                        finally {
-                            this._isStable = true;
-                        }
-                    }
-                }
-            }
-        };
-        /**
-         * @return {?}
-         */
-        NgZone.prototype.forkInnerZoneWithAngularBehavior = function () {
-            var _this = this;
-            this.inner = this.inner.fork({
-                name: 'angular',
-                properties: /** @type {?} */ ({ 'isAngularZone': true }),
-                onInvokeTask: function (delegate, current, target, task, applyThis, applyArgs) {
-                    try {
-                        _this.onEnter();
-                        return delegate.invokeTask(target, task, applyThis, applyArgs);
-                    }
-                    finally {
-                        _this.onLeave();
-                    }
-                },
-                onInvoke: function (delegate, current, target, callback, applyThis, applyArgs, source) {
-                    try {
-                        _this.onEnter();
-                        return delegate.invoke(target, callback, applyThis, applyArgs, source);
-                    }
-                    finally {
-                        _this.onLeave();
-                    }
-                },
-                onHasTask: function (delegate, current, target, hasTaskState) {
-                    delegate.hasTask(target, hasTaskState);
-                    if (current === target) {
-                        // We are only interested in hasTask events which originate from our zone
-                        // (A child hasTask event is not interesting to us)
-                        if (hasTaskState.change == 'microTask') {
-                            _this.setHasMicrotask(hasTaskState.microTask);
-                        }
-                        else if (hasTaskState.change == 'macroTask') {
-                            _this.setHasMacrotask(hasTaskState.macroTask);
-                        }
-                    }
-                },
-                onHandleError: function (delegate, current, target, error) {
-                    delegate.handleError(target, error);
-                    _this.triggerError(error);
-                    return false;
-                }
-            });
-        };
-        /**
-         * @return {?}
-         */
-        NgZone.prototype.onEnter = function () {
-            this._nesting++;
-            if (this._isStable) {
-                this._isStable = false;
-                this._onUnstable.emit(null);
-            }
-        };
-        /**
-         * @return {?}
-         */
-        NgZone.prototype.onLeave = function () {
-            this._nesting--;
-            this.checkStable();
-        };
-        /**
-         * @param {?} hasMicrotasks
-         * @return {?}
-         */
-        NgZone.prototype.setHasMicrotask = function (hasMicrotasks) {
-            this._hasPendingMicrotasks = hasMicrotasks;
-            this.checkStable();
-        };
-        /**
-         * @param {?} hasMacrotasks
-         * @return {?}
-         */
-        NgZone.prototype.setHasMacrotask = function (hasMacrotasks) { this._hasPendingMacrotasks = hasMacrotasks; };
-        /**
-         * @param {?} error
-         * @return {?}
-         */
-        NgZone.prototype.triggerError = function (error) { this._onErrorEvents.emit(error); };
-        return NgZone;
-    }());
-
-    var AnimationQueue = (function () {
-        /**
-         * @param {?} _zone
-         */
-        function AnimationQueue(_zone) {
-            this._zone = _zone;
-            this.entries = [];
-        }
-        /**
-         * @param {?} player
-         * @return {?}
-         */
-        AnimationQueue.prototype.enqueue = function (player) { this.entries.push(player); };
-        /**
-         * @return {?}
-         */
-        AnimationQueue.prototype.flush = function () {
-            var _this = this;
-            // given that each animation player may set aside
-            // microtasks and rely on DOM-based events, this
-            // will cause Angular to run change detection after
-            // each request. This sidesteps the issue. If a user
-            // hooks into an animation via (@anim.start) or (@anim.done)
-            // then those methods will automatically trigger change
-            // detection by wrapping themselves inside of a zone
-            if (this.entries.length) {
-                this._zone.runOutsideAngular(function () {
-                    // this code is wrapped into a single promise such that the
-                    // onStart and onDone player callbacks are triggered outside
-                    // of the digest cycle of animations
-                    Promise.resolve(null).then(function () { return _this._triggerAnimations(); });
-                });
-            }
-        };
-        /**
-         * @return {?}
-         */
-        AnimationQueue.prototype._triggerAnimations = function () {
-            NgZone.assertNotInAngularZone();
-            while (this.entries.length) {
-                var /** @type {?} */ player = this.entries.shift();
-                // in the event that an animation throws an error then we do
-                // not want to re-run animations on any previous animations
-                // if they have already been kicked off beforehand
-                if (!player.hasStarted()) {
-                    player.play();
-                }
-            }
-        };
-        AnimationQueue.decorators = [
-            { type: Injectable },
-        ];
-        /** @nocollapse */
-        AnimationQueue.ctorParameters = function () { return [
-            { type: NgZone, },
-        ]; };
-        return AnimationQueue;
     }());
 
     var DefaultIterableDifferFactory = (function () {
@@ -6500,7 +5991,7 @@
      * Use of this source code is governed by an MIT-style license that can be
      * found in the LICENSE file at https://angular.io/license
      */
-    var __extends$7 = (this && this.__extends) || function (d, b) {
+    var __extends$6 = (this && this.__extends) || function (d, b) {
         for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -6534,7 +6025,7 @@
       * ```
      */
     var ExpressionChangedAfterItHasBeenCheckedError = (function (_super) {
-        __extends$7(ExpressionChangedAfterItHasBeenCheckedError, _super);
+        __extends$6(ExpressionChangedAfterItHasBeenCheckedError, _super);
         /**
          * @param {?} oldValue
          * @param {?} currValue
@@ -6557,7 +6048,7 @@
       * be useful for debugging.
      */
     var ViewWrappedError = (function (_super) {
-        __extends$7(ViewWrappedError, _super);
+        __extends$6(ViewWrappedError, _super);
         /**
          * @param {?} originalError
          * @param {?} context
@@ -6576,7 +6067,7 @@
       * This is an internal Angular error.
      */
     var ViewDestroyedError = (function (_super) {
-        __extends$7(ViewDestroyedError, _super);
+        __extends$6(ViewDestroyedError, _super);
         /**
          * @param {?} details
          */
@@ -6590,11 +6081,9 @@
         /**
          * @param {?} _renderer
          * @param {?} sanitizer
-         * @param {?} animationQueue
          */
-        function ViewUtils(_renderer, sanitizer, animationQueue) {
+        function ViewUtils(_renderer, sanitizer) {
             this._renderer = _renderer;
-            this.animationQueue = animationQueue;
             this._nextCompTypeId = 0;
             this.sanitizer = sanitizer;
         }
@@ -6612,7 +6101,6 @@
         ViewUtils.ctorParameters = function () { return [
             { type: RootRenderer, },
             { type: Sanitizer, },
-            { type: AnimationQueue, },
         ]; };
         return ViewUtils;
     }());
@@ -7714,7 +7202,7 @@
      * Use of this source code is governed by an MIT-style license that can be
      * found in the LICENSE file at https://angular.io/license
      */
-    var __extends$8 = (this && this.__extends) || function (d, b) {
+    var __extends$7 = (this && this.__extends) || function (d, b) {
         for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -7723,7 +7211,7 @@
      * @stable
      */
     var NoComponentFactoryError = (function (_super) {
-        __extends$8(NoComponentFactoryError, _super);
+        __extends$7(NoComponentFactoryError, _super);
         /**
          * @param {?} component
          */
@@ -7911,6 +7399,444 @@
      * @experimental
      */
     var /** @type {?} */ wtfEndTimeRange = wtfEnabled ? endTimeRange : function (r) { return null; };
+
+    /**
+     * @license
+     * Copyright Google Inc. All Rights Reserved.
+     *
+     * Use of this source code is governed by an MIT-style license that can be
+     * found in the LICENSE file at https://angular.io/license
+     */
+    var __extends$8 = (this && this.__extends) || function (d, b) {
+        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+    /**
+     *  Use by directives and components to emit custom Events.
+      * *
+      * ### Examples
+      * *
+      * In the following example, `Zippy` alternatively emits `open` and `close` events when its
+      * title gets clicked:
+      * *
+      * ```
+      * selector: 'zippy',
+      * template: `
+      * <div class="zippy">
+      * <div (click)="toggle()">Toggle</div>
+      * <div [hidden]="!visible">
+      * <ng-content></ng-content>
+      * </div>
+      * </div>`})
+      * export class Zippy {
+      * visible: boolean = true;
+      * @Output() open: EventEmitter<any> = new EventEmitter();
+      * @Output() close: EventEmitter<any> = new EventEmitter();
+      * *
+      * toggle() {
+      * this.visible = !this.visible;
+      * if (this.visible) {
+      * this.open.emit(null);
+      * } else {
+      * this.close.emit(null);
+      * }
+      * }
+      * }
+      * ```
+      * *
+      * The events payload can be accessed by the parameter `$event` on the components output event
+      * handler:
+      * *
+      * ```
+      * <zippy (open)="onOpen($event)" (close)="onClose($event)"></zippy>
+      * ```
+      * *
+      * Uses Rx.Observable but provides an adapter to make it work as specified here:
+      * https://github.com/jhusain/observable-spec
+      * *
+      * Once a reference implementation of the spec is available, switch to it.
+     */
+    var EventEmitter = (function (_super) {
+        __extends$8(EventEmitter, _super);
+        /**
+         *  Creates an instance of [EventEmitter], which depending on [isAsync],
+          * delivers events synchronously or asynchronously.
+         * @param {?=} isAsync
+         */
+        function EventEmitter(isAsync) {
+            if (isAsync === void 0) { isAsync = false; }
+            _super.call(this);
+            this.__isAsync = isAsync;
+        }
+        /**
+         * @param {?=} value
+         * @return {?}
+         */
+        EventEmitter.prototype.emit = function (value) { _super.prototype.next.call(this, value); };
+        /**
+         * @param {?=} generatorOrNext
+         * @param {?=} error
+         * @param {?=} complete
+         * @return {?}
+         */
+        EventEmitter.prototype.subscribe = function (generatorOrNext, error, complete) {
+            var /** @type {?} */ schedulerFn;
+            var /** @type {?} */ errorFn = function (err) { return null; };
+            var /** @type {?} */ completeFn = function () { return null; };
+            if (generatorOrNext && typeof generatorOrNext === 'object') {
+                schedulerFn = this.__isAsync ? function (value) {
+                    setTimeout(function () { return generatorOrNext.next(value); });
+                } : function (value) { generatorOrNext.next(value); };
+                if (generatorOrNext.error) {
+                    errorFn = this.__isAsync ? function (err) { setTimeout(function () { return generatorOrNext.error(err); }); } :
+                        function (err) { generatorOrNext.error(err); };
+                }
+                if (generatorOrNext.complete) {
+                    completeFn = this.__isAsync ? function () { setTimeout(function () { return generatorOrNext.complete(); }); } :
+                        function () { generatorOrNext.complete(); };
+                }
+            }
+            else {
+                schedulerFn = this.__isAsync ? function (value) { setTimeout(function () { return generatorOrNext(value); }); } :
+                    function (value) { generatorOrNext(value); };
+                if (error) {
+                    errorFn =
+                        this.__isAsync ? function (err) { setTimeout(function () { return error(err); }); } : function (err) { error(err); };
+                }
+                if (complete) {
+                    completeFn =
+                        this.__isAsync ? function () { setTimeout(function () { return complete(); }); } : function () { complete(); };
+                }
+            }
+            return _super.prototype.subscribe.call(this, schedulerFn, errorFn, completeFn);
+        };
+        return EventEmitter;
+    }(rxjs_Subject.Subject));
+
+    /**
+     *  An injectable service for executing work inside or outside of the Angular zone.
+      * *
+      * The most common use of this service is to optimize performance when starting a work consisting of
+      * one or more asynchronous tasks that don't require UI updates or error handling to be handled by
+      * Angular. Such tasks can be kicked off via {@link runOutsideAngular} and if needed, these tasks
+      * can reenter the Angular zone via {@link run}.
+      * *
+      * <!-- TODO: add/fix links to:
+      * - docs explaining zones and the use of zones in Angular and change-detection
+      * - link to runOutsideAngular/run (throughout this file!)
+      * -->
+      * *
+      * ### Example
+      * ```
+      * import {Component, NgZone} from '@angular/core';
+      * import {NgIf} from '@angular/common';
+      * *
+      * selector: 'ng-zone-demo'.
+      * template: `
+      * <h2>Demo: NgZone</h2>
+      * *
+      * <p>Progress: {{progress}}%</p>
+      * <p *ngIf="progress >= 100">Done processing {{label}} of Angular zone!</p>
+      * *
+      * <button (click)="processWithinAngularZone()">Process within Angular zone</button>
+      * <button (click)="processOutsideOfAngularZone()">Process outside of Angular zone</button>
+      * `,
+      * })
+      * export class NgZoneDemo {
+      * progress: number = 0;
+      * label: string;
+      * *
+      * constructor(private _ngZone: NgZone) {}
+      * *
+      * // Loop inside the Angular zone
+      * // so the UI DOES refresh after each setTimeout cycle
+      * processWithinAngularZone() {
+      * this.label = 'inside';
+      * this.progress = 0;
+      * this._increaseProgress(() => console.log('Inside Done!'));
+      * }
+      * *
+      * // Loop outside of the Angular zone
+      * // so the UI DOES NOT refresh after each setTimeout cycle
+      * processOutsideOfAngularZone() {
+      * this.label = 'outside';
+      * this.progress = 0;
+      * this._ngZone.runOutsideAngular(() => {
+      * this._increaseProgress(() => {
+      * // reenter the Angular zone and display done
+      * this._ngZone.run(() => {console.log('Outside Done!') });
+      * }}));
+      * }
+      * *
+      * _increaseProgress(doneCallback: () => void) {
+      * this.progress += 1;
+      * console.log(`Current progress: ${this.progress}%`);
+      * *
+      * if (this.progress < 100) {
+      * window.setTimeout(() => this._increaseProgress(doneCallback)), 10)
+      * } else {
+      * doneCallback();
+      * }
+      * }
+      * }
+      * ```
+     */
+    var NgZone = (function () {
+        /**
+         * @param {?} __0
+         */
+        function NgZone(_a) {
+            var _b = _a.enableLongStackTrace, enableLongStackTrace = _b === void 0 ? false : _b;
+            this._hasPendingMicrotasks = false;
+            this._hasPendingMacrotasks = false;
+            this._isStable = true;
+            this._nesting = 0;
+            this._onUnstable = new EventEmitter(false);
+            this._onMicrotaskEmpty = new EventEmitter(false);
+            this._onStable = new EventEmitter(false);
+            this._onErrorEvents = new EventEmitter(false);
+            if (typeof Zone == 'undefined') {
+                throw new Error('Angular requires Zone.js prolyfill.');
+            }
+            Zone.assertZonePatched();
+            this.outer = this.inner = Zone.current;
+            if (Zone['wtfZoneSpec']) {
+                this.inner = this.inner.fork(Zone['wtfZoneSpec']);
+            }
+            if (enableLongStackTrace && Zone['longStackTraceZoneSpec']) {
+                this.inner = this.inner.fork(Zone['longStackTraceZoneSpec']);
+            }
+            this.forkInnerZoneWithAngularBehavior();
+        }
+        /**
+         * @return {?}
+         */
+        NgZone.isInAngularZone = function () { return Zone.current.get('isAngularZone') === true; };
+        /**
+         * @return {?}
+         */
+        NgZone.assertInAngularZone = function () {
+            if (!NgZone.isInAngularZone()) {
+                throw new Error('Expected to be in Angular Zone, but it is not!');
+            }
+        };
+        /**
+         * @return {?}
+         */
+        NgZone.assertNotInAngularZone = function () {
+            if (NgZone.isInAngularZone()) {
+                throw new Error('Expected to not be in Angular Zone, but it is!');
+            }
+        };
+        /**
+         *  Executes the `fn` function synchronously within the Angular zone and returns value returned by
+          * the function.
+          * *
+          * Running functions via `run` allows you to reenter Angular zone from a task that was executed
+          * outside of the Angular zone (typically started via {@link runOutsideAngular}).
+          * *
+          * Any future tasks or microtasks scheduled from within this function will continue executing from
+          * within the Angular zone.
+          * *
+          * If a synchronous error happens it will be rethrown and not reported via `onError`.
+         * @param {?} fn
+         * @return {?}
+         */
+        NgZone.prototype.run = function (fn) { return this.inner.run(fn); };
+        /**
+         *  Same as `run`, except that synchronous errors are caught and forwarded via `onError` and not
+          * rethrown.
+         * @param {?} fn
+         * @return {?}
+         */
+        NgZone.prototype.runGuarded = function (fn) { return this.inner.runGuarded(fn); };
+        /**
+         *  Executes the `fn` function synchronously in Angular's parent zone and returns value returned by
+          * the function.
+          * *
+          * Running functions via `runOutsideAngular` allows you to escape Angular's zone and do work that
+          * doesn't trigger Angular change-detection or is subject to Angular's error handling.
+          * *
+          * Any future tasks or microtasks scheduled from within this function will continue executing from
+          * outside of the Angular zone.
+          * *
+          * Use {@link run} to reenter the Angular zone and do work that updates the application model.
+         * @param {?} fn
+         * @return {?}
+         */
+        NgZone.prototype.runOutsideAngular = function (fn) { return this.outer.run(fn); };
+        Object.defineProperty(NgZone.prototype, "onUnstable", {
+            /**
+             *  Notifies when code enters Angular Zone. This gets fired first on VM Turn.
+             * @return {?}
+             */
+            get: function () { return this._onUnstable; },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(NgZone.prototype, "onMicrotaskEmpty", {
+            /**
+             *  Notifies when there is no more microtasks enqueue in the current VM Turn.
+              * This is a hint for Angular to do change detection, which may enqueue more microtasks.
+              * For this reason this event can fire multiple times per VM Turn.
+             * @return {?}
+             */
+            get: function () { return this._onMicrotaskEmpty; },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(NgZone.prototype, "onStable", {
+            /**
+             *  Notifies when the last `onMicrotaskEmpty` has run and there are no more microtasks, which
+              * implies we are about to relinquish VM turn.
+              * This event gets called just once.
+             * @return {?}
+             */
+            get: function () { return this._onStable; },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(NgZone.prototype, "onError", {
+            /**
+             *  Notify that an error has been delivered.
+             * @return {?}
+             */
+            get: function () { return this._onErrorEvents; },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(NgZone.prototype, "isStable", {
+            /**
+             *  Whether there are no outstanding microtasks or macrotasks.
+             * @return {?}
+             */
+            get: function () { return this._isStable; },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(NgZone.prototype, "hasPendingMicrotasks", {
+            /**
+             * @return {?}
+             */
+            get: function () { return this._hasPendingMicrotasks; },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(NgZone.prototype, "hasPendingMacrotasks", {
+            /**
+             * @return {?}
+             */
+            get: function () { return this._hasPendingMacrotasks; },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * @return {?}
+         */
+        NgZone.prototype.checkStable = function () {
+            var _this = this;
+            if (this._nesting == 0 && !this._hasPendingMicrotasks && !this._isStable) {
+                try {
+                    this._nesting++;
+                    this._onMicrotaskEmpty.emit(null);
+                }
+                finally {
+                    this._nesting--;
+                    if (!this._hasPendingMicrotasks) {
+                        try {
+                            this.runOutsideAngular(function () { return _this._onStable.emit(null); });
+                        }
+                        finally {
+                            this._isStable = true;
+                        }
+                    }
+                }
+            }
+        };
+        /**
+         * @return {?}
+         */
+        NgZone.prototype.forkInnerZoneWithAngularBehavior = function () {
+            var _this = this;
+            this.inner = this.inner.fork({
+                name: 'angular',
+                properties: /** @type {?} */ ({ 'isAngularZone': true }),
+                onInvokeTask: function (delegate, current, target, task, applyThis, applyArgs) {
+                    try {
+                        _this.onEnter();
+                        return delegate.invokeTask(target, task, applyThis, applyArgs);
+                    }
+                    finally {
+                        _this.onLeave();
+                    }
+                },
+                onInvoke: function (delegate, current, target, callback, applyThis, applyArgs, source) {
+                    try {
+                        _this.onEnter();
+                        return delegate.invoke(target, callback, applyThis, applyArgs, source);
+                    }
+                    finally {
+                        _this.onLeave();
+                    }
+                },
+                onHasTask: function (delegate, current, target, hasTaskState) {
+                    delegate.hasTask(target, hasTaskState);
+                    if (current === target) {
+                        // We are only interested in hasTask events which originate from our zone
+                        // (A child hasTask event is not interesting to us)
+                        if (hasTaskState.change == 'microTask') {
+                            _this.setHasMicrotask(hasTaskState.microTask);
+                        }
+                        else if (hasTaskState.change == 'macroTask') {
+                            _this.setHasMacrotask(hasTaskState.macroTask);
+                        }
+                    }
+                },
+                onHandleError: function (delegate, current, target, error) {
+                    delegate.handleError(target, error);
+                    _this.triggerError(error);
+                    return false;
+                }
+            });
+        };
+        /**
+         * @return {?}
+         */
+        NgZone.prototype.onEnter = function () {
+            this._nesting++;
+            if (this._isStable) {
+                this._isStable = false;
+                this._onUnstable.emit(null);
+            }
+        };
+        /**
+         * @return {?}
+         */
+        NgZone.prototype.onLeave = function () {
+            this._nesting--;
+            this.checkStable();
+        };
+        /**
+         * @param {?} hasMicrotasks
+         * @return {?}
+         */
+        NgZone.prototype.setHasMicrotask = function (hasMicrotasks) {
+            this._hasPendingMicrotasks = hasMicrotasks;
+            this.checkStable();
+        };
+        /**
+         * @param {?} hasMacrotasks
+         * @return {?}
+         */
+        NgZone.prototype.setHasMacrotask = function (hasMacrotasks) { this._hasPendingMacrotasks = hasMacrotasks; };
+        /**
+         * @param {?} error
+         * @return {?}
+         */
+        NgZone.prototype.triggerError = function (error) { this._onErrorEvents.emit(error); };
+        return NgZone;
+    }());
 
     /**
      *  The Testability service provides testing hooks that can be accessed from
@@ -9643,6 +9569,43 @@
      * Use of this source code is governed by an MIT-style license that can be
      * found in the LICENSE file at https://angular.io/license
      */
+    var /** @type {?} */ _queuedAnimations = [];
+    /**
+     * @param {?} player
+     * @return {?}
+     */
+    function queueAnimationGlobally(player) {
+        _queuedAnimations.push(player);
+    }
+    /**
+     * @return {?}
+     */
+    function triggerQueuedAnimations() {
+        // this code is wrapped into a single promise such that the
+        // onStart and onDone player callbacks are triggered outside
+        // of the digest cycle of animations
+        if (_queuedAnimations.length) {
+            Promise.resolve(null).then(_triggerAnimations);
+        }
+    }
+    /**
+     * @return {?}
+     */
+    function _triggerAnimations() {
+        for (var /** @type {?} */ i = 0; i < _queuedAnimations.length; i++) {
+            var /** @type {?} */ player = _queuedAnimations[i];
+            player.play();
+        }
+        _queuedAnimations = [];
+    }
+
+    /**
+     * @license
+     * Copyright Google Inc. All Rights Reserved.
+     *
+     * Use of this source code is governed by an MIT-style license that can be
+     * found in the LICENSE file at https://angular.io/license
+     */
     var __extends$11 = (this && this.__extends) || function (d, b) {
         for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
         function __() { this.constructor = d; }
@@ -9759,11 +9722,9 @@
     var ViewRef_ = (function () {
         /**
          * @param {?} _view
-         * @param {?} animationQueue
          */
-        function ViewRef_(_view, animationQueue) {
+        function ViewRef_(_view) {
             this._view = _view;
-            this.animationQueue = animationQueue;
             this._view = _view;
             this._originalMode = this._view.cdMode;
         }
@@ -9812,7 +9773,7 @@
          */
         ViewRef_.prototype.detectChanges = function () {
             this._view.detectChanges(false);
-            this.animationQueue.flush();
+            triggerQueuedAnimations();
         };
         /**
          * @return {?}
@@ -10176,7 +10137,6 @@
                             Compiler,
                             APP_ID_RANDOM_PROVIDER,
                             ViewUtils,
-                            AnimationQueue,
                             { provide: IterableDiffers, useFactory: _iterableDiffersFactory },
                             { provide: KeyValueDiffers, useFactory: _keyValueDiffersFactory },
                             { provide: LOCALE_ID, useValue: 'en-US' },
@@ -11582,18 +11542,16 @@
          * @return {?}
          */
         AnimationTransition.prototype.onStart = function (callback) {
-            var _this = this;
-            var /** @type {?} */ fn = (Zone.current.wrap(function () { return callback(_this._createEvent('start')); }, 'player.onStart'));
-            this._player.onStart(fn);
+            var /** @type {?} */ event = this._createEvent('start');
+            this._player.onStart(function () { return callback(event); });
         };
         /**
          * @param {?} callback
          * @return {?}
          */
         AnimationTransition.prototype.onDone = function (callback) {
-            var _this = this;
-            var /** @type {?} */ fn = (Zone.current.wrap(function () { return callback(_this._createEvent('done')); }, 'player.onDone'));
-            this._player.onDone(fn);
+            var /** @type {?} */ event = this._createEvent('done');
+            this._player.onDone(function () { return callback(event); });
         };
         return AnimationTransition;
     }());
@@ -12045,21 +12003,17 @@
         /**
          * @param {?} element
          * @param {?} animationName
-         * @param {?=} targetPlayer
          * @return {?}
          */
-        ViewAnimationMap.prototype.remove = function (element, animationName, targetPlayer) {
-            if (targetPlayer === void 0) { targetPlayer = null; }
+        ViewAnimationMap.prototype.remove = function (element, animationName) {
             var /** @type {?} */ playersByAnimation = this._map.get(element);
             if (playersByAnimation) {
                 var /** @type {?} */ player = playersByAnimation[animationName];
-                if (!targetPlayer || player === targetPlayer) {
-                    delete playersByAnimation[animationName];
-                    var /** @type {?} */ index = this._allPlayers.indexOf(player);
-                    this._allPlayers.splice(index, 1);
-                    if (Object.keys(playersByAnimation).length === 0) {
-                        this._map.delete(element);
-                    }
+                delete playersByAnimation[animationName];
+                var /** @type {?} */ index = this._allPlayers.indexOf(player);
+                this._allPlayers.splice(index, 1);
+                if (Object.keys(playersByAnimation).length === 0) {
+                    this._map.delete(element);
                 }
             }
         };
@@ -12067,11 +12021,7 @@
     }());
 
     var AnimationViewContext = (function () {
-        /**
-         * @param {?} _animationQueue
-         */
-        function AnimationViewContext(_animationQueue) {
-            this._animationQueue = _animationQueue;
+        function AnimationViewContext() {
             this._players = new ViewAnimationMap();
         }
         /**
@@ -12096,27 +12046,26 @@
          * @return {?}
          */
         AnimationViewContext.prototype.queueAnimation = function (element, animationName, player) {
-            var _this = this;
-            this._animationQueue.enqueue(player);
+            queueAnimationGlobally(player);
             this._players.set(element, animationName, player);
-            player.onDone(function () { return _this._players.remove(element, animationName, player); });
         };
         /**
          * @param {?} element
-         * @param {?=} animationName
+         * @param {?} animationName
+         * @param {?=} removeAllAnimations
          * @return {?}
          */
-        AnimationViewContext.prototype.getAnimationPlayers = function (element, animationName) {
-            if (animationName === void 0) { animationName = null; }
+        AnimationViewContext.prototype.getAnimationPlayers = function (element, animationName, removeAllAnimations) {
+            if (removeAllAnimations === void 0) { removeAllAnimations = false; }
             var /** @type {?} */ players = [];
-            if (animationName) {
+            if (removeAllAnimations) {
+                this._players.findAllPlayersByElement(element).forEach(function (player) { _recursePlayers(player, players); });
+            }
+            else {
                 var /** @type {?} */ currentPlayer = this._players.find(element, animationName);
                 if (currentPlayer) {
                     _recursePlayers(currentPlayer, players);
                 }
-            }
-            else {
-                this._players.findAllPlayersByElement(element).forEach(function (player) { return _recursePlayers(player, players); });
             }
             return players;
         };
@@ -12218,7 +12167,7 @@
             this.cdMode = cdMode;
             this.declaredViewContainer = declaredViewContainer;
             this.numberOfChecks = 0;
-            this.ref = new ViewRef_(this, viewUtils.animationQueue);
+            this.ref = new ViewRef_(this);
             if (type === ViewType.COMPONENT || type === ViewType.HOST) {
                 this.renderer = viewUtils.renderComponent(componentType);
             }
@@ -12233,7 +12182,7 @@
              */
             get: function () {
                 if (!this._animationContext) {
-                    this._animationContext = new AnimationViewContext(this.viewUtils.animationQueue);
+                    this._animationContext = new AnimationViewContext();
                 }
                 return this._animationContext;
             },
@@ -12394,8 +12343,7 @@
             else {
                 this._renderDetach();
             }
-            if (this.declaredViewContainer && this.declaredViewContainer !== this.viewContainer &&
-                this.declaredViewContainer.projectedViews) {
+            if (this.declaredViewContainer && this.declaredViewContainer !== this.viewContainer) {
                 var /** @type {?} */ projectedViews = this.declaredViewContainer.projectedViews;
                 var /** @type {?} */ index = projectedViews.indexOf(this);
                 // perf: pop is faster than splice!
@@ -12567,19 +12515,11 @@
          * @param {?} throwOnChange
          * @return {?}
          */
-        AppView.prototype.internalDetectChanges = function (throwOnChange) {
-            if (this.cdMode !== ChangeDetectorStatus.Detached) {
-                this.detectChanges(throwOnChange);
-            }
-        };
-        /**
-         * @param {?} throwOnChange
-         * @return {?}
-         */
         AppView.prototype.detectChanges = function (throwOnChange) {
             var /** @type {?} */ s = _scope_check(this.clazz);
             if (this.cdMode === ChangeDetectorStatus.Checked ||
-                this.cdMode === ChangeDetectorStatus.Errored)
+                this.cdMode === ChangeDetectorStatus.Errored ||
+                this.cdMode === ChangeDetectorStatus.Detached)
                 return;
             if (this.cdMode === ChangeDetectorStatus.Destroyed) {
                 this.throwDestroyedError('detectChanges');

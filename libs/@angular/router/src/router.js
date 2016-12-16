@@ -313,7 +313,7 @@ export var Router = (function () {
     };
     Object.defineProperty(Router.prototype, "routerState", {
         /**
-         *  The current route state
+         *  Returns the current route state.
          * @return {?}
          */
         get: function () { return this.currentRouterState; },
@@ -322,7 +322,7 @@ export var Router = (function () {
     });
     Object.defineProperty(Router.prototype, "url", {
         /**
-         *  The current url
+         *  Returns the current url.
          * @return {?}
          */
         get: function () { return this.serializeUrl(this.currentUrlTree); },
@@ -331,7 +331,7 @@ export var Router = (function () {
     });
     Object.defineProperty(Router.prototype, "events", {
         /**
-         *  An observable of router events
+         *  Returns an observable of route events
          * @return {?}
          */
         get: function () { return this.routerEvents; },
@@ -348,7 +348,7 @@ export var Router = (function () {
       * { path: 'team/:id', component: TeamCmp, children: [
       * { path: 'simple', component: SimpleCmp },
       * { path: 'user/:name', component: UserCmp }
-      * ]}
+      * ] }
       * ]);
       * ```
      * @param {?} config
@@ -363,7 +363,7 @@ export var Router = (function () {
      */
     Router.prototype.ngOnDestroy = function () { this.dispose(); };
     /**
-     *  Disposes of the router
+     *  Disposes of the router.
      * @return {?}
      */
     Router.prototype.dispose = function () {
@@ -418,7 +418,7 @@ export var Router = (function () {
      */
     Router.prototype.createUrlTree = function (commands, _a) {
         var _b = _a === void 0 ? {} : _a, relativeTo = _b.relativeTo, queryParams = _b.queryParams, fragment = _b.fragment, preserveQueryParams = _b.preserveQueryParams, preserveFragment = _b.preserveFragment;
-        var /** @type {?} */ a = relativeTo || this.routerState.root;
+        var /** @type {?} */ a = relativeTo ? relativeTo : this.routerState.root;
         var /** @type {?} */ q = preserveQueryParams ? this.currentUrlTree.queryParams : queryParams;
         var /** @type {?} */ f = preserveFragment ? this.currentUrlTree.fragment : fragment;
         return createUrlTree(a, this.currentUrlTree, commands, q, f);
@@ -427,9 +427,9 @@ export var Router = (function () {
      *  Navigate based on the provided url. This navigation is always absolute.
       * *
       * Returns a promise that:
-      * - resolves to 'true' when navigation succeeds,
-      * - resolves to 'false' when navigation fails,
-      * - is rejected when an error happens.
+      * - is resolved with 'true' when navigation succeeds
+      * - is resolved with 'false' when navigation fails
+      * - is rejected when an error happens
       * *
       * ### Usage
       * *
@@ -451,17 +451,19 @@ export var Router = (function () {
         if (url instanceof UrlTree) {
             return this.scheduleNavigation(this.urlHandlingStrategy.merge(url, this.rawUrlTree), true, extras);
         }
-        var /** @type {?} */ urlTree = this.urlSerializer.parse(url);
-        return this.scheduleNavigation(this.urlHandlingStrategy.merge(urlTree, this.rawUrlTree), true, extras);
+        else {
+            var /** @type {?} */ urlTree = this.urlSerializer.parse(url);
+            return this.scheduleNavigation(this.urlHandlingStrategy.merge(urlTree, this.rawUrlTree), true, extras);
+        }
     };
     /**
      *  Navigate based on the provided array of commands and a starting point.
       * If no starting route is provided, the navigation is absolute.
       * *
       * Returns a promise that:
-      * - resolves to 'true' when navigation succeeds,
-      * - resolves to 'false' when navigation fails,
-      * - is rejected when an error happens.
+      * - is resolved with 'true' when navigation succeeds
+      * - is resolved with 'false' when navigation fails
+      * - is rejected when an error happens
       * *
       * ### Usage
       * *
@@ -469,11 +471,11 @@ export var Router = (function () {
       * router.navigate(['team', 33, 'user', 11], {relativeTo: route});
       * *
       * // Navigate without updating the URL
-      * router.navigate(['team', 33, 'user', 11], {relativeTo: route, skipLocationChange: true});
+      * router.navigate(['team', 33, 'user', 11], {relativeTo: route, skipLocationChange: true });
       * ```
       * *
-      * In opposite to `navigateByUrl`, `navigate` always takes a delta that is applied to the current
-      * URL.
+      * In opposite to `navigateByUrl`, `navigate` always takes a delta
+      * that is applied to the current URL.
      * @param {?} commands
      * @param {?=} extras
      * @return {?}
@@ -486,19 +488,19 @@ export var Router = (function () {
         return this.navigateByUrl(this.createUrlTree(commands, extras), extras);
     };
     /**
-     *  Serializes a {@link UrlTree} into a string
+     *  Serializes a {@link UrlTree} into a string.
      * @param {?} url
      * @return {?}
      */
     Router.prototype.serializeUrl = function (url) { return this.urlSerializer.serialize(url); };
     /**
-     *  Parses a string into a {@link UrlTree}
+     *  Parses a string into a {@link UrlTree}.
      * @param {?} url
      * @return {?}
      */
     Router.prototype.parseUrl = function (url) { return this.urlSerializer.parse(url); };
     /**
-     *  Returns whether the url is activated
+     *  Returns if the url is activated or not.
      * @param {?} url
      * @param {?} exact
      * @return {?}

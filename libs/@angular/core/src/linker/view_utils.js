@@ -5,7 +5,6 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { AnimationQueue } from '../animation/animation_queue';
 import { devModeEqual } from '../change_detection/change_detection';
 import { UNINITIALIZED } from '../change_detection/change_detection_util';
 import { Injectable } from '../di';
@@ -18,11 +17,9 @@ export var ViewUtils = (function () {
     /**
      * @param {?} _renderer
      * @param {?} sanitizer
-     * @param {?} animationQueue
      */
-    function ViewUtils(_renderer, sanitizer, animationQueue) {
+    function ViewUtils(_renderer, sanitizer) {
         this._renderer = _renderer;
-        this.animationQueue = animationQueue;
         this._nextCompTypeId = 0;
         this.sanitizer = sanitizer;
     }
@@ -40,7 +37,6 @@ export var ViewUtils = (function () {
     ViewUtils.ctorParameters = function () { return [
         { type: RootRenderer, },
         { type: Sanitizer, },
-        { type: AnimationQueue, },
     ]; };
     return ViewUtils;
 }());
@@ -58,8 +54,6 @@ function ViewUtils_tsickle_Closure_declarations() {
     ViewUtils.prototype._nextCompTypeId;
     /** @type {?} */
     ViewUtils.prototype._renderer;
-    /** @type {?} */
-    ViewUtils.prototype.animationQueue;
 }
 var /** @type {?} */ nextRenderComponentTypeId = 0;
 /**

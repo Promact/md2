@@ -89,7 +89,7 @@ export var DirectiveWrapperCompiler = (function () {
             addCheckInputMethod(inputFieldName, builder);
         });
         addNgDoCheckMethod(builder);
-        addCheckHostMethod(hostParseResult.hostProps, hostParseResult.hostListeners, builder);
+        addCheckHostMethod(hostParseResult.hostProps, builder);
         addHandleEventMethod(hostParseResult.hostListeners, builder);
         addSubscribeMethod(dirMeta, builder);
         var /** @type {?} */ classStmt = builder.build();
@@ -284,11 +284,10 @@ function addCheckInputMethod(input, builder) {
 }
 /**
  * @param {?} hostProps
- * @param {?} hostEvents
  * @param {?} builder
  * @return {?}
  */
-function addCheckHostMethod(hostProps, hostEvents, builder) {
+function addCheckHostMethod(hostProps, builder) {
     var /** @type {?} */ stmts = [];
     var /** @type {?} */ methodParams = [
         new o.FnParam(VIEW_VAR.name, o.importType(createIdentifier(Identifiers.AppView), [o.DYNAMIC_TYPE])),
@@ -309,7 +308,7 @@ function addCheckHostMethod(hostProps, hostEvents, builder) {
         }
         var /** @type {?} */ checkBindingStmts;
         if (hostProp.isAnimation) {
-            var _a = triggerAnimation(VIEW_VAR, COMPONENT_VIEW_VAR, hostProp, hostEvents, o.THIS_EXPR.prop(EVENT_HANDLER_FIELD_NAME)
+            var _a = triggerAnimation(VIEW_VAR, COMPONENT_VIEW_VAR, hostProp, o.THIS_EXPR.prop(EVENT_HANDLER_FIELD_NAME)
                 .or(o.importExpr(createIdentifier(Identifiers.noop))), RENDER_EL_VAR, evalResult.currValExpr, field.expression), updateStmts = _a.updateStmts, detachStmts = _a.detachStmts;
             checkBindingStmts = updateStmts;
             (_b = builder.detachStmts).push.apply(_b, detachStmts);

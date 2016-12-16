@@ -54,7 +54,7 @@ export { ParseLocation, ParseSourceFile, ParseSourceSpan, ParseErrorLevel, Parse
 export { DomElementSchemaRegistry } from './src/schema/dom_element_schema_registry';
 export { CssSelector, SelectorMatcher, SelectorListContext, SelectorContext } from './src/selector';
 export { StylesCompileDependency, StylesCompileResult, CompiledStylesheet, StyleCompiler } from './src/style_compiler';
-export { TemplateParseError, TemplateParseResult, TemplateParser, splitClasses, createElementCssSelector, removeSummaryDuplicates } from './src/template_parser/template_parser';
+export { TemplateParseError, TemplateParseResult, TemplateParser, splitClasses, removeSummaryDuplicates } from './src/template_parser/template_parser';
 export { ViewCompiler } from './src/view_compiler/view_compiler';
 export { AnimationParser } from './src/animation/animation_parser';
 //# sourceMappingURL=index.js.map

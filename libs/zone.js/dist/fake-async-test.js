@@ -1,23 +1,3 @@
-/**
-* @license
-* Copyright Google Inc. All Rights Reserved.
-*
-* Use of this source code is governed by an MIT-style license that can be
-* found in the LICENSE file at https://angular.io/license
-*/
-(function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    (factory());
-}(this, (function () { 'use strict';
-
-/**
- * @license
- * Copyright Google Inc. All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
 (function (global) {
     var Scheduler = (function () {
         function Scheduler() {
@@ -34,7 +14,13 @@
             var currentId = id < 0 ? this.nextId++ : id;
             var endTime = this._currentTime + delay;
             // Insert so that scheduler queue remains sorted by end time.
-            var newEntry = { endTime: endTime, id: currentId, func: cb, args: args, delay: delay };
+            var newEntry = {
+                endTime: endTime,
+                id: currentId,
+                func: cb,
+                args: args,
+                delay: delay
+            };
             var i = 0;
             for (; i < this._schedulerQueue.length; i++) {
                 var currentEntry = this._schedulerQueue[i];
@@ -55,17 +41,16 @@
         };
         Scheduler.prototype.tick = function (millis) {
             if (millis === void 0) { millis = 0; }
-            var finalTime = this._currentTime + millis;
+            this._currentTime += millis;
             while (this._schedulerQueue.length > 0) {
                 var current = this._schedulerQueue[0];
-                if (finalTime < current.endTime) {
+                if (this._currentTime < current.endTime) {
                     // Done processing the queue since it's sorted by endTime.
                     break;
                 }
                 else {
                     // Time to run scheduled function. Remove it from the head of queue.
                     var current_1 = this._schedulerQueue.shift();
-                    this._currentTime = current_1.endTime;
                     var retval = current_1.func.apply(global, current_1.args);
                     if (!retval) {
                         // Uncaught exception in the current scheduled function. Stop processing the queue.
@@ -73,7 +58,6 @@
                     }
                 }
             }
-            this._currentTime = finalTime;
         };
         return Scheduler;
     }());
@@ -113,7 +97,7 @@
                         completers.onError.apply(global);
                     }
                 }
-                // Return true if there were no errors, false otherwise.
+                // Return true if there were no errors, false otherwise. 
                 return _this._lastError === null;
             };
         };
@@ -164,7 +148,7 @@
             var id = this._scheduler.nextId;
             var completers = { onSuccess: null, onError: this._dequeuePeriodicTimer(id) };
             var cb = this._fnAndFlush(fn, completers);
-            // Use the callback created above to requeue on success.
+            // Use the callback created above to requeue on success. 
             completers.onSuccess = this._requeuePeriodicTimer(cb, interval, args, id);
             // Queue the callback and dequeue the periodic timer only on error.
             this._scheduler.scheduleFunction(cb, interval, args);
@@ -252,5 +236,3 @@
     // constructor params.
     Zone['FakeAsyncTestZoneSpec'] = FakeAsyncTestZoneSpec;
 })(typeof window === 'object' && window || typeof self === 'object' && self || global);
-
-})));

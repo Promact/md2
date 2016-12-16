@@ -39,7 +39,7 @@ export var Body = (function () {
         if (this._body instanceof ArrayBuffer) {
             return String.fromCharCode.apply(null, new Uint16Array(/** @type {?} */ (this._body)));
         }
-        if (this._body == null) {
+        if (this._body === null) {
             return '';
         }
         if (typeof this._body === 'object') {

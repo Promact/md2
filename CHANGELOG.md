@@ -1,3 +1,16 @@
+<a name="0.0.10-7"></a>
+## [0.0.10-7](https://github.com/Promact/md2/compare/0.0.10-6...v0.0.10-7) (2016-12-16)
+
+
+### Bug Fixes
+
+* AoT issue ([b99c18d](https://github.com/Promact/md2/commit/b99c18d))
+* first trap issue ([5961e2d](https://github.com/Promact/md2/commit/5961e2d))
+* linting issues ([70a5c7d](https://github.com/Promact/md2/commit/70a5c7d))
+* linting issues ([ecf9486](https://github.com/Promact/md2/commit/ecf9486))
+
+
+
 <a name="0.0.10-6"></a>
 ## [0.0.10-6](https://github.com/Promact/md2/compare/v0.0.10-5...v0.0.10-6) (2016-12-09)
 

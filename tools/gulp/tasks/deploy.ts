@@ -3,10 +3,10 @@ import * as path from 'path';
 import * as fs from 'fs';
 import gulpRunSequence = require('run-sequence');
 
-//const bump = require('gulp-bump');
-//const git = require('gulp-git');
-//const changelog = require('gulp-conventional-changelog');
-//const releaser = require('conventional-github-releaser');
+const bump = require('gulp-bump');
+const git = require('gulp-git');
+const changelog = require('gulp-conventional-changelog');
+const releaser = require('conventional-github-releaser');
 
 // Deploy demo source
 gulp.task('deploy', ['build:devapp'], () => {
@@ -25,44 +25,44 @@ gulp.task('deploy', ['build:devapp'], () => {
   });
 });
 
-//// update package.json version
-//gulp.task(':release:version', () => {
-//  gulp.src(['./package.json'])
-//    .pipe(bump({ type: "patch" }))
-//    .pipe(gulp.dest('./'));
-//  return gulp.src(['./src/lib/package.json'])
-//    .pipe(bump({ type: "patch" }))
-//    .pipe(gulp.dest('./src/lib'));
-//});
+// update package.json version
+gulp.task(':release:version', () => {
+  gulp.src(['./package.json'])
+    .pipe(bump({ type: "patch" }))
+    .pipe(gulp.dest('./'));
+  return gulp.src(['./src/lib/package.json'])
+    .pipe(bump({ type: "patch" }))
+    .pipe(gulp.dest('./src/lib'));
+});
 
-//// update CHANGELOG.md
-//gulp.task(':release:changelog', () => {
-//  return gulp.src('CHANGELOG.md', { buffer: false })
-//    .pipe(changelog({ preset: 'angular' }))
-//    .pipe(gulp.dest('./'));
-//});
+// update CHANGELOG.md
+gulp.task(':release:changelog', () => {
+  return gulp.src('CHANGELOG.md', { buffer: false })
+    .pipe(changelog({ preset: 'angular' }))
+    .pipe(gulp.dest('./'));
+});
 
-//// release commit
-//gulp.task(':release:commit', () => {
-//  var version = JSON.parse(fs.readFileSync('./package.json', 'utf8')).version;
-//  return gulp.src('.')
-//    .pipe(git.add())
-//    .pipe(git.commit('Released MD2@' + version));
-//});
+// release commit
+gulp.task(':release:commit', () => {
+  var version = JSON.parse(fs.readFileSync('./package.json', 'utf8')).version;
+  return gulp.src('.')
+    .pipe(git.add())
+    .pipe(git.commit('Released MD2@' + version));
+});
 
-//// release push
-//gulp.task(':release:push', (cb: any) => {
-//  git.push('origin', 'master', cb);
-//});
+// release push
+gulp.task(':release:push', (cb: any) => {
+  git.push('origin', 'master', cb);
+});
 
-//// release tag
-//gulp.task(':release:tag', (cb: any) => {
-//  var version = JSON.parse(fs.readFileSync('./package.json', 'utf8')).version;
-//  git.tag(version, 'Created Tag for version: ' + version, function (error: any) {
-//    if (error) { return cb(error); }
-//    git.push('origin', 'master', { args: '--tags' }, cb);
-//  });
-//});
+// release tag
+gulp.task(':release:tag', (cb: any) => {
+  var version = JSON.parse(fs.readFileSync('./package.json', 'utf8')).version;
+  git.tag(version, 'Created Tag for version: ' + version, function (error: any) {
+    if (error) { return cb(error); }
+    git.push('origin', 'master', { args: '--tags' }, cb);
+  });
+});
 
 // release
 //gulp.task('github-release', function (done: any) {
@@ -76,8 +76,8 @@ gulp.task('deploy', ['build:devapp'], () => {
 
 gulp.task('release', (callback: any) => {
   gulpRunSequence(
-    //':release:version',
-    //':release:changelog',
+    ':release:version',
+    ':release:changelog',
     //':release:commit',
     //':release:push',
     //':release:tag',

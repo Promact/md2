@@ -7,10 +7,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { NgModule, Directive, ElementRef, HostBinding, Input } from '@angular/core';
+import { NgModule, Directive, ElementRef, HostBinding, Input, NgZone } from '@angular/core';
 import { RippleRenderer, ForegroundRippleState } from './ripple-renderer';
+import { DefaultStyleCompatibilityModeModule } from '../compatibility/default-mode';
+import { ViewportRuler } from '../overlay/position/viewport-ruler';
 export var MdRipple = (function () {
-    function MdRipple(_elementRef) {
+    function MdRipple(_elementRef, _ngZone, _ruler) {
         var _this = this;
         /**
          * If set, the radius in pixels of foreground ripples when fully expanded. If unset, the radius
@@ -28,9 +30,9 @@ export var MdRipple = (function () {
         eventHandlers.set('mousedown', function (event) { return _this._mouseDown(event); });
         eventHandlers.set('click', function (event) { return _this._click(event); });
         eventHandlers.set('mouseleave', function (event) { return _this._mouseLeave(event); });
-        this._rippleRenderer = new RippleRenderer(_elementRef, eventHandlers);
+        this._rippleRenderer = new RippleRenderer(_elementRef, eventHandlers, _ngZone);
+        this._ruler = _ruler;
     }
-    /** TODO: internal */
     MdRipple.prototype.ngOnInit = function () {
         // If no trigger element was explicity set, use the host element
         if (!this.trigger) {
@@ -40,12 +42,10 @@ export var MdRipple = (function () {
             this._rippleRenderer.createBackgroundIfNeeded();
         }
     };
-    /** TODO: internal */
     MdRipple.prototype.ngOnDestroy = function () {
         // Remove event listeners on the trigger element.
         this._rippleRenderer.clearTriggerElement();
     };
-    /** TODO: internal */
     MdRipple.prototype.ngOnChanges = function (changes) {
         // If the trigger element changed (or is being initially set), add event listeners to it.
         var changedInputs = Object.keys(changes);
@@ -108,7 +108,7 @@ export var MdRipple = (function () {
             // In that case, use the center of the bounding rect as the ripple origin.
             // FIXME: This fails on IE11, which still sets pageX/Y and screenX/Y on keyboard clicks.
             var isKeyEvent = (event.screenX === 0 && event.screenY === 0 && event.pageX === 0 && event.pageY === 0);
-            this.end(event.pageX, event.pageY, isKeyEvent);
+            this.end(event.pageX - this._ruler.getViewportScrollPosition().left, event.pageY - this._ruler.getViewportScrollPosition().top, isKeyEvent);
         }
     };
     /**
@@ -158,9 +158,9 @@ export var MdRipple = (function () {
     ], MdRipple.prototype, "unbounded", void 0);
     MdRipple = __decorate([
         Directive({
-            selector: '[md-ripple]',
+            selector: '[md-ripple], [mat-ripple]',
         }), 
-        __metadata('design:paramtypes', [ElementRef])
+        __metadata('design:paramtypes', [ElementRef, NgZone, ViewportRuler])
     ], MdRipple);
     return MdRipple;
 }());
@@ -170,12 +170,13 @@ export var MdRippleModule = (function () {
     MdRippleModule.forRoot = function () {
         return {
             ngModule: MdRippleModule,
-            providers: []
+            providers: [ViewportRuler]
         };
     };
     MdRippleModule = __decorate([
         NgModule({
-            exports: [MdRipple],
+            imports: [DefaultStyleCompatibilityModeModule],
+            exports: [MdRipple, DefaultStyleCompatibilityModeModule],
             declarations: [MdRipple],
         }), 
         __metadata('design:paramtypes', [])

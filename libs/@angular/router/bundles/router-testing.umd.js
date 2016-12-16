@@ -1,5 +1,5 @@
 /**
- * @license Angular v3.2.3
+ * @license Angular v3.3.1
  * (c) 2010-2016 Google, Inc. https://angular.io/
  * License: MIT
  */(function (global, factory) {
@@ -80,9 +80,9 @@
             { type: _angular_core.Injectable },
         ];
         /** @nocollapse */
-        SpyNgModuleFactoryLoader.ctorParameters = [
+        SpyNgModuleFactoryLoader.ctorParameters = function () { return [
             { type: _angular_core.Compiler, },
-        ];
+        ]; };
         return SpyNgModuleFactoryLoader;
     }());
     /**
@@ -147,7 +147,7 @@
                     },] },
         ];
         /** @nocollapse */
-        RouterTestingModule.ctorParameters = [];
+        RouterTestingModule.ctorParameters = function () { return []; };
         return RouterTestingModule;
     }());
 

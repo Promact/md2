@@ -4,7 +4,10 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 import { MdError } from '../errors/error';
-/** Exception thrown when attempting to attach a null portal to a host. */
+/**
+ * Exception thrown when attempting to attach a null portal to a host.
+ * @docs-private
+ */
 export var MdNullPortalError = (function (_super) {
     __extends(MdNullPortalError, _super);
     function MdNullPortalError() {
@@ -12,7 +15,10 @@ export var MdNullPortalError = (function (_super) {
     }
     return MdNullPortalError;
 }(MdError));
-/** Exception thrown when attempting to attach a portal to a host that is already attached. */
+/**
+ * Exception thrown when attempting to attach a portal to a host that is already attached.
+ * @docs-private
+ */
 export var MdPortalAlreadyAttachedError = (function (_super) {
     __extends(MdPortalAlreadyAttachedError, _super);
     function MdPortalAlreadyAttachedError() {
@@ -20,7 +26,10 @@ export var MdPortalAlreadyAttachedError = (function (_super) {
     }
     return MdPortalAlreadyAttachedError;
 }(MdError));
-/** Exception thrown when attempting to attach a portal to an already-disposed host. */
+/**
+ * Exception thrown when attempting to attach a portal to an already-disposed host.
+ * @docs-private
+ */
 export var MdPortalHostAlreadyDisposedError = (function (_super) {
     __extends(MdPortalHostAlreadyDisposedError, _super);
     function MdPortalHostAlreadyDisposedError() {
@@ -28,7 +37,10 @@ export var MdPortalHostAlreadyDisposedError = (function (_super) {
     }
     return MdPortalHostAlreadyDisposedError;
 }(MdError));
-/** Exception thrown when attempting to attach an unknown portal type. */
+/**
+ * Exception thrown when attempting to attach an unknown portal type.
+ * @docs-private
+ */
 export var MdUnknownPortalTypeError = (function (_super) {
     __extends(MdUnknownPortalTypeError, _super);
     function MdUnknownPortalTypeError() {
@@ -37,7 +49,10 @@ export var MdUnknownPortalTypeError = (function (_super) {
     }
     return MdUnknownPortalTypeError;
 }(MdError));
-/** Exception thrown when attempting to attach a portal to a null host. */
+/**
+ * Exception thrown when attempting to attach a portal to a null host.
+ * @docs-private
+ */
 export var MdNullPortalHostError = (function (_super) {
     __extends(MdNullPortalHostError, _super);
     function MdNullPortalHostError() {
@@ -45,7 +60,10 @@ export var MdNullPortalHostError = (function (_super) {
     }
     return MdNullPortalHostError;
 }(MdError));
-/** Exception thrown when attempting to detach a portal that is not attached. */
+/**
+ * Exception thrown when attempting to detach a portal that is not attached.
+ * @docs-private
+ */
 export var MdNoPortalAttachedError = (function (_super) {
     __extends(MdNoPortalAttachedError, _super);
     function MdNoPortalAttachedError() {

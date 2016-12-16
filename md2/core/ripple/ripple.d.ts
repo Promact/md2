@@ -1,4 +1,5 @@
-import { ModuleWithProviders, ElementRef, OnChanges, OnDestroy, OnInit, SimpleChange } from '@angular/core';
+import { ModuleWithProviders, ElementRef, NgZone, OnChanges, OnDestroy, OnInit, SimpleChange } from '@angular/core';
+import { ViewportRuler } from '../overlay/position/viewport-ruler';
 export declare class MdRipple implements OnInit, OnDestroy, OnChanges {
     /**
      * The element that triggers the ripple when click events are received. Defaults to the
@@ -35,12 +36,10 @@ export declare class MdRipple implements OnInit, OnDestroy, OnChanges {
     /** Whether foreground ripples should be visible outside the component's bounds. */
     unbounded: boolean;
     private _rippleRenderer;
-    constructor(_elementRef: ElementRef);
-    /** TODO: internal */
+    _ruler: ViewportRuler;
+    constructor(_elementRef: ElementRef, _ngZone: NgZone, _ruler: ViewportRuler);
     ngOnInit(): void;
-    /** TODO: internal */
     ngOnDestroy(): void;
-    /** TODO: internal */
     ngOnChanges(changes: {
         [propertyName: string]: SimpleChange;
     }): void;

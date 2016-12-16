@@ -7,8 +7,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Component, ViewEncapsulation, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewEncapsulation, ViewChild, ElementRef, Input, NgZone } from '@angular/core';
 import { InteractivityChecker } from './interactivity-checker';
+import { coerceBooleanProperty } from '../coercion/boolean-property';
 /**
  * Directive for trapping focus within a region.
  *
@@ -18,9 +19,38 @@ import { InteractivityChecker } from './interactivity-checker';
  * This will be replaced with a more intelligent solution before the library is considered stable.
  */
 export var FocusTrap = (function () {
-    function FocusTrap(_checker) {
+    function FocusTrap(_checker, _ngZone) {
         this._checker = _checker;
+        this._ngZone = _ngZone;
+        this._disabled = false;
     }
+    Object.defineProperty(FocusTrap.prototype, "disabled", {
+        /** Whether the focus trap is active. */
+        get: function () { return this._disabled; },
+        set: function (val) { this._disabled = coerceBooleanProperty(val); },
+        enumerable: true,
+        configurable: true
+    });
+    /**
+     * Waits for microtask queue to empty, then focuses the first tabbable element within the focus
+     * trap region.
+     */
+    FocusTrap.prototype.focusFirstTabbableElementWhenReady = function () {
+        var _this = this;
+        this._ngZone.onMicrotaskEmpty.first().subscribe(function () {
+            _this.focusFirstTabbableElement();
+        });
+    };
+    /**
+     * Waits for microtask queue to empty, then focuses the last tabbable element within the focus
+     * trap region.
+     */
+    FocusTrap.prototype.focusLastTabbableElementWhenReady = function () {
+        var _this = this;
+        this._ngZone.onMicrotaskEmpty.first().subscribe(function () {
+            _this.focusLastTabbableElement();
+        });
+    };
     /** Focuses the first tabbable element within the focus trap region. */
     FocusTrap.prototype.focusFirstTabbableElement = function () {
         var rootElement = this.trappedContent.nativeElement;
@@ -78,12 +108,16 @@ export var FocusTrap = (function () {
         ViewChild('trappedContent'), 
         __metadata('design:type', ElementRef)
     ], FocusTrap.prototype, "trappedContent", void 0);
+    __decorate([
+        Input(), 
+        __metadata('design:type', Boolean)
+    ], FocusTrap.prototype, "disabled", null);
     FocusTrap = __decorate([
         Component({selector: 'focus-trap',
-            template: "<div tabindex=\"0\" (focus)=\"focusLastTabbableElement()\"></div> <div #trappedContent><ng-content></ng-content></div> <div tabindex=\"0\" (focus)=\"focusFirstTabbableElement()\"></div> ",
+            template: "<div *ngIf=\"!disabled\" tabindex=\"0\" (focus)=\"focusLastTabbableElement()\"></div> <div #trappedContent class=\"cdk-focus-trap-content\"><ng-content></ng-content></div> <div *ngIf=\"!disabled\" tabindex=\"0\" (focus)=\"focusFirstTabbableElement()\"></div> ",
             encapsulation: ViewEncapsulation.None,
         }), 
-        __metadata('design:paramtypes', [InteractivityChecker])
+        __metadata('design:paramtypes', [InteractivityChecker, NgZone])
     ], FocusTrap);
     return FocusTrap;
 }());

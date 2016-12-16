@@ -158,7 +158,7 @@ export var MockBackend = (function () {
         { type: Injectable },
     ];
     /** @nocollapse */
-    MockBackend.ctorParameters = [];
+    MockBackend.ctorParameters = function () { return []; };
     return MockBackend;
 }());
 //# sourceMappingURL=mock_backend.js.map

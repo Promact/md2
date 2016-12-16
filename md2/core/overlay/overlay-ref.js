@@ -12,6 +12,14 @@ export var OverlayRef = (function () {
         this._backdropElement = null;
         this._backdropClick = new Subject();
     }
+    Object.defineProperty(OverlayRef.prototype, "overlayElement", {
+        /** The overlay's HTML element */
+        get: function () {
+            return this._pane;
+        },
+        enumerable: true,
+        configurable: true
+    });
     OverlayRef.prototype.attach = function (portal) {
         if (this._state.hasBackdrop) {
             this._attachBackdrop();
@@ -27,6 +35,9 @@ export var OverlayRef = (function () {
         return this._portalHost.detach();
     };
     OverlayRef.prototype.dispose = function () {
+        if (this._state.positionStrategy) {
+            this._state.positionStrategy.dispose();
+        }
         this._detachBackdrop();
         this._portalHost.dispose();
     };
@@ -57,6 +68,12 @@ export var OverlayRef = (function () {
         }
         if (this._state.height || this._state.height === 0) {
             this._pane.style.height = formatCssUnit(this._state.height);
+        }
+        if (this._state.minWidth || this._state.minWidth === 0) {
+            this._pane.style.minWidth = formatCssUnit(this._state.minWidth);
+        }
+        if (this._state.minHeight || this._state.minHeight === 0) {
+            this._pane.style.minHeight = formatCssUnit(this._state.minHeight);
         }
     };
     /** Attaches a backdrop for this overlay. */

@@ -15,6 +15,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 import { Component, Output, Input, EventEmitter, ViewChild, ViewEncapsulation, Directive, ViewContainerRef, TemplateRef, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Overlay, OVERLAY_PROVIDERS, OverlayState, TemplatePortal } from '../core/core';
+import 'rxjs/add/operator/first';
 import { Animate } from './animate';
 export var Md2DialogPortal = (function (_super) {
     __extends(Md2DialogPortal, _super);
@@ -148,7 +149,12 @@ export var Md2Dialog = (function () {
     ], Md2Dialog);
     return Md2Dialog;
 }());
-export var MD2_DIALOG_DIRECTIVES = [Md2Dialog, Md2DialogTitle, Md2DialogFooter, Md2DialogPortal];
+export var MD2_DIALOG_DIRECTIVES = [
+    Md2Dialog,
+    Md2DialogTitle,
+    Md2DialogFooter,
+    Md2DialogPortal
+];
 export var MD2_DIALOG_PROVIDERS = [Overlay, OVERLAY_PROVIDERS];
 export var Md2DialogModule = (function () {
     function Md2DialogModule() {

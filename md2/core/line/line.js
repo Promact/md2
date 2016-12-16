@@ -8,6 +8,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import { NgModule, Directive } from '@angular/core';
+import { DefaultStyleCompatibilityModeModule } from '../compatibility/default-mode';
 /**
  * Shared directive to count lines inside a text area, such as a list item.
  * Line elements can be extracted with a @ContentChildren(MdLine) query, then
@@ -17,12 +18,15 @@ export var MdLine = (function () {
     function MdLine() {
     }
     MdLine = __decorate([
-        Directive({ selector: '[md-line]' }), 
+        Directive({ selector: '[md-line], [mat-line]' }), 
         __metadata('design:paramtypes', [])
     ], MdLine);
     return MdLine;
 }());
-/* Helper that takes a query list of lines and sets the correct class on the host */
+/**
+ * Helper that takes a query list of lines and sets the correct class on the host.
+ * @docs-private
+ */
 export var MdLineSetter = (function () {
     function MdLineSetter(_lines, _renderer, _element) {
         var _this = this;
@@ -58,7 +62,8 @@ export var MdLineModule = (function () {
     }
     MdLineModule = __decorate([
         NgModule({
-            exports: [MdLine],
+            imports: [DefaultStyleCompatibilityModeModule],
+            exports: [MdLine, DefaultStyleCompatibilityModeModule],
             declarations: [MdLine],
         }), 
         __metadata('design:paramtypes', [])

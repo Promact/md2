@@ -14,6 +14,8 @@ export var ENTER = 13;
 export var SPACE = 32;
 export var TAB = 9;
 export var ESCAPE = 27;
+export var BACKSPACE = 8;
+export var DELETE = 46;
 export var KeyCodes;
 (function (KeyCodes) {
     KeyCodes[KeyCodes["UP_ARROW"] = 38] = "UP_ARROW";

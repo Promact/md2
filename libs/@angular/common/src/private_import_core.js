@@ -6,5 +6,5 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { __core_private__ as r } from '@angular/core';
-export var isPromise = r.isPromise;
+export var /** @type {?} */ isPromise = r.isPromise;
 //# sourceMappingURL=private_import_core.js.map

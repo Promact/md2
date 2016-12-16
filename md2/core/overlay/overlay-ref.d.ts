@@ -14,6 +14,8 @@ export declare class OverlayRef implements PortalHost {
     private _backdropElement;
     private _backdropClick;
     constructor(_portalHost: PortalHost, _pane: HTMLElement, _state: OverlayState, _ngZone: NgZone);
+    /** The overlay's HTML element */
+    readonly overlayElement: HTMLElement;
     attach(portal: Portal<any>): any;
     detach(): Promise<any>;
     dispose(): void;

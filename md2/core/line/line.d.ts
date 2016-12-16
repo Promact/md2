@@ -6,6 +6,10 @@ import { Renderer, ElementRef, QueryList } from '@angular/core';
  */
 export declare class MdLine {
 }
+/**
+ * Helper that takes a query list of lines and sets the correct class on the host.
+ * @docs-private
+ */
 export declare class MdLineSetter {
     private _lines;
     private _renderer;

@@ -24,6 +24,9 @@ export declare class ConnectedOverlayDirective implements OnDestroy {
     private _hasBackdrop;
     private _backdropSubscription;
     private _positionSubscription;
+    private _offsetX;
+    private _offsetY;
+    private _position;
     origin: OverlayOrigin;
     positions: ConnectionPositionPair[];
     /** The offset in pixels for the overlay connection point on the x-axis */
@@ -34,6 +37,10 @@ export declare class ConnectedOverlayDirective implements OnDestroy {
     width: number | string;
     /** The height of the overlay panel. */
     height: number | string;
+    /** The min width of the overlay panel. */
+    minWidth: number | string;
+    /** The min height of the overlay panel. */
+    minHeight: number | string;
     /** The custom class to be set on the backdrop element. */
     backdropClass: string;
     /** Whether or not the overlay should attach a backdrop. */
@@ -42,10 +49,11 @@ export declare class ConnectedOverlayDirective implements OnDestroy {
     /** Event emitted when the backdrop is clicked. */
     backdropClick: EventEmitter<void>;
     positionChange: EventEmitter<ConnectedOverlayPositionChange>;
+    attach: EventEmitter<void>;
+    detach: EventEmitter<void>;
     constructor(_overlay: Overlay, templateRef: TemplateRef<any>, viewContainerRef: ViewContainerRef, _dir: Dir);
     readonly overlayRef: OverlayRef;
     readonly dir: LayoutDirection;
-    /** TODO: internal */
     ngOnDestroy(): void;
     /** Creates an overlay */
     private _createOverlay();

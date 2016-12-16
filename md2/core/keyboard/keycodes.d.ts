@@ -10,6 +10,8 @@ export declare const ENTER: number;
 export declare const SPACE: number;
 export declare const TAB: number;
 export declare const ESCAPE: number;
+export declare const BACKSPACE: number;
+export declare const DELETE: number;
 export declare enum KeyCodes {
     UP_ARROW = 38,
     DOWN_ARROW = 40,

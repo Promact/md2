@@ -11,6 +11,10 @@ import * as o from '../output/output_ast';
 export var ViewTypeEnum = (function () {
     function ViewTypeEnum() {
     }
+    /**
+     * @param {?} value
+     * @return {?}
+     */
     ViewTypeEnum.fromValue = function (value) {
         return createEnumExpression(Identifiers.ViewType, value);
     };
@@ -19,6 +23,10 @@ export var ViewTypeEnum = (function () {
 export var ViewEncapsulationEnum = (function () {
     function ViewEncapsulationEnum() {
     }
+    /**
+     * @param {?} value
+     * @return {?}
+     */
     ViewEncapsulationEnum.fromValue = function (value) {
         return createEnumExpression(Identifiers.ViewEncapsulation, value);
     };
@@ -27,6 +35,10 @@ export var ViewEncapsulationEnum = (function () {
 export var ChangeDetectionStrategyEnum = (function () {
     function ChangeDetectionStrategyEnum() {
     }
+    /**
+     * @param {?} value
+     * @return {?}
+     */
     ChangeDetectionStrategyEnum.fromValue = function (value) {
         return createEnumExpression(Identifiers.ChangeDetectionStrategy, value);
     };
@@ -35,6 +47,10 @@ export var ChangeDetectionStrategyEnum = (function () {
 export var ChangeDetectorStatusEnum = (function () {
     function ChangeDetectorStatusEnum() {
     }
+    /**
+     * @param {?} value
+     * @return {?}
+     */
     ChangeDetectorStatusEnum.fromValue = function (value) {
         return createEnumExpression(Identifiers.ChangeDetectorStatus, value);
     };
@@ -49,6 +65,16 @@ export var ViewConstructorVars = (function () {
     ViewConstructorVars.parentElement = o.variable('parentElement');
     return ViewConstructorVars;
 }());
+function ViewConstructorVars_tsickle_Closure_declarations() {
+    /** @type {?} */
+    ViewConstructorVars.viewUtils;
+    /** @type {?} */
+    ViewConstructorVars.parentView;
+    /** @type {?} */
+    ViewConstructorVars.parentIndex;
+    /** @type {?} */
+    ViewConstructorVars.parentElement;
+}
 export var ViewProperties = (function () {
     function ViewProperties() {
     }
@@ -56,6 +82,12 @@ export var ViewProperties = (function () {
     ViewProperties.viewUtils = o.THIS_EXPR.prop('viewUtils');
     return ViewProperties;
 }());
+function ViewProperties_tsickle_Closure_declarations() {
+    /** @type {?} */
+    ViewProperties.renderer;
+    /** @type {?} */
+    ViewProperties.viewUtils;
+}
 export var InjectMethodVars = (function () {
     function InjectMethodVars() {
     }
@@ -64,6 +96,14 @@ export var InjectMethodVars = (function () {
     InjectMethodVars.notFoundResult = o.variable('notFoundResult');
     return InjectMethodVars;
 }());
+function InjectMethodVars_tsickle_Closure_declarations() {
+    /** @type {?} */
+    InjectMethodVars.token;
+    /** @type {?} */
+    InjectMethodVars.requestNodeIndex;
+    /** @type {?} */
+    InjectMethodVars.notFoundResult;
+}
 export var DetectChangesVars = (function () {
     function DetectChangesVars() {
     }
@@ -72,4 +112,12 @@ export var DetectChangesVars = (function () {
     DetectChangesVars.changed = o.variable("changed");
     return DetectChangesVars;
 }());
+function DetectChangesVars_tsickle_Closure_declarations() {
+    /** @type {?} */
+    DetectChangesVars.throwOnChange;
+    /** @type {?} */
+    DetectChangesVars.changes;
+    /** @type {?} */
+    DetectChangesVars.changed;
+}
 //# sourceMappingURL=constants.js.map

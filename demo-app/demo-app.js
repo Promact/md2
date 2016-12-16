@@ -17,7 +17,7 @@ var Home = (function () {
     Home = __decorate([
         core_1.Component({
             selector: 'home',
-            template: "\n    <h4>Angular2 based Material Design components, directives and services are Accordion, Autocomplete, Collapse, Colorpicker, Datepicker, Dialog(Modal), Menu, Multiselect, Select, Tabs, Toast and Tooltip.</h4>\n    <hr>\n    <div class=\"home-page\">\n      <a button=\"primary\" href=\"https://github.com/Promact/md2\">View on GitHub</a>\n      <a button=\"primary\" href=\"https://github.com/Promact/md2/zipball/master\">Download .zip</a>\n      <a button=\"primary\" href=\"https://github.com/Promact/md2/tarball/master\">Download .tar.gz</a>\n      <h1>Getting started</h1>\n      <h4>Dependencies</h4>\n      <p>This module consists of native Angular2 components, directives and services, no jQuery, Material or Bootstrap javascript is required.</p>\n      <p>Plus this module plays nice with Material Design CSS</p>\n      <h4>Installation</h4>\n      <p>Currently preferable way to install this module is <code>npm</code>:</p>\n      <pre class=\"language-bash\"><code class=\"language-bash\">npm <span class=\"token function\">install</span> --save md2</code></pre>\n      <h4>Reading documentation</h4>\n      <p>Each <code>MD2</code> components has api and annotation docs, examples and working demo. Each <code>property</code> and <code>event</code> has type annotation and default value if any.</p>\n    </div>\n  "
+            templateUrl: 'home.html',
         }), 
         __metadata('design:paramtypes', [])
     ], Home);

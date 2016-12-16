@@ -30,17 +30,34 @@ import { Injectable } from './metadata';
  */
 // so that metadata is gathered for this class
 export var OpaqueToken = (function () {
+    /**
+     * @param {?} _desc
+     */
     function OpaqueToken(_desc) {
         this._desc = _desc;
     }
+    /**
+     * @return {?}
+     */
     OpaqueToken.prototype.toString = function () { return "Token " + this._desc; };
     OpaqueToken.decorators = [
         { type: Injectable },
     ];
     /** @nocollapse */
-    OpaqueToken.ctorParameters = [
+    OpaqueToken.ctorParameters = function () { return [
         null,
-    ];
+    ]; };
     return OpaqueToken;
 }());
+function OpaqueToken_tsickle_Closure_declarations() {
+    /** @type {?} */
+    OpaqueToken.decorators;
+    /**
+     * @nocollapse
+     * @type {?}
+     */
+    OpaqueToken.ctorParameters;
+    /** @type {?} */
+    OpaqueToken.prototype._desc;
+}
 //# sourceMappingURL=opaque_token.js.map

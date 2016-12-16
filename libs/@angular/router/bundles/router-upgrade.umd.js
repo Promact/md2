@@ -1,5 +1,5 @@
 /**
- * @license Angular v3.2.3
+ * @license Angular v3.3.1
  * (c) 2010-2016 Google, Inc. https://angular.io/
  * License: MIT
  */(function (global, factory) {
@@ -36,8 +36,14 @@
         useFactory: initialRouterNavigation,
         deps: [_angular_upgrade_static.UpgradeModule, _angular_core.ApplicationRef, _angular_router.RouterPreloader, _angular_router.ROUTER_CONFIGURATION]
     };
+    /**
+     * @internal
+     */
     function initialRouterNavigation(ngUpgrade, ref, preloader, opts) {
         return function () {
+            if (!ngUpgrade.$injector) {
+                throw new Error("\n        RouterUpgradeInitializer can be used only after UpgradeModule.bootstrap has been called.\n        Remove RouterUpgradeInitializer and call setUpLocationSync after UpgradeModule.bootstrap.\n      ");
+            }
             var router = ngUpgrade.injector.get(_angular_router.Router);
             var ref = ngUpgrade.injector.get(_angular_core.ApplicationRef);
             router.resetRootComponentType(ref.componentTypes[0]);
@@ -46,21 +52,31 @@
                 router.setUpLocationChangeListener();
             }
             else {
-                setTimeout(function () { router.initialNavigation(); }, 0);
+                router.initialNavigation();
             }
-            // History.pushState does not fire onPopState, so the angular2 location
-            // doesn't detect it. The workaround is to attach a location change listener
-            // that will call navigate directly.
-            ngUpgrade.$injector.get('$rootScope')
-                .$on('$locationChangeStart', function (_, next, __) {
-                var url = document.createElement('a');
-                url.href = next;
-                router.navigateByUrl(url.pathname);
-            });
+            setUpLocationSync(ngUpgrade);
         };
+    }
+    /**
+     * @whatItDoes Sets up a location synchronization.
+     *
+     * History.pushState does not fire onPopState, so the angular2 location
+     * doesn't detect it. The workaround is to attach a location change listener
+     *
+     * @experimental
+     */
+    function setUpLocationSync(ngUpgrade) {
+        var router = ngUpgrade.injector.get(_angular_router.Router);
+        var url = document.createElement('a');
+        ngUpgrade.$injector.get('$rootScope')
+            .$on('$locationChangeStart', function (_, next, __) {
+            url.href = next;
+            router.navigateByUrl(url.pathname);
+        });
     }
 
     exports.RouterUpgradeInitializer = RouterUpgradeInitializer;
     exports.initialRouterNavigation = initialRouterNavigation;
+    exports.setUpLocationSync = setUpLocationSync;
 
 }));

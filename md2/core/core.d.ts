@@ -4,6 +4,8 @@ export { Portal, PortalHost, BasePortalHost, ComponentPortal, TemplatePortal } f
 export { PortalHostDirective, TemplatePortalDirective, PortalModule } from './portal/portal-directives';
 export { DomPortalHost } from './portal/dom-portal-host';
 export * from './projection/projection';
+export * from './platform/platform';
+export * from './platform/features';
 export { Overlay, OVERLAY_PROVIDERS } from './overlay/overlay';
 export { OverlayContainer } from './overlay/overlay-container';
 export { OverlayRef } from './overlay/overlay-ref';
@@ -23,10 +25,12 @@ export { applyCssTransform } from './style/apply-transform';
 export { MdError } from './errors/error';
 export { ComponentType } from './overlay/generic-component-type';
 export * from './keyboard/keycodes';
-export * from './compatibility/style-compatibility';
+export * from './compatibility/default-mode';
 export * from './animation/animation';
-export { coerceBooleanProperty } from './coersion/boolean-property';
-export { coerceNumberProperty } from './coersion/number-property';
+export { coerceBooleanProperty } from './coercion/boolean-property';
+export { coerceNumberProperty } from './coercion/number-property';
+export { DefaultStyleCompatibilityModeModule } from './compatibility/default-mode';
+export { NoConflictStyleCompatibilityMode } from './compatibility/no-conflict-mode';
 export declare class MdCoreModule {
     static forRoot(): ModuleWithProviders;
 }

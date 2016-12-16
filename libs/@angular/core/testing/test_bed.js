@@ -5,7 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { Injector, NgModule, NgZone, OpaqueToken } from '@angular/core';
+import { Injector, NgModule, NgZone, OpaqueToken, ReflectiveInjector } from '@angular/core';
 import { AsyncTestCompleter } from './async_test_completer';
 import { ComponentFixture } from './component_fixture';
 import { stringify } from './facade/lang';
@@ -230,8 +230,9 @@ export var TestBed = (function () {
                 }
             }
         }
-        this._moduleRef =
-            this._moduleWithComponentFactories.ngModuleFactory.create(this.platform.injector);
+        var ngZone = new NgZone({ enableLongStackTrace: true });
+        var ngZoneInjector = ReflectiveInjector.resolveAndCreate([{ provide: NgZone, useValue: ngZone }], this.platform.injector);
+        this._moduleRef = this._moduleWithComponentFactories.ngModuleFactory.create(ngZoneInjector);
         this._instantiated = true;
     };
     TestBed.prototype._createCompilerAndModule = function () {
@@ -247,7 +248,7 @@ export var TestBed = (function () {
                 { type: NgModule, args: [{ providers: providers, declarations: declarations, imports: imports, schemas: schemas },] },
             ];
             /** @nocollapse */
-            DynamicTestModule.ctorParameters = [];
+            DynamicTestModule.ctorParameters = function () { return []; };
             return DynamicTestModule;
         }());
         var compilerFactory = this.platform.injector.get(TestingCompilerFactory);

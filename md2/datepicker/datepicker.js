@@ -31,8 +31,10 @@ export var Md2Datepicker = (function () {
         this._onChange = function (value) { };
         this._onTouched = function () { };
         this._isHoursVisible = true;
-        this.months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-        this._days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        this.months = ['January', 'February', 'March', 'April',
+            'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        this._days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday',
+            'Friday', 'Saturday'];
         this._hours = [];
         this._minutes = [];
         this._prevMonth = 1;
@@ -61,7 +63,9 @@ export var Md2Datepicker = (function () {
         this.type = 'date';
         this.name = '';
         this.id = 'md2-datepicker-' + (++nextId);
-        this.format = this.type === 'date' ? 'DD/MM/YYYY' : this.type === 'time' ? 'HH:mm' : this.type === 'datetime' ? 'DD/MM/YYYY HH:mm' : 'DD/MM/YYYY';
+        this.format = this.type === 'date' ?
+            'DD/MM/YYYY' : this.type === 'time' ? 'HH:mm' : this.type === 'datetime' ?
+            'DD/MM/YYYY HH:mm' : 'DD/MM/YYYY';
         this.tabindex = 0;
         this.getYears();
         this.generateClock();
@@ -129,7 +133,8 @@ export var Md2Datepicker = (function () {
                 this._viewValue = this._formatDate(this._value);
                 var date = '';
                 if (this.type !== 'time') {
-                    date += this._value.getFullYear() + '-' + (this._value.getMonth() + 1) + '-' + this._value.getDate();
+                    date += this._value.getFullYear() + '-' + (this._value.getMonth() + 1) +
+                        '-' + this._value.getDate();
                 }
                 if (this.type === 'datetime') {
                     date += ' ';
@@ -442,14 +447,16 @@ export var Md2Datepicker = (function () {
      * @return boolean
      */
     Md2Datepicker.prototype._isBeforeMonth = function () {
-        return !this._minDate ? true : this._minDate && this._dateUtil.getMonthDistance(this.displayDate, this._minDate) < 0;
+        return !this._minDate ? true :
+            this._minDate && this._dateUtil.getMonthDistance(this.displayDate, this._minDate) < 0;
     };
     /**
      * Check is After month enabled or not
      * @return boolean
      */
     Md2Datepicker.prototype._isAfterMonth = function () {
-        return !this._maxDate ? true : this._maxDate && this._dateUtil.getMonthDistance(this.displayDate, this._maxDate) > 0;
+        return !this._maxDate ? true :
+            this._maxDate && this._dateUtil.getMonthDistance(this.displayDate, this._maxDate) > 0;
     };
     /**
      * Check the date is enabled or not
@@ -525,7 +532,11 @@ export var Md2Datepicker = (function () {
                         dayNbr = 1;
                         calMonth = this._nextMonth;
                     }
-                    var iDate = { year: year, month: calMonth === this._currMonth ? month : month + 1, day: dayNbr, hour: 0, minute: 0 };
+                    var iDate = {
+                        year: year,
+                        month: calMonth === this._currMonth ? month : month + 1,
+                        day: dayNbr, hour: 0, minute: 0
+                    };
                     var date = new Date(year, iDate.month, dayNbr);
                     week.push({
                         date: date,
@@ -590,7 +601,8 @@ export var Md2Datepicker = (function () {
     //  // this._clock.dx = event.pageX - this._clock.x;
     //  // this._clock.dy = event.pageY - this._clock.y;
     //  // let z = Math.sqrt(this._clock.dx * this._clock.dx + this._clock.dy * this._clock.dy);
-    //  // if (z < this._clock.outerRadius - this._clock.tickRadius || z > this._clock.outerRadius + this._clock.tickRadius) { return; }
+    //  // if (z < this._clock.outerRadius - this._clock.tickRadius || z > this._clock.outerRadius
+    //  //  + this._clock.tickRadius) { return; }
     //  // event.preventDefault();
     //  // this.setClockHand(this._clock.dx, this._clock.dy);
     //  // // this.onMouseMoveClock = this.onMouseMoveClock.bind(this);
@@ -617,7 +629,8 @@ export var Md2Datepicker = (function () {
     //   // let space = false;
     //   let x = event.pageX - this._clock.x,
     //     y = event.pageY - this._clock.y;
-    //   if ((space || this._clockEvent.moved) && x === this._clockEvent.dx && y === this._clockEvent.dy) {
+    //   if ((space || this._clockEvent.moved) && x === this._clockEvent.dx && 
+    //    y === this._clockEvent.dy) {
     //     this.setClockHand(x, y);
     //   }
     //   // if (this._isHoursVisible) {
@@ -654,7 +667,8 @@ export var Md2Datepicker = (function () {
     Md2Datepicker.prototype._resetClock = function () {
         var hour = this.displayDate.getHours();
         var minute = this.displayDate.getMinutes();
-        var value = this._isHoursVisible ? hour : minute, unit = Math.PI / (this._isHoursVisible ? 6 : 30), radian = value * unit, radius = this._isHoursVisible && value > 0 && value < 13 ? this._clock.innerRadius : this._clock.outerRadius, x = Math.sin(radian) * radius, y = -Math.cos(radian) * radius;
+        var value = this._isHoursVisible ? hour : minute, unit = Math.PI / (this._isHoursVisible ? 6 : 30), radian = value * unit, radius = this._isHoursVisible && value > 0 && value < 13 ?
+            this._clock.innerRadius : this._clock.outerRadius, x = Math.sin(radian) * radius, y = -Math.cos(radian) * radius;
         this._setClockHand(x, y);
     };
     /**
@@ -703,8 +717,10 @@ export var Md2Datepicker = (function () {
             var radian = i / 30 * Math.PI;
             this._minutes.push({
                 minute: i === 0 ? '00' : i,
-                top: this._clock.dialRadius - Math.cos(radian) * this._clock.outerRadius - this._clock.tickRadius,
-                left: this._clock.dialRadius + Math.sin(radian) * this._clock.outerRadius - this._clock.tickRadius
+                top: this._clock.dialRadius - Math.cos(radian) * this._clock.outerRadius -
+                    this._clock.tickRadius,
+                left: this._clock.dialRadius + Math.sin(radian) * this._clock.outerRadius -
+                    this._clock.tickRadius
             });
         }
     };
@@ -763,7 +779,8 @@ export var Md2Datepicker = (function () {
             this._viewValue = this._formatDate(this._value);
             var date = '';
             if (this.type !== 'time') {
-                date += this._value.getFullYear() + '-' + (this._value.getMonth() + 1) + '-' + this._value.getDate();
+                date += this._value.getFullYear() + '-' + (this._value.getMonth() + 1) +
+                    '-' + this._value.getDate();
             }
             if (this.type === 'datetime') {
                 date += ' ';

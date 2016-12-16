@@ -1,4 +1,4 @@
-/** TODO: internal */
+/** @docs-private */
 export var ForegroundRippleState;
 (function (ForegroundRippleState) {
     ForegroundRippleState[ForegroundRippleState["NEW"] = 0] = "NEW";
@@ -7,7 +7,7 @@ export var ForegroundRippleState;
 })(ForegroundRippleState || (ForegroundRippleState = {}));
 /**
  * Wrapper for a foreground ripple DOM element and its animation state.
- * TODO: internal
+ * @docs-private
  */
 export var ForegroundRipple = (function () {
     function ForegroundRipple(rippleElement) {
@@ -32,11 +32,12 @@ var distanceToFurthestCorner = function (x, y, rect) {
  * The constructor takes a reference to the ripple directive's host element and a map of DOM
  * event handlers to be installed on the element that triggers ripple animations.
  * This will eventually become a custom renderer once Angular support exists.
- * TODO: internal
+ * @docs-private
  */
 export var RippleRenderer = (function () {
-    function RippleRenderer(_elementRef, _eventHandlers) {
+    function RippleRenderer(_elementRef, _eventHandlers, _ngZone) {
         this._eventHandlers = _eventHandlers;
+        this._ngZone = _ngZone;
         this._rippleElement = _elementRef.nativeElement;
         // The background div is created in createBackgroundIfNeeded when the ripple becomes enabled.
         // This avoids creating unneeded divs when the ripple is always disabled.
@@ -84,6 +85,7 @@ export var RippleRenderer = (function () {
      * bounding rect if centered is true).
      */
     RippleRenderer.prototype.createForegroundRipple = function (rippleOriginLeft, rippleOriginTop, color, centered, radius, speedFactor, transitionEndCallback) {
+        var _this = this;
         var parentRect = this._rippleElement.getBoundingClientRect();
         // Create a foreground ripple div with the size and position of the fully expanded ripple.
         // When the div is created, it's given a transform style that causes the ripple to be displayed
@@ -116,6 +118,16 @@ export var RippleRenderer = (function () {
         var ripple = new ForegroundRipple(rippleDiv);
         ripple.state = ForegroundRippleState.EXPANDING;
         rippleDiv.addEventListener('transitionend', function (event) { return transitionEndCallback(ripple, event); });
+        // Ensure that ripples are always removed, even when transitionend doesn't fire.
+        // Run this outside the Angular zone because there's nothing that Angular cares about.
+        // If it were to run inside the Angular zone, every test that used ripples would have to be
+        // either async or fakeAsync.
+        this._ngZone.runOutsideAngular(function () {
+            // The ripple lasts a time equal to the sum of fade-in, transform,
+            // and fade-out (3 * fade-in time).
+            var rippleDuration = fadeInSeconds * 3 * 1000;
+            setTimeout(function () { return _this.removeRippleFromDom(ripple.rippleElement); }, rippleDuration);
+        });
     };
     /** Fades out a foreground ripple after it has fully expanded and faded in. */
     RippleRenderer.prototype.fadeOutForegroundRipple = function (ripple) {
@@ -124,7 +136,9 @@ export var RippleRenderer = (function () {
     };
     /** Removes a foreground ripple from the DOM after it has faded out. */
     RippleRenderer.prototype.removeRippleFromDom = function (ripple) {
-        ripple.parentElement.removeChild(ripple);
+        if (ripple && ripple.parentElement) {
+            ripple.parentElement.removeChild(ripple);
+        }
     };
     /** Fades in the ripple background. */
     RippleRenderer.prototype.fadeInRippleBackground = function (color) {

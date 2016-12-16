@@ -38,7 +38,7 @@ import * as reflector_reader from './reflection/reflector_reader';
 import * as api from './render/api';
 import * as decorators from './util/decorators';
 import { isPromise } from './util/lang';
-export var __core_private__ = {
+export var /** @type {?} */ __core_private__ = {
     isDefaultChangeDetectionStrategy: constants.isDefaultChangeDetectionStrategy,
     ChangeDetectorStatus: constants.ChangeDetectorStatus,
     constructDependencies: reflective_provider.constructDependencies,

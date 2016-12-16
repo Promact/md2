@@ -22,11 +22,11 @@ import { sanitizeUrl } from './url_sanitizer';
  * This regular expression was taken from the Closure sanitization library, and augmented for
  * transformation values.
  */
-var VALUES = '[-,."\'%_!# a-zA-Z0-9]+';
-var TRANSFORMATION_FNS = '(?:matrix|translate|scale|rotate|skew|perspective)(?:X|Y|3d)?';
-var COLOR_FNS = '(?:rgb|hsl)a?';
-var FN_ARGS = '\\([-0-9.%, a-zA-Z]+\\)';
-var SAFE_STYLE_VALUE = new RegExp("^(" + VALUES + "|(?:" + TRANSFORMATION_FNS + "|" + COLOR_FNS + ")" + FN_ARGS + ")$", 'g');
+var /** @type {?} */ VALUES = '[-,."\'%_!# a-zA-Z0-9]+';
+var /** @type {?} */ TRANSFORMATION_FNS = '(?:matrix|translate|scale|rotate|skew|perspective)(?:X|Y|3d)?';
+var /** @type {?} */ COLOR_FNS = '(?:rgb|hsl)a?';
+var /** @type {?} */ FN_ARGS = '\\([-0-9.%, a-zA-Z]+\\)';
+var /** @type {?} */ SAFE_STYLE_VALUE = new RegExp("^(" + VALUES + "|(?:" + TRANSFORMATION_FNS + "|" + COLOR_FNS + ")" + FN_ARGS + ")$", 'g');
 /**
  * Matches a `url(...)` value with an arbitrary argument as long as it does
  * not contain parentheses.
@@ -45,20 +45,22 @@ var SAFE_STYLE_VALUE = new RegExp("^(" + VALUES + "|(?:" + TRANSFORMATION_FNS + 
  * Given the common use case, low likelihood of attack vector, and low impact of an attack, this
  * code is permissive and allows URLs that sanitize otherwise.
  */
-var URL_RE = /^url\(([^)]+)\)$/;
+var /** @type {?} */ URL_RE = /^url\(([^)]+)\)$/;
 /**
- * Checks that quotes (" and ') are properly balanced inside a string. Assumes
- * that neither escape (\) nor any other character that could result in
- * breaking out of a string parsing context are allowed;
- * see http://www.w3.org/TR/css3-syntax/#string-token-diagram.
- *
- * This code was taken from the Closure sanitization library.
+ *  Checks that quotes (" and ') are properly balanced inside a string. Assumes
+  * that neither escape (\) nor any other character that could result in
+  * breaking out of a string parsing context are allowed;
+  * see http://www.w3.org/TR/css3-syntax/#string-token-diagram.
+  * *
+  * This code was taken from the Closure sanitization library.
+ * @param {?} value
+ * @return {?}
  */
 function hasBalancedQuotes(value) {
-    var outsideSingle = true;
-    var outsideDouble = true;
-    for (var i = 0; i < value.length; i++) {
-        var c = value.charAt(i);
+    var /** @type {?} */ outsideSingle = true;
+    var /** @type {?} */ outsideDouble = true;
+    for (var /** @type {?} */ i = 0; i < value.length; i++) {
+        var /** @type {?} */ c = value.charAt(i);
         if (c === '\'' && outsideDouble) {
             outsideSingle = !outsideSingle;
         }
@@ -69,8 +71,10 @@ function hasBalancedQuotes(value) {
     return outsideSingle && outsideDouble;
 }
 /**
- * Sanitizes the given untrusted CSS style property value (i.e. not an entire object, just a single
- * value) and returns a value that is safe to use in a browser environment.
+ *  Sanitizes the given untrusted CSS style property value (i.e. not an entire object, just a single
+  * value) and returns a value that is safe to use in a browser environment.
+ * @param {?} value
+ * @return {?}
  */
 export function sanitizeStyle(value) {
     value = String(value).trim(); // Make sure it's actually a string.
@@ -78,7 +82,7 @@ export function sanitizeStyle(value) {
         return '';
     // Single url(...) values are supported, but only for URLs that sanitize cleanly. See above for
     // reasoning behind this.
-    var urlMatch = value.match(URL_RE);
+    var /** @type {?} */ urlMatch = value.match(URL_RE);
     if ((urlMatch && sanitizeUrl(urlMatch[1]) === urlMatch[1]) ||
         value.match(SAFE_STYLE_VALUE) && hasBalancedQuotes(value)) {
         return value; // Safe style values.

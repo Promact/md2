@@ -1,3 +1,4 @@
+/** @docs-private */
 export var AnimationCurves = (function () {
     function AnimationCurves() {
     }
@@ -7,7 +8,7 @@ export var AnimationCurves = (function () {
     AnimationCurves.SHARP_CURVE = 'cubic-bezier(0.4,0.0,0.6,1)';
     return AnimationCurves;
 }());
-;
+/** @docs-private */
 export var AnimationDurations = (function () {
     function AnimationDurations() {
     }
@@ -16,6 +17,5 @@ export var AnimationDurations = (function () {
     AnimationDurations.EXITING = '195ms';
     return AnimationDurations;
 }());
-;
 
 //# sourceMappingURL=animation.js.map

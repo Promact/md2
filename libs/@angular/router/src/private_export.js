@@ -8,9 +8,9 @@
 import { ROUTES } from './router_config_loader';
 import { ROUTER_PROVIDERS } from './router_module';
 import { flatten } from './utils/collection';
-export var __router_private__ = {
+export var /** @type {?} */ __router_private__ = {
     ROUTER_PROVIDERS: ROUTER_PROVIDERS,
     ROUTES: ROUTES,
-    flatten: flatten
+    flatten: flatten,
 };
 //# sourceMappingURL=private_export.js.map

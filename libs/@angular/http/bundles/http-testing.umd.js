@@ -1,5 +1,5 @@
 /**
- * @license Angular v2.2.3
+ * @license Angular v2.3.1
  * (c) 2010-2016 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -157,7 +157,7 @@
             { type: _angular_core.Injectable },
         ];
         /** @nocollapse */
-        MockBackend.ctorParameters = [];
+        MockBackend.ctorParameters = function () { return []; };
         return MockBackend;
     }());
 

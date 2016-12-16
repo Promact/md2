@@ -1,13 +1,31 @@
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
 "use strict";
 var ts = require('typescript');
 var evaluator_1 = require('./evaluator');
 var schema_1 = require('./schema');
 var symbols_1 = require('./symbols');
 /**
+ * A set of collector options to use when collecting metadata.
+ */
+var CollectorOptions = (function () {
+    function CollectorOptions() {
+    }
+    return CollectorOptions;
+}());
+exports.CollectorOptions = CollectorOptions;
+/**
  * Collect decorator metadata from a TypeScript module.
  */
 var MetadataCollector = (function () {
-    function MetadataCollector() {
+    function MetadataCollector(options) {
+        if (options === void 0) { options = {}; }
+        this.options = options;
     }
     /**
      * Returns a JSON.stringify friendly form describing the decorators of the exported classes from
@@ -17,7 +35,7 @@ var MetadataCollector = (function () {
         if (strict === void 0) { strict = false; }
         var locals = new symbols_1.Symbols(sourceFile);
         var nodeMap = new Map();
-        var evaluator = new evaluator_1.Evaluator(locals, nodeMap);
+        var evaluator = new evaluator_1.Evaluator(locals, nodeMap, this.options);
         var metadata;
         var exports;
         function objFromDecorator(decoratorNode) {
@@ -71,6 +89,14 @@ var MetadataCollector = (function () {
                 else {
                     return errorSym('Symbol reference expected', node);
                 }
+            }
+            // Add class parents
+            if (classDeclaration.heritageClauses) {
+                classDeclaration.heritageClauses.forEach(function (hc) {
+                    if (hc.token === ts.SyntaxKind.ExtendsKeyword && hc.types) {
+                        hc.types.forEach(function (type) { return result.extends = referenceFrom(type.expression); });
+                    }
+                });
             }
             // Add class decorators
             if (classDeclaration.decorators) {
@@ -175,20 +201,21 @@ var MetadataCollector = (function () {
             if (statics) {
                 result.statics = statics;
             }
-            return result.decorators || members || statics ? recordEntry(result, classDeclaration) :
-                undefined;
+            return recordEntry(result, classDeclaration);
         }
         // Predeclare classes and functions
         ts.forEachChild(sourceFile, function (node) {
             switch (node.kind) {
                 case ts.SyntaxKind.ClassDeclaration:
                     var classDeclaration = node;
-                    var className = classDeclaration.name.text;
-                    if (node.flags & ts.NodeFlags.Export) {
-                        locals.define(className, { __symbolic: 'reference', name: className });
-                    }
-                    else {
-                        locals.define(className, errorSym('Reference to non-exported class', node, { className: className }));
+                    if (classDeclaration.name) {
+                        var className = classDeclaration.name.text;
+                        if (node.flags & ts.NodeFlags.Export) {
+                            locals.define(className, { __symbolic: 'reference', name: className });
+                        }
+                        else {
+                            locals.define(className, errorSym('Reference to non-exported class', node, { className: className }));
+                        }
                     }
                     break;
                 case ts.SyntaxKind.FunctionDeclaration:
@@ -196,7 +223,9 @@ var MetadataCollector = (function () {
                         // Report references to this function as an error.
                         var functionDeclaration = node;
                         var nameNode = functionDeclaration.name;
-                        locals.define(nameNode.text, errorSym('Reference to a non-exported function', nameNode, { name: nameNode.text }));
+                        if (nameNode && nameNode.text) {
+                            locals.define(nameNode.text, errorSym('Reference to a non-exported function', nameNode, { name: nameNode.text }));
+                        }
                     }
                     break;
             }
@@ -206,16 +235,28 @@ var MetadataCollector = (function () {
                 case ts.SyntaxKind.ExportDeclaration:
                     // Record export declarations
                     var exportDeclaration = node;
-                    var moduleSpecifier = exportDeclaration.moduleSpecifier;
+                    var moduleSpecifier = exportDeclaration.moduleSpecifier, exportClause = exportDeclaration.exportClause;
+                    if (!moduleSpecifier) {
+                        // no module specifier -> export {propName as name};
+                        if (exportClause) {
+                            exportClause.elements.forEach(function (spec) {
+                                var name = spec.name.text;
+                                var propNode = spec.propertyName || spec.name;
+                                var value = evaluator.evaluateNode(propNode);
+                                if (!metadata)
+                                    metadata = {};
+                                metadata[name] = recordEntry(value, node);
+                            });
+                        }
+                    }
                     if (moduleSpecifier && moduleSpecifier.kind == ts.SyntaxKind.StringLiteral) {
                         // Ignore exports that don't have string literals as exports.
                         // This is allowed by the syntax but will be flagged as an error by the type checker.
                         var from = moduleSpecifier.text;
                         var moduleExport = { from: from };
-                        if (exportDeclaration.exportClause) {
-                            moduleExport.export = exportDeclaration.exportClause.elements.map(function (element) { return element.propertyName ?
-                                { name: element.propertyName.text, as: element.name.text } :
-                                element.name.text; });
+                        if (exportClause) {
+                            moduleExport.export = exportClause.elements.map(function (spec) { return spec.propertyName ? { name: spec.propertyName.text, as: spec.name.text } :
+                                spec.name.text; });
                         }
                         if (!exports)
                             exports = [];
@@ -224,9 +265,9 @@ var MetadataCollector = (function () {
                     break;
                 case ts.SyntaxKind.ClassDeclaration:
                     var classDeclaration = node;
-                    var className = classDeclaration.name.text;
-                    if (node.flags & ts.NodeFlags.Export) {
-                        if (classDeclaration.decorators) {
+                    if (classDeclaration.name) {
+                        var className = classDeclaration.name.text;
+                        if (node.flags & ts.NodeFlags.Export) {
                             if (!metadata)
                                 metadata = {};
                             metadata[className] = classMetadataOf(classDeclaration);
@@ -239,11 +280,16 @@ var MetadataCollector = (function () {
                     // names substitution will be performed by the StaticReflector.
                     var functionDeclaration = node;
                     if (node.flags & ts.NodeFlags.Export) {
+                        if (!metadata)
+                            metadata = {};
                         var maybeFunc = maybeGetSimpleFunction(functionDeclaration);
                         if (maybeFunc) {
-                            if (!metadata)
-                                metadata = {};
                             metadata[maybeFunc.name] = recordEntry(maybeFunc.func, node);
+                        }
+                        else if (functionDeclaration.name.kind == ts.SyntaxKind.Identifier) {
+                            var nameNode = functionDeclaration.name;
+                            var functionName = nameNode.text;
+                            metadata[functionName] = { __symbolic: 'function' };
                         }
                     }
                     break;
@@ -287,7 +333,6 @@ var MetadataCollector = (function () {
                                 nextDefaultValue =
                                     recordEntry(errorSym('Unsuppported enum member name', member.name), node);
                             }
-                            ;
                         }
                         if (writtenMembers) {
                             if (!metadata)
@@ -330,7 +375,7 @@ var MetadataCollector = (function () {
                         }
                         else {
                             // Destructuring (or binding) declarations are not supported,
-                            // var {<identifier>[, <identifer>]+} = <expression>;
+                            // var {<identifier>[, <identifier>]+} = <expression>;
                             //   or
                             // var [<identifier>[, <identifier}+] = <expression>;
                             // are not supported.
@@ -373,7 +418,10 @@ var MetadataCollector = (function () {
             else if (strict) {
                 validateMetadata(sourceFile, nodeMap, metadata);
             }
-            var result = { __symbolic: 'module', version: schema_1.VERSION, metadata: metadata };
+            var result = {
+                __symbolic: 'module',
+                version: this.options.version || schema_1.VERSION, metadata: metadata
+            };
             if (exports)
                 result.exports = exports;
             return result;
@@ -449,14 +497,15 @@ function validateMetadata(sourceFile, nodeMap, metadata) {
             }
         }
     }
-    function validateMember(member) {
+    function validateMember(classData, member) {
         if (member.decorators) {
             member.decorators.forEach(validateExpression);
         }
         if (schema_1.isMethodMetadata(member) && member.parameterDecorators) {
             member.parameterDecorators.forEach(validateExpression);
         }
-        if (schema_1.isConstructorMetadata(member) && member.parameters) {
+        // Only validate parameters of classes for which we know that are used with our DI
+        if (classData.decorators && schema_1.isConstructorMetadata(member) && member.parameters) {
             member.parameters.forEach(validateExpression);
         }
     }
@@ -466,7 +515,7 @@ function validateMetadata(sourceFile, nodeMap, metadata) {
         }
         if (classData.members) {
             Object.getOwnPropertyNames(classData.members)
-                .forEach(function (name) { return classData.members[name].forEach(validateMember); });
+                .forEach(function (name) { return classData.members[name].forEach(function (m) { return validateMember(classData, m); }); });
         }
     }
     function validateFunction(functionDeclaration) {

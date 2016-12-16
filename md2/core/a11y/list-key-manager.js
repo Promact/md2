@@ -18,7 +18,11 @@ export var ListKeyManager = (function () {
         this._wrap = true;
         return this;
     };
-    /** Sets the focus of the list to the item at the index specified. */
+    /**
+     * Sets the focus of the list to the item at the index specified.
+     *
+     * @param index The index of the item to be focused.
+     */
     ListKeyManager.prototype.setFocus = function (index) {
         this._focusedItemIndex = index;
         this._items.toArray()[index].focus();
@@ -39,9 +43,13 @@ export var ListKeyManager = (function () {
                 this.focusLastItem();
                 break;
             case TAB:
+                // Note that we shouldn't prevent the default action on tab.
                 this._tabOut.next(null);
-                break;
+                return;
+            default:
+                return;
         }
+        event.preventDefault();
     };
     /** Focuses the first enabled item in the list. */
     ListKeyManager.prototype.focusFirstItem = function () {
@@ -67,6 +75,10 @@ export var ListKeyManager = (function () {
         enumerable: true,
         configurable: true
     });
+    /** Allows setting of the focusedItemIndex without focusing the item. */
+    ListKeyManager.prototype.updateFocusedItemIndex = function (index) {
+        this._focusedItemIndex = index;
+    };
     Object.defineProperty(ListKeyManager.prototype, "tabOut", {
         /**
          * Observable that emits any time the TAB key is pressed, so components can react

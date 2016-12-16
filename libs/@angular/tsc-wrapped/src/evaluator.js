@@ -1,3 +1,10 @@
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
 "use strict";
 var ts = require('typescript');
 var schema_1 = require('./schema');
@@ -66,9 +73,11 @@ exports.errorSymbol = errorSymbol;
  * possible.
  */
 var Evaluator = (function () {
-    function Evaluator(symbols, nodeMap) {
+    function Evaluator(symbols, nodeMap, options) {
+        if (options === void 0) { options = {}; }
         this.symbols = symbols;
         this.nodeMap = nodeMap;
+        this.options = options;
     }
     Evaluator.prototype.nameOf = function (node) {
         if (node.kind == ts.SyntaxKind.Identifier) {
@@ -191,11 +200,16 @@ var Evaluator = (function () {
         switch (node.kind) {
             case ts.SyntaxKind.ObjectLiteralExpression:
                 var obj_1 = {};
+                var quoted_1 = [];
                 ts.forEachChild(node, function (child) {
                     switch (child.kind) {
                         case ts.SyntaxKind.ShorthandPropertyAssignment:
                         case ts.SyntaxKind.PropertyAssignment:
                             var assignment = child;
+                            if (assignment.name.kind == ts.SyntaxKind.StringLiteral) {
+                                var name_2 = assignment.name.text;
+                                quoted_1.push(name_2);
+                            }
                             var propertyName = _this.nameOf(assignment.name);
                             if (schema_1.isMetadataError(propertyName)) {
                                 error = propertyName;
@@ -215,6 +229,9 @@ var Evaluator = (function () {
                 });
                 if (error)
                     return error;
+                if (this.options.quotedNames && quoted_1.length) {
+                    obj_1['$quoted$'] = quoted_1;
+                }
                 return obj_1;
             case ts.SyntaxKind.ArrayLiteralExpression:
                 var arr_1 = [];
@@ -329,11 +346,11 @@ var Evaluator = (function () {
             }
             case ts.SyntaxKind.Identifier:
                 var identifier = node;
-                var name_2 = identifier.text;
-                var reference = this.symbols.resolve(name_2);
+                var name_3 = identifier.text;
+                var reference = this.symbols.resolve(name_3);
                 if (reference === undefined) {
                     // Encode as a global reference. StaticReflector will check the reference.
-                    return recordEntry({ __symbolic: 'reference', name: name_2 }, node);
+                    return recordEntry({ __symbolic: 'reference', name: name_3 }, node);
                 }
                 return reference;
             case ts.SyntaxKind.TypeReference:

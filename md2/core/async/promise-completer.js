@@ -1,3 +1,4 @@
+/** @docs-private */
 export var PromiseCompleter = (function () {
     function PromiseCompleter() {
         var _this = this;

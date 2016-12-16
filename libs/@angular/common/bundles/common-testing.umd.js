@@ -1,5 +1,5 @@
 /**
- * @license Angular v2.2.3
+ * @license Angular v2.3.1
  * (c) 2010-2016 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -98,7 +98,7 @@
             { type: _angular_core.Injectable },
         ];
         /** @nocollapse */
-        SpyLocation.ctorParameters = [];
+        SpyLocation.ctorParameters = function () { return []; };
         return SpyLocation;
     }());
     var LocationState = (function () {
@@ -180,7 +180,7 @@
             { type: _angular_core.Injectable },
         ];
         /** @nocollapse */
-        MockLocationStrategy.ctorParameters = [];
+        MockLocationStrategy.ctorParameters = function () { return []; };
         return MockLocationStrategy;
     }(_angular_common.LocationStrategy));
     var _MockPopStateEvent = (function () {

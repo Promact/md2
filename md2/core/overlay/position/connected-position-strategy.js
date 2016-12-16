@@ -1,4 +1,3 @@
-import { applyCssTransform } from '../../style/apply-transform';
 import { ConnectionPositionPair, ConnectedOverlayPositionChange } from './connected-position';
 import { Subject } from 'rxjs/Subject';
 /**
@@ -49,9 +48,13 @@ export var ConnectedPositionStrategy = (function () {
         configurable: true
     });
     /**
+     * To be used to for any cleanup after the element gets destroyed.
+     */
+    ConnectedPositionStrategy.prototype.dispose = function () { };
+    /**
      * Updates the position of the overlay element, using whichever preferred position relative
      * to the origin fits on-screen.
-     * TODO: internal
+     * @docs-private
      */
     ConnectedPositionStrategy.prototype.apply = function (element) {
         // We need the bounding rects for the origin and the overlay to determine how to position
@@ -179,10 +182,10 @@ export var ConnectedPositionStrategy = (function () {
      */
     ConnectedPositionStrategy.prototype._willOverlayFitWithinViewport = function (overlayPoint, overlayRect, viewportRect) {
         // TODO(jelbourn): probably also want some space between overlay edge and viewport edge.
-        return overlayPoint.x >= viewportRect.left &&
-            overlayPoint.x + overlayRect.width <= viewportRect.right &&
-            overlayPoint.y >= viewportRect.top &&
-            overlayPoint.y + overlayRect.height <= viewportRect.bottom;
+        return overlayPoint.x >= 0 &&
+            overlayPoint.x + overlayRect.width <= viewportRect.width &&
+            overlayPoint.y >= 0 &&
+            overlayPoint.y + overlayRect.height <= viewportRect.height;
     };
     /**
      * Physically positions the overlay element to the given coordinate.
@@ -190,12 +193,8 @@ export var ConnectedPositionStrategy = (function () {
      * @param overlayPoint
      */
     ConnectedPositionStrategy.prototype._setElementPosition = function (element, overlayPoint) {
-        // Round the values to prevent blurry overlays due to subpixel rendering.
-        var x = Math.round(overlayPoint.x);
-        var y = Math.round(overlayPoint.y);
-        // TODO(jelbourn): we don't want to always overwrite the transform property here,
-        // because it will need to be used for animations.
-        applyCssTransform(element, "translateX(" + x + "px) translateY(" + y + "px)");
+        element.style.left = overlayPoint.x + 'px';
+        element.style.top = overlayPoint.y + 'px';
     };
     return ConnectedPositionStrategy;
 }());

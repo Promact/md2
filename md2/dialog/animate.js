@@ -75,7 +75,8 @@ export var Animate = (function () {
             if (!duration) {
                 continue;
             }
-            duration = (duration.indexOf('ms') > -1) ? parseFloat(duration) : parseFloat(duration) * 1000;
+            duration = (duration.indexOf('ms') > -1) ? parseFloat(duration) : parseFloat(duration) *
+                1000;
             if (duration === 0) {
                 continue;
             }

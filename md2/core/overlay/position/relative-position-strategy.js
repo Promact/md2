@@ -6,6 +6,9 @@ export var RelativePositionStrategy = (function () {
         // Not yet implemented.
         return null;
     };
+    RelativePositionStrategy.prototype.dispose = function () {
+        // Not yet implemented.
+    };
     return RelativePositionStrategy;
 }());
 

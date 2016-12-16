@@ -1,56 +1,67 @@
-import { applyCssTransform } from '../../style/apply-transform';
 /**
  * A strategy for positioning overlays. Using this strategy, an overlay is given an
- * explicit position relative to the browser's viewport.
+ * explicit position relative to the browser's viewport. We use flexbox, instead of
+ * transforms, in order to avoid issues with subpixel rendering which can cause the
+ * element to become blurry.
  */
 export var GlobalPositionStrategy = (function () {
     function GlobalPositionStrategy() {
-        this._cssPosition = 'absolute';
-        this._top = '';
-        this._bottom = '';
-        this._left = '';
-        this._right = '';
-        /** Array of individual applications of translateX(). Currently only for centering. */
-        this._translateX = [];
-        /** Array of individual applications of translateY(). Currently only for centering. */
-        this._translateY = [];
+        this._cssPosition = 'static';
+        this._topOffset = '';
+        this._bottomOffset = '';
+        this._leftOffset = '';
+        this._rightOffset = '';
+        this._alignItems = '';
+        this._justifyContent = '';
+        this._width = '';
+        this._height = '';
     }
-    /** Sets the element to use CSS position: fixed */
-    GlobalPositionStrategy.prototype.fixed = function () {
-        this._cssPosition = 'fixed';
-        return this;
-    };
-    /** Sets the element to use CSS position: absolute. This is the default. */
-    GlobalPositionStrategy.prototype.absolute = function () {
-        this._cssPosition = 'absolute';
-        return this;
-    };
     /** Sets the top position of the overlay. Clears any previously set vertical position. */
     GlobalPositionStrategy.prototype.top = function (value) {
-        this._bottom = '';
-        this._translateY = [];
-        this._top = value;
+        this._bottomOffset = '';
+        this._topOffset = value;
+        this._alignItems = 'flex-start';
         return this;
     };
     /** Sets the left position of the overlay. Clears any previously set horizontal position. */
     GlobalPositionStrategy.prototype.left = function (value) {
-        this._right = '';
-        this._translateX = [];
-        this._left = value;
+        this._rightOffset = '';
+        this._leftOffset = value;
+        this._justifyContent = 'flex-start';
         return this;
     };
     /** Sets the bottom position of the overlay. Clears any previously set vertical position. */
     GlobalPositionStrategy.prototype.bottom = function (value) {
-        this._top = '';
-        this._translateY = [];
-        this._bottom = value;
+        this._topOffset = '';
+        this._bottomOffset = value;
+        this._alignItems = 'flex-end';
         return this;
     };
     /** Sets the right position of the overlay. Clears any previously set horizontal position. */
     GlobalPositionStrategy.prototype.right = function (value) {
-        this._left = '';
-        this._translateX = [];
-        this._right = value;
+        this._leftOffset = '';
+        this._rightOffset = value;
+        this._justifyContent = 'flex-end';
+        return this;
+    };
+    /** Sets the overlay width and clears any previously set width. */
+    GlobalPositionStrategy.prototype.width = function (value) {
+        this._width = value;
+        // When the width is 100%, we should reset the `left` and the offset,
+        // in order to ensure that the element is flush against the viewport edge.
+        if (value === '100%') {
+            this.left('0px');
+        }
+        return this;
+    };
+    /** Sets the overlay height and clears any previously set height. */
+    GlobalPositionStrategy.prototype.height = function (value) {
+        this._height = value;
+        // When the height is 100%, we should reset the `top` and the offset,
+        // in order to ensure that the element is flush against the viewport edge.
+        if (value === '100%') {
+            this.top('0px');
+        }
         return this;
     };
     /**
@@ -58,10 +69,9 @@ export var GlobalPositionStrategy = (function () {
      * Clears any previously set horizontal position.
      */
     GlobalPositionStrategy.prototype.centerHorizontally = function (offset) {
-        if (offset === void 0) { offset = '0px'; }
-        this._left = '50%';
-        this._right = '';
-        this._translateX = ['-50%', offset];
+        if (offset === void 0) { offset = ''; }
+        this.left(offset);
+        this._justifyContent = 'center';
         return this;
     };
     /**
@@ -69,32 +79,43 @@ export var GlobalPositionStrategy = (function () {
      * Clears any previously set vertical position.
      */
     GlobalPositionStrategy.prototype.centerVertically = function (offset) {
-        if (offset === void 0) { offset = '0px'; }
-        this._top = '50%';
-        this._bottom = '';
-        this._translateY = ['-50%', offset];
+        if (offset === void 0) { offset = ''; }
+        this.top(offset);
+        this._alignItems = 'center';
         return this;
     };
     /**
      * Apply the position to the element.
-     * TODO: internal
+     * @docs-private
      */
     GlobalPositionStrategy.prototype.apply = function (element) {
-        element.style.position = this._cssPosition;
-        element.style.top = this._top;
-        element.style.left = this._left;
-        element.style.bottom = this._bottom;
-        element.style.right = this._right;
-        // TODO(jelbourn): we don't want to always overwrite the transform property here,
-        // because it will need to be used for animations.
-        var tranlateX = this._reduceTranslateValues('translateX', this._translateX);
-        var translateY = this._reduceTranslateValues('translateY', this._translateY);
-        applyCssTransform(element, tranlateX + " " + translateY);
+        if (!this._wrapper) {
+            this._wrapper = document.createElement('div');
+            this._wrapper.classList.add('md-global-overlay-wrapper');
+            element.parentNode.insertBefore(this._wrapper, element);
+            this._wrapper.appendChild(element);
+        }
+        var styles = element.style;
+        var parentStyles = element.parentNode.style;
+        styles.position = this._cssPosition;
+        styles.marginTop = this._topOffset;
+        styles.marginLeft = this._leftOffset;
+        styles.marginBottom = this._bottomOffset;
+        styles.marginRight = this._rightOffset;
+        styles.width = this._width;
+        styles.height = this._height;
+        parentStyles.justifyContent = this._justifyContent;
+        parentStyles.alignItems = this._alignItems;
         return Promise.resolve(null);
     };
-    /** Reduce a list of translate values to a string that can be used in the transform property */
-    GlobalPositionStrategy.prototype._reduceTranslateValues = function (translateFn, values) {
-        return values.map(function (t) { return (translateFn + "(" + t + ")"); }).join(' ');
+    /**
+     * Removes the wrapper element from the DOM.
+     */
+    GlobalPositionStrategy.prototype.dispose = function () {
+        if (this._wrapper && this._wrapper.parentNode) {
+            this._wrapper.parentNode.removeChild(this._wrapper);
+            this._wrapper = null;
+        }
     };
     return GlobalPositionStrategy;
 }());

@@ -1,5 +1,5 @@
 /**
- * @license Angular v2.2.3
+ * @license Angular v2.3.1
  * (c) 2010-2016 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -116,10 +116,10 @@
             return '' + token;
         }
         if (token.overriddenName) {
-            return token.overriddenName;
+            return "" + token.overriddenName;
         }
         if (token.name) {
-            return token.name;
+            return "" + token.name;
         }
         var res = token.toString();
         var newLineIndex = res.indexOf('\n');
@@ -450,9 +450,12 @@
     var BaseError = (function (_super) {
         __extends$1(BaseError, _super);
         function BaseError(message) {
+            _super.call(this, message);
             // Errors don't use current this, instead they create a new instance.
             // We have to do forward all of our api to the nativeInstance.
-            var nativeError = _super.call(this, message);
+            // TODO(bradfordcsmith): Remove this hack when
+            //     google/closure-compiler/issues/2102 is fixed.
+            var nativeError = new Error(message);
             this._nativeError = nativeError;
         }
         Object.defineProperty(BaseError.prototype, "message", {
@@ -767,8 +770,9 @@
                     }
                 }
             }
-            this._moduleRef =
-                this._moduleWithComponentFactories.ngModuleFactory.create(this.platform.injector);
+            var ngZone = new _angular_core.NgZone({ enableLongStackTrace: true });
+            var ngZoneInjector = _angular_core.ReflectiveInjector.resolveAndCreate([{ provide: _angular_core.NgZone, useValue: ngZone }], this.platform.injector);
+            this._moduleRef = this._moduleWithComponentFactories.ngModuleFactory.create(ngZoneInjector);
             this._instantiated = true;
         };
         TestBed.prototype._createCompilerAndModule = function () {
@@ -784,7 +788,7 @@
                     { type: _angular_core.NgModule, args: [{ providers: providers, declarations: declarations, imports: imports, schemas: schemas },] },
                 ];
                 /** @nocollapse */
-                DynamicTestModule.ctorParameters = [];
+                DynamicTestModule.ctorParameters = function () { return []; };
                 return DynamicTestModule;
             }());
             var compilerFactory = this.platform.injector.get(TestingCompilerFactory);

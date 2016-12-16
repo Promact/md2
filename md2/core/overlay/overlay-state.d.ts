@@ -15,6 +15,10 @@ export declare class OverlayState {
     width: number | string;
     /** The height of the overlay panel. If a number is provided, pixel units are assumed. **/
     height: number | string;
+    /** The min-width of the overlay panel. If a number is provided, pixel units are assumed. **/
+    minWidth: number | string;
+    /** The min-height of the overlay panel. If a number is provided, pixel units are assumed. **/
+    minHeight: number | string;
     /** The direction of the text in the overlay panel. */
     direction: LayoutDirection;
 }

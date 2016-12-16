@@ -8,21 +8,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import { Injectable } from '@angular/core';
+import { MdPlatform } from '../platform/platform';
+/* The InteractivityChecker leans heavily on the ally.js accessibility utilities.
+ * Methods like `isTabbable` are only covering specific edge-cases for the browsers which are
+ * supported.
+ */
 /**
  * Utility for checking the interactivity of an element, such as whether is is focusable or
  * tabbable.
- *
- * NOTE: Currently does not capture any special element behaviors, browser quirks, or edge cases.
- * This is a basic/naive starting point onto which further behavior will be added.
- *
- * This class uses instance methods instead of static functions so that alternate implementations
- * can be injected.
- *
- * TODO(jelbourn): explore using ally.js directly for its significantly more robust
- * checks (need to evaluate payload size, performance, and compatibility with tree-shaking).
  */
 export var InteractivityChecker = (function () {
-    function InteractivityChecker() {
+    function InteractivityChecker(_platform) {
+        this._platform = _platform;
     }
     /** Gets whether an element is disabled. */
     InteractivityChecker.prototype.isDisabled = function (element) {
@@ -37,23 +34,67 @@ export var InteractivityChecker = (function () {
      * being clipped by an `overflow: hidden` parent or being outside the viewport.
      */
     InteractivityChecker.prototype.isVisible = function (element) {
-        // There are additional special cases that this does not capture, but this will work for
-        // the most common cases.
-        // Use logic from jQuery to check for `display: none`.
-        // See https://github.com/jquery/jquery/blob/master/src/css/hiddenVisibleSelectors.js#L12
-        if (!(element.offsetWidth || element.offsetHeight || element.getClientRects().length)) {
-            return false;
-        }
-        // Check for css `visibility` property.
-        // TODO(jelbourn): do any browsers we support return an empty string instead of 'visible'?
-        return getComputedStyle(element).getPropertyValue('visibility') == 'visible';
+        return hasGeometry(element) && getComputedStyle(element).visibility === 'visible';
     };
     /**
      * Gets whether an element can be reached via Tab key.
      * Assumes that the element has already been checked with isFocusable.
      */
     InteractivityChecker.prototype.isTabbable = function (element) {
-        // Again, naive approach that does not capture many special cases and browser quirks.
+        var frameElement = getWindow(element).frameElement;
+        if (frameElement) {
+            var frameType = frameElement && frameElement.nodeName.toLowerCase();
+            // Frame elements inherit their tabindex onto all child elements.
+            if (getTabIndexValue(frameElement) === -1) {
+                return false;
+            }
+            // Webkit and Blink consider anything inside of an <object> element as non-tabbable.
+            if ((this._platform.BLINK || this._platform.WEBKIT) && frameType === 'object') {
+                return false;
+            }
+            // Webkit and Blink disable tabbing to an element inside of an invisible frame.
+            if ((this._platform.BLINK || this._platform.WEBKIT) && !this.isVisible(frameElement)) {
+                return false;
+            }
+        }
+        var nodeName = element.nodeName.toLowerCase();
+        var tabIndexValue = getTabIndexValue(element);
+        if (element.hasAttribute('contenteditable')) {
+            return tabIndexValue !== -1;
+        }
+        if (nodeName === 'iframe') {
+            // The frames may be tabbable depending on content, but it's not possibly to reliably
+            // investigate the content of the frames.
+            return false;
+        }
+        if (nodeName === 'audio') {
+            if (!element.hasAttribute('controls')) {
+                // By default an <audio> element without the controls enabled is not tabbable.
+                return false;
+            }
+            else if (this._platform.BLINK) {
+                // In Blink <audio controls> elements are always tabbable.
+                return true;
+            }
+        }
+        if (nodeName === 'video') {
+            if (!element.hasAttribute('controls') && this._platform.TRIDENT) {
+                // In Trident a <video> element without the controls enabled is not tabbable.
+                return false;
+            }
+            else if (this._platform.BLINK || this._platform.FIREFOX) {
+                // In Chrome and Firefox <video controls> elements are always tabbable.
+                return true;
+            }
+        }
+        if (nodeName === 'object' && (this._platform.BLINK || this._platform.WEBKIT)) {
+            // In all Blink and WebKit based browsers <object> elements are never tabbable.
+            return false;
+        }
+        // In iOS the browser only considers some specific elements as tabbable.
+        if (this._platform.WEBKIT && this._platform.IOS && !isPotentiallyTabbableIOS(element)) {
+            return false;
+        }
         return element.tabIndex >= 0;
     };
     /** Gets whether an element can be focused by the user. */
@@ -64,10 +105,16 @@ export var InteractivityChecker = (function () {
     };
     InteractivityChecker = __decorate([
         Injectable(), 
-        __metadata('design:paramtypes', [])
+        __metadata('design:paramtypes', [MdPlatform])
     ], InteractivityChecker);
     return InteractivityChecker;
 }());
+/** Checks whether the specified element has any geometry / rectangles. */
+function hasGeometry(element) {
+    // Use logic from jQuery to check for an invisible element.
+    // See https://github.com/jquery/jquery/blob/master/src/css/hiddenVisibleSelectors.js#L12
+    return !!(element.offsetWidth || element.offsetHeight || element.getClientRects().length);
+}
 /** Gets whether an element's  */
 function isNativeFormElement(element) {
     var nodeName = element.nodeName.toLowerCase();
@@ -105,6 +152,27 @@ function hasValidTabIndex(element) {
     return !!(tabIndex && !isNaN(parseInt(tabIndex, 10)));
 }
 /**
+ * Returns the parsed tabindex from the element attributes instead of returning the
+ * evaluated tabindex from the browsers defaults.
+ */
+function getTabIndexValue(element) {
+    if (!hasValidTabIndex(element)) {
+        return null;
+    }
+    // See browser issue in Gecko https://bugzilla.mozilla.org/show_bug.cgi?id=1128054
+    var tabIndex = parseInt(element.getAttribute('tabindex'), 10);
+    return isNaN(tabIndex) ? -1 : tabIndex;
+}
+/** Checks whether the specified element is potentially tabbable on iOS */
+function isPotentiallyTabbableIOS(element) {
+    var nodeName = element.nodeName.toLowerCase();
+    var inputType = nodeName === 'input' && element.type;
+    return inputType === 'text'
+        || inputType === 'password'
+        || nodeName === 'select'
+        || nodeName === 'textarea';
+}
+/**
  * Gets whether an element is potentially focusable without taking current visible/disabled state
  * into account.
  */
@@ -117,6 +185,10 @@ function isPotentiallyFocusable(element) {
         isAnchorWithHref(element) ||
         element.hasAttribute('contenteditable') ||
         hasValidTabIndex(element);
+}
+/** Gets the parent window of a DOM node with regards of being inside of an iframe. */
+function getWindow(node) {
+    return node.ownerDocument.defaultView || window;
 }
 
 //# sourceMappingURL=interactivity-checker.js.map

@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 import { Injectable } from '@angular/core';
 /**
  * Simple utility for getting the bounds of the browser viewport.
- * TODO: internal
+ * @docs-private
  */
 export var ViewportRuler = (function () {
     function ViewportRuler() {
@@ -53,12 +53,8 @@ export var ViewportRuler = (function () {
         // `scrollTop` and `scrollLeft` is inconsistent. However, using the bounding rect of
         // `document.documentElement` works consistently, where the `top` and `left` values will
         // equal negative the scroll position.
-        var top = documentRect.top < 0 && document.body.scrollTop == 0 ?
-            -documentRect.top :
-            document.body.scrollTop;
-        var left = documentRect.left < 0 && document.body.scrollLeft == 0 ?
-            -documentRect.left :
-            document.body.scrollLeft;
+        var top = -documentRect.top || document.body.scrollTop || window.scrollY || 0;
+        var left = -documentRect.left || document.body.scrollLeft || window.scrollX || 0;
         return { top: top, left: left };
     };
     ViewportRuler = __decorate([

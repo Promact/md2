@@ -8,7 +8,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import { NgModule } from '@angular/core';
-import { RtlModule, PortalModule, OverlayModule, A11yModule, ProjectionModule, StyleCompatibilityModule } from './core/index';
+import { MdRippleModule, RtlModule, PortalModule, OverlayModule, A11yModule, ProjectionModule, DefaultStyleCompatibilityModeModule } from './core/index';
 import { Md2AccordionModule } from './accordion/index';
 import { Md2AutocompleteModule } from './autocomplete/index';
 import { Md2ChipsModule } from './chips/index';
@@ -24,6 +24,7 @@ import { Md2TabsModule } from './tabs/index';
 import { Md2TagsModule } from './tags/index';
 import { Md2ToastModule } from './toast/index';
 import { Md2TooltipModule } from './tooltip/index';
+import { PlatformModule } from './core/platform/index';
 var MD2_MODULES = [
     Md2AccordionModule,
     Md2AutocompleteModule,
@@ -35,6 +36,7 @@ var MD2_MODULES = [
     Md2DialogModule,
     Md2MenuModule,
     Md2MultiselectModule,
+    MdRippleModule,
     Md2SelectModule,
     Md2TabsModule,
     Md2TagsModule,
@@ -44,8 +46,9 @@ var MD2_MODULES = [
     PortalModule,
     RtlModule,
     A11yModule,
+    PlatformModule,
     ProjectionModule,
-    StyleCompatibilityModule,
+    DefaultStyleCompatibilityModeModule,
 ];
 export var Md2RootModule = (function () {
     function Md2RootModule() {
@@ -63,17 +66,19 @@ export var Md2RootModule = (function () {
                 Md2DialogModule.forRoot(),
                 Md2MenuModule.forRoot(),
                 Md2MultiselectModule.forRoot(),
+                MdRippleModule.forRoot(),
                 Md2SelectModule.forRoot(),
                 Md2TabsModule.forRoot(),
                 Md2TagsModule.forRoot(),
                 Md2ToastModule.forRoot(),
                 Md2TooltipModule.forRoot(),
+                A11yModule.forRoot(),
+                OverlayModule.forRoot(),
+                PlatformModule.forRoot(),
                 PortalModule.forRoot(),
                 ProjectionModule.forRoot(),
                 RtlModule.forRoot(),
-                A11yModule.forRoot(),
-                OverlayModule.forRoot(),
-                StyleCompatibilityModule.forRoot(),
+                DefaultStyleCompatibilityModeModule.forRoot(),
             ],
             exports: MD2_MODULES,
         }), 

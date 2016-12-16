@@ -1,6 +1,6 @@
 /**
  * Simple utility for getting the bounds of the browser viewport.
- * TODO: internal
+ * @docs-private
  */
 export declare class ViewportRuler {
     /** Gets a ClientRect for the viewport's bounds. */

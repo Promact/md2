@@ -18,4 +18,5 @@ export { Connection, ConnectionBackend, XSRFStrategy } from './interfaces';
 export { Request } from './static_request';
 export { Response } from './static_response';
 export { QueryEncoder, URLSearchParams } from './url_search_params';
+export { VERSION } from './version';
 //# sourceMappingURL=index.js.map

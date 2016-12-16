@@ -1,17 +1,11 @@
+import { MdPlatform } from '../platform/platform';
 /**
  * Utility for checking the interactivity of an element, such as whether is is focusable or
  * tabbable.
- *
- * NOTE: Currently does not capture any special element behaviors, browser quirks, or edge cases.
- * This is a basic/naive starting point onto which further behavior will be added.
- *
- * This class uses instance methods instead of static functions so that alternate implementations
- * can be injected.
- *
- * TODO(jelbourn): explore using ally.js directly for its significantly more robust
- * checks (need to evaluate payload size, performance, and compatibility with tree-shaking).
  */
 export declare class InteractivityChecker {
+    private _platform;
+    constructor(_platform: MdPlatform);
     /** Gets whether an element is disabled. */
     isDisabled(element: HTMLElement): boolean;
     /**

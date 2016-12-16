@@ -13,6 +13,7 @@ import { Injectable, Directive, NgModule, ElementRef } from '@angular/core';
 function _replaceWith(toReplaceEl, otherEl) {
     toReplaceEl.parentElement.replaceChild(otherEl, toReplaceEl);
 }
+/** @docs-private */
 export var DomProjectionHost = (function () {
     function DomProjectionHost(ref) {
         this.ref = ref;
@@ -25,6 +26,7 @@ export var DomProjectionHost = (function () {
     ], DomProjectionHost);
     return DomProjectionHost;
 }());
+/** @docs-private */
 export var DomProjection = (function () {
     function DomProjection() {
     }
@@ -83,6 +85,7 @@ export var DomProjection = (function () {
     ], DomProjection);
     return DomProjection;
 }());
+/** @docs-private */
 export var ProjectionModule = (function () {
     function ProjectionModule() {
     }

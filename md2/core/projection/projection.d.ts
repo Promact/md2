@@ -1,8 +1,10 @@
 import { ModuleWithProviders, ElementRef } from '@angular/core';
+/** @docs-private */
 export declare class DomProjectionHost {
     ref: ElementRef;
     constructor(ref: ElementRef);
 }
+/** @docs-private */
 export declare class DomProjection {
     /**
      * Project an element into a host element.
@@ -34,6 +36,7 @@ export declare class DomProjection {
      */
     project(ref: ElementRef, host: DomProjectionHost): void;
 }
+/** @docs-private */
 export declare class ProjectionModule {
     static forRoot(): ModuleWithProviders;
 }

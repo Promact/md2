@@ -203,7 +203,9 @@ export var Md2Select = (function () {
     /**
      * get index of focused option
      */
-    Md2Select.prototype.getFocusIndex = function () { return this.options.toArray().findIndex(function (o) { return o.focused; }); };
+    Md2Select.prototype.getFocusIndex = function () {
+        return this.options.toArray().findIndex(function (o) { return o.focused; });
+    };
     /**
      * update focused option
      * @param inc

@@ -1,5 +1,5 @@
-import { ElementRef } from '@angular/core';
-/** TODO: internal */
+import { ElementRef, NgZone } from '@angular/core';
+/** @docs-private */
 export declare enum ForegroundRippleState {
     NEW = 0,
     EXPANDING = 1,
@@ -7,7 +7,7 @@ export declare enum ForegroundRippleState {
 }
 /**
  * Wrapper for a foreground ripple DOM element and its animation state.
- * TODO: internal
+ * @docs-private
  */
 export declare class ForegroundRipple {
     rippleElement: Element;
@@ -19,15 +19,16 @@ export declare class ForegroundRipple {
  * The constructor takes a reference to the ripple directive's host element and a map of DOM
  * event handlers to be installed on the element that triggers ripple animations.
  * This will eventually become a custom renderer once Angular support exists.
- * TODO: internal
+ * @docs-private
  */
 export declare class RippleRenderer {
     private _eventHandlers;
+    private _ngZone;
     private _backgroundDiv;
     private _rippleElement;
     private _triggerElement;
     _opacity: string;
-    constructor(_elementRef: ElementRef, _eventHandlers: Map<string, (e: Event) => void>);
+    constructor(_elementRef: ElementRef, _eventHandlers: Map<string, (e: Event) => void>, _ngZone: NgZone);
     /** Creates the div for the ripple background, if it doesn't already exist. */
     createBackgroundIfNeeded(): void;
     /**

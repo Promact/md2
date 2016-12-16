@@ -9,14 +9,14 @@ export declare class TextDirective {
     changeInput(value: string): void;
 }
 export declare class ColorpickerSliderDirective {
-    private el;
+    private _element;
     slider: string;
     pointX: number;
     pointY: number;
     change: EventEmitter<any>;
     private listenerMove;
     private listenerStop;
-    constructor(el: ElementRef);
+    constructor(_element: ElementRef);
     /**
      * set cursor position
      * @param event
@@ -46,10 +46,10 @@ export declare class ColorpickerSliderDirective {
      * @param event
      */
     getY(event: any): number;
+    _getNativeElement(): HTMLElement;
 }
 export declare class Md2Colorpicker implements OnInit, ControlValueAccessor {
     private service;
-    private el;
     _innerValue: string;
     private _onTouchedCallback;
     private _onChangeCallback;
@@ -77,7 +77,7 @@ export declare class Md2Colorpicker implements OnInit, ControlValueAccessor {
     * set accessor including call the onchange callback
     */
     value: any;
-    constructor(service: ColorpickerService, el: ElementRef);
+    constructor(service: ColorpickerService);
     ngOnInit(): void;
     /**
     * Show Colorpicker dialog

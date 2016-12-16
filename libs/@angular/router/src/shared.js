@@ -15,29 +15,47 @@ var __extends = (this && this.__extends) || function (d, b) {
  *
  * @stable
  */
-export var PRIMARY_OUTLET = 'primary';
+export var /** @type {?} */ PRIMARY_OUTLET = 'primary';
 export var NavigationCancelingError = (function (_super) {
     __extends(NavigationCancelingError, _super);
+    /**
+     * @param {?} message
+     */
     function NavigationCancelingError(message) {
         _super.call(this, message);
         this.message = message;
         this.stack = (new Error(message)).stack;
     }
+    /**
+     * @return {?}
+     */
     NavigationCancelingError.prototype.toString = function () { return this.message; };
     return NavigationCancelingError;
 }(Error));
+function NavigationCancelingError_tsickle_Closure_declarations() {
+    /** @type {?} */
+    NavigationCancelingError.prototype.stack;
+    /** @type {?} */
+    NavigationCancelingError.prototype.message;
+}
+/**
+ * @param {?} segments
+ * @param {?} segmentGroup
+ * @param {?} route
+ * @return {?}
+ */
 export function defaultUrlMatcher(segments, segmentGroup, route) {
-    var path = route.path;
-    var parts = path.split('/');
-    var posParams = {};
-    var consumed = [];
-    var currentIndex = 0;
-    for (var i = 0; i < parts.length; ++i) {
+    var /** @type {?} */ path = route.path;
+    var /** @type {?} */ parts = path.split('/');
+    var /** @type {?} */ posParams = {};
+    var /** @type {?} */ consumed = [];
+    var /** @type {?} */ currentIndex = 0;
+    for (var /** @type {?} */ i = 0; i < parts.length; ++i) {
         if (currentIndex >= segments.length)
             return null;
-        var current = segments[currentIndex];
-        var p = parts[i];
-        var isPosParam = p.startsWith(':');
+        var /** @type {?} */ current = segments[currentIndex];
+        var /** @type {?} */ p = parts[i];
+        var /** @type {?} */ isPosParam = p.startsWith(':');
         if (!isPosParam && p !== current.path)
             return null;
         if (isPosParam) {

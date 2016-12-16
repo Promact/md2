@@ -3,7 +3,7 @@
   <label class="color-text">{{_innerValue}}</label>
 </div>
 <div class="md2-colorpicker-wrapper" [class.active]="_isColorpickerVisible">
-  <div class="md2-color-picker" [style.top.px]="top" [style.left.px]="left">
+  <div class="md2-color-picker">
     <div [colorpicker-slider] [style.background-color]="_hueSliderColor" [point-x]="1" [point-y]="1" (change)="setSaturationAndBrightness($event)" class="saturation-lightness">
       <div [style.left.px]="slider.s" [style.top.px]="slider.v" class="cursor"></div>
     </div>

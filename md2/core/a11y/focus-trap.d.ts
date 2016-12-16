@@ -1,4 +1,4 @@
-import { ElementRef } from '@angular/core';
+import { ElementRef, NgZone } from '@angular/core';
 import { InteractivityChecker } from './interactivity-checker';
 /**
  * Directive for trapping focus within a region.
@@ -10,8 +10,22 @@ import { InteractivityChecker } from './interactivity-checker';
  */
 export declare class FocusTrap {
     private _checker;
+    private _ngZone;
     trappedContent: ElementRef;
-    constructor(_checker: InteractivityChecker);
+    /** Whether the focus trap is active. */
+    disabled: boolean;
+    private _disabled;
+    constructor(_checker: InteractivityChecker, _ngZone: NgZone);
+    /**
+     * Waits for microtask queue to empty, then focuses the first tabbable element within the focus
+     * trap region.
+     */
+    focusFirstTabbableElementWhenReady(): void;
+    /**
+     * Waits for microtask queue to empty, then focuses the last tabbable element within the focus
+     * trap region.
+     */
+    focusLastTabbableElementWhenReady(): void;
     /** Focuses the first tabbable element within the focus trap region. */
     focusFirstTabbableElement(): void;
     /** Focuses the last tabbable element within the focus trap region. */

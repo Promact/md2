@@ -1,5 +1,6 @@
 import { EventEmitter, OnDestroy, ViewContainerRef, TemplateRef, ModuleWithProviders } from '@angular/core';
 import { Overlay, OverlayState, TemplatePortal } from '../core/core';
+import 'rxjs/add/operator/first';
 export declare class Md2DialogPortal extends TemplatePortal {
     constructor(templateRef: TemplateRef<any>, viewContainerRef: ViewContainerRef);
 }

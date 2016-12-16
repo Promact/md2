@@ -1,22 +1,21 @@
 import { PositionStrategy } from './position-strategy';
 /**
  * A strategy for positioning overlays. Using this strategy, an overlay is given an
- * explicit position relative to the browser's viewport.
+ * explicit position relative to the browser's viewport. We use flexbox, instead of
+ * transforms, in order to avoid issues with subpixel rendering which can cause the
+ * element to become blurry.
  */
 export declare class GlobalPositionStrategy implements PositionStrategy {
     private _cssPosition;
-    private _top;
-    private _bottom;
-    private _left;
-    private _right;
-    /** Array of individual applications of translateX(). Currently only for centering. */
-    private _translateX;
-    /** Array of individual applications of translateY(). Currently only for centering. */
-    private _translateY;
-    /** Sets the element to use CSS position: fixed */
-    fixed(): this;
-    /** Sets the element to use CSS position: absolute. This is the default. */
-    absolute(): this;
+    private _topOffset;
+    private _bottomOffset;
+    private _leftOffset;
+    private _rightOffset;
+    private _alignItems;
+    private _justifyContent;
+    private _width;
+    private _height;
+    private _wrapper;
     /** Sets the top position of the overlay. Clears any previously set vertical position. */
     top(value: string): this;
     /** Sets the left position of the overlay. Clears any previously set horizontal position. */
@@ -25,6 +24,10 @@ export declare class GlobalPositionStrategy implements PositionStrategy {
     bottom(value: string): this;
     /** Sets the right position of the overlay. Clears any previously set horizontal position. */
     right(value: string): this;
+    /** Sets the overlay width and clears any previously set width. */
+    width(value: string): this;
+    /** Sets the overlay height and clears any previously set height. */
+    height(value: string): this;
     /**
      * Centers the overlay horizontally with an optional offset.
      * Clears any previously set horizontal position.
@@ -37,9 +40,11 @@ export declare class GlobalPositionStrategy implements PositionStrategy {
     centerVertically(offset?: string): this;
     /**
      * Apply the position to the element.
-     * TODO: internal
+     * @docs-private
      */
     apply(element: HTMLElement): Promise<void>;
-    /** Reduce a list of translate values to a string that can be used in the transform property */
-    private _reduceTranslateValues(translateFn, values);
+    /**
+     * Removes the wrapper element from the DOM.
+     */
+    dispose(): void;
 }

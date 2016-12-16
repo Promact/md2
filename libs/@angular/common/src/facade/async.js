@@ -14,68 +14,77 @@ import { Subject } from 'rxjs/Subject';
 export { Observable } from 'rxjs/Observable';
 export { Subject } from 'rxjs/Subject';
 /**
- * Use by directives and components to emit custom Events.
- *
- * ### Examples
- *
- * In the following example, `Zippy` alternatively emits `open` and `close` events when its
- * title gets clicked:
- *
- * ```
- * @Component({
- *   selector: 'zippy',
- *   template: `
- *   <div class="zippy">
- *     <div (click)="toggle()">Toggle</div>
- *     <div [hidden]="!visible">
- *       <ng-content></ng-content>
- *     </div>
- *  </div>`})
- * export class Zippy {
- *   visible: boolean = true;
- *   @Output() open: EventEmitter<any> = new EventEmitter();
- *   @Output() close: EventEmitter<any> = new EventEmitter();
- *
- *   toggle() {
- *     this.visible = !this.visible;
- *     if (this.visible) {
- *       this.open.emit(null);
- *     } else {
- *       this.close.emit(null);
- *     }
- *   }
- * }
- * ```
- *
- * The events payload can be accessed by the parameter `$event` on the components output event
- * handler:
- *
- * ```
- * <zippy (open)="onOpen($event)" (close)="onClose($event)"></zippy>
- * ```
- *
- * Uses Rx.Observable but provides an adapter to make it work as specified here:
- * https://github.com/jhusain/observable-spec
- *
- * Once a reference implementation of the spec is available, switch to it.
- * @stable
+ *  Use by directives and components to emit custom Events.
+  * *
+  * ### Examples
+  * *
+  * In the following example, `Zippy` alternatively emits `open` and `close` events when its
+  * title gets clicked:
+  * *
+  * ```
+  * selector: 'zippy',
+  * template: `
+  * <div class="zippy">
+  * <div (click)="toggle()">Toggle</div>
+  * <div [hidden]="!visible">
+  * <ng-content></ng-content>
+  * </div>
+  * </div>`})
+  * export class Zippy {
+  * visible: boolean = true;
+  * @Output() open: EventEmitter<any> = new EventEmitter();
+  * @Output() close: EventEmitter<any> = new EventEmitter();
+  * *
+  * toggle() {
+  * this.visible = !this.visible;
+  * if (this.visible) {
+  * this.open.emit(null);
+  * } else {
+  * this.close.emit(null);
+  * }
+  * }
+  * }
+  * ```
+  * *
+  * The events payload can be accessed by the parameter `$event` on the components output event
+  * handler:
+  * *
+  * ```
+  * <zippy (open)="onOpen($event)" (close)="onClose($event)"></zippy>
+  * ```
+  * *
+  * Uses Rx.Observable but provides an adapter to make it work as specified here:
+  * https://github.com/jhusain/observable-spec
+  * *
+  * Once a reference implementation of the spec is available, switch to it.
  */
 export var EventEmitter = (function (_super) {
     __extends(EventEmitter, _super);
     /**
-     * Creates an instance of [EventEmitter], which depending on [isAsync],
-     * delivers events synchronously or asynchronously.
+     *  Creates an instance of [EventEmitter], which depending on [isAsync],
+      * delivers events synchronously or asynchronously.
+     * @param {?=} isAsync
      */
     function EventEmitter(isAsync) {
         if (isAsync === void 0) { isAsync = false; }
         _super.call(this);
         this.__isAsync = isAsync;
     }
+    /**
+     * @param {?=} value
+     * @return {?}
+     */
     EventEmitter.prototype.emit = function (value) { _super.prototype.next.call(this, value); };
+    /**
+     * @param {?=} generatorOrNext
+     * @param {?=} error
+     * @param {?=} complete
+     * @return {?}
+     */
     EventEmitter.prototype.subscribe = function (generatorOrNext, error, complete) {
-        var schedulerFn;
-        var errorFn = function (err) { return null; };
-        var completeFn = function () { return null; };
+        var /** @type {?} */ schedulerFn;
+        var /** @type {?} */ errorFn = function (err) { return null; };
+        var /** @type {?} */ completeFn = function () { return null; };
         if (generatorOrNext && typeof generatorOrNext === 'object') {
             schedulerFn = this.__isAsync ? function (value) {
                 setTimeout(function () { return generatorOrNext.next(value); });
@@ -105,4 +114,8 @@ export var EventEmitter = (function (_super) {
     };
     return EventEmitter;
 }(Subject));
+function EventEmitter_tsickle_Closure_declarations() {
+    /** @type {?} */
+    EventEmitter.prototype.__isAsync;
+}
 //# sourceMappingURL=async.js.map

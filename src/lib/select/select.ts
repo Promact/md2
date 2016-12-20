@@ -370,7 +370,7 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
    */
   _setScrollTop(): void {
     const scrollContainer =
-        this.overlayDir.overlayRef.overlayElement.querySelector('.md-select-panel');
+        this.overlayDir.overlayRef.overlayElement.querySelector('.md2-select-panel');
     scrollContainer.scrollTop = this._scrollTop;
   }
 

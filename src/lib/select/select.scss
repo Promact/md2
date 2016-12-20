@@ -1,4 +1,5 @@
-$primary: #123 !default;
+$primary: #3f51b5 !default;
+$warn: #f44336 !default;
 $md2-select-trigger-height: 30px !default;
 $md2-select-trigger-min-width: 112px !default;
 $md2-select-arrow-size: 5px !default;
@@ -6,7 +7,7 @@ $md2-select-arrow-margin: 4px !default;
 $md2-select-panel-max-height: 256px !default;
 
 md2-select {
-  display: inline-block;
+  display: block;
   outline: none;
 }
 
@@ -33,13 +34,13 @@ md2-select {
   }
 
   md2-select:focus:not(.md2-select-disabled) & {
-    color: #3f51b5;
-    border-bottom: 1px solid #3f51b5;
+    color: $primary;
+    border-bottom: 1px solid $primary;
   }
 
   md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) & {
-    color: #f44336;
-    border-bottom: 1px solid #f44336;
+    color: $warn;
+    border-bottom: 1px solid $warn;
   }
 }
 
@@ -96,11 +97,11 @@ md2-select {
   color: rgba(black, 0.38);
 
   md2-select:focus:not(.md2-select-disabled) & {
-    color: #3f51b5;
+    color: $primary;
   }
 
   md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) & {
-    color: #f44336;
+    color: $warn;
   }
 }
 
@@ -145,7 +146,7 @@ md2-option {
 
   &.md2-selected {
     background: rgba(black, 0.04);
-    color: #3f51b5;
+    color: $primary;
   }
 
   &.md2-option-disabled {

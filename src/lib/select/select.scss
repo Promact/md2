@@ -1,3 +1,4 @@
+$primary: #123 !default;
 $md2-select-trigger-height: 30px !default;
 $md2-select-trigger-min-width: 112px !default;
 $md2-select-arrow-size: 5px !default;
@@ -10,8 +11,8 @@ md2-select {
 }
 
 .md2-select-trigger {
-  color: rgba(0, 0, 0, 0.38);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  color: rgba(black, 0.38);
+  border-bottom: 1px solid rgba(black, 0.12);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -22,7 +23,7 @@ md2-select {
   box-sizing: border-box;
 
   [aria-disabled='true'] & {
-    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.26) 0%, rgba(0, 0, 0, 0.26) 33%, transparent 0%);
+    background-image: linear-gradient(to right, rgba(black, 0.26) 0%, rgba(black, 0.26) 33%, transparent 0%);
     background-size: 4px 1px;
     background-repeat: repeat-x;
     border-bottom: transparent;
@@ -73,10 +74,10 @@ md2-select {
   white-space: nowrap;
   overflow-x: hidden;
   text-overflow: ellipsis;
-  color: rgba(0, 0, 0, 0.87);
+  color: rgba(black, 0.87);
 
   .md2-select-disabled & {
-    color: rgba(0, 0, 0, 0.38);
+    color: rgba(black, 0.38);
   }
 
   [dir='rtl'] & {
@@ -92,7 +93,7 @@ md2-select {
   border-right: $md2-select-arrow-size solid transparent;
   border-top: $md2-select-arrow-size solid;
   margin: 0 $md2-select-arrow-margin;
-  color: rgba(0, 0, 0, 0.38);
+  color: rgba(black, 0.38);
 
   md2-select:focus:not(.md2-select-disabled) & {
     color: #3f51b5;
@@ -104,7 +105,7 @@ md2-select {
 }
 
 .md2-select-panel {
-  box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12);
+  box-shadow: 0px 5px 5px -3px rgba(black, 0.2), 0px 8px 10px 1px rgba(black, 0.14), 0px 3px 14px 2px rgba(black, 0.12);
   min-width: 112px;
   max-width: 280px;
   overflow: auto;
@@ -112,11 +113,9 @@ md2-select {
   padding-top: 0;
   padding-bottom: 0;
   max-height: $md2-select-panel-max-height;
-}
-
-.md2-select-content {
   background: white;
 }
+
 
 md2-option {
   white-space: nowrap;
@@ -141,16 +140,16 @@ md2-option {
   }
 
   &:hover:not(.md2-option-disabled), &:focus:not(.md2-option-disabled) {
-    background: rgba(0, 0, 0, 0.04);
+    background: rgba(black, 0.04);
   }
 
   &.md2-selected {
-    background: rgba(0, 0, 0, 0.04);
+    background: rgba(black, 0.04);
     color: #3f51b5;
   }
 
   &.md2-option-disabled {
-    color: rgba(0, 0, 0, 0.38);
+    color: rgba(black, 0.38);
   }
 }
 

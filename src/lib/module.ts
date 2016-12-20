@@ -28,7 +28,6 @@ import { Md2TooltipModule } from './tooltip/index';
 
 import { PlatformModule } from './core/platform/index';
 
-
 const MD2_MODULES = [
   Md2AccordionModule,
   Md2AutocompleteModule,

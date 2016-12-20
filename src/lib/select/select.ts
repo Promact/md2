@@ -393,15 +393,26 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
   private _setSelectionByValue(value: any): void {
     const options = this.options.toArray();
 
-    for (let i = 0; i < this.options.length; i++) {
-      if (options[i].value === value) {
-        options[i].select();
-        return;
+    if (this.multiple) {
+      this._selected = [];
+      value = Array.isArray(value) ? value : [];
+      for (let i = 0; i < this.options.length; i++) {
+        if (value.indexOf(options[i].value) > -1) {
+          options[i].select();
+        }
       }
-    }
+      this._updateOptions();
+    } else {
+      for (let i = 0; i < this.options.length; i++) {
+        if (options[i].value === value) {
+          options[i].select();
+          return;
+        }
+      }
 
-    // Clear selection if no item was selected.
-    this._clearSelection();
+      // Clear selection if no item was selected.
+      this._clearSelection();
+    }
   }
 
   /** Clears the select trigger and deselects every option in the list. */
@@ -433,10 +444,39 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
   private _listenToOptions(): void {
     this.options.forEach((option: Md2Option) => {
       const sub = option.onSelect.subscribe((isUserInput: boolean) => {
-        if (isUserInput) {
-          this._onChange(option.value);
+        //if (isUserInput) {
+        //  this._onChange(option.value);
+        //}
+        //this._onSelect(option);
+        if (this.multiple) {
+          let ind = this._selected.indexOf(option);
+          if (ind < 0) {
+            this._selected.push(option);
+            console.log('Add:' + option.viewValue);
+            this._selected = this._selected.sort((a: Md2Option, b: Md2Option) => {
+              return this.options.toArray().indexOf(a) - this.options.toArray().indexOf(b);
+            });
+          } else {
+            this._selected.splice(ind, 1);
+            option.deselect();
+            console.log('Remove:' + option.viewValue);
+          }
+        } else {
+          this._selected[0] = option;
+          if (this.panelOpen) {
+            this.close();
+          }
         }
-        this._onSelect(option);
+        if (isUserInput) {
+          if (this.multiple) {
+            this._onChange(this._selected.map(option => option.value));
+          } else {
+            this._onChange(option.value);
+          }
+        }
+        this._updateOptions();
+        this._setValueWidth();
+        this._placeholderState = '';
       });
       this._subscriptions.push(sub);
     });
@@ -454,24 +494,30 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
   }
 
   /** When a new option is selected, deselects the others and closes the panel. */
-  private _onSelect(option: Md2Option): void {
-    if (this.multiple) {
-    } else {
-      this._selected[0] = option;
-      this._updateOptions();
-    }
-    this._setValueWidth();
-    this._placeholderState = '';
-    if (this.panelOpen) {
-      this.close();
-    }
-  }
+  //private _onSelect(option: Md2Option): void {
+  //  if (this.multiple) {
+  //  } else {
+  //    this._selected[0] = option;
+  //    if (this.panelOpen) {
+  //      this.close();
+  //    }
+  //  }
+  //  this._updateOptions();
+  //  this._setValueWidth();
+  //  this._placeholderState = '';
+  //}
 
   /** Deselect each option that doesn't match the current selection. */
   private _updateOptions(): void {
     this.options.forEach((option: Md2Option) => {
-      if (option !== this.selected[0]) {
-        option.deselect();
+      if (this.multiple) {
+        if (this._selected.indexOf(option) < 0) {
+          option.deselect();
+        }
+      } else {
+        if (option !== this.selected[0]) {
+          option.deselect();
+        }
       }
     });
   }

@@ -10,7 +10,7 @@
           backdropClass="cdk-overlay-transparent-backdrop" [positions]="_positions" [minWidth]="_triggerWidth"
           [offsetY]="_offsetY" [offsetX]="_offsetX" (attach)="_setScrollTop()">
   <div class="md2-select-panel" [@transformPanel]="'showing'" (@transformPanel.done)="_onPanelDone()"
-       (keydown)="_keyManager.onKeydown($event)" [style.transformOrigin]="_transformOrigin">
+       (keydown)="_keyManager.onKeydown($event)" [style.transformOrigin]="_transformOrigin"  [attr.multiple]="multiple">
     <div class="md2-select-content" [@fadeInContent]="'showing'">
       <ng-content></ng-content>
     </div>

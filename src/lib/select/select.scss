@@ -1,4 +1,4 @@
-$primary: #3f51b5 !default;
+$primary: #106cc8 !default;
 $warn: #f44336 !default;
 $md2-select-trigger-height: 30px !default;
 $md2-select-trigger-min-width: 112px !default;
@@ -24,7 +24,7 @@ md2-select {
   box-sizing: border-box;
 
   [aria-disabled='true'] & {
-    background-image: linear-gradient(to right, rgba(black, 0.26) 0%, rgba(black, 0.26) 33%, transparent 0%);
+    background-image: linear-gradient(to right, rgba(black, 0.26) 0, rgba(black, 0.26) 33%, transparent 0);
     background-size: 4px 1px;
     background-repeat: repeat-x;
     border-bottom: transparent;
@@ -70,8 +70,9 @@ md2-select {
 
 .md2-select-value {
   position: absolute;
-  left: 0;
   top: 6px;
+  right: 18px;
+  left: 0;
   white-space: nowrap;
   overflow-x: hidden;
   text-overflow: ellipsis;
@@ -85,6 +86,11 @@ md2-select {
     left: auto;
     right: 0;
   }
+}
+
+.md2-select-value-text:not(:last-child)::after {
+  content: ',';
+  margin-left: -2px;
 }
 
 .md2-select-arrow {
@@ -106,7 +112,7 @@ md2-select {
 }
 
 .md2-select-panel {
-  box-shadow: 0px 5px 5px -3px rgba(black, 0.2), 0px 8px 10px 1px rgba(black, 0.14), 0px 3px 14px 2px rgba(black, 0.12);
+  box-shadow: 0 0 3px rgba(black, 0.2), 0 8px 10px 1px rgba(black, 0.14), 0 3px 14px 2px rgba(black, 0.12);
   min-width: 112px;
   max-width: 280px;
   overflow: auto;
@@ -140,17 +146,42 @@ md2-option {
     user-select: none;
   }
 
-  &:hover:not(.md2-option-disabled), &:focus:not(.md2-option-disabled) {
+  &:hover:not(.md2-option-disabled),
+  &:focus:not(.md2-option-disabled) {
     background: rgba(black, 0.04);
   }
 
   &.md2-selected {
-    background: rgba(black, 0.04);
     color: $primary;
   }
 
   &.md2-option-disabled {
     color: rgba(black, 0.38);
+  }
+
+  [multiple="true"] & {
+    padding-left: 40px;
+
+    &:after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 12px;
+      display: block;
+      width: 16px;
+      height: 16px;
+      margin-top: -8px;
+      border: 2px solid;
+      border-radius: 2px;
+      box-sizing: border-box;
+      transition: 240ms;
+    }
+
+    &.md2-selected:after {
+      transform: rotate(-45deg);
+      height: 8px;
+      border-width: 0 0 2px 2px;
+    }
   }
 }
 

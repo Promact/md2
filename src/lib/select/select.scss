@@ -153,7 +153,7 @@ md2-option {
   }
 }
 
-.md-overlay-container, .md-global-overlay-wrapper {
+.cdk-overlay-container, .cdk-global-overlay-wrapper {
   pointer-events: none;
   top: 0;
   left: 0;
@@ -161,19 +161,19 @@ md2-option {
   width: 100%;
 }
 
-.md-overlay-container {
+.cdk-overlay-container {
   position: fixed;
   z-index: 1000;
 }
 
-.md-overlay-pane {
+.cdk-overlay-pane {
   position: absolute;
   pointer-events: auto;
   box-sizing: border-box;
   z-index: 1000;
 }
 
-.md-overlay-backdrop {
+.cdk-overlay-backdrop {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -185,10 +185,10 @@ md2-option {
   opacity: 0;
 }
 
-.md-overlay-transparent-backdrop {
+.cdk-overlay-transparent-backdrop {
   background: none;
 }
 
-.md-overlay-backdrop.md-overlay-backdrop-showing {
+.cdk-overlay-backdrop.cdk-overlay-backdrop-showing {
   opacity: 0.48;
 }

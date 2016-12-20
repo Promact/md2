@@ -94,7 +94,7 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
   private _panelOpen = false;
 
   /** The currently selected option. */
-  private _selected: Md2Option;
+  private _selected: Array<Md2Option> = [];
 
   /** Subscriptions to option events. */
   private _subscriptions: Subscription[] = [];
@@ -110,6 +110,9 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
 
   /** Whether the select is disabled.  */
   private _disabled: boolean = false;
+
+  /** Whether the select is multiple.  */
+  private _multiple: boolean = false;
 
   /** The scroll position of the overlay panel, calculated to center the selected option. */
   private _scrollTop = 0;
@@ -208,6 +211,15 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
   }
 
   @Input()
+  get multiple() {
+    return this._multiple;
+  }
+
+  set multiple(value: any) {
+    this._multiple = coerceBooleanProperty(value);
+  }
+
+  @Input()
   get required() {
     return this._required;
   }
@@ -220,8 +232,8 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
   @Output() onClose = new EventEmitter();
 
   constructor(private _element: ElementRef, private _renderer: Renderer,
-              private _viewportRuler: ViewportRuler, @Optional() private _dir: Dir,
-              @Optional() public _control: NgControl) {
+    private _viewportRuler: ViewportRuler, @Optional() private _dir: Dir,
+    @Optional() public _control: NgControl) {
     if (this._control) {
       this._control.valueAccessor = this;
     }
@@ -312,7 +324,7 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
   }
 
   /** The currently selected option. */
-  get selected(): Md2Option {
+  get selected(): Array<Md2Option> {
     return this._selected;
   }
 
@@ -370,7 +382,7 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
    */
   _setScrollTop(): void {
     const scrollContainer =
-        this.overlayDir.overlayRef.overlayElement.querySelector('.md2-select-panel');
+      this.overlayDir.overlayRef.overlayElement.querySelector('.md2-select-panel');
     scrollContainer.scrollTop = this._scrollTop;
   }
 
@@ -394,7 +406,7 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
 
   /** Clears the select trigger and deselects every option in the list. */
   private _clearSelection(): void {
-    this._selected = null;
+    this._selected = [];
     this._updateOptions();
   }
 
@@ -443,8 +455,11 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
 
   /** When a new option is selected, deselects the others and closes the panel. */
   private _onSelect(option: Md2Option): void {
-    this._selected = option;
-    this._updateOptions();
+    if (this.multiple) {
+    } else {
+      this._selected[0] = option;
+      this._updateOptions();
+    }
     this._setValueWidth();
     this._placeholderState = '';
     if (this.panelOpen) {
@@ -455,7 +470,7 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
   /** Deselect each option that doesn't match the current selection. */
   private _updateOptions(): void {
     this.options.forEach((option: Md2Option) => {
-      if (option !== this.selected) {
+      if (option !== this.selected[0]) {
         option.deselect();
       }
     });
@@ -467,15 +482,15 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
    * overflow. The selection arrow is 9px wide, add 4px of padding = 13
    */
   private _setValueWidth() {
-    this._selectedValueWidth =  this._triggerWidth - 13;
+    this._selectedValueWidth = this._triggerWidth - 13;
   }
 
   /** Focuses the selected item. If no option is selected, it will focus
    * the first item instead.
    */
   private _focusCorrectOption(): void {
-    if (this.selected) {
-      this._keyManager.setFocus(this._getOptionIndex(this.selected));
+    if (this.selected.length) {
+      this._keyManager.setFocus(this._getOptionIndex(this.selected[0]));
     } else {
       this._keyManager.focusFirstItem();
     }
@@ -498,14 +513,14 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
     this._offsetX = this._isRtl() ? SELECT_PANEL_PADDING_X : -SELECT_PANEL_PADDING_X;
 
     const panelHeight =
-        Math.min(this.options.length * SELECT_OPTION_HEIGHT, SELECT_PANEL_MAX_HEIGHT);
+      Math.min(this.options.length * SELECT_OPTION_HEIGHT, SELECT_PANEL_MAX_HEIGHT);
     const scrollContainerHeight = this.options.length * SELECT_OPTION_HEIGHT;
 
     // The farthest the panel can be scrolled before it hits the bottom
     const maxScroll = scrollContainerHeight - panelHeight;
 
     if (this.selected) {
-      const selectedIndex = this._getOptionIndex(this.selected);
+      const selectedIndex = this._getOptionIndex(this.selected[0]);
       // We must maintain a scroll buffer so the selected option will be scrolled to the
       // center of the overlay panel rather than the top.
       const scrollBuffer = panelHeight / 2;
@@ -530,7 +545,7 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
    * scroll position to the min or max scroll positions respectively.
    */
   _calculateOverlayScroll(selectedIndex: number, scrollBuffer: number,
-                          maxScroll: number): number {
+    maxScroll: number): number {
     const optionOffsetFromScrollTop = SELECT_OPTION_HEIGHT * selectedIndex;
     const halfOptionHeight = SELECT_OPTION_HEIGHT / 2;
 
@@ -548,7 +563,7 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
    * selected option to be aligned over the trigger when the panel opens.
    */
   private _calculateOverlayOffset(selectedIndex: number, scrollBuffer: number,
-                                  maxScroll: number): number {
+    maxScroll: number): number {
     let optionOffsetFromPanelTop: number;
 
     if (this._scrollTop === 0) {
@@ -562,7 +577,7 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
       // scrolled to the very bottom, this padding is at the top of the panel and
       // must be added to the offset.
       optionOffsetFromPanelTop =
-          selectedDisplayIndex * SELECT_OPTION_HEIGHT + SELECT_PANEL_PADDING_Y;
+        selectedDisplayIndex * SELECT_OPTION_HEIGHT + SELECT_PANEL_PADDING_Y;
     } else {
       // If the option was scrolled to the middle of the panel using a scroll buffer,
       // its offset will be the scroll buffer minus the half height that was added to
@@ -588,17 +603,17 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
 
     const topSpaceAvailable = triggerRect.top - SELECT_PANEL_VIEWPORT_PADDING;
     const bottomSpaceAvailable =
-        viewportRect.height - triggerRect.bottom - SELECT_PANEL_VIEWPORT_PADDING;
+      viewportRect.height - triggerRect.bottom - SELECT_PANEL_VIEWPORT_PADDING;
 
     const panelHeightTop = Math.abs(this._offsetY);
     const totalPanelHeight =
-        Math.min(this.options.length * SELECT_OPTION_HEIGHT, SELECT_PANEL_MAX_HEIGHT);
-    const panelHeightBottom = totalPanelHeight -  panelHeightTop - triggerRect.height;
+      Math.min(this.options.length * SELECT_OPTION_HEIGHT, SELECT_PANEL_MAX_HEIGHT);
+    const panelHeightBottom = totalPanelHeight - panelHeightTop - triggerRect.height;
 
     if (panelHeightBottom > bottomSpaceAvailable) {
       this._adjustPanelUp(panelHeightBottom, bottomSpaceAvailable);
     } else if (panelHeightTop > topSpaceAvailable) {
-     this._adjustPanelDown(panelHeightTop, topSpaceAvailable, maxScroll);
+      this._adjustPanelDown(panelHeightTop, topSpaceAvailable, maxScroll);
     } else {
       this._transformOrigin = this._getOriginBasedOnOption();
     }
@@ -626,7 +641,7 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
 
   /** Adjusts the overlay panel down to fit in the viewport. */
   private _adjustPanelDown(panelHeightTop: number, topSpaceAvailable: number,
-                           maxScroll: number) {
+    maxScroll: number) {
     const distanceAboveViewport = panelHeightTop - topSpaceAvailable;
 
     // Scrolls the panel down by the distance it was extending past the boundary, then
@@ -649,7 +664,7 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
   /** Sets the transform origin point based on the selected option. */
   private _getOriginBasedOnOption(): string {
     const originY =
-        Math.abs(this._offsetY) - SELECT_OPTION_HEIGHT_ADJUSTMENT + SELECT_OPTION_HEIGHT / 2;
+      Math.abs(this._offsetY) - SELECT_OPTION_HEIGHT_ADJUSTMENT + SELECT_OPTION_HEIGHT / 2;
     return `50% ${originY}px 0px`;
   }
 

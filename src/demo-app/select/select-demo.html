@@ -39,7 +39,7 @@
   <h4>Multiple Select</h4>
   <div>
     <md2-select multiple [(ngModel)]="multiItem" (change)="handleChange($event)" placeholder="Select Cities">
-      <md2-option> -- Select Cities -- </md2-option>
+      <md2-option disabled> -- Select Cities -- </md2-option>
       <md2-option *ngFor="let i of items" [value]="i.value">{{i.name}}</md2-option>
     </md2-select>
   </div>

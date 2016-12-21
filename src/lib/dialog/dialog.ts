@@ -18,7 +18,8 @@ import {
   OVERLAY_PROVIDERS,
   OverlayState,
   OverlayRef,
-  TemplatePortal
+  TemplatePortal,
+  ESCAPE
 } from '../core/core';
 
 import 'rxjs/add/operator/first';
@@ -117,7 +118,7 @@ export class Md2Dialog implements OnDestroy {
   }
 
   _handleDocumentKeydown(event: KeyboardEvent) {
-    if (event.keyCode == 27) {
+    if (event.keyCode === ESCAPE) {
       this.close();
     }
   }

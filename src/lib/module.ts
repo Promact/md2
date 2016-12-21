@@ -3,6 +3,7 @@ import { NgModule, ModuleWithProviders } from '@angular/core';
 import {
   MdRippleModule,
   RtlModule,
+  ObserveContentModule,
   PortalModule,
   OverlayModule,
   A11yModule,
@@ -52,6 +53,7 @@ const MD2_MODULES = [
   PlatformModule,
   ProjectionModule,
   DefaultStyleCompatibilityModeModule,
+  ObserveContentModule
 ];
 
 @NgModule({
@@ -79,6 +81,7 @@ const MD2_MODULES = [
     PortalModule.forRoot(),
     ProjectionModule.forRoot(),
     RtlModule.forRoot(),
+    ObserveContentModule.forRoot(),
     DefaultStyleCompatibilityModeModule.forRoot(),
   ],
   exports: MD2_MODULES,

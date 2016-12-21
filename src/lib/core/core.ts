@@ -1,6 +1,7 @@
 import {NgModule, ModuleWithProviders} from '@angular/core';
 import {MdLineModule} from './line/line';
 import {RtlModule} from './rtl/dir';
+import {ObserveContentModule} from './observe-content/observe-content';
 import {MdRippleModule} from './ripple/ripple';
 import {PortalModule} from './portal/portal-directives';
 import {OverlayModule} from './overlay/overlay-directives';
@@ -10,6 +11,9 @@ import {OVERLAY_PROVIDERS} from './overlay/overlay';
 
 // RTL
 export {Dir, LayoutDirection, RtlModule} from './rtl/dir';
+
+// Mutation Observer
+export {ObserveContentModule, ObserveContent} from './observe-content/observe-content';
 
 // Portals
 export {
@@ -47,6 +51,11 @@ export {
 } from './overlay/overlay-directives';
 export * from './overlay/position/connected-position-strategy';
 export * from './overlay/position/connected-position';
+export {ScrollDispatcher} from './overlay/scroll/scroll-dispatcher';
+
+// Gestures
+export {GestureConfig} from './gestures/gesture-config';
+export * from './gestures/gesture-annotations';
 
 // Ripple
 export {MdRipple, MdRippleModule} from './ripple/ripple';
@@ -106,8 +115,24 @@ export {NoConflictStyleCompatibilityMode} from './compatibility/no-conflict-mode
 
 
 @NgModule({
-  imports: [MdLineModule, RtlModule, MdRippleModule, PortalModule, OverlayModule, A11yModule],
-  exports: [MdLineModule, RtlModule, MdRippleModule, PortalModule, OverlayModule, A11yModule],
+  imports: [
+    MdLineModule,
+    RtlModule,
+    MdRippleModule,
+    ObserveContentModule,
+    PortalModule,
+    OverlayModule,
+    A11yModule,
+  ],
+  exports: [
+    MdLineModule,
+    RtlModule,
+    MdRippleModule,
+    ObserveContentModule,
+    PortalModule,
+    OverlayModule,
+    A11yModule,
+  ],
 })
 export class MdCoreModule {
   static forRoot(): ModuleWithProviders {

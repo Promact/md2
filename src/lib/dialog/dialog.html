@@ -1,4 +1,5 @@
 <template md2DialogPortal>
+  <div class="md2-dialog-backdrop" (click)="close()"></div>
   <div class="md2-dialog" [class.open]="_isOpened">
     <div class="md2-dialog-container">
       <div class="md2-dialog-header">

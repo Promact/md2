@@ -48,7 +48,6 @@ export class Md2MenuTrigger {
   }
 
   _closeMenu() {
-    console.log('ttt');
     this._getParentElement().classList.remove('open');
     this._closeChildrenMenu(this._getParentElement());
   }

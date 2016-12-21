@@ -4,10 +4,6 @@ sudo: false
 node_js:
   - '6.9.1'
 
-branches:
-  only:
-    - master
-
 install:
   - npm install
 

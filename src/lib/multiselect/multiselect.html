@@ -1,7 +1,6 @@
 <div class="md2-multiselect-container">
   <span class="md2-multiselect-placeholder" [class.has-value]="_items.length">
     {{placeholder}}
-    <span class="md2-placeholder-required" *ngIf="required">*</span>
   </span>
   <div class="md2-multiselect-value">
     <div *ngFor="let v of _items; let last = last" class="md2-multiselect-value-item">

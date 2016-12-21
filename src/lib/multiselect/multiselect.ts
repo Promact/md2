@@ -19,7 +19,12 @@ import {
 import { CommonModule } from '@angular/common';
 import {
   coerceBooleanProperty,
-  KeyCodes
+  ENTER,
+  SPACE,
+  TAB,
+  ESCAPE,
+  DOWN_ARROW,
+  UP_ARROW
 } from '../core/core';
 
 export class Option {
@@ -73,7 +78,6 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
 
   private _value: any = '';
   private _readonly: boolean;
-  private _required: boolean;
   private _disabled: boolean;
   private _isInitialized: boolean;
   private _onTouchedCallback: () => void = noop;
@@ -95,10 +99,6 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
   @Input()
   get readonly(): boolean { return this._readonly; }
   set readonly(value) { this._readonly = coerceBooleanProperty(value); }
-
-  @Input()
-  get required(): boolean { return this._required; }
-  set required(value) { this._required = coerceBooleanProperty(value); }
 
   @Input()
   get disabled(): boolean { return this._disabled; }
@@ -205,26 +205,26 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
       event.stopPropagation();
 
       switch (event.keyCode) {
-        case KeyCodes.TAB:
-        case KeyCodes.ESCAPE: this._onBlur(); break;
-        case KeyCodes.ENTER:
-        case KeyCodes.SPACE: this._handleOptionClick(event, this._focusedOption); break;
+        case TAB:
+        case ESCAPE: this._onBlur(); break;
+        case ENTER:
+        case SPACE: this._handleOptionClick(event, this._focusedOption); break;
 
-        case KeyCodes.DOWN_ARROW:
+        case DOWN_ARROW:
           this._focusedOption = (this._focusedOption === this._list.length - 1) ? 0 : Math.min(this._focusedOption + 1, this._list.length - 1);
           this.updateScroll();
           break;
-        case KeyCodes.UP_ARROW:
+        case UP_ARROW:
           this._focusedOption = (this._focusedOption === 0) ? this._list.length - 1 : Math.max(0, this._focusedOption - 1);
           this.updateScroll();
           break;
       }
     } else {
       switch (event.keyCode) {
-        case KeyCodes.ENTER:
-        case KeyCodes.SPACE:
-        case KeyCodes.DOWN_ARROW:
-        case KeyCodes.UP_ARROW:
+        case ENTER:
+        case SPACE:
+        case DOWN_ARROW:
+        case UP_ARROW:
           event.preventDefault();
           event.stopPropagation();
           this.updateOptions();

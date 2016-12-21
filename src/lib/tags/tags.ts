@@ -19,7 +19,12 @@ import {
 import { CommonModule } from '@angular/common';
 import {
   coerceBooleanProperty,
-  KeyCodes
+  LEFT_ARROW,
+  RIGHT_ARROW,
+  BACKSPACE,
+  DELETE,
+  TAB,
+  ESCAPE
 } from '../core/core';
 import { Md2AutocompleteModule } from '../autocomplete/autocomplete';
 
@@ -261,26 +266,26 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
   _handleKeydown(event: KeyboardEvent) {
     if (this.disabled || this._inputValue) { return; }
     switch (event.keyCode) {
-      case KeyCodes.BACKSPACE:
-      case KeyCodes.DELETE:
+      case BACKSPACE:
+      case DELETE:
         if (this._selectedTag < 0) { return; }
         event.preventDefault();
         this.removeAndSelectAdjacentTag(this._selectedTag);
         break;
 
-      case KeyCodes.TAB:
-      case KeyCodes.ESCAPE:
+      case TAB:
+      case ESCAPE:
         if (this._selectedTag < 0) { return; }
         event.preventDefault();
         this._handleFocus();
         break;
 
-      case KeyCodes.LEFT_ARROW:
+      case LEFT_ARROW:
         event.preventDefault();
         if (this._selectedTag < 0) { this._selectedTag = this._items.length; }
         if (this._items.length) { this.selectAndFocusTagSafe(this._selectedTag - 1); }
         break;
-      case KeyCodes.RIGHT_ARROW:
+      case RIGHT_ARROW:
         event.preventDefault();
         if (this._selectedTag >= this._items.length) { this._selectedTag = -1; }
         this.selectAndFocusTagSafe(this._selectedTag + 1);

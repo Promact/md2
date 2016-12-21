@@ -72,27 +72,7 @@ export class Md2TabLabel {
 @Component({
   moduleId: module.id,
   selector: 'md2-tabs',
-  template: `
-    <div class="md2-tabs-header-wrapper">
-      <div role="button" class="md2-prev-button" [class.disabled]="!canPageBack()" *ngIf="_shouldPaginate" (click)="previousPage()">
-        <em class="prev-icon">Prev</em>
-      </div>
-      <div role="button" class="md2-next-button" [class.disabled]="!canPageForward()" *ngIf="_shouldPaginate" (click)="nextPage()">
-        <em class="next-icon">Next</em>
-      </div>
-      <div class="md2-tabs-canvas" [class.md2-paginated]="_shouldPaginate" role="tablist" tabindex="0" (keydown.arrowRight)="focusNextTab()" (keydown.arrowLeft)="focusPreviousTab()" (keydown.enter)="selectedIndex = focusIndex" (mousewheel)="scroll($event)">
-        <div class="md2-tabs-header" [style.marginLeft]="-_offsetLeft + 'px'">
-          <div class="md2-tab-label" role="tab" *ngFor="let tab of tabs; let i = index" [class.focus]="focusIndex === i" [class.active]="selectedIndex === i" [class.disabled]="tab.disabled" (click)="focusIndex = selectedIndex = i">
-            <span [md2Transclude]="tab.labelRef">{{tab.label}}</span>
-          </div>
-          <div class="md2-tab-ink-bar" [style.left]="_inkBarLeft" [style.width]="_inkBarWidth"></div>
-        </div>
-      </div>
-    </div>
-    <div class="md2-tabs-body-wrapper">
-      <ng-content></ng-content>
-    </div>
-  `,
+  templateUrl: 'tabs.html',
   styleUrls: ['tabs.css'],
   host: {
     '[class]': 'class',
@@ -142,7 +122,13 @@ export class Md2Tabs implements AfterContentInit {
   }
 
   get element() {
-    const elements: any = { root: this.elementRef.nativeElement, wrapper: null, canvas: null, paging: null, tabs: null };
+    const elements: any = {
+      root: this.elementRef.nativeElement,
+      wrapper: null,
+      canvas: null,
+      paging: null,
+      tabs: null
+    };
     elements.wrapper = elements.root.querySelector('.md2-tabs-header-wrapper');
     elements.canvas = elements.wrapper.querySelector('.md2-tabs-canvas');
     elements.paging = elements.canvas.querySelector('.md2-tabs-header');
@@ -250,7 +236,8 @@ export class Md2Tabs implements AfterContentInit {
       tab = elements.tabs[i];
       if (tab.offsetLeft + tab.offsetWidth >= this._offsetLeft) { break; }
     }
-    this._offsetLeft = this.fixOffset(tab.offsetLeft + tab.offsetWidth - elements.canvas.clientWidth);
+    this._offsetLeft = this.fixOffset(tab.offsetLeft +
+      tab.offsetWidth - elements.canvas.clientWidth);
   }
 
   /**
@@ -313,7 +300,8 @@ export class Md2Tabs implements AfterContentInit {
     let tab = elements.tabs[index],
       left = tab.offsetLeft,
       right = tab.offsetWidth + left;
-    this._offsetLeft = Math.max(this._offsetLeft, this.fixOffset(right - elements.canvas.clientWidth + 32 * 2));
+    this._offsetLeft = Math.max(this._offsetLeft,
+      this.fixOffset(right - elements.canvas.clientWidth + 32 * 2));
     this._offsetLeft = Math.min(this._offsetLeft, this.fixOffset(left));
   }
 

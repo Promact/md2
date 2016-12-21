@@ -29,11 +29,6 @@ export enum KeyCodes {
   RIGHT_ARROW = 39,
   LEFT_ARROW = 37,
 
-  PAGE_UP = 33,
-  PAGE_DOWN = 34,
-
-  HOME = 36,
-  END = 35,
   ENTER = 13,
   SPACE = 32,
   BACKSPACE = 8,

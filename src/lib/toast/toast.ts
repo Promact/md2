@@ -128,9 +128,7 @@ export class Md2Toast {
 
 @Component({
   selector: 'md2-toast',
-  template: `
-    <div *ngFor="let toast of toasts" class="md2-toast" [class.in]="toast.isVisible" (click)="remove(toast.id)">{{toast.message}}</div>
-  `,
+  templateUrl: 'toast.html',
   styleUrls: ['toast.css'],
   encapsulation: ViewEncapsulation.None,
 })

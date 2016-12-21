@@ -134,7 +134,7 @@ md2-option {
   height: 48px;
   padding: 0 16px;
   font-size: 16px;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
   text-align: start;
   text-decoration: none;
   position: relative;
@@ -159,10 +159,10 @@ md2-option {
     color: rgba(black, 0.38);
   }
 
-  [multiple="true"] & {
+  [multiple='true'] & {
     padding-left: 40px;
 
-    &:after {
+    &::after {
       content: '';
       position: absolute;
       top: 50%;
@@ -177,7 +177,7 @@ md2-option {
       transition: 240ms;
     }
 
-    &.md2-selected:after {
+    &.md2-selected::after {
       transform: rotate(-45deg);
       height: 8px;
       border-width: 0 0 2px 2px;

@@ -121,7 +121,8 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
       this._items = [];
       if (value && value.length && typeof value === 'object' && Array.isArray(value)) {
         for (let i = 0; i < value.length; i++) {
-          let selItm = this._options.find((itm: any) => this.equals(this.valueKey ? itm[this.valueKey] : itm, value[i]));
+          let selItm = this._options.find((itm: any) => this.equals(this.valueKey ?
+            itm[this.valueKey] : itm, value[i]));
           if (selItm) { this._items.push(new Option(selItm, this.textKey, this.valueKey)); }
         }
       }
@@ -211,11 +212,13 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
         case SPACE: this._handleOptionClick(event, this._focusedOption); break;
 
         case DOWN_ARROW:
-          this._focusedOption = (this._focusedOption === this._list.length - 1) ? 0 : Math.min(this._focusedOption + 1, this._list.length - 1);
+          this._focusedOption = (this._focusedOption === this._list.length - 1) ?
+            0 : Math.min(this._focusedOption + 1, this._list.length - 1);
           this.updateScroll();
           break;
         case UP_ARROW:
-          this._focusedOption = (this._focusedOption === 0) ? this._list.length - 1 : Math.max(0, this._focusedOption - 1);
+          this._focusedOption = (this._focusedOption === 0) ?
+            this._list.length - 1 : Math.max(0, this._focusedOption - 1);
           this.updateScroll();
           break;
       }
@@ -265,7 +268,10 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
     let ind = this._items.map(i => i.text).indexOf(this._list[index].text);
     if (ind < 0) {
       this._items.push(this._list[index]);
-      this._items = this._items.sort((a, b) => { return this._list.findIndex((i: any) => i.text === a.text) - this._list.findIndex((i: any) => i.text === b.text); });
+      this._items = this._items.sort((a, b) => {
+        return this._list.findIndex((i: any) =>
+          i.text === a.text) - this._list.findIndex((i: any) => i.text === b.text);
+      });
     } else {
       this._items.splice(ind, 1);
     }
@@ -298,7 +304,8 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
       this._items = [];
       if (value && value.length && typeof value === 'object' && Array.isArray(value)) {
         for (let i = 0; i < value.length; i++) {
-          let selItm = this._options.find((itm: any) => this.equals(this.valueKey ? itm[this.valueKey] : itm, value[i]));
+          let selItm = this._options.find((itm: any) =>
+            this.equals(this.valueKey ? itm[this.valueKey] : itm, value[i]));
           if (selItm) { this._items.push(new Option(selItm, this.textKey, this.valueKey)); }
         }
       }

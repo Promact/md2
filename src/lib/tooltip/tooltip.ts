@@ -115,7 +115,8 @@ export class Md2TooltipComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    let _position = this.positionElements(this.hostEl.nativeElement, this._element.nativeElement.children[0], this.position);
+    let _position = this.positionElements(this.hostEl.nativeElement,
+      this._element.nativeElement.children[0], this.position);
     this._top = _position.top + 'px';
     this._left = _position.left + 'px';
     this._isVisible = true;
@@ -129,7 +130,9 @@ export class Md2TooltipComponent implements AfterViewInit {
    * @param position position
    * @return {top: number, left: number} object of top, left properties
    */
-  private positionElements(hostEl: HTMLElement, targetEl: HTMLElement, position: string): { top: number, left: number } {
+  private positionElements(hostEl: HTMLElement,
+    targetEl: HTMLElement, position: string):
+    { top: number, left: number } {
     let positionStrParts = position.split('-');
     let pos0 = positionStrParts[0];
     let pos1 = positionStrParts[1] || 'center';
@@ -153,7 +156,8 @@ export class Md2TooltipComponent implements AfterViewInit {
       case 'before':
         targetElPos = {
           top: shiftHeight[pos1],
-          left: (hostElPos.left - targetElWidth)// > 0 ? (hostElPos.left - targetElWidth) : (hostElPos.width + hostElPos.left)
+          left: (hostElPos.left - targetElWidth)
+          // > 0 ? (hostElPos.left - targetElWidth) : (hostElPos.width + hostElPos.left)
         };
         break;
       case 'after':
@@ -181,7 +185,8 @@ export class Md2TooltipComponent implements AfterViewInit {
   /**
    * calculate offset of target element
    * @param nativeEl element
-   * @return {width: number, height: number,top: number, left: number} object of with, height, top, left properties
+   * @return {width: number, height: number,top: number, left: number}
+   *         object of with, height, top, left properties
    */
   private offset(nativeEl: any): { width: number, height: number, top: number, left: number } {
     let boundingClientRect = nativeEl.getBoundingClientRect();

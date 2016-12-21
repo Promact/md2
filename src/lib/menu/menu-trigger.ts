@@ -14,12 +14,12 @@ import {
 })
 export class Md2MenuTrigger {
 
-  private _documentClickHandler: any;
+  private _handleClick: any;
 
   constructor(private _element: ElementRef, private _renderer: Renderer) { }
 
   ngAfterViewInit() {
-    this._documentClickHandler = this._renderer.listenGlobal('document', 'click', (event: Event) => {
+    this._handleClick = this._renderer.listenGlobal('document', 'click', (event: Event) => {
       if (!this._hasChildMenu(event)) {
         this._closeMenu();
       }
@@ -27,7 +27,7 @@ export class Md2MenuTrigger {
   }
 
   ngOnDestroy() {
-    this._documentClickHandler = null;
+    this._handleClick = null;
   }
 
   _toggleMenu() {

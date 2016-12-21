@@ -12,7 +12,11 @@
   </svg>
 </div>
 <ul *ngIf="isMenuVisible" class="md2-multiselect-menu">
-  <li class="md2-option" *ngFor="let l of _list; let i = index;" [class.active]="_isActive(i)" [class.focus]="focusedOption === i" (click)="_handleOptionClick($event, i)">
+  <li *ngFor="let l of _list; let i = index;"
+      class="md2-option"
+      [class.active]="_isActive(i)"
+      [class.focus]="_focusedOption === i"
+      (click)="_handleOptionClick($event, i)">
     <div class="md2-option-icon"></div>
     <div class="md2-option-text" [innerHtml]="l.text"></div>
   </li>

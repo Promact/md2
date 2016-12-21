@@ -64,6 +64,12 @@ export const SELECT_PANEL_PADDING_Y = 16;
  */
 export const SELECT_PANEL_VIEWPORT_PADDING = 8;
 
+/** Change event object emitted by Md2Select. */
+export class Md2SelectChange {
+  source: Md2Select;
+  value: any;
+}
+
 @Component({
   moduleId: module.id,
   selector: 'md2-select, mat-select',
@@ -189,6 +195,8 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
   @ViewChild(ConnectedOverlayDirective) overlayDir: ConnectedOverlayDirective;
   @ContentChildren(Md2Option) options: QueryList<Md2Option>;
 
+  @Output() change: EventEmitter<Md2SelectChange> = new EventEmitter<Md2SelectChange>();
+
   @Input()
   get placeholder() {
     return this._placeholder;
@@ -269,10 +277,23 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
   /** Closes the overlay panel and focuses the host element. */
   close(): void {
     this._panelOpen = false;
-    if (!this._selected) {
+    if (!this._selected.length) {
       this._placeholderState = '';
     }
     this._focusHost();
+  }
+
+  /** Dispatch change event with current select and value. */
+  _emitChangeEvent(): void {
+    let event = new Md2SelectChange();
+    event.source = this;
+    if (this.multiple) {
+      event.value = this._selected.map(option => option.value);
+    } else {
+      event.value = this._selected[0].value;
+    }
+    this._onChange(event.value);
+    this.change.emit(event);
   }
 
   /**
@@ -444,22 +465,15 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
   private _listenToOptions(): void {
     this.options.forEach((option: Md2Option) => {
       const sub = option.onSelect.subscribe((isUserInput: boolean) => {
-        //if (isUserInput) {
-        //  this._onChange(option.value);
-        //}
-        //this._onSelect(option);
         if (this.multiple) {
           let ind = this._selected.indexOf(option);
           if (ind < 0) {
             this._selected.push(option);
-            console.log('Add:' + option.viewValue);
             this._selected = this._selected.sort((a: Md2Option, b: Md2Option) => {
               return this.options.toArray().indexOf(a) - this.options.toArray().indexOf(b);
             });
           } else {
             this._selected.splice(ind, 1);
-            option.deselect();
-            console.log('Remove:' + option.viewValue);
           }
         } else {
           this._selected[0] = option;
@@ -467,13 +481,11 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
             this.close();
           }
         }
+
         if (isUserInput) {
-          if (this.multiple) {
-            this._onChange(this._selected.map(option => option.value));
-          } else {
-            this._onChange(option.value);
-          }
+          this._emitChangeEvent();
         }
+
         this._updateOptions();
         this._setValueWidth();
         this._placeholderState = '';
@@ -492,20 +504,6 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
   private _setOptionIds() {
     this._optionIds = this.options.map(option => option.id).join(' ');
   }
-
-  /** When a new option is selected, deselects the others and closes the panel. */
-  //private _onSelect(option: Md2Option): void {
-  //  if (this.multiple) {
-  //  } else {
-  //    this._selected[0] = option;
-  //    if (this.panelOpen) {
-  //      this.close();
-  //    }
-  //  }
-  //  this._updateOptions();
-  //  this._setValueWidth();
-  //  this._placeholderState = '';
-  //}
 
   /** Deselect each option that doesn't match the current selection. */
   private _updateOptions(): void {

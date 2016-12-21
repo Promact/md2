@@ -20,7 +20,18 @@ import { Md2DateUtil } from './dateUtil';
 
 import {
   coerceBooleanProperty,
-  KeyCodes
+  ENTER,
+  SPACE,
+  TAB,
+  ESCAPE,
+  HOME,
+  END,
+  PAGE_UP,
+  PAGE_DOWN,
+  LEFT_ARROW,
+  RIGHT_ARROW,
+  UP_ARROW,
+  DOWN_ARROW
 } from '../core/core';
 
 export interface IDay {
@@ -249,22 +260,22 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
       event.stopPropagation();
 
       switch (event.keyCode) {
-        case KeyCodes.TAB:
-        case KeyCodes.ESCAPE: this._onBlur(); break;
+        case TAB:
+        case ESCAPE: this._onBlur(); break;
       }
       let displayDate = this.displayDate;
       if (this._isYearsVisible) {
         switch (event.keyCode) {
-          case KeyCodes.ENTER:
-          case KeyCodes.SPACE: this._onClickOk(); break;
+          case ENTER:
+          case SPACE: this._onClickOk(); break;
 
-          case KeyCodes.DOWN_ARROW:
+          case DOWN_ARROW:
             if (this.displayDate.getFullYear() < (this.today.getFullYear() + 100)) {
               this.displayDate = this._dateUtil.incrementYears(displayDate, 1);
               this._scrollToSelectedYear();
             }
             break;
-          case KeyCodes.UP_ARROW:
+          case UP_ARROW:
             if (this.displayDate.getFullYear() > 1900) {
               this.displayDate = this._dateUtil.incrementYears(displayDate, -1);
               this._scrollToSelectedYear();
@@ -274,34 +285,34 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
 
       } else if (this._isCalendarVisible) {
         switch (event.keyCode) {
-          case KeyCodes.ENTER:
-          case KeyCodes.SPACE: this.setDate(this.displayDate); break;
+          case ENTER:
+          case SPACE: this.setDate(this.displayDate); break;
 
-          case KeyCodes.RIGHT_ARROW:
+          case RIGHT_ARROW:
             this.displayDate = this._dateUtil.incrementDays(displayDate, 1);
             break;
-          case KeyCodes.LEFT_ARROW:
+          case LEFT_ARROW:
             this.displayDate = this._dateUtil.incrementDays(displayDate, -1);
             break;
 
-          case KeyCodes.PAGE_DOWN:
+          case PAGE_DOWN:
             this.displayDate = this._dateUtil.incrementMonths(displayDate, 1);
             break;
-          case KeyCodes.PAGE_UP:
+          case PAGE_UP:
             this.displayDate = this._dateUtil.incrementMonths(displayDate, -1);
             break;
 
-          case KeyCodes.DOWN_ARROW:
+          case DOWN_ARROW:
             this.displayDate = this._dateUtil.incrementDays(displayDate, 7);
             break;
-          case KeyCodes.UP_ARROW:
+          case UP_ARROW:
             this.displayDate = this._dateUtil.incrementDays(displayDate, -7);
             break;
 
-          case KeyCodes.HOME:
+          case HOME:
             this.displayDate = this._dateUtil.getFirstDateOfMonth(displayDate);
             break;
-          case KeyCodes.END:
+          case END:
             this.displayDate = this._dateUtil.getLastDateOfMonth(displayDate);
             break;
         }
@@ -310,35 +321,35 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
         }
       } else if (this._isHoursVisible) {
         switch (event.keyCode) {
-          case KeyCodes.ENTER:
-          case KeyCodes.SPACE: this.setHour(this.displayDate.getHours()); break;
+          case ENTER:
+          case SPACE: this.setHour(this.displayDate.getHours()); break;
 
-          case KeyCodes.UP_ARROW:
+          case UP_ARROW:
             this.displayDate = this._dateUtil.incrementHours(displayDate, 1); this._resetClock();
             break;
-          case KeyCodes.DOWN_ARROW:
+          case DOWN_ARROW:
             this.displayDate = this._dateUtil.incrementHours(displayDate, -1); this._resetClock();
             break;
         }
       } else {
         switch (event.keyCode) {
-          case KeyCodes.ENTER:
-          case KeyCodes.SPACE:
+          case ENTER:
+          case SPACE:
             this.setMinute(this.displayDate.getMinutes());
             break;
 
-          case KeyCodes.UP_ARROW:
+          case UP_ARROW:
             this.displayDate = this._dateUtil.incrementMinutes(displayDate, 1); this._resetClock();
             break;
-          case KeyCodes.DOWN_ARROW:
+          case DOWN_ARROW:
             this.displayDate = this._dateUtil.incrementMinutes(displayDate, -1); this._resetClock();
             break;
         }
       }
     } else {
       switch (event.keyCode) {
-        case KeyCodes.ENTER:
-        case KeyCodes.SPACE:
+        case ENTER:
+        case SPACE:
           event.preventDefault();
           event.stopPropagation();
           this._showDatepicker();

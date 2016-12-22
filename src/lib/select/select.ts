@@ -72,7 +72,7 @@ export class Md2SelectChange {
 
 @Component({
   moduleId: module.id,
-  selector: 'md2-select, mat-select',
+  selector: 'md2-select',
   templateUrl: 'select.html',
   styleUrls: ['select.css'],
   encapsulation: ViewEncapsulation.None,

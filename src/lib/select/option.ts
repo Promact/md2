@@ -18,7 +18,7 @@ let _uniqueIdCounter = 0;
 
 @Component({
   moduleId: module.id,
-  selector: 'md2-option, mat-option',
+  selector: 'md2-option',
   host: {
     'role': 'option',
     '[attr.tabindex]': '_getTabIndex()',

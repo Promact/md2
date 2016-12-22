@@ -60,8 +60,13 @@ export const MD2_AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR: any = {
   host: {
     'role': 'autocomplete',
     '[id]': 'id',
+    '[attr.aria-label]': 'placeholder',
+    '[attr.aria-required]': 'required.toString()',
+    '[attr.aria-disabled]': 'disabled.toString()',
+    '[attr.aria-invalid]': '_control?.invalid || "false"',
     '[class.md2-autocomplete-disabled]': 'disabled',
-    '[attr.aria-disabled]': 'disabled'
+    '(keydown)': '_handleKeydown($event)',
+    '(blur)': '_onBlur()'
   },
   encapsulation: ViewEncapsulation.None
 })
@@ -76,8 +81,8 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
   @Output() textChange = new EventEmitter();
 
   private _value: any = '';
-  private _readonly: boolean;
-  private _required: boolean;
+  private _readonly: boolean = false;
+  private _required: boolean = false;
   private _disabled: boolean = false;
   private _isInitialized: boolean = false;
   private _onTouchedCallback: () => void = noop;

@@ -69,7 +69,6 @@ let nextId = 0;
   host: {
     'role': 'datepicker',
     '[id]': 'id',
-    '[class]': 'class',
     '[class.md2-datepicker-disabled]': 'disabled',
     '[tabindex]': 'disabled ? -1 : tabindex',
     '[attr.aria-label]': 'placeholder',
@@ -151,7 +150,6 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   @Input() type: 'date' | 'time' | 'datetime' = 'date';
   @Input() name: string = '';
   @Input() id: string = 'md2-datepicker-' + (++nextId);
-  @Input() class: string;
   @Input() placeholder: string;
   @Input() format: string = this.type === 'date' ?
     'DD/MM/YYYY' : this.type === 'time' ? 'HH:mm' : this.type === 'datetime' ?

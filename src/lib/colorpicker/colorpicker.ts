@@ -82,7 +82,10 @@ export class ColorpickerSliderDirective {
     let y = Math.max(0, Math.min(this.getY(event), height));
 
     if (this.pointX !== undefined && this.pointY !== undefined) {
-      this.change.emit({ s: x / width, v: (1 - y / height), pointX: this.pointX, pointY: this.pointY });
+      this.change.emit({
+        s: x / width, v: (1 - y / height),
+        pointX: this.pointX, pointY: this.pointY
+      });
     } else if (this.pointX === undefined && this.pointY !== undefined) {
       this.change.emit({ v: y / height, rg: this.pointY });
     } else {
@@ -127,7 +130,8 @@ export class ColorpickerSliderDirective {
    */
   getX(event: any) {
     let boundingClientRect = this._getNativeElement().getBoundingClientRect();
-    return (event.pageX !== undefined ? event.pageX : event.touches[0].pageX) - boundingClientRect.left - window.pageXOffset;
+    return (event.pageX !== undefined ? event.pageX : event.touches[0].pageX) -
+      boundingClientRect.left - window.pageXOffset;
   }
 
   /**
@@ -136,7 +140,8 @@ export class ColorpickerSliderDirective {
    */
   getY(event: any) {
     let boundingClientRect = this._getNativeElement().getBoundingClientRect();
-    return (event.pageY !== undefined ? event.pageY : event.touches[0].pageY) - boundingClientRect.top - window.pageYOffset;
+    return (event.pageY !== undefined ? event.pageY : event.touches[0].pageY) -
+      boundingClientRect.top - window.pageYOffset;
   }
 
   _getNativeElement(): HTMLElement {
@@ -344,11 +349,13 @@ export class Md2Colorpicker implements OnInit, ControlValueAccessor {
   update() {
     let hsla = this.service.hsva2hsla(this.hsva);
     let rgba = this.service.denormalizeRGBA(this.service.hsvaToRgba(this.hsva));
-    let hueRgba = this.service.denormalizeRGBA(this.service.hsvaToRgba(new Hsva(this.hsva.h, 1, 1, 1)));
+    let hueRgba = this.service.denormalizeRGBA(this.service.hsvaToRgba(
+      new Hsva(this.hsva.h, 1, 1, 1)));
 
     this.alphaColor = 'rgb(' + rgba.r + ',' + rgba.g + ',' + rgba.b + ')';
     this._hueSliderColor = 'rgb(' + hueRgba.r + ',' + hueRgba.g + ',' + hueRgba.b + ')';
-    this.hslaText = new Hsla(Math.round((hsla.h) * 360), Math.round(hsla.s * 100), Math.round(hsla.l * 100), Math.round(hsla.a * 100) / 100);
+    this.hslaText = new Hsla(Math.round((hsla.h) * 360), Math.round(hsla.s * 100),
+      Math.round(hsla.l * 100), Math.round(hsla.a * 100) / 100);
     this.rgbaText = new Rgba(rgba.r, rgba.g, rgba.b, Math.round(rgba.a * 100) / 100);
     this.hexText = this.service.hexText(rgba);
 
@@ -356,8 +363,9 @@ export class Md2Colorpicker implements OnInit, ControlValueAccessor {
       this.format++;
     }
     this.outputColor = this.service.outputFormat(this.hsva, this.cFormat);
-    this.slider = new SliderPosition((this.hsva.h) * this.sliderDim.h - 8, this.hsva.s * this.sliderDim.s - 8,
-      (1 - this.hsva.v) * this.sliderDim.v - 8, this.hsva.a * this.sliderDim.a - 8);
+    this.slider = new SliderPosition((this.hsva.h) * this.sliderDim.h - 8,
+      this.hsva.s * this.sliderDim.s - 8, (1 - this.hsva.v) * this.sliderDim.v - 8,
+      this.hsva.a * this.sliderDim.a - 8);
 
     this.colorChanged(this.outputColor);
   }
@@ -421,7 +429,9 @@ export class SliderDimension {
   constructor(public h: number, public s: number, public v: number, public a: number) { }
 }
 
-export const MD2_COLORPICKER_DIRECTIVES = [Md2Colorpicker, ColorpickerSliderDirective, TextDirective];
+export const MD2_COLORPICKER_DIRECTIVES = [
+  Md2Colorpicker, ColorpickerSliderDirective, TextDirective
+];
 
 @NgModule({
   declarations: MD2_COLORPICKER_DIRECTIVES,

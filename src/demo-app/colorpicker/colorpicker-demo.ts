@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 
 @Component({
   moduleId: module.id,
@@ -6,9 +6,9 @@ import {Component, OnInit} from '@angular/core';
   templateUrl: 'colorpicker-demo.html'
 })
 export class ColorpickerDemo {
-  private color: string = '#123456';
-  private color2: string = '#654321';
-  private change(value: any) {
+  private _color: string = '#123456';
+  private _color2: string = '#654321';
+  handleChange(value: any) {
     console.log('Changed color: ', value);
   }
 }

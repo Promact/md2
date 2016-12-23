@@ -1,3 +1,22 @@
+<a name="0.0.11"></a>
+## [0.0.11](https://github.com/Promact/md2/compare/0.0.10-7...v0.0.11) (2016-12-23)
+
+
+### Bug Fixes
+
+* AoT issue ([b99c18d](https://github.com/Promact/md2/commit/b99c18d))
+* demo home issue ([6f7bbbe](https://github.com/Promact/md2/commit/6f7bbbe))
+* first trap issue ([5961e2d](https://github.com/Promact/md2/commit/5961e2d))
+* safari date issue [#20](https://github.com/Promact/md2/issues/20) ([c611574](https://github.com/Promact/md2/commit/c611574))
+
+
+### Features
+
+* api docs ([bca2bd7](https://github.com/Promact/md2/commit/bca2bd7))
+* initial select multiple ([64d6765](https://github.com/Promact/md2/commit/64d6765))
+
+
+
 <a name="0.0.10-7"></a>
 ## [0.0.10-7](https://github.com/Promact/md2/compare/0.0.10-6...v0.0.10-7) (2016-12-16)
 

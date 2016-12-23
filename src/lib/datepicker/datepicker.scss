@@ -390,14 +390,14 @@ md2-datepicker.md2-datepicker-disabled:focus {
   }
 
   &.disabled,
-  .disabled:hover {
+  &.disabled:hover {
     color: rgba(black, 0.45);
     background: transparent;
     pointer-events: none;
   }
 
-  .prev-month,
-  .next-month {
+  &.prev-month,
+  &.next-month {
     visibility: hidden;
   }
 }

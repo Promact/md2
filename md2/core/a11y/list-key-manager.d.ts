@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Observable';
  * This is the interface for focusable items (used by the ListKeyManager).
  * Each item must know how to focus itself and whether or not it is currently disabled.
  */
-export interface MdFocusable {
+export interface Focusable {
     focus(): void;
     disabled?: boolean;
 }
@@ -17,7 +17,7 @@ export declare class ListKeyManager {
     private _focusedItemIndex;
     private _tabOut;
     private _wrap;
-    constructor(_items: QueryList<MdFocusable>);
+    constructor(_items: QueryList<Focusable>);
     /**
      * Turns on focus wrapping mode, which ensures that the focus will wrap to
      * the other end of list when there are no more items in the given direction.

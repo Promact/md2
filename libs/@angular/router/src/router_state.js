@@ -56,7 +56,7 @@ export var RouterState = (function (_super) {
 }(Tree));
 function RouterState_tsickle_Closure_declarations() {
     /**
-     * The current snapshot of the router state.
+     * The current snapshot of the router state
      * @type {?}
      */
     RouterState.prototype.snapshot;
@@ -92,15 +92,16 @@ export function createEmptyStateSnapshot(urlTree, rootComponent) {
 }
 /**
  *  outlet.
-  * ActivatedRoute can also be used to traverse the router state tree.
+  * An `ActivatedRoute` can also be used to traverse the router state tree.
   * *
   * *
   * ```
   * class MyComponent {
   * constructor(route: ActivatedRoute) {
   * const id: Observable<string> = route.params.map(p => p.id);
-  * const url: Observable<string> = route.url.map(s => s.join(''));
-  * const user = route.data.map(d => d.user); //includes `data` and `resolve`
+  * const url: Observable<string> = route.url.map(segments => segments.join(''));
+  * // route.data includes both `data` and `resolve`
+  * const user = route.data.map(d => d.user);
   * }
   * }
   * ```
@@ -117,8 +118,7 @@ export var ActivatedRoute = (function () {
      * @param {?} component
      * @param {?} futureSnapshot
      */
-    function ActivatedRoute(url, params, queryParams, fragment, data, outlet, component, // TODO: vsavkin: remove |string
-        futureSnapshot) {
+    function ActivatedRoute(url, params, queryParams, fragment, data, outlet, component, futureSnapshot) {
         this.url = url;
         this.params = params;
         this.queryParams = queryParams;
@@ -130,7 +130,7 @@ export var ActivatedRoute = (function () {
     }
     Object.defineProperty(ActivatedRoute.prototype, "routeConfig", {
         /**
-         *  The configuration used to match this route.
+         *  The configuration used to match this route
          * @return {?}
          */
         get: function () { return this._futureSnapshot.routeConfig; },
@@ -139,7 +139,7 @@ export var ActivatedRoute = (function () {
     });
     Object.defineProperty(ActivatedRoute.prototype, "root", {
         /**
-         *  The root of the router state.
+         *  The root of the router state
          * @return {?}
          */
         get: function () { return this._routerState.root; },
@@ -148,7 +148,7 @@ export var ActivatedRoute = (function () {
     });
     Object.defineProperty(ActivatedRoute.prototype, "parent", {
         /**
-         *  The parent of this route in the router state tree.
+         *  The parent of this route in the router state tree
          * @return {?}
          */
         get: function () { return this._routerState.parent(this); },
@@ -157,7 +157,7 @@ export var ActivatedRoute = (function () {
     });
     Object.defineProperty(ActivatedRoute.prototype, "firstChild", {
         /**
-         *  The first child of this route in the router state tree.
+         *  The first child of this route in the router state tree
          * @return {?}
          */
         get: function () { return this._routerState.firstChild(this); },
@@ -166,7 +166,7 @@ export var ActivatedRoute = (function () {
     });
     Object.defineProperty(ActivatedRoute.prototype, "children", {
         /**
-         *  The children of this route in the router state tree.
+         *  The children of this route in the router state tree
          * @return {?}
          */
         get: function () { return this._routerState.children(this); },
@@ -175,7 +175,7 @@ export var ActivatedRoute = (function () {
     });
     Object.defineProperty(ActivatedRoute.prototype, "pathFromRoot", {
         /**
-         *  The path from the root of the router state tree to this route.
+         *  The path from the root of the router state tree to this route
          * @return {?}
          */
         get: function () { return this._routerState.pathFromRoot(this); },
@@ -191,54 +191,46 @@ export var ActivatedRoute = (function () {
     return ActivatedRoute;
 }());
 function ActivatedRoute_tsickle_Closure_declarations() {
-    /** @type {?} */
-    ActivatedRoute.prototype._futureSnapshot;
     /**
-     * The current snapshot of this route.
+     * The current snapshot of this route
      * @type {?}
      */
     ActivatedRoute.prototype.snapshot;
     /** @type {?} */
+    ActivatedRoute.prototype._futureSnapshot;
+    /** @type {?} */
     ActivatedRoute.prototype._routerState;
     /**
-     * The URL segments matched by this route. The observable will emit a new value when
-     * the array of segments changes.
+     * An observable of the URL segments matched by this route
      * @type {?}
      */
     ActivatedRoute.prototype.url;
     /**
-     * The matrix parameters scoped to this route. The observable will emit a new value when
-     * the set of the parameters changes.
+     * An observable of the matrix parameters scoped to this route
      * @type {?}
      */
     ActivatedRoute.prototype.params;
     /**
-     * The query parameters shared by all the routes. The observable will emit a new value when
-     * the set of the parameters changes.
+     * An observable of the query parameters shared by all the routes
      * @type {?}
      */
     ActivatedRoute.prototype.queryParams;
     /**
-     * The URL fragment shared by all the routes. The observable will emit a new value when
-     * the URL fragment changes.
+     * An observable of the URL fragment shared by all the routes
      * @type {?}
      */
     ActivatedRoute.prototype.fragment;
     /**
-     * The static and resolved data of this route. The observable will emit a new value when
-     * any of the resolvers returns a new object.
+     * An observable of the static and resolved data of this route.
      * @type {?}
      */
     ActivatedRoute.prototype.data;
     /**
-     * The outlet name of the route. It's a constant.
+     * The outlet name of the route. It's a constant
      * @type {?}
      */
     ActivatedRoute.prototype.outlet;
-    /**
-     * The component of the route. It's a constant.
-     * @type {?}
-     */
+    /** @type {?} */
     ActivatedRoute.prototype.component;
 }
 /**
@@ -315,7 +307,7 @@ export var ActivatedRouteSnapshot = (function () {
     }
     Object.defineProperty(ActivatedRouteSnapshot.prototype, "routeConfig", {
         /**
-         *  The configuration used to match this route.
+         *  The configuration used to match this route
          * @return {?}
          */
         get: function () { return this._routeConfig; },
@@ -324,7 +316,7 @@ export var ActivatedRouteSnapshot = (function () {
     });
     Object.defineProperty(ActivatedRouteSnapshot.prototype, "root", {
         /**
-         *  The root of the router state.
+         *  The root of the router state
          * @return {?}
          */
         get: function () { return this._routerState.root; },
@@ -333,7 +325,7 @@ export var ActivatedRouteSnapshot = (function () {
     });
     Object.defineProperty(ActivatedRouteSnapshot.prototype, "parent", {
         /**
-         *  The parent of this route in the router state tree.
+         *  The parent of this route in the router state tree
          * @return {?}
          */
         get: function () { return this._routerState.parent(this); },
@@ -342,7 +334,7 @@ export var ActivatedRouteSnapshot = (function () {
     });
     Object.defineProperty(ActivatedRouteSnapshot.prototype, "firstChild", {
         /**
-         *  The first child of this route in the router state tree.
+         *  The first child of this route in the router state tree
          * @return {?}
          */
         get: function () { return this._routerState.firstChild(this); },
@@ -351,7 +343,7 @@ export var ActivatedRouteSnapshot = (function () {
     });
     Object.defineProperty(ActivatedRouteSnapshot.prototype, "children", {
         /**
-         *  The children of this route in the router state tree.
+         *  The children of this route in the router state tree
          * @return {?}
          */
         get: function () { return this._routerState.children(this); },
@@ -360,7 +352,7 @@ export var ActivatedRouteSnapshot = (function () {
     });
     Object.defineProperty(ActivatedRouteSnapshot.prototype, "pathFromRoot", {
         /**
-         *  The path from the root of the router state tree to this route.
+         *  The path from the root of the router state tree to this route
          * @return {?}
          */
         get: function () { return this._routerState.pathFromRoot(this); },
@@ -371,7 +363,7 @@ export var ActivatedRouteSnapshot = (function () {
      * @return {?}
      */
     ActivatedRouteSnapshot.prototype.toString = function () {
-        var /** @type {?} */ url = this.url.map(function (s) { return s.toString(); }).join('/');
+        var /** @type {?} */ url = this.url.map(function (segment) { return segment.toString(); }).join('/');
         var /** @type {?} */ matched = this._routeConfig ? this._routeConfig.path : '';
         return "Route(url:'" + url + "', path:'" + matched + "')";
     };
@@ -391,37 +383,37 @@ function ActivatedRouteSnapshot_tsickle_Closure_declarations() {
     /** @type {?} */
     ActivatedRouteSnapshot.prototype._routerState;
     /**
-     * The URL segments matched by this route.
+     * The URL segments matched by this route
      * @type {?}
      */
     ActivatedRouteSnapshot.prototype.url;
     /**
-     * The matrix parameters scoped to this route.
+     * The matrix parameters scoped to this route
      * @type {?}
      */
     ActivatedRouteSnapshot.prototype.params;
     /**
-     * The query parameters shared by all the routes.
+     * The query parameters shared by all the routes
      * @type {?}
      */
     ActivatedRouteSnapshot.prototype.queryParams;
     /**
-     * The URL fragment shared by all the routes.
+     * The URL fragment shared by all the routes
      * @type {?}
      */
     ActivatedRouteSnapshot.prototype.fragment;
     /**
-     * The static and resolved data of this route.
+     * The static and resolved data of this route
      * @type {?}
      */
     ActivatedRouteSnapshot.prototype.data;
     /**
-     * The outlet name of the route.
+     * The outlet name of the route
      * @type {?}
      */
     ActivatedRouteSnapshot.prototype.outlet;
     /**
-     * The component of the route.
+     * The component of the route
      * @type {?}
      */
     ActivatedRouteSnapshot.prototype.component;

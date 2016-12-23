@@ -14,6 +14,7 @@ import { OverlayRef } from './overlay-ref';
 import { OverlayPositionBuilder } from './position/overlay-position-builder';
 import { ViewportRuler } from './position/viewport-ruler';
 import { OverlayContainer } from './overlay-container';
+import { ScrollDispatcher } from './scroll/scroll-dispatcher';
 /** Next overlay unique ID. */
 var nextUniqueId = 0;
 /** The default state for newly created overlays. */
@@ -57,8 +58,8 @@ export var Overlay = (function () {
      */
     Overlay.prototype._createPaneElement = function () {
         var pane = document.createElement('div');
-        pane.id = "md-overlay-" + nextUniqueId++;
-        pane.classList.add('md-overlay-pane');
+        pane.id = "cdk-overlay-" + nextUniqueId++;
+        pane.classList.add('cdk-overlay-pane');
         this._overlayContainer.getContainerElement().appendChild(pane);
         return pane;
     };
@@ -91,6 +92,7 @@ export var OVERLAY_PROVIDERS = [
     OverlayPositionBuilder,
     Overlay,
     OverlayContainer,
+    ScrollDispatcher,
 ];
 
 //# sourceMappingURL=overlay.js.map

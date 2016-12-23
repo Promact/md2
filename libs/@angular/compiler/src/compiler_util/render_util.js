@@ -82,13 +82,14 @@ function sanitizedValue(view, boundProp, renderValue, securityContextExpression)
  * @param {?} view
  * @param {?} componentView
  * @param {?} boundProp
+ * @param {?} boundOutputs
  * @param {?} eventListener
  * @param {?} renderElement
  * @param {?} renderValue
  * @param {?} lastRenderValue
  * @return {?}
  */
-export function triggerAnimation(view, componentView, boundProp, eventListener, renderElement, renderValue, lastRenderValue) {
+export function triggerAnimation(view, componentView, boundProp, boundOutputs, eventListener, renderElement, renderValue, lastRenderValue) {
     var /** @type {?} */ detachStmts = [];
     var /** @type {?} */ updateStmts = [];
     var /** @type {?} */ animationName = boundProp.name;
@@ -108,14 +109,19 @@ export function triggerAnimation(view, componentView, boundProp, eventListener, 
     detachStmts.push(animationTransitionVar
         .set(animationFnExpr.callFn([view, renderElement, lastRenderValue, emptyStateValue]))
         .toDeclStmt());
-    var /** @type {?} */ registerStmts = [
-        animationTransitionVar
+    var /** @type {?} */ registerStmts = [];
+    var /** @type {?} */ animationStartMethodExists = boundOutputs.find(function (event) { return event.isAnimation && event.name == animationName && event.phase == 'start'; });
+    if (animationStartMethodExists) {
+        registerStmts.push(animationTransitionVar
             .callMethod('onStart', [eventListener.callMethod(o.BuiltinMethod.Bind, [view, o.literal(BoundEventAst.calcFullName(animationName, null, 'start'))])])
-            .toStmt(),
-        animationTransitionVar
+            .toStmt());
+    }
+    var /** @type {?} */ animationDoneMethodExists = boundOutputs.find(function (event) { return event.isAnimation && event.name == animationName && event.phase == 'done'; });
+    if (animationDoneMethodExists) {
+        registerStmts.push(animationTransitionVar
             .callMethod('onDone', [eventListener.callMethod(o.BuiltinMethod.Bind, [view, o.literal(BoundEventAst.calcFullName(animationName, null, 'done'))])])
-            .toStmt(),
-    ];
+            .toStmt());
+    }
     updateStmts.push.apply(updateStmts, registerStmts);
     detachStmts.push.apply(detachStmts, registerStmts);
     return { updateStmts: updateStmts, detachStmts: detachStmts };

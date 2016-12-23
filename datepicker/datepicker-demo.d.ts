@@ -1,10 +1,9 @@
 export declare class DatepickerDemo {
     disabled: boolean;
-    datetime: any;
-    datetime1: any;
-    date: any;
-    time: any;
-    minDate: any;
-    maxDate: any;
+    date: Date;
+    time: Date;
+    datetime: Date;
+    minDate: Date;
+    maxDate: Date;
     handleChange(value: any): void;
 }

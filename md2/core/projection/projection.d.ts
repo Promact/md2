@@ -16,10 +16,10 @@ export declare class DomProjection {
      * ```
      *   @Component({
      *     template: `<div>
-     *       <dom-projection-host>
+     *       <cdk-dom-projection-host>
      *         <div>other</div>
      *         <ng-content></ng-content>
-     *       </dom-projection-host>
+     *       </cdk-dom-projection-host>
      *     </div>`
      *   })
      *   class Cmpt {

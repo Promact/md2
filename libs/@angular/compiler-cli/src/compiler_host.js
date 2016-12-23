@@ -18,7 +18,7 @@ var ts = require('typescript');
 var EXT = /(\.ts|\.d\.ts|\.js|\.jsx|\.tsx)$/;
 var DTS = /\.d\.ts$/;
 var NODE_MODULES = '/node_modules/';
-var IS_GENERATED = /\.(ngfactory|css(\.shim)?)$/;
+var IS_GENERATED = /\.(ngfactory|ngstyle)$/;
 var CompilerHost = (function () {
     function CompilerHost(program, options, context) {
         this.program = program;
@@ -164,28 +164,30 @@ var CompilerHost = (function () {
                 (Array.isArray(metadataOrMetadatas) ? metadataOrMetadatas : [metadataOrMetadatas]) :
                 [];
             var v1Metadata = metadatas_1.find(function (m) { return m['version'] === 1; });
-            var v2Metadata = metadatas_1.find(function (m) { return m['version'] === 2; });
-            if (!v2Metadata && v1Metadata) {
-                // patch up v1 to v2 by merging the metadata with metadata collected from the d.ts file
+            var v3Metadata = metadatas_1.find(function (m) { return m['version'] === 3; });
+            if (!v3Metadata && v1Metadata) {
+                // patch up v1 to v3 by merging the metadata with metadata collected from the d.ts file
                 // as the only difference between the versions is whether all exports are contained in
                 // the metadata and the `extends` clause.
-                v2Metadata = { '__symbolic': 'module', 'version': 2, 'metadata': {} };
+                v3Metadata = { '__symbolic': 'module', 'version': 3, 'metadata': {} };
                 if (v1Metadata.exports) {
-                    v2Metadata.exports = v1Metadata.exports;
+                    v3Metadata.exports = v1Metadata.exports;
                 }
                 for (var prop in v1Metadata.metadata) {
-                    v2Metadata.metadata[prop] = v1Metadata.metadata[prop];
+                    v3Metadata.metadata[prop] = v1Metadata.metadata[prop];
                 }
-                var sourceText = this.context.readFile(dtsFilePath);
                 var exports_1 = this.metadataCollector.getMetadata(this.getSourceFile(dtsFilePath));
                 if (exports_1) {
                     for (var prop in exports_1.metadata) {
-                        if (!v2Metadata.metadata[prop]) {
-                            v2Metadata.metadata[prop] = exports_1.metadata[prop];
+                        if (!v3Metadata.metadata[prop]) {
+                            v3Metadata.metadata[prop] = exports_1.metadata[prop];
                         }
                     }
+                    if (exports_1.exports) {
+                        v3Metadata.exports = exports_1.exports;
+                    }
                 }
-                metadatas_1.push(v2Metadata);
+                metadatas_1.push(v3Metadata);
             }
             this.resolverCache.set(filePath, metadatas_1);
             return metadatas_1;

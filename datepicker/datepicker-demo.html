@@ -1,42 +1,22 @@
 <div class="demo-datepicker">
   <h1>Datepicker Demo</h1>
   <hr />
-  <h4>Date Time Picker</h4>
-  <div>
-    <md2-datepicker [(ngModel)]="datetime"
-                    type="datetime"
-                    placeholder="Date Time"
-                    format="DD/MM/YYYY HH:mm"
-                    required
-                    (change)="handleChange($event)">
-    </md2-datepicker>
-
-    <md2-datepicker [(ngModel)]="datetime1"
-                    type="datetime"
-                    placeholder="Date Time"
-                    format="DD/MM/YYYY HH:mm"
-                    (change)="handleChange($event)">
-    </md2-datepicker>
-  </div>
   <h4>Date Picker</h4>
   <div>
-    <md2-datepicker [(ngModel)]="date"
-                    type="date"
+    <md2-datepicker type="date"
                     placeholder="Date"
                     format="DD/MM/YYYY"
                     (change)="handleChange($event)">
     </md2-datepicker>
-  </div>
-  <h4>Time Picker</h4>
-  <div>
-    <md2-datepicker [(ngModel)]="time"
-                    type="time"
-                    placeholder="Time"
-                    format="HH:mm"
+    <md2-datepicker [(ngModel)]="date"
+                    type="date"
+                    placeholder="Date"
+                    format="DD/MM/YYYY"
+                    required
                     (change)="handleChange($event)">
     </md2-datepicker>
-
-  </div>  <h4>Disabled</h4>
+  </div>
+  <h4>Disabled</h4>
   <div>
     <md2-datepicker [(ngModel)]="date"
                     type="date"
@@ -54,6 +34,24 @@
                     [max]="maxDate"
                     placeholder="Date Time"
                     format="DD/MM/YYYY"
+                    (change)="handleChange($event)">
+    </md2-datepicker>
+  </div>
+  <h4>Time Picker</h4>
+  <div>
+    <md2-datepicker [(ngModel)]="time"
+                    type="time"
+                    placeholder="Time"
+                    format="HH:mm"
+                    (change)="handleChange($event)">
+    </md2-datepicker>
+  </div>
+  <h4>Date Time Picker</h4>
+  <div>
+    <md2-datepicker [(ngModel)]="datetime"
+                    type="datetime"
+                    placeholder="Date Time"
+                    format="DD/MM/YYYY HH:mm"
                     (change)="handleChange($event)">
     </md2-datepicker>
   </div>

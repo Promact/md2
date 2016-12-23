@@ -11,10 +11,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var ColorpickerDemo = (function () {
     function ColorpickerDemo() {
-        this.color = '#123456';
-        this.color2 = '#654321';
+        this._color = '#123456';
+        this._color2 = '#654321';
     }
-    ColorpickerDemo.prototype.change = function (value) {
+    ColorpickerDemo.prototype.handleChange = function (value) {
         console.log('Changed color: ', value);
     };
     ColorpickerDemo = __decorate([

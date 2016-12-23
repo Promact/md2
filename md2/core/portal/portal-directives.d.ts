@@ -17,7 +17,7 @@ export declare class TemplatePortalDirective extends TemplatePortal {
  * directly attached to it, enabling declarative use.
  *
  * Usage:
- * <template [portalHost]="greeting"></template>
+ * <template [cdkPortalHost]="greeting"></template>
  */
 export declare class PortalHostDirective extends BasePortalHost implements OnDestroy {
     private _componentFactoryResolver;
@@ -25,6 +25,8 @@ export declare class PortalHostDirective extends BasePortalHost implements OnDes
     /** The attached portal. */
     private _portal;
     constructor(_componentFactoryResolver: ComponentFactoryResolver, _viewContainerRef: ViewContainerRef);
+    /** @deprecated */
+    _deprecatedPortal: Portal<any>;
     portal: Portal<any>;
     ngOnDestroy(): void;
     /** Attach the given ComponentPortal to this PortalHost using the ComponentFactoryResolver. */

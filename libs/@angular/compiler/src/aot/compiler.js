@@ -305,7 +305,7 @@ function _componentFactoryName(comp) {
  * @return {?}
  */
 function _stylesModuleUrl(stylesheetUrl, shim, suffix) {
-    return shim ? stylesheetUrl + ".shim" + suffix : "" + stylesheetUrl + suffix;
+    return "" + stylesheetUrl + (shim ? '.shim' : '') + ".ngstyle" + suffix;
 }
 /**
  * @param {?} meta

@@ -229,6 +229,10 @@ function _normalizeAnimationEntry(entry) {
  * @return {?}
  */
 function _normalizeStyleMetadata(entry, stateStyles, schema, errors, permitStateReferences) {
+    var /** @type {?} */ offset = entry.offset;
+    if (offset > 1 || offset < 0) {
+        errors.push(new AnimationParseError("Offset values for animations must be between 0 and 1"));
+    }
     var /** @type {?} */ normalizedStyles = [];
     entry.styles.forEach(function (styleEntry) {
         if (typeof styleEntry === 'string') {

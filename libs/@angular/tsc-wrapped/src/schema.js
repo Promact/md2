@@ -12,7 +12,7 @@
 // leave VERSION the same. If possible, as many versions of the metadata that can represent the
 // semantics of the file in an array. For example, when generating a version 2 file, if version 1
 // can accurately represent the metadata, generate both version 1 and version 2 in an array.
-exports.VERSION = 2;
+exports.VERSION = 3;
 function isModuleMetadata(value) {
     return value && value.__symbolic === 'module';
 }

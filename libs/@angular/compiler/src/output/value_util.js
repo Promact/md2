@@ -7,6 +7,7 @@
  */
 import { visitValue } from '../util';
 import * as o from './output_ast';
+export var /** @type {?} */ QUOTED_KEYS = '$quoted$';
 /**
  * @param {?} value
  * @param {?=} type
@@ -36,8 +37,11 @@ var _ValueOutputAstTransformer = (function () {
     _ValueOutputAstTransformer.prototype.visitStringMap = function (map, type) {
         var _this = this;
         var /** @type {?} */ entries = [];
-        Object.keys(map).forEach(function (key) { entries.push([key, visitValue(map[key], _this, null)]); });
-        return o.literalMap(entries, type);
+        var /** @type {?} */ quotedSet = new Set(map && map[QUOTED_KEYS]);
+        Object.keys(map).forEach(function (key) {
+            entries.push(new o.LiteralMapEntry(key, visitValue(map[key], _this, null), quotedSet.has(key)));
+        });
+        return new o.LiteralMapExpr(entries, type);
     };
     /**
      * @param {?} value

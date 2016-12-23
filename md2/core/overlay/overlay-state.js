@@ -7,7 +7,7 @@ export var OverlayState = (function () {
         /** Whether the overlay has a backdrop. */
         this.hasBackdrop = false;
         /** Custom class to add to the backdrop **/
-        this.backdropClass = 'md-overlay-dark-backdrop';
+        this.backdropClass = 'cdk-overlay-dark-backdrop';
         /** The direction of the text in the overlay panel. */
         this.direction = 'ltr';
     }

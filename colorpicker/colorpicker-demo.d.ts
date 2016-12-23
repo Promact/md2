@@ -1,5 +1,5 @@
 export declare class ColorpickerDemo {
-    private color;
-    private color2;
-    private change(value);
+    private _color;
+    private _color2;
+    handleChange(value: any): void;
 }

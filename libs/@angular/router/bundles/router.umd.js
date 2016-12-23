@@ -1,5 +1,5 @@
 /**
- * @license Angular v3.3.0
+ * @license Angular v3.3.1
  * (c) 2010-2016 Google, Inc. https://angular.io/
  * License: MIT
  */(function (global, factory) {
@@ -191,9 +191,7 @@
           var /** @type {?} */ last$ = l.last.call(concatted$);
           return rxjs_operator_map.map.call(last$, function () { return res; });
       }
-      else {
-          return rxjs_observable_of.of(res);
-      }
+      return rxjs_observable_of.of(res);
   }
   /**
    * @param {?} observables
@@ -211,12 +209,10 @@
       if (value instanceof rxjs_Observable.Observable) {
           return value;
       }
-      else if (value instanceof Promise) {
+      if (value instanceof Promise) {
           return rxjs_observable_fromPromise.fromPromise(value);
       }
-      else {
-          return rxjs_observable_of.of(value);
-      }
+      return rxjs_observable_of.of(value);
   }
 
   /**
@@ -293,10 +289,8 @@
           return equalQueryParams(container.queryParams, containee.queryParams) &&
               equalSegmentGroups(container.root, containee.root);
       }
-      else {
-          return containsQueryParams(container.queryParams, containee.queryParams) &&
-              containsSegmentGroup(container.root, containee.root);
-      }
+      return containsQueryParams(container.queryParams, containee.queryParams) &&
+          containsSegmentGroup(container.root, containee.root);
   }
   /**
    * @param {?} container
@@ -432,17 +426,18 @@
           var _this = this;
           this.segments = segments;
           this.children = children;
+          /** The parent node in the url tree */
           this.parent = null;
           forEach(children, function (v, k) { return v.parent = _this; });
       }
       /**
-       *  Return true if the segment has child segments
+       *  Wether the segment has child segments
        * @return {?}
        */
       UrlSegmentGroup.prototype.hasChildren = function () { return this.numberOfChildren > 0; };
       Object.defineProperty(UrlSegmentGroup.prototype, "numberOfChildren", {
           /**
-           *  Returns the number of child sements.
+           *  Number of child segments
            * @return {?}
            */
           get: function () { return Object.keys(this.children).length; },
@@ -471,8 +466,8 @@
     * ```
     * *
     * *
-    * A UrlSegment is a part of a URL between the two slashes. It contains a path and
-    * the matrix parameters associated with the segment.
+    * A UrlSegment is a part of a URL between the two slashes. It contains a path and the matrix
+    * parameters associated with the segment.
     * *
    */
   var UrlSegment = (function () {
@@ -551,14 +546,14 @@
       function UrlSerializer() {
       }
       /**
-       *  Parse a url into a {@link UrlTree}.
+       *  Parse a url into a {@link UrlTree}
        * @abstract
        * @param {?} url
        * @return {?}
        */
       UrlSerializer.prototype.parse = function (url) { };
       /**
-       *  Converts a {@link UrlTree} into a url.
+       *  Converts a {@link UrlTree} into a url
        * @abstract
        * @param {?} tree
        * @return {?}
@@ -585,7 +580,7 @@
       function DefaultUrlSerializer() {
       }
       /**
-       *  Parse a url into a {@link UrlTree}.
+       *  Parses a url into a {@link UrlTree}
        * @param {?} url
        * @return {?}
        */
@@ -594,7 +589,7 @@
           return new UrlTree(p.parseRootSegment(), p.parseQueryParams(), p.parseFragment());
       };
       /**
-       *  Converts a {@link UrlTree} into a url.
+       *  Converts a {@link UrlTree} into a url
        * @param {?} tree
        * @return {?}
        */
@@ -684,8 +679,12 @@
    * @return {?}
    */
   function serializeQueryParams(params) {
-      var /** @type {?} */ strs = pairs(params).map(function (p) { return (encode(p.first) + "=" + encode(p.second)); });
-      return strs.length > 0 ? "?" + strs.join("&") : '';
+      var /** @type {?} */ strParams = Object.keys(params).map(function (name) {
+          var /** @type {?} */ value = params[name];
+          return Array.isArray(value) ? value.map(function (v) { return (encode(name) + "=" + encode(v)); }).join('&') :
+              encode(name) + "=" + encode(value);
+      });
+      return strParams.length ? "?" + strParams.join("&") : '';
   }
   var Pair = (function () {
       /**
@@ -711,7 +710,7 @@
       }
       return res;
   }
-  var /** @type {?} */ SEGMENT_RE = /^[^\/\(\)\?;=&#]+/;
+  var /** @type {?} */ SEGMENT_RE = /^[^\/()?;=&#]+/;
   /**
    * @param {?} str
    * @return {?}
@@ -721,7 +720,7 @@
       var /** @type {?} */ match = str.match(SEGMENT_RE);
       return match ? match[0] : '';
   }
-  var /** @type {?} */ QUERY_PARAM_RE = /^[^=\?&#]+/;
+  var /** @type {?} */ QUERY_PARAM_RE = /^[^=?&#]+/;
   /**
    * @param {?} str
    * @return {?}
@@ -731,7 +730,7 @@
       var /** @type {?} */ match = str.match(SEGMENT_RE);
       return match ? match[0] : '';
   }
-  var /** @type {?} */ QUERY_PARAM_VALUE_RE = /^[^\?&#]+/;
+  var /** @type {?} */ QUERY_PARAM_VALUE_RE = /^[^?&#]+/;
   /**
    * @param {?} str
    * @return {?}
@@ -774,9 +773,7 @@
           if (this.remaining === '' || this.remaining.startsWith('?') || this.remaining.startsWith('#')) {
               return new UrlSegmentGroup([], {});
           }
-          else {
-              return new UrlSegmentGroup([], this.parseChildren());
-          }
+          return new UrlSegmentGroup([], this.parseChildren());
       };
       /**
        * @return {?}
@@ -847,9 +844,7 @@
           if (this.peekStartsWith('#')) {
               return decodeURI(this.remaining.substring(1));
           }
-          else {
-              return null;
-          }
+          return null;
       };
       /**
        * @return {?}
@@ -902,7 +897,21 @@
                   this.capture(value);
               }
           }
-          params[decode(key)] = decode(value);
+          var /** @type {?} */ decodedKey = decode(key);
+          var /** @type {?} */ decodedVal = decode(value);
+          if (params.hasOwnProperty(decodedKey)) {
+              // Append to existing values
+              var /** @type {?} */ currentVal = params[decodedKey];
+              if (!Array.isArray(currentVal)) {
+                  currentVal = [currentVal];
+                  params[decodedKey] = currentVal;
+              }
+              currentVal.push(decodedVal);
+          }
+          else {
+              // Create a new value
+              params[decodedKey] = decodedVal;
+          }
       };
       /**
        * @param {?} allowPrimary
@@ -1863,15 +1872,16 @@
   }
   /**
    *  outlet.
-    * ActivatedRoute can also be used to traverse the router state tree.
+    * An `ActivatedRoute` can also be used to traverse the router state tree.
     * *
     * *
     * ```
     * class MyComponent {
     * constructor(route: ActivatedRoute) {
     * const id: Observable<string> = route.params.map(p => p.id);
-    * const url: Observable<string> = route.url.map(s => s.join(''));
-    * const user = route.data.map(d => d.user); //includes `data` and `resolve`
+    * const url: Observable<string> = route.url.map(segments => segments.join(''));
+    * // route.data includes both `data` and `resolve`
+    * const user = route.data.map(d => d.user);
     * }
     * }
     * ```
@@ -1888,8 +1898,7 @@
        * @param {?} component
        * @param {?} futureSnapshot
        */
-      function ActivatedRoute(url, params, queryParams, fragment, data, outlet, component, // TODO: vsavkin: remove |string
-          futureSnapshot) {
+      function ActivatedRoute(url, params, queryParams, fragment, data, outlet, component, futureSnapshot) {
           this.url = url;
           this.params = params;
           this.queryParams = queryParams;
@@ -1901,7 +1910,7 @@
       }
       Object.defineProperty(ActivatedRoute.prototype, "routeConfig", {
           /**
-           *  The configuration used to match this route.
+           *  The configuration used to match this route
            * @return {?}
            */
           get: function () { return this._futureSnapshot.routeConfig; },
@@ -1910,7 +1919,7 @@
       });
       Object.defineProperty(ActivatedRoute.prototype, "root", {
           /**
-           *  The root of the router state.
+           *  The root of the router state
            * @return {?}
            */
           get: function () { return this._routerState.root; },
@@ -1919,7 +1928,7 @@
       });
       Object.defineProperty(ActivatedRoute.prototype, "parent", {
           /**
-           *  The parent of this route in the router state tree.
+           *  The parent of this route in the router state tree
            * @return {?}
            */
           get: function () { return this._routerState.parent(this); },
@@ -1928,7 +1937,7 @@
       });
       Object.defineProperty(ActivatedRoute.prototype, "firstChild", {
           /**
-           *  The first child of this route in the router state tree.
+           *  The first child of this route in the router state tree
            * @return {?}
            */
           get: function () { return this._routerState.firstChild(this); },
@@ -1937,7 +1946,7 @@
       });
       Object.defineProperty(ActivatedRoute.prototype, "children", {
           /**
-           *  The children of this route in the router state tree.
+           *  The children of this route in the router state tree
            * @return {?}
            */
           get: function () { return this._routerState.children(this); },
@@ -1946,7 +1955,7 @@
       });
       Object.defineProperty(ActivatedRoute.prototype, "pathFromRoot", {
           /**
-           *  The path from the root of the router state tree to this route.
+           *  The path from the root of the router state tree to this route
            * @return {?}
            */
           get: function () { return this._routerState.pathFromRoot(this); },
@@ -2035,7 +2044,7 @@
       }
       Object.defineProperty(ActivatedRouteSnapshot.prototype, "routeConfig", {
           /**
-           *  The configuration used to match this route.
+           *  The configuration used to match this route
            * @return {?}
            */
           get: function () { return this._routeConfig; },
@@ -2044,7 +2053,7 @@
       });
       Object.defineProperty(ActivatedRouteSnapshot.prototype, "root", {
           /**
-           *  The root of the router state.
+           *  The root of the router state
            * @return {?}
            */
           get: function () { return this._routerState.root; },
@@ -2053,7 +2062,7 @@
       });
       Object.defineProperty(ActivatedRouteSnapshot.prototype, "parent", {
           /**
-           *  The parent of this route in the router state tree.
+           *  The parent of this route in the router state tree
            * @return {?}
            */
           get: function () { return this._routerState.parent(this); },
@@ -2062,7 +2071,7 @@
       });
       Object.defineProperty(ActivatedRouteSnapshot.prototype, "firstChild", {
           /**
-           *  The first child of this route in the router state tree.
+           *  The first child of this route in the router state tree
            * @return {?}
            */
           get: function () { return this._routerState.firstChild(this); },
@@ -2071,7 +2080,7 @@
       });
       Object.defineProperty(ActivatedRouteSnapshot.prototype, "children", {
           /**
-           *  The children of this route in the router state tree.
+           *  The children of this route in the router state tree
            * @return {?}
            */
           get: function () { return this._routerState.children(this); },
@@ -2080,7 +2089,7 @@
       });
       Object.defineProperty(ActivatedRouteSnapshot.prototype, "pathFromRoot", {
           /**
-           *  The path from the root of the router state tree to this route.
+           *  The path from the root of the router state tree to this route
            * @return {?}
            */
           get: function () { return this._routerState.pathFromRoot(this); },
@@ -2091,7 +2100,7 @@
        * @return {?}
        */
       ActivatedRouteSnapshot.prototype.toString = function () {
-          var /** @type {?} */ url = this.url.map(function (s) { return s.toString(); }).join('/');
+          var /** @type {?} */ url = this.url.map(function (segment) { return segment.toString(); }).join('/');
           var /** @type {?} */ matched = this._routeConfig ? this._routeConfig.path : '';
           return "Route(url:'" + url + "', path:'" + matched + "')";
       };
@@ -2281,37 +2290,22 @@
       if (commands.length === 0) {
           return tree(urlTree.root, urlTree.root, urlTree, queryParams, fragment);
       }
-      var /** @type {?} */ normalizedCommands = normalizeCommands(commands);
-      validateCommands(normalizedCommands);
-      if (navigateToRoot(normalizedCommands)) {
+      var /** @type {?} */ nav = computeNavigation(commands);
+      if (nav.toRoot()) {
           return tree(urlTree.root, new UrlSegmentGroup([], {}), urlTree, queryParams, fragment);
       }
-      var /** @type {?} */ startingPosition = findStartingPosition(normalizedCommands, urlTree, route);
+      var /** @type {?} */ startingPosition = findStartingPosition(nav, urlTree, route);
       var /** @type {?} */ segmentGroup = startingPosition.processChildren ?
-          updateSegmentGroupChildren(startingPosition.segmentGroup, startingPosition.index, normalizedCommands.commands) :
-          updateSegmentGroup(startingPosition.segmentGroup, startingPosition.index, normalizedCommands.commands);
+          updateSegmentGroupChildren(startingPosition.segmentGroup, startingPosition.index, nav.commands) :
+          updateSegmentGroup(startingPosition.segmentGroup, startingPosition.index, nav.commands);
       return tree(startingPosition.segmentGroup, segmentGroup, urlTree, queryParams, fragment);
-  }
-  /**
-   * @param {?} n
-   * @return {?}
-   */
-  function validateCommands(n) {
-      if (n.isAbsolute && n.commands.length > 0 && isMatrixParams(n.commands[0])) {
-          throw new Error('Root segment cannot have matrix parameters');
-      }
-      var /** @type {?} */ c = n.commands.filter(function (c) { return typeof c === 'object' && c.outlets !== undefined; });
-      if (c.length > 0 && c[0] !== n.commands[n.commands.length - 1]) {
-          throw new Error('{outlets:{}} has to be the last command');
-      }
   }
   /**
    * @param {?} command
    * @return {?}
    */
   function isMatrixParams(command) {
-      return typeof command === 'object' && command.outlets === undefined &&
-          command.segmentPath === undefined;
+      return typeof command === 'object' && !command.outlets && !command.segmentPath;
   }
   /**
    * @param {?} oldSegmentGroup
@@ -2325,9 +2319,7 @@
       if (urlTree.root === oldSegmentGroup) {
           return new UrlTree(newSegmentGroup, stringify(queryParams), fragment);
       }
-      else {
-          return new UrlTree(replaceSegment(urlTree.root, oldSegmentGroup, newSegmentGroup), stringify(queryParams), fragment);
-      }
+      return new UrlTree(replaceSegment(urlTree.root, oldSegmentGroup, newSegmentGroup), stringify(queryParams), fragment);
   }
   /**
    * @param {?} current
@@ -2347,86 +2339,78 @@
       });
       return new UrlSegmentGroup(current.segments, children);
   }
-  /**
-   * @param {?} normalizedChange
-   * @return {?}
-   */
-  function navigateToRoot(normalizedChange) {
-      return normalizedChange.isAbsolute && normalizedChange.commands.length === 1 &&
-          normalizedChange.commands[0] == '/';
-  }
-  var NormalizedNavigationCommands = (function () {
+  var Navigation = (function () {
       /**
        * @param {?} isAbsolute
        * @param {?} numberOfDoubleDots
        * @param {?} commands
        */
-      function NormalizedNavigationCommands(isAbsolute, numberOfDoubleDots, commands) {
+      function Navigation(isAbsolute, numberOfDoubleDots, commands) {
           this.isAbsolute = isAbsolute;
           this.numberOfDoubleDots = numberOfDoubleDots;
           this.commands = commands;
+          if (isAbsolute && commands.length > 0 && isMatrixParams(commands[0])) {
+              throw new Error('Root segment cannot have matrix parameters');
+          }
+          var cmdWithOutlet = commands.find(function (c) { return typeof c === 'object' && c.outlets; });
+          if (cmdWithOutlet && cmdWithOutlet !== last(commands)) {
+              throw new Error('{outlets:{}} has to be the last command');
+          }
       }
-      return NormalizedNavigationCommands;
+      /**
+       * @return {?}
+       */
+      Navigation.prototype.toRoot = function () {
+          return this.isAbsolute && this.commands.length === 1 && this.commands[0] == '/';
+      };
+      return Navigation;
   }());
   /**
+   *  Transforms commands to a normalized `Navigation`
    * @param {?} commands
    * @return {?}
    */
-  function normalizeCommands(commands) {
-      if ((typeof commands[0] === 'string') && commands.length === 1 && commands[0] == '/') {
-          return new NormalizedNavigationCommands(true, 0, commands);
+  function computeNavigation(commands) {
+      if ((typeof commands[0] === 'string') && commands.length === 1 && commands[0] === '/') {
+          return new Navigation(true, 0, commands);
       }
       var /** @type {?} */ numberOfDoubleDots = 0;
       var /** @type {?} */ isAbsolute = false;
-      var /** @type {?} */ res = [];
-      var _loop_1 = function(i) {
-          var /** @type {?} */ c = commands[i];
-          if (typeof c === 'object' && c.outlets !== undefined) {
-              var /** @type {?} */ r_1 = {};
-              forEach(c.outlets, function (commands, name) {
-                  if (typeof commands === 'string') {
-                      r_1[name] = commands.split('/');
-                  }
-                  else {
-                      r_1[name] = commands;
-                  }
-              });
-              res.push({ outlets: r_1 });
-              return "continue";
-          }
-          if (typeof c === 'object' && c.segmentPath !== undefined) {
-              res.push(c.segmentPath);
-              return "continue";
-          }
-          if (!(typeof c === 'string')) {
-              res.push(c);
-              return "continue";
-          }
-          if (i === 0) {
-              var /** @type {?} */ parts = c.split('/');
-              for (var /** @type {?} */ j = 0; j < parts.length; ++j) {
-                  var /** @type {?} */ cc = parts[j];
-                  if (j == 0 && cc == '.') {
-                  }
-                  else if (j == 0 && cc == '') {
-                      isAbsolute = true;
-                  }
-                  else if (cc == '..') {
-                      numberOfDoubleDots++;
-                  }
-                  else if (cc != '') {
-                      res.push(cc);
-                  }
+      var /** @type {?} */ res = commands.reduce(function (res, cmd, cmdIdx) {
+          if (typeof cmd === 'object') {
+              if (cmd.outlets) {
+                  var /** @type {?} */ outlets_1 = {};
+                  forEach(cmd.outlets, function (commands, name) {
+                      outlets_1[name] = typeof commands === 'string' ? commands.split('/') : commands;
+                  });
+                  return res.concat([{ outlets: outlets_1 }]);
+              }
+              if (cmd.segmentPath) {
+                  return res.concat([cmd.segmentPath]);
               }
           }
-          else {
-              res.push(c);
+          if (!(typeof cmd === 'string')) {
+              return res.concat([cmd]);
           }
-      };
-      for (var /** @type {?} */ i = 0; i < commands.length; ++i) {
-          _loop_1(i);
-      }
-      return new NormalizedNavigationCommands(isAbsolute, numberOfDoubleDots, res);
+          if (cmdIdx === 0) {
+              cmd.split('/').forEach(function (urlPart, partIndex) {
+                  if (partIndex == 0 && urlPart === '.') {
+                  }
+                  else if (partIndex == 0 && urlPart === '') {
+                      isAbsolute = true;
+                  }
+                  else if (urlPart === '..') {
+                      numberOfDoubleDots++;
+                  }
+                  else if (urlPart != '') {
+                      res.push(urlPart);
+                  }
+              });
+              return res;
+          }
+          return res.concat([cmd]);
+      }, []);
+      return new Navigation(isAbsolute, numberOfDoubleDots, res);
   }
   var Position = (function () {
       /**
@@ -2442,23 +2426,21 @@
       return Position;
   }());
   /**
-   * @param {?} normalizedChange
-   * @param {?} urlTree
+   * @param {?} nav
+   * @param {?} tree
    * @param {?} route
    * @return {?}
    */
-  function findStartingPosition(normalizedChange, urlTree, route) {
-      if (normalizedChange.isAbsolute) {
-          return new Position(urlTree.root, true, 0);
+  function findStartingPosition(nav, tree, route) {
+      if (nav.isAbsolute) {
+          return new Position(tree.root, true, 0);
       }
-      else if (route.snapshot._lastPathIndex === -1) {
+      if (route.snapshot._lastPathIndex === -1) {
           return new Position(route.snapshot._urlSegment, true, 0);
       }
-      else {
-          var /** @type {?} */ modifier = isMatrixParams(normalizedChange.commands[0]) ? 0 : 1;
-          var /** @type {?} */ index = route.snapshot._lastPathIndex + modifier;
-          return createPositionApplyingDoubleDots(route.snapshot._urlSegment, index, normalizedChange.numberOfDoubleDots);
-      }
+      var /** @type {?} */ modifier = isMatrixParams(nav.commands[0]) ? 0 : 1;
+      var /** @type {?} */ index = route.snapshot._lastPathIndex + modifier;
+      return createPositionApplyingDoubleDots(route.snapshot._urlSegment, index, nav.numberOfDoubleDots);
   }
   /**
    * @param {?} group
@@ -2546,15 +2528,15 @@
           return new UrlSegmentGroup(segmentGroup.segments, {});
       }
       else {
-          var /** @type {?} */ outlets_1 = getOutlets(commands);
+          var /** @type {?} */ outlets_2 = getOutlets(commands);
           var /** @type {?} */ children_1 = {};
-          forEach(outlets_1, function (commands, outlet) {
+          forEach(outlets_2, function (commands, outlet) {
               if (commands !== null) {
                   children_1[outlet] = updateSegmentGroup(segmentGroup.children[outlet], startIndex, commands);
               }
           });
           forEach(segmentGroup.children, function (child, childOutlet) {
-              if (outlets_1[childOutlet] === undefined) {
+              if (outlets_2[childOutlet] === undefined) {
                   children_1[childOutlet] = child;
               }
           });
@@ -2604,7 +2586,7 @@
       var /** @type {?} */ i = 0;
       while (i < commands.length) {
           if (typeof commands[i] === 'object' && commands[i].outlets !== undefined) {
-              var /** @type {?} */ children = createNewSegmentChldren(commands[i].outlets);
+              var /** @type {?} */ children = createNewSegmentChildren(commands[i].outlets);
               return new UrlSegmentGroup(paths, children);
           }
           // if we start with an object literal, we need to reuse the path part from the segment
@@ -2631,7 +2613,7 @@
    * @param {?} outlets
    * @return {?}
    */
-  function createNewSegmentChldren(outlets) {
+  function createNewSegmentChildren(outlets) {
       var /** @type {?} */ children = {};
       forEach(outlets, function (commands, outlet) {
           if (commands !== null) {
@@ -3375,7 +3357,7 @@
       };
       Object.defineProperty(Router.prototype, "routerState", {
           /**
-           *  Returns the current route state.
+           *  The current route state
            * @return {?}
            */
           get: function () { return this.currentRouterState; },
@@ -3384,7 +3366,7 @@
       });
       Object.defineProperty(Router.prototype, "url", {
           /**
-           *  Returns the current url.
+           *  The current url
            * @return {?}
            */
           get: function () { return this.serializeUrl(this.currentUrlTree); },
@@ -3393,7 +3375,7 @@
       });
       Object.defineProperty(Router.prototype, "events", {
           /**
-           *  Returns an observable of route events
+           *  An observable of router events
            * @return {?}
            */
           get: function () { return this.routerEvents; },
@@ -3410,7 +3392,7 @@
         * { path: 'team/:id', component: TeamCmp, children: [
         * { path: 'simple', component: SimpleCmp },
         * { path: 'user/:name', component: UserCmp }
-        * ] }
+        * ]}
         * ]);
         * ```
        * @param {?} config
@@ -3425,7 +3407,7 @@
        */
       Router.prototype.ngOnDestroy = function () { this.dispose(); };
       /**
-       *  Disposes of the router.
+       *  Disposes of the router
        * @return {?}
        */
       Router.prototype.dispose = function () {
@@ -3480,7 +3462,7 @@
        */
       Router.prototype.createUrlTree = function (commands, _a) {
           var _b = _a === void 0 ? {} : _a, relativeTo = _b.relativeTo, queryParams = _b.queryParams, fragment = _b.fragment, preserveQueryParams = _b.preserveQueryParams, preserveFragment = _b.preserveFragment;
-          var /** @type {?} */ a = relativeTo ? relativeTo : this.routerState.root;
+          var /** @type {?} */ a = relativeTo || this.routerState.root;
           var /** @type {?} */ q = preserveQueryParams ? this.currentUrlTree.queryParams : queryParams;
           var /** @type {?} */ f = preserveFragment ? this.currentUrlTree.fragment : fragment;
           return createUrlTree(a, this.currentUrlTree, commands, q, f);
@@ -3489,9 +3471,9 @@
        *  Navigate based on the provided url. This navigation is always absolute.
         * *
         * Returns a promise that:
-        * - is resolved with 'true' when navigation succeeds
-        * - is resolved with 'false' when navigation fails
-        * - is rejected when an error happens
+        * - resolves to 'true' when navigation succeeds,
+        * - resolves to 'false' when navigation fails,
+        * - is rejected when an error happens.
         * *
         * ### Usage
         * *
@@ -3513,19 +3495,17 @@
           if (url instanceof UrlTree) {
               return this.scheduleNavigation(this.urlHandlingStrategy.merge(url, this.rawUrlTree), true, extras);
           }
-          else {
-              var /** @type {?} */ urlTree = this.urlSerializer.parse(url);
-              return this.scheduleNavigation(this.urlHandlingStrategy.merge(urlTree, this.rawUrlTree), true, extras);
-          }
+          var /** @type {?} */ urlTree = this.urlSerializer.parse(url);
+          return this.scheduleNavigation(this.urlHandlingStrategy.merge(urlTree, this.rawUrlTree), true, extras);
       };
       /**
        *  Navigate based on the provided array of commands and a starting point.
         * If no starting route is provided, the navigation is absolute.
         * *
         * Returns a promise that:
-        * - is resolved with 'true' when navigation succeeds
-        * - is resolved with 'false' when navigation fails
-        * - is rejected when an error happens
+        * - resolves to 'true' when navigation succeeds,
+        * - resolves to 'false' when navigation fails,
+        * - is rejected when an error happens.
         * *
         * ### Usage
         * *
@@ -3533,11 +3513,11 @@
         * router.navigate(['team', 33, 'user', 11], {relativeTo: route});
         * *
         * // Navigate without updating the URL
-        * router.navigate(['team', 33, 'user', 11], {relativeTo: route, skipLocationChange: true });
+        * router.navigate(['team', 33, 'user', 11], {relativeTo: route, skipLocationChange: true});
         * ```
         * *
-        * In opposite to `navigateByUrl`, `navigate` always takes a delta
-        * that is applied to the current URL.
+        * In opposite to `navigateByUrl`, `navigate` always takes a delta that is applied to the current
+        * URL.
        * @param {?} commands
        * @param {?=} extras
        * @return {?}
@@ -3550,19 +3530,19 @@
           return this.navigateByUrl(this.createUrlTree(commands, extras), extras);
       };
       /**
-       *  Serializes a {@link UrlTree} into a string.
+       *  Serializes a {@link UrlTree} into a string
        * @param {?} url
        * @return {?}
        */
       Router.prototype.serializeUrl = function (url) { return this.urlSerializer.serialize(url); };
       /**
-       *  Parses a string into a {@link UrlTree}.
+       *  Parses a string into a {@link UrlTree}
        * @param {?} url
        * @return {?}
        */
       Router.prototype.parseUrl = function (url) { return this.urlSerializer.parse(url); };
       /**
-       *  Returns if the url is activated or not.
+       *  Returns whether the url is activated
        * @param {?} url
        * @param {?} exact
        * @return {?}
@@ -4962,14 +4942,14 @@
       function RouteReuseStrategy() {
       }
       /**
-       *  Determines if this route (and its subtree) should be detached to be reused later.
+       *  Determines if this route (and its subtree) should be detached to be reused later
        * @abstract
        * @param {?} route
        * @return {?}
        */
       RouteReuseStrategy.prototype.shouldDetach = function (route) { };
       /**
-       *  Stores the detached route.
+       *  Stores the detached route
        * @abstract
        * @param {?} route
        * @param {?} handle
@@ -4977,21 +4957,21 @@
        */
       RouteReuseStrategy.prototype.store = function (route, handle) { };
       /**
-       *  Determines if this route (and its subtree) should be reattached.
+       *  Determines if this route (and its subtree) should be reattached
        * @abstract
        * @param {?} route
        * @return {?}
        */
       RouteReuseStrategy.prototype.shouldAttach = function (route) { };
       /**
-       *  Retrieves the previously stored route.
+       *  Retrieves the previously stored route
        * @abstract
        * @param {?} route
        * @return {?}
        */
       RouteReuseStrategy.prototype.retrieve = function (route) { };
       /**
-       *  Determines if a route should be reused.
+       *  Determines if a route should be reused
        * @abstract
        * @param {?} future
        * @param {?} curr
@@ -5432,12 +5412,12 @@
   /**
    * @stable
    */
-  var /** @type {?} */ VERSION = new _angular_core.Version('3.3.0');
+  var /** @type {?} */ VERSION = new _angular_core.Version('3.3.1');
 
   var /** @type {?} */ __router_private__ = {
       ROUTER_PROVIDERS: ROUTER_PROVIDERS,
       ROUTES: ROUTES,
-      flatten: flatten
+      flatten: flatten,
   };
 
   exports.RouterLink = RouterLink;

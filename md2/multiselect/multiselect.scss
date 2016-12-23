@@ -72,17 +72,12 @@ md2-multiselect:focus .md2-multiselect-placeholder {
   color: #2196f3;
 }
 
-md2-multiselect:focus .md2-multiselect-placeholder .md2-placeholder-required {
-  color: #f00;
-}
-
 md2-multiselect:focus .md2-multiselect-placeholder,
 md2-multiselect .md2-multiselect-placeholder.has-value {
   transform: translate3d(0, 6px, 0) scale(0.75);
 }
 
-md2-multiselect.md2-multiselect-disabled:focus .md2-multiselect-placeholder,
-md2-multiselect.md2-multiselect-disabled:focus .md2-multiselect-placeholder .md2-placeholder-required {
+md2-multiselect.md2-multiselect-disabled:focus .md2-multiselect-placeholder {
   color: rgba(0, 0, 0, 0.38);
 }
 
@@ -142,7 +137,8 @@ md2-multiselect .md2-multiselect-menu .md2-option.active {
   color: #106cc8;
 }
 
-md2-multiselect .md2-multiselect-menu .md2-option:hover, .md2-multiselect .md2-multiselect-menu .md2-option.focus {
+md2-multiselect .md2-multiselect-menu .md2-option:hover,
+md2-multiselect .md2-multiselect-menu .md2-option.focus {
   background: #eeeeee;
 }
 

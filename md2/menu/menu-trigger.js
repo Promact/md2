@@ -15,14 +15,14 @@ export var Md2MenuTrigger = (function () {
     }
     Md2MenuTrigger.prototype.ngAfterViewInit = function () {
         var _this = this;
-        this._documentClickHandler = this._renderer.listenGlobal('document', 'click', function (event) {
+        this._handleClick = this._renderer.listenGlobal('document', 'click', function (event) {
             if (!_this._hasChildMenu(event)) {
                 _this._closeMenu();
             }
         });
     };
     Md2MenuTrigger.prototype.ngOnDestroy = function () {
-        this._documentClickHandler = null;
+        this._handleClick = null;
     };
     Md2MenuTrigger.prototype._toggleMenu = function () {
         if (this._hasClass(this._getParentElement(), 'open')) {
@@ -42,7 +42,6 @@ export var Md2MenuTrigger = (function () {
         });
     };
     Md2MenuTrigger.prototype._closeMenu = function () {
-        console.log('ttt');
         this._getParentElement().classList.remove('open');
         this._closeChildrenMenu(this._getParentElement());
     };

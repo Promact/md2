@@ -10,6 +10,7 @@ Select allow the user to select option from options.
 | `readonly` | `boolean` | Whether or not the select is readonly |
 | `required` | `boolean` | Whether or not the select is required |
 | `disabled` | `boolean` | Whether or not the select is disabled |
+| `multiple` | `boolean` | Whether or not the select is multiple |
 
 ### Events of Select
 

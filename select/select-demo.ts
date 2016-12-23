@@ -23,6 +23,7 @@ export class SelectDemo {
     { name: 'Mumbai', value: '5', disabled: false },
     { name: 'Goa', value: '6', disabled: true }
   ];
+  multiItem: Array<any> = ['1', '3'];
   item: string = '3';
   handleChange(value: any) {
     console.log('Changed data: ', value);

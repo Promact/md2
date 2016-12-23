@@ -1,4 +1,6 @@
 import { Rgba, Hsla, Hsva } from './colorpicker';
+export declare const COLOR_RGB: RegExp;
+export declare const COLOR_HSL: RegExp;
 export declare class ColorpickerService {
     /**
   * hsla to hsva

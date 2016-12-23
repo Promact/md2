@@ -1,1 +1,1 @@
-{"version":3,"sources":["tags/index.ts"],"names":[],"mappings":"AAAA,cAAc,QAAQ,CAAC","file":"tags/index.js","sourcesContent":["export * from './tags';\r\n"],"sourceRoot":"/source/"}
+{"version":3,"sources":["tags/index.ts"],"names":[],"mappings":"AAAA,cAAc,QAAQ,CAAC","file":"index.js","sourcesContent":["export * from './tags';\n"]}

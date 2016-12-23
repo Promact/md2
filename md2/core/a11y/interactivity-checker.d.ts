@@ -1,11 +1,11 @@
-import { MdPlatform } from '../platform/platform';
+import { Platform } from '../platform/platform';
 /**
  * Utility for checking the interactivity of an element, such as whether is is focusable or
  * tabbable.
  */
 export declare class InteractivityChecker {
     private _platform;
-    constructor(_platform: MdPlatform);
+    constructor(_platform: Platform);
     /** Gets whether an element is disabled. */
     isDisabled(element: HTMLElement): boolean;
     /**

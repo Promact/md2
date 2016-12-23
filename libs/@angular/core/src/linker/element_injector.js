@@ -11,7 +11,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 import { Injector, THROW_IF_NOT_FOUND } from '../di/injector';
-var /** @type {?} */ _UNDEFINED = new Object();
 export var ElementInjector = (function (_super) {
     __extends(ElementInjector, _super);
     /**

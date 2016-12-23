@@ -1,5 +1,5 @@
 /**
- * @license Angular v2.3.0
+ * @license Angular v2.3.1
  * (c) 2010-2016 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -64,10 +64,10 @@
           return '' + token;
       }
       if (token.overriddenName) {
-          return token.overriddenName;
+          return "" + token.overriddenName;
       }
       if (token.name) {
-          return token.name;
+          return "" + token.name;
       }
       var /** @type {?} */ res = token.toString();
       var /** @type {?} */ newLineIndex = res.indexOf('\n');
@@ -1970,7 +1970,7 @@
   /**
    * @stable
    */
-  var /** @type {?} */ VERSION = new _angular_core.Version('2.3.0');
+  var /** @type {?} */ VERSION = new _angular_core.Version('2.3.1');
 
   exports.ServerModule = ServerModule;
   exports.platformDynamicServer = platformDynamicServer;

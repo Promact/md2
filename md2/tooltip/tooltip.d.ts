@@ -45,7 +45,8 @@ export declare class Md2TooltipComponent implements AfterViewInit {
     /**
      * calculate offset of target element
      * @param nativeEl element
-     * @return {width: number, height: number,top: number, left: number} object of with, height, top, left properties
+     * @return {width: number, height: number,top: number, left: number}
+     *         object of with, height, top, left properties
      */
     private offset(nativeEl);
     private readonly window;

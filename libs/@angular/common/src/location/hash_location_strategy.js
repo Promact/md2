@@ -26,17 +26,7 @@ import { PlatformLocation } from './platform_location';
   * *
   * ### Example
   * *
-  * ```
-  * import {Component, NgModule} from '@angular/core';
-  * import {
-  * LocationStrategy,
-  * HashLocationStrategy
-  * } from '@angular/common';
-  * *
-  * providers: [{provide: LocationStrategy, useClass: HashLocationStrategy}]
-  * })
-  * class AppModule {}
-  * ```
+  * {@example common/location/ts/hash_location_component.ts region='LocationComponent'}
   * *
  */
 export var HashLocationStrategy = (function (_super) {

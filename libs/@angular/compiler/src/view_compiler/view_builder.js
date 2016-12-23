@@ -610,7 +610,7 @@ function generateDetectChangesMethod(view) {
     }
     stmts.push.apply(stmts, view.detectChangesRenderPropertiesMethod.finish());
     view.viewChildren.forEach(function (viewChild) {
-        stmts.push(viewChild.callMethod('detectChanges', [DetectChangesVars.throwOnChange]).toStmt());
+        stmts.push(viewChild.callMethod('internalDetectChanges', [DetectChangesVars.throwOnChange]).toStmt());
     });
     var /** @type {?} */ afterViewStmts = view.updateViewQueriesMethod.finish().concat(view.afterViewLifecycleCallbacksMethod.finish());
     if (afterViewStmts.length > 0) {

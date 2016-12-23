@@ -65,7 +65,7 @@ var ViewBinderVisitor = (function () {
         var _this = this;
         var /** @type {?} */ compileElement = (this.view.nodes[this._nodeIndex++]);
         var /** @type {?} */ hasEvents = bindOutputs(ast.outputs, ast.directives, compileElement, true);
-        bindRenderInputs(ast.inputs, hasEvents, compileElement);
+        bindRenderInputs(ast.inputs, ast.outputs, hasEvents, compileElement);
         ast.directives.forEach(function (directiveAst, dirIndex) {
             var /** @type {?} */ directiveWrapperInstance = compileElement.directiveWrapperInstance.get(directiveAst.directive.type.reference);
             bindDirectiveInputs(directiveAst, directiveWrapperInstance, dirIndex, compileElement);

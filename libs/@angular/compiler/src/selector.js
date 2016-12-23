@@ -340,12 +340,12 @@ export var SelectorMatcher = (function () {
         if (!map || typeof name !== 'string') {
             return false;
         }
-        var /** @type {?} */ selectables = map.get(name);
+        var /** @type {?} */ selectables = map.get(name) || [];
         var /** @type {?} */ starSelectables = map.get('*');
         if (starSelectables) {
             selectables = selectables.concat(starSelectables);
         }
-        if (!selectables) {
+        if (selectables.length === 0) {
             return false;
         }
         var /** @type {?} */ selectable;

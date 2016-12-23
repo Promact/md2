@@ -9,7 +9,7 @@ import { OpaqueToken } from '@angular/core';
 /**
  *  `LocationStrategy` is responsible for representing and reading route state
   * from the browser's URL. Angular provides two strategies:
-  * {@link HashLocationStrategy} and {@link PathLocationStrategy} (default).
+  * {@link HashLocationStrategy} and {@link PathLocationStrategy}.
   * *
   * This is used under the hood of the {@link Location} service.
   * *

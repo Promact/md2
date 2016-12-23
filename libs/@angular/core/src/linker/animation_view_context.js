@@ -1,9 +1,12 @@
 import { AnimationGroupPlayer } from '../animation/animation_group_player';
-import { queueAnimation as queueAnimationGlobally } from '../animation/animation_queue';
 import { AnimationSequencePlayer } from '../animation/animation_sequence_player';
 import { ViewAnimationMap } from '../animation/view_animation_map';
 export var AnimationViewContext = (function () {
-    function AnimationViewContext() {
+    /**
+     * @param {?} _animationQueue
+     */
+    function AnimationViewContext(_animationQueue) {
+        this._animationQueue = _animationQueue;
         this._players = new ViewAnimationMap();
     }
     /**
@@ -28,26 +31,27 @@ export var AnimationViewContext = (function () {
      * @return {?}
      */
     AnimationViewContext.prototype.queueAnimation = function (element, animationName, player) {
-        queueAnimationGlobally(player);
+        var _this = this;
+        this._animationQueue.enqueue(player);
         this._players.set(element, animationName, player);
+        player.onDone(function () { return _this._players.remove(element, animationName, player); });
     };
     /**
      * @param {?} element
-     * @param {?} animationName
-     * @param {?=} removeAllAnimations
+     * @param {?=} animationName
      * @return {?}
      */
-    AnimationViewContext.prototype.getAnimationPlayers = function (element, animationName, removeAllAnimations) {
-        if (removeAllAnimations === void 0) { removeAllAnimations = false; }
+    AnimationViewContext.prototype.getAnimationPlayers = function (element, animationName) {
+        if (animationName === void 0) { animationName = null; }
         var /** @type {?} */ players = [];
-        if (removeAllAnimations) {
-            this._players.findAllPlayersByElement(element).forEach(function (player) { _recursePlayers(player, players); });
-        }
-        else {
+        if (animationName) {
             var /** @type {?} */ currentPlayer = this._players.find(element, animationName);
             if (currentPlayer) {
                 _recursePlayers(currentPlayer, players);
             }
+        }
+        else {
+            this._players.findAllPlayersByElement(element).forEach(function (player) { return _recursePlayers(player, players); });
         }
         return players;
     };
@@ -56,6 +60,8 @@ export var AnimationViewContext = (function () {
 function AnimationViewContext_tsickle_Closure_declarations() {
     /** @type {?} */
     AnimationViewContext.prototype._players;
+    /** @type {?} */
+    AnimationViewContext.prototype._animationQueue;
 }
 /**
  * @param {?} player

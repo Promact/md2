@@ -17,26 +17,26 @@ import { Injectable } from '@angular/core';
  * This service does not *store* any IDs and names because they may change at any time, so it is
  * less error-prone if they are simply passed through when the events occur.
  */
-export var MdUniqueSelectionDispatcher = (function () {
-    function MdUniqueSelectionDispatcher() {
+export var UniqueSelectionDispatcher = (function () {
+    function UniqueSelectionDispatcher() {
         this._listeners = [];
     }
     /** Notify other items that selection for the given name has been set. */
-    MdUniqueSelectionDispatcher.prototype.notify = function (id, name) {
+    UniqueSelectionDispatcher.prototype.notify = function (id, name) {
         for (var _i = 0, _a = this._listeners; _i < _a.length; _i++) {
             var listener = _a[_i];
             listener(id, name);
         }
     };
     /** Listen for future changes to item selection. */
-    MdUniqueSelectionDispatcher.prototype.listen = function (listener) {
+    UniqueSelectionDispatcher.prototype.listen = function (listener) {
         this._listeners.push(listener);
     };
-    MdUniqueSelectionDispatcher = __decorate([
+    UniqueSelectionDispatcher = __decorate([
         Injectable(), 
         __metadata('design:paramtypes', [])
-    ], MdUniqueSelectionDispatcher);
-    return MdUniqueSelectionDispatcher;
+    ], UniqueSelectionDispatcher);
+    return UniqueSelectionDispatcher;
 }());
 
 //# sourceMappingURL=unique-selection-dispatcher.js.map

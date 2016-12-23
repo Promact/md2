@@ -74,7 +74,10 @@ export var ColorpickerSliderDirective = (function () {
         var x = Math.max(0, Math.min(this.getX(event), width));
         var y = Math.max(0, Math.min(this.getY(event), height));
         if (this.pointX !== undefined && this.pointY !== undefined) {
-            this.change.emit({ s: x / width, v: (1 - y / height), pointX: this.pointX, pointY: this.pointY });
+            this.change.emit({
+                s: x / width, v: (1 - y / height),
+                pointX: this.pointX, pointY: this.pointY
+            });
         }
         else if (this.pointX === undefined && this.pointY !== undefined) {
             this.change.emit({ v: y / height, rg: this.pointY });
@@ -117,7 +120,8 @@ export var ColorpickerSliderDirective = (function () {
      */
     ColorpickerSliderDirective.prototype.getX = function (event) {
         var boundingClientRect = this._getNativeElement().getBoundingClientRect();
-        return (event.pageX !== undefined ? event.pageX : event.touches[0].pageX) - boundingClientRect.left - window.pageXOffset;
+        return (event.pageX !== undefined ? event.pageX : event.touches[0].pageX) -
+            boundingClientRect.left - window.pageXOffset;
     };
     /**
      * get y
@@ -125,7 +129,8 @@ export var ColorpickerSliderDirective = (function () {
      */
     ColorpickerSliderDirective.prototype.getY = function (event) {
         var boundingClientRect = this._getNativeElement().getBoundingClientRect();
-        return (event.pageY !== undefined ? event.pageY : event.touches[0].pageY) - boundingClientRect.top - window.pageYOffset;
+        return (event.pageY !== undefined ? event.pageY : event.touches[0].pageY) -
+            boundingClientRect.top - window.pageYOffset;
     };
     ColorpickerSliderDirective.prototype._getNativeElement = function () {
         return this._element.nativeElement;
@@ -459,7 +464,9 @@ export var SliderDimension = (function () {
     }
     return SliderDimension;
 }());
-export var MD2_COLORPICKER_DIRECTIVES = [Md2Colorpicker, ColorpickerSliderDirective, TextDirective];
+export var MD2_COLORPICKER_DIRECTIVES = [
+    Md2Colorpicker, ColorpickerSliderDirective, TextDirective
+];
 export var Md2ColorpickerModule = (function () {
     function Md2ColorpickerModule() {
     }

@@ -6,17 +6,17 @@ md2-pagination {
   -ms-user-select: none;
   user-select: none; }
 
-md2-pagination:before,
-md2-pagination:after {
+md2-pagination::before,
+md2-pagination::after {
   display: table;
   content: ''; }
 
-md2-pagination:after {
+md2-pagination::after {
   clear: both; }
 
 md2-pagination .md2-pagination {
   display: inline-block;
-  margin: 0.5rem 0;
+  margin: 8px 0;
   padding: 0; }
 
 md2-pagination .md2-pagination li {
@@ -42,7 +42,7 @@ md2-pagination .md2-pagination li.disabled:hover {
 
 md2-pagination .md2-pagination li.active,
 md2-pagination .md2-pagination li.active:hover {
-  background: #106CC8;
+  background: #106cc8;
   color: #fff;
   cursor: default; }
 
@@ -52,7 +52,7 @@ md2-pagination .md2-pagination li svg {
 
 md2-pagination .md2-rows-select {
   display: inline-block;
-  margin: 0.5rem 0;
+  margin: 8px 0;
   padding: 0;
   float: right;
   color: rgba(0, 0, 0, 0.54);

@@ -6,35 +6,53 @@ export declare class MdRipple implements OnInit, OnDestroy, OnChanges {
      * directive's host element.
      */
     trigger: HTMLElement | HTMLElement;
+    /** @deprecated */
+    _triggerDeprecated: HTMLElement | HTMLElement;
     /**
      * Whether the ripple always originates from the center of the host element's bounds, rather
      * than originating from the location of the click event.
      */
     centered: boolean;
+    /** @deprecated */
+    _centeredDeprecated: boolean;
     /**
      * Whether click events will not trigger the ripple. It can still be triggered by manually
      * calling start() and end().
      */
     disabled: boolean;
+    /** @deprecated */
+    _disabledDeprecated: boolean;
     /**
      * If set, the radius in pixels of foreground ripples when fully expanded. If unset, the radius
      * will be the distance from the center of the ripple to the furthest corner of the host element's
      * bounding rectangle.
      */
     maxRadius: number;
+    /** @deprecated */
+    _maxRadiusDeprecated: number;
     /**
      * If set, the normal duration of ripple animations is divided by this value. For example,
      * setting it to 0.5 will cause the animations to take twice as long.
      */
     speedFactor: number;
+    /** @deprecated */
+    _speedFactorDeprecated: number;
     /** Custom color for ripples. */
     color: string;
+    /** @deprecated */
+    _colorDeprecated: string;
     /** Custom color for the ripple background. */
     backgroundColor: string;
+    /** @deprecated */
+    _backgroundColorDeprecated: string;
     /** Whether the ripple background will be highlighted to indicated a focused state. */
     focused: boolean;
+    /** @deprecated */
+    _focusedDeprecated: boolean;
     /** Whether foreground ripples should be visible outside the component's bounds. */
     unbounded: boolean;
+    /** @deprecated */
+    _unboundedDeprecated: boolean;
     private _rippleRenderer;
     _ruler: ViewportRuler;
     constructor(_elementRef: ElementRef, _ngZone: NgZone, _ruler: ViewportRuler);

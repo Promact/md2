@@ -490,8 +490,7 @@ var StatementInterpreter = (function () {
     StatementInterpreter.prototype.visitLiteralMapExpr = function (ast, ctx) {
         var _this = this;
         var /** @type {?} */ result = {};
-        ast.entries.forEach(function (entry) { return ((result))[(entry[0])] =
-            ((entry[1])).visitExpression(_this, ctx); });
+        ast.entries.forEach(function (entry) { return ((result))[entry.key] = entry.value.visitExpression(_this, ctx); });
         return result;
     };
     /**

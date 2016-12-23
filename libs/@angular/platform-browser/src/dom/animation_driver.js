@@ -6,8 +6,11 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { NoOpAnimationPlayer } from '../private_import_core';
-var _NoOpAnimationDriver = (function () {
-    function _NoOpAnimationDriver() {
+/**
+ * @experimental
+ */
+export var NoOpAnimationDriver = (function () {
+    function NoOpAnimationDriver() {
     }
     /**
      * @param {?} element
@@ -19,11 +22,11 @@ var _NoOpAnimationDriver = (function () {
      * @param {?=} previousPlayers
      * @return {?}
      */
-    _NoOpAnimationDriver.prototype.animate = function (element, startingStyles, keyframes, duration, delay, easing, previousPlayers) {
+    NoOpAnimationDriver.prototype.animate = function (element, startingStyles, keyframes, duration, delay, easing, previousPlayers) {
         if (previousPlayers === void 0) { previousPlayers = []; }
         return new NoOpAnimationPlayer();
     };
-    return _NoOpAnimationDriver;
+    return NoOpAnimationDriver;
 }());
 /**
  * @abstract
@@ -43,7 +46,7 @@ export var AnimationDriver = (function () {
      * @return {?}
      */
     AnimationDriver.prototype.animate = function (element, startingStyles, keyframes, duration, delay, easing, previousPlayers) { };
-    AnimationDriver.NOOP = new _NoOpAnimationDriver();
+    AnimationDriver.NOOP = new NoOpAnimationDriver();
     return AnimationDriver;
 }());
 function AnimationDriver_tsickle_Closure_declarations() {

@@ -8,7 +8,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import { Injectable } from '@angular/core';
-import { MdPlatform } from '../platform/platform';
+import { Platform } from '../platform/platform';
 /* The InteractivityChecker leans heavily on the ally.js accessibility utilities.
  * Methods like `isTabbable` are only covering specific edge-cases for the browsers which are
  * supported.
@@ -105,7 +105,7 @@ export var InteractivityChecker = (function () {
     };
     InteractivityChecker = __decorate([
         Injectable(), 
-        __metadata('design:paramtypes', [MdPlatform])
+        __metadata('design:paramtypes', [Platform])
     ], InteractivityChecker);
     return InteractivityChecker;
 }());

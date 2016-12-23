@@ -34,13 +34,6 @@ export var /** @type {?} */ PENDING = 'PENDING';
 export var /** @type {?} */ DISABLED = 'DISABLED';
 /**
  * @param {?} control
- * @return {?}
- */
-export function isControl(control) {
-    return control instanceof AbstractControl;
-}
-/**
- * @param {?} control
  * @param {?} path
  * @param {?} delimiter
  * @return {?}

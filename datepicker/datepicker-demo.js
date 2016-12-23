@@ -12,12 +12,11 @@ var core_1 = require('@angular/core');
 var DatepickerDemo = (function () {
     function DatepickerDemo() {
         this.disabled = true;
-        this.datetime = '';
-        this.datetime1 = '2016-09-15 12:10';
-        this.date = '2016-09-15';
-        this.time = '12:10';
-        this.minDate = '2016-07-15';
-        this.maxDate = '2016-12-15';
+        this.date = new Date(2016, 9, 15);
+        this.time = new Date(1, 1, 1, 12, 10);
+        this.datetime = new Date(2016, 9, 15, 12, 10);
+        this.minDate = new Date(2016, 7, 15);
+        this.maxDate = new Date(2016, 12, 15);
     }
     DatepickerDemo.prototype.handleChange = function (value) {
         console.log('Changed data: ', value);

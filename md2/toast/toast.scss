@@ -31,7 +31,7 @@ md2-toast {
   opacity: 1;
 }
 
-.md-visually-hidden {
+.cdk-visually-hidden {
   border: 0;
   clip: rect(0 0 0 0);
   height: 1px;
@@ -43,7 +43,7 @@ md2-toast {
   width: 1px;
 }
 
-.md-overlay-container, .md-global-overlay-wrapper {
+.cdk-overlay-container, .cdk-global-overlay-wrapper {
   pointer-events: none;
   top: 0;
   left: 0;
@@ -51,25 +51,25 @@ md2-toast {
   width: 100%;
 }
 
-.md-overlay-container {
+.cdk-overlay-container {
   position: fixed;
   z-index: 1000;
 }
 
-.md-global-overlay-wrapper {
+.cdk-global-overlay-wrapper {
   display: flex;
   position: absolute;
   z-index: 1000;
 }
 
-.md-overlay-pane {
+.cdk-overlay-pane {
   position: absolute;
   pointer-events: auto;
   box-sizing: border-box;
   z-index: 1000;
 }
 
-.md-overlay-backdrop {
+.cdk-overlay-backdrop {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -81,10 +81,10 @@ md2-toast {
   opacity: 0;
 }
 
-.md-overlay-backdrop.md-overlay-backdrop-showing {
+.cdk-overlay-backdrop.cdk-overlay-backdrop-showing {
   opacity: 0.48;
 }
 
-.md-overlay-dark-backdrop {
+.cdk-overlay-dark-backdrop {
   background: #212121;
 }

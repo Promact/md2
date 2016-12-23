@@ -11,19 +11,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var ChipsDemo = (function () {
     function ChipsDemo() {
-        this.itemsData = [
+        this._itemsData = [
             { name: 'Vadodara', value: '1' },
             { name: 'Mumbai', value: '5' },
             { name: 'Goa', value: '6' }
         ];
-        this.items = [
+        this._items = [
             { text: 'Vadodaraa', value: '8' },
             { text: 'Mumbaia', value: '2' },
             { text: 'Goaa', value: '4' }
         ];
-        this.validPattern = /^[0-9]*$/;
+        this._validPattern = /^[0-9]*$/;
     }
-    ChipsDemo.prototype.change = function (value) {
+    ChipsDemo.prototype.handleChange = function (value) {
         console.log('Changed data: ', value);
     };
     ChipsDemo = __decorate([

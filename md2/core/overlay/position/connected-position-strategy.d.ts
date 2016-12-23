@@ -66,23 +66,18 @@ export declare class ConnectedPositionStrategy implements PositionStrategy {
     private _getOriginConnectionPoint(originRect, pos);
     /**
      * Gets the (x, y) coordinate of the top-left corner of the overlay given a given position and
-     * origin point to which the overlay should be connected.
-     * @param originPoint
-     * @param overlayRect
-     * @param pos
+     * origin point to which the overlay should be connected, as well as how much of the element
+     * would be inside the viewport at that position.
      */
-    private _getOverlayPoint(originPoint, overlayRect, pos);
-    /**
-     * Gets whether the overlay positioned at the given point will fit on-screen.
-     * @param overlayPoint The top-left coordinate of the overlay.
-     * @param overlayRect Bounding rect of the overlay, used to get its size.
-     * @param viewportRect The bounding viewport.
-     */
-    private _willOverlayFitWithinViewport(overlayPoint, overlayRect, viewportRect);
+    private _getOverlayPoint(originPoint, overlayRect, viewportRect, pos);
     /**
      * Physically positions the overlay element to the given coordinate.
      * @param element
      * @param overlayPoint
      */
     private _setElementPosition(element, overlayPoint);
+    /**
+     * Subtracts the amount that an element is overflowing on an axis from it's length.
+     */
+    private _subtractOverflows(length, ...overflows);
 }

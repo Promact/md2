@@ -29,16 +29,18 @@ export var AnimationTransition = (function () {
      * @return {?}
      */
     AnimationTransition.prototype.onStart = function (callback) {
-        var /** @type {?} */ event = this._createEvent('start');
-        this._player.onStart(function () { return callback(event); });
+        var _this = this;
+        var /** @type {?} */ fn = (Zone.current.wrap(function () { return callback(_this._createEvent('start')); }, 'player.onStart'));
+        this._player.onStart(fn);
     };
     /**
      * @param {?} callback
      * @return {?}
      */
     AnimationTransition.prototype.onDone = function (callback) {
-        var /** @type {?} */ event = this._createEvent('done');
-        this._player.onDone(function () { return callback(event); });
+        var _this = this;
+        var /** @type {?} */ fn = (Zone.current.wrap(function () { return callback(_this._createEvent('done')); }, 'player.onDone'));
+        this._player.onDone(fn);
     };
     return AnimationTransition;
 }());

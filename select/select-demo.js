@@ -20,6 +20,7 @@ var SelectDemo = (function () {
             { name: 'Mumbai', value: '5', disabled: false },
             { name: 'Goa', value: '6', disabled: true }
         ];
+        this.multiItem = ['1', '3'];
         this.item = '3';
         setTimeout(function () {
             _this.items.push({ name: 'Manjalpur', value: '7', disabled: false });

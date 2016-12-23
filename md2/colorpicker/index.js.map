@@ -1,1 +1,1 @@
-{"version":3,"sources":["colorpicker/index.ts"],"names":[],"mappings":"AAAA,cAAc,eAAe,CAAC","file":"colorpicker/index.js","sourcesContent":["export * from './colorpicker';\r\n"],"sourceRoot":"/source/"}
+{"version":3,"sources":["colorpicker/index.ts"],"names":[],"mappings":"AAAA,cAAc,eAAe,CAAC","file":"index.js","sourcesContent":["export * from './colorpicker';\n"]}

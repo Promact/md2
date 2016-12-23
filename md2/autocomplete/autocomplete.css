@@ -14,7 +14,7 @@ md2-autocomplete.md2-autocomplete-disabled {
   pointer-events: none;
   cursor: default; }
 
-md2-autocomplete .md2-autocomplete-wrap {
+.md2-autocomplete-trigger {
   position: relative;
   display: block;
   width: 100%;
@@ -24,12 +24,14 @@ md2-autocomplete .md2-autocomplete-wrap {
   min-width: 64px;
   min-height: 26px;
   cursor: pointer; }
+  .md2-autocomplete-trigger.is-focused {
+    padding-bottom: 0;
+    border-bottom: 2px solid #106cc8; }
+  md2-autocomplete.ng-invalid.ng-touched:not(.md2-autocomplete-disabled) .md2-autocomplete-trigger {
+    color: #f44336;
+    border-bottom-color: #f44336; }
 
-.md2-autocomplete-wrap.is-focused {
-  padding-bottom: 0;
-  border-bottom: 2px solid #106cc8; }
-
-md2-autocomplete.md2-autocomplete-disabled .md2-autocomplete-wrap {
+md2-autocomplete.md2-autocomplete-disabled .md2-autocomplete-trigger {
   color: rgba(0, 0, 0, 0.38);
   border-color: transparent;
   background-image: linear-gradient(to right, rgba(0, 0, 0, 0.38) 0%, rgba(0, 0, 0, 0.38) 33%, transparent 0%);
@@ -38,12 +40,11 @@ md2-autocomplete.md2-autocomplete-disabled .md2-autocomplete-wrap {
   background-repeat: repeat-x;
   cursor: default;
   cursor: default; }
+  md2-autocomplete.md2-autocomplete-disabled .md2-autocomplete-trigger.is-focused {
+    padding-bottom: 1px;
+    border-bottom: 1px solid transparent; }
 
-md2-autocomplete.md2-autocomplete-disabled .md2-autocomplete-wrap.is-focused {
-  padding-bottom: 1px;
-  border-bottom: 1px solid transparent; }
-
-.md2-autocomplete-wrap .md2-autocomplete-input {
+.md2-autocomplete-input {
   width: 100%;
   height: 26px;
   font-size: 15px;
@@ -55,7 +56,7 @@ md2-autocomplete.md2-autocomplete-disabled .md2-autocomplete-wrap.is-focused {
 md2-autocomplete.md2-autocomplete-disabled .md2-autocomplete-input {
   color: rgba(0, 0, 0, 0.38); }
 
-md2-autocomplete .md2-autocomplete-placeholder {
+.md2-autocomplete-placeholder {
   color: rgba(0, 0, 0, 0.38);
   position: absolute;
   right: 26px;
@@ -75,24 +76,23 @@ md2-autocomplete .md2-autocomplete-placeholder {
   transition: transform 400ms cubic-bezier(0.25, 0.8, 0.25, 1);
   transform-origin: left top;
   color: rgba(0, 0, 0, 0.38); }
+  [aria-required=true] .md2-autocomplete-placeholder::after {
+    content: '*'; }
 
-.md2-autocomplete-wrap.is-focused .md2-autocomplete-placeholder {
-  color: #2196f3; }
+.md2-autocomplete-trigger.is-focused .md2-autocomplete-placeholder {
+  color: #106cc8; }
 
-.md2-autocomplete-wrap.is-focused .md2-autocomplete-placeholder .md2-placeholder-required {
-  color: #f00; }
-
-.md2-autocomplete-wrap.is-focused .md2-autocomplete-placeholder,
+.md2-autocomplete-trigger.is-focused .md2-autocomplete-placeholder,
 md2-autocomplete .md2-autocomplete-placeholder.has-value {
   transform: translate3d(0, 6px, 0) scale(0.75); }
 
-.md2-autocomplete-wrap svg {
+.md2-autocomplete-trigger svg {
   position: absolute;
   right: 0;
   top: 0;
   display: block;
   height: 100%;
-  background: #fff;
+  background: white;
   fill: currentColor;
   color: rgba(0, 0, 0, 0.54); }
 
@@ -109,7 +109,7 @@ md2-autocomplete .md2-autocomplete-placeholder.has-value {
   max-height: 256px;
   min-height: 48px;
   overflow-y: auto;
-  background: #fff; }
+  background: white; }
 
 .md2-autocomplete-menu .md2-option {
   position: relative;
@@ -124,17 +124,16 @@ md2-autocomplete .md2-autocomplete-placeholder.has-value {
 
 .md2-autocomplete-menu .md2-option:hover,
 .md2-autocomplete-menu .md2-option.focus {
-  background: #eeeeee; }
+  background: #ededed; }
 
 .md2-autocomplete-menu .md2-option .md2-text {
   width: auto;
   white-space: nowrap;
   overflow: hidden;
-  -ms-text-overflow: ellipsis;
   text-overflow: ellipsis;
   font-size: 16px; }
 
 .md2-autocomplete-menu .highlight {
-  color: #757575; }
+  color: #737373; }
 
 /*# sourceMappingURL=autocomplete.css.map */

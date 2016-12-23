@@ -21,6 +21,8 @@ export declare class Md2Dialog implements OnDestroy {
     dialogTitle: string;
     /** Overlay configuration for positioning the dialog */
     config: OverlayState;
+    /** @internal */
+    private _overlayRef;
     ngOnDestroy(): any;
     /** Show the dialog */
     show(): Promise<Md2Dialog>;

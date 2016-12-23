@@ -33,6 +33,78 @@ export var MdRipple = (function () {
         this._rippleRenderer = new RippleRenderer(_elementRef, eventHandlers, _ngZone);
         this._ruler = _ruler;
     }
+    Object.defineProperty(MdRipple.prototype, "_triggerDeprecated", {
+        /** @deprecated */
+        get: function () { return this.trigger; },
+        set: function (value) { this.trigger = value; },
+        enumerable: true,
+        configurable: true
+    });
+    ;
+    Object.defineProperty(MdRipple.prototype, "_centeredDeprecated", {
+        /** @deprecated */
+        get: function () { return this.centered; },
+        set: function (value) { this.centered = value; },
+        enumerable: true,
+        configurable: true
+    });
+    ;
+    Object.defineProperty(MdRipple.prototype, "_disabledDeprecated", {
+        /** @deprecated */
+        get: function () { return this.disabled; },
+        set: function (value) { this.disabled = value; },
+        enumerable: true,
+        configurable: true
+    });
+    ;
+    Object.defineProperty(MdRipple.prototype, "_maxRadiusDeprecated", {
+        /** @deprecated */
+        get: function () { return this.maxRadius; },
+        set: function (value) { this.maxRadius = value; },
+        enumerable: true,
+        configurable: true
+    });
+    ;
+    Object.defineProperty(MdRipple.prototype, "_speedFactorDeprecated", {
+        /** @deprecated */
+        get: function () { return this.speedFactor; },
+        set: function (value) { this.speedFactor = value; },
+        enumerable: true,
+        configurable: true
+    });
+    ;
+    Object.defineProperty(MdRipple.prototype, "_colorDeprecated", {
+        /** @deprecated */
+        get: function () { return this.color; },
+        set: function (value) { this.color = value; },
+        enumerable: true,
+        configurable: true
+    });
+    ;
+    Object.defineProperty(MdRipple.prototype, "_backgroundColorDeprecated", {
+        /** @deprecated */
+        get: function () { return this.backgroundColor; },
+        set: function (value) { this.backgroundColor = value; },
+        enumerable: true,
+        configurable: true
+    });
+    ;
+    Object.defineProperty(MdRipple.prototype, "_focusedDeprecated", {
+        /** @deprecated */
+        get: function () { return this.focused; },
+        set: function (value) { this.focused = value; },
+        enumerable: true,
+        configurable: true
+    });
+    ;
+    Object.defineProperty(MdRipple.prototype, "_unboundedDeprecated", {
+        /** @deprecated */
+        get: function () { return this.unbounded; },
+        set: function (value) { this.unbounded = value; },
+        enumerable: true,
+        configurable: true
+    });
+    ;
     MdRipple.prototype.ngOnInit = function () {
         // If no trigger element was explicity set, use the host element
         if (!this.trigger) {
@@ -119,43 +191,79 @@ export var MdRipple = (function () {
         this._rippleRenderer.fadeOutRippleBackground();
     };
     __decorate([
-        Input('md-ripple-trigger'), 
+        Input('mdRippleTrigger'), 
         __metadata('design:type', Object)
     ], MdRipple.prototype, "trigger", void 0);
     __decorate([
-        Input('md-ripple-centered'), 
+        Input('md-ripple-trigger'), 
+        __metadata('design:type', Object)
+    ], MdRipple.prototype, "_triggerDeprecated", null);
+    __decorate([
+        Input('mdRippleCentered'), 
         __metadata('design:type', Boolean)
     ], MdRipple.prototype, "centered", void 0);
     __decorate([
-        Input('md-ripple-disabled'), 
+        Input('md-ripple-centered'), 
+        __metadata('design:type', Object)
+    ], MdRipple.prototype, "_centeredDeprecated", null);
+    __decorate([
+        Input('mdRippleDisabled'), 
         __metadata('design:type', Boolean)
     ], MdRipple.prototype, "disabled", void 0);
     __decorate([
-        Input('md-ripple-max-radius'), 
+        Input('md-ripple-disabled'), 
+        __metadata('design:type', Object)
+    ], MdRipple.prototype, "_disabledDeprecated", null);
+    __decorate([
+        Input('mdRippleMaxRadius'), 
         __metadata('design:type', Number)
     ], MdRipple.prototype, "maxRadius", void 0);
     __decorate([
-        Input('md-ripple-speed-factor'), 
+        Input('md-ripple-max-radius'), 
+        __metadata('design:type', Object)
+    ], MdRipple.prototype, "_maxRadiusDeprecated", null);
+    __decorate([
+        Input('mdRippleSpeedFactor'), 
         __metadata('design:type', Number)
     ], MdRipple.prototype, "speedFactor", void 0);
     __decorate([
-        Input('md-ripple-color'), 
+        Input('md-ripple-speed-factor'), 
+        __metadata('design:type', Object)
+    ], MdRipple.prototype, "_speedFactorDeprecated", null);
+    __decorate([
+        Input('mdRippleColor'), 
         __metadata('design:type', String)
     ], MdRipple.prototype, "color", void 0);
     __decorate([
-        Input('md-ripple-background-color'), 
+        Input('md-ripple-color'), 
+        __metadata('design:type', Object)
+    ], MdRipple.prototype, "_colorDeprecated", null);
+    __decorate([
+        Input('mdRippleBackgroundColor'), 
         __metadata('design:type', String)
     ], MdRipple.prototype, "backgroundColor", void 0);
     __decorate([
+        Input('md-ripple-background-color'), 
+        __metadata('design:type', Object)
+    ], MdRipple.prototype, "_backgroundColorDeprecated", null);
+    __decorate([
         HostBinding('class.md-ripple-focused'),
-        Input('md-ripple-focused'), 
+        Input('mdRippleFocused'), 
         __metadata('design:type', Boolean)
     ], MdRipple.prototype, "focused", void 0);
     __decorate([
+        Input('md-ripple-focused'), 
+        __metadata('design:type', Boolean)
+    ], MdRipple.prototype, "_focusedDeprecated", null);
+    __decorate([
         HostBinding('class.md-ripple-unbounded'),
-        Input('md-ripple-unbounded'), 
+        Input('mdRippleUnbounded'), 
         __metadata('design:type', Boolean)
     ], MdRipple.prototype, "unbounded", void 0);
+    __decorate([
+        Input('md-ripple-unbounded'), 
+        __metadata('design:type', Boolean)
+    ], MdRipple.prototype, "_unboundedDeprecated", null);
     MdRipple = __decorate([
         Directive({
             selector: '[md-ripple], [mat-ripple]',

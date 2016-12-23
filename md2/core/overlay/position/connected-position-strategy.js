@@ -63,7 +63,8 @@ export var ConnectedPositionStrategy = (function () {
         var overlayRect = element.getBoundingClientRect();
         // We use the viewport rect to determine whether a position would go off-screen.
         var viewportRect = this._viewportRuler.getViewportRect();
-        var firstOverlayPoint = null;
+        // Fallback point if none of the fallbacks fit into the viewport.
+        var fallbackPoint = null;
         // We want to place the overlay in the first of the preferred positions such that the
         // overlay fits on-screen.
         for (var _i = 0, _a = this._preferredPositions; _i < _a.length; _i++) {
@@ -71,18 +72,20 @@ export var ConnectedPositionStrategy = (function () {
             // Get the (x, y) point of connection on the origin, and then use that to get the
             // (top, left) coordinate for the overlay at `pos`.
             var originPoint = this._getOriginConnectionPoint(originRect, pos);
-            var overlayPoint = this._getOverlayPoint(originPoint, overlayRect, pos);
-            firstOverlayPoint = firstOverlayPoint || overlayPoint;
+            var overlayPoint = this._getOverlayPoint(originPoint, overlayRect, viewportRect, pos);
             // If the overlay in the calculated position fits on-screen, put it there and we're done.
-            if (this._willOverlayFitWithinViewport(overlayPoint, overlayRect, viewportRect)) {
+            if (overlayPoint.fitsInViewport) {
                 this._setElementPosition(element, overlayPoint);
                 this._onPositionChange.next(new ConnectedOverlayPositionChange(pos));
                 return Promise.resolve(null);
             }
+            else if (!fallbackPoint || fallbackPoint.visibleArea < overlayPoint.visibleArea) {
+                fallbackPoint = overlayPoint;
+            }
         }
-        // TODO(jelbourn): fallback behavior for when none of the preferred positions fit on-screen.
-        // For now, just stick it in the first position and let it go off-screen.
-        this._setElementPosition(element, firstOverlayPoint);
+        // If none of the preferred positions were in the viewport, take the one
+        // with the largest visible area.
+        this._setElementPosition(element, fallbackPoint);
         return Promise.resolve(null);
     };
     ConnectedPositionStrategy.prototype.withFallbackPosition = function (originPos, overlayPos) {
@@ -144,12 +147,10 @@ export var ConnectedPositionStrategy = (function () {
     };
     /**
      * Gets the (x, y) coordinate of the top-left corner of the overlay given a given position and
-     * origin point to which the overlay should be connected.
-     * @param originPoint
-     * @param overlayRect
-     * @param pos
+     * origin point to which the overlay should be connected, as well as how much of the element
+     * would be inside the viewport at that position.
      */
-    ConnectedPositionStrategy.prototype._getOverlayPoint = function (originPoint, overlayRect, pos) {
+    ConnectedPositionStrategy.prototype._getOverlayPoint = function (originPoint, overlayRect, viewportRect, pos) {
         // Calculate the (overlayStartX, overlayStartY), the start of the potential overlay position
         // relative to the origin point.
         var overlayStartX;
@@ -169,23 +170,21 @@ export var ConnectedPositionStrategy = (function () {
         else {
             overlayStartY = pos.overlayY == 'top' ? 0 : -overlayRect.height;
         }
-        return {
-            x: originPoint.x + overlayStartX + this._offsetX,
-            y: originPoint.y + overlayStartY + this._offsetY
-        };
-    };
-    /**
-     * Gets whether the overlay positioned at the given point will fit on-screen.
-     * @param overlayPoint The top-left coordinate of the overlay.
-     * @param overlayRect Bounding rect of the overlay, used to get its size.
-     * @param viewportRect The bounding viewport.
-     */
-    ConnectedPositionStrategy.prototype._willOverlayFitWithinViewport = function (overlayPoint, overlayRect, viewportRect) {
-        // TODO(jelbourn): probably also want some space between overlay edge and viewport edge.
-        return overlayPoint.x >= 0 &&
-            overlayPoint.x + overlayRect.width <= viewportRect.width &&
-            overlayPoint.y >= 0 &&
-            overlayPoint.y + overlayRect.height <= viewportRect.height;
+        // The (x, y) coordinates of the overlay.
+        var x = originPoint.x + overlayStartX + this._offsetX;
+        var y = originPoint.y + overlayStartY + this._offsetY;
+        // How much the overlay would overflow at this position, on each side.
+        var leftOverflow = viewportRect.left - x;
+        var rightOverflow = (x + overlayRect.width) - viewportRect.right;
+        var topOverflow = viewportRect.top - y;
+        var bottomOverflow = (y + overlayRect.height) - viewportRect.bottom;
+        // Visible parts of the element on each axis.
+        var visibleWidth = this._subtractOverflows(overlayRect.width, leftOverflow, rightOverflow);
+        var visibleHeight = this._subtractOverflows(overlayRect.height, topOverflow, bottomOverflow);
+        // The area of the element that's within the viewport.
+        var visibleArea = visibleWidth * visibleHeight;
+        var fitsInViewport = (overlayRect.width * overlayRect.height) === visibleArea;
+        return { x: x, y: y, fitsInViewport: fitsInViewport, visibleArea: visibleArea };
     };
     /**
      * Physically positions the overlay element to the given coordinate.
@@ -196,7 +195,20 @@ export var ConnectedPositionStrategy = (function () {
         element.style.left = overlayPoint.x + 'px';
         element.style.top = overlayPoint.y + 'px';
     };
+    /**
+     * Subtracts the amount that an element is overflowing on an axis from it's length.
+     */
+    ConnectedPositionStrategy.prototype._subtractOverflows = function (length) {
+        var overflows = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            overflows[_i - 1] = arguments[_i];
+        }
+        return overflows.reduce(function (currentValue, currentOverflow) {
+            return currentValue - Math.max(currentOverflow, 0);
+        }, length);
+    };
     return ConnectedPositionStrategy;
 }());
+;
 
 //# sourceMappingURL=connected-position-strategy.js.map

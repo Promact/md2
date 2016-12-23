@@ -84,8 +84,8 @@ export var DirectiveResolver = (function () {
                     outputs.push(propName);
                 }
             }
-            var /** @type {?} */ hostBinding = ListWrapper.findLast(propertyMetadata[propName], function (a) { return a instanceof HostBinding; });
-            if (hostBinding) {
+            var /** @type {?} */ hostBindings = propertyMetadata[propName].filter(function (a) { return a && a instanceof HostBinding; });
+            hostBindings.forEach(function (hostBinding) {
                 if (hostBinding.hostPropertyName) {
                     var /** @type {?} */ startWith = hostBinding.hostPropertyName[0];
                     if (startWith === '(') {
@@ -99,12 +99,12 @@ export var DirectiveResolver = (function () {
                 else {
                     host[("[" + propName + "]")] = propName;
                 }
-            }
-            var /** @type {?} */ hostListener = ListWrapper.findLast(propertyMetadata[propName], function (a) { return a instanceof HostListener; });
-            if (hostListener) {
+            });
+            var /** @type {?} */ hostListeners = propertyMetadata[propName].filter(function (a) { return a && a instanceof HostListener; });
+            hostListeners.forEach(function (hostListener) {
                 var /** @type {?} */ args = hostListener.args || [];
                 host[("(" + hostListener.eventName + ")")] = propName + "(" + args.join(',') + ")";
-            }
+            });
             var /** @type {?} */ query = ListWrapper.findLast(propertyMetadata[propName], function (a) { return a instanceof Query; });
             if (query) {
                 queries[propName] = query;

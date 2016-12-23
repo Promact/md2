@@ -20,7 +20,7 @@ export var DomProjectionHost = (function () {
     }
     DomProjectionHost = __decorate([
         Directive({
-            selector: 'dom-projection-host'
+            selector: 'cdk-dom-projection-host'
         }), 
         __metadata('design:paramtypes', [ElementRef])
     ], DomProjectionHost);
@@ -40,10 +40,10 @@ export var DomProjection = (function () {
      * ```
      *   @Component({
      *     template: `<div>
-     *       <dom-projection-host>
+     *       <cdk-dom-projection-host>
      *         <div>other</div>
      *         <ng-content></ng-content>
-     *       </dom-projection-host>
+     *       </cdk-dom-projection-host>
      *     </div>`
      *   })
      *   class Cmpt {

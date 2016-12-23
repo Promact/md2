@@ -8,7 +8,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import { NgModule } from '@angular/core';
-import { MdRippleModule, RtlModule, PortalModule, OverlayModule, A11yModule, ProjectionModule, DefaultStyleCompatibilityModeModule } from './core/index';
+import { MdRippleModule, RtlModule, ObserveContentModule, PortalModule, OverlayModule, A11yModule, ProjectionModule, DefaultStyleCompatibilityModeModule } from './core/index';
 import { Md2AccordionModule } from './accordion/index';
 import { Md2AutocompleteModule } from './autocomplete/index';
 import { Md2ChipsModule } from './chips/index';
@@ -49,6 +49,7 @@ var MD2_MODULES = [
     PlatformModule,
     ProjectionModule,
     DefaultStyleCompatibilityModeModule,
+    ObserveContentModule
 ];
 export var Md2RootModule = (function () {
     function Md2RootModule() {
@@ -78,6 +79,7 @@ export var Md2RootModule = (function () {
                 PortalModule.forRoot(),
                 ProjectionModule.forRoot(),
                 RtlModule.forRoot(),
+                ObserveContentModule.forRoot(),
                 DefaultStyleCompatibilityModeModule.forRoot(),
             ],
             exports: MD2_MODULES,

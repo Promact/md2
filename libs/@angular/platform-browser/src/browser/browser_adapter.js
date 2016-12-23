@@ -112,7 +112,13 @@ export var BrowserDomAdapter = (function (_super) {
      */
     BrowserDomAdapter.prototype.logError = function (error) {
         if (window.console) {
-            (window.console.error || window.console.log)(error);
+            if (console.error) {
+                console.error(error);
+            }
+            else {
+                // tslint:disable-next-line:no-console
+                console.log(error);
+            }
         }
     };
     /**
@@ -132,7 +138,6 @@ export var BrowserDomAdapter = (function (_super) {
     BrowserDomAdapter.prototype.logGroup = function (error) {
         if (window.console) {
             window.console.group && window.console.group(error);
-            this.logError(error);
         }
     };
     /**

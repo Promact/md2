@@ -13,7 +13,6 @@ export declare class Md2Multiselect implements AfterContentInit, ControlValueAcc
     change: EventEmitter<any>;
     private _value;
     private _readonly;
-    private _required;
     private _disabled;
     private _isInitialized;
     private _onTouchedCallback;
@@ -29,7 +28,6 @@ export declare class Md2Multiselect implements AfterContentInit, ControlValueAcc
     textKey: string;
     valueKey: string;
     readonly: boolean;
-    required: boolean;
     disabled: boolean;
     options: Array<any>;
     value: any;

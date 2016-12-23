@@ -61,7 +61,6 @@ export declare class Md2Datepicker implements AfterContentInit, ControlValueAcce
     type: 'date' | 'time' | 'datetime';
     name: string;
     id: string;
-    class: string;
     placeholder: string;
     format: string;
     tabindex: number;

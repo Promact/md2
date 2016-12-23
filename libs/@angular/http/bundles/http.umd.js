@@ -1,5 +1,5 @@
 /**
- * @license Angular v2.3.0
+ * @license Angular v2.3.1
  * (c) 2010-2016 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -783,7 +783,7 @@
             if (this._body instanceof ArrayBuffer) {
                 return String.fromCharCode.apply(null, new Uint16Array(/** @type {?} */ (this._body)));
             }
-            if (this._body === null) {
+            if (this._body == null) {
                 return '';
             }
             if (typeof this._body === 'object') {
@@ -1425,7 +1425,7 @@
         RequestOptions.prototype.merge = function (options) {
             return new RequestOptions({
                 method: options && options.method != null ? options.method : this.method,
-                headers: options && options.headers != null ? options.headers : this.headers,
+                headers: options && options.headers != null ? options.headers : new Headers(this.headers),
                 body: options && options.body != null ? options.body : this.body,
                 url: options && options.url != null ? options.url : this.url,
                 search: options && options.search != null ?
@@ -1995,7 +1995,7 @@
     /**
      * @stable
      */
-    var /** @type {?} */ VERSION = new _angular_core.Version('2.3.0');
+    var /** @type {?} */ VERSION = new _angular_core.Version('2.3.1');
 
     exports.BrowserXhr = BrowserXhr;
     exports.JSONPBackend = JSONPBackend;

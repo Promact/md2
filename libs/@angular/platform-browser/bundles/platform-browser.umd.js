@@ -1,5 +1,5 @@
 /**
- * @license Angular v2.3.0
+ * @license Angular v2.3.1
  * (c) 2010-2016 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -12,8 +12,11 @@
   var /** @type {?} */ DebugDomRootRenderer = core.__core_private__.DebugDomRootRenderer;
   var /** @type {?} */ NoOpAnimationPlayer = core.__core_private__.NoOpAnimationPlayer;
 
-  var _NoOpAnimationDriver = (function () {
-      function _NoOpAnimationDriver() {
+  /**
+   * @experimental
+   */
+  var NoOpAnimationDriver = (function () {
+      function NoOpAnimationDriver() {
       }
       /**
        * @param {?} element
@@ -25,11 +28,11 @@
        * @param {?=} previousPlayers
        * @return {?}
        */
-      _NoOpAnimationDriver.prototype.animate = function (element, startingStyles, keyframes, duration, delay, easing, previousPlayers) {
+      NoOpAnimationDriver.prototype.animate = function (element, startingStyles, keyframes, duration, delay, easing, previousPlayers) {
           if (previousPlayers === void 0) { previousPlayers = []; }
           return new NoOpAnimationPlayer();
       };
-      return _NoOpAnimationDriver;
+      return NoOpAnimationDriver;
   }());
   /**
    * @abstract
@@ -49,7 +52,7 @@
        * @return {?}
        */
       AnimationDriver.prototype.animate = function (element, startingStyles, keyframes, duration, delay, easing, previousPlayers) { };
-      AnimationDriver.NOOP = new _NoOpAnimationDriver();
+      AnimationDriver.NOOP = new NoOpAnimationDriver();
       return AnimationDriver;
   }());
 
@@ -108,10 +111,10 @@
           return '' + token;
       }
       if (token.overriddenName) {
-          return token.overriddenName;
+          return "" + token.overriddenName;
       }
       if (token.name) {
-          return token.name;
+          return "" + token.name;
       }
       var /** @type {?} */ res = token.toString();
       var /** @type {?} */ newLineIndex = res.indexOf('\n');
@@ -1197,7 +1200,7 @@
           }
           keyframes.forEach(function (keyframe) {
               var /** @type {?} */ data = _populateStyles(keyframe.styles, startingStyleLookup);
-              data['offset'] = keyframe.offset;
+              data['offset'] = Math.max(0, Math.min(1, keyframe.offset));
               formattedSteps.push(data);
           });
           // this is a special case when only styles are applied as an
@@ -1457,7 +1460,13 @@
        */
       BrowserDomAdapter.prototype.logError = function (error) {
           if (window.console) {
-              (window.console.error || window.console.log)(error);
+              if (console.error) {
+                  console.error(error);
+              }
+              else {
+                  // tslint:disable-next-line:no-console
+                  console.log(error);
+              }
           }
       };
       /**
@@ -1477,7 +1486,6 @@
       BrowserDomAdapter.prototype.logGroup = function (error) {
           if (window.console) {
               window.console.group && window.console.group(error);
-              this.logError(error);
           }
       };
       /**
@@ -4646,7 +4654,7 @@
   /**
    * @stable
    */
-  var /** @type {?} */ VERSION = new core.Version('2.3.0');
+  var /** @type {?} */ VERSION = new core.Version('2.3.1');
 
   exports.BrowserModule = BrowserModule;
   exports.platformBrowser = platformBrowser;

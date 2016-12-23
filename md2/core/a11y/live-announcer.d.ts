@@ -1,7 +1,7 @@
 import { OpaqueToken } from '@angular/core';
 export declare const LIVE_ANNOUNCER_ELEMENT_TOKEN: OpaqueToken;
 export declare type AriaLivePoliteness = 'off' | 'polite' | 'assertive';
-export declare class MdLiveAnnouncer {
+export declare class LiveAnnouncer {
     private _liveElement;
     constructor(elementToken: any);
     /**

@@ -23,9 +23,12 @@ export var BaseError = (function (_super) {
      * @param {?} message
      */
     function BaseError(message) {
+        _super.call(this, message);
         // Errors don't use current this, instead they create a new instance.
         // We have to do forward all of our api to the nativeInstance.
-        var nativeError = _super.call(this, message);
+        // TODO(bradfordcsmith): Remove this hack when
+        //     google/closure-compiler/issues/2102 is fixed.
+        var nativeError = new Error(message);
         this._nativeError = nativeError;
     }
     Object.defineProperty(BaseError.prototype, "message", {

@@ -2,7 +2,7 @@ import { ElementRef, Renderer } from '@angular/core';
 export declare class Md2MenuTrigger {
     private _element;
     private _renderer;
-    private _documentClickHandler;
+    private _handleClick;
     constructor(_element: ElementRef, _renderer: Renderer);
     ngAfterViewInit(): void;
     ngOnDestroy(): void;

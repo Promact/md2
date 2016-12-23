@@ -1,8 +1,18 @@
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 import { Directive, Input, forwardRef } from '@angular/core';
 import { NG_VALIDATORS, Validators } from '../validators';
 export var /** @type {?} */ REQUIRED_VALIDATOR = {
     provide: NG_VALIDATORS,
     useExisting: forwardRef(function () { return RequiredValidator; }),
+    multi: true
+};
+export var /** @type {?} */ CHECKBOX_REQUIRED_VALIDATOR = {
+    provide: NG_VALIDATORS,
+    useExisting: forwardRef(function () { return CheckboxRequiredValidator; }),
     multi: true
 };
 /**
@@ -50,7 +60,7 @@ export var RequiredValidator = (function () {
     RequiredValidator.prototype.registerOnValidatorChange = function (fn) { this._onChange = fn; };
     RequiredValidator.decorators = [
         { type: Directive, args: [{
-                    selector: '[required][formControlName],[required][formControl],[required][ngModel]',
+                    selector: ':not([type=checkbox])[required][formControlName],:not([type=checkbox])[required][formControl],:not([type=checkbox])[required][ngModel]',
                     providers: [REQUIRED_VALIDATOR],
                     host: { '[attr.required]': 'required ? "" : null' }
                 },] },
@@ -76,6 +86,49 @@ function RequiredValidator_tsickle_Closure_declarations() {
     RequiredValidator.prototype._required;
     /** @type {?} */
     RequiredValidator.prototype._onChange;
+}
+/**
+ *  A Directive that adds the `required` validator to checkbox controls marked with the
+  * `required` attribute, via the {@link NG_VALIDATORS} binding.
+  * *
+  * ### Example
+  * *
+  * ```
+  * <input type="checkbox" name="active" ngModel required>
+  * ```
+  * *
+ */
+export var CheckboxRequiredValidator = (function (_super) {
+    __extends(CheckboxRequiredValidator, _super);
+    function CheckboxRequiredValidator() {
+        _super.apply(this, arguments);
+    }
+    /**
+     * @param {?} c
+     * @return {?}
+     */
+    CheckboxRequiredValidator.prototype.validate = function (c) {
+        return this.required ? Validators.requiredTrue(c) : null;
+    };
+    CheckboxRequiredValidator.decorators = [
+        { type: Directive, args: [{
+                    selector: 'input[type=checkbox][required][formControlName],input[type=checkbox][required][formControl],input[type=checkbox][required][ngModel]',
+                    providers: [CHECKBOX_REQUIRED_VALIDATOR],
+                    host: { '[attr.required]': 'required ? "" : null' }
+                },] },
+    ];
+    /** @nocollapse */
+    CheckboxRequiredValidator.ctorParameters = function () { return []; };
+    return CheckboxRequiredValidator;
+}(RequiredValidator));
+function CheckboxRequiredValidator_tsickle_Closure_declarations() {
+    /** @type {?} */
+    CheckboxRequiredValidator.decorators;
+    /**
+     * @nocollapse
+     * @type {?}
+     */
+    CheckboxRequiredValidator.ctorParameters;
 }
 /**
  * Provider which adds {@link MinLengthValidator} to {@link NG_VALIDATORS}.

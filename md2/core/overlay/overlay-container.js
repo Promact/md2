@@ -19,11 +19,11 @@ export var OverlayContainer = (function () {
     };
     /**
      * Create the overlay container element, which is simply a div
-     * with the 'md-overlay-container' class on the document body.
+     * with the 'cdk-overlay-container' class on the document body.
      */
     OverlayContainer.prototype._createContainer = function () {
         var container = document.createElement('div');
-        container.classList.add('md-overlay-container');
+        container.classList.add('cdk-overlay-container');
         document.body.appendChild(container);
         this._containerElement = container;
     };

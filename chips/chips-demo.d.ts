@@ -1,7 +1,7 @@
 export declare class ChipsDemo {
-    private item;
-    private itemsData;
-    private items;
-    private validPattern;
-    private change(value);
+    private _item;
+    private _itemsData;
+    private _items;
+    private _validPattern;
+    handleChange(value: any): void;
 }

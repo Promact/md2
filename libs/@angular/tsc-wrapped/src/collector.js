@@ -11,10 +11,21 @@ var evaluator_1 = require('./evaluator');
 var schema_1 = require('./schema');
 var symbols_1 = require('./symbols');
 /**
+ * A set of collector options to use when collecting metadata.
+ */
+var CollectorOptions = (function () {
+    function CollectorOptions() {
+    }
+    return CollectorOptions;
+}());
+exports.CollectorOptions = CollectorOptions;
+/**
  * Collect decorator metadata from a TypeScript module.
  */
 var MetadataCollector = (function () {
-    function MetadataCollector() {
+    function MetadataCollector(options) {
+        if (options === void 0) { options = {}; }
+        this.options = options;
     }
     /**
      * Returns a JSON.stringify friendly form describing the decorators of the exported classes from
@@ -24,7 +35,7 @@ var MetadataCollector = (function () {
         if (strict === void 0) { strict = false; }
         var locals = new symbols_1.Symbols(sourceFile);
         var nodeMap = new Map();
-        var evaluator = new evaluator_1.Evaluator(locals, nodeMap);
+        var evaluator = new evaluator_1.Evaluator(locals, nodeMap, this.options);
         var metadata;
         var exports;
         function objFromDecorator(decoratorNode) {
@@ -224,16 +235,28 @@ var MetadataCollector = (function () {
                 case ts.SyntaxKind.ExportDeclaration:
                     // Record export declarations
                     var exportDeclaration = node;
-                    var moduleSpecifier = exportDeclaration.moduleSpecifier;
+                    var moduleSpecifier = exportDeclaration.moduleSpecifier, exportClause = exportDeclaration.exportClause;
+                    if (!moduleSpecifier) {
+                        // no module specifier -> export {propName as name};
+                        if (exportClause) {
+                            exportClause.elements.forEach(function (spec) {
+                                var name = spec.name.text;
+                                var propNode = spec.propertyName || spec.name;
+                                var value = evaluator.evaluateNode(propNode);
+                                if (!metadata)
+                                    metadata = {};
+                                metadata[name] = recordEntry(value, node);
+                            });
+                        }
+                    }
                     if (moduleSpecifier && moduleSpecifier.kind == ts.SyntaxKind.StringLiteral) {
                         // Ignore exports that don't have string literals as exports.
                         // This is allowed by the syntax but will be flagged as an error by the type checker.
                         var from = moduleSpecifier.text;
                         var moduleExport = { from: from };
-                        if (exportDeclaration.exportClause) {
-                            moduleExport.export = exportDeclaration.exportClause.elements.map(function (element) { return element.propertyName ?
-                                { name: element.propertyName.text, as: element.name.text } :
-                                element.name.text; });
+                        if (exportClause) {
+                            moduleExport.export = exportClause.elements.map(function (spec) { return spec.propertyName ? { name: spec.propertyName.text, as: spec.name.text } :
+                                spec.name.text; });
                         }
                         if (!exports)
                             exports = [];
@@ -310,7 +333,6 @@ var MetadataCollector = (function () {
                                 nextDefaultValue =
                                     recordEntry(errorSym('Unsuppported enum member name', member.name), node);
                             }
-                            ;
                         }
                         if (writtenMembers) {
                             if (!metadata)
@@ -353,7 +375,7 @@ var MetadataCollector = (function () {
                         }
                         else {
                             // Destructuring (or binding) declarations are not supported,
-                            // var {<identifier>[, <identifer>]+} = <expression>;
+                            // var {<identifier>[, <identifier>]+} = <expression>;
                             //   or
                             // var [<identifier>[, <identifier}+] = <expression>;
                             // are not supported.
@@ -396,7 +418,10 @@ var MetadataCollector = (function () {
             else if (strict) {
                 validateMetadata(sourceFile, nodeMap, metadata);
             }
-            var result = { __symbolic: 'module', version: schema_1.VERSION, metadata: metadata };
+            var result = {
+                __symbolic: 'module',
+                version: this.options.version || schema_1.VERSION, metadata: metadata
+            };
             if (exports)
                 result.exports = exports;
             return result;

@@ -3,13 +3,13 @@
     <hr />
     <h4>Basic Chips</h4>
     <div>
-        <md2-chips [(ngModel)]="item"
+        <md2-chips [(ngModel)]="_item"
                    placeholder="Add"
                    [maxChips]="8"
                    [isRemovable]="true"
                    [readonly]="false"
                    [isAutoComplete]="false"
-                   (change)="change($event)">
+                   (change)="handleChange($event)">
 
             <div class="md2-template" [hidden]="true">
                 <em>(data)</em>
@@ -18,26 +18,26 @@
     </div>
     <h4>Chips with AutoComplete</h4>
     <div>
-        <md2-chips [(ngModel)]="itemsData"
+        <md2-chips [(ngModel)]="_itemsData"
                    placeholder="Add"
                    [maxChips]="8"
                    [isRemovable]="true"
                    [readonly]="false"
                    [isAutoComplete]="true"
-                   [autocompleteDataList]="items"
-                   (change)="change($event)" item-text="name" autocomplete-item-text="text">
+                   [autocompleteDataList]="_items"
+                   (change)="handleChange($event)" item-text="name" autocomplete-item-text="text">
         </md2-chips>
     </div>
 
     <h4>Disabled</h4>
     <div>
-        <md2-chips [(ngModel)]="itemsData"
+        <md2-chips [(ngModel)]="_itemsData"
                    placeholder="Add"
                    [maxChips]="8"
                    [isRemovable]="true"
                    [readonly]="true"
                    [isAutoComplete]="false"
-                   (change)="change($event)" item-text="name">
+                   (change)="handleChange($event)" item-text="name">
             <div class="md2-template" [hidden]="true">
                 <em>(data)</em>
             </div>

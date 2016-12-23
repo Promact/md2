@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Rgba, Hsla, Hsva } from './colorpicker';
 
+export const COLOR_RGB = /(rgb)a?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*%?,\s*(\d{1,3})\s*%?(?:,\s*(\d+(?:\.\d+)?)\s*)?\)/;
+export const COLOR_HSL = /(hsl)a?\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*(?:,\s*(\d+(?:\.\d+)?)\s*)?\)/;
+
 @Injectable()
 export class ColorpickerService {
   /**
@@ -8,7 +11,8 @@ export class ColorpickerService {
 * @param hsla
 */
   hsla2hsva(hsla: Hsla) {
-    let h: number = Math.min(hsla.h, 1), s = Math.min(hsla.s, 1), l = Math.min(hsla.l, 1), a = Math.min(hsla.a, 1);
+    let h: number = Math.min(hsla.h, 1), s = Math.min(hsla.s, 1), l = Math.min(hsla.l, 1);
+    let a = Math.min(hsla.a, 1);
     if (l === 0) {
       return { h: h, s: 0, v: 0, a: a };
     } else {
@@ -38,7 +42,8 @@ export class ColorpickerService {
    * @param rgba
    */
   rgbaToHsva(rgba: Rgba) {
-    let r: number = Math.min(rgba.r, 1), g = Math.min(rgba.g, 1), b = Math.min(rgba.b, 1), a = Math.min(rgba.a, 1);
+    let r: number = Math.min(rgba.r, 1), g = Math.min(rgba.g, 1), b = Math.min(rgba.b, 1);
+    let a = Math.min(rgba.a, 1);
     let max: number = Math.max(r, g, b), min = Math.min(r, g, b);
     let h: number, s: number, v: number = max;
     let d: number = max - min;
@@ -109,7 +114,7 @@ export class ColorpickerService {
   stringToHsva(colorString: string) {
     let stringParsers = [
       {
-        re: /(rgb)a?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*%?,\s*(\d{1,3})\s*%?(?:,\s*(\d+(?:\.\d+)?)\s*)?\)/,
+        re: COLOR_RGB,
         parse: function (execResult: Array<string>) {
           return new Rgba(parseInt(execResult[2]) / 255,
             parseInt(execResult[3]) / 255,
@@ -118,7 +123,7 @@ export class ColorpickerService {
         }
       },
       {
-        re: /(hsl)a?\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*(?:,\s*(\d+(?:\.\d+)?)\s*)?\)/,
+        re: COLOR_HSL,
         parse: function (execResult: Array<string>) {
           return new Hsla(parseInt(execResult[2]) / 360,
             parseInt(execResult[3]) / 100,
@@ -150,7 +155,8 @@ export class ColorpickerService {
     for (let key in stringParsers) {
       if (stringParsers.hasOwnProperty(key)) {
         let parser = stringParsers[key];
-        let match: Array<string> = parser.re.exec(colorString), color = match && parser.parse(match);
+        let match: Array<string> = parser.re.exec(colorString);
+        let color = match && parser.parse(match);
         if (color) {
           if (color instanceof Rgba) {
             hsva = this.rgbaToHsva(color);
@@ -174,17 +180,22 @@ export class ColorpickerService {
       switch (outputFormat) {
         case 'hsla':
           let hsla = this.hsva2hsla(hsva);
-          let hslaText = new Hsla(Math.round((hsla.h) * 360), Math.round(hsla.s * 100), Math.round(hsla.l * 100), Math.round(hsla.a * 100) / 100);
-          return 'hsla(' + hslaText.h + ',' + hslaText.s + '%,' + hslaText.l + '%,' + hslaText.a + ')';
+          let hslaText = new Hsla(Math.round((hsla.h) * 360), Math.round(hsla.s * 100),
+            Math.round(hsla.l * 100), Math.round(hsla.a * 100) / 100
+          );
+          return 'hsla(' + hslaText.h + ',' + hslaText.s + '%,' +
+            hslaText.l + '%,' + hslaText.a + ')';
         default:
           let rgba = this.denormalizeRGBA(this.hsvaToRgba(hsva));
-          return 'rgba(' + rgba.r + ',' + rgba.g + ',' + rgba.b + ',' + Math.round(rgba.a * 100) / 100 + ')';
+          return 'rgba(' + rgba.r + ',' + rgba.g + ',' + rgba.b +
+            ',' + Math.round(rgba.a * 100) / 100 + ')';
       }
     } else {
       switch (outputFormat) {
         case 'hsla':
           let hsla = this.hsva2hsla(hsva);
-          let hslaText = new Hsla(Math.round((hsla.h) * 360), Math.round(hsla.s * 100), Math.round(hsla.l * 100), Math.round(hsla.a * 100) / 100);
+          let hslaText = new Hsla(Math.round((hsla.h) * 360), Math.round(hsla.s * 100),
+            Math.round(hsla.l * 100), Math.round(hsla.a * 100) / 100);
           return 'hsl(' + hslaText.h + ',' + hslaText.s + '%,' + hslaText.l + '%)';
         case 'rgba':
           let rgba = this.denormalizeRGBA(this.hsvaToRgba(hsva));
@@ -194,7 +205,6 @@ export class ColorpickerService {
       }
     }
   }
-
   hexText(rgba: Rgba) {
     let mainText = ((1 << 24) | (rgba.r << 16) | (rgba.g << 8) | rgba.b).toString(16);
     let hexText = '#' + mainText.substr(1);
@@ -205,6 +215,7 @@ export class ColorpickerService {
   }
 
   denormalizeRGBA(rgba: Rgba) {
-    return new Rgba(Math.round(rgba.r * 255), Math.round(rgba.g * 255), Math.round(rgba.b * 255), rgba.a);
+    return new Rgba(Math.round(rgba.r * 255), Math.round(rgba.g * 255),
+      Math.round(rgba.b * 255), rgba.a);
   }
 }

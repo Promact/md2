@@ -10,8 +10,6 @@ md2-accordion-tab {
   border-width: 0 0 1px;
   border-style: solid;
   border-color: rgba(0, 0, 0, 0.12);
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
   box-sizing: border-box;
 }
 
@@ -40,12 +38,7 @@ md2-accordion-tab .md2-accordion-header {
   text-decoration: none;
   white-space: nowrap;
   width: 100%;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
   box-sizing: border-box;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
   -webkit-user-drag: none;
 }
@@ -56,9 +49,6 @@ md2-accordion-tab.md2-accordion-tab-active .md2-accordion-header {
 
 md2-accordion-tab.md2-accordion-tab-disabled .md2-accordion-header {
   pointer-events: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
   -webkit-user-drag: none;
   opacity: 0.5;
@@ -76,19 +66,11 @@ md2-accordion-tab .md2-accordion-header-icon {
   border-width: 0 2px 2px 0;
   border-style: solid;
   border-color: rgba(0, 0, 0, 0.54);
-  -moz-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  -o-transform: rotate(45deg);
-  -webkit-transform: rotate(45deg);
   transform: rotate(45deg);
   transition: 300ms ease-in-out;
 }
 
 md2-accordion-tab.md2-accordion-tab-active .md2-accordion-header-icon {
-  -moz-transform: rotate(225deg);
-  -ms-transform: rotate(225deg);
-  -o-transform: rotate(225deg);
-  -webkit-transform: rotate(225deg);
   transform: rotate(225deg);
   top: 16px;
 }

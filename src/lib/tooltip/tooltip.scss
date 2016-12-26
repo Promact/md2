@@ -1,65 +1,20 @@
-$md2-font-family: '';
-$md2-tooltip-height: 1.5;
+$md2-tooltip-height: 22px;
 $md2-tooltip-margin: 14px;
-$md2-tooltip-padding: 4px 12px;
+$md2-tooltip-padding: 8px;
 
-md2-tooltip {
+:host {
   pointer-events: none;
-  user-select: none;
-  backface-visibility: hidden;
-
-  .md2-tooltip-container {
-    position: fixed;
-    display: block;
-    overflow: hidden;
-    z-index: 1070;
-  }
-
-  .md2-tooltip {
-    max-width: 200px;
-    margin: $md2-tooltip-margin;
-    padding: $md2-tooltip-padding;
-    font-family: $md2-font-family;
-    color: white;
-    font-size: 10px;
-    word-wrap: break-word;
-    background-color: rgba(97, 97, 97, 0.9);
-    border-radius: 2px;
-    line-height: $md2-tooltip-height;
-    opacity: 0;
-    transition: all 200ms cubic-bezier(0.25, 0.8, 0.25, 1);
-    transform-origin: center top;
-    transform: scale(0);
-
-    &.before {
-      transform-origin: center right;
-    }
-
-    &.after {
-      transform-origin: center left;
-    }
-
-    &.above {
-      transform-origin: center bottom;
-    }
-
-    &.visible {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
 }
 
-.cdk-visually-hidden {
-  border: 0;
-  clip: rect(0 0 0 0);
-  height: 1px;
-  margin: -1px;
-  overflow: hidden;
-  padding: 0;
-  position: absolute;
-  text-transform: none;
-  width: 1px;
+.md2-tooltip {
+  color: white;
+  padding: 0 $md2-tooltip-padding;
+  border-radius: 2px;
+  font-size: 10px;
+  margin: $md2-tooltip-margin;
+  height: $md2-tooltip-height;
+  line-height: $md2-tooltip-height;
+  background: rgba(97, 97, 97, 0.9);
 }
 
 .cdk-overlay-container, .cdk-global-overlay-wrapper {
@@ -86,24 +41,4 @@ md2-tooltip {
   pointer-events: auto;
   box-sizing: border-box;
   z-index: 1000;
-}
-
-.cdk-overlay-backdrop {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 1;
-  pointer-events: auto;
-  transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1);
-  opacity: 0;
-}
-
-.cdk-overlay-backdrop.cdk-overlay-backdrop-showing {
-  opacity: 0.48;
-}
-
-.cdk-overlay-dark-backdrop {
-  background: #212121;
 }

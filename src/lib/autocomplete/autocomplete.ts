@@ -63,10 +63,7 @@ export const MD2_AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR: any = {
     '[attr.aria-label]': 'placeholder',
     '[attr.aria-required]': 'required.toString()',
     '[attr.aria-disabled]': 'disabled.toString()',
-    '[attr.aria-invalid]': '_control?.invalid || "false"',
     '[class.md2-autocomplete-disabled]': 'disabled',
-    '(keydown)': '_handleKeydown($event)',
-    '(blur)': '_onBlur()'
   },
   encapsulation: ViewEncapsulation.None
 })

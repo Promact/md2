@@ -418,14 +418,16 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
       this._selected = [];
       value = Array.isArray(value) ? value : [];
       for (let i = 0; i < this.options.length; i++) {
-        if (value.indexOf(options[i].value) > -1) {
-          options[i].select();
-        }
+        value.find((v: any) => {
+          if (this._equals(v, options[i].value)) {
+            options[i].select();
+          }
+        });
       }
       this._updateOptions();
     } else {
       for (let i = 0; i < this.options.length; i++) {
-        if (options[i].value === value) {
+        if (this._equals(options[i].value, value)) {
           options[i].select();
           return;
         }
@@ -710,6 +712,25 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
     const originY =
       Math.abs(this._offsetY) - SELECT_OPTION_HEIGHT_ADJUSTMENT + SELECT_OPTION_HEIGHT / 2;
     return `50% ${originY}px 0px`;
+  }
+
+  private _equals(o1: any, o2: any) {
+    if (o1 === o2) { return true; }
+    if (o1 === null || o2 === null) { return false; }
+    if (o1 !== o1 && o2 !== o2) { return true; }
+    let t1 = typeof o1, t2 = typeof o2, key: any, keySet: any;
+    if (t1 === t2 && t1 === 'object') {
+      keySet = Object.create(null);
+      for (key in o1) {
+        if (!this._equals(o1[key], o2[key])) { return false; }
+        keySet[key] = true;
+      }
+      for (key in o2) {
+        if (!(key in keySet) && key.charAt(0) !== '$' && o2[key]) { return false; }
+      }
+      return true;
+    }
+    return false;
   }
 
 }

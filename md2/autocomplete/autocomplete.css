@@ -38,7 +38,6 @@ md2-autocomplete.md2-autocomplete-disabled .md2-autocomplete-trigger {
   background-position: bottom -1px left 0;
   background-size: 4px 1px;
   background-repeat: repeat-x;
-  cursor: default;
   cursor: default; }
   md2-autocomplete.md2-autocomplete-disabled .md2-autocomplete-trigger.is-focused {
     padding-bottom: 1px;
@@ -57,16 +56,15 @@ md2-autocomplete.md2-autocomplete-disabled .md2-autocomplete-input {
   color: rgba(0, 0, 0, 0.38); }
 
 .md2-autocomplete-placeholder {
-  color: rgba(0, 0, 0, 0.38);
   position: absolute;
   right: 26px;
   bottom: 100%;
   left: 0;
-  color: rgba(0, 0, 0, 0.38);
   max-width: 100%;
   padding-left: 3px;
   padding-right: 0;
   line-height: 1.4;
+  color: rgba(0, 0, 0, 0.38);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -74,8 +72,7 @@ md2-autocomplete.md2-autocomplete-disabled .md2-autocomplete-input {
   z-index: 1;
   transform: translate3d(0, 26px, 0) scale(1);
   transition: transform 400ms cubic-bezier(0.25, 0.8, 0.25, 1);
-  transform-origin: left top;
-  color: rgba(0, 0, 0, 0.38); }
+  transform-origin: left top; }
   [aria-required=true] .md2-autocomplete-placeholder::after {
     content: '*'; }
 

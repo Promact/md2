@@ -105,7 +105,7 @@ md2-dialog-footer {
   border-top: 1px solid rgba(0, 0, 0, 0.12); }
 
 .md2-dialog-backdrop {
-  position: absolute;
+  position: fixed;
   top: 0;
   bottom: 0;
   left: 0;

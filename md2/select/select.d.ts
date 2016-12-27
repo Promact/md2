@@ -248,4 +248,5 @@ export declare class Md2Select implements AfterContentInit, ControlValueAccessor
     private _adjustPanelDown(panelHeightTop, topSpaceAvailable, maxScroll);
     /** Sets the transform origin point based on the selected option. */
     private _getOriginBasedOnOption();
+    private _equals(o1, o2);
 }

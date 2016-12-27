@@ -3851,7 +3851,7 @@ var Md2Autocomplete = (function () {
     Md2Autocomplete = __decorate$27([
         _angular_core.Component({selector: 'md2-autocomplete',
             template: "<div class=\"md2-autocomplete-trigger\" [class.is-focused]=\"_inputFocused || isMenuVisible\"> <input [(ngModel)]=\"_inputValue\" type=\"text\" tabs=\"false\" autocomplete=\"off\" [readonly]=\"readonly\" [tabindex]=\"disabled ? -1 : tabindex\" [disabled]=\"disabled\" class=\"md2-autocomplete-input\" (focus)=\"_handleFocus()\" (blur)=\"_handleBlur()\" (keydown)=\"_handleKeydown($event)\" (change)=\"$event.stopPropagation()\" /> <span class=\"md2-autocomplete-placeholder\" [class.has-value]=\"_inputValue\"> {{ placeholder }} </span> <svg *ngIf=\"_inputValue\" (click)=\"_onClear()\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\" /> </svg> </div> <ul *ngIf=\"isMenuVisible\" class=\"md2-autocomplete-menu\" (mouseenter)=\"_handleMouseEnter()\" (mouseleave)=\"_handleMouseLeave()\"> <li class=\"md2-option\" *ngFor=\"let l of _list; let i = index;\" [class.focus]=\"_focusedOption === i\" (click)=\"_selectOption($event, i)\"> <div class=\"md2-text\" [innerHtml]=\"l.text | highlight:_inputValue\"></div> </li> </ul> ",
-            styles: ["md2-autocomplete { position: relative; display: block; margin: 18px 0; outline: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } md2-autocomplete.md2-autocomplete-disabled { pointer-events: none; cursor: default; } .md2-autocomplete-trigger { position: relative; display: block; width: 100%; padding: 2px 2px 1px; border-bottom: 1px solid rgba(0, 0, 0, 0.12); box-sizing: border-box; min-width: 64px; min-height: 26px; cursor: pointer; } .md2-autocomplete-trigger.is-focused { padding-bottom: 0; border-bottom: 2px solid #106cc8; } md2-autocomplete.ng-invalid.ng-touched:not(.md2-autocomplete-disabled) .md2-autocomplete-trigger { color: #f44336; border-bottom-color: #f44336; } md2-autocomplete.md2-autocomplete-disabled .md2-autocomplete-trigger { color: rgba(0, 0, 0, 0.38); border-color: transparent; background-image: linear-gradient(to right, rgba(0, 0, 0, 0.38) 0%, rgba(0, 0, 0, 0.38) 33%, transparent 0%); background-position: bottom -1px left 0; background-size: 4px 1px; background-repeat: repeat-x; cursor: default; cursor: default; } md2-autocomplete.md2-autocomplete-disabled .md2-autocomplete-trigger.is-focused { padding-bottom: 1px; border-bottom: 1px solid transparent; } .md2-autocomplete-input { width: 100%; height: 26px; font-size: 15px; outline: none; background: transparent; border: 0; box-sizing: border-box; } md2-autocomplete.md2-autocomplete-disabled .md2-autocomplete-input { color: rgba(0, 0, 0, 0.38); } .md2-autocomplete-placeholder { color: rgba(0, 0, 0, 0.38); position: absolute; right: 26px; bottom: 100%; left: 0; color: rgba(0, 0, 0, 0.38); max-width: 100%; padding-left: 3px; padding-right: 0; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; z-index: 1; transform: translate3d(0, 26px, 0) scale(1); transition: transform 400ms cubic-bezier(0.25, 0.8, 0.25, 1); transform-origin: left top; color: rgba(0, 0, 0, 0.38); } [aria-required=true] .md2-autocomplete-placeholder::after { content: '*'; } .md2-autocomplete-trigger.is-focused .md2-autocomplete-placeholder { color: #106cc8; } .md2-autocomplete-trigger.is-focused .md2-autocomplete-placeholder, md2-autocomplete .md2-autocomplete-placeholder.has-value { transform: translate3d(0, 6px, 0) scale(0.75); } .md2-autocomplete-trigger svg { position: absolute; right: 0; top: 0; display: block; height: 100%; background: white; fill: currentColor; color: rgba(0, 0, 0, 0.54); } .md2-autocomplete-menu { position: absolute; left: 0; top: 100%; display: block; z-index: 10; width: 100%; margin: 0; padding: 8px 0; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12); max-height: 256px; min-height: 48px; overflow-y: auto; background: white; } .md2-autocomplete-menu .md2-option { position: relative; display: block; color: #212121; cursor: pointer; width: auto; padding: 0 16px; height: 48px; line-height: 48px; transition: background 150ms linear; } .md2-autocomplete-menu .md2-option:hover, .md2-autocomplete-menu .md2-option.focus { background: #ededed; } .md2-autocomplete-menu .md2-option .md2-text { width: auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 16px; } .md2-autocomplete-menu .highlight { color: #737373; } /*# sourceMappingURL=autocomplete.css.map */ "],
+            styles: ["md2-autocomplete { position: relative; display: block; margin: 18px 0; outline: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } md2-autocomplete.md2-autocomplete-disabled { pointer-events: none; cursor: default; } .md2-autocomplete-trigger { position: relative; display: block; width: 100%; padding: 2px 2px 1px; border-bottom: 1px solid rgba(0, 0, 0, 0.12); box-sizing: border-box; min-width: 64px; min-height: 26px; cursor: pointer; } .md2-autocomplete-trigger.is-focused { padding-bottom: 0; border-bottom: 2px solid #106cc8; } md2-autocomplete.ng-invalid.ng-touched:not(.md2-autocomplete-disabled) .md2-autocomplete-trigger { color: #f44336; border-bottom-color: #f44336; } md2-autocomplete.md2-autocomplete-disabled .md2-autocomplete-trigger { color: rgba(0, 0, 0, 0.38); border-color: transparent; background-image: linear-gradient(to right, rgba(0, 0, 0, 0.38) 0%, rgba(0, 0, 0, 0.38) 33%, transparent 0%); background-position: bottom -1px left 0; background-size: 4px 1px; background-repeat: repeat-x; cursor: default; } md2-autocomplete.md2-autocomplete-disabled .md2-autocomplete-trigger.is-focused { padding-bottom: 1px; border-bottom: 1px solid transparent; } .md2-autocomplete-input { width: 100%; height: 26px; font-size: 15px; outline: none; background: transparent; border: 0; box-sizing: border-box; } md2-autocomplete.md2-autocomplete-disabled .md2-autocomplete-input { color: rgba(0, 0, 0, 0.38); } .md2-autocomplete-placeholder { position: absolute; right: 26px; bottom: 100%; left: 0; max-width: 100%; padding-left: 3px; padding-right: 0; line-height: 1.4; color: rgba(0, 0, 0, 0.38); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; z-index: 1; transform: translate3d(0, 26px, 0) scale(1); transition: transform 400ms cubic-bezier(0.25, 0.8, 0.25, 1); transform-origin: left top; } [aria-required=true] .md2-autocomplete-placeholder::after { content: '*'; } .md2-autocomplete-trigger.is-focused .md2-autocomplete-placeholder { color: #106cc8; } .md2-autocomplete-trigger.is-focused .md2-autocomplete-placeholder, md2-autocomplete .md2-autocomplete-placeholder.has-value { transform: translate3d(0, 6px, 0) scale(0.75); } .md2-autocomplete-trigger svg { position: absolute; right: 0; top: 0; display: block; height: 100%; background: white; fill: currentColor; color: rgba(0, 0, 0, 0.54); } .md2-autocomplete-menu { position: absolute; left: 0; top: 100%; display: block; z-index: 10; width: 100%; margin: 0; padding: 8px 0; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12); max-height: 256px; min-height: 48px; overflow-y: auto; background: white; } .md2-autocomplete-menu .md2-option { position: relative; display: block; color: #212121; cursor: pointer; width: auto; padding: 0 16px; height: 48px; line-height: 48px; transition: background 150ms linear; } .md2-autocomplete-menu .md2-option:hover, .md2-autocomplete-menu .md2-option.focus { background: #ededed; } .md2-autocomplete-menu .md2-option .md2-text { width: auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 16px; } .md2-autocomplete-menu .highlight { color: #737373; } /*# sourceMappingURL=autocomplete.css.map */ "],
             providers: [MD2_AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR],
             host: {
                 'role': 'autocomplete',
@@ -3859,10 +3859,7 @@ var Md2Autocomplete = (function () {
                 '[attr.aria-label]': 'placeholder',
                 '[attr.aria-required]': 'required.toString()',
                 '[attr.aria-disabled]': 'disabled.toString()',
-                '[attr.aria-invalid]': '_control?.invalid || "false"',
                 '[class.md2-autocomplete-disabled]': 'disabled',
-                '(keydown)': '_handleKeydown($event)',
-                '(blur)': '_onBlur()'
             },
             encapsulation: _angular_core.ViewEncapsulation.None
         }), 
@@ -6908,7 +6905,7 @@ var Md2Dialog = (function () {
     Md2Dialog = __decorate$36([
         _angular_core.Component({selector: 'md2-dialog',
             template: "<template md2DialogPortal> <div class=\"md2-dialog-backdrop\" (click)=\"close()\"></div> <div class=\"md2-dialog\" [class.open]=\"_isOpened\"> <div class=\"md2-dialog-container\"> <div class=\"md2-dialog-header\"> <button type=\"button\" class=\"close\" aria-label=\"Close\" (click)=\"close()\">&times;</button> <h2 *ngIf=\"dialogTitle\" class=\"md2-dialog-title\" id=\"myDialogLabel\" [innerHtml]=\"dialogTitle\"></h2> <ng-content select=\"md2-dialog-title\"></ng-content> </div> <div class=\"md2-dialog-body\"> <ng-content></ng-content> </div> <ng-content select=\"md2-dialog-footer\"></ng-content> </div> </div> </template> ",
-            styles: [".md2-dialog-open { overflow-y: hidden; } .md2-dialog { position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 1050; display: none; overflow-x: hidden; overflow-y: scroll; -webkit-overflow-scrolling: touch; outline: 0; } .md2-dialog.open { display: block; } .md2-dialog .md2-dialog-container { position: relative; width: auto; margin: 15px; background-color: #fff; pointer-events: auto; background-clip: padding-box; border-radius: 0 0 4px 4px; outline: 0; box-shadow: 0 7px 8px -4px rgba(0, 0, 0, 0.2), 0 13px 19px 2px rgba(0, 0, 0, 0.14), 0 5px 24px 4px rgba(0, 0, 0, 0.12); transition: 300ms; transform: scale(0.1); } .md2-dialog.open .md2-dialog-container { transform: scale(1); } @media (min-width: 768px) { .md2-dialog .md2-dialog-container { width: 600px; margin: 30px auto; } } .md2-dialog-header { background: #2196f3; color: #fff; font-size: 25px; line-height: 1.1; font-weight: 500; padding: 0 48px 0 16px; border-bottom: 1px solid #e5e5e5; word-wrap: break-word; } .md2-dialog-header .close { position: absolute; top: 21px; right: 16px; display: inline-block; width: 18px; height: 18px; overflow: hidden; -webkit-appearance: none; padding: 0; cursor: pointer; background: 0 0; border: 0; outline: 0; opacity: 0.8; font-size: 0; z-index: 1; min-width: initial; box-shadow: none; margin: 0; } .md2-dialog-header .close::before, .md2-dialog-header .close::after { content: ''; position: absolute; top: 50%; left: 0; width: 100%; height: 2px; margin-top: -1px; background: #ccc; border-radius: 2px; } .md2-dialog-header .close::before { transform: rotate(45deg); } .md2-dialog-header .close::after { transform: rotate(-45deg); } .md2-dialog-header .close:hover { opacity: 1; } .md2-dialog-header md2-dialog-title, .md2-dialog-header .md2-dialog-title { display: block; margin: 0; padding: 16px 0; font-size: 25px; font-weight: 500; } .md2-dialog-header dialog-header { line-height: 33px; } .md2-dialog-body { position: relative; padding: 16px; } .md2-dialog-footer, md2-dialog-footer { display: block; padding: 16px; text-align: right; border-top: 1px solid rgba(0, 0, 0, 0.12); } .md2-dialog-backdrop { position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1; pointer-events: auto; transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1); background: #212121; opacity: 0.48; } .cdk-overlay-container { position: fixed; pointer-events: none; top: 0; left: 0; height: 100%; width: 100%; z-index: 1000; } /*# sourceMappingURL=dialog.css.map */ "],
+            styles: [".md2-dialog-open { overflow-y: hidden; } .md2-dialog { position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 1050; display: none; overflow-x: hidden; overflow-y: scroll; -webkit-overflow-scrolling: touch; outline: 0; } .md2-dialog.open { display: block; } .md2-dialog .md2-dialog-container { position: relative; width: auto; margin: 15px; background-color: #fff; pointer-events: auto; background-clip: padding-box; border-radius: 0 0 4px 4px; outline: 0; box-shadow: 0 7px 8px -4px rgba(0, 0, 0, 0.2), 0 13px 19px 2px rgba(0, 0, 0, 0.14), 0 5px 24px 4px rgba(0, 0, 0, 0.12); transition: 300ms; transform: scale(0.1); } .md2-dialog.open .md2-dialog-container { transform: scale(1); } @media (min-width: 768px) { .md2-dialog .md2-dialog-container { width: 600px; margin: 30px auto; } } .md2-dialog-header { background: #2196f3; color: #fff; font-size: 25px; line-height: 1.1; font-weight: 500; padding: 0 48px 0 16px; border-bottom: 1px solid #e5e5e5; word-wrap: break-word; } .md2-dialog-header .close { position: absolute; top: 21px; right: 16px; display: inline-block; width: 18px; height: 18px; overflow: hidden; -webkit-appearance: none; padding: 0; cursor: pointer; background: 0 0; border: 0; outline: 0; opacity: 0.8; font-size: 0; z-index: 1; min-width: initial; box-shadow: none; margin: 0; } .md2-dialog-header .close::before, .md2-dialog-header .close::after { content: ''; position: absolute; top: 50%; left: 0; width: 100%; height: 2px; margin-top: -1px; background: #ccc; border-radius: 2px; } .md2-dialog-header .close::before { transform: rotate(45deg); } .md2-dialog-header .close::after { transform: rotate(-45deg); } .md2-dialog-header .close:hover { opacity: 1; } .md2-dialog-header md2-dialog-title, .md2-dialog-header .md2-dialog-title { display: block; margin: 0; padding: 16px 0; font-size: 25px; font-weight: 500; } .md2-dialog-header dialog-header { line-height: 33px; } .md2-dialog-body { position: relative; padding: 16px; } .md2-dialog-footer, md2-dialog-footer { display: block; padding: 16px; text-align: right; border-top: 1px solid rgba(0, 0, 0, 0.12); } .md2-dialog-backdrop { position: fixed; top: 0; bottom: 0; left: 0; right: 0; z-index: 1; pointer-events: auto; transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1); background: #212121; opacity: 0.48; } .cdk-overlay-container { position: fixed; pointer-events: none; top: 0; left: 0; height: 100%; width: 100%; z-index: 1000; } /*# sourceMappingURL=dialog.css.map */ "],
             host: {
                 'tabindex': '0',
                 '(body:keydown)': '_handleDocumentKeydown($event)'
@@ -7665,7 +7662,7 @@ var Md2Option = (function () {
         __metadata$44('design:type', Object)
     ], Md2Option.prototype, "onSelect", void 0);
     Md2Option = __decorate$44([
-        _angular_core.Component({selector: 'md2-option, mat-option',
+        _angular_core.Component({selector: 'md2-option',
             host: {
                 'role': 'option',
                 '[attr.tabindex]': '_getTabIndex()',
@@ -7678,7 +7675,7 @@ var Md2Option = (function () {
                 '(keydown)': '_handleKeydown($event)'
             },
             template: '<ng-content></ng-content>',
-            styles: ["md2-select { display: block; outline: none; } .md2-select-trigger { color: rgba(0, 0, 0, 0.38); border-bottom: 1px solid rgba(0, 0, 0, 0.12); display: flex; justify-content: space-between; align-items: center; height: 30px; min-width: 112px; cursor: pointer; position: relative; box-sizing: border-box; } [aria-disabled='true'] .md2-select-trigger { background-image: linear-gradient(to right, rgba(0, 0, 0, 0.26) 0, rgba(0, 0, 0, 0.26) 33%, transparent 0); background-size: 4px 1px; background-repeat: repeat-x; border-bottom: transparent; background-position: 0 bottom; cursor: default; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } md2-select:focus:not(.md2-select-disabled) .md2-select-trigger { color: #106cc8; border-bottom: 1px solid #106cc8; } md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) .md2-select-trigger { color: #f44336; border-bottom: 1px solid #f44336; } .md2-select-placeholder { position: relative; padding: 0 2px; transform-origin: left top; } .md2-select-placeholder.md2-floating-placeholder { top: -22px; left: -2px; transform: scale(0.75); } [dir='rtl'] .md2-select-placeholder { transform-origin: right top; } [dir='rtl'] .md2-select-placeholder.md2-floating-placeholder { left: 2px; } [aria-required=true] .md2-select-placeholder::after { content: '*'; } .md2-select-value { position: absolute; top: 6px; right: 18px; left: 0; white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; color: rgba(0, 0, 0, 0.87); } .md2-select-disabled .md2-select-value { color: rgba(0, 0, 0, 0.38); } [dir='rtl'] .md2-select-value { left: auto; right: 0; } .md2-select-value-text:not(:last-child)::after { content: ','; margin-left: -2px; } .md2-select-arrow { width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 5px solid; margin: 0 4px; color: rgba(0, 0, 0, 0.38); } md2-select:focus:not(.md2-select-disabled) .md2-select-arrow { color: #106cc8; } md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) .md2-select-arrow { color: #f44336; } .md2-select-panel { box-shadow: 0 0 3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12); min-width: 112px; max-width: 280px; overflow: auto; -webkit-overflow-scrolling: touch; padding-top: 0; padding-bottom: 0; max-height: 256px; background: white; } md2-option { white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; display: flex; flex-direction: row; align-items: center; height: 48px; padding: 0 16px; font-size: 16px; font-family: Roboto, 'Helvetica Neue', sans-serif; text-align: start; text-decoration: none; position: relative; cursor: pointer; outline: none; } md2-option[aria-disabled='true'] { cursor: default; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } md2-option:hover:not(.md2-option-disabled), md2-option:focus:not(.md2-option-disabled) { background: rgba(0, 0, 0, 0.04); } md2-option.md2-selected { color: #106cc8; } md2-option.md2-option-disabled { color: rgba(0, 0, 0, 0.38); } [multiple='true'] md2-option { padding-left: 40px; } [multiple='true'] md2-option::after { content: ''; position: absolute; top: 50%; left: 12px; display: block; width: 16px; height: 16px; margin-top: -8px; border: 2px solid; border-radius: 2px; box-sizing: border-box; transition: 240ms; } [multiple='true'] md2-option.md2-selected::after { transform: rotate(-45deg); height: 8px; border-width: 0 0 2px 2px; } .cdk-overlay-container, .cdk-global-overlay-wrapper { pointer-events: none; top: 0; left: 0; height: 100%; width: 100%; } .cdk-overlay-container { position: fixed; z-index: 1000; } .cdk-overlay-pane { position: absolute; pointer-events: auto; box-sizing: border-box; z-index: 1000; } .cdk-overlay-backdrop { position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1; pointer-events: auto; transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1); opacity: 0; } .cdk-overlay-transparent-backdrop { background: none; } .cdk-overlay-backdrop.cdk-overlay-backdrop-showing { opacity: 0.48; } /*# sourceMappingURL=select.css.map */ "],
+            styles: ["md2-select { display: block; outline: none; } .md2-select-trigger { color: rgba(0, 0, 0, 0.38); border-bottom: 1px solid rgba(0, 0, 0, 0.12); display: flex; justify-content: space-between; align-items: center; height: 30px; min-width: 112px; cursor: pointer; position: relative; box-sizing: border-box; } [aria-disabled='true'] .md2-select-trigger { background-image: linear-gradient(to right, rgba(0, 0, 0, 0.26) 0, rgba(0, 0, 0, 0.26) 33%, transparent 0); background-size: 4px 1px; background-repeat: repeat-x; border-bottom: transparent; background-position: 0 bottom; cursor: default; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } md2-select:focus:not(.md2-select-disabled) .md2-select-trigger { color: #106cc8; border-bottom: 1px solid #106cc8; } md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) .md2-select-trigger { color: #f44336; border-bottom: 1px solid #f44336; } .md2-select-placeholder { position: relative; padding: 0 2px; transform-origin: left top; white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; } .md2-select-placeholder.md2-floating-placeholder { top: -22px; left: -2px; transform: scale(0.75); } [dir='rtl'] .md2-select-placeholder { transform-origin: right top; } [dir='rtl'] .md2-select-placeholder.md2-floating-placeholder { left: 2px; } [aria-required=true] .md2-select-placeholder::after { content: '*'; } .md2-select-value { position: absolute; top: 6px; right: 18px; left: 0; white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; color: rgba(0, 0, 0, 0.87); } .md2-select-disabled .md2-select-value { color: rgba(0, 0, 0, 0.38); } [dir='rtl'] .md2-select-value { left: auto; right: 0; } .md2-select-value-text:not(:last-child)::after { content: ','; margin-left: -2px; } .md2-select-arrow { width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 5px solid; margin: 0 4px; color: rgba(0, 0, 0, 0.38); } md2-select:focus:not(.md2-select-disabled) .md2-select-arrow { color: #106cc8; } md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) .md2-select-arrow { color: #f44336; } .md2-select-panel { box-shadow: 0 0 3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12); min-width: 112px; max-width: 280px; overflow: auto; -webkit-overflow-scrolling: touch; padding-top: 0; padding-bottom: 0; max-height: 256px; background: white; } md2-option { white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; display: block; flex-direction: row; align-items: center; padding: 13px 16px; font-size: 16px; font-family: Roboto, 'Helvetica Neue', sans-serif; text-align: start; text-decoration: none; position: relative; cursor: pointer; outline: none; box-sizing: padding-box; } md2-option[aria-disabled='true'] { cursor: default; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } md2-option:hover:not(.md2-option-disabled), md2-option:focus:not(.md2-option-disabled) { background: rgba(0, 0, 0, 0.04); } md2-option.md2-selected { color: #106cc8; } md2-option.md2-option-disabled { color: rgba(0, 0, 0, 0.38); } [multiple='true'] md2-option { padding-left: 40px; } [multiple='true'] md2-option::after { content: ''; position: absolute; top: 50%; left: 12px; display: block; width: 16px; height: 16px; margin-top: -8px; border: 2px solid; border-radius: 2px; box-sizing: border-box; transition: 240ms; } [multiple='true'] md2-option.md2-selected::after { transform: rotate(-45deg); height: 8px; border-width: 0 0 2px 2px; } .cdk-overlay-container, .cdk-global-overlay-wrapper { pointer-events: none; top: 0; left: 0; height: 100%; width: 100%; } .cdk-overlay-container { position: fixed; z-index: 1000; } .cdk-overlay-pane { position: absolute; pointer-events: auto; box-sizing: border-box; z-index: 1000; } .cdk-overlay-backdrop { position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1; pointer-events: auto; transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1); opacity: 0; } .cdk-overlay-transparent-backdrop { background: none; } .cdk-overlay-backdrop.cdk-overlay-backdrop-showing { opacity: 0.48; } /*# sourceMappingURL=select.css.map */ "],
             encapsulation: _angular_core.ViewEncapsulation.None
         }), 
         __metadata$44('design:paramtypes', [_angular_core.ElementRef, _angular_core.Renderer])
@@ -8213,20 +8210,26 @@ var Md2Select = (function () {
      * found with the designated value, the select trigger is cleared.
      */
     Md2Select.prototype._setSelectionByValue = function (value) {
+        var _this = this;
         var options = this.options.toArray();
         if (this.multiple) {
             this._selected = [];
             value = Array.isArray(value) ? value : [];
+            var _loop_1 = function(i) {
+                value.find(function (v) {
+                    if (_this._equals(v, options[i].value)) {
+                        options[i].select();
+                    }
+                });
+            };
             for (var i = 0; i < this.options.length; i++) {
-                if (value.indexOf(options[i].value) > -1) {
-                    options[i].select();
-                }
+                _loop_1(i);
             }
             this._updateOptions();
         }
         else {
             for (var i = 0; i < this.options.length; i++) {
-                if (options[i].value === value) {
+                if (this._equals(options[i].value, value)) {
                     options[i].select();
                     return;
                 }
@@ -8480,6 +8483,34 @@ var Md2Select = (function () {
         var originY = Math.abs(this._offsetY) - SELECT_OPTION_HEIGHT_ADJUSTMENT + SELECT_OPTION_HEIGHT / 2;
         return "50% " + originY + "px 0px";
     };
+    Md2Select.prototype._equals = function (o1, o2) {
+        if (o1 === o2) {
+            return true;
+        }
+        if (o1 === null || o2 === null) {
+            return false;
+        }
+        if (o1 !== o1 && o2 !== o2) {
+            return true;
+        }
+        var t1 = typeof o1, t2 = typeof o2, key, keySet;
+        if (t1 === t2 && t1 === 'object') {
+            keySet = Object.create(null);
+            for (key in o1) {
+                if (!this._equals(o1[key], o2[key])) {
+                    return false;
+                }
+                keySet[key] = true;
+            }
+            for (key in o2) {
+                if (!(key in keySet) && key.charAt(0) !== '$' && o2[key]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    };
     __decorate$43([
         _angular_core.ViewChild('trigger'), 
         __metadata$43('design:type', _angular_core.ElementRef)
@@ -8521,9 +8552,9 @@ var Md2Select = (function () {
         __metadata$43('design:type', Object)
     ], Md2Select.prototype, "onClose", void 0);
     Md2Select = __decorate$43([
-        _angular_core.Component({selector: 'md2-select, mat-select',
+        _angular_core.Component({selector: 'md2-select',
             template: "<div class=\"md2-select-trigger\" cdk-overlay-origin (click)=\"toggle()\" #origin=\"cdkOverlayOrigin\" #trigger> <span class=\"md2-select-placeholder\" [class.md2-floating-placeholder]=\"this.selected.length\" [@transformPlaceholder]=\"_placeholderState\" [style.width.px]=\"_selectedValueWidth\">{{ placeholder }}</span> <span class=\"md2-select-value\"> <span class=\"md2-select-value-text\" *ngFor=\"let option of selected\"> {{ option.viewValue }} </span> </span> <span class=\"md2-select-arrow\"></span> </div> <template cdk-connected-overlay [origin]=\"origin\" [open]=\"panelOpen\" hasBackdrop (backdropClick)=\"close()\" backdropClass=\"cdk-overlay-transparent-backdrop\" [positions]=\"_positions\" [minWidth]=\"_triggerWidth\" [offsetY]=\"_offsetY\" [offsetX]=\"_offsetX\" (attach)=\"_setScrollTop()\"> <div class=\"md2-select-panel\" [@transformPanel]=\"'showing'\" (@transformPanel.done)=\"_onPanelDone()\" (keydown)=\"_keyManager.onKeydown($event)\" [style.transformOrigin]=\"_transformOrigin\"  [attr.multiple]=\"multiple\"> <div class=\"md2-select-content\" [@fadeInContent]=\"'showing'\"> <ng-content></ng-content> </div> </div> </template> ",
-            styles: ["md2-select { display: block; outline: none; } .md2-select-trigger { color: rgba(0, 0, 0, 0.38); border-bottom: 1px solid rgba(0, 0, 0, 0.12); display: flex; justify-content: space-between; align-items: center; height: 30px; min-width: 112px; cursor: pointer; position: relative; box-sizing: border-box; } [aria-disabled='true'] .md2-select-trigger { background-image: linear-gradient(to right, rgba(0, 0, 0, 0.26) 0, rgba(0, 0, 0, 0.26) 33%, transparent 0); background-size: 4px 1px; background-repeat: repeat-x; border-bottom: transparent; background-position: 0 bottom; cursor: default; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } md2-select:focus:not(.md2-select-disabled) .md2-select-trigger { color: #106cc8; border-bottom: 1px solid #106cc8; } md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) .md2-select-trigger { color: #f44336; border-bottom: 1px solid #f44336; } .md2-select-placeholder { position: relative; padding: 0 2px; transform-origin: left top; } .md2-select-placeholder.md2-floating-placeholder { top: -22px; left: -2px; transform: scale(0.75); } [dir='rtl'] .md2-select-placeholder { transform-origin: right top; } [dir='rtl'] .md2-select-placeholder.md2-floating-placeholder { left: 2px; } [aria-required=true] .md2-select-placeholder::after { content: '*'; } .md2-select-value { position: absolute; top: 6px; right: 18px; left: 0; white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; color: rgba(0, 0, 0, 0.87); } .md2-select-disabled .md2-select-value { color: rgba(0, 0, 0, 0.38); } [dir='rtl'] .md2-select-value { left: auto; right: 0; } .md2-select-value-text:not(:last-child)::after { content: ','; margin-left: -2px; } .md2-select-arrow { width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 5px solid; margin: 0 4px; color: rgba(0, 0, 0, 0.38); } md2-select:focus:not(.md2-select-disabled) .md2-select-arrow { color: #106cc8; } md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) .md2-select-arrow { color: #f44336; } .md2-select-panel { box-shadow: 0 0 3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12); min-width: 112px; max-width: 280px; overflow: auto; -webkit-overflow-scrolling: touch; padding-top: 0; padding-bottom: 0; max-height: 256px; background: white; } md2-option { white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; display: flex; flex-direction: row; align-items: center; height: 48px; padding: 0 16px; font-size: 16px; font-family: Roboto, 'Helvetica Neue', sans-serif; text-align: start; text-decoration: none; position: relative; cursor: pointer; outline: none; } md2-option[aria-disabled='true'] { cursor: default; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } md2-option:hover:not(.md2-option-disabled), md2-option:focus:not(.md2-option-disabled) { background: rgba(0, 0, 0, 0.04); } md2-option.md2-selected { color: #106cc8; } md2-option.md2-option-disabled { color: rgba(0, 0, 0, 0.38); } [multiple='true'] md2-option { padding-left: 40px; } [multiple='true'] md2-option::after { content: ''; position: absolute; top: 50%; left: 12px; display: block; width: 16px; height: 16px; margin-top: -8px; border: 2px solid; border-radius: 2px; box-sizing: border-box; transition: 240ms; } [multiple='true'] md2-option.md2-selected::after { transform: rotate(-45deg); height: 8px; border-width: 0 0 2px 2px; } .cdk-overlay-container, .cdk-global-overlay-wrapper { pointer-events: none; top: 0; left: 0; height: 100%; width: 100%; } .cdk-overlay-container { position: fixed; z-index: 1000; } .cdk-overlay-pane { position: absolute; pointer-events: auto; box-sizing: border-box; z-index: 1000; } .cdk-overlay-backdrop { position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1; pointer-events: auto; transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1); opacity: 0; } .cdk-overlay-transparent-backdrop { background: none; } .cdk-overlay-backdrop.cdk-overlay-backdrop-showing { opacity: 0.48; } /*# sourceMappingURL=select.css.map */ "],
+            styles: ["md2-select { display: block; outline: none; } .md2-select-trigger { color: rgba(0, 0, 0, 0.38); border-bottom: 1px solid rgba(0, 0, 0, 0.12); display: flex; justify-content: space-between; align-items: center; height: 30px; min-width: 112px; cursor: pointer; position: relative; box-sizing: border-box; } [aria-disabled='true'] .md2-select-trigger { background-image: linear-gradient(to right, rgba(0, 0, 0, 0.26) 0, rgba(0, 0, 0, 0.26) 33%, transparent 0); background-size: 4px 1px; background-repeat: repeat-x; border-bottom: transparent; background-position: 0 bottom; cursor: default; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } md2-select:focus:not(.md2-select-disabled) .md2-select-trigger { color: #106cc8; border-bottom: 1px solid #106cc8; } md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) .md2-select-trigger { color: #f44336; border-bottom: 1px solid #f44336; } .md2-select-placeholder { position: relative; padding: 0 2px; transform-origin: left top; white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; } .md2-select-placeholder.md2-floating-placeholder { top: -22px; left: -2px; transform: scale(0.75); } [dir='rtl'] .md2-select-placeholder { transform-origin: right top; } [dir='rtl'] .md2-select-placeholder.md2-floating-placeholder { left: 2px; } [aria-required=true] .md2-select-placeholder::after { content: '*'; } .md2-select-value { position: absolute; top: 6px; right: 18px; left: 0; white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; color: rgba(0, 0, 0, 0.87); } .md2-select-disabled .md2-select-value { color: rgba(0, 0, 0, 0.38); } [dir='rtl'] .md2-select-value { left: auto; right: 0; } .md2-select-value-text:not(:last-child)::after { content: ','; margin-left: -2px; } .md2-select-arrow { width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 5px solid; margin: 0 4px; color: rgba(0, 0, 0, 0.38); } md2-select:focus:not(.md2-select-disabled) .md2-select-arrow { color: #106cc8; } md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) .md2-select-arrow { color: #f44336; } .md2-select-panel { box-shadow: 0 0 3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12); min-width: 112px; max-width: 280px; overflow: auto; -webkit-overflow-scrolling: touch; padding-top: 0; padding-bottom: 0; max-height: 256px; background: white; } md2-option { white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; display: block; flex-direction: row; align-items: center; padding: 13px 16px; font-size: 16px; font-family: Roboto, 'Helvetica Neue', sans-serif; text-align: start; text-decoration: none; position: relative; cursor: pointer; outline: none; box-sizing: padding-box; } md2-option[aria-disabled='true'] { cursor: default; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } md2-option:hover:not(.md2-option-disabled), md2-option:focus:not(.md2-option-disabled) { background: rgba(0, 0, 0, 0.04); } md2-option.md2-selected { color: #106cc8; } md2-option.md2-option-disabled { color: rgba(0, 0, 0, 0.38); } [multiple='true'] md2-option { padding-left: 40px; } [multiple='true'] md2-option::after { content: ''; position: absolute; top: 50%; left: 12px; display: block; width: 16px; height: 16px; margin-top: -8px; border: 2px solid; border-radius: 2px; box-sizing: border-box; transition: 240ms; } [multiple='true'] md2-option.md2-selected::after { transform: rotate(-45deg); height: 8px; border-width: 0 0 2px 2px; } .cdk-overlay-container, .cdk-global-overlay-wrapper { pointer-events: none; top: 0; left: 0; height: 100%; width: 100%; } .cdk-overlay-container { position: fixed; z-index: 1000; } .cdk-overlay-pane { position: absolute; pointer-events: auto; box-sizing: border-box; z-index: 1000; } .cdk-overlay-backdrop { position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1; pointer-events: auto; transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1); opacity: 0; } .cdk-overlay-transparent-backdrop { background: none; } .cdk-overlay-backdrop.cdk-overlay-backdrop-showing { opacity: 0.48; } /*# sourceMappingURL=select.css.map */ "],
             encapsulation: _angular_core.ViewEncapsulation.None,
             host: {
                 'role': 'listbox',
@@ -9626,7 +9657,7 @@ var Md2ToastComponent = (function () {
         _angular_core.Component({
             selector: 'md2-toast',
             template: "<div *ngFor=\"let toast of toasts\" class=\"md2-toast\" [class.in]=\"toast.isVisible\" (click)=\"remove(toast.id)\">{{ toast.message }}</div> ",
-            styles: ["md2-toast { display: block; box-sizing: border-box; cursor: default; overflow: hidden; min-width: 304px; max-width: 100%; padding: 8px; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } .md2-toast { position: relative; padding: 14px 24px; margin-bottom: 5px; display: block; margin-top: -53px; opacity: 0; background-color: #323232; color: #fafafa; box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26); border-radius: 2px; font-size: 14px; overflow: hidden; word-wrap: break-word; transition: all 250ms linear; } .md2-toast.in { margin-top: 0; opacity: 1; } .cdk-visually-hidden { border: 0; clip: rect(0 0 0 0); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; text-transform: none; width: 1px; } .cdk-overlay-container, .cdk-global-overlay-wrapper { pointer-events: none; top: 0; left: 0; height: 100%; width: 100%; } .cdk-overlay-container { position: fixed; z-index: 1000; } .cdk-global-overlay-wrapper { display: flex; position: absolute; z-index: 1000; } .cdk-overlay-pane { position: absolute; pointer-events: auto; box-sizing: border-box; z-index: 1000; } .cdk-overlay-backdrop { position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1; pointer-events: auto; transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1); opacity: 0; } .cdk-overlay-backdrop.cdk-overlay-backdrop-showing { opacity: 0.48; } .cdk-overlay-dark-backdrop { background: #212121; } /*# sourceMappingURL=toast.css.map */ "],
+            styles: ["md2-toast { display: block; box-sizing: border-box; cursor: default; overflow: hidden; min-width: 304px; max-width: 100%; padding: 8px; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } .md2-toast { position: relative; padding: 14px 24px; margin-bottom: 5px; display: block; margin-top: -53px; opacity: 0; background-color: #323232; color: #fafafa; box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26); border-radius: 2px; font-size: 14px; overflow: hidden; word-wrap: break-word; transition: all 250ms linear; } .md2-toast.in { margin-top: 0; opacity: 1; } .cdk-visually-hidden { border: 0; clip: rect(0 0 0 0); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; text-transform: none; width: 1px; } .cdk-overlay-container, .cdk-global-overlay-wrapper { pointer-events: none; top: 0; left: 0; height: 100%; width: 100%; } .cdk-overlay-container { position: fixed; z-index: 1000; } .cdk-global-overlay-wrapper { display: flex; position: absolute; z-index: 1000; } .cdk-overlay-pane { position: absolute; pointer-events: auto; box-sizing: border-box; z-index: 1000; } /*# sourceMappingURL=toast.css.map */ "],
             encapsulation: _angular_core.ViewEncapsulation.None,
         }), 
         __metadata$47('design:paramtypes', [])
@@ -9655,6 +9686,23 @@ var Md2ToastModule = (function () {
     return Md2ToastModule;
 }());
 
+var __extends$7 = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * Exception thrown when a tooltip has an invalid position.
+ * @docs-private
+ */
+var Md2TooltipInvalidPositionError = (function (_super) {
+    __extends$7(Md2TooltipInvalidPositionError, _super);
+    function Md2TooltipInvalidPositionError(position) {
+        _super.call(this, "Tooltip position \"" + position + "\" is invalid.");
+    }
+    return Md2TooltipInvalidPositionError;
+}(MdError));
+
 var __decorate$48 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -9664,195 +9712,334 @@ var __decorate$48 = (this && this.__decorate) || function (decorators, target, k
 var __metadata$48 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param$6 = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+/** Time in ms to delay before changing the tooltip visibility to hidden */
+var TOUCHEND_HIDE_DELAY = 1500;
+/**
+ * Directive that attaches a material design tooltip to the host element. Animates the showing and
+ * hiding of a tooltip provided position (defaults to below the element).
+ *
+ * https://material.google.com/components/tooltips.html
+ */
 var Md2Tooltip = (function () {
-    function Md2Tooltip(_viewContainer, _overlay) {
-        this._viewContainer = _viewContainer;
+    function Md2Tooltip(_overlay, _elementRef, _viewContainerRef, _ngZone, _dir) {
         this._overlay = _overlay;
-        this.visible = false;
-        this.position = 'below';
-        this.delay = 0;
+        this._elementRef = _elementRef;
+        this._viewContainerRef = _viewContainerRef;
+        this._ngZone = _ngZone;
+        this._dir = _dir;
+        this._position = 'below';
+        /** The default delay in ms before showing the tooltip after show is called */
+        this.showDelay = 0;
+        /** The default delay in ms before hiding the tooltip after hide is called */
+        this.hideDelay = 0;
     }
+    Object.defineProperty(Md2Tooltip.prototype, "position", {
+        /** Allows the user to define the position of the tooltip relative to the parent element */
+        get: function () { return this._position; },
+        set: function (value) {
+            if (value !== this._position) {
+                this._position = value;
+                // TODO(andrewjs): When the overlay's position can be dynamically changed, do not destroy
+                // the tooltip.
+                if (this._tooltipInstance) {
+                    this._disposeTooltip();
+                }
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Md2Tooltip.prototype, "message", {
+        /** The message to be displayed in the tooltip */
+        get: function () { return this._message; },
+        set: function (value) {
+            this._message = value;
+            if (this._tooltipInstance) {
+                this._setTooltipMessage(this._message);
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
     /**
-     * show tooltip while mouse enter or focus of element
-     * @param event
+     * Dispose the tooltip when destroyed.
      */
-    Md2Tooltip.prototype.show = function (event) {
-        var _this = this;
-        if (this.visible) {
-            return;
-        }
-        this.visible = true;
-        clearTimeout(this.timer);
-        this.timer = setTimeout(function () {
-            _this.timer = 0;
-            var strategy = _this._overlay.position().global().top('0').left('0');
-            var config = new OverlayState();
-            config.positionStrategy = strategy;
-            _this._overlayRef = _this._overlay.create(config);
-            var portal = new ComponentPortal(Md2TooltipComponent);
-            _this._tooltipInstance = _this._overlayRef.attach(portal).instance;
-            _this._tooltipInstance.message = _this.message;
-            _this._tooltipInstance.position = _this.position;
-            _this._tooltipInstance.hostEl = _this._viewContainer.element;
-        }, this.delay);
-    };
-    /**
-     * hide tooltip while mouse our/leave or blur of element
-     * @param event
-     */
-    Md2Tooltip.prototype.hide = function (event) {
-        clearTimeout(this.timer);
-        if (!this.visible) {
-            return;
-        }
-        this.visible = false;
+    Md2Tooltip.prototype.ngOnDestroy = function () {
         if (this._tooltipInstance) {
-            this._overlayRef.dispose();
-            this._overlayRef = null;
-            this._tooltipInstance = null;
+            this._disposeTooltip();
         }
     };
-    __decorate$48([
-        _angular_core.Input('tooltip'), 
-        __metadata$48('design:type', String)
-    ], Md2Tooltip.prototype, "message", void 0);
+    /** Shows the tooltip after the delay in ms, defaults to tooltip-delay-show or 0ms if no input */
+    Md2Tooltip.prototype.show = function (delay) {
+        if (delay === void 0) { delay = this.showDelay; }
+        if (!this._message || !this._message.trim()) {
+            return;
+        }
+        if (!this._tooltipInstance) {
+            this._createTooltip();
+        }
+        this._setTooltipMessage(this._message);
+        this._tooltipInstance.show(this._position, delay);
+    };
+    /** Hides the tooltip after the delay in ms, defaults to tooltip-delay-hide or 0ms if no input */
+    Md2Tooltip.prototype.hide = function (delay) {
+        if (delay === void 0) { delay = this.hideDelay; }
+        if (this._tooltipInstance) {
+            this._tooltipInstance.hide(delay);
+        }
+    };
+    /** Shows/hides the tooltip */
+    Md2Tooltip.prototype.toggle = function () {
+        this._isTooltipVisible() ? this.hide() : this.show();
+    };
+    /** Returns true if the tooltip is currently visible to the user */
+    Md2Tooltip.prototype._isTooltipVisible = function () {
+        return this._tooltipInstance && this._tooltipInstance.isVisible();
+    };
+    /** Create the tooltip to display */
+    Md2Tooltip.prototype._createTooltip = function () {
+        var _this = this;
+        this._createOverlay();
+        var portal = new ComponentPortal(Md2TooltipComponent, this._viewContainerRef);
+        this._tooltipInstance = this._overlayRef.attach(portal).instance;
+        // Dispose the overlay when finished the shown tooltip.
+        this._tooltipInstance.afterHidden().subscribe(function () {
+            // Check first if the tooltip has already been removed through this components destroy.
+            if (_this._tooltipInstance) {
+                _this._disposeTooltip();
+            }
+        });
+    };
+    /** Create the overlay config and position strategy */
+    Md2Tooltip.prototype._createOverlay = function () {
+        var origin = this._getOrigin();
+        var position = this._getOverlayPosition();
+        var strategy = this._overlay.position().connectedTo(this._elementRef, origin, position);
+        var config = new OverlayState();
+        config.positionStrategy = strategy;
+        this._overlayRef = this._overlay.create(config);
+    };
+    /** Disposes the current tooltip and the overlay it is attached to */
+    Md2Tooltip.prototype._disposeTooltip = function () {
+        this._overlayRef.dispose();
+        this._overlayRef = null;
+        this._tooltipInstance = null;
+    };
+    /** Returns the origin position based on the user's position preference */
+    Md2Tooltip.prototype._getOrigin = function () {
+        if (this.position == 'above' || this.position == 'below') {
+            return { originX: 'center', originY: this.position == 'above' ? 'top' : 'bottom' };
+        }
+        var isDirectionLtr = !this._dir || this._dir.value == 'ltr';
+        if (this.position == 'left' ||
+            this.position == 'before' && isDirectionLtr ||
+            this.position == 'after' && !isDirectionLtr) {
+            return { originX: 'start', originY: 'center' };
+        }
+        if (this.position == 'right' ||
+            this.position == 'after' && isDirectionLtr ||
+            this.position == 'before' && !isDirectionLtr) {
+            return { originX: 'end', originY: 'center' };
+        }
+        throw new Md2TooltipInvalidPositionError(this.position);
+    };
+    /** Returns the overlay position based on the user's preference */
+    Md2Tooltip.prototype._getOverlayPosition = function () {
+        if (this.position == 'above') {
+            return { overlayX: 'center', overlayY: 'bottom' };
+        }
+        if (this.position == 'below') {
+            return { overlayX: 'center', overlayY: 'top' };
+        }
+        var isLtr = !this._dir || this._dir.value == 'ltr';
+        if (this.position == 'left' ||
+            this.position == 'before' && isLtr ||
+            this.position == 'after' && !isLtr) {
+            return { overlayX: 'end', overlayY: 'center' };
+        }
+        if (this.position == 'right' ||
+            this.position == 'after' && isLtr ||
+            this.position == 'before' && !isLtr) {
+            return { overlayX: 'start', overlayY: 'center' };
+        }
+        throw new Md2TooltipInvalidPositionError(this.position);
+    };
+    /** Updates the tooltip message and repositions the overlay according to the new message length */
+    Md2Tooltip.prototype._setTooltipMessage = function (message) {
+        var _this = this;
+        // Must wait for the message to be painted to the tooltip so that the overlay can properly
+        // calculate the correct positioning based on the size of the text.
+        this._tooltipInstance.message = message;
+        this._ngZone.onMicrotaskEmpty.first().subscribe(function () {
+            if (_this._tooltipInstance) {
+                _this._overlayRef.updatePosition();
+            }
+        });
+    };
     __decorate$48([
         _angular_core.Input('tooltip-position'), 
         __metadata$48('design:type', String)
-    ], Md2Tooltip.prototype, "position", void 0);
+    ], Md2Tooltip.prototype, "position", null);
     __decorate$48([
         _angular_core.Input('tooltip-delay'), 
-        __metadata$48('design:type', Number)
-    ], Md2Tooltip.prototype, "delay", void 0);
+        __metadata$48('design:type', Object)
+    ], Md2Tooltip.prototype, "showDelay", void 0);
     __decorate$48([
-        _angular_core.HostListener('focusin', ['$event']),
-        _angular_core.HostListener('mouseenter', ['$event']), 
-        __metadata$48('design:type', Function), 
-        __metadata$48('design:paramtypes', [Event]), 
-        __metadata$48('design:returntype', void 0)
-    ], Md2Tooltip.prototype, "show", null);
+        _angular_core.Input('tooltip-hide-delay'), 
+        __metadata$48('design:type', Object)
+    ], Md2Tooltip.prototype, "hideDelay", void 0);
     __decorate$48([
-        _angular_core.HostListener('focusout', ['$event']),
-        _angular_core.HostListener('mouseleave', ['$event']), 
-        __metadata$48('design:type', Function), 
-        __metadata$48('design:paramtypes', [Event]), 
-        __metadata$48('design:returntype', void 0)
-    ], Md2Tooltip.prototype, "hide", null);
+        _angular_core.Input('tooltip'), 
+        __metadata$48('design:type', Object)
+    ], Md2Tooltip.prototype, "message", null);
     Md2Tooltip = __decorate$48([
         _angular_core.Directive({
-            selector: '[tooltip]'
-        }), 
-        __metadata$48('design:paramtypes', [_angular_core.ViewContainerRef, Overlay])
+            selector: '[tooltip]',
+            host: {
+                '(longpress)': 'show()',
+                '(touchend)': 'hide(' + TOUCHEND_HIDE_DELAY + ')',
+                '(mouseenter)': 'show()',
+                '(mouseleave)': 'hide()',
+            },
+            exportAs: 'md2Tooltip',
+        }),
+        __param$6(4, _angular_core.Optional()), 
+        __metadata$48('design:paramtypes', [Overlay, _angular_core.ElementRef, _angular_core.ViewContainerRef, _angular_core.NgZone, Dir])
     ], Md2Tooltip);
     return Md2Tooltip;
 }());
+/**
+ * Internal component that wraps the tooltip's content.
+ * @docs-private
+ */
 var Md2TooltipComponent = (function () {
-    function Md2TooltipComponent(_element, _changeDetector) {
-        this._element = _element;
-        this._changeDetector = _changeDetector;
-        this._top = '-1000px';
-        this._left = '-1000px';
-        this._isVisible = false;
+    function Md2TooltipComponent(_dir) {
+        this._dir = _dir;
+        /** Property watched by the animation framework to show or hide the tooltip */
+        this._visibility = 'initial';
+        /** Whether interactions on the page should close the tooltip */
+        this._closeOnInteraction = false;
+        /** The transform origin used in the animation for showing and hiding the tooltip */
+        this._transformOrigin = 'bottom';
+        /** Subject for notifying that the tooltip has been hidden from the view */
+        this._onHide = new rxjs_Subject.Subject();
     }
-    Md2TooltipComponent.prototype.ngAfterViewInit = function () {
-        var _position = this.positionElements(this.hostEl.nativeElement, this._element.nativeElement.children[0], this.position);
-        this._top = _position.top + 'px';
-        this._left = _position.left + 'px';
-        this._isVisible = true;
-        this._changeDetector.detectChanges();
+    /**
+     * Shows the tooltip with an animation originating from the provided origin
+     * @param position Position of the tooltip.
+     * @param delay Amount of milliseconds to the delay showing the tooltip.
+     */
+    Md2TooltipComponent.prototype.show = function (position, delay) {
+        var _this = this;
+        // Cancel the delayed hide if it is scheduled
+        if (this._hideTimeoutId) {
+            clearTimeout(this._hideTimeoutId);
+        }
+        // Body interactions should cancel the tooltip if there is a delay in showing.
+        this._closeOnInteraction = true;
+        this._setTransformOrigin(position);
+        this._showTimeoutId = setTimeout(function () {
+            _this._visibility = 'visible';
+            // If this was set to true immediately, then a body click that triggers show() would
+            // trigger interaction and close the tooltip right after it was displayed.
+            _this._closeOnInteraction = false;
+            setTimeout(function () { _this._closeOnInteraction = true; }, 0);
+        }, delay);
     };
     /**
-     * calculate position of target element
-     * @param hostEl host element
-     * @param targetEl targer element
-     * @param position position
-     * @return {top: number, left: number} object of top, left properties
+     * Begins the animation to hide the tooltip after the provided delay in ms.
+     * @param delay Amount of milliseconds to delay showing the tooltip.
      */
-    Md2TooltipComponent.prototype.positionElements = function (hostEl, targetEl, position) {
-        var positionStrParts = position.split('-');
-        var pos0 = positionStrParts[0];
-        var pos1 = positionStrParts[1] || 'center';
-        var hostElPos = this.offset(hostEl);
-        var targetElWidth = targetEl.offsetWidth;
-        var targetElHeight = targetEl.offsetHeight;
-        var shiftWidth = {
-            center: hostElPos.left + hostElPos.width / 2 - targetElWidth / 2,
-            before: hostElPos.left,
-            after: hostElPos.left + hostElPos.width
-        };
-        var shiftHeight = {
-            center: hostElPos.top + hostElPos.height / 2 - targetElHeight / 2,
-            above: hostElPos.top,
-            below: hostElPos.top + hostElPos.height
-        };
-        var targetElPos;
-        switch (pos0) {
+    Md2TooltipComponent.prototype.hide = function (delay) {
+        var _this = this;
+        // Cancel the delayed show if it is scheduled
+        if (this._showTimeoutId) {
+            clearTimeout(this._showTimeoutId);
+        }
+        this._hideTimeoutId = setTimeout(function () {
+            _this._visibility = 'hidden';
+            _this._closeOnInteraction = false;
+        }, delay);
+    };
+    /**
+     * Returns an observable that notifies when the tooltip has been hidden from view
+     */
+    Md2TooltipComponent.prototype.afterHidden = function () {
+        return this._onHide.asObservable();
+    };
+    /**
+     * Whether the tooltip is being displayed
+     */
+    Md2TooltipComponent.prototype.isVisible = function () {
+        return this._visibility === 'visible';
+    };
+    /** Sets the tooltip transform origin according to the tooltip position */
+    Md2TooltipComponent.prototype._setTransformOrigin = function (value) {
+        var isLtr = !this._dir || this._dir.value == 'ltr';
+        switch (value) {
             case 'before':
-                targetElPos = {
-                    top: shiftHeight[pos1],
-                    left: (hostElPos.left - targetElWidth)
-                };
+                this._transformOrigin = isLtr ? 'right' : 'left';
                 break;
             case 'after':
-                targetElPos = {
-                    top: shiftHeight[pos1],
-                    left: shiftWidth[pos0]
-                };
+                this._transformOrigin = isLtr ? 'left' : 'right';
+                break;
+            case 'left':
+                this._transformOrigin = 'right';
+                break;
+            case 'right':
+                this._transformOrigin = 'left';
                 break;
             case 'above':
-                targetElPos = {
-                    top: hostElPos.top - targetElHeight,
-                    left: shiftWidth[pos1]
-                };
+                this._transformOrigin = 'bottom';
                 break;
-            default:
-                targetElPos = {
-                    top: shiftHeight[pos0],
-                    left: shiftWidth[pos1]
-                };
+            case 'below':
+                this._transformOrigin = 'top';
                 break;
+            default: throw new Md2TooltipInvalidPositionError(value);
         }
-        return targetElPos;
+    };
+    Md2TooltipComponent.prototype._afterVisibilityAnimation = function (e) {
+        if (e.toState === 'hidden' && !this.isVisible()) {
+            this._onHide.next();
+        }
     };
     /**
-     * calculate offset of target element
-     * @param nativeEl element
-     * @return {width: number, height: number,top: number, left: number}
-     *         object of with, height, top, left properties
+     * Interactions on the HTML body should close the tooltip immediately as defined in the
+     * material design spec.
+     * https://material.google.com/components/tooltips.html#tooltips-interaction
      */
-    Md2TooltipComponent.prototype.offset = function (nativeEl) {
-        var boundingClientRect = nativeEl.getBoundingClientRect();
-        return {
-            width: boundingClientRect.width || nativeEl.offsetWidth,
-            height: boundingClientRect.height || nativeEl.offsetHeight,
-            top: boundingClientRect.top,
-            left: boundingClientRect.left
-        };
+    Md2TooltipComponent.prototype._handleBodyInteraction = function () {
+        if (this._closeOnInteraction) {
+            this.hide(0);
+        }
     };
-    Object.defineProperty(Md2TooltipComponent.prototype, "window", {
-        get: function () { return window; },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Md2TooltipComponent.prototype, "document", {
-        get: function () { return window.document; },
-        enumerable: true,
-        configurable: true
-    });
     Md2TooltipComponent = __decorate$48([
         _angular_core.Component({selector: 'md2-tooltip',
-            template: "\n    <div class=\"md2-tooltip-container\" [ngStyle]=\"{top: _top, left: _left}\">\n      <div class=\"md2-tooltip {{position}}\" [class.visible]=\"_isVisible\">{{message}}</div>\n    </div>\n  ",
-            styles: ["md2-tooltip { pointer-events: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } md2-tooltip .md2-tooltip-container { position: fixed; display: block; overflow: hidden; z-index: 1070; } md2-tooltip .md2-tooltip { max-width: 200px; margin: 14px; padding: 4px 12px; font-family: \"\"; color: white; font-size: 10px; word-wrap: break-word; background-color: rgba(97, 97, 97, 0.9); border-radius: 2px; line-height: 1.5; opacity: 0; transition: all 200ms cubic-bezier(0.25, 0.8, 0.25, 1); transform-origin: center top; transform: scale(0); } md2-tooltip .md2-tooltip.before { transform-origin: center right; } md2-tooltip .md2-tooltip.after { transform-origin: center left; } md2-tooltip .md2-tooltip.above { transform-origin: center bottom; } md2-tooltip .md2-tooltip.visible { opacity: 1; transform: scale(1); } .cdk-visually-hidden { border: 0; clip: rect(0 0 0 0); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; text-transform: none; width: 1px; } .cdk-overlay-container, .cdk-global-overlay-wrapper { pointer-events: none; top: 0; left: 0; height: 100%; width: 100%; } .cdk-overlay-container { position: fixed; z-index: 1000; } .cdk-global-overlay-wrapper { display: flex; position: absolute; z-index: 1000; } .cdk-overlay-pane { position: absolute; pointer-events: auto; box-sizing: border-box; z-index: 1000; } .cdk-overlay-backdrop { position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1; pointer-events: auto; transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1); opacity: 0; } .cdk-overlay-backdrop.cdk-overlay-backdrop-showing { opacity: 0.48; } .cdk-overlay-dark-backdrop { background: #212121; } /*# sourceMappingURL=tooltip.css.map */ "],
+            template: "<div class=\"md2-tooltip\" [style.transform-origin]=\"_transformOrigin\" [@state]=\"_visibility\" (@state.done)=\"_afterVisibilityAnimation($event)\"> {{message}} </div>",
+            styles: [":host { pointer-events: none; } .md2-tooltip { color: white; padding: 0 8px; border-radius: 2px; font-size: 10px; margin: 14px; height: 22px; line-height: 22px; background: rgba(97, 97, 97, 0.9); } .cdk-overlay-container, .cdk-global-overlay-wrapper { pointer-events: none; top: 0; left: 0; height: 100%; width: 100%; } .cdk-overlay-container { position: fixed; z-index: 1000; } .cdk-global-overlay-wrapper { display: flex; position: absolute; z-index: 1000; } .cdk-overlay-pane { position: absolute; pointer-events: auto; box-sizing: border-box; z-index: 1000; } /*# sourceMappingURL=tooltip.css.map */ "],
+            animations: [
+                _angular_core.trigger('state', [
+                    _angular_core.state('void', _angular_core.style({ transform: 'scale(0)' })),
+                    _angular_core.state('initial', _angular_core.style({ transform: 'scale(0)' })),
+                    _angular_core.state('visible', _angular_core.style({ transform: 'scale(1)' })),
+                    _angular_core.state('hidden', _angular_core.style({ transform: 'scale(0)' })),
+                    _angular_core.transition('* => visible', _angular_core.animate('150ms cubic-bezier(0.0, 0.0, 0.2, 1)')),
+                    _angular_core.transition('* => hidden', _angular_core.animate('150ms cubic-bezier(0.4, 0.0, 1, 1)')),
+                ])
+            ],
             host: {
-                'role': 'tooltip',
+                '(body:click)': 'this._handleBodyInteraction()'
             },
             encapsulation: _angular_core.ViewEncapsulation.None
-        }), 
-        __metadata$48('design:paramtypes', [_angular_core.ElementRef, _angular_core.ChangeDetectorRef])
+        }),
+        __param$6(0, _angular_core.Optional()), 
+        __metadata$48('design:paramtypes', [Dir])
     ], Md2TooltipComponent);
     return Md2TooltipComponent;
 }());
-var MD2_TOOLTIP_DIRECTIVES = [Md2Tooltip, Md2TooltipComponent];
 var Md2TooltipModule = (function () {
     function Md2TooltipModule() {
     }
@@ -9864,10 +10051,10 @@ var Md2TooltipModule = (function () {
     };
     Md2TooltipModule = __decorate$48([
         _angular_core.NgModule({
-            imports: [_angular_common.CommonModule],
-            exports: MD2_TOOLTIP_DIRECTIVES,
-            declarations: MD2_TOOLTIP_DIRECTIVES,
-            entryComponents: [Md2TooltipComponent]
+            imports: [OverlayModule, DefaultStyleCompatibilityModeModule],
+            exports: [Md2Tooltip, Md2TooltipComponent, DefaultStyleCompatibilityModeModule],
+            declarations: [Md2Tooltip, Md2TooltipComponent],
+            entryComponents: [Md2TooltipComponent],
         }), 
         __metadata$48('design:paramtypes', [])
     ], Md2TooltipModule);
@@ -10123,9 +10310,9 @@ exports.Md2Toast = Md2Toast;
 exports.Md2ToastComponent = Md2ToastComponent;
 exports.MD2_TOAST_DIRECTIVES = MD2_TOAST_DIRECTIVES;
 exports.Md2ToastModule = Md2ToastModule;
+exports.TOUCHEND_HIDE_DELAY = TOUCHEND_HIDE_DELAY;
 exports.Md2Tooltip = Md2Tooltip;
 exports.Md2TooltipComponent = Md2TooltipComponent;
-exports.MD2_TOOLTIP_DIRECTIVES = MD2_TOOLTIP_DIRECTIVES;
 exports.Md2TooltipModule = Md2TooltipModule;
 
 Object.defineProperty(exports, '__esModule', { value: true });

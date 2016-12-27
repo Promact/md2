@@ -34,7 +34,10 @@ md2-select {
 .md2-select-placeholder {
   position: relative;
   padding: 0 2px;
-  transform-origin: left top; }
+  transform-origin: left top;
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis; }
   .md2-select-placeholder.md2-floating-placeholder {
     top: -22px;
     left: -2px;
@@ -93,18 +96,18 @@ md2-option {
   white-space: nowrap;
   overflow-x: hidden;
   text-overflow: ellipsis;
-  display: flex;
+  display: block;
   flex-direction: row;
   align-items: center;
-  height: 48px;
-  padding: 0 16px;
+  padding: 13px 16px;
   font-size: 16px;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
   text-align: start;
   text-decoration: none;
   position: relative;
   cursor: pointer;
-  outline: none; }
+  outline: none;
+  box-sizing: padding-box; }
   md2-option[aria-disabled='true'] {
     cursor: default;
     -webkit-user-select: none;

@@ -1,3 +1,21 @@
+<a name="0.0.12"></a>
+## [0.0.12](https://github.com/Promact/md2/compare/0.0.11...v0.0.12) (2016-12-27)
+
+### Bug Fixes
+
+* fix(datepicker, select) styling issues
+* fix(accordion) remove prefix sytles
+* fix(autocomplete) lint free style
+* fix(toast) lint free style
+* fix(autocomplete) AoT issue #47
+
+
+### Breaking changes
+
+* The <md2-multiselect> element is deprecated in favor of <md2-select multiple>.
+
+
+
 <a name="0.0.11"></a>
 ## [0.0.11](https://github.com/Promact/md2/compare/0.0.10-7...v0.0.11) (2016-12-23)
 

@@ -1,5 +1,5 @@
 <a name="0.0.12"></a>
-## [0.0.12](https://github.com/Promact/md2/compare/0.0.11...v0.0.12) (2016-12-27)
+## [0.0.12](https://github.com/Promact/md2/compare/0.0.11...0.0.12) (2016-12-27)
 
 ### Bug Fixes
 
@@ -17,7 +17,7 @@
 
 
 <a name="0.0.11"></a>
-## [0.0.11](https://github.com/Promact/md2/compare/0.0.10-7...v0.0.11) (2016-12-23)
+## [0.0.11](https://github.com/Promact/md2/compare/0.0.10-7...0.0.11) (2016-12-23)
 
 
 ### Bug Fixes
@@ -36,7 +36,7 @@
 
 
 <a name="0.0.10-7"></a>
-## [0.0.10-7](https://github.com/Promact/md2/compare/0.0.10-6...v0.0.10-7) (2016-12-16)
+## [0.0.10-7](https://github.com/Promact/md2/compare/0.0.10-6...0.0.10-7) (2016-12-16)
 
 
 ### Bug Fixes
@@ -49,7 +49,7 @@
 
 
 <a name="0.0.10-6"></a>
-## [0.0.10-6](https://github.com/Promact/md2/compare/v0.0.10-5...v0.0.10-6) (2016-12-09)
+## [0.0.10-6](https://github.com/Promact/md2/compare/v0.0.10-5...0.0.10-6) (2016-12-09)
 
 
 ### Bug Fixes
@@ -58,7 +58,7 @@
 
 
 <a name="0.0.10-5"></a>
-## [0.0.10-5](https://github.com/Promact/md2/compare/v0.0.10-4...v0.0.10-5) (2016-12-07)
+## [0.0.10-5](https://github.com/Promact/md2/compare/v0.0.10-4...0.0.10-5) (2016-12-07)
 
 
 ### Features
@@ -66,7 +66,7 @@
 
 
 <a name="0.0.10-4"></a>
-## [0.0.10-4](https://github.com/Promact/md2/compare/v0.0.10-3...v0.0.10-4) (2016-12-07)
+## [0.0.10-4](https://github.com/Promact/md2/compare/v0.0.10-3...0.0.10-4) (2016-12-07)
 
 
 ### Bug Fixes
@@ -81,7 +81,7 @@
 
 
 <a name="0.0.10-3"></a>
-## [0.0.10-3](https://github.com/Promact/md2/compare/v0.0.10-2...v0.0.10-3) (2016-12-06)
+## [0.0.10-3](https://github.com/Promact/md2/compare/v0.0.10-2...0.0.10-3) (2016-12-06)
 
 
 ### Bug Fixes
@@ -96,7 +96,7 @@
 
 
 <a name="0.0.10-2"></a>
-## [0.0.10-2](https://github.com/Promact/md2/compare/v0.0.10...v0.0.10-2) (2016-11-29)
+## [0.0.10-2](https://github.com/Promact/md2/compare/v0.0.10...0.0.10-2) (2016-11-29)
 
 
 ### Bug Fixes
@@ -121,7 +121,7 @@
 
 
 <a name="0.0.10"></a>
-## [0.0.10](https://github.com/Promact/md2/compare/v0.0.9...v0.0.10) (2016-11-24)
+## [0.0.10](https://github.com/Promact/md2/compare/v0.0.9...0.0.10) (2016-11-24)
 
 
 ### Bug Fixes
@@ -130,7 +130,7 @@
 
 
 <a name="0.0.9"></a>
-## [0.0.9](https://github.com/Promact/md2/compare/0.0.8...v0.0.9) (2016-11-18)
+## [0.0.9](https://github.com/Promact/md2/compare/0.0.8...0.0.9) (2016-11-18)
 
 
 ### Bug Fixes
@@ -141,7 +141,7 @@
 
 
 <a name="0.0.8"></a>
-## [0.0.8](https://github.com/Promact/md2/compare/0.0.7...v0.0.8) (2016-11-15)
+## [0.0.8](https://github.com/Promact/md2/compare/0.0.7...0.0.8) (2016-11-15)
 
 ### Bug Fixes
 
@@ -149,7 +149,7 @@
 
 
 <a name="0.0.7"></a>
-## [0.0.7](https://github.com/Promact/md2/compare/0.0.6...v0.0.7) (2016-11-11)
+## [0.0.7](https://github.com/Promact/md2/compare/0.0.6...0.0.7) (2016-11-11)
 
 
 ### Bug Fixes

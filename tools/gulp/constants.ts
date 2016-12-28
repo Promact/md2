@@ -1,5 +1,7 @@
 import {join} from 'path';
 
+export const MATERIAL_VERSION = require('../../package.json').version;
+
 export const PROJECT_ROOT = join(__dirname, '../..');
 export const SOURCE_ROOT = join(PROJECT_ROOT, 'src');
 
@@ -21,6 +23,12 @@ export const HTML_MINIFIER_OPTIONS = {
   caseSensitive: true,
   removeAttributeQuotes: false
 };
+
+export const LICENSE_BANNER = `/**
+  * @license Md2 v${MATERIAL_VERSION}
+  * Copyright (c) 2016 Promact, Inc. http://code.promactinfo.com/md2/
+  * License: MIT
+  */`;
 
 export const NPM_VENDOR_FILES = [
   '@angular', 'core-js/client', 'rxjs', 'systemjs/dist', 'zone.js/dist'

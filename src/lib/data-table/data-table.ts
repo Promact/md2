@@ -232,6 +232,8 @@ export class Md2Pagination implements OnChanges {
   _lastPage: number;
   _dataLength: number = 0;
 
+  @Output() change: EventEmitter<any> = new EventEmitter<any>();
+
   @Input('md2-rows') rows: any = [];
   @Input('md2-table') md2InputTable: Md2DataTable;
 
@@ -251,10 +253,13 @@ export class Md2Pagination implements OnChanges {
 
   _setPage(page: number): void {
     this._md2Table.setPage(page, this._rows);
+    this.change.emit(page);
   }
 
-  _setRows(rows: number): void {
-    this._md2Table.setPage(this._activePage, rows);
+  _setRows(event: any): void {
+    event.stopPropagation();
+    this._md2Table.setPage(this._activePage, event.target.value);
+    this.change.emit(this._activePage);
   }
 
   private _onPageChange = (event: PageEvent) => {

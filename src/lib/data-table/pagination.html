@@ -37,7 +37,7 @@
 </ul>
 <div class="md2-rows-select" *ngIf="rows.length > 0">
   Rows per page:
-  <select (change)="_setRows($event.target.value)">
+  <select (change)="_setRows($event)">
     <option *ngFor="let row of rows" [selected]="_rows===row">{{row}}</option>
   </select>
 </div>

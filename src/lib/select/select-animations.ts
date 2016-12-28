@@ -21,12 +21,12 @@ import {
  */
 export const transformPlaceholder: AnimationEntryMetadata = trigger('transformPlaceholder', [
   state('floating-ltr', style({
-    top: '-22px',
+    top: '-16px',
     left: '-2px',
     transform: `scale(0.75)`
   })),
   state('floating-rtl', style({
-    top: '-22px',
+    top: '-16px',
     left: '2px',
     transform: `scale(0.75)`
   })),

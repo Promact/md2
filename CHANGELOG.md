@@ -1,3 +1,16 @@
+<a name="0.0.13"></a>
+## [0.0.13](https://github.com/Promact/md2/compare/0.0.12...v0.0.13) (2016-12-29)
+
+### Breaking changes
+
+* saperate bundlings and move its in bundles path
+
+### Features
+
+* feat(data-table) update pagination navigations
+* feat(data-table) pagination change event
+
+
 <a name="0.0.12"></a>
 ## [0.0.12](https://github.com/Promact/md2/compare/0.0.11...0.0.12) (2016-12-27)
 

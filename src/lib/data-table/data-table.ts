@@ -52,11 +52,13 @@ export class Md2DataTable implements OnChanges, DoCheck {
   @Input()
   get activePage(): number { return this._activePage; }
   set activePage(value: number) {
-    this._activePage = value;
-    this.activePageChange.emit(value);
+    if (this._activePage !== value) {
+      this._activePage = value;
+      this.activePageChange.emit(value);
+    }
   }
 
-  @Output() activePageChange = new EventEmitter();
+  @Output() activePageChange: EventEmitter<any> = new EventEmitter<any>();
 
   getSort(): SortEvent {
     return { sortField: this.sortField, sortOrder: this.sortOrder };
@@ -85,12 +87,16 @@ export class Md2DataTable implements OnChanges, DoCheck {
         activePage : this.calculateNewActivePage(this.pageLength, pageLength);
       this.pageLength = pageLength;
       this.isDataChanged = true;
-      this.onPageChange.emit({
-        activePage: this.activePage,
-        pageLength: this.pageLength,
-        dataLength: this.inputData.length
-      });
+      this._emitPageChangeEvent();
     }
+  }
+
+  _emitPageChangeEvent(): void {
+    this.onPageChange.emit({
+      activePage: this.activePage,
+      pageLength: this.pageLength,
+      dataLength: this.inputData.length
+    });
   }
 
   private calculateNewActivePage(previousPageLength: number,
@@ -111,11 +117,7 @@ export class Md2DataTable implements OnChanges, DoCheck {
       this.inputData = changes['inputData'].currentValue || [];
       if (this.inputData.length > 0) {
         this.recalculatePage();
-        this.onPageChange.emit({
-          activePage: this.activePage,
-          pageLength: this.pageLength,
-          dataLength: this.inputData.length
-        });
+        this._emitPageChangeEvent();
         this.isDataChanged = true;
       }
     }
@@ -126,11 +128,7 @@ export class Md2DataTable implements OnChanges, DoCheck {
       this._dataLength = this.inputData.length;
       this.fillData();
       this.recalculatePage();
-      this.onPageChange.emit({
-        activePage: this.activePage,
-        pageLength: this.pageLength,
-        dataLength: this.inputData.length
-      });
+      this._emitPageChangeEvent();
       this.isDataChanged = true;
     }
     if (this.isDataChanged) {
@@ -284,8 +282,7 @@ export const MD2_DATA_TABLE_DIRECTIVES: any[] = [
 export class Md2DataTableModule {
   static forRoot(): ModuleWithProviders {
     return {
-      ngModule: Md2DataTableModule,
-      providers: []
+      ngModule: Md2DataTableModule
     };
   }
 }

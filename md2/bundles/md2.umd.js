@@ -1,3 +1,8 @@
+/**
+  * @license Md2 v0.0.13
+  * Copyright (c) 2016 Promact, Inc. http://code.promactinfo.com/md2/
+  * License: MIT
+  */
 (function (global, factory) {
    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('rxjs/Subject'), require('rxjs/Observable'), require('rxjs/add/observable/fromEvent'), require('@angular/common'), require('@angular/platform-browser'), require('@angular/forms'), require('rxjs/add/operator/first')) :
    typeof define === 'function' && define.amd ? define(['exports', '@angular/core', 'rxjs/Subject', 'rxjs/Observable', 'rxjs/add/observable/fromEvent', '@angular/common', '@angular/platform-browser', '@angular/forms', 'rxjs/add/operator/first'], factory) :
@@ -534,7 +539,7 @@ var MdRipple = (function () {
         enumerable: true,
         configurable: true
     });
-    ;
+    
     Object.defineProperty(MdRipple.prototype, "_centeredDeprecated", {
         /** @deprecated */
         get: function () { return this.centered; },
@@ -542,7 +547,7 @@ var MdRipple = (function () {
         enumerable: true,
         configurable: true
     });
-    ;
+    
     Object.defineProperty(MdRipple.prototype, "_disabledDeprecated", {
         /** @deprecated */
         get: function () { return this.disabled; },
@@ -550,7 +555,7 @@ var MdRipple = (function () {
         enumerable: true,
         configurable: true
     });
-    ;
+    
     Object.defineProperty(MdRipple.prototype, "_maxRadiusDeprecated", {
         /** @deprecated */
         get: function () { return this.maxRadius; },
@@ -558,7 +563,7 @@ var MdRipple = (function () {
         enumerable: true,
         configurable: true
     });
-    ;
+    
     Object.defineProperty(MdRipple.prototype, "_speedFactorDeprecated", {
         /** @deprecated */
         get: function () { return this.speedFactor; },
@@ -566,7 +571,7 @@ var MdRipple = (function () {
         enumerable: true,
         configurable: true
     });
-    ;
+    
     Object.defineProperty(MdRipple.prototype, "_colorDeprecated", {
         /** @deprecated */
         get: function () { return this.color; },
@@ -574,7 +579,7 @@ var MdRipple = (function () {
         enumerable: true,
         configurable: true
     });
-    ;
+    
     Object.defineProperty(MdRipple.prototype, "_backgroundColorDeprecated", {
         /** @deprecated */
         get: function () { return this.backgroundColor; },
@@ -582,7 +587,7 @@ var MdRipple = (function () {
         enumerable: true,
         configurable: true
     });
-    ;
+    
     Object.defineProperty(MdRipple.prototype, "_focusedDeprecated", {
         /** @deprecated */
         get: function () { return this.focused; },
@@ -590,7 +595,7 @@ var MdRipple = (function () {
         enumerable: true,
         configurable: true
     });
-    ;
+    
     Object.defineProperty(MdRipple.prototype, "_unboundedDeprecated", {
         /** @deprecated */
         get: function () { return this.unbounded; },
@@ -598,7 +603,7 @@ var MdRipple = (function () {
         enumerable: true,
         configurable: true
     });
-    ;
+    
     MdRipple.prototype.ngOnInit = function () {
         // If no trigger element was explicity set, use the host element
         if (!this.trigger) {
@@ -1640,7 +1645,6 @@ var ConnectedPositionStrategy = (function () {
     };
     return ConnectedPositionStrategy;
 }());
-;
 
 /**
  * A strategy for positioning overlays. Using this strategy, an overlay is given an
@@ -1922,9 +1926,9 @@ var Overlay = (function () {
      * @param state State to apply to the overlay.
      * @returns A reference to the created overlay.
      */
-    Overlay.prototype.create = function (state) {
-        if (state === void 0) { state = defaultState; }
-        return this._createOverlayRef(this._createPaneElement(), state);
+    Overlay.prototype.create = function (state$$1) {
+        if (state$$1 === void 0) { state$$1 = defaultState; }
+        return this._createOverlayRef(this._createPaneElement(), state$$1);
     };
     /**
      * Returns a position builder that can be used, via fluent API,
@@ -1958,8 +1962,8 @@ var Overlay = (function () {
      * @param state
      * @returns {OverlayRef}
      */
-    Overlay.prototype._createOverlayRef = function (pane, state) {
-        return new OverlayRef(this._createPortalHost(pane), pane, state, this._ngZone);
+    Overlay.prototype._createOverlayRef = function (pane, state$$1) {
+        return new OverlayRef(this._createPortalHost(pane), pane, state$$1, this._ngZone);
     };
     Overlay = __decorate$9([
         _angular_core.Injectable(), 
@@ -3114,6 +3118,7 @@ var TAB = 9;
 var ESCAPE = 27;
 var BACKSPACE = 8;
 var DELETE = 46;
+
 (function (KeyCodes) {
     KeyCodes[KeyCodes["UP_ARROW"] = 38] = "UP_ARROW";
     KeyCodes[KeyCodes["DOWN_ARROW"] = 40] = "DOWN_ARROW";
@@ -4881,7 +4886,7 @@ var Md2Colorpicker = (function () {
         enumerable: true,
         configurable: true
     });
-    ;
+    
     Md2Colorpicker.prototype.ngOnInit = function () {
         var hsva = this.service.stringToHsva(this._innerValue);
         if (hsva !== null) {
@@ -5361,6 +5366,7 @@ var Md2Pagination = (function () {
         var _this = this;
         this._injectMd2Table = _injectMd2Table;
         this._dataLength = 0;
+        this.change = new _angular_core.EventEmitter();
         this.rows = [];
         this._onPageChange = function (event) {
             _this._activePage = event.activePage;
@@ -5381,10 +5387,17 @@ var Md2Pagination = (function () {
     };
     Md2Pagination.prototype._setPage = function (page) {
         this._md2Table.setPage(page, this._rows);
+        this.change.emit(page);
     };
-    Md2Pagination.prototype._setRows = function (rows) {
-        this._md2Table.setPage(this._activePage, rows);
+    Md2Pagination.prototype._setRows = function (event) {
+        event.stopPropagation();
+        this._md2Table.setPage(this._activePage, event.target.value);
+        this.change.emit(this._activePage);
     };
+    __decorate$33([
+        _angular_core.Output(), 
+        __metadata$33('design:type', _angular_core.EventEmitter)
+    ], Md2Pagination.prototype, "change", void 0);
     __decorate$33([
         _angular_core.Input('md2-rows'), 
         __metadata$33('design:type', Object)
@@ -5396,7 +5409,7 @@ var Md2Pagination = (function () {
     Md2Pagination = __decorate$33([
         _angular_core.Component({
             selector: 'md2-pagination',
-            template: "<ul class=\"md2-pagination\" *ngIf=\"_dataLength > _rows\"> <li [class.disabled]=\"_activePage <= 1\" (click)=\"_setPage(1)\"> <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z\" /> </svg> </li> <li *ngIf=\"_activePage > 4 && _activePage + 1 > _lastPage\" (click)=\"_setPage(_activePage - 4)\"> {{_activePage-4}} </li> <li *ngIf=\"_activePage > 3 && _activePage + 2 > _lastPage\" (click)=\"_setPage(_activePage - 3)\"> {{_activePage-3}} </li> <li *ngIf=\"_activePage > 2\" (click)=\"_setPage(_activePage - 2)\"> {{_activePage-2}} </li> <li *ngIf=\"_activePage > 1\" (click)=\"_setPage(_activePage - 1)\"> {{_activePage-1}} </li> <li class=\"active\">{{_activePage}}</li> <li *ngIf=\"_activePage + 1 <= _lastPage\" (click)=\"_setPage(_activePage + 1)\"> {{_activePage+1}} </li> <li *ngIf=\"_activePage + 2 <= _lastPage\" (click)=\"_setPage(_activePage + 2)\"> {{_activePage+2}} </li> <li *ngIf=\"_activePage + 3 <= _lastPage && _activePage < 3\" (click)=\"_setPage(_activePage + 3)\"> {{_activePage+3}} </li> <li *ngIf=\"_activePage + 4 <= _lastPage && _activePage < 2\" (click)=\"_setPage(_activePage + 4)\"> {{_activePage+4}} </li> <li [class.disabled]=\"_activePage >= _lastPage\" (click)=\"_setPage(_lastPage)\"> <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z\" /> </svg> </li> </ul> <div class=\"md2-rows-select\" *ngIf=\"rows.length > 0\"> Rows per page: <select (change)=\"_setRows($event.target.value)\"> <option *ngFor=\"let row of rows\" [selected]=\"_rows===row\">{{row}}</option> </select> </div>",
+            template: "<ul class=\"md2-pagination\" *ngIf=\"_dataLength > _rows\"> <li [class.disabled]=\"_activePage <= 1\" (click)=\"_setPage(_activePage - 1)\"> <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z\" /> </svg> </li> <li *ngIf=\"_activePage > 4 && _activePage + 1 > _lastPage\" (click)=\"_setPage(_activePage - 4)\"> {{_activePage-4}} </li> <li *ngIf=\"_activePage > 3 && _activePage + 2 > _lastPage\" (click)=\"_setPage(_activePage - 3)\"> {{_activePage-3}} </li> <li *ngIf=\"_activePage > 2\" (click)=\"_setPage(_activePage - 2)\"> {{_activePage-2}} </li> <li *ngIf=\"_activePage > 1\" (click)=\"_setPage(_activePage - 1)\"> {{_activePage-1}} </li> <li class=\"active\">{{_activePage}}</li> <li *ngIf=\"_activePage + 1 <= _lastPage\" (click)=\"_setPage(_activePage + 1)\"> {{_activePage+1}} </li> <li *ngIf=\"_activePage + 2 <= _lastPage\" (click)=\"_setPage(_activePage + 2)\"> {{_activePage+2}} </li> <li *ngIf=\"_activePage + 3 <= _lastPage && _activePage < 3\" (click)=\"_setPage(_activePage + 3)\"> {{_activePage+3}} </li> <li *ngIf=\"_activePage + 4 <= _lastPage && _activePage < 2\" (click)=\"_setPage(_activePage + 4)\"> {{_activePage+4}} </li> <li [class.disabled]=\"_activePage >= _lastPage\" (click)=\"_setPage(_activePage + 1)\"> <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z\" /> </svg> </li> </ul> <div class=\"md2-rows-select\" *ngIf=\"rows.length > 0\"> Rows per page: <select (change)=\"_setRows($event)\"> <option *ngFor=\"let row of rows\" [selected]=\"_rows===row\">{{row}}</option> </select> </div>",
             styles: ["md2-pagination { display: block; color: #0e59a5; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } md2-pagination::before, md2-pagination::after { display: table; content: ''; } md2-pagination::after { clear: both; } md2-pagination .md2-pagination { display: inline-block; margin: 8px 0; padding: 0; } md2-pagination .md2-pagination li { position: relative; display: inline-block; width: 36px; vertical-align: top; text-align: center; line-height: 36px; border-radius: 100px; cursor: pointer; box-sizing: border-box; } md2-pagination .md2-pagination li:hover { background: rgba(0, 0, 0, 0.12); } md2-pagination .md2-pagination li.disabled, md2-pagination .md2-pagination li.disabled:hover { pointer-events: none; background: transparent; cursor: default; opacity: 0.5; } md2-pagination .md2-pagination li.active, md2-pagination .md2-pagination li.active:hover { background: #106cc8; color: #fff; cursor: default; } md2-pagination .md2-pagination li svg { fill: currentColor; margin-bottom: -7px; } md2-pagination .md2-rows-select { display: inline-block; margin: 8px 0; padding: 0; float: right; color: rgba(0, 0, 0, 0.54); line-height: 36px; } md2-pagination .md2-rows-select select { border: 0; outline: 0; } /*# sourceMappingURL=pagination.css.map */ "],
             encapsulation: _angular_core.ViewEncapsulation.None
         }),
@@ -6693,10 +6706,10 @@ var Animate = (function () {
     Animate.getTransitionDuration = function (element, includeDelay) {
         if (includeDelay === void 0) { includeDelay = false; }
         var prefixes = ['', 'moz', 'webkit', 'ms', 'o', 'khtml'];
-        var style = window.getComputedStyle(element);
+        var style$$1 = window.getComputedStyle(element);
         for (var i = 0; i < prefixes.length; i++) {
             var durationProperty = (i === 0 ? '' : "-" + prefixes[i] + "-") + "transition-duration";
-            var duration = style[durationProperty];
+            var duration = style$$1[durationProperty];
             if (!duration) {
                 continue;
             }
@@ -6707,7 +6720,7 @@ var Animate = (function () {
             }
             if (includeDelay) {
                 var delayProperty = (i === 0 ? '' : "-" + prefixes[i] + "-") + "transition-delay";
-                var delay = style[delayProperty];
+                var delay = style$$1[delayProperty];
                 if (typeof delay !== 'undefined') {
                     duration += (delay.indexOf('ms') > -1) ? parseFloat(delay) : parseFloat(delay) * 1000;
                 }
@@ -7675,7 +7688,7 @@ var Md2Option = (function () {
                 '(keydown)': '_handleKeydown($event)'
             },
             template: '<ng-content></ng-content>',
-            styles: ["md2-select { display: block; outline: none; } .md2-select-trigger { color: rgba(0, 0, 0, 0.38); border-bottom: 1px solid rgba(0, 0, 0, 0.12); display: flex; justify-content: space-between; align-items: center; height: 30px; min-width: 112px; cursor: pointer; position: relative; box-sizing: border-box; } [aria-disabled='true'] .md2-select-trigger { background-image: linear-gradient(to right, rgba(0, 0, 0, 0.26) 0, rgba(0, 0, 0, 0.26) 33%, transparent 0); background-size: 4px 1px; background-repeat: repeat-x; border-bottom: transparent; background-position: 0 bottom; cursor: default; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } md2-select:focus:not(.md2-select-disabled) .md2-select-trigger { color: #106cc8; border-bottom: 1px solid #106cc8; } md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) .md2-select-trigger { color: #f44336; border-bottom: 1px solid #f44336; } .md2-select-placeholder { position: relative; padding: 0 2px; transform-origin: left top; white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; } .md2-select-placeholder.md2-floating-placeholder { top: -22px; left: -2px; transform: scale(0.75); } [dir='rtl'] .md2-select-placeholder { transform-origin: right top; } [dir='rtl'] .md2-select-placeholder.md2-floating-placeholder { left: 2px; } [aria-required=true] .md2-select-placeholder::after { content: '*'; } .md2-select-value { position: absolute; top: 6px; right: 18px; left: 0; white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; color: rgba(0, 0, 0, 0.87); } .md2-select-disabled .md2-select-value { color: rgba(0, 0, 0, 0.38); } [dir='rtl'] .md2-select-value { left: auto; right: 0; } .md2-select-value-text:not(:last-child)::after { content: ','; margin-left: -2px; } .md2-select-arrow { width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 5px solid; margin: 0 4px; color: rgba(0, 0, 0, 0.38); } md2-select:focus:not(.md2-select-disabled) .md2-select-arrow { color: #106cc8; } md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) .md2-select-arrow { color: #f44336; } .md2-select-panel { box-shadow: 0 0 3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12); min-width: 112px; max-width: 280px; overflow: auto; -webkit-overflow-scrolling: touch; padding-top: 0; padding-bottom: 0; max-height: 256px; background: white; } md2-option { white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; display: block; flex-direction: row; align-items: center; padding: 13px 16px; font-size: 16px; font-family: Roboto, 'Helvetica Neue', sans-serif; text-align: start; text-decoration: none; position: relative; cursor: pointer; outline: none; box-sizing: padding-box; } md2-option[aria-disabled='true'] { cursor: default; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } md2-option:hover:not(.md2-option-disabled), md2-option:focus:not(.md2-option-disabled) { background: rgba(0, 0, 0, 0.04); } md2-option.md2-selected { color: #106cc8; } md2-option.md2-option-disabled { color: rgba(0, 0, 0, 0.38); } [multiple='true'] md2-option { padding-left: 40px; } [multiple='true'] md2-option::after { content: ''; position: absolute; top: 50%; left: 12px; display: block; width: 16px; height: 16px; margin-top: -8px; border: 2px solid; border-radius: 2px; box-sizing: border-box; transition: 240ms; } [multiple='true'] md2-option.md2-selected::after { transform: rotate(-45deg); height: 8px; border-width: 0 0 2px 2px; } .cdk-overlay-container, .cdk-global-overlay-wrapper { pointer-events: none; top: 0; left: 0; height: 100%; width: 100%; } .cdk-overlay-container { position: fixed; z-index: 1000; } .cdk-overlay-pane { position: absolute; pointer-events: auto; box-sizing: border-box; z-index: 1000; } .cdk-overlay-backdrop { position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1; pointer-events: auto; transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1); opacity: 0; } .cdk-overlay-transparent-backdrop { background: none; } .cdk-overlay-backdrop.cdk-overlay-backdrop-showing { opacity: 0.48; } /*# sourceMappingURL=select.css.map */ "],
+            styles: ["md2-select { display: block; outline: none; } .md2-select-trigger { color: rgba(0, 0, 0, 0.38); border-bottom: 1px solid rgba(0, 0, 0, 0.12); display: flex; justify-content: space-between; align-items: center; height: 30px; min-width: 112px; margin: 18px 0; line-height: 22px; cursor: pointer; position: relative; box-sizing: border-box; } [aria-disabled='true'] .md2-select-trigger { background-image: linear-gradient(to right, rgba(0, 0, 0, 0.26) 0, rgba(0, 0, 0, 0.26) 33%, transparent 0); background-size: 4px 1px; background-repeat: repeat-x; border-bottom: transparent; background-position: 0 bottom; cursor: default; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } md2-select:focus:not(.md2-select-disabled) .md2-select-trigger { color: #106cc8; border-bottom: 1px solid #106cc8; } md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) .md2-select-trigger { color: #f44336; border-bottom: 1px solid #f44336; } .md2-select-placeholder { position: absolute; right: 18px; left: 0; padding: 0 2px; transform-origin: left top; white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; } .md2-select-placeholder.md2-floating-placeholder { top: -16px; left: -2px; transform: scale(0.75); } [dir='rtl'] .md2-select-placeholder { transform-origin: right top; } [dir='rtl'] .md2-select-placeholder.md2-floating-placeholder { left: 2px; } [aria-required=true] .md2-select-placeholder::after { content: '*'; } .md2-select-value { position: relative; white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; color: rgba(0, 0, 0, 0.87); } .md2-select-disabled .md2-select-value { color: rgba(0, 0, 0, 0.38); } [dir='rtl'] .md2-select-value { left: auto; right: 0; } .md2-select-value-text:not(:last-child)::after { content: ','; margin-left: -2px; } .md2-select-arrow { width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 5px solid; margin: 0 4px; color: rgba(0, 0, 0, 0.38); } md2-select:focus:not(.md2-select-disabled) .md2-select-arrow { color: #106cc8; } md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) .md2-select-arrow { color: #f44336; } .md2-select-panel { box-shadow: 0 0 3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12); min-width: 112px; max-width: 280px; overflow: auto; -webkit-overflow-scrolling: touch; padding-top: 0; padding-bottom: 0; max-height: 256px; background: white; } md2-option { white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; display: block; flex-direction: row; align-items: center; padding: 13px 16px; font-size: 16px; font-family: Roboto, 'Helvetica Neue', sans-serif; text-align: start; text-decoration: none; position: relative; cursor: pointer; outline: none; box-sizing: padding-box; } md2-option[aria-disabled='true'] { cursor: default; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } md2-option:hover:not(.md2-option-disabled), md2-option:focus:not(.md2-option-disabled) { background: rgba(0, 0, 0, 0.04); } md2-option.md2-selected { color: #106cc8; } md2-option.md2-option-disabled { color: rgba(0, 0, 0, 0.38); } [multiple='true'] md2-option { padding-left: 40px; } [multiple='true'] md2-option::after { content: ''; position: absolute; top: 50%; left: 12px; display: block; width: 16px; height: 16px; margin-top: -8px; border: 2px solid; border-radius: 2px; box-sizing: border-box; transition: 240ms; } [multiple='true'] md2-option.md2-selected::after { transform: rotate(-45deg); height: 8px; border-width: 0 0 2px 2px; } .cdk-overlay-container, .cdk-global-overlay-wrapper { pointer-events: none; top: 0; left: 0; height: 100%; width: 100%; } .cdk-overlay-container { position: fixed; z-index: 1000; } .cdk-overlay-pane { position: absolute; pointer-events: auto; box-sizing: border-box; z-index: 1000; } .cdk-overlay-backdrop { position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1; pointer-events: auto; transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1); opacity: 0; } .cdk-overlay-transparent-backdrop { background: none; } .cdk-overlay-backdrop.cdk-overlay-backdrop-showing { opacity: 0.48; } /*# sourceMappingURL=select.css.map */ "],
             encapsulation: _angular_core.ViewEncapsulation.None
         }), 
         __metadata$44('design:paramtypes', [_angular_core.ElementRef, _angular_core.Renderer])
@@ -7842,12 +7855,12 @@ var ListKeyManager = (function () {
  */
 var transformPlaceholder = _angular_core.trigger('transformPlaceholder', [
     _angular_core.state('floating-ltr', _angular_core.style({
-        top: '-22px',
+        top: '-16px',
         left: '-2px',
         transform: "scale(0.75)"
     })),
     _angular_core.state('floating-rtl', _angular_core.style({
-        top: '-22px',
+        top: '-16px',
         left: '2px',
         transform: "scale(0.75)"
     })),
@@ -8554,7 +8567,7 @@ var Md2Select = (function () {
     Md2Select = __decorate$43([
         _angular_core.Component({selector: 'md2-select',
             template: "<div class=\"md2-select-trigger\" cdk-overlay-origin (click)=\"toggle()\" #origin=\"cdkOverlayOrigin\" #trigger> <span class=\"md2-select-placeholder\" [class.md2-floating-placeholder]=\"this.selected.length\" [@transformPlaceholder]=\"_placeholderState\" [style.width.px]=\"_selectedValueWidth\">{{ placeholder }}</span> <span class=\"md2-select-value\"> <span class=\"md2-select-value-text\" *ngFor=\"let option of selected\"> {{ option.viewValue }} </span> </span> <span class=\"md2-select-arrow\"></span> </div> <template cdk-connected-overlay [origin]=\"origin\" [open]=\"panelOpen\" hasBackdrop (backdropClick)=\"close()\" backdropClass=\"cdk-overlay-transparent-backdrop\" [positions]=\"_positions\" [minWidth]=\"_triggerWidth\" [offsetY]=\"_offsetY\" [offsetX]=\"_offsetX\" (attach)=\"_setScrollTop()\"> <div class=\"md2-select-panel\" [@transformPanel]=\"'showing'\" (@transformPanel.done)=\"_onPanelDone()\" (keydown)=\"_keyManager.onKeydown($event)\" [style.transformOrigin]=\"_transformOrigin\"  [attr.multiple]=\"multiple\"> <div class=\"md2-select-content\" [@fadeInContent]=\"'showing'\"> <ng-content></ng-content> </div> </div> </template> ",
-            styles: ["md2-select { display: block; outline: none; } .md2-select-trigger { color: rgba(0, 0, 0, 0.38); border-bottom: 1px solid rgba(0, 0, 0, 0.12); display: flex; justify-content: space-between; align-items: center; height: 30px; min-width: 112px; cursor: pointer; position: relative; box-sizing: border-box; } [aria-disabled='true'] .md2-select-trigger { background-image: linear-gradient(to right, rgba(0, 0, 0, 0.26) 0, rgba(0, 0, 0, 0.26) 33%, transparent 0); background-size: 4px 1px; background-repeat: repeat-x; border-bottom: transparent; background-position: 0 bottom; cursor: default; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } md2-select:focus:not(.md2-select-disabled) .md2-select-trigger { color: #106cc8; border-bottom: 1px solid #106cc8; } md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) .md2-select-trigger { color: #f44336; border-bottom: 1px solid #f44336; } .md2-select-placeholder { position: relative; padding: 0 2px; transform-origin: left top; white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; } .md2-select-placeholder.md2-floating-placeholder { top: -22px; left: -2px; transform: scale(0.75); } [dir='rtl'] .md2-select-placeholder { transform-origin: right top; } [dir='rtl'] .md2-select-placeholder.md2-floating-placeholder { left: 2px; } [aria-required=true] .md2-select-placeholder::after { content: '*'; } .md2-select-value { position: absolute; top: 6px; right: 18px; left: 0; white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; color: rgba(0, 0, 0, 0.87); } .md2-select-disabled .md2-select-value { color: rgba(0, 0, 0, 0.38); } [dir='rtl'] .md2-select-value { left: auto; right: 0; } .md2-select-value-text:not(:last-child)::after { content: ','; margin-left: -2px; } .md2-select-arrow { width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 5px solid; margin: 0 4px; color: rgba(0, 0, 0, 0.38); } md2-select:focus:not(.md2-select-disabled) .md2-select-arrow { color: #106cc8; } md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) .md2-select-arrow { color: #f44336; } .md2-select-panel { box-shadow: 0 0 3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12); min-width: 112px; max-width: 280px; overflow: auto; -webkit-overflow-scrolling: touch; padding-top: 0; padding-bottom: 0; max-height: 256px; background: white; } md2-option { white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; display: block; flex-direction: row; align-items: center; padding: 13px 16px; font-size: 16px; font-family: Roboto, 'Helvetica Neue', sans-serif; text-align: start; text-decoration: none; position: relative; cursor: pointer; outline: none; box-sizing: padding-box; } md2-option[aria-disabled='true'] { cursor: default; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } md2-option:hover:not(.md2-option-disabled), md2-option:focus:not(.md2-option-disabled) { background: rgba(0, 0, 0, 0.04); } md2-option.md2-selected { color: #106cc8; } md2-option.md2-option-disabled { color: rgba(0, 0, 0, 0.38); } [multiple='true'] md2-option { padding-left: 40px; } [multiple='true'] md2-option::after { content: ''; position: absolute; top: 50%; left: 12px; display: block; width: 16px; height: 16px; margin-top: -8px; border: 2px solid; border-radius: 2px; box-sizing: border-box; transition: 240ms; } [multiple='true'] md2-option.md2-selected::after { transform: rotate(-45deg); height: 8px; border-width: 0 0 2px 2px; } .cdk-overlay-container, .cdk-global-overlay-wrapper { pointer-events: none; top: 0; left: 0; height: 100%; width: 100%; } .cdk-overlay-container { position: fixed; z-index: 1000; } .cdk-overlay-pane { position: absolute; pointer-events: auto; box-sizing: border-box; z-index: 1000; } .cdk-overlay-backdrop { position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1; pointer-events: auto; transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1); opacity: 0; } .cdk-overlay-transparent-backdrop { background: none; } .cdk-overlay-backdrop.cdk-overlay-backdrop-showing { opacity: 0.48; } /*# sourceMappingURL=select.css.map */ "],
+            styles: ["md2-select { display: block; outline: none; } .md2-select-trigger { color: rgba(0, 0, 0, 0.38); border-bottom: 1px solid rgba(0, 0, 0, 0.12); display: flex; justify-content: space-between; align-items: center; height: 30px; min-width: 112px; margin: 18px 0; line-height: 22px; cursor: pointer; position: relative; box-sizing: border-box; } [aria-disabled='true'] .md2-select-trigger { background-image: linear-gradient(to right, rgba(0, 0, 0, 0.26) 0, rgba(0, 0, 0, 0.26) 33%, transparent 0); background-size: 4px 1px; background-repeat: repeat-x; border-bottom: transparent; background-position: 0 bottom; cursor: default; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } md2-select:focus:not(.md2-select-disabled) .md2-select-trigger { color: #106cc8; border-bottom: 1px solid #106cc8; } md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) .md2-select-trigger { color: #f44336; border-bottom: 1px solid #f44336; } .md2-select-placeholder { position: absolute; right: 18px; left: 0; padding: 0 2px; transform-origin: left top; white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; } .md2-select-placeholder.md2-floating-placeholder { top: -16px; left: -2px; transform: scale(0.75); } [dir='rtl'] .md2-select-placeholder { transform-origin: right top; } [dir='rtl'] .md2-select-placeholder.md2-floating-placeholder { left: 2px; } [aria-required=true] .md2-select-placeholder::after { content: '*'; } .md2-select-value { position: relative; white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; color: rgba(0, 0, 0, 0.87); } .md2-select-disabled .md2-select-value { color: rgba(0, 0, 0, 0.38); } [dir='rtl'] .md2-select-value { left: auto; right: 0; } .md2-select-value-text:not(:last-child)::after { content: ','; margin-left: -2px; } .md2-select-arrow { width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 5px solid; margin: 0 4px; color: rgba(0, 0, 0, 0.38); } md2-select:focus:not(.md2-select-disabled) .md2-select-arrow { color: #106cc8; } md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) .md2-select-arrow { color: #f44336; } .md2-select-panel { box-shadow: 0 0 3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12); min-width: 112px; max-width: 280px; overflow: auto; -webkit-overflow-scrolling: touch; padding-top: 0; padding-bottom: 0; max-height: 256px; background: white; } md2-option { white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; display: block; flex-direction: row; align-items: center; padding: 13px 16px; font-size: 16px; font-family: Roboto, 'Helvetica Neue', sans-serif; text-align: start; text-decoration: none; position: relative; cursor: pointer; outline: none; box-sizing: padding-box; } md2-option[aria-disabled='true'] { cursor: default; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } md2-option:hover:not(.md2-option-disabled), md2-option:focus:not(.md2-option-disabled) { background: rgba(0, 0, 0, 0.04); } md2-option.md2-selected { color: #106cc8; } md2-option.md2-option-disabled { color: rgba(0, 0, 0, 0.38); } [multiple='true'] md2-option { padding-left: 40px; } [multiple='true'] md2-option::after { content: ''; position: absolute; top: 50%; left: 12px; display: block; width: 16px; height: 16px; margin-top: -8px; border: 2px solid; border-radius: 2px; box-sizing: border-box; transition: 240ms; } [multiple='true'] md2-option.md2-selected::after { transform: rotate(-45deg); height: 8px; border-width: 0 0 2px 2px; } .cdk-overlay-container, .cdk-global-overlay-wrapper { pointer-events: none; top: 0; left: 0; height: 100%; width: 100%; } .cdk-overlay-container { position: fixed; z-index: 1000; } .cdk-overlay-pane { position: absolute; pointer-events: auto; box-sizing: border-box; z-index: 1000; } .cdk-overlay-backdrop { position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1; pointer-events: auto; transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1); opacity: 0; } .cdk-overlay-transparent-backdrop { background: none; } .cdk-overlay-backdrop.cdk-overlay-backdrop-showing { opacity: 0.48; } /*# sourceMappingURL=select.css.map */ "],
             encapsulation: _angular_core.ViewEncapsulation.None,
             host: {
                 'role': 'listbox',
@@ -10318,5 +10331,3 @@ exports.Md2TooltipModule = Md2TooltipModule;
 Object.defineProperty(exports, '__esModule', { value: true });
 
 })));
-
-//# sourceMappingURL=./md2.umd.js.map

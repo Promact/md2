@@ -52,13 +52,14 @@ export declare class Md2Pagination implements OnChanges {
     _rows: number;
     _lastPage: number;
     _dataLength: number;
+    change: EventEmitter<any>;
     rows: any;
     md2InputTable: Md2DataTable;
     constructor(_injectMd2Table: Md2DataTable);
     ngAfterViewInit(): void;
     ngOnChanges(changes: any): any;
     _setPage(page: number): void;
-    _setRows(rows: number): void;
+    _setRows(event: any): void;
     private _onPageChange;
 }
 export declare const MD2_DATA_TABLE_DIRECTIVES: any[];

@@ -10,6 +10,8 @@ md2-select {
   align-items: center;
   height: 30px;
   min-width: 112px;
+  margin: 18px 0;
+  line-height: 22px;
   cursor: pointer;
   position: relative;
   box-sizing: border-box; }
@@ -32,14 +34,16 @@ md2-select {
     border-bottom: 1px solid #f44336; }
 
 .md2-select-placeholder {
-  position: relative;
+  position: absolute;
+  right: 18px;
+  left: 0;
   padding: 0 2px;
   transform-origin: left top;
   white-space: nowrap;
   overflow-x: hidden;
   text-overflow: ellipsis; }
   .md2-select-placeholder.md2-floating-placeholder {
-    top: -22px;
+    top: -16px;
     left: -2px;
     transform: scale(0.75); }
   [dir='rtl'] .md2-select-placeholder {
@@ -50,10 +54,7 @@ md2-select {
     content: '*'; }
 
 .md2-select-value {
-  position: absolute;
-  top: 6px;
-  right: 18px;
-  left: 0;
+  position: relative;
   white-space: nowrap;
   overflow-x: hidden;
   text-overflow: ellipsis;

@@ -43,6 +43,12 @@ A directive would have the following markup.
 | `md2-rows` | `Array<string>` | Number of rows on page set list |
 | `md2-table` | `Md2DataTable` | reference of Md2DataTable |
 
+### Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `change` | `Event` | Fired when change the page |
+
 ### Examples
 A pagination would have the following markup.
 ```html

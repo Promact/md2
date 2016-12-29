@@ -1,5 +1,5 @@
 <ul class="md2-pagination" *ngIf="_dataLength > _rows">
-  <li [class.disabled]="_activePage <= 1" (click)="_setPage(1)">
+  <li [class.disabled]="_activePage <= 1" (click)="_setPage(_activePage - 1)">
     <svg width="24" height="24" viewBox="0 0 24 24">
       <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
     </svg>
@@ -29,7 +29,7 @@
   <li *ngIf="_activePage + 4 <= _lastPage && _activePage < 2" (click)="_setPage(_activePage + 4)">
     {{_activePage+4}}
   </li>
-  <li [class.disabled]="_activePage >= _lastPage" (click)="_setPage(_lastPage)">
+  <li [class.disabled]="_activePage >= _lastPage" (click)="_setPage(_activePage + 1)">
     <svg width="24" height="24" viewBox="0 0 24 24">
       <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
     </svg>
@@ -37,7 +37,7 @@
 </ul>
 <div class="md2-rows-select" *ngIf="rows.length > 0">
   Rows per page:
-  <select (change)="_setRows($event.target.value)">
+  <select (change)="_setRows($event)">
     <option *ngFor="let row of rows" [selected]="_rows===row">{{row}}</option>
   </select>
 </div>

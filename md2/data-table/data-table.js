@@ -189,6 +189,7 @@ export var Md2Pagination = (function () {
         var _this = this;
         this._injectMd2Table = _injectMd2Table;
         this._dataLength = 0;
+        this.change = new EventEmitter();
         this.rows = [];
         this._onPageChange = function (event) {
             _this._activePage = event.activePage;
@@ -209,10 +210,17 @@ export var Md2Pagination = (function () {
     };
     Md2Pagination.prototype._setPage = function (page) {
         this._md2Table.setPage(page, this._rows);
+        this.change.emit(page);
     };
-    Md2Pagination.prototype._setRows = function (rows) {
-        this._md2Table.setPage(this._activePage, rows);
+    Md2Pagination.prototype._setRows = function (event) {
+        event.stopPropagation();
+        this._md2Table.setPage(this._activePage, event.target.value);
+        this.change.emit(this._activePage);
     };
+    __decorate([
+        Output(), 
+        __metadata('design:type', EventEmitter)
+    ], Md2Pagination.prototype, "change", void 0);
     __decorate([
         Input('md2-rows'), 
         __metadata('design:type', Object)
@@ -224,7 +232,7 @@ export var Md2Pagination = (function () {
     Md2Pagination = __decorate([
         Component({
             selector: 'md2-pagination',
-            template: "<ul class=\"md2-pagination\" *ngIf=\"_dataLength > _rows\"> <li [class.disabled]=\"_activePage <= 1\" (click)=\"_setPage(1)\"> <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z\" /> </svg> </li> <li *ngIf=\"_activePage > 4 && _activePage + 1 > _lastPage\" (click)=\"_setPage(_activePage - 4)\"> {{_activePage-4}} </li> <li *ngIf=\"_activePage > 3 && _activePage + 2 > _lastPage\" (click)=\"_setPage(_activePage - 3)\"> {{_activePage-3}} </li> <li *ngIf=\"_activePage > 2\" (click)=\"_setPage(_activePage - 2)\"> {{_activePage-2}} </li> <li *ngIf=\"_activePage > 1\" (click)=\"_setPage(_activePage - 1)\"> {{_activePage-1}} </li> <li class=\"active\">{{_activePage}}</li> <li *ngIf=\"_activePage + 1 <= _lastPage\" (click)=\"_setPage(_activePage + 1)\"> {{_activePage+1}} </li> <li *ngIf=\"_activePage + 2 <= _lastPage\" (click)=\"_setPage(_activePage + 2)\"> {{_activePage+2}} </li> <li *ngIf=\"_activePage + 3 <= _lastPage && _activePage < 3\" (click)=\"_setPage(_activePage + 3)\"> {{_activePage+3}} </li> <li *ngIf=\"_activePage + 4 <= _lastPage && _activePage < 2\" (click)=\"_setPage(_activePage + 4)\"> {{_activePage+4}} </li> <li [class.disabled]=\"_activePage >= _lastPage\" (click)=\"_setPage(_lastPage)\"> <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z\" /> </svg> </li> </ul> <div class=\"md2-rows-select\" *ngIf=\"rows.length > 0\"> Rows per page: <select (change)=\"_setRows($event.target.value)\"> <option *ngFor=\"let row of rows\" [selected]=\"_rows===row\">{{row}}</option> </select> </div>",
+            template: "<ul class=\"md2-pagination\" *ngIf=\"_dataLength > _rows\"> <li [class.disabled]=\"_activePage <= 1\" (click)=\"_setPage(_activePage - 1)\"> <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z\" /> </svg> </li> <li *ngIf=\"_activePage > 4 && _activePage + 1 > _lastPage\" (click)=\"_setPage(_activePage - 4)\"> {{_activePage-4}} </li> <li *ngIf=\"_activePage > 3 && _activePage + 2 > _lastPage\" (click)=\"_setPage(_activePage - 3)\"> {{_activePage-3}} </li> <li *ngIf=\"_activePage > 2\" (click)=\"_setPage(_activePage - 2)\"> {{_activePage-2}} </li> <li *ngIf=\"_activePage > 1\" (click)=\"_setPage(_activePage - 1)\"> {{_activePage-1}} </li> <li class=\"active\">{{_activePage}}</li> <li *ngIf=\"_activePage + 1 <= _lastPage\" (click)=\"_setPage(_activePage + 1)\"> {{_activePage+1}} </li> <li *ngIf=\"_activePage + 2 <= _lastPage\" (click)=\"_setPage(_activePage + 2)\"> {{_activePage+2}} </li> <li *ngIf=\"_activePage + 3 <= _lastPage && _activePage < 3\" (click)=\"_setPage(_activePage + 3)\"> {{_activePage+3}} </li> <li *ngIf=\"_activePage + 4 <= _lastPage && _activePage < 2\" (click)=\"_setPage(_activePage + 4)\"> {{_activePage+4}} </li> <li [class.disabled]=\"_activePage >= _lastPage\" (click)=\"_setPage(_activePage + 1)\"> <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z\" /> </svg> </li> </ul> <div class=\"md2-rows-select\" *ngIf=\"rows.length > 0\"> Rows per page: <select (change)=\"_setRows($event)\"> <option *ngFor=\"let row of rows\" [selected]=\"_rows===row\">{{row}}</option> </select> </div>",
             styles: ["md2-pagination { display: block; color: #0e59a5; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } md2-pagination::before, md2-pagination::after { display: table; content: ''; } md2-pagination::after { clear: both; } md2-pagination .md2-pagination { display: inline-block; margin: 8px 0; padding: 0; } md2-pagination .md2-pagination li { position: relative; display: inline-block; width: 36px; vertical-align: top; text-align: center; line-height: 36px; border-radius: 100px; cursor: pointer; box-sizing: border-box; } md2-pagination .md2-pagination li:hover { background: rgba(0, 0, 0, 0.12); } md2-pagination .md2-pagination li.disabled, md2-pagination .md2-pagination li.disabled:hover { pointer-events: none; background: transparent; cursor: default; opacity: 0.5; } md2-pagination .md2-pagination li.active, md2-pagination .md2-pagination li.active:hover { background: #106cc8; color: #fff; cursor: default; } md2-pagination .md2-pagination li svg { fill: currentColor; margin-bottom: -7px; } md2-pagination .md2-rows-select { display: inline-block; margin: 8px 0; padding: 0; float: right; color: rgba(0, 0, 0, 0.54); line-height: 36px; } md2-pagination .md2-rows-select select { border: 0; outline: 0; } /*# sourceMappingURL=pagination.css.map */ "],
             encapsulation: ViewEncapsulation.None
         }),

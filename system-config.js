@@ -12,14 +12,11 @@ System.config({
         '@angular/router': 'libs/@angular/router/bundles/router.umd.js',
         '@angular/platform-browser': 'libs/@angular/platform-browser/bundles/platform-browser.umd.js',
         '@angular/platform-browser-dynamic': 'libs/@angular/platform-browser-dynamic/bundles/platform-browser-dynamic.umd.js',
+        'md2': 'md2/bundles/md2.umd.js'
     },
     packages: {
         // Thirdparty barrels.
         'rxjs': { main: 'index' },
-        'md2': {
-            format: 'cjs',
-            main: 'md2.umd.js'
-        },
         // Set the default extension for the root package, because otherwise the demo-app can't
         // be built within the production mode. Due to missing file extensions.
         '.': {

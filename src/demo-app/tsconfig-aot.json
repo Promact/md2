@@ -1,34 +1,30 @@
+/* Config file for the Angular Compiler. Paths need to be relative to the dist folder. */
 {
   "compilerOptions": {
-    "declaration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "lib": ["es6", "es2015", "dom"],
-    "mapRoot": "/",
     "module": "commonjs",
     "moduleResolution": "node",
     "noEmitOnError": true,
     "noImplicitAny": true,
-    "outDir": "../../dist/",
-    "sourceMap": true,
     "target": "es5",
-    "stripInternal": false,
     "baseUrl": "",
     "typeRoots": [
-      "../../node_modules/@types/!(node)"
+      "../node_modules/@types"
     ],
     "paths": {
-      "md2": [
-        "../../dist/md2"
+      "@angular/material": [
+        "./@angular/material"
       ]
     }
   },
-  "exclude": [
-    "*-aot.ts"
+  "files": [
+    "./demo-app-module.ts",
+    "./main-aot.ts"
   ],
   "angularCompilerOptions": {
-    "genDir": "../../dist",
-    "skipTemplateCodegen": true,
+    "skipTemplateCodegen": false,
     "debug": true
   }
 }

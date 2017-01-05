@@ -1,6 +1,4 @@
-import {
-  Directive, ElementRef, OnInit, OnDestroy
-} from '@angular/core';
+import {Directive, ElementRef, OnInit, OnDestroy} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ScrollDispatcher} from './scroll-dispatcher';
 import 'rxjs/add/observable/fromEvent';
@@ -15,7 +13,8 @@ import 'rxjs/add/observable/fromEvent';
   selector: '[cdk-scrollable]'
 })
 export class Scrollable implements OnInit, OnDestroy {
-  constructor(private _elementRef: ElementRef, private _scroll: ScrollDispatcher) {}
+  constructor(private _elementRef: ElementRef,
+              private _scroll: ScrollDispatcher) {}
 
   ngOnInit() {
     this._scroll.register(this);
@@ -25,8 +24,14 @@ export class Scrollable implements OnInit, OnDestroy {
     this._scroll.deregister(this);
   }
 
-  /** Returns observable that emits when the scroll event is fired on the host element. */
+  /**
+   * Returns observable that emits when a scroll event is fired on the host element.
+   */
   elementScrolled(): Observable<any> {
     return Observable.fromEvent(this._elementRef.nativeElement, 'scroll');
+  }
+
+  getElementRef(): ElementRef {
+    return this._elementRef;
   }
 }

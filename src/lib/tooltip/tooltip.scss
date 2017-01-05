@@ -1,6 +1,8 @@
-$md2-tooltip-height: 22px;
+$md2-tooltip-target-height: 22px;
+$md2-tooltip-font-size: 10px;
 $md2-tooltip-margin: 14px;
-$md2-tooltip-padding: 8px;
+$md2-tooltip-horizontal-padding: 8px;
+$md2-tooltip-vertical-padding: ($md2-tooltip-target-height - $md2-tooltip-font-size) / 2;
 
 :host {
   pointer-events: none;
@@ -8,12 +10,12 @@ $md2-tooltip-padding: 8px;
 
 .md2-tooltip {
   color: white;
-  padding: 0 $md2-tooltip-padding;
+  padding: $md2-tooltip-vertical-padding $md2-tooltip-horizontal-padding;
   border-radius: 2px;
-  font-size: 10px;
+  font-size: $md2-tooltip-font-size;
   margin: $md2-tooltip-margin;
-  height: $md2-tooltip-height;
-  line-height: $md2-tooltip-height;
+  /*height: $md2-tooltip-target-height;
+  line-height: $md2-tooltip-target-height;*/
   background: rgba(97, 97, 97, 0.9);
 }
 

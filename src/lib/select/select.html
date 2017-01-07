@@ -1,5 +1,5 @@
 <div class="md2-select-trigger" cdk-overlay-origin (click)="toggle()" #origin="cdkOverlayOrigin" #trigger>
-  <span class="md2-select-placeholder" [class.md2-floating-placeholder]="this.selected.length"
+  <span class="md2-select-placeholder" [class.md2-floating-placeholder]="selected.length"
         [@transformPlaceholder]="_placeholderState" [style.width.px]="_selectedValueWidth">{{ placeholder }}</span>
   <span class="md2-select-value">
     <span class="md2-select-value-text" *ngFor="let option of selected"> {{ option.viewValue }} </span>

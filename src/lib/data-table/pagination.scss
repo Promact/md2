@@ -1,9 +1,8 @@
+$primary: #106cc8 !default;
+
 md2-pagination {
   display: block;
-  color: #0e59a5;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
+  color: $primary;
   user-select: none;
 }
 
@@ -36,7 +35,7 @@ md2-pagination .md2-pagination li {
 }
 
 md2-pagination .md2-pagination li:hover {
-  background: rgba(0, 0, 0, 0.12);
+  background: rgba(black, 0.12);
 }
 
 md2-pagination .md2-pagination li.disabled,
@@ -44,13 +43,13 @@ md2-pagination .md2-pagination li.disabled:hover {
   pointer-events: none;
   background: transparent;
   cursor: default;
-  opacity: 0.5;
+  opacity: 0.48;
 }
 
 md2-pagination .md2-pagination li.active,
 md2-pagination .md2-pagination li.active:hover {
-  background: #106cc8;
-  color: #fff;
+  background: $primary;
+  color: white;
   cursor: default;
 }
 
@@ -64,7 +63,7 @@ md2-pagination .md2-rows-select {
   margin: 8px 0;
   padding: 0;
   float: right;
-  color: rgba(0, 0, 0, 0.54);
+  color: rgba(black, 0.54);
   line-height: 36px;
 }
 

@@ -16,7 +16,7 @@ Angular2 based Material Design components, directives and services are Accordion
 // ================
 {
   map: {
-    'md2': 'node_modules/md2'
+    'md2': 'node_modules/md2/bundles'
   },
   packages: {
     'md2': {

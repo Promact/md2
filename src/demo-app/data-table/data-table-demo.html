@@ -3,7 +3,7 @@
   <hr />
   <h4>Basic</h4>
   <div>
-    <table [md2-data]="data | dataPipe : search" #md2="Md2DataTable" [md2-page-length]="10">
+    <table [md2Data]="data | dataPipe : search" #md2="md2DataTable" [rowsPerPage]="10">
       <thead>
         <tr>
           <td colspan="4">
@@ -11,10 +11,10 @@
           </td>
         </tr>
         <tr>
-          <th style="width: 20%" md2-sort-field="name">Name</th>
-          <th style="width: 50%" md2-sort-field="email">Email</th>
-          <th style="width: 10%" md2-sort-field="age">Age</th>
-          <th style="width: 20%" md2-sort-field="city">City</th>
+          <th style="width: 20%" md2SortBy="name">Name</th>
+          <th style="width: 50%" md2SortBy="email">Email</th>
+          <th style="width: 10%" md2SortBy="age">Age</th>
+          <th style="width: 20%" md2SortBy="city">City</th>
         </tr>
       </thead>
       <tbody>
@@ -28,7 +28,7 @@
       <tfoot>
         <tr>
           <td colspan="4">
-            <md2-pagination [md2-rows]="[5,10,15]"></md2-pagination>
+            <md2-pagination [rowsPerPageSet]="[5,10,15]"></md2-pagination>
           </td>
         </tr>
       </tfoot>

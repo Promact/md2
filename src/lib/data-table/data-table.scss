@@ -1,5 +1,32 @@
 $primary: #106cc8 !default;
 
+/*
+ * Data Table
+ */
+
+
+/*
+ * Sort
+ */
+[md2SortBy] span {
+  position: relative;
+  display: block;
+  line-height: 24px;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+}
+
+[md2SortBy] span svg {
+  display: inline-block;
+  vertical-align: middle;
+  fill: currentColor;
+}
+
+
+/*
+ * Pagination
+ */
 md2-pagination {
   display: block;
   color: $primary;

@@ -5,7 +5,6 @@ import {
   Input,
   Output,
   OnInit,
-  SimpleChange,
   Optional,
   DoCheck,
   IterableDiffers,
@@ -188,11 +187,11 @@ export class Md2DataTable implements DoCheck {
     let offset = (this.activePage - 1) * this.rowsPerPage;
     let data = this.md2Data;
     let sortBy = this.sortBy;
-    //if (typeof sortBy === 'string' || sortBy instanceof String) {
-    //  data = _.orderBy(data, this.caseInsensitiveIteratee(<string>sortBy), [this.sortOrder]);
-    //} else {
-    //  data = _.orderBy(data, sortBy, [this.sortOrder]);
-    //}
+    // if (typeof sortBy === 'string' || sortBy instanceof String) {
+    //   data = _.orderBy(data, this.caseInsensitiveIteratee(<string>sortBy), [this.sortOrder]);
+    // } else {
+    //   data = _.orderBy(data, sortBy, [this.sortOrder]);
+    // }
     if (sortBy) {
       data = data.sort((a: any, b: any) => {
         let x = isNaN(a[sortBy + '']) ? a[sortBy + ''].toLowerCase() : a[sortBy + ''];

@@ -1,13 +1,7 @@
-<span (click)="_sort()">
-  <ng-content></ng-content>
-  <svg *ngIf="_isAsc" width="24" height="24" viewBox="0 0 24 24">
-    <path d="M7 14l5-5 5 5z" />
-  </svg>
-  <svg *ngIf="_isDesc" width="24" height="24" viewBox="0 0 24 24">
-    <path d="M7 10l5 5 5-5z" />
-  </svg>
-  <svg *ngIf="!_isAsc && !_isDesc" width="24" height="24" viewBox="0 0 24 24">
-    <path d="M7,10.5l5-5l5,5H7z" />
-    <path d="M7,12.5l5,5l5-5H7z" />
-  </svg>
-</span>
+<ng-content></ng-content>
+<svg *ngIf="!_isDesc" width="16" height="16" viewBox="0 0 24 24">
+  <path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z" />
+</svg>
+<svg *ngIf="_isDesc" width="16" height="16" viewBox="0 0 24 24">
+  <path d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z" />
+</svg>

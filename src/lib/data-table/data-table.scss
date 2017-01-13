@@ -8,19 +8,34 @@ $primary: #106cc8 !default;
 /*
  * Sort
  */
-[md2SortBy] span {
-  position: relative;
-  display: block;
+[md2SortBy] {
   line-height: 24px;
+  color: rgba(black, 0.54);
   white-space: nowrap;
   cursor: pointer;
   user-select: none;
-}
 
-[md2SortBy] span svg {
-  display: inline-block;
-  vertical-align: middle;
-  fill: currentColor;
+  svg {
+    display: inline-block;
+    vertical-align: middle;
+    fill: currentColor;
+    opacity: 0;
+  }
+
+  &:hover:not(.md2-sort-active) {
+    svg {
+      color: rgba(black, 0.26);
+      opacity: 1;
+    }
+  }
+
+  &.md2-sort-active {
+    color: rgba(black, 0.87);
+
+    svg {
+      opacity: 1;
+    }
+  }
 }
 
 

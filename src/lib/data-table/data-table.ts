@@ -15,7 +15,6 @@ import {
   NgModule,
   ModuleWithProviders,
 } from '@angular/core';
-import { ReplaySubject } from 'rxjs/Rx';
 import { CommonModule } from '@angular/common';
 
 export class Md2PaginationChange {
@@ -78,7 +77,7 @@ export class Md2DataTable implements OnChanges, DoCheck {
   @Output() sortByChange = new EventEmitter<string | string[]>();
   @Output() sortOrderChange = new EventEmitter<string>();
 
-  onSortChange = new ReplaySubject<SortEvent>(1);
+  onSortChange = new EventEmitter<SortEvent>();
   onPageChange = new EventEmitter<PageEvent>();
 
   constructor(private differs: IterableDiffers) {
@@ -213,6 +212,10 @@ export class Md2DataTable implements OnChanges, DoCheck {
   selector: '[md2SortBy]',
   templateUrl: 'sort.html',
   styleUrls: ['data-table.scss'],
+  host: {
+    '[class.md2-sort-active]': '_isAsc || _isDesc',
+    '(click)': '_sort()'
+  },
   encapsulation: ViewEncapsulation.None
 })
 export class Md2DataTableSortBy implements OnInit {

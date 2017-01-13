@@ -6,7 +6,6 @@ import {
   Output,
   OnInit,
   SimpleChange,
-  OnChanges,
   Optional,
   DoCheck,
   IterableDiffers,
@@ -41,37 +40,70 @@ export interface DataEvent {
   selector: 'table[md2Data]',
   exportAs: 'md2DataTable'
 })
-export class Md2DataTable implements OnChanges, DoCheck {
+export class Md2DataTable implements DoCheck {
 
   private diff: IterableDiffer;
   private isDataChanged = false;
-
+  private _data: Array<any> = [];
   private _activePage: number = 1;
+  private _rowsPerPage: number = 1000;
+  private _sortBy: string | Array<string> = '';
+  private _sortOrder: string = 'asc';
 
-  data: any[];
+  data: Array<any>;
 
-  @Input() md2Data: any[] = [];
-  @Input() rowsPerPage: number = 1000;
-  //@Input() activePage: number = 1;
-  @Input() sortBy: string | string[] = '';
-  @Input() sortOrder: string = 'asc';
+  @Input()
+  get md2Data() { return this._data; }
+  set md2Data(value: Array<any>) {
+    if (this._data !== value) {
+      this._data = value || [];
+      this.recalculatePage();
+      this.isDataChanged = true;
+    }
+  }
 
   @Input()
   get activePage() { return this._activePage; }
   set activePage(value: number) {
-    console.log('Active Page: ' + value);
     if (this._activePage !== value) {
       this._activePage = value;
     }
   }
 
-  //@Input()
-  //get rowsPerPage() { return this._rowsPerPage; }
-  //set rowsPerPage(value: number) {
-  //  if (this._rowsPerPage !== value) {
-  //    this._rowsPerPage = value;
-  //  }
-  //}
+  @Input()
+  get rowsPerPage() { return this._rowsPerPage; }
+  set rowsPerPage(value: number) {
+    if (this._rowsPerPage !== value) {
+      this._rowsPerPage = value;
+      this.setPage(this.activePage, value);
+      this.isDataChanged = true;
+    }
+  }
+
+  @Input()
+  get sortBy() { return this._sortBy; }
+  set sortBy(value: string | Array<string>) {
+    if (this._sortBy !== value) {
+      this._sortBy = value;
+      if (value) {
+        this.onSortChange.next({ sortBy: this.sortBy, sortOrder: this.sortOrder });
+      }
+      this.isDataChanged = true;
+    }
+  }
+
+  @Input()
+  get sortOrder() { return this._sortOrder; }
+  set sortOrder(value: string) {
+    if (!(value === 'asc' || value === 'desc')) {
+      console.warn('sortOrder value must be one of ["asc", "desc"], but is:', value);
+      value = 'asc';
+    }
+    if (this._sortOrder !== value) {
+      this._sortOrder = value;
+      this.isDataChanged = true;
+    }
+  }
 
   @Output() activePageChange = new EventEmitter<number>();
   @Output() sortByChange = new EventEmitter<string | string[]>();
@@ -84,32 +116,7 @@ export class Md2DataTable implements OnChanges, DoCheck {
     this.diff = differs.find([]).create(null);
   }
 
-  ngOnChanges(changes: { [key: string]: SimpleChange }): any {
-    console.log('ngOnChanges');
-    if (changes['rowsPerPage']) {
-      this.rowsPerPage = changes['rowsPerPage'].currentValue;//.previousValue;
-      this.setPage(this.activePage, changes['rowsPerPage'].currentValue);
-      this.isDataChanged = true;
-    }
-    if (changes['sortBy'] || changes['sortOrder']) {
-      //if (!_.includes(['asc', 'desc'], this.sortOrder)) {
-      //  console.warn('md2-data-table: value md2SortOrder must be one of ["asc", "desc"], but is:', this.sortOrder);
-      //  this.sortOrder = 'asc';
-      //}
-      if (this.sortBy) {
-        this.onSortChange.next({ sortBy: this.sortBy, sortOrder: this.sortOrder });
-      }
-      this.isDataChanged = true;
-    }
-    if (changes['md2Data']) {
-      this.md2Data = changes['md2Data'].currentValue || [];
-      this.recalculatePage();
-      this.isDataChanged = true;
-    }
-  }
-
   ngDoCheck(): any {
-    console.log('ngOnChanges');
     let changes = this.diff.diff(this.md2Data);
     if (changes) {
       this.recalculatePage();
@@ -128,7 +135,7 @@ export class Md2DataTable implements OnChanges, DoCheck {
   setSort(sortBy: string | string[], sortOrder: string) {
     if (this.sortBy !== sortBy || this.sortOrder !== sortOrder) {
       this.sortBy = sortBy;
-      this.sortOrder = sortOrder;// _.includes(['asc', 'desc'], sortOrder) ? sortOrder : 'asc';
+      this.sortOrder = sortOrder;
       this.isDataChanged = true;
       this.onSortChange.next({ sortBy: sortBy, sortOrder: sortOrder });
       this.sortByChange.emit(this.sortBy);
@@ -137,12 +144,17 @@ export class Md2DataTable implements OnChanges, DoCheck {
   }
 
   getPage(): PageEvent {
-    return { activePage: this.activePage, rowsPerPage: this.rowsPerPage, dataLength: this.md2Data.length };
+    return {
+      activePage: this.activePage,
+      rowsPerPage: this.rowsPerPage,
+      dataLength: this.md2Data.length
+    };
   }
 
   setPage(activePage: number, rowsPerPage: number): void {
     if (this.rowsPerPage !== rowsPerPage || this.activePage !== activePage) {
-      this.activePage = this.activePage !== activePage ? activePage : this.calculateNewActivePage(this.rowsPerPage, rowsPerPage);
+      this.activePage = this.activePage !== activePage ?
+        activePage : this.calculateNewActivePage(this.rowsPerPage, rowsPerPage);
       this.rowsPerPage = rowsPerPage;
       this.isDataChanged = true;
       this.onPageChange.emit({
@@ -171,8 +183,6 @@ export class Md2DataTable implements OnChanges, DoCheck {
       dataLength: this.md2Data.length
     });
   }
-
-
 
   private fillData() {
     let offset = (this.activePage - 1) * this.rowsPerPage;
@@ -206,6 +216,7 @@ export class Md2DataTable implements OnChanges, DoCheck {
       return value;
     };
   }
+
 }
 
 @Component({
@@ -249,7 +260,7 @@ export class Md2DataTableSortBy implements OnInit {
   selector: 'md2-pagination',
   templateUrl: 'pagination.html',
   styleUrls: ['data-table.css'],
-  //exportAs: 'md2Pagination',
+  exportAs: 'md2Pagination',
   encapsulation: ViewEncapsulation.None
 })
 export class Md2Pagination {
@@ -277,7 +288,7 @@ export class Md2Pagination {
 
   _setRows(event: any): void {
     event.stopPropagation();
-    this.md2Table.setPage(this._activePage, event.target.value);
+    this.md2Table.setPage(this._activePage, parseInt(event.target.value));
   }
 
   private onPageChangeSubscriber = (event: PageEvent) => {

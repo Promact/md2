@@ -58,6 +58,7 @@ md2-select {
   &.md2-floating-placeholder {
     top: -16px;
     left: -2px;
+    text-align: left;
     transform: scale(0.75);
   }
 
@@ -66,6 +67,7 @@ md2-select {
 
     &.md2-floating-placeholder {
       left: 2px;
+      text-align: right;
     }
   }
 

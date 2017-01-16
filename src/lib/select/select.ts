@@ -236,8 +236,8 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
     this._required = coerceBooleanProperty(value);
   }
 
-  @Output() onOpen = new EventEmitter();
-  @Output() onClose = new EventEmitter();
+  @Output() onOpen: EventEmitter<void> = new EventEmitter<void>();
+  @Output() onClose: EventEmitter<void> = new EventEmitter<void>();
 
   constructor(private _element: ElementRef, private _renderer: Renderer,
     private _viewportRuler: ViewportRuler, @Optional() private _dir: Dir,
@@ -250,7 +250,15 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
   ngAfterContentInit() {
     this._initKeyManager();
     this._resetOptions();
-    this._changeSubscription = this.options.changes.subscribe(() => this._resetOptions());
+    this._changeSubscription = this.options.changes.subscribe(() => {
+      this._resetOptions();
+
+      if (this._control) {
+        // Defer setting the value in order to avoid the "Expression
+        // has changed after it was checked" errors from Angular.
+        Promise.resolve(null).then(() => this._setSelectionByValue(this._control.value));
+      }
+    });
   }
 
   ngOnDestroy() {

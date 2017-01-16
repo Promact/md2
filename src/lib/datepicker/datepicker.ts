@@ -298,10 +298,18 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
             break;
 
           case PAGE_DOWN:
-            this.displayDate = this._dateUtil.incrementMonths(displayDate, 1);
+            if (event.shiftKey) {
+              this.displayDate = this._dateUtil.incrementYears(displayDate, 1);
+            } else {
+              this.displayDate = this._dateUtil.incrementMonths(displayDate, 1);
+            }
             break;
           case PAGE_UP:
-            this.displayDate = this._dateUtil.incrementMonths(displayDate, -1);
+            if (event.shiftKey) {
+              this.displayDate = this._dateUtil.incrementYears(displayDate, -1);
+            } else {
+              this.displayDate = this._dateUtil.incrementMonths(displayDate, -1);
+            }
             break;
 
           case DOWN_ARROW:

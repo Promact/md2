@@ -96,7 +96,7 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
   _list: Array<Item> = [];
 
   private selectedItem: Item = null;
-  private noBlur: boolean = true;
+  private noBlur: boolean = false;
   _focusedOption: number = 0;
   _inputValue: string = '';
   _inputFocused: boolean = false;
@@ -257,6 +257,7 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
     this.selectedItem = this._list[index];
     this._inputValue = this._list[index].text;
     this.updateValue();
+    this._handleMouseLeave();
   }
 
   /**

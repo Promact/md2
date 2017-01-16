@@ -396,8 +396,8 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
 
   private _scrollToSelectedYear() {
     setTimeout(() => {
-      let yearContainer = this.element.nativeElement.querySelector('.md2-years'),
-        selectedYear = this.element.nativeElement.querySelector('.md2-year.selected');
+      let yearContainer = this.element.nativeElement.querySelector('.md2-calendar-years'),
+        selectedYear = this.element.nativeElement.querySelector('.md2-calendar-year.selected');
       yearContainer.scrollTop = (selectedYear.offsetTop + 20) - yearContainer.clientHeight / 2;
     }, 0);
   }
@@ -412,7 +412,6 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
       date.getHours(), date.getMinutes());
     this.generateCalendar();
     this._isYearsVisible = false;
-    // this.isCalendarVisible = true;
   }
 
   /**

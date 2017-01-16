@@ -144,7 +144,9 @@ md2-datepicker.md2-datepicker-disabled:focus {
   padding: 16px;
   color: white;
   font-weight: 500;
+  white-space: nowrap;
   background: $primary;
+  box-sizing: border-box;
 }
 
 .md2-datepicker-header-year {
@@ -164,7 +166,6 @@ md2-datepicker.md2-datepicker-disabled:focus {
 
 .md2-datepicker-header-date-time {
   font-size: 32px;
-  white-space: nowrap;
 }
 
 .md2-datepicker-header-date {
@@ -489,5 +490,27 @@ md2-datepicker.md2-datepicker-disabled:focus {
     &:hover {
       background: darken(white, 8);
     }
+  }
+}
+
+@media (min-width: 600px) {
+  .md2-datepicker-panel {
+    display: flex;
+    width: 430px;
+  }
+
+  .md2-datepicker-header {
+    width: 130px;
+    padding-right: 15px;
+    white-space: normal;
+    word-wrap: break-word;
+  }
+
+  .md2-datepicker-header-time {
+    display: block;
+    padding-left: 0;
+  }
+
+  .md2-datepicker-content {
   }
 }

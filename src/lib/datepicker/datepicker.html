@@ -28,7 +28,7 @@
       <span class="md2-datepicker-header-date"
             [class.active]="_isCalendarVisible && !_isYearsVisible"
             [class.hidden]="type==='time'"
-            (click)="_showCalendar()">{{_viewDay.day.substr(0, 3)}},&nbsp;{{_viewDay.month.substr(0, 3)}}&nbsp;{{_viewDay.date}}</span>
+            (click)="_showCalendar()">{{_viewDay.day.substr(0, 3)}}, {{_viewDay.month.substr(0, 3)}}&nbsp;{{_viewDay.date}}</span>
       <span class="md2-datepicker-header-time"
             [class.active]="!_isCalendarVisible"
             [class.hidden]="type==='date'">

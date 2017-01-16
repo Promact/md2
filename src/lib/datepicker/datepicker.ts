@@ -882,6 +882,9 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
       if (this.type !== 'date') {
         date += this._value.getHours() + ':' + this._value.getMinutes();
       }
+    } else {
+      this._value = null;
+      this._viewValue = null;
     }
   }
 

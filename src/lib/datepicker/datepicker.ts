@@ -142,8 +142,8 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
     moved: false
   };
 
-  private _minDate: Date = null;
-  private _maxDate: Date = null;
+  private _min: Date = null;
+  private _max: Date = null;
 
   @Output() change: EventEmitter<any> = new EventEmitter<any>();
 
@@ -168,15 +168,19 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   get disabled(): boolean { return this._disabled; }
   set disabled(value) { this._disabled = coerceBooleanProperty(value); }
 
-  @Input() set min(value: string) {
-    this._minDate = new Date(value);
-    this._minDate.setHours(0, 0, 0, 0);
-    this.getYears();
+  @Input() set min(value: Date) {
+    if (value && this._dateUtil.isValidDate(value)) {
+      this._min = new Date(value);
+      this._min.setHours(0, 0, 0, 0);
+      this.getYears();
+    } else { this._min = null; }
   }
-  @Input() set max(value: string) {
-    this._maxDate = new Date(value);
-    this._maxDate.setHours(0, 0, 0, 0);
-    this.getYears();
+  @Input() set max(value: Date) {
+    if (value && this._dateUtil.isValidDate(value)) {
+      this._max = new Date(value);
+      this._max.setHours(0, 0, 0, 0);
+      this.getYears();
+    } else { this._max = null; }
   }
 
   @Input()
@@ -222,11 +226,11 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   }
   set displayDate(date: Date) {
     if (date && this._dateUtil.isValidDate(date)) {
-      if (this._minDate && this._minDate > date) {
-        date = this._minDate;
+      if (this._min && this._min > date) {
+        date = this._min;
       }
-      if (this._maxDate && this._maxDate < date) {
-        date = this._maxDate;
+      if (this._max && this._max < date) {
+        date = this._max;
       }
       this._displayDate = date;
       this._viewDay = {
@@ -374,8 +378,8 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   }
 
   private getYears() {
-    let startYear = this._minDate ? this._minDate.getFullYear() : 1900,
-      endYear = this._maxDate ? this._maxDate.getFullYear() : this.today.getFullYear() + 100;
+    let startYear = this._min ? this._min.getFullYear() : 1900,
+      endYear = this._max ? this._max.getFullYear() : this.today.getFullYear() + 100;
     this._years = [];
     for (let i = startYear; i <= endYear; i++) {
       this._years.push(i);
@@ -504,8 +508,8 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
    * @return boolean
    */
   _isBeforeMonth() {
-    return !this._minDate ? true :
-      this._minDate && this._dateUtil.getMonthDistance(this.displayDate, this._minDate) < 0;
+    return !this._min ? true :
+      this._min && this._dateUtil.getMonthDistance(this.displayDate, this._min) < 0;
   }
 
   /**
@@ -513,8 +517,8 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
    * @return boolean
    */
   _isAfterMonth() {
-    return !this._maxDate ? true :
-      this._maxDate && this._dateUtil.getMonthDistance(this.displayDate, this._maxDate) > 0;
+    return !this._max ? true :
+      this._max && this._dateUtil.getMonthDistance(this.displayDate, this._max) > 0;
   }
 
   /**
@@ -523,12 +527,12 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
    * @return boolean
    */
   private _isDisabledDate(date: Date): boolean {
-    if (this._minDate && this._maxDate) {
-      return (this._minDate > date) || (this._maxDate < date);
-    } else if (this._minDate) {
-      return (this._minDate > date);
-    } else if (this._maxDate) {
-      return (this._maxDate < date);
+    if (this._min && this._max) {
+      return (this._min > date) || (this._max < date);
+    } else if (this._min) {
+      return (this._min > date);
+    } else if (this._max) {
+      return (this._max < date);
     } else {
       return false;
     }

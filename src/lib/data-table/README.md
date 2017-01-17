@@ -12,6 +12,14 @@ Data Table is a arrange data in ordering searching and paginate it.
 | `sortBy` | `string` or `Array<string>` | Sort by parameter(s) |
 | `sortOrder` | `string` | Sort order parameters are 'asc' or 'desc' |
 
+### Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `activePageChange` | `Event` | Fired when change the active page |
+| `sortByChange` | `Event` | Fired when change sort by |
+| `sortOrderChange` | `Event` | Fired when change sort order |
+
 ### Examples
 A Datatable would have the following markup.
 ```html

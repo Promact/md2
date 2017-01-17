@@ -28,7 +28,7 @@ md2-select {
     background-image: linear-gradient(to right, rgba(black, 0.26) 0, rgba(black, 0.26) 33%, transparent 0);
     background-size: 4px 1px;
     background-repeat: repeat-x;
-    border-bottom: transparent;
+    border-color: transparent;
     background-position: 0 bottom;
     cursor: default;
     user-select: none;
@@ -36,12 +36,12 @@ md2-select {
 
   md2-select:focus:not(.md2-select-disabled) & {
     color: $primary;
-    border-bottom: 1px solid $primary;
+    border-color: $primary;
   }
 
   md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) & {
     color: $warn;
-    border-bottom: 1px solid $warn;
+    border-color: $warn;
   }
 }
 

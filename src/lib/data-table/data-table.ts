@@ -175,8 +175,12 @@ export class Md2DataTable implements DoCheck {
 
   private recalculatePage() {
     let lastPage = Math.ceil(this.md2Data.length / this.rowsPerPage);
-    this.activePage = lastPage < this.activePage ? lastPage : this.activePage;
-    this.activePage = this.activePage || 1;
+    if (lastPage < this.activePage) {
+      this._activePage = lastPage || 1;
+      setTimeout(() => {
+        this.activePageChange.emit(this.activePage);
+      }, 10);
+    } else { }
 
     this.onPageChange.emit({
       activePage: this.activePage,

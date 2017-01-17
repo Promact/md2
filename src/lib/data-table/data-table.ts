@@ -186,16 +186,10 @@ export class Md2DataTable implements DoCheck {
   private fillData() {
     let offset = (this.activePage - 1) * this.rowsPerPage;
     let data = this.md2Data;
-    let sortBy = this.sortBy;
-    // if (typeof sortBy === 'string' || sortBy instanceof String) {
-    //   data = _.orderBy(data, this.caseInsensitiveIteratee(<string>sortBy), [this.sortOrder]);
-    // } else {
-    //   data = _.orderBy(data, sortBy, [this.sortOrder]);
-    // }
-    if (sortBy) {
+    if (this.sortBy) {
       data = data.sort((a: any, b: any) => {
-        let x = isNaN(a[sortBy + '']) ? a[sortBy + ''].toLowerCase() : a[sortBy + ''];
-        let y = isNaN(b[sortBy + '']) ? b[sortBy + ''].toLowerCase() : b[sortBy + ''];
+        let x = this.caseInsensitiveIteratee(a);
+        let y = this.caseInsensitiveIteratee(b);
         return (x > y) ? 1 : (y > x) ? -1 : 0;
       });
     }
@@ -203,17 +197,18 @@ export class Md2DataTable implements DoCheck {
     this.data = data.slice(offset, offset + this.rowsPerPage);
   }
 
-  private caseInsensitiveIteratee(sortBy: string) {
-    return (row: any): any => {
-      let value = row;
-      for (let sortByProperty of sortBy.split('.')) {
+  private caseInsensitiveIteratee(value: any) {
+    if (typeof this.sortBy === 'string' || this.sortBy instanceof String) {
+      for (let sortByProperty of this.sortBy.split('.')) {
         value = value[sortByProperty];
       }
-      if (value && typeof value === 'string' || value instanceof String) {
-        return value.toLowerCase();
-      }
-      return value;
-    };
+    } else {
+      value = value[this.sortBy + ''];
+    }
+    if (value && typeof value === 'string' || value instanceof String) {
+      return value.toLowerCase();
+    }
+    return value;
   }
 
 }

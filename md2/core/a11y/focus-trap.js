@@ -51,7 +51,9 @@ export var FocusTrap = (function () {
             _this.focusLastTabbableElement();
         });
     };
-    /** Focuses the first tabbable element within the focus trap region. */
+    /**
+     * Focuses the first tabbable element within the focus trap region.
+     */
     FocusTrap.prototype.focusFirstTabbableElement = function () {
         var rootElement = this.trappedContent.nativeElement;
         var redirectToElement = rootElement.querySelector('[cdk-focus-start]') ||
@@ -60,7 +62,9 @@ export var FocusTrap = (function () {
             redirectToElement.focus();
         }
     };
-    /** Focuses the last tabbable element within the focus trap region. */
+    /**
+     * Focuses the last tabbable element within the focus trap region.
+     */
     FocusTrap.prototype.focusLastTabbableElement = function () {
         var rootElement = this.trappedContent.nativeElement;
         var focusTargets = rootElement.querySelectorAll('[cdk-focus-end]');

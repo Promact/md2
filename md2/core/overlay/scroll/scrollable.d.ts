@@ -13,6 +13,9 @@ export declare class Scrollable implements OnInit, OnDestroy {
     constructor(_elementRef: ElementRef, _scroll: ScrollDispatcher);
     ngOnInit(): void;
     ngOnDestroy(): void;
-    /** Returns observable that emits when the scroll event is fired on the host element. */
+    /**
+     * Returns observable that emits when a scroll event is fired on the host element.
+     */
     elementScrolled(): Observable<any>;
+    getElementRef(): ElementRef;
 }

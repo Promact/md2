@@ -54,6 +54,8 @@ export var RippleRenderer = (function () {
     /**
      * Installs event handlers on the given trigger element, and removes event handlers from the
      * previous trigger if needed.
+     *
+     * @param newTrigger New trigger to which to attach the ripple handlers.
      */
     RippleRenderer.prototype.setTriggerElement = function (newTrigger) {
         var _this = this;
@@ -83,6 +85,14 @@ export var RippleRenderer = (function () {
      * Creates a foreground ripple and sets its animation to expand and fade in from the position
      * given by rippleOriginLeft and rippleOriginTop (or from the center of the <md-ripple>
      * bounding rect if centered is true).
+     *
+     * @param rippleOriginLeft Left origin of the ripple.
+     * @param rippleOriginTop Top origin of the ripple.
+     * @param color Ripple color.
+     * @param centered Whether the ripple should be centered.
+     * @param radius Radius of the ripple.
+     * @param speedFactor Speed at which the ripple expands towards the edges.
+     * @param transitionEndCallback Callback to be triggered when the ripple transition is done.
      */
     RippleRenderer.prototype.createForegroundRipple = function (rippleOriginLeft, rippleOriginTop, color, centered, radius, speedFactor, transitionEndCallback) {
         var _this = this;
@@ -129,18 +139,27 @@ export var RippleRenderer = (function () {
             setTimeout(function () { return _this.removeRippleFromDom(ripple.rippleElement); }, rippleDuration);
         });
     };
-    /** Fades out a foreground ripple after it has fully expanded and faded in. */
+    /**
+     * Fades out a foreground ripple after it has fully expanded and faded in.
+     * @param ripple Ripple to be faded out.
+     */
     RippleRenderer.prototype.fadeOutForegroundRipple = function (ripple) {
         ripple.classList.remove('md-ripple-fade-in');
         ripple.classList.add('md-ripple-fade-out');
     };
-    /** Removes a foreground ripple from the DOM after it has faded out. */
+    /**
+     * Removes a foreground ripple from the DOM after it has faded out.
+     * @param ripple Ripple to be removed from the DOM.
+     */
     RippleRenderer.prototype.removeRippleFromDom = function (ripple) {
         if (ripple && ripple.parentElement) {
             ripple.parentElement.removeChild(ripple);
         }
     };
-    /** Fades in the ripple background. */
+    /**
+     * Fades in the ripple background.
+     * @param color New background color for the ripple.
+     */
     RippleRenderer.prototype.fadeInRippleBackground = function (color) {
         this._backgroundDiv.classList.add('md-ripple-active');
         // If color is not set, this will default to the background color defined in CSS.

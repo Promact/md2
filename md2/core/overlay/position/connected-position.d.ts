@@ -1,4 +1,3 @@
-/** Horizontal dimension of a connection point on the perimeter of the origin or overlay element. */
 export declare type HorizontalConnectionPos = 'start' | 'center' | 'end';
 /** Vertical dimension of a connection point on the perimeter of the origin or overlay element. */
 export declare type VerticalConnectionPos = 'top' | 'center' | 'bottom';
@@ -20,8 +19,38 @@ export declare class ConnectionPositionPair {
     overlayY: VerticalConnectionPos;
     constructor(origin: OriginConnectionPosition, overlay: OverlayConnectionPosition);
 }
+/**
+ * Set of properties regarding the position of the origin and overlay relative to the viewport
+ * with respect to the containing Scrollable elements.
+ *
+ * The overlay and origin are clipped if any part of their bounding client rectangle exceeds the
+ * bounds of any one of the strategy's Scrollable's bounding client rectangle.
+ *
+ * The overlay and origin are outside view if there is no overlap between their bounding client
+ * rectangle and any one of the strategy's Scrollable's bounding client rectangle.
+ *
+ *       -----------                    -----------
+ *       | outside |                    | clipped |
+ *       |  view   |              --------------------------
+ *       |         |              |     |         |        |
+ *       ----------               |     -----------        |
+ *  --------------------------    |                        |
+ *  |                        |    |      Scrollable        |
+ *  |                        |    |                        |
+ *  |                        |     --------------------------
+ *  |      Scrollable        |
+ *  |                        |
+ *  --------------------------
+ */
+export declare class ScrollableViewProperties {
+    isOriginClipped: boolean;
+    isOriginOutsideView: boolean;
+    isOverlayClipped: boolean;
+    isOverlayOutsideView: boolean;
+}
 /** The change event emitted by the strategy when a fallback position is used. */
 export declare class ConnectedOverlayPositionChange {
     connectionPair: ConnectionPositionPair;
-    constructor(connectionPair: ConnectionPositionPair);
+    scrollableViewProperties: ScrollableViewProperties;
+    constructor(connectionPair: ConnectionPositionPair, scrollableViewProperties: ScrollableViewProperties);
 }

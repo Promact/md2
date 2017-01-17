@@ -17,7 +17,7 @@ export * from './overlay/position/connected-position-strategy';
 export * from './overlay/position/connected-position';
 export { ScrollDispatcher } from './overlay/scroll/scroll-dispatcher';
 export { GestureConfig } from './gestures/gesture-config';
-export * from './gestures/gesture-annotations';
+export { HammerInput, HammerManager } from './gestures/gesture-annotations';
 export { MdRipple, MdRippleModule } from './ripple/ripple';
 export { AriaLivePoliteness, LiveAnnouncer, LIVE_ANNOUNCER_ELEMENT_TOKEN } from './a11y/live-announcer';
 /** @deprecated */

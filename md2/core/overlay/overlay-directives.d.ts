@@ -8,9 +8,8 @@ import { Dir, LayoutDirection } from '../rtl/dir';
  * ConnectedPositionStrategy.
  */
 export declare class OverlayOrigin {
-    private _elementRef;
-    constructor(_elementRef: ElementRef);
-    readonly elementRef: ElementRef;
+    elementRef: ElementRef;
+    constructor(elementRef: ElementRef);
 }
 /**
  * Directive to facilitate declarative creation of an Overlay using a ConnectedPositionStrategy.
@@ -27,7 +26,9 @@ export declare class ConnectedOverlayDirective implements OnDestroy {
     private _offsetX;
     private _offsetY;
     private _position;
+    /** Origin for the connected overlay. */
     origin: OverlayOrigin;
+    /** Registered connected position pairs. */
     positions: ConnectionPositionPair[];
     /** The offset in pixels for the overlay connection point on the x-axis */
     offsetX: number;
@@ -48,11 +49,16 @@ export declare class ConnectedOverlayDirective implements OnDestroy {
     open: boolean;
     /** Event emitted when the backdrop is clicked. */
     backdropClick: EventEmitter<void>;
+    /** Event emitted when the position has changed. */
     positionChange: EventEmitter<ConnectedOverlayPositionChange>;
+    /** Event emitted when the overlay has been attached. */
     attach: EventEmitter<void>;
+    /** Event emitted when the overlay has been detached. */
     detach: EventEmitter<void>;
     constructor(_overlay: Overlay, templateRef: TemplateRef<any>, viewContainerRef: ViewContainerRef, _dir: Dir);
+    /** The associated overlay reference. */
     readonly overlayRef: OverlayRef;
+    /** The element's layout direction. */
     readonly dir: LayoutDirection;
     ngOnDestroy(): void;
     /** Creates an overlay */

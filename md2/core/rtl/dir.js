@@ -9,17 +9,20 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 import { NgModule, Directive, HostBinding, Output, Input, EventEmitter } from '@angular/core';
 /**
- * Directive to listen to changes of direction of part of the DOM.
+ * Directive to listen for changes of direction of part of the DOM.
  *
  * Applications should use this directive instead of the native attribute so that Material
  * components can listen on changes of direction.
  */
 export var Dir = (function () {
     function Dir() {
+        /** Layout direction of the element. */
         this._dir = 'ltr';
+        /** Event emitted when the direction changes. */
         this.dirChange = new EventEmitter();
     }
     Object.defineProperty(Dir.prototype, "dir", {
+        /** @docs-private */
         get: function () {
             return this._dir;
         },
@@ -34,6 +37,7 @@ export var Dir = (function () {
         configurable: true
     });
     Object.defineProperty(Dir.prototype, "value", {
+        /** Current layout direction of the element. */
         get: function () { return this.dir; },
         set: function (v) { this.dir = v; },
         enumerable: true,

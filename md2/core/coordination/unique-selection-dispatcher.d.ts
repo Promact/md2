@@ -10,7 +10,11 @@ export declare type UniqueSelectionDispatcherListener = (id: string, name: strin
  */
 export declare class UniqueSelectionDispatcher {
     private _listeners;
-    /** Notify other items that selection for the given name has been set. */
+    /**
+     * Notify other items that selection for the given name has been set.
+     * @param id ID of the item.
+     * @param name Name of the item.
+     */
     notify(id: string, name: string): void;
     /** Listen for future changes to item selection. */
     listen(listener: UniqueSelectionDispatcherListener): void;

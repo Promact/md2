@@ -20,8 +20,9 @@ export var LiveAnnouncer = (function () {
         this._liveElement = elementToken || this._createLiveElement();
     }
     /**
+     * Announces a message to screenreaders.
      * @param message Message to be announced to the screenreader
-     * @param politeness The politeness of the announcer element.
+     * @param politeness The politeness of the announcer element
      */
     LiveAnnouncer.prototype.announce = function (message, politeness) {
         var _this = this;

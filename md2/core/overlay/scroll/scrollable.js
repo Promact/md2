@@ -27,9 +27,14 @@ export var Scrollable = (function () {
     Scrollable.prototype.ngOnDestroy = function () {
         this._scroll.deregister(this);
     };
-    /** Returns observable that emits when the scroll event is fired on the host element. */
+    /**
+     * Returns observable that emits when a scroll event is fired on the host element.
+     */
     Scrollable.prototype.elementScrolled = function () {
         return Observable.fromEvent(this._elementRef.nativeElement, 'scroll');
+    };
+    Scrollable.prototype.getElementRef = function () {
+        return this._elementRef;
     };
     Scrollable = __decorate([
         Directive({

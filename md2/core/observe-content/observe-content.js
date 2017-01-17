@@ -8,9 +8,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import { Directive, ElementRef, NgModule, Output, EventEmitter } from '@angular/core';
+/**
+ * Directive that triggers a callback whenever the content of
+ * its associated element has changed.
+ */
 export var ObserveContent = (function () {
     function ObserveContent(_elementRef) {
         this._elementRef = _elementRef;
+        /** Event emitted for each change in the element's content. */
         this.event = new EventEmitter();
     }
     ObserveContent.prototype.ngAfterContentInit = function () {

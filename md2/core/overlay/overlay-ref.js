@@ -20,6 +20,11 @@ export var OverlayRef = (function () {
         enumerable: true,
         configurable: true
     });
+    /**
+     * Attaches the overlay to a portal instance and adds the backdrop.
+     * @param portal Portal instance to which to attach the overlay.
+     * @returns The portal attachment result.
+     */
     OverlayRef.prototype.attach = function (portal) {
         if (this._state.hasBackdrop) {
             this._attachBackdrop();
@@ -30,10 +35,17 @@ export var OverlayRef = (function () {
         this.updatePosition();
         return attachResult;
     };
+    /**
+     * Detaches an overlay from a portal.
+     * @returns Resolves when the overlay has been detached.
+     */
     OverlayRef.prototype.detach = function () {
         this._detachBackdrop();
         return this._portalHost.detach();
     };
+    /**
+     * Cleans up the overlay from the DOM.
+     */
     OverlayRef.prototype.dispose = function () {
         if (this._state.positionStrategy) {
             this._state.positionStrategy.dispose();
@@ -41,13 +53,21 @@ export var OverlayRef = (function () {
         this._detachBackdrop();
         this._portalHost.dispose();
     };
+    /**
+     * Checks whether the overlay has been attached.
+     */
     OverlayRef.prototype.hasAttached = function () {
         return this._portalHost.hasAttached();
     };
+    /**
+     * Returns an observable that emits when the backdrop has been clicked.
+     */
     OverlayRef.prototype.backdropClick = function () {
         return this._backdropClick.asObservable();
     };
-    /** Gets the current state config of the overlay. */
+    /**
+     * Gets the current state config of the overlay.
+     */
     OverlayRef.prototype.getState = function () {
         return this._state;
     };

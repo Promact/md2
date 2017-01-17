@@ -1,5 +1,5 @@
 var supportedInputTypes;
-/** @returns {Set<string>} the input types supported by this browser. */
+/** @returns The input types supported by this browser. */
 export function getSupportedInputTypes() {
     if (!supportedInputTypes) {
         var featureTestInput_1 = document.createElement('input');

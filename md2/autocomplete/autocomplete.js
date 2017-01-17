@@ -31,6 +31,12 @@ export var MD2_AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR = {
     useExisting: forwardRef(function () { return Md2Autocomplete; }),
     multi: true
 };
+/** Change event object emitted by Md2Autocomplete. */
+export var Md2AutocompleteChange = (function () {
+    function Md2AutocompleteChange() {
+    }
+    return Md2AutocompleteChange;
+}());
 export var Md2Autocomplete = (function () {
     function Md2Autocomplete(_element) {
         this._element = _element;
@@ -41,12 +47,12 @@ export var Md2Autocomplete = (function () {
         this._required = false;
         this._disabled = false;
         this._isInitialized = false;
-        this._onTouchedCallback = noop;
-        this._onChangeCallback = noop;
+        this._onChange = function (value) { };
+        this._onTouched = function () { };
         this._items = [];
         this._list = [];
         this.selectedItem = null;
-        this.noBlur = true;
+        this.noBlur = false;
         this._focusedOption = 0;
         this._inputValue = '';
         this._inputFocused = false;
@@ -100,8 +106,7 @@ export var Md2Autocomplete = (function () {
                     this._inputValue = '';
                 }
                 if (this._isInitialized) {
-                    this._onChangeCallback(value);
-                    this.change.emit(value);
+                    this._emitChangeEvent();
                 }
             }
         },
@@ -241,6 +246,7 @@ export var Md2Autocomplete = (function () {
         this.selectedItem = this._list[index];
         this._inputValue = this._list[index].text;
         this.updateValue();
+        this._handleMouseLeave();
     };
     /**
      * clear selected suggestion
@@ -260,8 +266,7 @@ export var Md2Autocomplete = (function () {
      */
     Md2Autocomplete.prototype.updateValue = function () {
         this._value = this.selectedItem ? this.selectedItem.value : this.selectedItem;
-        this._onChangeCallback(this._value);
-        this.change.emit(this._value);
+        this._emitChangeEvent();
         this.onFocus();
     };
     /**
@@ -286,6 +291,7 @@ export var Md2Autocomplete = (function () {
      */
     Md2Autocomplete.prototype._handleBlur = function () {
         this._inputFocused = false;
+        this._onTouched();
     };
     /**
      * suggestion menu mouse enter listener
@@ -311,6 +317,13 @@ export var Md2Autocomplete = (function () {
             }
         }
     };
+    Md2Autocomplete.prototype._emitChangeEvent = function () {
+        var event = new Md2AutocompleteChange();
+        event.source = this;
+        event.value = this._value;
+        this._onChange(event.value);
+        this.change.emit(event);
+    };
     Md2Autocomplete.prototype.writeValue = function (value) {
         var _this = this;
         if (value !== this._value) {
@@ -329,8 +342,8 @@ export var Md2Autocomplete = (function () {
             }
         }
     };
-    Md2Autocomplete.prototype.registerOnChange = function (fn) { this._onChangeCallback = fn; };
-    Md2Autocomplete.prototype.registerOnTouched = function (fn) { this._onTouchedCallback = fn; };
+    Md2Autocomplete.prototype.registerOnChange = function (fn) { this._onChange = fn; };
+    Md2Autocomplete.prototype.registerOnTouched = function (fn) { this._onTouched = fn; };
     __decorate([
         Output(), 
         __metadata('design:type', EventEmitter)

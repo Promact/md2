@@ -26,9 +26,13 @@ export declare class FocusTrap {
      * trap region.
      */
     focusLastTabbableElementWhenReady(): void;
-    /** Focuses the first tabbable element within the focus trap region. */
+    /**
+     * Focuses the first tabbable element within the focus trap region.
+     */
     focusFirstTabbableElement(): void;
-    /** Focuses the last tabbable element within the focus trap region. */
+    /**
+     * Focuses the last tabbable element within the focus trap region.
+     */
     focusLastTabbableElement(): void;
     /** Get the first tabbable element from a DOM subtree (inclusive). */
     private _getFirstTabbableElement(root);

@@ -39,7 +39,7 @@ export var Overlay = (function () {
     /**
      * Creates an overlay.
      * @param state State to apply to the overlay.
-     * @returns A reference to the created overlay.
+     * @returns Reference to the created overlay.
      */
     Overlay.prototype.create = function (state) {
         if (state === void 0) { state = defaultState; }
@@ -54,7 +54,7 @@ export var Overlay = (function () {
     };
     /**
      * Creates the DOM element for an overlay and appends it to the overlay container.
-     * @returns Promise resolving to the created element.
+     * @returns Newly-created pane element
      */
     Overlay.prototype._createPaneElement = function () {
         var pane = document.createElement('div');
@@ -75,7 +75,6 @@ export var Overlay = (function () {
      * Creates an OverlayRef for an overlay in the given DOM element.
      * @param pane DOM element for the overlay
      * @param state
-     * @returns {OverlayRef}
      */
     Overlay.prototype._createOverlayRef = function (pane, state) {
         return new OverlayRef(this._createPortalHost(pane), pane, state, this._ngZone);

@@ -55,8 +55,8 @@ export declare class Md2Datepicker implements AfterContentInit, ControlValueAcce
     _viewDay: IDay;
     _viewValue: string;
     _clock: any;
-    private _minDate;
-    private _maxDate;
+    private _min;
+    private _max;
     change: EventEmitter<any>;
     type: 'date' | 'time' | 'datetime';
     name: string;
@@ -67,8 +67,8 @@ export declare class Md2Datepicker implements AfterContentInit, ControlValueAcce
     readonly: boolean;
     required: boolean;
     disabled: boolean;
-    min: string;
-    max: string;
+    min: Date;
+    max: Date;
     value: any;
     displayDate: Date;
     _handleClick(event: MouseEvent): void;

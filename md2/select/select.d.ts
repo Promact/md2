@@ -121,8 +121,8 @@ export declare class Md2Select implements AfterContentInit, ControlValueAccessor
     disabled: any;
     multiple: any;
     required: any;
-    onOpen: EventEmitter<{}>;
-    onClose: EventEmitter<{}>;
+    onOpen: EventEmitter<void>;
+    onClose: EventEmitter<void>;
     constructor(_element: ElementRef, _renderer: Renderer, _viewportRuler: ViewportRuler, _dir: Dir, _control: NgControl);
     ngAfterContentInit(): void;
     ngOnDestroy(): void;

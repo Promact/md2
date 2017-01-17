@@ -1,3 +1,4 @@
+/** @docs-private */
 export var FakeViewportRuler = (function () {
     function FakeViewportRuler() {
     }

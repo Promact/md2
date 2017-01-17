@@ -34,7 +34,7 @@ export var GestureConfig = (function (_super) {
                 'components may not work correctly.');
         }
     }
-    /*
+    /**
      * Builds Hammer instance manually to add custom recognizers that match the Material Design spec.
      *
      * Our gesture names come from the Material Design gestures spec:
@@ -44,8 +44,9 @@ export var GestureConfig = (function (_super) {
      * http://hammerjs.github.io/recognizer-pan/
      * http://hammerjs.github.io/recognizer-press/
      *
-     * TODO: Confirm threshold numbers with Material Design UX Team
-     * */
+     * @param element Element to which to assign the new HammerJS gestures.
+     * @returns Newly-created HammerJS instance.
+     */
     GestureConfig.prototype.buildHammer = function (element) {
         var mc = new this._hammer(element);
         // Default Hammer Recognizers.
@@ -54,6 +55,7 @@ export var GestureConfig = (function (_super) {
         var press = new this._hammer.Press();
         // Notice that a HammerJS recognizer can only depend on one other recognizer once.
         // Otherwise the previous `recognizeWith` will be dropped.
+        // TODO: Confirm threshold numbers with Material Design UX Team
         var slide = this._createRecognizer(pan, { event: 'slide', threshold: 0 }, swipe);
         var longpress = this._createRecognizer(press, { event: 'longpress', time: 500 });
         // Overwrite the default `pan` event to use the swipe event.

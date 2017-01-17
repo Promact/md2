@@ -89,7 +89,7 @@ md2-datepicker.md2-datepicker-disabled:focus .md2-datepicker-placeholder {
   font-size: 15px;
   line-height: 26px; }
 
-.md2-datepicker-wrapper {
+.md2-datepicker-panel {
   position: absolute;
   top: 0;
   left: 0;
@@ -106,89 +106,79 @@ md2-datepicker.md2-datepicker-disabled:focus .md2-datepicker-placeholder {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none; }
-  .md2-datepicker-wrapper.active {
+  .md2-datepicker-panel.active {
     transform: scale(1); }
 
 .md2-datepicker-header {
-  display: block;
-  padding: 20px;
+  padding: 16px;
   color: white;
-  font-size: 28px;
-  line-height: 28px;
   font-weight: 500;
+  white-space: nowrap;
   background: #106cc8;
   box-sizing: border-box; }
 
-.md2-datepicker-year {
-  display: block;
-  height: 16px;
-  margin: 0 0 10px;
+.md2-datepicker-header-year {
   font-size: 16px;
-  line-height: 16px;
   opacity: 0.7;
   cursor: pointer; }
-  .md2-datepicker-year.active {
+  .md2-datepicker-header-year.active {
     opacity: 1;
     pointer-events: none; }
-  .md2-datepicker-year.hidden {
+  .md2-datepicker-header-year.hidden {
     display: none; }
 
-.md2-datepicker-date {
-  cursor: pointer;
-  opacity: 0.7; }
-  .md2-datepicker-date.active {
+.md2-datepicker-header-date-time {
+  font-size: 32px; }
+
+.md2-datepicker-header-date {
+  opacity: 0.7;
+  cursor: pointer; }
+  .md2-datepicker-header-date.active {
     opacity: 1;
     pointer-events: none; }
-  .md2-datepicker-date.hidden {
+  .md2-datepicker-header-date.hidden {
     display: none; }
 
-.md2-datepicker-time {
+.md2-datepicker-header-time {
+  opacity: 0.7;
   display: inline-block;
-  padding-left: 10px;
-  cursor: pointer;
-  opacity: 0.7; }
-  .md2-datepicker-time.active {
-    opacity: 1; }
-    .md2-datepicker-time.active .md2-datepicker-hour,
-    .md2-datepicker-time.active .md2-datepicker-minute {
-      opacity: 0.7; }
-      .md2-datepicker-time.active .md2-datepicker-hour.active,
-      .md2-datepicker-time.active .md2-datepicker-minute.active {
+  padding-left: 8px;
+  cursor: pointer; }
+  .md2-datepicker-header-time.active {
+    opacity: 1;
+    cursor: default; }
+    .md2-datepicker-header-time.active .md2-datepicker-header-hour,
+    .md2-datepicker-header-time.active .md2-datepicker-header-minute {
+      opacity: 0.7;
+      cursor: pointer; }
+      .md2-datepicker-header-time.active .md2-datepicker-header-hour.active,
+      .md2-datepicker-header-time.active .md2-datepicker-header-minute.active {
         opacity: 1;
         pointer-events: none; }
-  .md2-datepicker-time.hidden {
+      .md2-datepicker-header-time.active .md2-datepicker-header-hour.hidden,
+      .md2-datepicker-header-time.active .md2-datepicker-header-minute.hidden {
+        display: none; }
+  .md2-datepicker-header-time.hidden {
     display: none; }
 
-.md2-datepicker-hour,
-.md2-datepicker-minute {
-  opacity: 1; }
-
-.md2-datepicker-body {
+.md2-datepicker-content {
   position: relative;
   width: 100%;
-  height: 300px;
+  padding-top: 300px;
   overflow: hidden; }
 
-.md2-datepicker-footer {
-  text-align: right; }
-  .md2-datepicker-footer .md2-button {
-    display: inline-block;
-    min-width: 64px;
-    margin: 4px 8px 8px 0;
-    padding: 0 12px;
-    font-size: 14px;
-    color: #106cc8;
-    line-height: 36px;
-    text-align: center;
-    text-transform: uppercase;
-    border-radius: 2px;
-    cursor: pointer;
-    box-sizing: border-box;
-    transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1); }
-    .md2-datepicker-footer .md2-button:hover {
-      background: #ebebeb; }
+.md2-datepicker-calendar {
+  position: absolute;
+  top: 0;
+  right: 100%;
+  display: block;
+  width: 100%;
+  height: 300px;
+  transition: 300ms; }
+  .md2-datepicker-calendar.active {
+    right: 0; }
 
-.md2-years {
+.md2-calendar-years {
   position: absolute;
   top: 10px;
   right: 100%;
@@ -200,48 +190,39 @@ md2-datepicker.md2-datepicker-disabled:focus .md2-datepicker-placeholder {
   overflow-x: hidden;
   overflow-y: auto;
   transition: 300ms; }
-  .md2-years.active {
+  .md2-calendar-years.active {
     right: 0; }
-  .md2-years .md2-years-wrapper {
+  .md2-calendar-years .md2-calendar-years-content {
     display: flex;
     flex-direction: column;
     justify-content: center;
     min-height: 100%; }
-  .md2-years .md2-year {
-    position: relative;
-    display: block;
-    margin: 0 auto;
-    padding: 0;
-    font-size: 17px;
-    font-weight: 400;
-    text-align: center;
-    cursor: pointer; }
-    .md2-years .md2-year.selected {
-      color: #106cc8;
-      font-size: 26px;
-      font-weight: 500; }
 
-.md2-datepicker-container {
-  position: absolute;
-  top: 0;
-  left: 100%;
+.md2-calendar-year {
+  position: relative;
   display: block;
-  width: 100%;
-  transition: 300ms; }
-  .md2-datepicker-container.active {
-    left: 0; }
+  margin: 0 auto;
+  padding: 0;
+  font-size: 17px;
+  font-weight: 400;
+  text-align: center;
+  cursor: pointer; }
+  .md2-calendar-year.selected {
+    color: #106cc8;
+    font-size: 26px;
+    font-weight: 500; }
 
-.md2-calendar {
+.md2-calendar-month {
   position: absolute;
-  right: 100%;
+  left: 100%;
   display: block;
   width: 100%;
   font-size: 12px;
   font-weight: 400;
   text-align: center;
   transition: 300ms; }
-  .md2-calendar.active {
-    right: 0; }
+  .md2-calendar-month.active {
+    left: 0; }
 
 .md2-calendar-controls {
   position: relative;
@@ -275,15 +256,15 @@ md2-datepicker.md2-datepicker-disabled:focus .md2-datepicker-placeholder {
 .md2-calendar-next-month {
   right: 0; }
 
-.md2-calendar-month {
+.md2-calendar-dates {
   margin: 0 20px; }
-  .md2-calendar-month th {
+  .md2-calendar-dates th {
     width: 35px;
     height: 20px;
     font-weight: 500;
     line-height: 15px;
     opacity: 0.5; }
-  .md2-calendar-month td {
+  .md2-calendar-dates td {
     padding: 0; }
 
 .md2-calendar-day {
@@ -310,8 +291,9 @@ md2-datepicker.md2-datepicker-disabled:focus .md2-datepicker-placeholder {
   .md2-calendar-day.prev-month, .md2-calendar-day.next-month {
     visibility: hidden; }
 
-.md2-clock {
+.md2-datepicker-clock {
   position: absolute;
+  top: 0;
   left: 100%;
   display: block;
   width: 240px;
@@ -323,7 +305,7 @@ md2-datepicker.md2-datepicker-disabled:focus .md2-datepicker-placeholder {
   background-color: #e0e0e0;
   border-radius: 50%;
   transition: 300ms; }
-  .md2-clock.active {
+  .md2-datepicker-clock.active {
     left: 0; }
 
 .md2-clock-hours,
@@ -380,5 +362,37 @@ md2-datepicker.md2-datepicker-disabled:focus .md2-datepicker-placeholder {
 .md2-clock-center {
   stroke: none;
   fill: #106cc8; }
+
+.md2-datepicker-actions {
+  text-align: right; }
+  .md2-datepicker-actions .md2-button {
+    display: inline-block;
+    min-width: 64px;
+    margin: 4px 8px 8px 0;
+    padding: 0 12px;
+    font-size: 14px;
+    color: #106cc8;
+    line-height: 36px;
+    text-align: center;
+    text-transform: uppercase;
+    border-radius: 2px;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1); }
+    .md2-datepicker-actions .md2-button:hover {
+      background: #ebebeb; }
+
+@media (min-width: 600px) {
+  .md2-datepicker-panel {
+    display: flex;
+    width: 430px; }
+  .md2-datepicker-header {
+    width: 130px;
+    padding-right: 15px;
+    white-space: normal;
+    word-wrap: break-word; }
+  .md2-datepicker-header-time {
+    display: block;
+    padding-left: 0; } }
 
 /*# sourceMappingURL=datepicker.css.map */

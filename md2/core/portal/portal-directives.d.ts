@@ -27,11 +27,19 @@ export declare class PortalHostDirective extends BasePortalHost implements OnDes
     constructor(_componentFactoryResolver: ComponentFactoryResolver, _viewContainerRef: ViewContainerRef);
     /** @deprecated */
     _deprecatedPortal: Portal<any>;
+    /** Portal associated with the Portal host. */
     portal: Portal<any>;
     ngOnDestroy(): void;
-    /** Attach the given ComponentPortal to this PortalHost using the ComponentFactoryResolver. */
+    /**
+     * Attach the given ComponentPortal to this PortalHost using the ComponentFactoryResolver.
+     *
+     * @param portal Portal to be attached to the portal host.
+     */
     attachComponentPortal<T>(portal: ComponentPortal<T>): ComponentRef<T>;
-    /** Attach the given TemplatePortal to this PortlHost as an embedded View. */
+    /**
+     * Attach the given TemplatePortal to this PortlHost as an embedded View.
+     * @param portal Portal to be attached.
+     */
     attachTemplatePortal(portal: TemplatePortal): Map<string, any>;
     /** Detaches the currently attached Portal (if there is one) and attaches the given Portal. */
     private _replaceAttachedPortal(p);

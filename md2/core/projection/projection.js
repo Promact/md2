@@ -57,6 +57,9 @@ export var DomProjection = (function () {
      * contain the `<div>other</div>` HTML as well as its own children.
      *
      * Note: without `<ng-content></ng-content>` the projection will project an empty element.
+     *
+     * @param ref ElementRef to be projected.
+     * @param host Projection host into which to project the `ElementRef`.
      */
     DomProjection.prototype.project = function (ref, host) {
         var projectedEl = ref.nativeElement;

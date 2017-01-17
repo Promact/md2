@@ -6,33 +6,43 @@ Data Table is a arrange data in ordering searching and paginate it.
 
 | Name | Type | Description |
 | --- | --- | --- |
-| `md2-data` | `Array<any>` | List of array data assign for datatable |
-| `md2-page-length` | `number` | Number of rows per page |
+| `md2Data` | `Array<any>` | List of array data assign for datatable |
+| `rowsPerPage` | `number` | Number of rows per page |
 | `activePage` | `number` | Number of active page |
+| `sortBy` | `string` or `Array<string>` | Sort by parameter(s) |
+| `sortOrder` | `string` | Sort order parameters are 'asc' or 'desc' |
+
+### Events
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `activePageChange` | `Event` | Fired when change the active page |
+| `sortByChange` | `Event` | Fired when change sort by |
+| `sortOrderChange` | `Event` | Fired when change sort order |
 
 ### Examples
 A Datatable would have the following markup.
 ```html
 <table class="table table-striped"
-       [md2-data]="data"
-       #md2="Md2DataTable"
-       [md2-page-length]="10"
-       [(activePage)]="activePage">
+       [md2Data]="data"
+       #md2="md2DataTable"
+       [rowsPerPage]="10"
+       [activePage]="activePage">
   ...
 </table>
 ```
 
-## `[md2-sort-field]`
+## `[md2SortBy]`
 ### Properties
 
 | Name | Type | Description |
 | --- | --- | --- |
-| `md2-sort-field` | `string` | field for sorting data |
+| `md2SortBy` | `string` | Sort by parameter |
 
 ### Examples
 A directive would have the following markup.
 ```html
-<th md2-sort-field="name">Name</th>
+<th md2SortBy="name">Name</th>
 ```
 
 ## `<md2-pagination>`
@@ -40,8 +50,8 @@ A directive would have the following markup.
 
 | Name | Type | Description |
 | --- | --- | --- |
-| `md2-rows` | `Array<string>` | Number of rows on page set list |
-| `md2-table` | `Md2DataTable` | reference of Md2DataTable |
+| `rowsPerPageSet` | `Array<string>` | Number of rows per page set list |
+| `md2Table` | `Md2DataTable` | reference of Md2DataTable |
 
 ### Events
 
@@ -58,16 +68,16 @@ A pagination would have the following markup.
 ### Examples
 A data-table would have the following markup.
 ```html
-<table [md2-data]="data"
-       #md2="Md2DataTable"
-       [md2-page-length]="10"
+<table [md2Data]="data"
+       #md2="md2DataTable"
+       [rowsPerPage]="10"
        [(activePage)]="activePage">
   <thead>
     <tr>
-      <th md2-sort-field="name">Name</th>
-      <th md2-sort-field="email">Email</th>
-      <th md2-sort-field="age">Age</th>
-      <th md2-sort-field="city">City</th>
+      <th md2SortBy="name">Name</th>
+      <th md2SortBy="email">Email</th>
+      <th md2SortBy="age">Age</th>
+      <th md2SortBy="city">City</th>
     </tr>
   </thead>
   <tbody>
@@ -81,7 +91,7 @@ A data-table would have the following markup.
   <tfoot>
     <tr>
       <td colspan="4">
-        <md2-pagination [md2-rows]="[5,10,15]"></md2-pagination>
+        <md2-pagination [rowsPerPageSet]="[5,10,15]"></md2-pagination>
       </td>
     </tr>
   </tfoot>

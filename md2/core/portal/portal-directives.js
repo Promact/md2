@@ -59,6 +59,7 @@ export var PortalHostDirective = (function (_super) {
         configurable: true
     });
     Object.defineProperty(PortalHostDirective.prototype, "portal", {
+        /** Portal associated with the Portal host. */
         get: function () {
             return this._portal;
         },
@@ -73,7 +74,11 @@ export var PortalHostDirective = (function (_super) {
     PortalHostDirective.prototype.ngOnDestroy = function () {
         this.dispose();
     };
-    /** Attach the given ComponentPortal to this PortalHost using the ComponentFactoryResolver. */
+    /**
+     * Attach the given ComponentPortal to this PortalHost using the ComponentFactoryResolver.
+     *
+     * @param portal Portal to be attached to the portal host.
+     */
     PortalHostDirective.prototype.attachComponentPortal = function (portal) {
         portal.setAttachedHost(this);
         // If the portal specifies an origin, use that as the logical location of the component
@@ -86,7 +91,10 @@ export var PortalHostDirective = (function (_super) {
         this.setDisposeFn(function () { return ref.destroy(); });
         return ref;
     };
-    /** Attach the given TemplatePortal to this PortlHost as an embedded View. */
+    /**
+     * Attach the given TemplatePortal to this PortlHost as an embedded View.
+     * @param portal Portal to be attached.
+     */
     PortalHostDirective.prototype.attachTemplatePortal = function (portal) {
         var _this = this;
         portal.setAttachedHost(this);

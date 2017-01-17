@@ -7,6 +7,11 @@ export declare class Item {
     constructor(source: any, textKey: string, valueKey: string);
 }
 export declare const MD2_AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR: any;
+/** Change event object emitted by Md2Autocomplete. */
+export declare class Md2AutocompleteChange {
+    source: Md2Autocomplete;
+    value: any;
+}
 export declare class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
     private _element;
     constructor(_element: ElementRef);
@@ -18,8 +23,8 @@ export declare class Md2Autocomplete implements AfterContentInit, ControlValueAc
     private _required;
     private _disabled;
     private _isInitialized;
-    private _onTouchedCallback;
-    private _onChangeCallback;
+    _onChange: (value: any) => void;
+    _onTouched: () => void;
     private _items;
     _list: Array<Item>;
     private selectedItem;
@@ -94,9 +99,10 @@ export declare class Md2Autocomplete implements AfterContentInit, ControlValueAc
      * @param query
      */
     private updateItems(query);
+    _emitChangeEvent(): void;
     writeValue(value: any): void;
-    registerOnChange(fn: any): void;
-    registerOnTouched(fn: any): void;
+    registerOnChange(fn: (value: any) => void): void;
+    registerOnTouched(fn: () => {}): void;
 }
 export declare const MD2_AUTOCOMPLETE_DIRECTIVES: (typeof HighlightPipe | typeof Md2Autocomplete)[];
 export declare class Md2AutocompleteModule {

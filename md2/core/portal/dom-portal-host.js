@@ -19,7 +19,10 @@ export var DomPortalHost = (function (_super) {
         this._appRef = _appRef;
         this._defaultInjector = _defaultInjector;
     }
-    /** Attach the given ComponentPortal to DOM element using the ComponentFactoryResolver. */
+    /**
+     * Attach the given ComponentPortal to DOM element using the ComponentFactoryResolver.
+     * @param portal Portal to be attached
+     */
     DomPortalHost.prototype.attachComponentPortal = function (portal) {
         var _this = this;
         var componentFactory = this._componentFactoryResolver.resolveComponentFactory(portal.component);
@@ -68,6 +71,10 @@ export var DomPortalHost = (function (_super) {
         this._hostDomElement.appendChild(this._getComponentRootNode(componentRef));
         return componentRef;
     };
+    /**
+     * Attaches a template portal to the DOM as an embedded view.
+     * @param portal Portal to be attached.
+     */
     DomPortalHost.prototype.attachTemplatePortal = function (portal) {
         var _this = this;
         var viewContainer = portal.viewContainerRef;
@@ -82,6 +89,9 @@ export var DomPortalHost = (function (_super) {
         // TODO(jelbourn): Return locals from view.
         return new Map();
     };
+    /**
+     * Clears out a portal from the DOM.
+     */
     DomPortalHost.prototype.dispose = function () {
         _super.prototype.dispose.call(this);
         if (this._hostDomElement.parentNode != null) {

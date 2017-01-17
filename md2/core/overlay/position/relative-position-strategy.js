@@ -1,3 +1,4 @@
+/** @docs-private */
 export var RelativePositionStrategy = (function () {
     function RelativePositionStrategy(_relativeTo) {
         this._relativeTo = _relativeTo;

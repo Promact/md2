@@ -106,7 +106,7 @@ export var MdRipple = (function () {
     });
     ;
     MdRipple.prototype.ngOnInit = function () {
-        // If no trigger element was explicity set, use the host element
+        // If no trigger element was explicitly set, use the host element
         if (!this.trigger) {
             this._rippleRenderer.setTriggerElementToHost();
         }

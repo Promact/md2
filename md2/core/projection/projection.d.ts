@@ -33,6 +33,9 @@ export declare class DomProjection {
      * contain the `<div>other</div>` HTML as well as its own children.
      *
      * Note: without `<ng-content></ng-content>` the projection will project an empty element.
+     *
+     * @param ref ElementRef to be projected.
+     * @param host Projection host into which to project the `ElementRef`.
      */
     project(ref: ElementRef, host: DomProjectionHost): void;
 }

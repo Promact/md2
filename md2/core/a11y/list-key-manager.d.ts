@@ -21,6 +21,8 @@ export declare class ListKeyManager {
     /**
      * Turns on focus wrapping mode, which ensures that the focus will wrap to
      * the other end of list when there are no more items in the given direction.
+     *
+     * @returns The ListKeyManager that the method was called on.
      */
     withFocusWrap(): this;
     /**
@@ -29,7 +31,10 @@ export declare class ListKeyManager {
      * @param index The index of the item to be focused.
      */
     setFocus(index: number): void;
-    /** Sets the focus properly depending on the key event passed in. */
+    /**
+     * Sets the focus depending on the key event passed in.
+     * @param event Keyboard event to be used for determining which element to focus.
+     */
     onKeydown(event: KeyboardEvent): void;
     /** Focuses the first enabled item in the list. */
     focusFirstItem(): void;
@@ -41,7 +46,10 @@ export declare class ListKeyManager {
     focusPreviousItem(): void;
     /** Returns the index of the currently focused item. */
     readonly focusedItemIndex: number;
-    /** Allows setting of the focusedItemIndex without focusing the item. */
+    /**
+     * Allows setting of the focusedItemIndex without focusing the item.
+     * @param index The new focusedItemIndex.
+     */
     updateFocusedItemIndex(index: number): void;
     /**
      * Observable that emits any time the TAB key is pressed, so components can react

@@ -19,7 +19,6 @@ md2-select {
   align-items: center;
   height: $md2-select-trigger-height;
   min-width: $md2-select-trigger-min-width;
-  margin: 18px 0;
   line-height: 22px;
   cursor: pointer;
   position: relative;
@@ -29,7 +28,7 @@ md2-select {
     background-image: linear-gradient(to right, rgba(black, 0.26) 0, rgba(black, 0.26) 33%, transparent 0);
     background-size: 4px 1px;
     background-repeat: repeat-x;
-    border-bottom: transparent;
+    border-color: transparent;
     background-position: 0 bottom;
     cursor: default;
     user-select: none;
@@ -37,12 +36,12 @@ md2-select {
 
   md2-select:focus:not(.md2-select-disabled) & {
     color: $primary;
-    border-bottom: 1px solid $primary;
+    border-color: $primary;
   }
 
   md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) & {
     color: $warn;
-    border-bottom: 1px solid $warn;
+    border-color: $warn;
   }
 }
 
@@ -59,6 +58,7 @@ md2-select {
   &.md2-floating-placeholder {
     top: -16px;
     left: -2px;
+    text-align: left;
     transform: scale(0.75);
   }
 
@@ -67,6 +67,7 @@ md2-select {
 
     &.md2-floating-placeholder {
       left: 2px;
+      text-align: right;
     }
   }
 
@@ -215,7 +216,7 @@ md2-option {
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 1;
+  z-index: 1000;
   pointer-events: auto;
   transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1);
   opacity: 0;

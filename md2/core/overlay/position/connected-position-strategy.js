@@ -18,6 +18,8 @@ export var ConnectedPositionStrategy = (function () {
         this._offsetX = 0;
         /** The offset in pixels for the overlay connection point on the y-axis */
         this._offsetY = 0;
+        /** The Scrollable containers used to check scrollable view properties on position change. */
+        this.scrollables = [];
         /** Ordered list of preferred positions, from most to least desirable. */
         this._preferredPositions = [];
         this._onPositionChange = new Subject();
@@ -41,6 +43,7 @@ export var ConnectedPositionStrategy = (function () {
         configurable: true
     });
     Object.defineProperty(ConnectedPositionStrategy.prototype, "positions", {
+        /** Ordered list of preferred positions, from most to least desirable. */
         get: function () {
             return this._preferredPositions;
         },
@@ -55,6 +58,9 @@ export var ConnectedPositionStrategy = (function () {
      * Updates the position of the overlay element, using whichever preferred position relative
      * to the origin fits on-screen.
      * @docs-private
+     *
+     * @param element Element to which to apply the CSS styles.
+     * @returns Resolves when the styles have been applied.
      */
     ConnectedPositionStrategy.prototype.apply = function (element) {
         // We need the bounding rects for the origin and the overlay to determine how to position
@@ -76,7 +82,10 @@ export var ConnectedPositionStrategy = (function () {
             // If the overlay in the calculated position fits on-screen, put it there and we're done.
             if (overlayPoint.fitsInViewport) {
                 this._setElementPosition(element, overlayPoint);
-                this._onPositionChange.next(new ConnectedOverlayPositionChange(pos));
+                // Notify that the position has been changed along with its change properties.
+                var scrollableViewProperties = this.getScrollableViewProperties(element);
+                var positionChange = new ConnectedOverlayPositionChange(pos, scrollableViewProperties);
+                this._onPositionChange.next(positionChange);
                 return Promise.resolve(null);
             }
             else if (!fallbackPoint || fallbackPoint.visibleArea < overlayPoint.visibleArea) {
@@ -88,21 +97,43 @@ export var ConnectedPositionStrategy = (function () {
         this._setElementPosition(element, fallbackPoint);
         return Promise.resolve(null);
     };
+    /**
+     * Sets the list of Scrollable containers that host the origin element so that
+     * on reposition we can evaluate if it or the overlay has been clipped or outside view. Every
+     * Scrollable must be an ancestor element of the strategy's origin element.
+     */
+    ConnectedPositionStrategy.prototype.withScrollableContainers = function (scrollables) {
+        this.scrollables = scrollables;
+    };
+    /**
+     * Adds a new preferred fallback position.
+     * @param originPos
+     * @param overlayPos
+     */
     ConnectedPositionStrategy.prototype.withFallbackPosition = function (originPos, overlayPos) {
         this._preferredPositions.push(new ConnectionPositionPair(originPos, overlayPos));
         return this;
     };
-    /** Sets the layout direction so the overlay's position can be adjusted to match. */
+    /**
+     * Sets the layout direction so the overlay's position can be adjusted to match.
+     * @param dir New layout direction.
+     */
     ConnectedPositionStrategy.prototype.withDirection = function (dir) {
         this._dir = dir;
         return this;
     };
-    /** Sets an offset for the overlay's connection point on the x-axis */
+    /**
+     * Sets an offset for the overlay's connection point on the x-axis
+     * @param offset New offset in the X axis.
+     */
     ConnectedPositionStrategy.prototype.withOffsetX = function (offset) {
         this._offsetX = offset;
         return this;
     };
-    /** Sets an offset for the overlay's connection point on the y-axis */
+    /**
+     * Sets an offset for the overlay's connection point on the y-axis
+     * @param  offset New offset in the Y axis.
+     */
     ConnectedPositionStrategy.prototype.withOffsetY = function (offset) {
         this._offsetY = offset;
         return this;
@@ -187,6 +218,44 @@ export var ConnectedPositionStrategy = (function () {
         return { x: x, y: y, fitsInViewport: fitsInViewport, visibleArea: visibleArea };
     };
     /**
+     * Gets the view properties of the trigger and overlay, including whether they are clipped
+     * or completely outside the view of any of the strategy's scrollables.
+     */
+    ConnectedPositionStrategy.prototype.getScrollableViewProperties = function (overlay) {
+        var _this = this;
+        var originBounds = this._getElementBounds(this._origin);
+        var overlayBounds = this._getElementBounds(overlay);
+        var scrollContainerBounds = this.scrollables.map(function (scrollable) {
+            return _this._getElementBounds(scrollable.getElementRef().nativeElement);
+        });
+        return {
+            isOriginClipped: this.isElementClipped(originBounds, scrollContainerBounds),
+            isOriginOutsideView: this.isElementOutsideView(originBounds, scrollContainerBounds),
+            isOverlayClipped: this.isElementClipped(overlayBounds, scrollContainerBounds),
+            isOverlayOutsideView: this.isElementOutsideView(overlayBounds, scrollContainerBounds),
+        };
+    };
+    /** Whether the element is completely out of the view of any of the containers. */
+    ConnectedPositionStrategy.prototype.isElementOutsideView = function (elementBounds, containersBounds) {
+        return containersBounds.some(function (containerBounds) {
+            var outsideAbove = elementBounds.bottom < containerBounds.top;
+            var outsideBelow = elementBounds.top > containerBounds.bottom;
+            var outsideLeft = elementBounds.right < containerBounds.left;
+            var outsideRight = elementBounds.left > containerBounds.right;
+            return outsideAbove || outsideBelow || outsideLeft || outsideRight;
+        });
+    };
+    /** Whether the element is clipped by any of the containers. */
+    ConnectedPositionStrategy.prototype.isElementClipped = function (elementBounds, containersBounds) {
+        return containersBounds.some(function (containerBounds) {
+            var clippedAbove = elementBounds.top < containerBounds.top;
+            var clippedBelow = elementBounds.bottom > containerBounds.bottom;
+            var clippedLeft = elementBounds.left < containerBounds.left;
+            var clippedRight = elementBounds.right > containerBounds.right;
+            return clippedAbove || clippedBelow || clippedLeft || clippedRight;
+        });
+    };
+    /**
      * Physically positions the overlay element to the given coordinate.
      * @param element
      * @param overlayPoint
@@ -194,6 +263,16 @@ export var ConnectedPositionStrategy = (function () {
     ConnectedPositionStrategy.prototype._setElementPosition = function (element, overlayPoint) {
         element.style.left = overlayPoint.x + 'px';
         element.style.top = overlayPoint.y + 'px';
+    };
+    /** Returns the bounding positions of the provided element with respect to the viewport. */
+    ConnectedPositionStrategy.prototype._getElementBounds = function (element) {
+        var boundingClientRect = element.getBoundingClientRect();
+        return {
+            top: boundingClientRect.top,
+            right: boundingClientRect.left + boundingClientRect.width,
+            bottom: boundingClientRect.top + boundingClientRect.height,
+            left: boundingClientRect.left
+        };
     };
     /**
      * Subtracts the amount that an element is overflowing on an axis from it's length.
@@ -209,6 +288,5 @@ export var ConnectedPositionStrategy = (function () {
     };
     return ConnectedPositionStrategy;
 }());
-;
 
 //# sourceMappingURL=connected-position-strategy.js.map

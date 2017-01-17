@@ -16,31 +16,56 @@ export declare class GlobalPositionStrategy implements PositionStrategy {
     private _width;
     private _height;
     private _wrapper;
-    /** Sets the top position of the overlay. Clears any previously set vertical position. */
+    /**
+     * Sets the top position of the overlay. Clears any previously set vertical position.
+     * @param value New top offset.
+     */
     top(value: string): this;
-    /** Sets the left position of the overlay. Clears any previously set horizontal position. */
+    /**
+     * Sets the left position of the overlay. Clears any previously set horizontal position.
+     * @param value New left offset.
+     */
     left(value: string): this;
-    /** Sets the bottom position of the overlay. Clears any previously set vertical position. */
+    /**
+     * Sets the bottom position of the overlay. Clears any previously set vertical position.
+     * @param value New bottom offset.
+     */
     bottom(value: string): this;
-    /** Sets the right position of the overlay. Clears any previously set horizontal position. */
+    /**
+     * Sets the right position of the overlay. Clears any previously set horizontal position.
+     * @param value New right offset.
+     */
     right(value: string): this;
-    /** Sets the overlay width and clears any previously set width. */
+    /**
+     * Sets the overlay width and clears any previously set width.
+     * @param value New width for the overlay
+     */
     width(value: string): this;
-    /** Sets the overlay height and clears any previously set height. */
+    /**
+     * Sets the overlay height and clears any previously set height.
+     * @param value New height for the overlay
+     */
     height(value: string): this;
     /**
      * Centers the overlay horizontally with an optional offset.
      * Clears any previously set horizontal position.
+     *
+     * @param offset Overlay offset from the horizontal center.
      */
     centerHorizontally(offset?: string): this;
     /**
      * Centers the overlay vertically with an optional offset.
      * Clears any previously set vertical position.
+     *
+     * @param offset Overlay offset from the vertical center.
      */
     centerVertically(offset?: string): this;
     /**
      * Apply the position to the element.
      * @docs-private
+     *
+     * @param element Element to which to apply the CSS.
+     * @returns Resolved when the styles have been applied.
      */
     apply(element: HTMLElement): Promise<void>;
     /**

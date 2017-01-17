@@ -14,6 +14,8 @@ import {
   ModuleWithProviders,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Md2SelectModule } from '../select/index';
 
 export class Md2PaginationChange {
   source: Md2Pagination;
@@ -281,8 +283,7 @@ export class Md2Pagination {
   }
 
   _setRows(event: any): void {
-    event.stopPropagation();
-    this.md2Table.setPage(this._activePage, parseInt(event.target.value));
+    this.md2Table.setPage(this._activePage, parseInt(event.value));
   }
 
   private onPageChangeSubscriber = (event: PageEvent) => {
@@ -301,7 +302,7 @@ export const MD2_DATA_TABLE_DIRECTIVES: any[] = [
 ];
 
 @NgModule({
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule, Md2SelectModule.forRoot()],
   exports: MD2_DATA_TABLE_DIRECTIVES,
   declarations: MD2_DATA_TABLE_DIRECTIVES,
 })

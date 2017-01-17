@@ -1,3 +1,32 @@
+<a name="0.0.13-1"></a>
+## [0.0.13-1](https://github.com/Promact/md2/compare/0.0.13...v0.0.13-1) (2017-01-17)
+
+### Breaking changes
+
+* data-table: directives are now camelcase and renamed
+
+
+### Bug Fixes
+
+* fix(data-table) active page change event while page change after data updates
+* fix(select) styling issue
+* fix(datepicker) min/max date null or undefined to seta as default #37
+* fix(datepicker) unable to clear issue #60
+* fix(autocomplete) suggestion list not closing issue
+* fix(autocomplete) require ngControl issue #57
+* fix(data-table) pagination issues and performance
+
+
+### Features
+
+* chore(data-table) set rows per page select dropdown is material #59
+* feat(date-table) sort by deeply
+* feat(datepicker) responsive #32
+* chore(datepicker) update html and styling structure
+* feat(datepicker) handle years through keyboard
+* feat(tooltip) multiple line support
+
+
 <a name="0.0.13"></a>
 ## [0.0.13](https://github.com/Promact/md2/compare/0.0.12...v0.0.13) (2016-12-29)
 

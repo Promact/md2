@@ -17,6 +17,7 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Md2DateUtil } from './dateUtil';
+import { DateLocale } from './date-locale';
 
 import {
   coerceBooleanProperty,
@@ -80,8 +81,11 @@ let nextId = 0;
 })
 export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
 
-  constructor(private _dateUtil: Md2DateUtil, private element: ElementRef,
+  constructor(private _dateUtil: Md2DateUtil, private _locale: DateLocale, private element: ElementRef,
     @Optional() public _control: NgControl) {
+
+    this._weekDays = _locale.days;
+
     this.getYears();
     this.generateClock();
     // this.mouseMoveListener = (event: MouseEvent) => { this.onMouseMoveClock(event); };
@@ -104,6 +108,7 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   private _required: boolean = false;
   private _disabled: boolean = false;
   private _isInitialized: boolean = false;
+
   _onChange = (value: any) => { };
   _onTouched = () => { };
 
@@ -112,10 +117,8 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   _isCalendarVisible: boolean;
   _isHoursVisible: boolean = true;
 
-  private months: Array<string> = ['January', 'February', 'March', 'April',
-    'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-  _days: Array<string> = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday',
-    'Friday', 'Saturday'];
+  _weekDays: Array<any>;
+
   _hours: Array<Object> = [];
   _minutes: Array<Object> = [];
 
@@ -235,9 +238,9 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
       this._displayDate = date;
       this._viewDay = {
         year: date.getFullYear(),
-        month: this.months[date.getMonth()],
+        month: this._locale.months[date.getMonth()].full,
         date: this._prependZero(date.getDate() + ''),
-        day: this._days[date.getDay()],
+        day: this._locale.days[date.getDay()].full,
         hour: this._prependZero(date.getHours() + ''),
         minute: this._prependZero(date.getMinutes() + '')
       };
@@ -916,7 +919,7 @@ export class Md2DatepickerModule {
   static forRoot(): ModuleWithProviders {
     return {
       ngModule: Md2DatepickerModule,
-      providers: [Md2DateUtil]
+      providers: [Md2DateUtil, DateLocale]
     };
   }
 }

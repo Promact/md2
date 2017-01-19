@@ -69,7 +69,7 @@
           <div class="md2-calendar-header">{{_viewDay.month}} {{_viewDay.year}}</div>
         </div>
         <table class="md2-calendar-dates">
-          <thead><tr><th *ngFor="let d of _days">{{d.substr(0, 1)}}</th></tr></thead>
+          <thead><tr><th *ngFor="let day of _weekDays">{{day.xshort}}</th></tr></thead>
           <tbody>
             <tr *ngFor="let w of _dates">
               <td *ngFor="let d of w">

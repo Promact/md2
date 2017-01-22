@@ -7,6 +7,8 @@ import {
   Output,
   Optional,
   EventEmitter,
+  Renderer,
+  Self,
   ViewEncapsulation,
   NgModule,
   ModuleWithProviders
@@ -81,8 +83,15 @@ let nextId = 0;
 })
 export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
 
-  constructor(private _dateUtil: Md2DateUtil, private _locale: DateLocale, private element: ElementRef,
-    @Optional() public _control: NgControl) {
+  private _panelOpen = false;
+  private _selected: Date = null;
+
+  constructor(private _element: ElementRef, private _renderer: Renderer,
+    private _dateUtil: Md2DateUtil, private _locale: DateLocale,
+    @Self() @Optional() public _control: NgControl) {
+    if (this._control) {
+      this._control.valueAccessor = this;
+    }
 
     this._weekDays = _locale.days;
 
@@ -90,14 +99,42 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
     this.generateClock();
     // this.mouseMoveListener = (event: MouseEvent) => { this.onMouseMoveClock(event); };
     // this.mouseUpListener = (event: MouseEvent) => { this.onMouseUpClock(event); };
-    if (this._control) {
-      this._control.valueAccessor = this;
-    }
   }
 
   ngAfterContentInit() {
     this._isInitialized = true;
     this._isCalendarVisible = this.type !== 'time' ? true : false;
+  }
+
+  @Input()
+  get selected() { return this._selected; }
+  set selected(value: Date) { this._selected = value; }
+
+  get panelOpen(): boolean {
+    return this._panelOpen;
+  }
+
+  toggle(): void {
+    this.panelOpen ? this.close() : this.open();
+  }
+
+  /** Opens the overlay panel. */
+  open(): void {
+    if (this.disabled) { return; }
+    this._panelOpen = true;
+  }
+
+  /** Closes the overlay panel and focuses the host element. */
+  close(): void {
+    this._panelOpen = false;
+    //if (!this._value) {
+    //  this._placeholderState = '';
+    //}
+    this._focusHost();
+  }
+
+  private _focusHost(): void {
+    this._renderer.invokeElementMethod(this._element.nativeElement, 'focus');
   }
 
   // private mouseMoveListener: any;
@@ -130,7 +167,6 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   _dates: Array<Object> = [];
   private today: Date = new Date();
   private _displayDate: Date = null;
-  _selectedDate: Date = null;
   _viewDay: IDay = { year: 0, month: '', date: '', day: '', hour: '', minute: '' };
   _viewValue: string = '';
 
@@ -399,8 +435,8 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
 
   private _scrollToSelectedYear() {
     setTimeout(() => {
-      let yearContainer = this.element.nativeElement.querySelector('.md2-calendar-years'),
-        selectedYear = this.element.nativeElement.querySelector('.md2-calendar-year.selected');
+      let yearContainer = this._element.nativeElement.querySelector('.md2-calendar-years'),
+        selectedYear = this._element.nativeElement.querySelector('.md2-calendar-year.selected');
       yearContainer.scrollTop = (selectedYear.offsetTop + 20) - yearContainer.clientHeight / 2;
     }, 0);
   }
@@ -423,11 +459,11 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   _showDatepicker() {
     if (this.disabled || this.readonly) { return; }
     this._isDatepickerVisible = true;
-    this._selectedDate = this.value || new Date(1, 0, 1);
+    this.selected = this.value || new Date(1, 0, 1);
     this.displayDate = this.value || this.today;
     this.generateCalendar();
     this._resetClock();
-    this.element.nativeElement.focus();
+    this._element.nativeElement.focus();
   }
 
   /**
@@ -496,7 +532,7 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
       this.value = date;
       this._onBlur();
     } else {
-      this._selectedDate = date;
+      this.selected = date;
       this.displayDate = date;
       this._isCalendarVisible = false;
       this._isHoursVisible = true;
@@ -670,8 +706,8 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
     let date = this.displayDate;
     this.displayDate = new Date(date.getFullYear(), date.getMonth(),
       date.getDate(), date.getHours(), minute);
-    this._selectedDate = this.displayDate;
-    this.value = this._selectedDate;
+    this.selected = this.displayDate;
+    this.value = this.displayDate;
     this._onBlur();
   }
 

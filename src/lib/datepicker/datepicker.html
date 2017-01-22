@@ -1,5 +1,5 @@
 ﻿<div class="md2-datepicker-trigger" (click)="_showDatepicker()">
-  <div class="md2-datepicker-calendar-icon">
+  <div class="md2-datepicker-icon">
     <svg *ngIf="type==='date'" width="24" height="24" viewBox="0 0 24 24">
       <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"></path>
     </svg>
@@ -28,7 +28,10 @@
       <span class="md2-datepicker-header-date"
             [class.active]="_isCalendarVisible && !_isYearsVisible"
             [class.hidden]="type==='time'"
-            (click)="_showCalendar()">{{_viewDay.day.substr(0, 3)}}, {{_viewDay.month.substr(0, 3)}}&nbsp;{{_viewDay.date}}</span>
+            (click)="_showCalendar()">
+        {{_viewDay.day.substr(0, 3)}},
+        {{_viewDay.month.substr(0, 3)}}&nbsp;{{_viewDay.date}}
+      </span>
       <span class="md2-datepicker-header-time"
             [class.active]="!_isCalendarVisible"
             [class.hidden]="type==='date'">
@@ -51,22 +54,22 @@
         </div>
       </div>
       <div class="md2-calendar-month" [class.active]="!_isYearsVisible">
-        <div class="md2-calendar-controls">
-          <div class="md2-calendar-prev-month"
+        <div class="md2-calendar-month-header">
+          <div class="md2-button"
                [class.disabled]="!_isBeforeMonth()"
                (click)="_isBeforeMonth() && _updateMonth(-1)">
-            <svg viewBox="0 0 24 24" width="24" height="24">
+            <svg width="24" height="24" viewBox="0 0 24 24">
               <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
             </svg>
           </div>
-          <div class="md2-calendar-next-month"
+          <div class="md2-calendar-month-year">{{_viewDay.month}} {{_viewDay.year}}</div>
+          <div class="md2-button"
                [class.disabled]="!_isAfterMonth()"
                (click)="_isAfterMonth() && _updateMonth(1)">
-            <svg viewBox="0 0 24 24" width="24" height="24">
+            <svg width="24" height="24" viewBox="0 0 24 24">
               <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path>
             </svg>
           </div>
-          <div class="md2-calendar-header">{{_viewDay.month}} {{_viewDay.year}}</div>
         </div>
         <table class="md2-calendar-dates">
           <thead><tr><th *ngFor="let day of _weekDays">{{day.xshort}}</th></tr></thead>
@@ -76,7 +79,7 @@
                 <div class="md2-calendar-day"
                      [class.today]="d.today"
                      [class.focus]="_dateUtil.isSameDay(displayDate, d.date)"
-                     [class.selected]="_dateUtil.isSameDay(_selectedDate, d.date)"
+                     [class.selected]="_dateUtil.isSameDay(selected, d.date)"
                      [class.disabled]="d.disabled"
                      [class.prev-month]="d.calMonth===_prevMonth"
                      [class.curr-month]="d.calMonth===_currMonth"

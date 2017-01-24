@@ -150,6 +150,9 @@ export class Md2Tabs implements AfterContentInit {
     setTimeout(() => {
       const tabs = this.tabs.toArray();
       if (this.selectedIndex) {
+        if (this.selectedIndex >= tabs.length) {
+          this.selectedIndex = 0;
+        }
         tabs.forEach(tab => tab.active = false);
         tabs[this.selectedIndex].active = true;
         this.adjustOffset(this.selectedIndex);

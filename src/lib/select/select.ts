@@ -204,9 +204,6 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
 
   set placeholder(value: string) {
     this._placeholder = value;
-
-    // Must wait to record the trigger width to ensure placeholder width is included.
-    Promise.resolve(null).then(() => this._triggerWidth = this._getWidth());
   }
 
   @Input()
@@ -277,6 +274,7 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
     if (this.disabled) {
       return;
     }
+    this._triggerWidth = this._getWidth();
     this._calculateOverlayPosition();
     this._placeholderState = this._isRtl() ? 'floating-rtl' : 'floating-ltr';
     this._panelOpen = true;

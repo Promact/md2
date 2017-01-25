@@ -207,7 +207,7 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
 
       switch (event.keyCode) {
         case TAB:
-        case ESCAPE: this._onBlur(); break;
+        case ESCAPE: this._onBlur(event); break;
         case ENTER:
         case SPACE: this._handleOptionClick(event, this._focusedOption); break;
 
@@ -244,8 +244,15 @@ export class Md2Multiselect implements AfterContentInit, ControlValueAccessor {
     this._focusedOption = 0;
   }
 
-  @HostListener('blur')
-  _onBlur() { this.isFocused = false; }
+  @HostListener('blur', ['$event'])
+  _onBlur(event: any) {    
+    if (document.activeElement.className !== 'md2-option-text') {
+      this.isFocused = false;
+    }
+    else {
+      event.target.focus();
+    }
+  }
 
   /**
    * to check current option is active or not

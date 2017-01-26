@@ -248,9 +248,11 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   @Input()
   get format(): string { return this._format; }
   set format(value) {
-    this._format = value;
-    if (this._value) {
-      this._viewValue = this._formatDate(this._value);
+    if (this._format !== value) {
+      this._format = value || this._format;
+      if (this._viewValue && this._value) {
+        this._viewValue = this._formatDate(this._value);
+      }
     }
   }
 

@@ -192,6 +192,9 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   // private mouseUpListener: any;
 
   private _value: Date = null;
+  private _format: string = this.type === 'date' ?
+    'DD/MM/YYYY' : this.type === 'time' ? 'HH:mm' : this.type === 'datetime' ?
+      'DD/MM/YYYY HH:mm' : 'DD/MM/YYYY';
   private _readonly: boolean = false;
   private _required: boolean = false;
   private _disabled: boolean = false;
@@ -240,10 +243,16 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   @Input() name: string = '';
   @Input() id: string = 'md2-datepicker-' + (++nextId);
   @Input() placeholder: string;
-  @Input() format: string = this.type === 'date' ?
-    'DD/MM/YYYY' : this.type === 'time' ? 'HH:mm' : this.type === 'datetime' ?
-      'DD/MM/YYYY HH:mm' : 'DD/MM/YYYY';
   @Input() tabindex: number = 0;
+
+  @Input()
+  get format(): string { return this._format; }
+  set format(value) {
+    this._format = value;
+    if (this._value) {
+      this._viewValue = this._formatDate(this._value);
+    }
+  }
 
   @Input()
   get readonly(): boolean { return this._readonly; }

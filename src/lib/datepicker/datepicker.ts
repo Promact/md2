@@ -115,6 +115,9 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
     },
   ];
 
+  @Output() onOpen: EventEmitter<void> = new EventEmitter<void>();
+  @Output() onClose: EventEmitter<void> = new EventEmitter<void>();
+
   constructor(private _element: ElementRef, private _renderer: Renderer,
     private _dateUtil: Md2DateUtil, private _locale: DateLocale,
     @Self() @Optional() public _control: NgControl) {
@@ -165,15 +168,20 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
 
   _onPanelDone(): void {
     if (this.panelOpen) {
-      //this._focusCorrectOption();
-      //this.onOpen.emit();
+      this._focusPanel();
+      this.onOpen.emit();
     } else {
-      //this.onClose.emit();
+      this.onClose.emit();
     }
   }
 
   _onFadeInDone(): void {
     this._panelDoneAnimating = this.panelOpen;
+  }
+
+  private _focusPanel(): void {
+    let el: any = document.querySelectorAll('.md2-datepicker-panel')[0];
+    el.focus();
   }
 
   private _focusHost(): void {

@@ -22,7 +22,7 @@
           backdropClass="cdk-overlay-transparent-backdrop" [positions]="_positions">
   <div class="md2-datepicker-panel" [@transformPanel]="'showing'" (@transformPanel.done)="_onPanelDone()"
        (keydown)="_handleKeydown($event)" [style.transformOrigin]="_transformOrigin"
-       [class.md2-datepicker-panel-done-animating]="_panelDoneAnimating">
+       [class.md2-datepicker-panel-done-animating]="_panelDoneAnimating" tabindex="0">
     <div class="md2-datepicker-header">
       <div class="md2-datepicker-header-year"
            [class.active]="_isYearsVisible"
@@ -123,15 +123,9 @@
         </div>
       </div>
       <div class="md2-datepicker-actions">
-        <div class="md2-button" (click)="_onBlur()">Cancel</div>
+        <div class="md2-button" (click)="close()">Cancel</div>
         <div class="md2-button" (click)="_onClickOk()">Ok</div>
       </div>
     </div>
-
-
-    <!--<div class="md2-datepicker-content" [@fadeInContent]="'showing'" (@fadeInContent.done)="_onFadeInDone()">
-      <ng-content></ng-content>
-      Test Panel
-    </div>-->
   </div>
 </template>

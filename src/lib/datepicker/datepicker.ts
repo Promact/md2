@@ -41,6 +41,12 @@ import {
   DOWN_ARROW
 } from '../core/core';
 
+/** Change event object emitted by Md2Select. */
+export class Md2DateChange {
+  source: Md2Datepicker;
+  date: Date;
+}
+
 export interface IDay {
   year: number;
   month: string;
@@ -94,6 +100,7 @@ let nextId = 0;
 })
 export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
 
+  private _date: Date = null;
   private _panelOpen = false;
   private _selected: Date = null;
 
@@ -139,6 +146,41 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   }
 
   @Input()
+  get date() { return this._date; }
+  set date(value: Date) {
+    this._date = this.coerceDateProperty(value);
+    if (value && value !== this._date) {
+      if (this._dateUtil.isValidDate(value)) {
+        this._date = value;
+      } else {
+        if (this.type === 'time') {
+          this._date = new Date('1-1-1 ' + value);
+        } else {
+          this._date = new Date(value);
+        }
+      }
+      this._viewValue = this._formatDate(this._date);
+      let date = '';
+      if (this.type !== 'time') {
+        date += this._date.getFullYear() + '-' + (this._date.getMonth() + 1) +
+          '-' + this._date.getDate();
+      }
+      if (this.type === 'datetime') {
+        date += ' ';
+      }
+      if (this.type !== 'date') {
+        date += this._date.getHours() + ':' + this._date.getMinutes();
+      }
+      if (this._isInitialized) {
+        if (this._control) {
+          this._onChange(date);
+        }
+        this.change.emit(date);
+      }
+    }
+  }
+
+  @Input()
   get selected() { return this._selected; }
   set selected(value: Date) { this._selected = value; }
 
@@ -160,7 +202,7 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   /** Closes the overlay panel and focuses the host element. */
   close(): void {
     this._panelOpen = false;
-    //if (!this._value) {
+    //if (!this._date) {
     //  this._placeholderState = '';
     //}
     this._focusHost();
@@ -188,10 +230,14 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
     this._renderer.invokeElementMethod(this._element.nativeElement, 'focus');
   }
 
+  private coerceDateProperty(value: any, fallbackValue = new Date()): Date {
+    let timestamp = Date.parse(value);
+    return isNaN(timestamp) ? fallbackValue : new Date(timestamp);
+  }
+
   // private mouseMoveListener: any;
   // private mouseUpListener: any;
 
-  private _value: Date = null;
   private _format: string = this.type === 'date' ?
     'DD/MM/YYYY' : this.type === 'time' ? 'HH:mm' : this.type === 'datetime' ?
       'DD/MM/YYYY HH:mm' : 'DD/MM/YYYY';
@@ -250,8 +296,8 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   set format(value) {
     if (this._format !== value) {
       this._format = value || this._format;
-      if (this._viewValue && this._value) {
-        this._viewValue = this._formatDate(this._value);
+      if (this._viewValue && this._date) {
+        this._viewValue = this._formatDate(this._date);
       }
     }
   }
@@ -281,40 +327,6 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
       this._max.setHours(0, 0, 0, 0);
       this.getYears();
     } else { this._max = null; }
-  }
-
-  @Input()
-  get value(): any { return this._value; }
-  set value(value: any) {
-    if (value && value !== this._value) {
-      if (this._dateUtil.isValidDate(value)) {
-        this._value = value;
-      } else {
-        if (this.type === 'time') {
-          this._value = new Date('1-1-1 ' + value);
-        } else {
-          this._value = new Date(value);
-        }
-      }
-      this._viewValue = this._formatDate(this._value);
-      let date = '';
-      if (this.type !== 'time') {
-        date += this._value.getFullYear() + '-' + (this._value.getMonth() + 1) +
-          '-' + this._value.getDate();
-      }
-      if (this.type === 'datetime') {
-        date += ' ';
-      }
-      if (this.type !== 'date') {
-        date += this._value.getHours() + ':' + this._value.getMinutes();
-      }
-      if (this._isInitialized) {
-        if (this._control) {
-          this._onChange(date);
-        }
-        this.change.emit(date);
-      }
-    }
   }
 
   get displayDate(): Date {
@@ -521,8 +533,8 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
    */
   _showDatepicker() {
     if (this.disabled || this.readonly) { return; }
-    this.selected = this.value || new Date(1, 0, 1);
-    this.displayDate = this.value || this.today;
+    this.selected = this.date || new Date(1, 0, 1);
+    this.displayDate = this.date || this.today;
     this.generateCalendar();
     this._resetClock();
     this._element.nativeElement.focus();
@@ -561,7 +573,7 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
       this._isHoursVisible = false;
       this._resetClock();
     } else {
-      this.value = this.displayDate;
+      this.date = this.displayDate;
       this._onBlur();
       this.close();
     }
@@ -592,7 +604,7 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
    */
   private setDate(date: Date) {
     if (this.type === 'date') {
-      this.value = date;
+      this.date = date;
       this._onBlur();
       this.close();
     } else {
@@ -771,7 +783,7 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
     this.displayDate = new Date(date.getFullYear(), date.getMonth(),
       date.getDate(), date.getHours(), minute);
     this.selected = this.displayDate;
-    this.value = this.displayDate;
+    this.date = this.displayDate;
     this._onBlur();
     this.close();
   }
@@ -974,31 +986,39 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
     };
   }
 
+  private _emitChangeEvent(): void {
+    let event = new Md2DateChange();
+    event.source = this;
+    event.date = this._date;
+    this._onChange(event.date);
+    this.change.emit(event);
+  }
+
   writeValue(value: any): void {
-    if (value && value !== this._value) {
+    if (value && value !== this._date) {
       if (this._dateUtil.isValidDate(value)) {
-        this._value = value;
+        this._date = value;
       } else {
         if (this.type === 'time') {
-          this._value = new Date('1-1-1 ' + value);
+          this._date = new Date('1-1-1 ' + value);
         } else {
-          this._value = new Date(value);
+          this._date = new Date(value);
         }
       }
-      this._viewValue = this._formatDate(this._value);
+      this._viewValue = this._formatDate(this._date);
       let date = '';
       if (this.type !== 'time') {
-        date += this._value.getFullYear() + '-' + (this._value.getMonth() + 1) +
-          '-' + this._value.getDate();
+        date += this._date.getFullYear() + '-' + (this._date.getMonth() + 1) +
+          '-' + this._date.getDate();
       }
       if (this.type === 'datetime') {
         date += ' ';
       }
       if (this.type !== 'date') {
-        date += this._value.getHours() + ':' + this._value.getMinutes();
+        date += this._date.getHours() + ':' + this._date.getMinutes();
       }
     } else {
-      this._value = null;
+      this._date = null;
       this._viewValue = null;
     }
   }

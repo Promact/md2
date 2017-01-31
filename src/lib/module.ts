@@ -8,7 +8,7 @@ import {
   OverlayModule,
   A11yModule,
   ProjectionModule,
-  DefaultStyleCompatibilityModeModule,
+  CompatibilityModule,
 } from './core/index';
 
 import { Md2AccordionModule } from './accordion/index';
@@ -52,7 +52,7 @@ const MD2_MODULES = [
   A11yModule,
   PlatformModule,
   ProjectionModule,
-  DefaultStyleCompatibilityModeModule,
+  CompatibilityModule,
   ObserveContentModule
 ];
 
@@ -82,7 +82,7 @@ const MD2_MODULES = [
     ProjectionModule.forRoot(),
     RtlModule.forRoot(),
     ObserveContentModule.forRoot(),
-    DefaultStyleCompatibilityModeModule.forRoot(),
+    CompatibilityModule.forRoot(),
   ],
   exports: MD2_MODULES,
 })
@@ -94,6 +94,7 @@ export class Md2RootModule { }
   exports: MD2_MODULES,
 })
 export class Md2Module {
+  /** @deprecated */
   static forRoot(): ModuleWithProviders {
     return { ngModule: Md2RootModule };
   }

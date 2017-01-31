@@ -24,8 +24,7 @@ import {
   OverlayRef,
   ComponentPortal,
   OverlayConnectionPosition,
-  OriginConnectionPosition,
-  DefaultStyleCompatibilityModeModule
+  OriginConnectionPosition
 } from '../core';
 import { Md2TooltipInvalidPositionError } from './tooltip-errors';
 import { Observable } from 'rxjs/Observable';
@@ -370,8 +369,8 @@ export class Md2TooltipComponent {
 
 
 @NgModule({
-  imports: [OverlayModule, DefaultStyleCompatibilityModeModule],
-  exports: [Md2Tooltip, Md2TooltipComponent, DefaultStyleCompatibilityModeModule],
+  imports: [OverlayModule],
+  exports: [Md2Tooltip, Md2TooltipComponent],
   declarations: [Md2Tooltip, Md2TooltipComponent],
   entryComponents: [Md2TooltipComponent],
 })

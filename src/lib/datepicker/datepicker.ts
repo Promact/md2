@@ -104,6 +104,9 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   private _panelOpen = false;
   private _selected: Date = null;
 
+  private mouseMoveListener: any;
+  private mouseUpListener: any;
+
   _transformOrigin: string = 'top';
   _panelDoneAnimating: boolean = false;
 
@@ -136,8 +139,8 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
 
     this.getYears();
     this.generateClock();
-    // this.mouseMoveListener = (event: MouseEvent) => { this.onMouseMoveClock(event); };
-    // this.mouseUpListener = (event: MouseEvent) => { this.onMouseUpClock(event); };
+    this.mouseMoveListener = (event: MouseEvent) => { this._handleMousemove(event); };
+    this.mouseUpListener = (event: MouseEvent) => { this._handleMouseup(event); };
   }
 
   ngAfterContentInit() {
@@ -235,8 +238,6 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
     return isNaN(timestamp) ? fallbackValue : new Date(timestamp);
   }
 
-  // private mouseMoveListener: any;
-  // private mouseUpListener: any;
 
   private _format: string = this.type === 'date' ?
     'DD/MM/YYYY' : this.type === 'time' ? 'HH:mm' : this.type === 'datetime' ?
@@ -788,85 +789,159 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
     this.close();
   }
 
-  // private onMouseDownClock(event: MouseEvent) {
-  //  document.addEventListener('mousemove', this.mouseMoveListener);
-  //  document.addEventListener('mouseup', this.mouseUpListener);
+  _handleMousedown(event: MouseEvent) {
+    console.log('Down');
+    document.addEventListener('mousemove', this.mouseMoveListener);
+    document.addEventListener('mouseup', this.mouseUpListener);
+    // let offset = this.offset(event.currentTarget)
+    // this._clock.x = offset.left + this._clock.dialRadius;
+    // this._clock.y = offset.top + this._clock.dialRadius;
+    // this._clock.dx = event.pageX - this._clock.x;
+    // this._clock.dy = event.pageY - this._clock.y;
+    // let z = Math.sqrt(this._clock.dx * this._clock.dx + this._clock.dy * this._clock.dy);
+    // if (z < this._clock.outerRadius - this._clock.tickRadius || z > this._clock.outerRadius
+    //  + this._clock.tickRadius) { return; }
+    // event.preventDefault();
+    // this.setClockHand(this._clock.dx, this._clock.dy);
+
+    // // this.onMouseMoveClock = this.onMouseMoveClock.bind(this);
+    // // this.onMouseUpClock = this.onMouseUpClock.bind(this);
+    // document.addEventListener('mousemove', this.onMouseMoveClock);
+    // document.addEventListener('mouseup', this.onMouseUpClock);
+
+    /*
+    var offset = plate.offset(),
+				isTouch = /^touch/.test(e.type),
+				x0 = offset.left + dialRadius,
+				y0 = offset.top + dialRadius,
+				dx = (isTouch ? e.originalEvent.touches[0] : e).pageX - x0,
+				dy = (isTouch ? e.originalEvent.touches[0] : e).pageY - y0,
+				z = Math.sqrt(dx * dx + dy * dy),
+				moved = false;
+
+			// When clicking on minutes view space, check the mouse position
+			if (space && (z < outerRadius - tickRadius || z > outerRadius + tickRadius)) {
+				return;
+			}
+			e.preventDefault();
+
+			// Set cursor style of body after 200ms
+			var movingTimer = setTimeout(function(){
+				$body.addClass('clockpicker-moving');
+			}, 200);
+
+			// Place the canvas to top
+			if (svgSupported) {
+				plate.append(self.canvas);
+			}
+
+			// Clock
+			self.setHand(dx, dy, ! space, true);
+    */
+  }
+
+  _handleMousemove(event: MouseEvent) {
+    console.log('move');
+    //   event.preventDefault();
+    //   event.stopPropagation();
+    //   let x = event.pageX - this._clock.x,
+    //     y = event.pageY - this._clock.y;
+    //   this._clock.moved = true;
+    //   this._setClockHand(x, y);// , false, true
+    //   // if (!moved && x === dx && y === dy) {
+    //   //   // Clicking in chrome on windows will trigger a mousemove event
+    //   //   return;
+    //   // }
+
+    /*
+    e.preventDefault();
+				var isTouch = /^touch/.test(e.type),
+					x = (isTouch ? e.originalEvent.touches[0] : e).pageX - x0,
+					y = (isTouch ? e.originalEvent.touches[0] : e).pageY - y0;
+				if (! moved && x === dx && y === dy) {
+					// Clicking in chrome on windows will trigger a mousemove event
+					return;
+				}
+				moved = true;
+				self.setHand(x, y, false, true);
+    */
+  }
+
+  _handleMouseup(event: MouseEvent) {
+    console.log('Up');
+    //   event.preventDefault();
+    document.removeEventListener('mousemove', this.mouseMoveListener);
+    document.removeEventListener('mouseup', this.mouseUpListener);
+    //   // let space = false;
+
+    //   let x = event.pageX - this._clock.x,
+    //     y = event.pageY - this._clock.y;
+    //   if ((space || this._clockEvent.moved) && x === this._clockEvent.dx && 
+    //    y === this._clockEvent.dy) {
+    //     this.setClockHand(x, y);
+    //   }
+    //   // if (this._isHoursVisible) {
+    //   //   // self.toggleView('minutes', duration / 2);
+    //   // } else {
+    //   //   // if (options.autoclose) {
+    //   //   //   self.minutesView.addClass('clockpicker-dial-out');
+    //   //   //   setTimeout(function () {
+    //   //   //     self.done();
+    //   //   //   }, duration / 2);
+    //   //   // }
+    //   // }
+
+    //   if ((space || moved) && x === dx && y === dy) {
+    //     self.setHand(x, y);
+    //   }
+    //   if (self.currentView === 'hours') {
+    //     self.toggleView('minutes', duration / 2);
+    //   } else {
+    //     if (options.autoclose) {
+    //       self.minutesView.addClass('clockpicker-dial-out');
+    //       setTimeout(function () {
+    //         self.done();
+    //       }, duration / 2);
+    //     }
+    //   }
+    //   plate.prepend(canvas);
+
+    //   // Reset cursor style of body
+    //   clearTimeout(movingTimer);
+    //   $body.removeClass('clockpicker-moving');
 
 
 
-  //  // let offset = this.offset(event.currentTarget)
-  //  // this._clock.x = offset.left + this._clock.dialRadius;
-  //  // this._clock.y = offset.top + this._clock.dialRadius;
-  //  // this._clock.dx = event.pageX - this._clock.x;
-  //  // this._clock.dy = event.pageY - this._clock.y;
-  //  // let z = Math.sqrt(this._clock.dx * this._clock.dx + this._clock.dy * this._clock.dy);
-  //  // if (z < this._clock.outerRadius - this._clock.tickRadius || z > this._clock.outerRadius
-  //  //  + this._clock.tickRadius) { return; }
-  //  // event.preventDefault();
-  //  // this.setClockHand(this._clock.dx, this._clock.dy);
+    /*
+    $doc.off(mouseupEvent);
+				e.preventDefault();
+				var isTouch = /^touch/.test(e.type),
+					x = (isTouch ? e.originalEvent.changedTouches[0] : e).pageX - x0,
+					y = (isTouch ? e.originalEvent.changedTouches[0] : e).pageY - y0;
+				if ((space || moved) && x === dx && y === dy) {
+					self.setHand(x, y);
+				}
+				if (self.currentView === 'hours') {
+					self.toggleView('minutes', duration / 2);
+				} else {
+					if (options.autoclose) {
+						self.minutesView.addClass('clockpicker-dial-out');
+						setTimeout(function(){
+							self.done();
+						}, duration / 2);
+					}
+				}
+				plate.prepend(canvas);
 
-  //  // // this.onMouseMoveClock = this.onMouseMoveClock.bind(this);
-  //  // // this.onMouseUpClock = this.onMouseUpClock.bind(this);
-  //  // document.addEventListener('mousemove', this.onMouseMoveClock);
-  //  // document.addEventListener('mouseup', this.onMouseUpClock);
-  // }
+				// Reset cursor style of body
+				clearTimeout(movingTimer);
+				$body.removeClass('clockpicker-moving');
 
-  // onMouseMoveClock(event: MouseEvent) {
-  //   event.preventDefault();
-  //   event.stopPropagation();
-  //   let x = event.pageX - this._clock.x,
-  //     y = event.pageY - this._clock.y;
-  //   this._clock.moved = true;
-  //   this._setClockHand(x, y);// , false, true
-  //   // if (!moved && x === dx && y === dy) {
-  //   //   // Clicking in chrome on windows will trigger a mousemove event
-  //   //   return;
-  //   // }
-  // }
+				// Unbind mousemove event
+				$doc.off(mousemoveEvent);
 
-  // onMouseUpClock(event: MouseEvent) {
-  //   event.preventDefault();
-  //   document.removeEventListener('mousemove', this.mouseMoveListener);
-  //   document.removeEventListener('mouseup', this.mouseUpListener);
-  //   // let space = false;
-
-  //   let x = event.pageX - this._clock.x,
-  //     y = event.pageY - this._clock.y;
-  //   if ((space || this._clockEvent.moved) && x === this._clockEvent.dx && 
-  //    y === this._clockEvent.dy) {
-  //     this.setClockHand(x, y);
-  //   }
-  //   // if (this._isHoursVisible) {
-  //   //   // self.toggleView('minutes', duration / 2);
-  //   // } else {
-  //   //   // if (options.autoclose) {
-  //   //   //   self.minutesView.addClass('clockpicker-dial-out');
-  //   //   //   setTimeout(function () {
-  //   //   //     self.done();
-  //   //   //   }, duration / 2);
-  //   //   // }
-  //   // }
-
-  //   if ((space || moved) && x === dx && y === dy) {
-  //     self.setHand(x, y);
-  //   }
-  //   if (self.currentView === 'hours') {
-  //     self.toggleView('minutes', duration / 2);
-  //   } else {
-  //     if (options.autoclose) {
-  //       self.minutesView.addClass('clockpicker-dial-out');
-  //       setTimeout(function () {
-  //         self.done();
-  //       }, duration / 2);
-  //     }
-  //   }
-  //   plate.prepend(canvas);
-
-  //   // Reset cursor style of body
-  //   clearTimeout(movingTimer);
-  //   $body.removeClass('clockpicker-moving');
-
-  // }
+    */
+  }
 
   /**
    * reser clock hands

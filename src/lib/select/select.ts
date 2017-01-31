@@ -10,19 +10,20 @@ import {
   Output,
   QueryList,
   Renderer,
+  Self,
   ViewEncapsulation,
   ViewChild,
 } from '@angular/core';
-import {Md2Option} from './option';
-import {ENTER, SPACE} from '../core/keyboard/keycodes';
-import {ListKeyManager} from '../core/a11y/list-key-manager';
-import {Dir} from '../core/rtl/dir';
-import {Subscription} from 'rxjs/Subscription';
-import {transformPlaceholder, transformPanel, fadeInContent} from './select-animations';
-import {ControlValueAccessor, NgControl} from '@angular/forms';
-import {coerceBooleanProperty} from '../core/coercion/boolean-property';
-import {ConnectedOverlayDirective} from '../core/overlay/overlay-directives';
-import {ViewportRuler} from '../core/overlay/position/viewport-ruler';
+import { Md2Option, Md2OptionSelectEvent } from './option';
+import { ENTER, SPACE } from '../core/keyboard/keycodes';
+import { FocusKeyManager } from '../core/a11y/focus-key-manager';
+import { Dir } from '../core/rtl/dir';
+import { Subscription } from 'rxjs/Subscription';
+import { transformPlaceholder, transformPanel, fadeInContent } from './select-animations';
+import { ControlValueAccessor, NgControl } from '@angular/forms';
+import { coerceBooleanProperty } from '../core/coercion/boolean-property';
+import { ConnectedOverlayDirective } from '../core/overlay/overlay-directives';
+import { ViewportRuler } from '../core/overlay/position/viewport-ruler';
 
 /**
  * The following style constants are necessary to save here in order
@@ -64,10 +65,9 @@ export const SELECT_PANEL_PADDING_Y = 16;
  */
 export const SELECT_PANEL_VIEWPORT_PADDING = 8;
 
-/** Change event object emitted by Md2Select. */
+/** Change event object that is emitted when the select value has changed. */
 export class Md2SelectChange {
-  source: Md2Select;
-  value: any;
+  constructor(public source: Md2Select, public value: any) { }
 }
 
 @Component({
@@ -142,19 +142,22 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
   _selectedValueWidth: number;
 
   /** Manages keyboard events for options in the panel. */
-  _keyManager: ListKeyManager;
+  _keyManager: FocusKeyManager;
 
   /** View -> model callback called when value changes */
-  _onChange = (value: any) => {};
+  _onChange = (value: any) => { };
 
   /** View -> model callback called when select has been touched */
-  _onTouched = () => {};
+  _onTouched = () => { };
 
   /** The IDs of child options to be passed to the aria-owns attribute. */
   _optionIds: string = '';
 
   /** The value of the select panel's transform-origin property. */
   _transformOrigin: string = 'top';
+
+  /** Whether the panel's animation is done. */
+  _panelDoneAnimating: boolean = false;
 
   /**
    * The x-offset of the overlay panel in relation to the trigger's top start corner.
@@ -191,54 +194,54 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
     },
   ];
 
+  /** Trigger that opens the select. */
   @ViewChild('trigger') trigger: ElementRef;
+
+  /** Overlay pane containing the options. */
   @ViewChild(ConnectedOverlayDirective) overlayDir: ConnectedOverlayDirective;
+
+  /** All of the defined select options. */
   @ContentChildren(Md2Option) options: QueryList<Md2Option>;
 
-  @Output() change: EventEmitter<Md2SelectChange> = new EventEmitter<Md2SelectChange>();
-
+  /** Placeholder to be shown if no value has been selected. */
   @Input()
-  get placeholder() {
-    return this._placeholder;
-  }
-
+  get placeholder() { return this._placeholder; }
   set placeholder(value: string) {
     this._placeholder = value;
+
+    // Must wait to record the trigger width to ensure placeholder width is included.
+    Promise.resolve(null).then(() => this._triggerWidth = this._getWidth());
   }
 
+  /** Whether the component is disabled. */
   @Input()
-  get disabled() {
-    return this._disabled;
-  }
-
+  get disabled() { return this._disabled; }
   set disabled(value: any) {
     this._disabled = coerceBooleanProperty(value);
   }
 
+  /** Whether the component is multiple. */
   @Input()
-  get multiple() {
-    return this._multiple;
-  }
+  get multiple() { return this._multiple; }
+  set multiple(value: any) { this._multiple = coerceBooleanProperty(value); }
 
-  set multiple(value: any) {
-    this._multiple = coerceBooleanProperty(value);
-  }
-
+  /** Whether the component is required. */
   @Input()
-  get required() {
-    return this._required;
-  }
+  get required() { return this._required; }
+  set required(value: any) { this._required = coerceBooleanProperty(value); }
 
-  set required(value: any) {
-    this._required = coerceBooleanProperty(value);
-  }
-
+  /** Event emitted when the select has been opened. */
   @Output() onOpen: EventEmitter<void> = new EventEmitter<void>();
+
+  /** Event emitted when the select has been closed. */
   @Output() onClose: EventEmitter<void> = new EventEmitter<void>();
+
+  /** Event emitted when the selected value has been changed by the user. */
+  @Output() change: EventEmitter<Md2SelectChange> = new EventEmitter<Md2SelectChange>();
 
   constructor(private _element: ElementRef, private _renderer: Renderer,
     private _viewportRuler: ViewportRuler, @Optional() private _dir: Dir,
-    @Optional() public _control: NgControl) {
+    @Self() @Optional() public _control: NgControl) {
     if (this._control) {
       this._control.valueAccessor = this;
     }
@@ -289,22 +292,11 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
     this._focusHost();
   }
 
-  /** Dispatch change event with current select and value. */
-  _emitChangeEvent(): void {
-    let event = new Md2SelectChange();
-    event.source = this;
-    if (this.multiple) {
-      event.value = this._selected.map(option => option.value);
-    } else {
-      event.value = this._selected[0].value;
-    }
-    this._onChange(event.value);
-    this.change.emit(event);
-  }
-
   /**
    * Sets the select's value. Part of the ControlValueAccessor interface
    * required to integrate with Angular's core forms API.
+   *
+   * @param value New value to be written to the model.
    */
   writeValue(value: any): void {
     if (!this.options) {
@@ -323,6 +315,8 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
    * Saves a callback function to be invoked when the select's value
    * changes from user input. Part of the ControlValueAccessor interface
    * required to integrate with Angular's core forms API.
+   *
+   * @param fn Callback to be triggered when the value changes.
    */
   registerOnChange(fn: (value: any) => void): void {
     this._onChange = fn;
@@ -332,6 +326,8 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
    * Saves a callback function to be invoked when the select is blurred
    * by the user. Part of the ControlValueAccessor interface required
    * to integrate with Angular's core forms API.
+   *
+   * @param fn Callback to be triggered when the component has been touched.
    */
   registerOnTouched(fn: () => {}): void {
     this._onTouched = fn;
@@ -340,6 +336,8 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
   /**
    * Disables the select. Part of the ControlValueAccessor interface required
    * to integrate with Angular's core forms API.
+   *
+   * @param isDisabled Sets whether the component is disabled.
    */
   setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
@@ -374,8 +372,8 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
   }
 
   /**
-   * When the panel is finished animating, emits an event and focuses
-   * an option if the panel is open.
+   * When the panel element is finished transforming in (though not fading in), it
+   * emits an event and focuses an option if the panel is open.
    */
   _onPanelDone(): void {
     if (this.panelOpen) {
@@ -384,6 +382,14 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
     } else {
       this.onClose.emit();
     }
+  }
+
+  /**
+   * When the panel content is done fading in, the _panelDoneAnimating property is
+   * set so the proper class can be added to the panel.
+   */
+  _onFadeInDone(): void {
+    this._panelDoneAnimating = this.panelOpen;
   }
 
   /**
@@ -456,7 +462,7 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
 
   /** Sets up a key manager to listen to keyboard events on the overlay panel. */
   private _initKeyManager() {
-    this._keyManager = new ListKeyManager(this.options);
+    this._keyManager = new FocusKeyManager(this.options);
     this._tabSubscription = this._keyManager.tabOut.subscribe(() => {
       this.close();
     });
@@ -472,7 +478,7 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
   /** Listens to selection events on each option. */
   private _listenToOptions(): void {
     this.options.forEach((option: Md2Option) => {
-      const sub = option.onSelect.subscribe((isUserInput: boolean) => {
+      const sub = option.onSelect.subscribe((event: Md2OptionSelectEvent) => {
         if (this.multiple) {
           let ind = this._selected.indexOf(option);
           if (ind < 0) {
@@ -490,7 +496,7 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
           }
         }
 
-        if (isUserInput) {
+        if (event.isUserInput) {
           this._emitChangeEvent();
         }
 
@@ -508,9 +514,21 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
     this._subscriptions = [];
   }
 
+  /** Emits an event when the user selects an option. */
+  _emitChangeEvent(): void {
+    let value: any;
+    if (this.multiple) {
+      value = this._selected.map(option => option.value);
+    } else {
+      value = this._selected[0].value;
+    }
+    this._onChange(value);
+    this.change.emit(new Md2SelectChange(this, value));
+  }
+
   /** Records option IDs to pass to the aria-owns property. */
   private _setOptionIds() {
-    this._optionIds = this.options.map(option => option.id).join(' ');
+    this._optionIds = this.options.map((option: Md2Option) => option.id).join(' ');
   }
 
   /** Deselect each option that doesn't match the current selection. */
@@ -542,9 +560,9 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
    */
   private _focusCorrectOption(): void {
     if (this.selected.length) {
-      this._keyManager.setFocus(this._getOptionIndex(this.selected[0]));
+      this._keyManager.setActiveItem(this._getOptionIndex(this.selected[0]));
     } else {
-      this._keyManager.focusFirstItem();
+      this._keyManager.setFirstItemActive();
     }
   }
 

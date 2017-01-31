@@ -111,9 +111,6 @@ export * from './compatibility/compatibility';
 // Animation
 export * from './animation/animation';
 
-// Selection
-export * from './selection/index';
-
 // Coercion
 export {coerceBooleanProperty} from './coercion/boolean-property';
 export {coerceNumberProperty} from './coercion/number-property';

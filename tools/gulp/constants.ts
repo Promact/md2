@@ -26,7 +26,7 @@ export const HTML_MINIFIER_OPTIONS = {
 
 export const LICENSE_BANNER = `/**
   * @license Md2 v${MATERIAL_VERSION}
-  * Copyright (c) 2016 Promact, Inc. http://code.promactinfo.com/md2/
+  * Copyright (c) 2017 Promact, Inc. http://code.promactinfo.com/md2/
   * License: MIT
   */`;
 

@@ -8,7 +8,7 @@ import {spawnSync} from 'child_process';
 // Those imports lack types.
 const uglifyJs = require('uglify-js');
 
-const BUNDLE_PATH = join(DIST_COMPONENTS_ROOT, 'bundles', 'material.umd.js');
+const BUNDLE_PATH = join(DIST_COMPONENTS_ROOT, 'bundles', 'md2.umd.js');
 
 /** Task which runs test against the size of whole library. */
 task('payload', ['build:release'], () => {

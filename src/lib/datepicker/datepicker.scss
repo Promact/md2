@@ -300,7 +300,7 @@ md2-datepicker.md2-datepicker-disabled:focus {
 }
 
 .md2-calendar-dates {
-  margin: 0 20px;
+  margin: 0 auto;
 
   th {
     width: 35px;
@@ -464,7 +464,7 @@ md2-datepicker.md2-datepicker-disabled:focus {
   }
 }
 
-@media (min-width: 600px) {
+@media (min-width: 480px) {
   .md2-datepicker-panel {
     display: flex;
     width: 450px;
@@ -519,8 +519,8 @@ md2-datepicker.md2-datepicker-disabled:focus {
   opacity: 0;
 }
 
-.cdk-overlay-transparent-backdrop {
-  background: none;
+.cdk-overlay-dark-backdrop {
+  background: rgba(black, 0.6);
 }
 
 .cdk-overlay-backdrop.cdk-overlay-backdrop-showing {

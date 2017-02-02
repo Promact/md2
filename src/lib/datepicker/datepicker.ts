@@ -531,7 +531,7 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
    * Display Datepicker
    */
   _showDatepicker() {
-    if (this.disabled || this.readonly) { return; }
+    if (this.disabled) { return; }
     this.selected = this.date || new Date(1, 0, 1);
     this.displayDate = this.date || this.today;
     this.generateCalendar();

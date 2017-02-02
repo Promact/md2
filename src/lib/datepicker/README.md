@@ -7,7 +7,6 @@ Datepicker allow the user to select date and time.
 | Name | Type | Description |
 | --- | --- | --- |
 | `type` | `'date' | 'time' | 'datetime'` | The type of the datepicker |
-| `readonly` | `boolean` | Whether or not the datepicker is readonly |
 | `required` | `boolean` | Whether or not the datepicker is required |
 | `disabled` | `boolean` | Whether or not the datepicker is disabled |
 | `name` | `number` | Datepicker name. |

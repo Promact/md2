@@ -242,7 +242,6 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   private _format: string = this.type === 'date' ?
     'DD/MM/YYYY' : this.type === 'time' ? 'HH:mm' : this.type === 'datetime' ?
       'DD/MM/YYYY HH:mm' : 'DD/MM/YYYY';
-  private _readonly: boolean = false;
   private _required: boolean = false;
   private _disabled: boolean = false;
   private _isInitialized: boolean = false;
@@ -302,10 +301,6 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
       }
     }
   }
-
-  @Input()
-  get readonly(): boolean { return this._readonly; }
-  set readonly(value) { this._readonly = coerceBooleanProperty(value); }
 
   @Input()
   get required(): boolean { return this._required; }

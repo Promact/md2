@@ -88,6 +88,7 @@ let nextId = 0;
     '[attr.aria-disabled]': 'disabled.toString()',
     '[attr.aria-invalid]': '_control?.invalid || "false"',
     '(keydown)': '_handleKeydown($event)',
+    '(focus)': '_onFocus()',
     '(blur)': '_onBlur()'
   },
   animations: [
@@ -102,6 +103,7 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   private _date: Date = null;
   private _panelOpen = false;
   private _selected: Date = null;
+  private _openOnFocus: boolean = false;
 
   private mouseMoveListener: any;
   private mouseUpListener: any;
@@ -192,6 +194,17 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   get selected() { return this._selected; }
   set selected(value: Date) { this._selected = value; }
 
+  @Input()
+  get openOnFocus(): boolean { return this._openOnFocus; }
+  set openOnFocus(value: boolean) { this._openOnFocus = coerceBooleanProperty(value); }
+
+  @Input()
+  set isOpen(value: boolean) {
+    if (value && !this.panelOpen) {
+      this.open();
+    }
+  }
+
   get panelOpen(): boolean {
     return this._panelOpen;
   }
@@ -209,7 +222,9 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
 
   /** Closes the overlay panel and focuses the host element. */
   close(): void {
-    this._panelOpen = false;
+    setTimeout(()=>{
+      this._panelOpen = false;
+    }, 10)
     //if (!this._date) {
     //  this._placeholderState = '';
     //}
@@ -479,6 +494,12 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
           this._showDatepicker();
           break;
       }
+    }
+  }
+
+  _onFocus() {
+    if (!this.panelOpen && this.openOnFocus) {
+      this.open();
     }
   }
 

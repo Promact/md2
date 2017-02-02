@@ -16,6 +16,8 @@ Datepicker allow the user to select date and time.
 | `placeholder` | `number` | Datepicker placeholder label |
 | `format` | `number` | The date format of datepicker |
 | `tabindex` | `number` | The tabIndex of the datepicker. |
+| `openOnFocus` | `boolean` | Opend Calendar Whether or not the datepicker is openOnFocus. |
+| `isOpen` | `number` | Opend Calendar Whether or not the datepicker is isOpen. |
 
 ### Events
 

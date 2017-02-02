@@ -43,8 +43,7 @@ import {
 
 /** Change event object emitted by Md2Select. */
 export class Md2DateChange {
-  source: Md2Datepicker;
-  date: Date;
+  constructor(public source: Md2Datepicker, public date: Date) { }
 }
 
 export interface IDay {
@@ -125,8 +124,14 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
     },
   ];
 
+  /** Event emitted when the select has been opened. */
   @Output() onOpen: EventEmitter<void> = new EventEmitter<void>();
+
+  /** Event emitted when the select has been closed. */
   @Output() onClose: EventEmitter<void> = new EventEmitter<void>();
+
+  /** Event emitted when the selected date has been changed by the user. */
+  @Output() change: EventEmitter<Md2DateChange> = new EventEmitter<Md2DateChange>();
 
   constructor(private _element: ElementRef, private _renderer: Renderer,
     private _dateUtil: Md2DateUtil, private _locale: DateLocale,
@@ -163,23 +168,23 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
         }
       }
       this._viewValue = this._formatDate(this._date);
-      let date = '';
-      if (this.type !== 'time') {
-        date += this._date.getFullYear() + '-' + (this._date.getMonth() + 1) +
-          '-' + this._date.getDate();
-      }
-      if (this.type === 'datetime') {
-        date += ' ';
-      }
-      if (this.type !== 'date') {
-        date += this._date.getHours() + ':' + this._date.getMinutes();
-      }
-      if (this._isInitialized) {
-        if (this._control) {
-          this._onChange(date);
-        }
-        this.change.emit(date);
-      }
+      //let date = '';
+      //if (this.type !== 'time') {
+      //  date += this._date.getFullYear() + '-' + (this._date.getMonth() + 1) +
+      //    '-' + this._date.getDate();
+      //}
+      //if (this.type === 'datetime') {
+      //  date += ' ';
+      //}
+      //if (this.type !== 'date') {
+      //  date += this._date.getHours() + ':' + this._date.getMinutes();
+      //}
+      //if (this._isInitialized) {
+      //  if (this._control) {
+      //    this._onChange(date);
+      //  }
+      //  this.change.emit(date);
+      //}
     }
   }
 
@@ -209,6 +214,10 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
     //  this._placeholderState = '';
     //}
     this._focusHost();
+
+    this._isYearsVisible = false;
+    this._isCalendarVisible = this.type !== 'time' ? true : false;
+    this._isHoursVisible = true;
   }
 
   _onPanelDone(): void {
@@ -282,8 +291,6 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
 
   private _min: Date = null;
   private _max: Date = null;
-
-  @Output() change: EventEmitter<any> = new EventEmitter<any>();
 
   @Input() type: 'date' | 'time' | 'datetime' = 'date';
   @Input() name: string = '';
@@ -479,10 +486,6 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
     if (!this.panelOpen) {
       this._onTouched();
     }
-    //this._isYearsVisible = false;
-    //this._isCalendarVisible = this.type !== 'time' ? true : false;
-    //this._isHoursVisible = true;
-    //this._onTouched();
   }
 
 
@@ -570,6 +573,7 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
       this._resetClock();
     } else {
       this.date = this.displayDate;
+      this._emitChangeEvent();
       this._onBlur();
       this.close();
     }
@@ -601,6 +605,7 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   private setDate(date: Date) {
     if (this.type === 'date') {
       this.date = date;
+      this._emitChangeEvent();
       this._onBlur();
       this.close();
     } else {
@@ -780,6 +785,7 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
       date.getDate(), date.getHours(), minute);
     this.selected = this.displayDate;
     this.date = this.displayDate;
+    this._emitChangeEvent();
     this._onBlur();
     this.close();
   }
@@ -1056,12 +1062,10 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
     };
   }
 
-  private _emitChangeEvent(): void {
-    let event = new Md2DateChange();
-    event.source = this;
-    event.date = this._date;
-    this._onChange(event.date);
-    this.change.emit(event);
+  /** Emits an event when the user selects a date. */
+  _emitChangeEvent(): void {
+    this._onChange(this.date);
+    this.change.emit(new Md2DateChange(this, this.date));
   }
 
   writeValue(value: any): void {

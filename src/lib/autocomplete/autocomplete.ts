@@ -41,8 +41,6 @@ export class Item {
   }
 }
 
-const noop = () => { };
-
 let nextId = 0;
 
 export const MD2_AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR: any = {

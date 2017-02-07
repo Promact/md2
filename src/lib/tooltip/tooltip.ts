@@ -15,7 +15,8 @@ import {
   NgZone,
   Optional,
   OnDestroy,
-  ViewEncapsulation
+  ViewEncapsulation,
+  ChangeDetectorRef
 } from '@angular/core';
 import {
   Overlay,
@@ -24,13 +25,13 @@ import {
   OverlayRef,
   ComponentPortal,
   OverlayConnectionPosition,
-  OriginConnectionPosition
+  OriginConnectionPosition,
+  CompatibilityModule,
 } from '../core';
 import { Md2TooltipInvalidPositionError } from './tooltip-errors';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { Dir } from '../core/rtl/dir';
-import { OVERLAY_PROVIDERS } from '../core/overlay/overlay';
 import 'rxjs/add/operator/first';
 
 export type TooltipPosition = 'left' | 'right' | 'above' | 'below' | 'before' | 'after';
@@ -278,7 +279,7 @@ export class Md2TooltipComponent {
   /** Subject for notifying that the tooltip has been hidden from the view */
   private _onHide: Subject<any> = new Subject();
 
-  constructor( @Optional() private _dir: Dir) { }
+  constructor( @Optional() private _dir: Dir, private _changeDetectorRef: ChangeDetectorRef) { }
 
   /**
    * Shows the tooltip with an animation originating from the provided origin
@@ -301,6 +302,10 @@ export class Md2TooltipComponent {
       // If this was set to true immediately, then a body click that triggers show() would
       // trigger interaction and close the tooltip right after it was displayed.
       this._closeOnInteraction = false;
+
+      // Mark for check so if any parent component has set the 
+      // ChangeDetectionStrategy to OnPush it will be checked anyways
+      this._changeDetectorRef.markForCheck();
       setTimeout(() => { this._closeOnInteraction = true; }, 0);
     }, delay);
   }
@@ -318,6 +323,10 @@ export class Md2TooltipComponent {
     this._hideTimeoutId = setTimeout(() => {
       this._visibility = 'hidden';
       this._closeOnInteraction = false;
+
+      // Mark for check so if any parent component has set the 
+      // ChangeDetectionStrategy to OnPush it will be checked anyways
+      this._changeDetectorRef.markForCheck();
     }, delay);
   }
 
@@ -369,16 +378,17 @@ export class Md2TooltipComponent {
 
 
 @NgModule({
-  imports: [OverlayModule],
-  exports: [Md2Tooltip, Md2TooltipComponent],
+  imports: [OverlayModule, CompatibilityModule],
+  exports: [Md2Tooltip, Md2TooltipComponent, CompatibilityModule],
   declarations: [Md2Tooltip, Md2TooltipComponent],
   entryComponents: [Md2TooltipComponent],
 })
 export class Md2TooltipModule {
+  /** @deprecated */
   static forRoot(): ModuleWithProviders {
     return {
       ngModule: Md2TooltipModule,
-      providers: [OVERLAY_PROVIDERS]
+      providers: []
     };
   }
 }

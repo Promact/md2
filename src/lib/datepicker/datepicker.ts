@@ -504,7 +504,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
         case SPACE:
           event.preventDefault();
           event.stopPropagation();
-          this._showDatepicker();
+          this.open();
           break;
       }
     }

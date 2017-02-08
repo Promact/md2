@@ -224,19 +224,19 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   close(): void {
     setTimeout(() => {
       this._panelOpen = false;
-    }, 10);
-    //if (!this._date) {
-    //  this._placeholderState = '';
-    //}
-    if (this._overlayRef) {
-      this._overlayRef.detach();
-      this._backdropSubscription.unsubscribe();
-    }
-    this._focusHost();
+      //if (!this._date) {
+      //  this._placeholderState = '';
+      //}
+      if (this._overlayRef) {
+        this._overlayRef.detach();
+        this._backdropSubscription.unsubscribe();
+      }
+      this._focusHost();
 
-    this._isYearsVisible = false;
-    this._isCalendarVisible = this.type !== 'time' ? true : false;
-    this._isHoursVisible = true;
+      this._isYearsVisible = false;
+      this._isCalendarVisible = this.type !== 'time' ? true : false;
+      this._isHoursVisible = true;
+    }, 10);
   }
 
   /** Removes the panel from the DOM. */

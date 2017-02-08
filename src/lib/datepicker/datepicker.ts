@@ -45,7 +45,7 @@ import {
   TemplatePortalDirective,
   PortalModule
 } from '../core';
-import { transformPlaceholder, transformPanel, fadeInContent } from '../select/select-animations';
+import { fadeInContent } from './datepicker-animations';
 import { Subscription } from 'rxjs/Subscription';
 
 /** Change event object emitted by Md2Select. */
@@ -99,8 +99,6 @@ let nextId = 0;
     '(blur)': '_onBlur()'
   },
   animations: [
-    transformPlaceholder,
-    transformPanel,
     fadeInContent
   ],
   encapsulation: ViewEncapsulation.None
@@ -120,21 +118,6 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
 
   _transformOrigin: string = 'top';
   _panelDoneAnimating: boolean = false;
-
-  _positions = [
-    {
-      originX: 'start',
-      originY: 'top',
-      overlayX: 'start',
-      overlayY: 'top',
-    },
-    {
-      originX: 'start',
-      originY: 'bottom',
-      overlayX: 'start',
-      overlayY: 'bottom',
-    },
-  ];
 
   @ViewChildren(TemplatePortalDirective) templatePortals: QueryList<Portal<any>>;
 
@@ -241,7 +224,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   close(): void {
     setTimeout(() => {
       this._panelOpen = false;
-    }, 10)
+    }, 10);
     //if (!this._date) {
     //  this._placeholderState = '';
     //}
@@ -1151,118 +1134,6 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   registerOnChange(fn: (value: any) => void): void { this._onChange = fn; }
 
   registerOnTouched(fn: () => {}): void { this._onTouched = fn; }
-
-
-  ///**
-  // * Calculates the y-offset of the select's overlay panel in relation to the
-  // * top start corner of the trigger. It has to be adjusted in order for the
-  // * selected option to be aligned over the trigger when the panel opens.
-  // */
-  //private _calculateOverlayOffset(selectedIndex: number, scrollBuffer: number,
-  //  maxScroll: number): number {
-  //  let optionOffsetFromPanelTop: number;
-
-  //  if (this._scrollTop === 0) {
-  //    optionOffsetFromPanelTop = selectedIndex * SELECT_OPTION_HEIGHT;
-  //  } else if (this._scrollTop === maxScroll) {
-  //    const firstDisplayedIndex = this.options.length - SELECT_MAX_OPTIONS_DISPLAYED;
-  //    const selectedDisplayIndex = selectedIndex - firstDisplayedIndex;
-
-  //    // Because the panel height is longer than the height of the options alone,
-  //    // there is always extra padding at the top or bottom of the panel. When
-  //    // scrolled to the very bottom, this padding is at the top of the panel and
-  //    // must be added to the offset.
-  //    optionOffsetFromPanelTop =
-  //      selectedDisplayIndex * SELECT_OPTION_HEIGHT + SELECT_PANEL_PADDING_Y;
-  //  } else {
-  //    // If the option was scrolled to the middle of the panel using a scroll buffer,
-  //    // its offset will be the scroll buffer minus the half height that was added to
-  //    // center it.
-  //    optionOffsetFromPanelTop = scrollBuffer - SELECT_OPTION_HEIGHT / 2;
-  //  }
-
-  //  // The final offset is the option's offset from the top, adjusted for the height
-  //  // difference, multiplied by -1 to ensure that the overlay moves in the correct
-  //  // direction up the page.
-  //  return optionOffsetFromPanelTop * -1 - SELECT_OPTION_HEIGHT_ADJUSTMENT;
-  //}
-
-  ///**
-  // * Checks that the attempted overlay position will fit within the viewport.
-  // * If it will not fit, tries to adjust the scroll position and the associated
-  // * y-offset so the panel can open fully on-screen. If it still won't fit,
-  // * sets the offset back to 0 to allow the fallback position to take over.
-  // */
-  //private _checkOverlayWithinViewport(maxScroll: number): void {
-  //  const viewportRect = this._viewportRuler.getViewportRect();
-  //  const triggerRect = this._getTriggerRect();
-
-  //  const topSpaceAvailable = triggerRect.top - SELECT_PANEL_VIEWPORT_PADDING;
-  //  const bottomSpaceAvailable =
-  //    viewportRect.height - triggerRect.bottom - SELECT_PANEL_VIEWPORT_PADDING;
-
-  //  const panelHeightTop = Math.abs(this._offsetY);
-  //  const totalPanelHeight =
-  //    Math.min(this.options.length * SELECT_OPTION_HEIGHT, SELECT_PANEL_MAX_HEIGHT);
-  //  const panelHeightBottom = totalPanelHeight - panelHeightTop - triggerRect.height;
-
-  //  if (panelHeightBottom > bottomSpaceAvailable) {
-  //    this._adjustPanelUp(panelHeightBottom, bottomSpaceAvailable);
-  //  } else if (panelHeightTop > topSpaceAvailable) {
-  //    this._adjustPanelDown(panelHeightTop, topSpaceAvailable, maxScroll);
-  //  } else {
-  //    this._transformOrigin = this._getOriginBasedOnOption();
-  //  }
-  //}
-
-  ///** Adjusts the overlay panel up to fit in the viewport. */
-  //private _adjustPanelUp(panelHeightBottom: number, bottomSpaceAvailable: number) {
-  //  const distanceBelowViewport = panelHeightBottom - bottomSpaceAvailable;
-
-  //  // Scrolls the panel up by the distance it was extending past the boundary, then
-  //  // adjusts the offset by that amount to move the panel up into the viewport.
-  //  this._scrollTop -= distanceBelowViewport;
-  //  this._offsetY -= distanceBelowViewport;
-  //  this._transformOrigin = this._getOriginBasedOnOption();
-
-  //  // If the panel is scrolled to the very top, it won't be able to fit the panel
-  //  // by scrolling, so set the offset to 0 to allow the fallback position to take
-  //  // effect.
-  //  if (this._scrollTop <= 0) {
-  //    this._scrollTop = 0;
-  //    this._offsetY = 0;
-  //    this._transformOrigin = `50% bottom 0px`;
-  //  }
-  //}
-
-  ///** Adjusts the overlay panel down to fit in the viewport. */
-  //private _adjustPanelDown(panelHeightTop: number, topSpaceAvailable: number,
-  //  maxScroll: number) {
-  //  const distanceAboveViewport = panelHeightTop - topSpaceAvailable;
-
-  //  // Scrolls the panel down by the distance it was extending past the boundary, then
-  //  // adjusts the offset by that amount to move the panel down into the viewport.
-  //  this._scrollTop += distanceAboveViewport;
-  //  this._offsetY += distanceAboveViewport;
-  //  this._transformOrigin = this._getOriginBasedOnOption();
-
-  //  // If the panel is scrolled to the very bottom, it won't be able to fit the
-  //  // panel by scrolling, so set the offset to 0 to allow the fallback position
-  //  // to take effect.
-  //  if (this._scrollTop >= maxScroll) {
-  //    this._scrollTop = maxScroll;
-  //    this._offsetY = 0;
-  //    this._transformOrigin = `50% top 0px`;
-  //    return;
-  //  }
-  //}
-
-  ///** Sets the transform origin point based on the selected option. */
-  //private _getOriginBasedOnOption(): string {
-  //  const originY =
-  //    Math.abs(this._offsetY) - SELECT_OPTION_HEIGHT_ADJUSTMENT + SELECT_OPTION_HEIGHT / 2;
-  //  return `50% ${originY}px 0px`;
-  //}
 
   private _subscribeToBackdrop(): void {
     this._backdropSubscription = this._overlayRef.backdropClick().subscribe(() => {

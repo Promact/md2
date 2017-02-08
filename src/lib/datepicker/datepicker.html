@@ -1,4 +1,4 @@
-﻿<div class="md2-datepicker-trigger" cdk-overlay-origin #origin="cdkOverlayOrigin" (click)="toggle()">
+﻿<div class="md2-datepicker-trigger" (click)="toggle()">
   <div class="md2-datepicker-icon">
     <svg *ngIf="type==='date'" width="24" height="24" viewBox="0 0 24 24">
       <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"></path>
@@ -18,8 +18,7 @@
     </svg>
   </div>
 </div>
-<template cdk-connected-overlay [origin]="origin" [width]="0" [height]="0" [open]="panelOpen" hasBackdrop (backdropClick)="close()"
-          backdropClass="cdk-overlay-dark-backdrop" [positions]="_positions">
+<template portal>
   <div class="md2-datepicker-panel" [@transformPanel]="'showing'" (@transformPanel.done)="_onPanelDone()"
        (keydown)="_handleKeydown($event)" [style.transformOrigin]="_transformOrigin"
        [class.md2-datepicker-panel-done-animating]="_panelDoneAnimating" tabindex="0">

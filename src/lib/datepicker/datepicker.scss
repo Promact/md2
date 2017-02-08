@@ -500,6 +500,12 @@ md2-datepicker.md2-datepicker-disabled:focus {
   z-index: 1000;
 }
 
+.cdk-global-overlay-wrapper {
+  display: flex;
+  position: absolute;
+  z-index: 1000;
+}
+
 .cdk-overlay-pane {
   position: absolute;
   pointer-events: auto;
@@ -519,10 +525,10 @@ md2-datepicker.md2-datepicker-disabled:focus {
   opacity: 0;
 }
 
-.cdk-overlay-dark-backdrop {
-  background: rgba(black, 0.6);
-}
-
 .cdk-overlay-backdrop.cdk-overlay-backdrop-showing {
   opacity: 0.48;
+}
+
+.cdk-overlay-dark-backdrop {
+  background: rgba(black, 0.6);
 }

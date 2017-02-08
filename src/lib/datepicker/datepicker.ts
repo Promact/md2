@@ -4,11 +4,14 @@ import {
   ElementRef,
   HostListener,
   Input,
+  OnDestroy,
   Output,
   Optional,
   EventEmitter,
   Renderer,
   Self,
+  ViewChildren,
+  QueryList,
   ViewEncapsulation,
   NgModule,
   ModuleWithProviders
@@ -20,11 +23,6 @@ import {
 import { CommonModule } from '@angular/common';
 import { Md2DateUtil } from './dateUtil';
 import { DateLocale } from './date-locale';
-import {
-  OverlayModule,
-} from '../core';
-import { transformPlaceholder, transformPanel, fadeInContent } from '../select/select-animations';
-
 import {
   coerceBooleanProperty,
   ENTER,
@@ -38,8 +36,17 @@ import {
   LEFT_ARROW,
   RIGHT_ARROW,
   UP_ARROW,
-  DOWN_ARROW
-} from '../core/core';
+  DOWN_ARROW,
+  Overlay,
+  OverlayState,
+  OverlayRef,
+  OverlayModule,
+  Portal,
+  TemplatePortalDirective,
+  PortalModule
+} from '../core';
+import { transformPlaceholder, transformPanel, fadeInContent } from '../select/select-animations';
+import { Subscription } from 'rxjs/Subscription';
 
 /** Change event object emitted by Md2Select. */
 export class Md2DateChange {
@@ -98,7 +105,10 @@ let nextId = 0;
   ],
   encapsulation: ViewEncapsulation.None
 })
-export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
+export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueAccessor {
+
+  private _overlayRef: OverlayRef;
+  private _backdropSubscription: Subscription;
 
   private _date: Date = null;
   private _panelOpen = false;
@@ -126,6 +136,8 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
     },
   ];
 
+  @ViewChildren(TemplatePortalDirective) templatePortals: QueryList<Portal<any>>;
+
   /** Event emitted when the select has been opened. */
   @Output() onOpen: EventEmitter<void> = new EventEmitter<void>();
 
@@ -135,7 +147,7 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   /** Event emitted when the selected date has been changed by the user. */
   @Output() change: EventEmitter<Md2DateChange> = new EventEmitter<Md2DateChange>();
 
-  constructor(private _element: ElementRef, private _renderer: Renderer,
+  constructor(private _element: ElementRef, private overlay: Overlay, private _renderer: Renderer,
     private _dateUtil: Md2DateUtil, private _locale: DateLocale,
     @Self() @Optional() public _control: NgControl) {
     if (this._control) {
@@ -154,6 +166,8 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
     this._isInitialized = true;
     this._isCalendarVisible = this.type !== 'time' ? true : false;
   }
+
+  ngOnDestroy() { this.destroyPanel(); }
 
   @Input()
   get date() { return this._date; }
@@ -216,23 +230,40 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   /** Opens the overlay panel. */
   open(): void {
     if (this.disabled) { return; }
+    this._createOverlay();
+    this._overlayRef.attach(this.templatePortals.first);
+    this._subscribeToBackdrop();
     this._panelOpen = true;
     this._showDatepicker();
   }
 
   /** Closes the overlay panel and focuses the host element. */
   close(): void {
-    setTimeout(()=>{
+    setTimeout(() => {
       this._panelOpen = false;
     }, 10)
     //if (!this._date) {
     //  this._placeholderState = '';
     //}
+    if (this._overlayRef) {
+      this._overlayRef.detach();
+      this._backdropSubscription.unsubscribe();
+    }
     this._focusHost();
 
     this._isYearsVisible = false;
     this._isCalendarVisible = this.type !== 'time' ? true : false;
     this._isHoursVisible = true;
+  }
+
+  /** Removes the panel from the DOM. */
+  destroyPanel(): void {
+    if (this._overlayRef) {
+      this._overlayRef.dispose();
+      this._overlayRef = null;
+
+      this._cleanUpSubscriptions();
+    }
   }
 
   _onPanelDone(): void {
@@ -261,7 +292,6 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
     let timestamp = Date.parse(value);
     return isNaN(timestamp) ? fallbackValue : new Date(timestamp);
   }
-
 
   private _format: string = this.type === 'date' ?
     'DD/MM/YYYY' : this.type === 'time' ? 'HH:mm' : this.type === 'datetime' ?
@@ -1234,12 +1264,42 @@ export class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
   //  return `50% ${originY}px 0px`;
   //}
 
+  private _subscribeToBackdrop(): void {
+    this._backdropSubscription = this._overlayRef.backdropClick().subscribe(() => {
+      this.close();
+    });
+  }
+
+  /**
+   *  This method creates the overlay from the provided panel's template and saves its
+   *  OverlayRef so that it can be attached to the DOM when open is called.
+   */
+  private _createOverlay(): void {
+    if (!this._overlayRef) {
+      let config = new OverlayState();
+      config.positionStrategy = this.overlay.position()
+        .global()
+        .centerHorizontally()
+        .centerVertically();
+      config.hasBackdrop = true;
+      config.backdropClass = 'cdk-overlay-dark-backdrop';
+
+      this._overlayRef = this.overlay.create(config);
+    }
+  }
+
+  private _cleanUpSubscriptions(): void {
+    if (this._backdropSubscription) {
+      this._backdropSubscription.unsubscribe();
+    }
+  }
+
 }
 
 export const MD2_DATEPICKER_DIRECTIVES = [Md2Datepicker];
 
 @NgModule({
-  imports: [CommonModule, OverlayModule],
+  imports: [CommonModule, OverlayModule, PortalModule],
   exports: MD2_DATEPICKER_DIRECTIVES,
   declarations: MD2_DATEPICKER_DIRECTIVES,
 })

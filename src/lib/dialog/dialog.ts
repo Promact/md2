@@ -46,7 +46,7 @@ export class Md2DialogFooter { }
   styleUrls: ['dialog.css'],
   host: {
     'tabindex': '0',
-    '(body:keydown)': '_handleDocumentKeydown($event)'
+    '(body:keydown.esc)': '_handleDocumentKeydown($event)'
   },
   encapsulation: ViewEncapsulation.None,
 })
@@ -118,9 +118,7 @@ export class Md2Dialog implements OnDestroy {
   }
 
   _handleDocumentKeydown(event: KeyboardEvent) {
-    if (event.keyCode === ESCAPE) {
       this.close();
-    }
   }
 }
 

@@ -16,9 +16,9 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-export class Md2TabChangeEvent {
-  index: number;
-  tab: Md2Tab;
+/** Change event object that is emitted when the tab has changed. */
+export class Md2TabChange {
+  constructor(public tab: Md2Tab, public index: number) { }
 }
 
 @Directive({ selector: '[md2Transclude]' })
@@ -109,7 +109,7 @@ export class Md2Tabs implements AfterContentInit {
         }
       }
       if (this._isInitialized) {
-        this.change.emit(this._createChangeEvent(value));
+        this._emitChangeEvent();
       }
     }
   }
@@ -136,7 +136,7 @@ export class Md2Tabs implements AfterContentInit {
     return elements;
   }
 
-  @Output() change: EventEmitter<Md2TabChangeEvent> = new EventEmitter<Md2TabChangeEvent>();
+  @Output() change: EventEmitter<Md2TabChange> = new EventEmitter<Md2TabChange>();
 
   constructor(private elementRef: ElementRef) { }
 
@@ -180,18 +180,9 @@ export class Md2Tabs implements AfterContentInit {
     this._inkBarWidth = tab.offsetWidth + 'px';
   }
 
-  /**
-   * Create Change Event
-   * @param index
-   * @return event of Md2TabChangeEvent
-   */
-  private _createChangeEvent(index: number): Md2TabChangeEvent {
-    const event = new Md2TabChangeEvent;
-    event.index = index;
-    if (this.tabs && this.tabs.length) {
-      event.tab = this.tabs.toArray()[index];
-    }
-    return event;
+  /** Emits an event when the user selects an option. */
+  _emitChangeEvent(): void {
+    this.change.emit(new Md2TabChange(this.tabs.toArray()[this._selectedIndex], this._selectedIndex));
   }
 
   /**

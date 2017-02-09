@@ -178,7 +178,7 @@ export class ColorpickerService {
   outputFormat(hsva: Hsva, outputFormat: string) {
     if (hsva.a < 1) {
       switch (outputFormat) {
-        case 'hsla':
+        case 'hsl':
           let hsla = this.hsva2hsla(hsva);
           let hslaText = new Hsla(Math.round((hsla.h) * 360), Math.round(hsla.s * 100),
             Math.round(hsla.l * 100), Math.round(hsla.a * 100) / 100
@@ -192,12 +192,12 @@ export class ColorpickerService {
       }
     } else {
       switch (outputFormat) {
-        case 'hsla':
+        case 'hsl':
           let hsla = this.hsva2hsla(hsva);
           let hslaText = new Hsla(Math.round((hsla.h) * 360), Math.round(hsla.s * 100),
             Math.round(hsla.l * 100), Math.round(hsla.a * 100) / 100);
           return 'hsl(' + hslaText.h + ',' + hslaText.s + '%,' + hslaText.l + '%)';
-        case 'rgba':
+        case 'rgb':
           let rgba = this.denormalizeRGBA(this.hsvaToRgba(hsva));
           return 'rgb(' + rgba.r + ',' + rgba.g + ',' + rgba.b + ')';
         default:
@@ -208,10 +208,7 @@ export class ColorpickerService {
   hexText(rgba: Rgba) {
     let mainText = ((1 << 24) | (rgba.r << 16) | (rgba.g << 8) | rgba.b).toString(16);
     let hexText = '#' + mainText.substr(1);
-    if (hexText[1] === hexText[2] && hexText[3] === hexText[4] && hexText[5] === hexText[6]) {
-      hexText = '#' + hexText[1] + hexText[3] + hexText[5];
-    }
-    return hexText.toUpperCase();
+    return hexText.toLowerCase();
   }
 
   denormalizeRGBA(rgba: Rgba) {

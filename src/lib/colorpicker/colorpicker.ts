@@ -224,9 +224,9 @@ export class Md2Colorpicker implements OnInit, ControlValueAccessor {
     }
     this.sliderDim = new SliderDimension(150, 230, 130, 150);
     this.slider = new SliderPosition(0, 0, 0, 0);
-    if (this.cFormat === 'rgba') {
+    if (this.cFormat === 'rgb') {
       this.format = 1;
-    } else if (this.cFormat === 'hsla') {
+    } else if (this.cFormat === 'hsl') {
       this.format = 2;
     } else {
       this.format = 0;

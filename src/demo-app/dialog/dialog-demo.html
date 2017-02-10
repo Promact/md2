@@ -17,7 +17,7 @@
     <button button="primary" (click)="confirm.show()">
       Confirm Dialog
     </button>
-    <md2-dialog #custom1 title="{{dialogHeader}}">
+    <md2-dialog #custom1 [title]="dialogHeader">
       <input type="text" class="md2-input" [(ngModel)]="dialogHeader" />
       <p>
         The mango is a juicy stone fruit belonging to the genus Mangifera, consisting of numerous
@@ -40,7 +40,7 @@
         decorations at weddings, public celebrations, and religious ceremonies.
       </p>
     </md2-dialog>
-    <md2-dialog #custom title="{{dialogHeader}}">
+    <md2-dialog #custom [title]="dialogHeader">
       <button button="primary" flex="auto" (click)="custom1.show()">
         Custom Dialog
       </button>

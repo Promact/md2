@@ -95,9 +95,10 @@ export class Md2Tabs implements AfterContentInit {
   @Input() class: string;
 
   @Input()
+  get selectedIndex() { return this._selectedIndex; }
   set selectedIndex(value: any) {
     if (typeof value === 'string') { value = parseInt(value); }
-    if (value != this._selectedIndex) {
+    if (value !== this._selectedIndex) {
       this._selectedIndex = value;
       this.adjustOffset(value);
       this._updateInkBar();
@@ -110,10 +111,10 @@ export class Md2Tabs implements AfterContentInit {
       }
       if (this._isInitialized) {
         this._emitChangeEvent();
+        this.selectedIndexChange.emit(value);
       }
     }
   }
-  get selectedIndex() { return this._selectedIndex; }
 
   get focusIndex(): number { return this._focusIndex; }
   set focusIndex(value: number) {
@@ -137,6 +138,7 @@ export class Md2Tabs implements AfterContentInit {
   }
 
   @Output() change: EventEmitter<Md2TabChange> = new EventEmitter<Md2TabChange>();
+  @Output() selectedIndexChange: EventEmitter<number> = new EventEmitter<number>();
 
   constructor(private elementRef: ElementRef) { }
 

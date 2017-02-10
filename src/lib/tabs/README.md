@@ -13,6 +13,7 @@ Tabs allow the user to organize their content by labels such that only one tab i
 | Name | Type | Description |
 | --- | --- | --- |
 | `change` | `Event` | Fired when changed tab |
+| `selectedIndexChange` | `Event` | Fired when changed tab with number of selected tab index |
 
 ## `<md2-tab>`
 ### Properties of Tab

@@ -15,6 +15,7 @@ import {
   NgZone,
   Optional,
   OnDestroy,
+  OnInit,
   ViewEncapsulation,
   ChangeDetectorRef
 } from '@angular/core';
@@ -33,11 +34,16 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { Dir } from '../core/rtl/dir';
 import 'rxjs/add/operator/first';
+import { ScrollDispatcher } from '../core/overlay/scroll/scroll-dispatcher';
+import { Subscription } from 'rxjs/Subscription';
 
 export type TooltipPosition = 'left' | 'right' | 'above' | 'below' | 'before' | 'after';
 
 /** Time in ms to delay before changing the tooltip visibility to hidden */
 export const TOUCHEND_HIDE_DELAY = 1500;
+
+/** Time in ms to throttle repositioning after scroll events. */
+export const SCROLL_THROTTLE_MS = 20;
 
 /**
  * Directive that attaches a material design tooltip to the host element. Animates the showing and
@@ -55,9 +61,10 @@ export const TOUCHEND_HIDE_DELAY = 1500;
   },
   exportAs: 'md2Tooltip',
 })
-export class Md2Tooltip implements OnDestroy {
+export class Md2Tooltip implements OnInit, OnDestroy {
   _overlayRef: OverlayRef;
   _tooltipInstance: Md2TooltipComponent;
+  scrollSubscription: Subscription;
 
   private _position: TooltipPosition = 'below';
 
@@ -94,10 +101,21 @@ export class Md2Tooltip implements OnDestroy {
   }
 
   constructor(private _overlay: Overlay,
+    private _scrollDispatcher: ScrollDispatcher,
     private _elementRef: ElementRef,
     private _viewContainerRef: ViewContainerRef,
     private _ngZone: NgZone,
     @Optional() private _dir: Dir) { }
+
+  ngOnInit() {
+    // When a scroll on the page occurs, update the position in case this tooltip needs
+    // to be repositioned.
+    this.scrollSubscription = this._scrollDispatcher.scrolled(SCROLL_THROTTLE_MS).subscribe(() => {
+      if (this._overlayRef) {
+        this._overlayRef.updatePosition();
+      }
+    });
+  }
 
   /**
    * Dispose the tooltip when destroyed.
@@ -106,6 +124,8 @@ export class Md2Tooltip implements OnDestroy {
     if (this._tooltipInstance) {
       this._disposeTooltip();
     }
+
+    this.scrollSubscription.unsubscribe();
   }
 
   /** Shows the tooltip after the delay in ms, defaults to tooltip-delay-show or 0ms if no input */
@@ -156,7 +176,18 @@ export class Md2Tooltip implements OnDestroy {
   private _createOverlay(): void {
     let origin = this._getOrigin();
     let position = this._getOverlayPosition();
+
+    // Create connected position strategy that listens for scroll events to reposition.
+    // After position changes occur and the overlay is clipped by a parent scrollable then
+    // close the tooltip.
     let strategy = this._overlay.position().connectedTo(this._elementRef, origin, position);
+    strategy.withScrollableContainers(this._scrollDispatcher.getScrollContainers(this._elementRef));
+    strategy.onPositionChange.subscribe(change => {
+      if (change.scrollableViewProperties.isOverlayClipped &&
+        this._tooltipInstance && this._tooltipInstance.isVisible()) {
+        this.hide(0);
+      }
+    });
     let config = new OverlayState();
     config.positionStrategy = strategy;
 
@@ -303,7 +334,7 @@ export class Md2TooltipComponent {
       // trigger interaction and close the tooltip right after it was displayed.
       this._closeOnInteraction = false;
 
-      // Mark for check so if any parent component has set the 
+      // Mark for check so if any parent component has set the
       // ChangeDetectionStrategy to OnPush it will be checked anyways
       this._changeDetectorRef.markForCheck();
       setTimeout(() => { this._closeOnInteraction = true; }, 0);
@@ -324,7 +355,7 @@ export class Md2TooltipComponent {
       this._visibility = 'hidden';
       this._closeOnInteraction = false;
 
-      // Mark for check so if any parent component has set the 
+      // Mark for check so if any parent component has set the
       // ChangeDetectionStrategy to OnPush it will be checked anyways
       this._changeDetectorRef.markForCheck();
     }, delay);

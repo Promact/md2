@@ -18,7 +18,8 @@ import {
   OVERLAY_PROVIDERS,
   OverlayState,
   OverlayRef,
-  TemplatePortal,
+  OverlayModule,
+  TemplatePortalDirective,
   ESCAPE
 } from '../core/core';
 
@@ -27,7 +28,7 @@ import 'rxjs/add/operator/first';
 import { Animate } from './animate';
 
 @Directive({ selector: '[md2DialogPortal]' })
-export class Md2DialogPortal extends TemplatePortal {
+export class Md2DialogPortal extends TemplatePortalDirective {
   constructor(templateRef: TemplateRef<any>, viewContainerRef: ViewContainerRef) {
     super(templateRef, viewContainerRef);
   }
@@ -53,7 +54,7 @@ export class Md2DialogFooter { }
 export class Md2Dialog implements OnDestroy {
   constructor(private _overlay: Overlay) { }
 
-  @Output() onShow: EventEmitter<Md2Dialog> = new EventEmitter<Md2Dialog>();
+  @Output() onOpen: EventEmitter<Md2Dialog> = new EventEmitter<Md2Dialog>();
   @Output() onClose: EventEmitter<any> = new EventEmitter<any>();
   @Output() onCancel: EventEmitter<any> = new EventEmitter<any>();
 
@@ -91,7 +92,7 @@ export class Md2Dialog implements OnDestroy {
       .then(() => Animate.wait())
       .then(() => {
         this._isOpened = true;
-        this.onShow.emit(this);
+        this.onOpen.emit(this);
         return this;
       });
   }
@@ -118,7 +119,7 @@ export class Md2Dialog implements OnDestroy {
   }
 
   _handleDocumentKeydown(event: KeyboardEvent) {
-      this.close();
+    this.close();
   }
 }
 
@@ -129,10 +130,8 @@ export const MD2_DIALOG_DIRECTIVES: any[] = [
   Md2DialogPortal
 ];
 
-export const MD2_DIALOG_PROVIDERS: any[] = [Overlay, OVERLAY_PROVIDERS];
-
 @NgModule({
-  imports: [CommonModule],
+  imports: [CommonModule, OverlayModule],
   exports: MD2_DIALOG_DIRECTIVES,
   declarations: MD2_DIALOG_DIRECTIVES,
 })
@@ -140,7 +139,7 @@ export class Md2DialogModule {
   static forRoot(): ModuleWithProviders {
     return {
       ngModule: Md2DialogModule,
-      providers: MD2_DIALOG_PROVIDERS
+      providers: []
     };
   }
 }

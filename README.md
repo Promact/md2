@@ -44,6 +44,7 @@ export class AppModule { }
 
 - [md2-accordion](https://github.com/Promact/md2/tree/master/src/lib/accordion)
 - [md2-autocomplete](https://github.com/Promact/md2/tree/master/src/lib/autocomplete)
+- [md2-chips](https://github.com/Promact/md2/tree/master/src/lib/chips)
 - [md2-collapse](https://github.com/Promact/md2/tree/master/src/lib/collapse)
 - [md2-colorpicker](https://github.com/Promact/md2/tree/master/src/lib/colorpicker)
 - [md2-data-table](https://github.com/Promact/md2/tree/master/src/lib/data-table)

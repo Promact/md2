@@ -167,23 +167,6 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
         }
       }
       this._viewValue = this._formatDate(this._date);
-      //let date = '';
-      //if (this.type !== 'time') {
-      //  date += this._date.getFullYear() + '-' + (this._date.getMonth() + 1) +
-      //    '-' + this._date.getDate();
-      //}
-      //if (this.type === 'datetime') {
-      //  date += ' ';
-      //}
-      //if (this.type !== 'date') {
-      //  date += this._date.getHours() + ':' + this._date.getMinutes();
-      //}
-      //if (this._isInitialized) {
-      //  if (this._control) {
-      //    this._onChange(date);
-      //  }
-      //  this.change.emit(date);
-      //}
     }
   }
 
@@ -1108,23 +1091,14 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
         this._date = value;
       } else {
         if (this.type === 'time') {
-          this._date = new Date('1-1-1 ' + value);
+          this._date = new Date();
+          this._date.setHours(value.substring(0, 2));
+          this._date.setMinutes(value.substring(3, 5));
         } else {
           this._date = new Date(value);
         }
       }
       this._viewValue = this._formatDate(this._date);
-      let date = '';
-      if (this.type !== 'time') {
-        date += this._date.getFullYear() + '-' + (this._date.getMonth() + 1) +
-          '-' + this._date.getDate();
-      }
-      if (this.type === 'datetime') {
-        date += ' ';
-      }
-      if (this.type !== 'date') {
-        date += this._date.getHours() + ':' + this._date.getMinutes();
-      }
     } else {
       this._date = null;
       this._viewValue = null;

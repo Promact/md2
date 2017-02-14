@@ -5,6 +5,7 @@ import {
   ViewEncapsulation
 } from '@angular/core';
 import { Md2Accordion } from './accordionpanel';
+import { coerceBooleanProperty } from '../core';
 
 @Directive({ selector: 'md2-accordion-header' })
 export class Md2AccordionHeader { }
@@ -32,11 +33,25 @@ export class Md2AccordionHeader { }
 })
 export class Md2AccordionTab {
 
+  private _disabled: boolean = false;
+  private _active: boolean = false;
+
   @Input() header: string;
 
-  @Input() active: boolean;
+  @Input()
+  get active(): boolean { return this._active; }
+  set active(value) {
+    this._active = coerceBooleanProperty(value);
+    if (this._active) {
+      for (var i = 0; i < this._accordion.tabs.length; i++) {
+        if (this._accordion.tabs[i] !== this) { this._accordion.tabs[i].active = false; }
+      }
+    }
+  }
 
-  @Input() disabled: boolean;
+  @Input()
+  get disabled(): boolean { return this._disabled; }
+  set disabled(value) { this._disabled = coerceBooleanProperty(value); }
 
   constructor(private _accordion: Md2Accordion) {
     this._accordion.addTab(this);
@@ -62,10 +77,10 @@ export class Md2AccordionTab {
       for (let i = 0; i < this._accordion.tabs.length; i++) {
         this._accordion.tabs[i].active = false;
       }
-      this.active = true;
+      this._active = true;
       this._accordion.open.emit({ originalEvent: event, index: index });
     } else {
-      this.active = true;
+      this._active = true;
       this._accordion.open.emit({ originalEvent: event, index: index });
     }
 

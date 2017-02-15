@@ -1,7 +1,6 @@
 <template md2DialogPortal>
-  <div class="md2-dialog-backdrop" (click)="close()"></div>
-  <div class="md2-dialog" [class.open]="_isOpened">
-    <div class="md2-dialog-container" [@zoomInContent]="'in'">
+  <div class="md2-dialog-panel" [@zoomInContent]="'in'" (@zoomInContent.done)="_onPanelDone()">
+    <div class="md2-dialog-content">
       <div class="md2-dialog-header">
         <button type="button" class="close" aria-label="Close" (click)="close()">&times;</button>
         <h2 *ngIf="dialogTitle" class="md2-dialog-title" id="myDialogLabel" [innerHtml]="dialogTitle"></h2>

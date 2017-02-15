@@ -15,13 +15,12 @@ import {
 import { CommonModule } from '@angular/common';
 import {
   Overlay,
-  OVERLAY_PROVIDERS,
   OverlayState,
   OverlayRef,
   OverlayModule,
-  TemplatePortalDirective,
-  ESCAPE
+  TemplatePortalDirective
 } from '../core/core';
+import { Subscription } from 'rxjs/Subscription';
 
 import 'rxjs/add/operator/first';
 
@@ -47,12 +46,17 @@ export class Md2DialogFooter { }
   styleUrls: ['dialog.css'],
   host: {
     'tabindex': '0',
-    '(body:keydown.esc)': '_handleDocumentKeydown($event)'
+    '(body:keydown.esc)': '_handleEscKeydown($event)'
   },
   animations: [zoomInContent],
   encapsulation: ViewEncapsulation.None,
 })
 export class Md2Dialog implements OnDestroy {
+
+  private _panelOpen = false;
+  private _overlayRef: OverlayRef = null;
+  private _backdropSubscription: Subscription;
+
   constructor(private _overlay: Overlay) { }
 
   @Output() onOpen: EventEmitter<Md2Dialog> = new EventEmitter<Md2Dialog>();
@@ -62,61 +66,96 @@ export class Md2Dialog implements OnDestroy {
   /** The portal to send the dialog content through */
   @ViewChild(Md2DialogPortal) _portal: Md2DialogPortal;
 
-  /** Is the dialog active? */
-  _isOpened: boolean = false;
-
   @Input('title') dialogTitle: string;
 
-  /** Overlay configuration for positioning the dialog */
-  @Input() config = new OverlayState();
-
-  /** @internal */
-  private _overlayRef: OverlayRef = null;
 
   ngOnDestroy(): any {
     return this.close();
   }
 
   /** Show the dialog */
-  show(): Promise<Md2Dialog> {
-    return this.open();
+  show(): void {
+    this.open();
   }
 
   /** Open the dialog */
-  open(): Promise<Md2Dialog> {
-    return this.close()
-      .then(() => this._overlay.create(this.config))
-      .then((ref: OverlayRef) => {
-        this._overlayRef = ref;
-        return ref.attach(this._portal);
-      })
-      .then(() => {
-        this._isOpened = true;
-        this.onOpen.emit(this);
-        return this;
-      });
+  open(): void {
+    if (!this._panelOpen) {
+      this._createOverlay();
+      this._overlayRef.attach(this._portal);
+      this._subscribeToBackdrop();
+      this._panelOpen = true;
+    }
   }
 
   /** Close the dialog */
-  close(result: any = true, cancel: boolean = false): Promise<Md2Dialog> {
-    if (!this._overlayRef) {
-      return Promise.resolve<Md2Dialog>(this);
+  close(result: any = true, cancel: boolean = false): void {
+    this._panelOpen = false;
+    if (this._overlayRef) {
+      this._overlayRef.detach();
+      this._backdropSubscription.unsubscribe();
     }
-    this._isOpened = false;
-    this._overlayRef.detach()
-    this._overlayRef.dispose();
-    this._overlayRef = null;
-    if (cancel) {
-      this.onCancel.emit(result);
-    } else {
-      this.onClose.emit(result);
-    }
-    return Promise.resolve<Md2Dialog>(this);
+
+    //if (!this._overlayRef) {
+    //  return;
+    //}
+    //this._panelOpen = false;
+    //this._overlayRef.detach();
+    //this._overlayRef.dispose();
+    //this._overlayRef = null;
+    //if (cancel) {
+    //  this.onCancel.emit(result);
+    //}
   }
 
-  _handleDocumentKeydown(event: KeyboardEvent) {
+  /** Removes the panel from the DOM. */
+  destroyPanel(): void {
+    if (this._overlayRef) {
+      this._overlayRef.dispose();
+      this._overlayRef = null;
+
+      this._cleanUpSubscriptions();
+    }
+  }
+
+  _onPanelDone(): void {
+    if (this._panelOpen) {
+      this.onOpen.emit(this);
+    } else {
+      this.onClose.emit();
+    }
+  }
+
+  _handleEscKeydown(event: KeyboardEvent) {
     this.close();
   }
+
+  private _subscribeToBackdrop(): void {
+    this._backdropSubscription = this._overlayRef.backdropClick().subscribe(() => {
+      this.close();
+    });
+  }
+
+  private _createOverlay(): void {
+    if (!this._overlayRef) {
+      let config = new OverlayState();
+      config.positionStrategy = this._overlay.position()
+        .global()
+        .centerHorizontally()
+        .centerVertically();
+      config.hasBackdrop = true;
+      config.backdropClass = 'cdk-overlay-dark-backdrop';
+
+      this._overlayRef = this._overlay.create(config);
+    }
+  }
+
+  private _cleanUpSubscriptions(): void {
+    if (this._backdropSubscription) {
+      this._backdropSubscription.unsubscribe();
+    }
+  }
+
 }
 
 export const MD2_DIALOG_DIRECTIVES: any[] = [

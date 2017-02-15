@@ -184,7 +184,8 @@ export class Md2Tabs implements AfterContentInit {
 
   /** Emits an event when the user selects an option. */
   _emitChangeEvent(): void {
-    this.change.emit(new Md2TabChange(this.tabs.toArray()[this._selectedIndex], this._selectedIndex));
+    let index = this._selectedIndex;
+    this.change.emit(new Md2TabChange(this.tabs.toArray()[index], index));
   }
 
   /**

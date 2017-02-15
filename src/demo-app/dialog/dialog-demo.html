@@ -13,6 +13,10 @@
     <md2-dialog #confirm>
       <md2-dialog-title>Would you like to delete your debt?</md2-dialog-title>
       All of the banks have agreed to forgive you your debts.
+      <md2-dialog-footer>
+        <button button="primary" (click)="close(confirm)">Ok</button>
+        <button button (click)="close(confirm)">Cancel</button>
+      </md2-dialog-footer>
     </md2-dialog>
     <button button="primary" (click)="confirm.show()">
       Confirm Dialog
@@ -39,6 +43,10 @@
         Bangladesh. In several cultures, its fruit and leaves are ritually used as floral
         decorations at weddings, public celebrations, and religious ceremonies.
       </p>
+      <md2-dialog-footer>
+        <button button="primary" (click)="close(custom1)">Ok</button>
+        <button button (click)="close(custom1)">Cancel</button>
+      </md2-dialog-footer>
     </md2-dialog>
     <md2-dialog #custom [title]="dialogHeader">
       <button button="primary" flex="auto" (click)="custom1.show()">

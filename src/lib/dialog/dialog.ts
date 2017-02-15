@@ -25,7 +25,7 @@ import {
 
 import 'rxjs/add/operator/first';
 
-import { Animate } from './animate';
+import { zoomInContent } from './dialog-animations';
 
 @Directive({ selector: '[md2DialogPortal]' })
 export class Md2DialogPortal extends TemplatePortalDirective {
@@ -49,6 +49,7 @@ export class Md2DialogFooter { }
     'tabindex': '0',
     '(body:keydown.esc)': '_handleDocumentKeydown($event)'
   },
+  animations: [zoomInContent],
   encapsulation: ViewEncapsulation.None,
 })
 export class Md2Dialog implements OnDestroy {
@@ -89,7 +90,6 @@ export class Md2Dialog implements OnDestroy {
         this._overlayRef = ref;
         return ref.attach(this._portal);
       })
-      .then(() => Animate.wait())
       .then(() => {
         this._isOpened = true;
         this.onOpen.emit(this);
@@ -103,19 +103,15 @@ export class Md2Dialog implements OnDestroy {
       return Promise.resolve<Md2Dialog>(this);
     }
     this._isOpened = false;
-    // TODO(jd): this is terrible, use animate states
-    return Animate.wait(100)
-      .then(() => this._overlayRef.detach())
-      .then(() => {
-        this._overlayRef.dispose();
-        this._overlayRef = null;
-        if (cancel) {
-          this.onCancel.emit(result);
-        } else {
-          this.onClose.emit(result);
-        }
-        return this;
-      });
+    this._overlayRef.detach()
+    this._overlayRef.dispose();
+    this._overlayRef = null;
+    if (cancel) {
+      this.onCancel.emit(result);
+    } else {
+      this.onClose.emit(result);
+    }
+    return Promise.resolve<Md2Dialog>(this);
   }
 
   _handleDocumentKeydown(event: KeyboardEvent) {

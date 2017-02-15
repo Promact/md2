@@ -295,7 +295,7 @@ export class Md2Pagination {
     this._rowsPerPage = event.rowsPerPage;
     this._dataLength = event.dataLength;
     this._lastPage = Math.ceil(this._dataLength / this._rowsPerPage);
-  };
+  }
 
 }
 

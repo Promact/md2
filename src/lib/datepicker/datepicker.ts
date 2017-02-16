@@ -1147,12 +1147,13 @@ export const MD2_DATEPICKER_DIRECTIVES = [Md2Datepicker];
   imports: [CommonModule, OverlayModule, PortalModule],
   exports: MD2_DATEPICKER_DIRECTIVES,
   declarations: MD2_DATEPICKER_DIRECTIVES,
+  providers: [Md2DateUtil, DateLocale]
 })
 export class Md2DatepickerModule {
   static forRoot(): ModuleWithProviders {
     return {
       ngModule: Md2DatepickerModule,
-      providers: [Md2DateUtil, DateLocale]
+      providers: []
     };
   }
 }

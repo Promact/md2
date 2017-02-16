@@ -189,13 +189,14 @@ export const MD2_TOAST_DIRECTIVES: any[] = [Md2ToastComponent];
   imports: [CommonModule],
   exports: MD2_TOAST_DIRECTIVES,
   declarations: MD2_TOAST_DIRECTIVES,
-  entryComponents: MD2_TOAST_DIRECTIVES
+  entryComponents: MD2_TOAST_DIRECTIVES,
+  providers: [Md2Toast, Md2ToastConfig, OVERLAY_PROVIDERS]
 })
 export class Md2ToastModule {
   static forRoot(): ModuleWithProviders {
     return {
       ngModule: Md2ToastModule,
-      providers: [Md2Toast, Md2ToastConfig, OVERLAY_PROVIDERS]
+      providers: []
     };
   }
 }

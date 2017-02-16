@@ -1,3 +1,18 @@
+<a name="0.0.14"></a>
+## [0.0.14](https://github.com/Promact/md2/compare/0.0.13-1...v0.0.14) (2017-02-16)
+
+
+### Breaking changes
+
+* chore(datepicker, toast) update providers and depricated `forRoot()`
+
+
+### Bug Fixes
+
+* chore(dialog) update promise in open/close methods
+
+
+
 <a name="0.0.13-2"></a>
 ## [0.0.13-2](https://github.com/Promact/md2/compare/0.0.13-1...v0.0.13-2) (2017-02-16)
 

@@ -92,7 +92,6 @@ export class Md2Dialog implements OnDestroy {
       this._overlayRef.detach();
       this._backdropSubscription.unsubscribe();
     }
-    this.destroyPanel();
   }
 
   /** Removes the panel from the DOM. */

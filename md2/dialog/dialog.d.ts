@@ -20,12 +20,10 @@ export declare class Md2Dialog implements OnDestroy {
     _portal: Md2DialogPortal;
     dialogTitle: string;
     ngOnDestroy(): void;
-    /** Show the dialog */
-    show(): void;
     /** Open the dialog */
-    open(): void;
+    open(): Promise<Md2Dialog>;
     /** Close the dialog */
-    close(result?: any, cancel?: boolean): void;
+    close(): Promise<Md2Dialog>;
     /** Removes the panel from the DOM. */
     destroyPanel(): void;
     _onPanelDone(): void;

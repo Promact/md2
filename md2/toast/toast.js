@@ -191,7 +191,7 @@ export var Md2ToastModule = (function () {
     Md2ToastModule.forRoot = function () {
         return {
             ngModule: Md2ToastModule,
-            providers: [Md2Toast, Md2ToastConfig, OVERLAY_PROVIDERS]
+            providers: []
         };
     };
     Md2ToastModule = __decorate([
@@ -199,7 +199,8 @@ export var Md2ToastModule = (function () {
             imports: [CommonModule],
             exports: MD2_TOAST_DIRECTIVES,
             declarations: MD2_TOAST_DIRECTIVES,
-            entryComponents: MD2_TOAST_DIRECTIVES
+            entryComponents: MD2_TOAST_DIRECTIVES,
+            providers: [Md2Toast, Md2ToastConfig, OVERLAY_PROVIDERS]
         }), 
         __metadata('design:paramtypes', [])
     ], Md2ToastModule);

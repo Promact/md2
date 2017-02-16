@@ -1137,7 +1137,7 @@ export var Md2DatepickerModule = (function () {
     Md2DatepickerModule.forRoot = function () {
         return {
             ngModule: Md2DatepickerModule,
-            providers: [Md2DateUtil, DateLocale]
+            providers: []
         };
     };
     Md2DatepickerModule = __decorate([
@@ -1145,6 +1145,7 @@ export var Md2DatepickerModule = (function () {
             imports: [CommonModule, OverlayModule, PortalModule],
             exports: MD2_DATEPICKER_DIRECTIVES,
             declarations: MD2_DATEPICKER_DIRECTIVES,
+            providers: [Md2DateUtil, DateLocale]
         }), 
         __metadata('design:paramtypes', [])
     ], Md2DatepickerModule);

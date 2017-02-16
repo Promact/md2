@@ -55,28 +55,25 @@ export var Md2Dialog = (function () {
         this.onClose = new EventEmitter();
     }
     Md2Dialog.prototype.ngOnDestroy = function () { this.destroyPanel(); };
-    /** Show the dialog */
-    Md2Dialog.prototype.show = function () {
-        this.open();
-    };
     /** Open the dialog */
     Md2Dialog.prototype.open = function () {
-        if (!this._panelOpen) {
-            this._createOverlay();
-            this._overlayRef.attach(this._portal);
-            this._subscribeToBackdrop();
-            this._panelOpen = true;
+        if (this._panelOpen) {
+            return Promise.resolve(this);
         }
+        this._createOverlay();
+        this._overlayRef.attach(this._portal);
+        this._subscribeToBackdrop();
+        this._panelOpen = true;
+        return Promise.resolve(this);
     };
     /** Close the dialog */
-    Md2Dialog.prototype.close = function (result, cancel) {
-        if (result === void 0) { result = true; }
-        if (cancel === void 0) { cancel = false; }
+    Md2Dialog.prototype.close = function () {
         this._panelOpen = false;
         if (this._overlayRef) {
             this._overlayRef.detach();
             this._backdropSubscription.unsubscribe();
         }
+        return Promise.resolve(this);
     };
     /** Removes the panel from the DOM. */
     Md2Dialog.prototype.destroyPanel = function () {

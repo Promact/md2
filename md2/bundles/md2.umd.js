@@ -1,5 +1,5 @@
 /**
-  * @license Md2 v0.0.13-2
+  * @license Md2 v0.0.14
   * Copyright (c) 2017 Promact, Inc. http://code.promactinfo.com/md2/
   * License: MIT
   */
@@ -3801,19 +3801,41 @@ var __decorate$29 = (this && this.__decorate) || function (decorators, target, k
 var __metadata$29 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+// This is the value used by AngularJS Material. Through trial and error (on iPhone 6S) they found
+// that a value of around 650ms seems appropriate.
+var TOUCH_BUFFER_MS = 650;
 /** Monitors mouse and keyboard events to determine the cause of focus events. */
 var FocusOriginMonitor = (function () {
     function FocusOriginMonitor() {
+        // Note: we listen to events in the capture phase so we can detect them even if the user stops
+        // propagation.
         var _this = this;
         /** The focus origin that the next focus event is a result of. */
         this._origin = null;
         /** Whether the window has just been focused. */
         this._windowFocused = false;
-        // Listen to keydown and mousedown in the capture phase so we can detect them even if the user
-        // stops propagation.
-        // TODO(mmalerba): Figure out how to handle touchstart
-        document.addEventListener('keydown', function () { return _this._setOriginForCurrentEventQueue('keyboard'); }, true);
-        document.addEventListener('mousedown', function () { return _this._setOriginForCurrentEventQueue('mouse'); }, true);
+        // On keydown record the origin and clear any touch event that may be in progress.
+        document.addEventListener('keydown', function () {
+            _this._lastTouchTarget = null;
+            _this._setOriginForCurrentEventQueue('keyboard');
+        }, true);
+        // On mousedown record the origin only if there is not touch target, since a mousedown can
+        // happen as a result of a touch event.
+        document.addEventListener('mousedown', function () {
+            if (!_this._lastTouchTarget) {
+                _this._setOriginForCurrentEventQueue('mouse');
+            }
+        }, true);
+        // When the touchstart event fires the focus event is not yet in the event queue. This means we
+        // can't rely on the trick used above (setting timeout of 0ms). Instead we wait 650ms to see if
+        // a focus happens.
+        document.addEventListener('touchstart', function (event) {
+            if (_this._touchTimeout != null) {
+                clearTimeout(_this._touchTimeout);
+            }
+            _this._lastTouchTarget = event.target;
+            _this._touchTimeout = setTimeout(function () { return _this._lastTouchTarget = null; }, TOUCH_BUFFER_MS);
+        }, true);
         // Make a note of when the window regains focus, so we can restore the origin info for the
         // focused element.
         window.addEventListener('focus', function () {
@@ -3825,7 +3847,7 @@ var FocusOriginMonitor = (function () {
     FocusOriginMonitor.prototype.registerElementForFocusClasses = function (element, renderer) {
         var _this = this;
         var subject = new rxjs_Subject.Subject();
-        renderer.listen(element, 'focus', function () { return _this._onFocus(element, renderer, subject); });
+        renderer.listen(element, 'focus', function (event) { return _this._onFocus(event, element, renderer, subject); });
         renderer.listen(element, 'blur', function () { return _this._onBlur(element, renderer, subject); });
         return subject.asObservable();
     };
@@ -3840,22 +3862,50 @@ var FocusOriginMonitor = (function () {
         this._origin = origin;
         setTimeout(function () { return _this._origin = null; }, 0);
     };
+    /** Checks whether the given focus event was caused by a touchstart event. */
+    FocusOriginMonitor.prototype._wasCausedByTouch = function (event) {
+        // Note(mmalerba): This implementation is not quite perfect, there is a small edge case.
+        // Consider the following dom structure:
+        //
+        // <div #parent tabindex="0" cdkFocusClasses>
+        //   <div #child (click)="#parent.focus()"></div>
+        // </div>
+        //
+        // If the user touches the #child element and the #parent is programmatically focused as a
+        // result, this code will still consider it to have been caused by the touch event and will
+        // apply the cdk-touch-focused class rather than the cdk-program-focused class. This is a
+        // relatively small edge-case that can be worked around by using
+        // focusVia(parentEl, renderer,  'program') to focus the parent element.
+        //
+        // If we decide that we absolutely must handle this case correctly, we can do so by listening
+        // for the first focus event after the touchstart, and then the first blur event after that
+        // focus event. When that blur event fires we know that whatever follows is not a result of the
+        // touchstart.
+        var focusTarget = event.target;
+        return this._lastTouchTarget instanceof Node && focusTarget instanceof Node &&
+            (focusTarget == this._lastTouchTarget || focusTarget.contains(this._lastTouchTarget));
+    };
     /** Handles focus events on a registered element. */
-    FocusOriginMonitor.prototype._onFocus = function (element, renderer, subject) {
+    FocusOriginMonitor.prototype._onFocus = function (event, element, renderer, subject) {
         // If we couldn't detect a cause for the focus event, it's due to one of two reasons:
         // 1) The window has just regained focus, in which case we want to restore the focused state of
         //    the element from before the window blurred.
-        // 2) The element was programmatically focused, in which case we should mark the origin as
+        // 2) It was caused by a touch event, in which case we mark the origin as 'touch'.
+        // 3) The element was programmatically focused, in which case we should mark the origin as
         //    'program'.
         if (!this._origin) {
             if (this._windowFocused && this._lastFocusOrigin) {
                 this._origin = this._lastFocusOrigin;
+            }
+            else if (this._wasCausedByTouch(event)) {
+                this._origin = 'touch';
             }
             else {
                 this._origin = 'program';
             }
         }
         renderer.setElementClass(element, 'cdk-focused', true);
+        renderer.setElementClass(element, 'cdk-touch-focused', this._origin == 'touch');
         renderer.setElementClass(element, 'cdk-keyboard-focused', this._origin == 'keyboard');
         renderer.setElementClass(element, 'cdk-mouse-focused', this._origin == 'mouse');
         renderer.setElementClass(element, 'cdk-program-focused', this._origin == 'program');
@@ -3866,6 +3916,7 @@ var FocusOriginMonitor = (function () {
     /** Handles blur events on a registered element. */
     FocusOriginMonitor.prototype._onBlur = function (element, renderer, subject) {
         renderer.setElementClass(element, 'cdk-focused', false);
+        renderer.setElementClass(element, 'cdk-touch-focused', false);
         renderer.setElementClass(element, 'cdk-keyboard-focused', false);
         renderer.setElementClass(element, 'cdk-mouse-focused', false);
         renderer.setElementClass(element, 'cdk-program-focused', false);
@@ -8954,7 +9005,7 @@ var Md2DatepickerModule = (function () {
     Md2DatepickerModule.forRoot = function () {
         return {
             ngModule: Md2DatepickerModule,
-            providers: [Md2DateUtil, DateLocale]
+            providers: []
         };
     };
     Md2DatepickerModule = __decorate$44([
@@ -8962,6 +9013,7 @@ var Md2DatepickerModule = (function () {
             imports: [_angular_common.CommonModule, OverlayModule, PortalModule],
             exports: MD2_DATEPICKER_DIRECTIVES,
             declarations: MD2_DATEPICKER_DIRECTIVES,
+            providers: [Md2DateUtil, DateLocale]
         }), 
         __metadata$44('design:paramtypes', [])
     ], Md2DatepickerModule);
@@ -9033,28 +9085,25 @@ var Md2Dialog = (function () {
         this.onClose = new _angular_core.EventEmitter();
     }
     Md2Dialog.prototype.ngOnDestroy = function () { this.destroyPanel(); };
-    /** Show the dialog */
-    Md2Dialog.prototype.show = function () {
-        this.open();
-    };
     /** Open the dialog */
     Md2Dialog.prototype.open = function () {
-        if (!this._panelOpen) {
-            this._createOverlay();
-            this._overlayRef.attach(this._portal);
-            this._subscribeToBackdrop();
-            this._panelOpen = true;
+        if (this._panelOpen) {
+            return Promise.resolve(this);
         }
+        this._createOverlay();
+        this._overlayRef.attach(this._portal);
+        this._subscribeToBackdrop();
+        this._panelOpen = true;
+        return Promise.resolve(this);
     };
     /** Close the dialog */
-    Md2Dialog.prototype.close = function (result, cancel) {
-        if (result === void 0) { result = true; }
-        if (cancel === void 0) { cancel = false; }
+    Md2Dialog.prototype.close = function () {
         this._panelOpen = false;
         if (this._overlayRef) {
             this._overlayRef.detach();
             this._backdropSubscription.unsubscribe();
         }
+        return Promise.resolve(this);
     };
     /** Removes the panel from the DOM. */
     Md2Dialog.prototype.destroyPanel = function () {
@@ -10824,7 +10873,7 @@ var Md2ToastModule = (function () {
     Md2ToastModule.forRoot = function () {
         return {
             ngModule: Md2ToastModule,
-            providers: [Md2Toast, Md2ToastConfig, OVERLAY_PROVIDERS]
+            providers: []
         };
     };
     Md2ToastModule = __decorate$55([
@@ -10832,7 +10881,8 @@ var Md2ToastModule = (function () {
             imports: [_angular_common.CommonModule],
             exports: MD2_TOAST_DIRECTIVES,
             declarations: MD2_TOAST_DIRECTIVES,
-            entryComponents: MD2_TOAST_DIRECTIVES
+            entryComponents: MD2_TOAST_DIRECTIVES,
+            providers: [Md2Toast, Md2ToastConfig, OVERLAY_PROVIDERS]
         }), 
         __metadata$55('design:paramtypes', [])
     ], Md2ToastModule);
@@ -11397,6 +11447,7 @@ exports.ConnectedOverlayPositionChange = ConnectedOverlayPositionChange;
 exports.SelectionModel = SelectionModel;
 exports.SelectionChange = SelectionChange;
 exports.StyleModule = StyleModule;
+exports.TOUCH_BUFFER_MS = TOUCH_BUFFER_MS;
 exports.FocusOriginMonitor = FocusOriginMonitor;
 exports.CdkFocusClasses = CdkFocusClasses;
 exports.FOCUS_ORIGIN_MONITOR_PROVIDER_FACTORY = FOCUS_ORIGIN_MONITOR_PROVIDER_FACTORY;

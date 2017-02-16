@@ -1,6 +1,7 @@
 "use strict";
 var Subject_1 = require('../Subject');
 var multicast_1 = require('./multicast');
+/* tslint:disable:max-line-length */
 /**
  * Returns a ConnectableObservable, which is a variety of Observable that waits until its connect method is called
  * before it begins emitting items to those Observers that have subscribed to it.

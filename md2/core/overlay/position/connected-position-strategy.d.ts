@@ -41,6 +41,10 @@ export declare class ConnectedPositionStrategy implements PositionStrategy {
     _preferredPositions: ConnectionPositionPair[];
     /** The origin element against which the overlay will be positioned. */
     private _origin;
+    /** The overlay pane element. */
+    private _pane;
+    /** The last position to have been calculated as the best fit position. */
+    private _lastConnectedPosition;
     _onPositionChange: Subject<ConnectedOverlayPositionChange>;
     /** Emits an event when the connection point changes. */
     readonly onPositionChange: Observable<ConnectedOverlayPositionChange>;
@@ -60,6 +64,12 @@ export declare class ConnectedPositionStrategy implements PositionStrategy {
      * @returns Resolves when the styles have been applied.
      */
     apply(element: HTMLElement): Promise<void>;
+    /**
+     * This re-aligns the overlay element with the trigger in its last calculated position,
+     * even if a position higher in the "preferred positions" list would now fit. This
+     * allows one to re-align the panel without changing the orientation of the panel.
+     */
+    recalculateLastPosition(): void;
     /**
      * Sets the list of Scrollable containers that host the origin element so that
      * on reposition we can evaluate if it or the overlay has been clipped or outside view. Every

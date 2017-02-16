@@ -10,29 +10,29 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Md2Select } from './select';
-import { Md2Option } from './option';
-import { DefaultStyleCompatibilityModeModule, OVERLAY_PROVIDERS, MdRippleModule, OverlayModule } from '../core';
+import { Md2OptionModule } from './option';
+import { CompatibilityModule, OverlayModule } from '../core';
 export * from './select';
-export { Md2Option } from './option';
+export * from './option';
 export { fadeInContent, transformPanel, transformPlaceholder } from './select-animations';
 export var Md2SelectModule = (function () {
     function Md2SelectModule() {
     }
+    /** @deprecated */
     Md2SelectModule.forRoot = function () {
         return {
             ngModule: Md2SelectModule,
-            providers: [OVERLAY_PROVIDERS]
+            providers: []
         };
     };
     Md2SelectModule = __decorate([
         NgModule({
-            imports: [CommonModule, OverlayModule, MdRippleModule, DefaultStyleCompatibilityModeModule],
-            exports: [Md2Select, Md2Option, DefaultStyleCompatibilityModeModule],
-            declarations: [Md2Select, Md2Option],
+            imports: [CommonModule, OverlayModule, Md2OptionModule, CompatibilityModule],
+            exports: [Md2Select, Md2OptionModule, CompatibilityModule],
+            declarations: [Md2Select],
         }), 
         __metadata('design:paramtypes', [])
     ], Md2SelectModule);
     return Md2SelectModule;
 }());
-
 //# sourceMappingURL=index.js.map

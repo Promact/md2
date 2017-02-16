@@ -28,22 +28,23 @@ export function devModeEqual(a, b) {
     }
 }
 /**
- *  Indicates that the result of a {@link Pipe} transformation has changed even though the
-  * reference
-  * has not changed.
-  * *
-  * The wrapped value will be unwrapped by change detection, and the unwrapped value will be stored.
-  * *
-  * Example:
-  * *
-  * ```
-  * if (this._latestValue === this._latestReturnedValue) {
-  * return this._latestReturnedValue;
-  * } else {
-  * this._latestReturnedValue = this._latestValue;
-  * return WrappedValue.wrap(this._latestValue); // this will force update
-  * }
-  * ```
+ * Indicates that the result of a {\@link Pipe} transformation has changed even though the
+ * reference
+ * has not changed.
+ *
+ * The wrapped value will be unwrapped by change detection, and the unwrapped value will be stored.
+ *
+ * Example:
+ *
+ * ```
+ * if (this._latestValue === this._latestReturnedValue) {
+ *    return this._latestReturnedValue;
+ *  } else {
+ *    this._latestReturnedValue = this._latestValue;
+ *    return WrappedValue.wrap(this._latestValue); // this will force update
+ *  }
+ * ```
+ * \@stable
  */
 export var WrappedValue = (function () {
     /**
@@ -64,7 +65,7 @@ function WrappedValue_tsickle_Closure_declarations() {
     WrappedValue.prototype.wrapped;
 }
 /**
- *  Helper class for unwrapping WrappedValue s
+ * Helper class for unwrapping WrappedValue s
  */
 export var ValueUnwrapper = (function () {
     function ValueUnwrapper() {
@@ -92,7 +93,8 @@ function ValueUnwrapper_tsickle_Closure_declarations() {
     ValueUnwrapper.prototype.hasWrappedValue;
 }
 /**
- *  Represents a basic change from a previous to a new value.
+ * Represents a basic change from a previous to a new value.
+ * \@stable
  */
 export var SimpleChange = (function () {
     /**
@@ -104,7 +106,7 @@ export var SimpleChange = (function () {
         this.currentValue = currentValue;
     }
     /**
-     *  Check whether the new value is the first value assigned.
+     * Check whether the new value is the first value assigned.
      * @return {?}
      */
     SimpleChange.prototype.isFirstChange = function () { return this.previousValue === UNINITIALIZED; };

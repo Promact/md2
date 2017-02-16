@@ -10,12 +10,13 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-import { OpaqueToken } from '../di';
+import { Injectable, OpaqueToken } from '../di';
 import { BaseError } from '../facade/errors';
 import { stringify } from '../facade/lang';
 /**
- *  Indicates that a component is still being loaded in a synchronous compile.
-  * *
+ * Indicates that a component is still being loaded in a synchronous compile.
+ *
+ * \@stable
  */
 export var ComponentStillLoadingError = (function (_super) {
     __extends(ComponentStillLoadingError, _super);
@@ -33,8 +34,9 @@ function ComponentStillLoadingError_tsickle_Closure_declarations() {
     ComponentStillLoadingError.prototype.compType;
 }
 /**
- *  Combination of NgModuleFactory and ComponentFactorys.
-  * *
+ * Combination of NgModuleFactory and ComponentFactorys.
+ *
+ * \@experimental
  */
 export var ModuleWithComponentFactories = (function () {
     /**
@@ -60,33 +62,34 @@ function _throwError() {
     throw new Error("Runtime compiler is not loaded");
 }
 /**
- *  Low-level service for running the angular compiler during runtime
-  * to create {@link ComponentFactory}s, which
-  * can later be used to create and render a Component instance.
-  * *
-  * Each `@NgModule` provides an own `Compiler` to its injector,
-  * that will use the directives/pipes of the ng module for compilation
-  * of components.
+ * Low-level service for running the angular compiler during runtime
+ * to create {\@link ComponentFactory}s, which
+ * can later be used to create and render a Component instance.
+ *
+ * Each `\@NgModule` provides an own `Compiler` to its injector,
+ * that will use the directives/pipes of the ng module for compilation
+ * of components.
+ * \@stable
  */
 export var Compiler = (function () {
     function Compiler() {
     }
     /**
-     *  Compiles the given NgModule and all of its components. All templates of the components listed
-      * in `entryComponents`
-      * have to be inlined. Otherwise throws a {@link ComponentStillLoadingError}.
+     * Compiles the given NgModule and all of its components. All templates of the components listed
+     * in `entryComponents`
+     * have to be inlined. Otherwise throws a {\@link ComponentStillLoadingError}.
      * @param {?} moduleType
      * @return {?}
      */
     Compiler.prototype.compileModuleSync = function (moduleType) { throw _throwError(); };
     /**
-     *  Compiles the given NgModule and all of its components
+     * Compiles the given NgModule and all of its components
      * @param {?} moduleType
      * @return {?}
      */
     Compiler.prototype.compileModuleAsync = function (moduleType) { throw _throwError(); };
     /**
-     *  Same as {@link compileModuleSync} but also creates ComponentFactories for all components.
+     * Same as {\@link compileModuleSync} but also creates ComponentFactories for all components.
      * @param {?} moduleType
      * @return {?}
      */
@@ -94,7 +97,7 @@ export var Compiler = (function () {
         throw _throwError();
     };
     /**
-     *  Same as {@link compileModuleAsync} but also creates ComponentFactories for all components.
+     * Same as {\@link compileModuleAsync} but also creates ComponentFactories for all components.
      * @param {?} moduleType
      * @return {?}
      */
@@ -102,27 +105,41 @@ export var Compiler = (function () {
         throw _throwError();
     };
     /**
-     *  Exposes the CSS-style selectors that have been used in `ngContent` directives within
-      * the template of the given component.
-      * This is used by the `upgrade` library to compile the appropriate transclude content
-      * in the Angular 1 wrapper component.
+     * Exposes the CSS-style selectors that have been used in `ngContent` directives within
+     * the template of the given component.
+     * This is used by the `upgrade` library to compile the appropriate transclude content
+     * in the Angular 1 wrapper component.
      * @param {?} component
      * @return {?}
      */
     Compiler.prototype.getNgContentSelectors = function (component) { throw _throwError(); };
     /**
-     *  Clears all caches.
+     * Clears all caches.
      * @return {?}
      */
     Compiler.prototype.clearCache = function () { };
     /**
-     *  Clears the cache for the given component/ngModule.
+     * Clears the cache for the given component/ngModule.
      * @param {?} type
      * @return {?}
      */
     Compiler.prototype.clearCacheFor = function (type) { };
+    Compiler.decorators = [
+        { type: Injectable },
+    ];
+    /** @nocollapse */
+    Compiler.ctorParameters = function () { return []; };
     return Compiler;
 }());
+function Compiler_tsickle_Closure_declarations() {
+    /** @type {?} */
+    Compiler.decorators;
+    /**
+     * @nocollapse
+     * @type {?}
+     */
+    Compiler.ctorParameters;
+}
 /**
  * Token to provide CompilerOptions in the platform injector.
  *
@@ -130,8 +147,9 @@ export var Compiler = (function () {
  */
 export var /** @type {?} */ COMPILER_OPTIONS = new OpaqueToken('compilerOptions');
 /**
- *  A factory for creating a Compiler
-  * *
+ * A factory for creating a Compiler
+ *
+ * \@experimental
  * @abstract
  */
 export var CompilerFactory = (function () {

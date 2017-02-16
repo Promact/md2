@@ -10,8 +10,9 @@ import { COMMON_DIRECTIVES } from './directives/index';
 import { NgLocaleLocalization, NgLocalization } from './localization';
 import { COMMON_PIPES } from './pipes/index';
 /**
- *  The module that includes all the basic Angular directives like {@link NgIf}, {@link NgFor}, ...
-  * *
+ * The module that includes all the basic Angular directives like {\@link NgIf}, {\@link NgFor}, ...
+ *
+ * \@stable
  */
 export var CommonModule = (function () {
     function CommonModule() {

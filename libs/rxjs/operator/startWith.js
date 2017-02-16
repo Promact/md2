@@ -4,6 +4,7 @@ var ScalarObservable_1 = require('../observable/ScalarObservable');
 var EmptyObservable_1 = require('../observable/EmptyObservable');
 var concat_1 = require('./concat');
 var isScheduler_1 = require('../util/isScheduler');
+/* tslint:disable:max-line-length */
 /**
  * Returns an Observable that emits the items in a specified Iterable before it begins to emit items emitted by the
  * source Observable.

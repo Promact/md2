@@ -13,15 +13,15 @@ export var /** @type {?} */ DEFAULT_VALUE_ACCESSOR = {
     multi: true
 };
 /**
- *  The default accessor for writing a value and listening to changes that is used by the
-  * {@link NgModel}, {@link FormControlDirective}, and {@link FormControlName} directives.
-  * *
-  * ### Example
-  * ```
-  * <input type="text" name="searchQuery" ngModel>
-  * ```
-  * *
-  * @stable
+ * The default accessor for writing a value and listening to changes that is used by the
+ * {\@link NgModel}, {\@link FormControlDirective}, and {\@link FormControlName} directives.
+ *
+ *  ### Example
+ *  ```
+ *  <input type="text" name="searchQuery" ngModel>
+ *  ```
+ *
+ *  \@stable
  */
 export var DefaultValueAccessor = (function () {
     /**

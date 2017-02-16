@@ -33,5 +33,4 @@ export var Md2AccordionModule = (function () {
     ], Md2AccordionModule);
     return Md2AccordionModule;
 }());
-
 //# sourceMappingURL=accordion.js.map

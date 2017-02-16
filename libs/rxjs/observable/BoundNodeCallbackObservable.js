@@ -15,11 +15,12 @@ var AsyncSubject_1 = require('../AsyncSubject');
  */
 var BoundNodeCallbackObservable = (function (_super) {
     __extends(BoundNodeCallbackObservable, _super);
-    function BoundNodeCallbackObservable(callbackFunc, selector, args, scheduler) {
+    function BoundNodeCallbackObservable(callbackFunc, selector, args, context, scheduler) {
         _super.call(this);
         this.callbackFunc = callbackFunc;
         this.selector = selector;
         this.args = args;
+        this.context = context;
         this.scheduler = scheduler;
     }
     /* tslint:enable:max-line-length */
@@ -35,10 +36,15 @@ var BoundNodeCallbackObservable = (function (_super) {
      * last parameter must be a callback function that `func` calls when it is
      * done. The callback function is expected to follow Node.js conventions,
      * where the first argument to the callback is an error, while remaining
-     * arguments are the callback result. The output of `bindNodeCallback` is a
+     * arguments are the callback result.
+     *
+     * The output of `bindNodeCallback` is a
      * function that takes the same parameters as `func`, except the last one (the
      * callback). When the output function is called with arguments, it will
      * return an Observable where the results will be delivered to.
+     *
+     * As in {@link bindCallback}, context (`this` property) of input function will be set to context
+     * of returned function, when it is called.
      *
      * @example <caption>Read a file from the filesystem and get the data as an Observable</caption>
      * import * as fs from 'fs';
@@ -51,7 +57,7 @@ var BoundNodeCallbackObservable = (function (_super) {
      * @see {@link fromPromise}
      *
      * @param {function} func Function with a callback as the last parameter.
-     * @param {function} selector A function which takes the arguments from the
+     * @param {function} [selector] A function which takes the arguments from the
      * callback and maps those a value to emit on the output Observable.
      * @param {Scheduler} [scheduler] The scheduler on which to schedule the
      * callbacks.
@@ -69,7 +75,7 @@ var BoundNodeCallbackObservable = (function (_super) {
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
             }
-            return new BoundNodeCallbackObservable(func, selector, args, scheduler);
+            return new BoundNodeCallbackObservable(func, selector, args, this, scheduler);
         };
     };
     BoundNodeCallbackObservable.prototype._subscribe = function (subscriber) {
@@ -108,7 +114,7 @@ var BoundNodeCallbackObservable = (function (_super) {
                 };
                 // use named function instance to avoid closure.
                 handler.source = this;
-                var result = tryCatch_1.tryCatch(callbackFunc).apply(this, args.concat(handler));
+                var result = tryCatch_1.tryCatch(callbackFunc).apply(this.context, args.concat(handler));
                 if (result === errorObject_1.errorObject) {
                     subject.error(errorObject_1.errorObject.e);
                 }
@@ -116,7 +122,7 @@ var BoundNodeCallbackObservable = (function (_super) {
             return subject.subscribe(subscriber);
         }
         else {
-            return scheduler.schedule(dispatch, 0, { source: this, subscriber: subscriber });
+            return scheduler.schedule(dispatch, 0, { source: this, subscriber: subscriber, context: this.context });
         }
     };
     return BoundNodeCallbackObservable;
@@ -124,7 +130,7 @@ var BoundNodeCallbackObservable = (function (_super) {
 exports.BoundNodeCallbackObservable = BoundNodeCallbackObservable;
 function dispatch(state) {
     var self = this;
-    var source = state.source, subscriber = state.subscriber;
+    var source = state.source, subscriber = state.subscriber, context = state.context;
     // XXX: cast to `any` to access to the private field in `source`.
     var _a = source, callbackFunc = _a.callbackFunc, args = _a.args, scheduler = _a.scheduler;
     var subject = source.subject;
@@ -157,7 +163,7 @@ function dispatch(state) {
         };
         // use named function to pass values in without closure
         handler.source = source;
-        var result = tryCatch_1.tryCatch(callbackFunc).apply(this, args.concat(handler));
+        var result = tryCatch_1.tryCatch(callbackFunc).apply(context, args.concat(handler));
         if (result === errorObject_1.errorObject) {
             subject.error(errorObject_1.errorObject.e);
         }

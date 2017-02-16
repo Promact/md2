@@ -1,4 +1,4 @@
-:host {
+md2-tooltip {
   pointer-events: none; }
 
 .md2-tooltip {
@@ -7,8 +7,7 @@
   border-radius: 2px;
   font-size: 10px;
   margin: 14px;
-  /*height: $md2-tooltip-target-height;
-  line-height: $md2-tooltip-target-height;*/
+  max-width: 250px;
   background: rgba(97, 97, 97, 0.9); }
 
 .cdk-overlay-container, .cdk-global-overlay-wrapper {

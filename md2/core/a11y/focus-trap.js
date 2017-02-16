@@ -125,5 +125,4 @@ export var FocusTrap = (function () {
     ], FocusTrap);
     return FocusTrap;
 }());
-
 //# sourceMappingURL=focus-trap.js.map

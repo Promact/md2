@@ -38,5 +38,4 @@ var DialogDemo = (function () {
     return DialogDemo;
 }());
 exports.DialogDemo = DialogDemo;
-
 //# sourceMappingURL=dialog-demo.js.map

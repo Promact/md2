@@ -11,56 +11,47 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 import { Injector, THROW_IF_NOT_FOUND } from '../di/injector';
-import { unimplemented } from '../facade/errors';
 import { stringify } from '../facade/lang';
 import { CodegenComponentFactoryResolver, ComponentFactoryResolver } from './component_factory_resolver';
 /**
- *  Represents an instance of an NgModule created via a {@link NgModuleFactory}.
-  * *
-  * `NgModuleRef` provides access to the NgModule Instance as well other objects related to this
-  * NgModule Instance.
-  * *
+ * Represents an instance of an NgModule created via a {\@link NgModuleFactory}.
+ *
+ * `NgModuleRef` provides access to the NgModule Instance as well other objects related to this
+ * NgModule Instance.
+ *
+ * \@stable
  * @abstract
  */
 export var NgModuleRef = (function () {
     function NgModuleRef() {
     }
-    Object.defineProperty(NgModuleRef.prototype, "injector", {
-        /**
-         *  The injector that contains all of the providers of the NgModule.
-         * @return {?}
-         */
-        get: function () { return unimplemented(); },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(NgModuleRef.prototype, "componentFactoryResolver", {
-        /**
-         *  The ComponentFactoryResolver to get hold of the ComponentFactories
-          * declared in the `entryComponents` property of the module.
-         * @return {?}
-         */
-        get: function () { return unimplemented(); },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(NgModuleRef.prototype, "instance", {
-        /**
-         *  The NgModule instance.
-         * @return {?}
-         */
-        get: function () { return unimplemented(); },
-        enumerable: true,
-        configurable: true
-    });
     /**
-     *  Destroys the module instance and all of the data structures associated with it.
+     * The injector that contains all of the providers of the NgModule.
+     * @abstract
+     * @return {?}
+     */
+    NgModuleRef.prototype.injector = function () { };
+    /**
+     * The ComponentFactoryResolver to get hold of the ComponentFactories
+     * declared in the `entryComponents` property of the module.
+     * @abstract
+     * @return {?}
+     */
+    NgModuleRef.prototype.componentFactoryResolver = function () { };
+    /**
+     * The NgModule instance.
+     * @abstract
+     * @return {?}
+     */
+    NgModuleRef.prototype.instance = function () { };
+    /**
+     * Destroys the module instance and all of the data structures associated with it.
      * @abstract
      * @return {?}
      */
     NgModuleRef.prototype.destroy = function () { };
     /**
-     *  Allows to register a callback that will be called when the module is destroyed.
+     * Allows to register a callback that will be called when the module is destroyed.
      * @abstract
      * @param {?} callback
      * @return {?}
@@ -69,7 +60,7 @@ export var NgModuleRef = (function () {
     return NgModuleRef;
 }());
 /**
- * @experimental
+ * \@experimental
  */
 export var NgModuleFactory = (function () {
     /**

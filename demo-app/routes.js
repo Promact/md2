@@ -33,5 +33,4 @@ exports.DEMO_APP_ROUTES = [
     { path: 'toast', component: toast_demo_1.ToastDemo },
     { path: 'tooltip', component: tooltip_demo_1.TooltipDemo },
 ];
-
 //# sourceMappingURL=routes.js.map

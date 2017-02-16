@@ -5,7 +5,6 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { Observable } from 'rxjs/Observable';
 import { fromPromise } from 'rxjs/observable/fromPromise';
 import { of } from 'rxjs/observable/of';
 import { concatAll } from 'rxjs/operator/concatAll';
@@ -13,6 +12,7 @@ import { every } from 'rxjs/operator/every';
 import * as l from 'rxjs/operator/last';
 import { map } from 'rxjs/operator/map';
 import { mergeAll } from 'rxjs/operator/mergeAll';
+import { isObservable, isPromise } from '../private_import_core';
 import { PRIMARY_OUTLET } from '../shared';
 /**
  * @param {?} a
@@ -157,10 +157,10 @@ export function andObservables(observables) {
  * @return {?}
  */
 export function wrapIntoObservable(value) {
-    if (value instanceof Observable) {
+    if (isObservable(value)) {
         return value;
     }
-    if (value instanceof Promise) {
+    if (isPromise(value)) {
         return fromPromise(value);
     }
     return of(value);

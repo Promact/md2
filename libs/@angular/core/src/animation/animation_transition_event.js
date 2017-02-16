@@ -1,31 +1,33 @@
 /**
- *  An instance of this class is returned as an event parameter when an animation
-  * callback is captured for an animation either during the start or done phase.
-  * *
-  * ```typescript
-  * host: {
-  * '[@myAnimationTrigger]': 'someExpression',
-  * '(@myAnimationTrigger.start)': 'captureStartEvent($event)',
-  * '(@myAnimationTrigger.done)': 'captureDoneEvent($event)',
-  * },
-  * animations: [
-  * trigger("myAnimationTrigger", [
-  * // ...
-  * ])
-  * ]
-  * })
-  * class MyComponent {
-  * someExpression: any = false;
-  * captureStartEvent(event: AnimationTransitionEvent) {
-  * // the toState, fromState and totalTime data is accessible from the event variable
-  * }
-  * *
-  * captureDoneEvent(event: AnimationTransitionEvent) {
-  * // the toState, fromState and totalTime data is accessible from the event variable
-  * }
-  * }
-  * ```
-  * *
+ * An instance of this class is returned as an event parameter when an animation
+ * callback is captured for an animation either during the start or done phase.
+ *
+ * ```typescript
+ * \@Component({
+ *   host: {
+ *     '[\@myAnimationTrigger]': 'someExpression',
+ *     '(\@myAnimationTrigger.start)': 'captureStartEvent($event)',
+ *     '(\@myAnimationTrigger.done)': 'captureDoneEvent($event)',
+ *   },
+ *   animations: [
+ *     trigger("myAnimationTrigger", [
+ *        // ...
+ *     ])
+ *   ]
+ * })
+ * class MyComponent {
+ *   someExpression: any = false;
+ *   captureStartEvent(event: AnimationTransitionEvent) {
+ *     // the toState, fromState and totalTime data is accessible from the event variable
+ *   }
+ *
+ *   captureDoneEvent(event: AnimationTransitionEvent) {
+ *     // the toState, fromState and totalTime data is accessible from the event variable
+ *   }
+ * }
+ * ```
+ *
+ * \@experimental Animation support is experimental.
  */
 export var AnimationTransitionEvent = (function () {
     /**

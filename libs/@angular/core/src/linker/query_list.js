@@ -9,25 +9,27 @@ import { EventEmitter } from '../facade/async';
 import { ListWrapper } from '../facade/collection';
 import { getSymbolIterator } from '../facade/lang';
 /**
- *  An unmodifiable list of items that Angular keeps up to date when the state
-  * of the application changes.
-  * *
-  * The type of object that {@link Query} and {@link ViewQueryMetadata} provide.
-  * *
-  * Implements an iterable interface, therefore it can be used in both ES6
-  * javascript `for (var i of items)` loops as well as in Angular templates with
-  * `*ngFor="let i of myList"`.
-  * *
-  * Changes can be observed by subscribing to the changes `Observable`.
-  * *
-  * NOTE: In the future this class will implement an `Observable` interface.
-  * *
-  * ### Example ([live demo](http://plnkr.co/edit/RX8sJnQYl9FWuSCWme5z?p=preview))
-  * ```typescript
-  * class Container {
-  * @ViewChildren(Item) items:QueryList<Item>;
-  * }
-  * ```
+ * An unmodifiable list of items that Angular keeps up to date when the state
+ * of the application changes.
+ *
+ * The type of object that {\@link Query} and {\@link ViewQueryMetadata} provide.
+ *
+ * Implements an iterable interface, therefore it can be used in both ES6
+ * javascript `for (var i of items)` loops as well as in Angular templates with
+ * `*ngFor="let i of myList"`.
+ *
+ * Changes can be observed by subscribing to the changes `Observable`.
+ *
+ * NOTE: In the future this class will implement an `Observable` interface.
+ *
+ * ### Example ([live demo](http://plnkr.co/edit/RX8sJnQYl9FWuSCWme5z?p=preview))
+ * ```typescript
+ * \@Component({...})
+ * class Container {
+ *   \@ViewChildren(Item) items:QueryList<Item>;
+ * }
+ * ```
+ * \@stable
  */
 export var QueryList = (function () {
     function QueryList() {
@@ -68,15 +70,15 @@ export var QueryList = (function () {
         configurable: true
     });
     /**
-     *  See
-      * [Array.map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map)
+     * See
+     * [Array.map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map)
      * @param {?} fn
      * @return {?}
      */
     QueryList.prototype.map = function (fn) { return this._results.map(fn); };
     /**
-     *  See
-      * [Array.filter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter)
+     * See
+     * [Array.filter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter)
      * @param {?} fn
      * @return {?}
      */
@@ -84,15 +86,15 @@ export var QueryList = (function () {
         return this._results.filter(fn);
     };
     /**
-     *  See
-      * [Array.find](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find)
+     * See
+     * [Array.find](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find)
      * @param {?} fn
      * @return {?}
      */
     QueryList.prototype.find = function (fn) { return this._results.find(fn); };
     /**
-     *  See
-      * [Array.reduce](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)
+     * See
+     * [Array.reduce](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)
      * @param {?} fn
      * @param {?} init
      * @return {?}
@@ -101,15 +103,15 @@ export var QueryList = (function () {
         return this._results.reduce(fn, init);
     };
     /**
-     *  See
-      * [Array.forEach](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach)
+     * See
+     * [Array.forEach](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach)
      * @param {?} fn
      * @return {?}
      */
     QueryList.prototype.forEach = function (fn) { this._results.forEach(fn); };
     /**
-     *  See
-      * [Array.some](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some)
+     * See
+     * [Array.some](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some)
      * @param {?} fn
      * @return {?}
      */
@@ -141,13 +143,13 @@ export var QueryList = (function () {
      */
     QueryList.prototype.notifyOnChanges = function () { this._emitter.emit(this); };
     /**
-     *  internal
+     * internal
      * @return {?}
      */
     QueryList.prototype.setDirty = function () { this._dirty = true; };
     Object.defineProperty(QueryList.prototype, "dirty", {
         /**
-         *  internal
+         * internal
          * @return {?}
          */
         get: function () { return this._dirty; },

@@ -5,11 +5,20 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { Injectable } from '@angular/core';
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 import { identifierModuleUrl, identifierName, tokenName, tokenReference } from './compile_metadata';
 import { createDiTokenExpression } from './compiler_util/identifier_util';
 import { isPresent } from './facade/lang';
 import { Identifiers, createIdentifier, resolveIdentifier } from './identifiers';
+import { CompilerInjectable } from './injectable';
 import { createClassStmt } from './output/class_builder';
 import * as o from './output/output_ast';
 import { convertValueToOutputAst } from './output/value_util';
@@ -97,22 +106,12 @@ export var NgModuleCompiler = (function () {
         }
         return new NgModuleCompileResult(stmts, ngModuleFactoryVar, deps);
     };
-    NgModuleCompiler.decorators = [
-        { type: Injectable },
-    ];
-    /** @nocollapse */
-    NgModuleCompiler.ctorParameters = function () { return []; };
+    NgModuleCompiler = __decorate([
+        CompilerInjectable(), 
+        __metadata('design:paramtypes', [])
+    ], NgModuleCompiler);
     return NgModuleCompiler;
 }());
-function NgModuleCompiler_tsickle_Closure_declarations() {
-    /** @type {?} */
-    NgModuleCompiler.decorators;
-    /**
-     * @nocollapse
-     * @type {?}
-     */
-    NgModuleCompiler.ctorParameters;
-}
 var _InjectorBuilder = (function () {
     /**
      * @param {?} _ngModuleMeta

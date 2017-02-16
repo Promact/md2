@@ -24,7 +24,6 @@ export var Item = (function () {
     }
     return Item;
 }());
-var noop = function () { };
 var nextId = 0;
 export var MD2_AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR = {
     provide: NG_VALUE_ACCESSOR,
@@ -436,5 +435,4 @@ export var Md2AutocompleteModule = (function () {
     ], Md2AutocompleteModule);
     return Md2AutocompleteModule;
 }());
-
 //# sourceMappingURL=autocomplete.js.map

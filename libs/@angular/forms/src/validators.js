@@ -15,7 +15,8 @@ import { isPromise } from './private_import_core';
  * @return {?}
  */
 function isEmptyInputValue(value) {
-    return value == null || typeof value === 'string' && value.length === 0;
+    // we don't check for string here so it also works with arrays
+    return value == null || value.length === 0;
 }
 /**
  * Providers for validators to be used for {@link FormControl}s in a form.
@@ -40,23 +41,24 @@ export var /** @type {?} */ NG_VALIDATORS = new OpaqueToken('NgValidators');
  */
 export var /** @type {?} */ NG_ASYNC_VALIDATORS = new OpaqueToken('NgAsyncValidators');
 /**
- *  Provides a set of validators used by form controls.
-  * *
-  * A validator is a function that processes a {@link FormControl} or collection of
-  * controls and returns a map of errors. A null map means that validation has passed.
-  * *
-  * ### Example
-  * *
-  * ```typescript
-  * var loginControl = new FormControl("", Validators.required)
-  * ```
-  * *
+ * Provides a set of validators used by form controls.
+ *
+ * A validator is a function that processes a {\@link FormControl} or collection of
+ * controls and returns a map of errors. A null map means that validation has passed.
+ *
+ * ### Example
+ *
+ * ```typescript
+ * var loginControl = new FormControl("", Validators.required)
+ * ```
+ *
+ * \@stable
  */
 export var Validators = (function () {
     function Validators() {
     }
     /**
-     *  Validator that requires controls to have a non-empty value.
+     * Validator that requires controls to have a non-empty value.
      * @param {?} control
      * @return {?}
      */
@@ -64,7 +66,7 @@ export var Validators = (function () {
         return isEmptyInputValue(control.value) ? { 'required': true } : null;
     };
     /**
-     *  Validator that requires control value to be true.
+     * Validator that requires control value to be true.
      * @param {?} control
      * @return {?}
      */
@@ -72,7 +74,7 @@ export var Validators = (function () {
         return control.value === true ? null : { 'required': true };
     };
     /**
-     *  Validator that requires controls to have a value of a minimum length.
+     * Validator that requires controls to have a value of a minimum length.
      * @param {?} minLength
      * @return {?}
      */
@@ -88,7 +90,7 @@ export var Validators = (function () {
         };
     };
     /**
-     *  Validator that requires controls to have a value of a maximum length.
+     * Validator that requires controls to have a value of a maximum length.
      * @param {?} maxLength
      * @return {?}
      */
@@ -101,7 +103,7 @@ export var Validators = (function () {
         };
     };
     /**
-     *  Validator that requires a control to match a regex to its value.
+     * Validator that requires a control to match a regex to its value.
      * @param {?} pattern
      * @return {?}
      */
@@ -128,14 +130,14 @@ export var Validators = (function () {
         };
     };
     /**
-     *  No-op validator.
+     * No-op validator.
      * @param {?} c
      * @return {?}
      */
     Validators.nullValidator = function (c) { return null; };
     /**
-     *  Compose multiple validators into a single function that returns the union
-      * of the individual error maps.
+     * Compose multiple validators into a single function that returns the union
+     * of the individual error maps.
      * @param {?} validators
      * @return {?}
      */

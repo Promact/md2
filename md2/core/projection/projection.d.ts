@@ -41,5 +41,6 @@ export declare class DomProjection {
 }
 /** @docs-private */
 export declare class ProjectionModule {
+    /** @deprecated */
     static forRoot(): ModuleWithProviders;
 }

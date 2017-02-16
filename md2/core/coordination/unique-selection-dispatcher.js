@@ -7,7 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Injectable } from '@angular/core';
+import { Injectable, Optional, SkipSelf } from '@angular/core';
 /**
  * Class to coordinate unique selection based on name.
  * Intended to be consumed as an Angular service.
@@ -42,5 +42,13 @@ export var UniqueSelectionDispatcher = (function () {
     ], UniqueSelectionDispatcher);
     return UniqueSelectionDispatcher;
 }());
-
+export function UNIQUE_SELECTION_DISPATCHER_PROVIDER_FACTORY(parentDispatcher) {
+    return parentDispatcher || new UniqueSelectionDispatcher();
+}
+export var UNIQUE_SELECTION_DISPATCHER_PROVIDER = {
+    // If there is already a dispatcher available, use that. Otherwise, provide a new one.
+    provide: UniqueSelectionDispatcher,
+    deps: [[new Optional(), new SkipSelf(), UniqueSelectionDispatcher]],
+    useFactory: UNIQUE_SELECTION_DISPATCHER_PROVIDER_FACTORY
+};
 //# sourceMappingURL=unique-selection-dispatcher.js.map

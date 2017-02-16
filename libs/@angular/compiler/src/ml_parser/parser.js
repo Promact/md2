@@ -341,7 +341,7 @@ var _TreeBuilder = (function () {
         }
         var /** @type {?} */ tagDef = this.getTagDefinition(el.name);
         var _a = this._getParentElementSkippingContainers(), parent = _a.parent, container = _a.container;
-        if (isPresent(parent) && tagDef.requireExtraParent(parent.name)) {
+        if (parent && tagDef.requireExtraParent(parent.name)) {
             var /** @type {?} */ newParent = new html.Element(tagDef.parentToAdd, [], [], el.sourceSpan, el.startSourceSpan, el.endSourceSpan);
             this._insertBeforeContainer(parent, container, newParent);
         }
@@ -405,9 +405,9 @@ var _TreeBuilder = (function () {
         return this._elementStack.length > 0 ? this._elementStack[this._elementStack.length - 1] : null;
     };
     /**
-     *  Returns the parent in the DOM and the container.
-      * *
-      * `<ng-container>` elements are skipped as they are not rendered as DOM element.
+     * Returns the parent in the DOM and the container.
+     *
+     * `<ng-container>` elements are skipped as they are not rendered as DOM element.
      * @return {?}
      */
     _TreeBuilder.prototype._getParentElementSkippingContainers = function () {
@@ -434,10 +434,11 @@ var _TreeBuilder = (function () {
         }
     };
     /**
-     *  Insert a node between the parent and the container.
-      * When no container is given, the node is appended as a child of the parent.
-      * Also updates the element stack accordingly.
-      * *
+     * Insert a node between the parent and the container.
+     * When no container is given, the node is appended as a child of the parent.
+     * Also updates the element stack accordingly.
+     *
+     * \@internal
      * @param {?} parent
      * @param {?} container
      * @param {?} node

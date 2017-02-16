@@ -57,7 +57,6 @@ function Text_tsickle_Closure_declarations() {
     /** @type {?} */
     Text.prototype.sourceSpan;
 }
-// TODO(vicb): do we really need this node (vs an array) ?
 export var Container = (function () {
     /**
      * @param {?} children

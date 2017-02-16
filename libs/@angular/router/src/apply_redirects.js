@@ -328,7 +328,7 @@ var ApplyRedirects = (function () {
             if (route.loadChildren) {
                 return map.call(this.configLoader.load(injector, route.loadChildren), function (r) {
                     ((route))._loadedConfig = r;
-                    return of(new UrlSegmentGroup(segments, {}));
+                    return new UrlSegmentGroup(segments, {});
                 });
             }
             else {

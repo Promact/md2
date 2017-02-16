@@ -25,5 +25,4 @@ export function extendObject(dest) {
     }
     return dest;
 }
-
 //# sourceMappingURL=object-extend.js.map

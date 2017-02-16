@@ -7,266 +7,86 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { NgModule, Directive, ElementRef, HostBinding, Input, NgZone } from '@angular/core';
-import { RippleRenderer, ForegroundRippleState } from './ripple-renderer';
-import { DefaultStyleCompatibilityModeModule } from '../compatibility/default-mode';
-import { ViewportRuler } from '../overlay/position/viewport-ruler';
+import { NgModule, Directive, ElementRef, Input, NgZone } from '@angular/core';
+import { RippleRenderer } from './ripple-renderer';
+import { CompatibilityModule } from '../compatibility/compatibility';
+import { ViewportRuler, VIEWPORT_RULER_PROVIDER } from '../overlay/position/viewport-ruler';
+import { SCROLL_DISPATCHER_PROVIDER } from '../overlay/scroll/scroll-dispatcher';
 export var MdRipple = (function () {
-    function MdRipple(_elementRef, _ngZone, _ruler) {
-        var _this = this;
+    function MdRipple(elementRef, ngZone, ruler) {
         /**
          * If set, the radius in pixels of foreground ripples when fully expanded. If unset, the radius
          * will be the distance from the center of the ripple to the furthest corner of the host element's
          * bounding rectangle.
          */
-        this.maxRadius = 0;
+        this.radius = 0;
         /**
          * If set, the normal duration of ripple animations is divided by this value. For example,
          * setting it to 0.5 will cause the animations to take twice as long.
+         * A changed speedFactor will not modify the fade-out duration of the ripples.
          */
         this.speedFactor = 1;
-        // These event handlers are attached to the element that triggers the ripple animations.
-        var eventHandlers = new Map();
-        eventHandlers.set('mousedown', function (event) { return _this._mouseDown(event); });
-        eventHandlers.set('click', function (event) { return _this._click(event); });
-        eventHandlers.set('mouseleave', function (event) { return _this._mouseLeave(event); });
-        this._rippleRenderer = new RippleRenderer(_elementRef, eventHandlers, _ngZone);
-        this._ruler = _ruler;
+        this._rippleRenderer = new RippleRenderer(elementRef, ngZone, ruler);
     }
-    Object.defineProperty(MdRipple.prototype, "_triggerDeprecated", {
-        /** @deprecated */
-        get: function () { return this.trigger; },
-        set: function (value) { this.trigger = value; },
-        enumerable: true,
-        configurable: true
-    });
-    ;
-    Object.defineProperty(MdRipple.prototype, "_centeredDeprecated", {
-        /** @deprecated */
-        get: function () { return this.centered; },
-        set: function (value) { this.centered = value; },
-        enumerable: true,
-        configurable: true
-    });
-    ;
-    Object.defineProperty(MdRipple.prototype, "_disabledDeprecated", {
-        /** @deprecated */
-        get: function () { return this.disabled; },
-        set: function (value) { this.disabled = value; },
-        enumerable: true,
-        configurable: true
-    });
-    ;
-    Object.defineProperty(MdRipple.prototype, "_maxRadiusDeprecated", {
-        /** @deprecated */
-        get: function () { return this.maxRadius; },
-        set: function (value) { this.maxRadius = value; },
-        enumerable: true,
-        configurable: true
-    });
-    ;
-    Object.defineProperty(MdRipple.prototype, "_speedFactorDeprecated", {
-        /** @deprecated */
-        get: function () { return this.speedFactor; },
-        set: function (value) { this.speedFactor = value; },
-        enumerable: true,
-        configurable: true
-    });
-    ;
-    Object.defineProperty(MdRipple.prototype, "_colorDeprecated", {
-        /** @deprecated */
-        get: function () { return this.color; },
-        set: function (value) { this.color = value; },
-        enumerable: true,
-        configurable: true
-    });
-    ;
-    Object.defineProperty(MdRipple.prototype, "_backgroundColorDeprecated", {
-        /** @deprecated */
-        get: function () { return this.backgroundColor; },
-        set: function (value) { this.backgroundColor = value; },
-        enumerable: true,
-        configurable: true
-    });
-    ;
-    Object.defineProperty(MdRipple.prototype, "_focusedDeprecated", {
-        /** @deprecated */
-        get: function () { return this.focused; },
-        set: function (value) { this.focused = value; },
-        enumerable: true,
-        configurable: true
-    });
-    ;
-    Object.defineProperty(MdRipple.prototype, "_unboundedDeprecated", {
-        /** @deprecated */
-        get: function () { return this.unbounded; },
-        set: function (value) { this.unbounded = value; },
-        enumerable: true,
-        configurable: true
-    });
-    ;
-    MdRipple.prototype.ngOnInit = function () {
-        // If no trigger element was explicitly set, use the host element
-        if (!this.trigger) {
-            this._rippleRenderer.setTriggerElementToHost();
-        }
-        if (!this.disabled) {
-            this._rippleRenderer.createBackgroundIfNeeded();
-        }
-    };
-    MdRipple.prototype.ngOnDestroy = function () {
-        // Remove event listeners on the trigger element.
-        this._rippleRenderer.clearTriggerElement();
-    };
     MdRipple.prototype.ngOnChanges = function (changes) {
-        // If the trigger element changed (or is being initially set), add event listeners to it.
-        var changedInputs = Object.keys(changes);
-        if (changedInputs.indexOf('trigger') !== -1) {
+        if (changes['trigger'] && this.trigger) {
             this._rippleRenderer.setTriggerElement(this.trigger);
         }
-        if (!this.disabled) {
-            this._rippleRenderer.createBackgroundIfNeeded();
-        }
+        this._rippleRenderer.rippleDisabled = this.disabled;
+        this._updateRippleConfig();
     };
-    /**
-     * Responds to the start of a ripple animation trigger by fading the background in.
-     */
-    MdRipple.prototype.start = function () {
-        this._rippleRenderer.createBackgroundIfNeeded();
-        this._rippleRenderer.fadeInRippleBackground(this.backgroundColor);
+    MdRipple.prototype.ngOnDestroy = function () {
+        // Set the trigger element to null to cleanup all listeners.
+        this._rippleRenderer.setTriggerElement(null);
     };
-    /**
-     * Responds to the end of a ripple animation trigger by fading the background out, and creating a
-     * foreground ripple that expands from the event location (or from the center of the element if
-     * the "centered" property is set or forceCenter is true).
-     */
-    MdRipple.prototype.end = function (left, top, forceCenter) {
-        var _this = this;
-        if (forceCenter === void 0) { forceCenter = true; }
-        this._rippleRenderer.createForegroundRipple(left, top, this.color, this.centered || forceCenter, this.maxRadius, this.speedFactor, function (ripple, e) { return _this._rippleTransitionEnded(ripple, e); });
-        this._rippleRenderer.fadeOutRippleBackground();
+    /** Launches a manual ripple at the specified position. */
+    MdRipple.prototype.launch = function (pageX, pageY, config) {
+        this._rippleRenderer.fadeInRipple(pageX, pageY, config);
     };
-    MdRipple.prototype._rippleTransitionEnded = function (ripple, event) {
-        if (event.propertyName === 'opacity') {
-            // If the ripple finished expanding, start fading it out. If it finished fading out,
-            // remove it from the DOM.
-            switch (ripple.state) {
-                case ForegroundRippleState.EXPANDING:
-                    this._rippleRenderer.fadeOutForegroundRipple(ripple.rippleElement);
-                    ripple.state = ForegroundRippleState.FADING_OUT;
-                    break;
-                case ForegroundRippleState.FADING_OUT:
-                    this._rippleRenderer.removeRippleFromDom(ripple.rippleElement);
-                    break;
-            }
-        }
-    };
-    /**
-     * Called when the trigger element receives a mousedown event. Starts the ripple animation by
-     * fading in the background.
-     */
-    MdRipple.prototype._mouseDown = function (event) {
-        if (!this.disabled && event.button === 0) {
-            this.start();
-        }
-    };
-    /**
-     * Called when the trigger element receives a click event. Creates a foreground ripple and
-     * runs its animation.
-     */
-    MdRipple.prototype._click = function (event) {
-        if (!this.disabled && event.button === 0) {
-            // If screen and page positions are all 0, this was probably triggered by a keypress.
-            // In that case, use the center of the bounding rect as the ripple origin.
-            // FIXME: This fails on IE11, which still sets pageX/Y and screenX/Y on keyboard clicks.
-            var isKeyEvent = (event.screenX === 0 && event.screenY === 0 && event.pageX === 0 && event.pageY === 0);
-            this.end(event.pageX - this._ruler.getViewportScrollPosition().left, event.pageY - this._ruler.getViewportScrollPosition().top, isKeyEvent);
-        }
-    };
-    /**
-     * Called when the trigger element receives a mouseleave event. Fades out the background.
-     */
-    MdRipple.prototype._mouseLeave = function (event) {
-        // We can always fade out the background here; It's a no-op if it was already inactive.
-        this._rippleRenderer.fadeOutRippleBackground();
+    /** Updates the ripple configuration with the input values. */
+    MdRipple.prototype._updateRippleConfig = function () {
+        this._rippleRenderer.rippleConfig = {
+            centered: this.centered,
+            speedFactor: this.speedFactor,
+            radius: this.radius,
+            color: this.color
+        };
     };
     __decorate([
         Input('mdRippleTrigger'), 
         __metadata('design:type', Object)
     ], MdRipple.prototype, "trigger", void 0);
     __decorate([
-        Input('md-ripple-trigger'), 
-        __metadata('design:type', Object)
-    ], MdRipple.prototype, "_triggerDeprecated", null);
-    __decorate([
         Input('mdRippleCentered'), 
         __metadata('design:type', Boolean)
     ], MdRipple.prototype, "centered", void 0);
-    __decorate([
-        Input('md-ripple-centered'), 
-        __metadata('design:type', Object)
-    ], MdRipple.prototype, "_centeredDeprecated", null);
     __decorate([
         Input('mdRippleDisabled'), 
         __metadata('design:type', Boolean)
     ], MdRipple.prototype, "disabled", void 0);
     __decorate([
-        Input('md-ripple-disabled'), 
-        __metadata('design:type', Object)
-    ], MdRipple.prototype, "_disabledDeprecated", null);
-    __decorate([
-        Input('mdRippleMaxRadius'), 
+        Input('mdRippleRadius'), 
         __metadata('design:type', Number)
-    ], MdRipple.prototype, "maxRadius", void 0);
-    __decorate([
-        Input('md-ripple-max-radius'), 
-        __metadata('design:type', Object)
-    ], MdRipple.prototype, "_maxRadiusDeprecated", null);
+    ], MdRipple.prototype, "radius", void 0);
     __decorate([
         Input('mdRippleSpeedFactor'), 
         __metadata('design:type', Number)
     ], MdRipple.prototype, "speedFactor", void 0);
     __decorate([
-        Input('md-ripple-speed-factor'), 
-        __metadata('design:type', Object)
-    ], MdRipple.prototype, "_speedFactorDeprecated", null);
-    __decorate([
         Input('mdRippleColor'), 
         __metadata('design:type', String)
     ], MdRipple.prototype, "color", void 0);
     __decorate([
-        Input('md-ripple-color'), 
-        __metadata('design:type', Object)
-    ], MdRipple.prototype, "_colorDeprecated", null);
-    __decorate([
-        Input('mdRippleBackgroundColor'), 
-        __metadata('design:type', String)
-    ], MdRipple.prototype, "backgroundColor", void 0);
-    __decorate([
-        Input('md-ripple-background-color'), 
-        __metadata('design:type', Object)
-    ], MdRipple.prototype, "_backgroundColorDeprecated", null);
-    __decorate([
-        HostBinding('class.md-ripple-focused'),
-        Input('mdRippleFocused'), 
-        __metadata('design:type', Boolean)
-    ], MdRipple.prototype, "focused", void 0);
-    __decorate([
-        Input('md-ripple-focused'), 
-        __metadata('design:type', Boolean)
-    ], MdRipple.prototype, "_focusedDeprecated", null);
-    __decorate([
-        HostBinding('class.md-ripple-unbounded'),
         Input('mdRippleUnbounded'), 
         __metadata('design:type', Boolean)
     ], MdRipple.prototype, "unbounded", void 0);
-    __decorate([
-        Input('md-ripple-unbounded'), 
-        __metadata('design:type', Boolean)
-    ], MdRipple.prototype, "_unboundedDeprecated", null);
     MdRipple = __decorate([
         Directive({
             selector: '[md-ripple], [mat-ripple]',
+            host: {
+                '[class.mat-ripple]': 'true',
+                '[class.mat-ripple-unbounded]': 'unbounded'
+            }
         }), 
         __metadata('design:paramtypes', [ElementRef, NgZone, ViewportRuler])
     ], MdRipple);
@@ -275,21 +95,22 @@ export var MdRipple = (function () {
 export var MdRippleModule = (function () {
     function MdRippleModule() {
     }
+    /** @deprecated */
     MdRippleModule.forRoot = function () {
         return {
             ngModule: MdRippleModule,
-            providers: [ViewportRuler]
+            providers: []
         };
     };
     MdRippleModule = __decorate([
         NgModule({
-            imports: [DefaultStyleCompatibilityModeModule],
-            exports: [MdRipple, DefaultStyleCompatibilityModeModule],
+            imports: [CompatibilityModule],
+            exports: [MdRipple, CompatibilityModule],
             declarations: [MdRipple],
+            providers: [VIEWPORT_RULER_PROVIDER, SCROLL_DISPATCHER_PROVIDER],
         }), 
         __metadata('design:paramtypes', [])
     ], MdRippleModule);
     return MdRippleModule;
 }());
-
 //# sourceMappingURL=ripple.js.map

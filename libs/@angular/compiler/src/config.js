@@ -7,12 +7,6 @@
  */
 import { ViewEncapsulation, isDevMode } from '@angular/core';
 import { Identifiers, createIdentifier } from './identifiers';
-/**
- * @return {?}
- */
-function unimplemented() {
-    throw new Error('unimplemented');
-}
 export var CompilerConfig = (function () {
     /**
      * @param {?=} __0
@@ -60,62 +54,44 @@ function CompilerConfig_tsickle_Closure_declarations() {
     CompilerConfig.prototype.useJit;
 }
 /**
- *  Types used for the renderer.
-  * Can be replaced to specialize the generated output to a specific renderer
-  * to help tree shaking.
+ * Types used for the renderer.
+ * Can be replaced to specialize the generated output to a specific renderer
+ * to help tree shaking.
  * @abstract
  */
 export var RenderTypes = (function () {
     function RenderTypes() {
     }
-    Object.defineProperty(RenderTypes.prototype, "renderer", {
-        /**
-         * @return {?}
-         */
-        get: function () { return unimplemented(); },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(RenderTypes.prototype, "renderText", {
-        /**
-         * @return {?}
-         */
-        get: function () { return unimplemented(); },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(RenderTypes.prototype, "renderElement", {
-        /**
-         * @return {?}
-         */
-        get: function () { return unimplemented(); },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(RenderTypes.prototype, "renderComment", {
-        /**
-         * @return {?}
-         */
-        get: function () { return unimplemented(); },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(RenderTypes.prototype, "renderNode", {
-        /**
-         * @return {?}
-         */
-        get: function () { return unimplemented(); },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(RenderTypes.prototype, "renderEvent", {
-        /**
-         * @return {?}
-         */
-        get: function () { return unimplemented(); },
-        enumerable: true,
-        configurable: true
-    });
+    /**
+     * @abstract
+     * @return {?}
+     */
+    RenderTypes.prototype.renderer = function () { };
+    /**
+     * @abstract
+     * @return {?}
+     */
+    RenderTypes.prototype.renderText = function () { };
+    /**
+     * @abstract
+     * @return {?}
+     */
+    RenderTypes.prototype.renderElement = function () { };
+    /**
+     * @abstract
+     * @return {?}
+     */
+    RenderTypes.prototype.renderComment = function () { };
+    /**
+     * @abstract
+     * @return {?}
+     */
+    RenderTypes.prototype.renderNode = function () { };
+    /**
+     * @abstract
+     * @return {?}
+     */
+    RenderTypes.prototype.renderEvent = function () { };
     return RenderTypes;
 }());
 export var DefaultRenderTypes = (function () {

@@ -13,7 +13,7 @@ var /** @type {?} */ inertElement = null;
 /** Lazily initialized to make sure the DOM adapter gets set before use. */
 var /** @type {?} */ DOM = null;
 /**
- *  Returns an HTML element that is guaranteed to not execute code when creating elements in it.
+ * Returns an HTML element that is guaranteed to not execute code when creating elements in it.
  * @return {?}
  */
 function getInertElement() {
@@ -104,8 +104,8 @@ var /** @type {?} */ HTML_ATTRS = tagSet('abbr,accesskey,align,alt,autoplay,axis
 // are left out here.
 var /** @type {?} */ VALID_ATTRS = merge(URI_ATTRS, SRCSET_ATTRS, HTML_ATTRS);
 /**
- *  SanitizingHtmlSerializer serializes a DOM fragment, stripping out any unsafe elements and unsafe
-  * attributes.
+ * SanitizingHtmlSerializer serializes a DOM fragment, stripping out any unsafe elements and unsafe
+ * attributes.
  */
 var SanitizingHtmlSerializer = (function () {
     function SanitizingHtmlSerializer() {
@@ -212,9 +212,9 @@ var /** @type {?} */ SURROGATE_PAIR_REGEXP = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g;
 // ! to ~ is the ASCII range.
 var /** @type {?} */ NON_ALPHANUMERIC_REGEXP = /([^\#-~ |!])/g;
 /**
- *  Escapes all potentially dangerous characters, so that the
-  * resulting string can be safely inserted into attribute or
-  * element text.
+ * Escapes all potentially dangerous characters, so that the
+ * resulting string can be safely inserted into attribute or
+ * element text.
  * @param {?} value
  * @return {?}
  */
@@ -230,11 +230,11 @@ function encodeEntities(value) {
         .replace(/>/g, '&gt;');
 }
 /**
- *  When IE9-11 comes across an unknown namespaced attribute e.g. 'xlink:foo' it adds 'xmlns:ns1'
-  * attribute to declare ns1 namespace and prefixes the attribute with 'ns1' (e.g. 'ns1:xlink:foo').
-  * *
-  * This is undesirable since we don't want to allow any of these custom attributes. This method
-  * strips them all.
+ * When IE9-11 comes across an unknown namespaced attribute e.g. 'xlink:foo' it adds 'xmlns:ns1'
+ * attribute to declare ns1 namespace and prefixes the attribute with 'ns1' (e.g. 'ns1:xlink:foo').
+ *
+ * This is undesirable since we don't want to allow any of these custom attributes. This method
+ * strips them all.
  * @param {?} el
  * @return {?}
  */
@@ -251,8 +251,8 @@ function stripCustomNsAttrs(el) {
     }
 }
 /**
- *  Sanitizes the given unsafe, untrusted HTML fragment, and returns HTML text that is safe to add to
-  * the DOM in a browser environment.
+ * Sanitizes the given unsafe, untrusted HTML fragment, and returns HTML text that is safe to add to
+ * the DOM in a browser environment.
  * @param {?} unsafeHtmlInput
  * @return {?}
  */

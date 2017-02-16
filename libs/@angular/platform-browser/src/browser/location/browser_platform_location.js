@@ -15,9 +15,9 @@ import { Injectable } from '@angular/core';
 import { getDOM } from '../../dom/dom_adapter';
 import { supportsState } from './history';
 /**
- *  `PlatformLocation` encapsulates all of the direct calls to platform APIs.
-  * This class should not be used directly by an application developer. Instead, use
-  * {@link Location}.
+ * `PlatformLocation` encapsulates all of the direct calls to platform APIs.
+ * This class should not be used directly by an application developer. Instead, use
+ * {\@link Location}.
  */
 export var BrowserPlatformLocation = (function (_super) {
     __extends(BrowserPlatformLocation, _super);
@@ -26,6 +26,7 @@ export var BrowserPlatformLocation = (function (_super) {
         this._init();
     }
     /**
+     * \@internal
      * @return {?}
      */
     BrowserPlatformLocation.prototype._init = function () {

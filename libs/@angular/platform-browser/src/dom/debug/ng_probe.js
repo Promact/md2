@@ -17,9 +17,9 @@ var /** @type {?} */ CORE_TOKENS = {
 var /** @type {?} */ INSPECT_GLOBAL_NAME = 'ng.probe';
 var /** @type {?} */ CORE_TOKENS_GLOBAL_NAME = 'ng.coreTokens';
 /**
- *  Returns a {@link DebugElement} for the given native DOM element, or
-  * null if the given native element does not have an Angular view associated
-  * with it.
+ * Returns a {\@link DebugElement} for the given native DOM element, or
+ * null if the given native element does not have an Angular view associated
+ * with it.
  * @param {?} element
  * @return {?}
  */
@@ -27,7 +27,7 @@ export function inspectNativeElement(element) {
     return core.getDebugNode(element);
 }
 /**
- *  Deprecated. Use the one from '@angular/core'.
+ * Deprecated. Use the one from '\@angular/core'.
  * @deprecated
  */
 export var NgProbeToken = (function () {

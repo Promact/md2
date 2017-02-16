@@ -13,32 +13,35 @@ var __extends = (this && this.__extends) || function (d, b) {
 import { UNINITIALIZED } from '../change_detection/change_detection_util';
 import { BaseError, WrappedError } from '../facade/errors';
 /**
- *  An error thrown if application changes model breaking the top-down data flow.
-  * *
-  * This exception is only thrown in dev mode.
-  * *
-  * <!-- TODO: Add a link once the dev mode option is configurable -->
-  * *
-  * ### Example
-  * *
-  * ```typescript
-  * selector: 'parent',
-  * template: '<child [prop]="parentProp"></child>',
-  * })
-  * class Parent {
-  * parentProp = 'init';
-  * }
-  * *
-  * class Child {
-  * constructor(public parent: Parent) {}
-  * *
-  * set prop(v) {
-  * // this updates the parent property, which is disallowed during change detection
-  * // this will result in ExpressionChangedAfterItHasBeenCheckedError
-  * this.parent.parentProp = 'updated';
-  * }
-  * }
-  * ```
+ * An error thrown if application changes model breaking the top-down data flow.
+ *
+ * This exception is only thrown in dev mode.
+ *
+ * <!-- TODO: Add a link once the dev mode option is configurable -->
+ *
+ * ### Example
+ *
+ * ```typescript
+ * \@Component({
+ *   selector: 'parent',
+ *   template: '<child [prop]="parentProp"></child>',
+ * })
+ * class Parent {
+ *   parentProp = 'init';
+ * }
+ *
+ * \@Directive({selector: 'child', inputs: ['prop']})
+ * class Child {
+ *   constructor(public parent: Parent) {}
+ *
+ *   set prop(v) {
+ *     // this updates the parent property, which is disallowed during change detection
+ *     // this will result in ExpressionChangedAfterItHasBeenCheckedError
+ *     this.parent.parentProp = 'updated';
+ *   }
+ * }
+ * ```
+ * \@stable
  */
 export var ExpressionChangedAfterItHasBeenCheckedError = (function (_super) {
     __extends(ExpressionChangedAfterItHasBeenCheckedError, _super);
@@ -58,10 +61,11 @@ export var ExpressionChangedAfterItHasBeenCheckedError = (function (_super) {
     return ExpressionChangedAfterItHasBeenCheckedError;
 }(BaseError));
 /**
- *  Thrown when an exception was raised during view creation, change detection or destruction.
-  * *
-  * This error wraps the original exception to attach additional contextual information that can
-  * be useful for debugging.
+ * Thrown when an exception was raised during view creation, change detection or destruction.
+ *
+ * This error wraps the original exception to attach additional contextual information that can
+ * be useful for debugging.
+ * \@stable
  */
 export var ViewWrappedError = (function (_super) {
     __extends(ViewWrappedError, _super);
@@ -83,11 +87,12 @@ function ViewWrappedError_tsickle_Closure_declarations() {
     ViewWrappedError.prototype.context;
 }
 /**
- *  Thrown when a destroyed view is used.
-  * *
-  * This error indicates a bug in the framework.
-  * *
-  * This is an internal Angular error.
+ * Thrown when a destroyed view is used.
+ *
+ * This error indicates a bug in the framework.
+ *
+ * This is an internal Angular error.
+ * \@stable
  */
 export var ViewDestroyedError = (function (_super) {
     __extends(ViewDestroyedError, _super);

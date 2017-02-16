@@ -12,7 +12,6 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 import { SecurityContext } from '@angular/core';
 import { EmptyExpr, RecursiveAstVisitor } from '../expression_parser/ast';
-import { isPresent } from '../facade/lang';
 import { mergeNsAndName } from '../ml_parser/tags';
 import { ParseError, ParseErrorLevel, ParseSourceSpan } from '../parse_util';
 import { CssSelector } from '../selector';
@@ -31,7 +30,7 @@ BoundPropertyType[BoundPropertyType.DEFAULT] = "DEFAULT";
 BoundPropertyType[BoundPropertyType.LITERAL_ATTR] = "LITERAL_ATTR";
 BoundPropertyType[BoundPropertyType.ANIMATION] = "ANIMATION";
 /**
- *  Represents a parsed property.
+ * Represents a parsed property.
  */
 export var BoundProperty = (function () {
     /**
@@ -75,7 +74,7 @@ function BoundProperty_tsickle_Closure_declarations() {
     BoundProperty.prototype.sourceSpan;
 }
 /**
- *  Parses bindings in templates and in the directive host area.
+ * Parses bindings in templates and in the directive host area.
  */
 export var BindingParser = (function () {
     /**
@@ -156,7 +155,6 @@ export var BindingParser = (function () {
         }
     };
     /**
-     * @param {?} name
      * @param {?} prefixToken
      * @param {?} value
      * @param {?} sourceSpan
@@ -165,14 +163,14 @@ export var BindingParser = (function () {
      * @param {?} targetVars
      * @return {?}
      */
-    BindingParser.prototype.parseInlineTemplateBinding = function (name, prefixToken, value, sourceSpan, targetMatchableAttrs, targetProps, targetVars) {
+    BindingParser.prototype.parseInlineTemplateBinding = function (prefixToken, value, sourceSpan, targetMatchableAttrs, targetProps, targetVars) {
         var /** @type {?} */ bindings = this._parseTemplateBindings(prefixToken, value, sourceSpan);
         for (var /** @type {?} */ i = 0; i < bindings.length; i++) {
             var /** @type {?} */ binding = bindings[i];
             if (binding.keyIsVar) {
                 targetVars.push(new VariableAst(binding.key, binding.name, sourceSpan));
             }
-            else if (isPresent(binding.expression)) {
+            else if (binding.expression) {
                 this._parsePropertyAst(binding.key, binding.expression, sourceSpan, targetMatchableAttrs, targetProps);
             }
             else {
@@ -194,7 +192,7 @@ export var BindingParser = (function () {
             var /** @type {?} */ bindingsResult = this._exprParser.parseTemplateBindings(prefixToken, value, sourceInfo);
             this._reportExpressionParserErrors(bindingsResult.errors, sourceSpan);
             bindingsResult.templateBindings.forEach(function (binding) {
-                if (isPresent(binding.expression)) {
+                if (binding.expression) {
                     _this._checkPipes(binding.expression, sourceSpan);
                 }
             });
@@ -263,7 +261,7 @@ export var BindingParser = (function () {
      */
     BindingParser.prototype.parsePropertyInterpolation = function (name, value, sourceSpan, targetMatchableAttrs, targetProps) {
         var /** @type {?} */ expr = this.parseInterpolation(value, sourceSpan);
-        if (isPresent(expr)) {
+        if (expr) {
             this._parsePropertyAst(name, expr, sourceSpan, targetMatchableAttrs, targetProps);
             return true;
         }
@@ -481,7 +479,7 @@ export var BindingParser = (function () {
      */
     BindingParser.prototype._checkPipes = function (ast, sourceSpan) {
         var _this = this;
-        if (isPresent(ast)) {
+        if (ast) {
             var /** @type {?} */ collector = new PipeCollector();
             ast.visit(collector);
             collector.pipes.forEach(function (ast, pipeName) {

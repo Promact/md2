@@ -6,10 +6,11 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /**
- *  Base class for control directives.
-  * *
-  * Only used internally in the forms module.
-  * *
+ * Base class for control directives.
+ *
+ * Only used internally in the forms module.
+ *
+ * \@stable
  * @abstract
  */
 export var AbstractControlDirective = (function () {

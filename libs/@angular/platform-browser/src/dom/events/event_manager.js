@@ -12,7 +12,7 @@ import { getDOM } from '../dom_adapter';
  */
 export var /** @type {?} */ EVENT_MANAGER_PLUGINS = new OpaqueToken('EventManagerPlugins');
 /**
- * @stable
+ * \@stable
  */
 export var EventManager = (function () {
     /**
@@ -51,6 +51,7 @@ export var EventManager = (function () {
      */
     EventManager.prototype.getZone = function () { return this._zone; };
     /**
+     * \@internal
      * @param {?} eventName
      * @return {?}
      */

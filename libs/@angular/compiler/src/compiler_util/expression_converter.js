@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import * as cdAst from '../expression_parser/ast';
-import { isBlank, isPresent } from '../facade/lang';
+import { isBlank } from '../facade/lang';
 import { Identifiers, createIdentifier } from '../identifiers';
 import * as o from '../output/output_ast';
 import { createPureProxy } from './identifier_util';
@@ -43,8 +43,8 @@ function ConvertPropertyBindingResult_tsickle_Closure_declarations() {
     ConvertPropertyBindingResult.prototype.forceUpdate;
 }
 /**
- *  Converts the given expression AST into an executable output AST, assuming the expression is
-  * used in a property binding.
+ * Converts the given expression AST into an executable output AST, assuming the expression is
+ * used in a property binding.
  * @param {?} builder
  * @param {?} nameResolver
  * @param {?} implicitReceiver
@@ -99,8 +99,8 @@ function ConvertActionBindingResult_tsickle_Closure_declarations() {
     ConvertActionBindingResult.prototype.preventDefault;
 }
 /**
- *  Converts the given expression AST into an executable output AST, assuming the expression is
-  * used in an action binding (e.g. an event handler).
+ * Converts the given expression AST into an executable output AST, assuming the expression is
+ * used in an action binding (e.g. an event handler).
  * @param {?} builder
  * @param {?} nameResolver
  * @param {?} implicitReceiver
@@ -133,8 +133,8 @@ export function convertActionBinding(builder, nameResolver, implicitReceiver, ac
     return new ConvertActionBindingResult(actionStmts, preventDefaultVar);
 }
 /**
- *  Creates variables that are shared by multiple calls to `convertActionBinding` /
-  * `convertPropertyBinding`
+ * Creates variables that are shared by multiple calls to `convertActionBinding` /
+ * `convertPropertyBinding`
  * @param {?} stmts
  * @return {?}
  */
@@ -444,7 +444,7 @@ var _AstToIrVisitor = (function () {
             var /** @type {?} */ receiver = this.visit(ast.receiver, _Mode.Expression);
             if (receiver === this._implicitReceiver) {
                 var /** @type {?} */ varExpr = this._getLocal(ast.name);
-                if (isPresent(varExpr)) {
+                if (varExpr) {
                     result = varExpr.callFn(args);
                 }
             }
@@ -493,7 +493,7 @@ var _AstToIrVisitor = (function () {
         var /** @type {?} */ receiver = this.visit(ast.receiver, _Mode.Expression);
         if (receiver === this._implicitReceiver) {
             var /** @type {?} */ varExpr = this._getLocal(ast.name);
-            if (isPresent(varExpr)) {
+            if (varExpr) {
                 throw new Error('Cannot assign to a reference or variable!');
             }
         }

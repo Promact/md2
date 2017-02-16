@@ -37,7 +37,7 @@ import * as reflection_capabilities from './reflection/reflection_capabilities';
 import * as reflector_reader from './reflection/reflector_reader';
 import * as api from './render/api';
 import * as decorators from './util/decorators';
-import { isPromise } from './util/lang';
+import { isObservable, isPromise } from './util/lang';
 export var /** @type {?} */ __core_private__ = {
     isDefaultChangeDetectionStrategy: constants.isDefaultChangeDetectionStrategy,
     ChangeDetectorStatus: constants.ChangeDetectorStatus,
@@ -87,6 +87,7 @@ export var /** @type {?} */ __core_private__ = {
     FILL_STYLE_FLAG: FILL_STYLE_FLAG_,
     ComponentStillLoadingError: ComponentStillLoadingError,
     isPromise: isPromise,
+    isObservable: isObservable,
     AnimationTransition: AnimationTransition
 };
 //# sourceMappingURL=core_private_export.js.map

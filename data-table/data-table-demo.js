@@ -48,5 +48,4 @@ var DataTableDemo = (function () {
     return DataTableDemo;
 }());
 exports.DataTableDemo = DataTableDemo;
-
 //# sourceMappingURL=data-table-demo.js.map

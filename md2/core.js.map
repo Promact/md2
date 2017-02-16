@@ -1,1 +1,1 @@
-{"version":3,"sources":["core.ts"],"names":[],"mappings":"AAAA,cAAc,cAAc,CAAC","file":"core.js","sourcesContent":[null]}
+{"version":3,"file":"core.js","sourceRoot":"","sources":["../../src/lib/core.ts"],"names":[],"mappings":"AAAA,cAAc,cAAc,CAAC","sourcesContent":["export * from './core/index';\n"]}

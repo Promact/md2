@@ -1,24 +1,7 @@
-/** @docs-private */
-export var ForegroundRippleState;
-(function (ForegroundRippleState) {
-    ForegroundRippleState[ForegroundRippleState["NEW"] = 0] = "NEW";
-    ForegroundRippleState[ForegroundRippleState["EXPANDING"] = 1] = "EXPANDING";
-    ForegroundRippleState[ForegroundRippleState["FADING_OUT"] = 2] = "FADING_OUT";
-})(ForegroundRippleState || (ForegroundRippleState = {}));
-/**
- * Wrapper for a foreground ripple DOM element and its animation state.
- * @docs-private
- */
-export var ForegroundRipple = (function () {
-    function ForegroundRipple(rippleElement) {
-        this.rippleElement = rippleElement;
-        this.state = ForegroundRippleState.NEW;
-    }
-    return ForegroundRipple;
-}());
-var RIPPLE_SPEED_PX_PER_SECOND = 1000;
-var MIN_RIPPLE_FILL_TIME_SECONDS = 0.1;
-var MAX_RIPPLE_FILL_TIME_SECONDS = 0.3;
+/** Fade-in speed in pixels per second. Can be modified with the speedFactor option. */
+export var RIPPLE_SPEED_PX_PER_SECOND = 170;
+/** Fade-out speed for the ripples in milliseconds. This can't be modified by the speedFactor. */
+export var RIPPLE_FADE_OUT_DURATION = 600;
 /**
  * Returns the distance from the point (x, y) to the furthest corner of a rectangle.
  */
@@ -35,143 +18,123 @@ var distanceToFurthestCorner = function (x, y, rect) {
  * @docs-private
  */
 export var RippleRenderer = (function () {
-    function RippleRenderer(_elementRef, _eventHandlers, _ngZone) {
-        this._eventHandlers = _eventHandlers;
+    function RippleRenderer(_elementRef, _ngZone, _ruler) {
         this._ngZone = _ngZone;
-        this._rippleElement = _elementRef.nativeElement;
-        // The background div is created in createBackgroundIfNeeded when the ripple becomes enabled.
-        // This avoids creating unneeded divs when the ripple is always disabled.
-        this._backgroundDiv = null;
+        this._ruler = _ruler;
+        /** Whether the mouse is currently down or not. */
+        this._isMousedown = false;
+        /** Currently active ripples that will be closed on mouseup. */
+        this._activeRipples = [];
+        /** Events to be registered on the trigger element. */
+        this._triggerEvents = new Map();
+        /** Ripple config for all ripples created by events. */
+        this.rippleConfig = {};
+        /** Whether mouse ripples should be created or not. */
+        this.rippleDisabled = false;
+        this._containerElement = _elementRef.nativeElement;
+        // Specify events which need to be registered on the trigger.
+        this._triggerEvents.set('mousedown', this.onMousedown.bind(this));
+        this._triggerEvents.set('mouseup', this.onMouseup.bind(this));
+        this._triggerEvents.set('mouseleave', this.onMouseLeave.bind(this));
+        // By default use the host element as trigger element.
+        this.setTriggerElement(this._containerElement);
     }
-    /** Creates the div for the ripple background, if it doesn't already exist. */
-    RippleRenderer.prototype.createBackgroundIfNeeded = function () {
-        if (!this._backgroundDiv) {
-            this._backgroundDiv = document.createElement('div');
-            this._backgroundDiv.classList.add('md-ripple-background');
-            this._rippleElement.appendChild(this._backgroundDiv);
-        }
-    };
-    /**
-     * Installs event handlers on the given trigger element, and removes event handlers from the
-     * previous trigger if needed.
-     *
-     * @param newTrigger New trigger to which to attach the ripple handlers.
-     */
-    RippleRenderer.prototype.setTriggerElement = function (newTrigger) {
+    /** Fades in a ripple at the given coordinates. */
+    RippleRenderer.prototype.fadeInRipple = function (pageX, pageY, config) {
         var _this = this;
-        if (this._triggerElement !== newTrigger) {
-            if (this._triggerElement) {
-                this._eventHandlers.forEach(function (eventHandler, eventName) {
-                    _this._triggerElement.removeEventListener(eventName, eventHandler);
-                });
-            }
-            this._triggerElement = newTrigger;
-            if (this._triggerElement) {
-                this._eventHandlers.forEach(function (eventHandler, eventName) {
-                    _this._triggerElement.addEventListener(eventName, eventHandler);
-                });
-            }
+        if (config === void 0) { config = {}; }
+        var containerRect = this._containerElement.getBoundingClientRect();
+        if (config.centered) {
+            pageX = containerRect.left + containerRect.width / 2;
+            pageY = containerRect.top + containerRect.height / 2;
         }
+        else {
+            // Subtract scroll values from the coordinates because calculations below
+            // are always relative to the viewport rectangle.
+            var scrollPosition = this._ruler.getViewportScrollPosition();
+            pageX -= scrollPosition.left;
+            pageY -= scrollPosition.top;
+        }
+        var radius = config.radius || distanceToFurthestCorner(pageX, pageY, containerRect);
+        var duration = 1 / (config.speedFactor || 1) * (radius / RIPPLE_SPEED_PX_PER_SECOND);
+        var offsetX = pageX - containerRect.left;
+        var offsetY = pageY - containerRect.top;
+        var ripple = document.createElement('div');
+        ripple.classList.add('mat-ripple-element');
+        ripple.style.left = (offsetX - radius) + "px";
+        ripple.style.top = (offsetY - radius) + "px";
+        ripple.style.height = radius * 2 + "px";
+        ripple.style.width = radius * 2 + "px";
+        // If the color is not set, the default CSS color will be used.
+        ripple.style.backgroundColor = config.color;
+        ripple.style.transitionDuration = duration + "s";
+        this._containerElement.appendChild(ripple);
+        // By default the browser does not recalculate the styles of dynamically created
+        // ripple elements. This is critical because then the `scale` would not animate properly.
+        this._enforceStyleRecalculation(ripple);
+        ripple.style.transform = 'scale(1)';
+        // Wait for the ripple to be faded in. Once it's faded in, the ripple can be hidden immediately
+        // if the mouse is released.
+        this.runTimeoutOutsideZone(function () {
+            _this._isMousedown ? _this._activeRipples.push(ripple) : _this.fadeOutRipple(ripple);
+        }, duration * 1000);
     };
-    /** Installs event handlers on the host element of the md-ripple directive. */
-    RippleRenderer.prototype.setTriggerElementToHost = function () {
-        this.setTriggerElement(this._rippleElement);
+    /** Fades out a ripple element. */
+    RippleRenderer.prototype.fadeOutRipple = function (ripple) {
+        ripple.style.transitionDuration = RIPPLE_FADE_OUT_DURATION + "ms";
+        ripple.style.opacity = '0';
+        // Once the ripple faded out, the ripple can be safely removed from the DOM.
+        this.runTimeoutOutsideZone(function () {
+            ripple.parentNode.removeChild(ripple);
+        }, RIPPLE_FADE_OUT_DURATION);
     };
-    /** Removes event handlers from the current trigger element if needed. */
-    RippleRenderer.prototype.clearTriggerElement = function () {
-        this.setTriggerElement(null);
-    };
-    /**
-     * Creates a foreground ripple and sets its animation to expand and fade in from the position
-     * given by rippleOriginLeft and rippleOriginTop (or from the center of the <md-ripple>
-     * bounding rect if centered is true).
-     *
-     * @param rippleOriginLeft Left origin of the ripple.
-     * @param rippleOriginTop Top origin of the ripple.
-     * @param color Ripple color.
-     * @param centered Whether the ripple should be centered.
-     * @param radius Radius of the ripple.
-     * @param speedFactor Speed at which the ripple expands towards the edges.
-     * @param transitionEndCallback Callback to be triggered when the ripple transition is done.
-     */
-    RippleRenderer.prototype.createForegroundRipple = function (rippleOriginLeft, rippleOriginTop, color, centered, radius, speedFactor, transitionEndCallback) {
+    /** Sets the trigger element and registers the mouse events. */
+    RippleRenderer.prototype.setTriggerElement = function (element) {
         var _this = this;
-        var parentRect = this._rippleElement.getBoundingClientRect();
-        // Create a foreground ripple div with the size and position of the fully expanded ripple.
-        // When the div is created, it's given a transform style that causes the ripple to be displayed
-        // small and centered on the event location (or the center of the bounding rect if the centered
-        // argument is true). Removing that transform causes the ripple to animate to its natural size.
-        var startX = centered ? (parentRect.left + parentRect.width / 2) : rippleOriginLeft;
-        var startY = centered ? (parentRect.top + parentRect.height / 2) : rippleOriginTop;
-        var offsetX = startX - parentRect.left;
-        var offsetY = startY - parentRect.top;
-        var maxRadius = radius > 0 ? radius : distanceToFurthestCorner(startX, startY, parentRect);
-        var rippleDiv = document.createElement('div');
-        this._rippleElement.appendChild(rippleDiv);
-        rippleDiv.classList.add('md-ripple-foreground');
-        rippleDiv.style.left = (offsetX - maxRadius) + "px";
-        rippleDiv.style.top = (offsetY - maxRadius) + "px";
-        rippleDiv.style.width = 2 * maxRadius + "px";
-        rippleDiv.style.height = rippleDiv.style.width;
-        // If color input is not set, this will default to the background color defined in CSS.
-        rippleDiv.style.backgroundColor = color;
-        // Start the ripple tiny.
-        rippleDiv.style.transform = "scale(0.001)";
-        var fadeInSeconds = (1 / (speedFactor || 1)) * Math.max(MIN_RIPPLE_FILL_TIME_SECONDS, Math.min(MAX_RIPPLE_FILL_TIME_SECONDS, maxRadius / RIPPLE_SPEED_PX_PER_SECOND));
-        rippleDiv.style.transitionDuration = fadeInSeconds + "s";
-        // https://timtaubert.de/blog/2012/09/css-transitions-for-dynamically-created-dom-elements/
-        // Store the opacity to prevent this line as being seen as a no-op by optimizers.
-        this._opacity = window.getComputedStyle(rippleDiv).opacity;
-        rippleDiv.classList.add('md-ripple-fade-in');
-        // Clearing the transform property causes the ripple to animate to its full size.
-        rippleDiv.style.transform = '';
-        var ripple = new ForegroundRipple(rippleDiv);
-        ripple.state = ForegroundRippleState.EXPANDING;
-        rippleDiv.addEventListener('transitionend', function (event) { return transitionEndCallback(ripple, event); });
-        // Ensure that ripples are always removed, even when transitionend doesn't fire.
-        // Run this outside the Angular zone because there's nothing that Angular cares about.
-        // If it were to run inside the Angular zone, every test that used ripples would have to be
-        // either async or fakeAsync.
-        this._ngZone.runOutsideAngular(function () {
-            // The ripple lasts a time equal to the sum of fade-in, transform,
-            // and fade-out (3 * fade-in time).
-            var rippleDuration = fadeInSeconds * 3 * 1000;
-            setTimeout(function () { return _this.removeRippleFromDom(ripple.rippleElement); }, rippleDuration);
-        });
+        // Remove all previously register event listeners from the trigger element.
+        if (this._triggerElement) {
+            this._triggerEvents.forEach(function (fn, type) { return _this._triggerElement.removeEventListener(type, fn); });
+        }
+        if (element) {
+            // If the element is not null, register all event listeners on the trigger element.
+            this._triggerEvents.forEach(function (fn, type) { return element.addEventListener(type, fn); });
+        }
+        this._triggerElement = element;
     };
-    /**
-     * Fades out a foreground ripple after it has fully expanded and faded in.
-     * @param ripple Ripple to be faded out.
-     */
-    RippleRenderer.prototype.fadeOutForegroundRipple = function (ripple) {
-        ripple.classList.remove('md-ripple-fade-in');
-        ripple.classList.add('md-ripple-fade-out');
+    /** Listener being called on mousedown event. */
+    RippleRenderer.prototype.onMousedown = function (event) {
+        if (this.rippleDisabled) {
+            return;
+        }
+        this._isMousedown = true;
+        this.fadeInRipple(event.pageX, event.pageY, this.rippleConfig);
     };
-    /**
-     * Removes a foreground ripple from the DOM after it has faded out.
-     * @param ripple Ripple to be removed from the DOM.
-     */
-    RippleRenderer.prototype.removeRippleFromDom = function (ripple) {
-        if (ripple && ripple.parentElement) {
-            ripple.parentElement.removeChild(ripple);
+    /** Listener being called on mouseup event. */
+    RippleRenderer.prototype.onMouseup = function () {
+        var _this = this;
+        this._isMousedown = false;
+        this._activeRipples.forEach(function (ripple) { return _this.fadeOutRipple(ripple); });
+        this._activeRipples = [];
+    };
+    /** Listener being called on mouseleave event. */
+    RippleRenderer.prototype.onMouseLeave = function () {
+        if (this._isMousedown) {
+            this.onMouseup();
         }
     };
-    /**
-     * Fades in the ripple background.
-     * @param color New background color for the ripple.
-     */
-    RippleRenderer.prototype.fadeInRippleBackground = function (color) {
-        this._backgroundDiv.classList.add('md-ripple-active');
-        // If color is not set, this will default to the background color defined in CSS.
-        this._backgroundDiv.style.backgroundColor = color;
+    /** Runs a timeout outside of the Angular zone to avoid triggering the change detection. */
+    RippleRenderer.prototype.runTimeoutOutsideZone = function (fn, delay) {
+        if (delay === void 0) { delay = 0; }
+        this._ngZone.runOutsideAngular(function () { return setTimeout(fn, delay); });
     };
-    /** Fades out the ripple background. */
-    RippleRenderer.prototype.fadeOutRippleBackground = function () {
-        if (this._backgroundDiv) {
-            this._backgroundDiv.classList.remove('md-ripple-active');
-        }
+    /** Enforces a style recalculation of a DOM element by computing its styles. */
+    // TODO(devversion): Move into global utility function.
+    RippleRenderer.prototype._enforceStyleRecalculation = function (element) {
+        // Enforce a style recalculation by calling `getComputedStyle` and accessing any property.
+        // Calling `getPropertyValue` is important to let optimizers know that this is not a noop.
+        // See: https://gist.github.com/paulirish/5d52fb081b3570c81e3a
+        window.getComputedStyle(element).getPropertyValue('opacity');
     };
     return RippleRenderer;
 }());
-
 //# sourceMappingURL=ripple-renderer.js.map

@@ -14,17 +14,19 @@ export * from './features';
 export var PlatformModule = (function () {
     function PlatformModule() {
     }
+    /** @deprecated */
     PlatformModule.forRoot = function () {
         return {
             ngModule: PlatformModule,
-            providers: [Platform],
+            providers: [],
         };
     };
     PlatformModule = __decorate([
-        NgModule({}), 
+        NgModule({
+            providers: [Platform]
+        }), 
         __metadata('design:paramtypes', [])
     ], PlatformModule);
     return PlatformModule;
 }());
-
 //# sourceMappingURL=index.js.map

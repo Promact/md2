@@ -5,86 +5,73 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { unimplemented } from '../facade/errors';
 import { isPresent } from '../facade/lang';
 import { wtfCreateScope, wtfLeave } from '../profile/profile';
 /**
- *  Represents a container where one or more Views can be attached.
-  * *
-  * The container can contain two kinds of Views. Host Views, created by instantiating a
-  * {@link Component} via {@link #createComponent}, and Embedded Views, created by instantiating an
-  * {@link TemplateRef Embedded Template} via {@link #createEmbeddedView}.
-  * *
-  * The location of the View Container within the containing View is specified by the Anchor
-  * `element`. Each View Container can have only one Anchor Element and each Anchor Element can only
-  * have a single View Container.
-  * *
-  * Root elements of Views attached to this container become siblings of the Anchor Element in
-  * the Rendered View.
-  * *
-  * To access a `ViewContainerRef` of an Element, you can either place a {@link Directive} injected
-  * with `ViewContainerRef` on the Element, or you obtain it via a {@link ViewChild} query.
+ * Represents a container where one or more Views can be attached.
+ *
+ * The container can contain two kinds of Views. Host Views, created by instantiating a
+ * {\@link Component} via {\@link #createComponent}, and Embedded Views, created by instantiating an
+ * {\@link TemplateRef Embedded Template} via {\@link #createEmbeddedView}.
+ *
+ * The location of the View Container within the containing View is specified by the Anchor
+ * `element`. Each View Container can have only one Anchor Element and each Anchor Element can only
+ * have a single View Container.
+ *
+ * Root elements of Views attached to this container become siblings of the Anchor Element in
+ * the Rendered View.
+ *
+ * To access a `ViewContainerRef` of an Element, you can either place a {\@link Directive} injected
+ * with `ViewContainerRef` on the Element, or you obtain it via a {\@link ViewChild} query.
+ * \@stable
  * @abstract
  */
 export var ViewContainerRef = (function () {
     function ViewContainerRef() {
     }
-    Object.defineProperty(ViewContainerRef.prototype, "element", {
-        /**
-         *  Anchor element that specifies the location of this container in the containing View.
-          * <!-- TODO: rename to anchorElement -->
-         * @return {?}
-         */
-        get: function () { return (unimplemented()); },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ViewContainerRef.prototype, "injector", {
-        /**
-         * @return {?}
-         */
-        get: function () { return (unimplemented()); },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ViewContainerRef.prototype, "parentInjector", {
-        /**
-         * @return {?}
-         */
-        get: function () { return (unimplemented()); },
-        enumerable: true,
-        configurable: true
-    });
     /**
-     *  Destroys all Views in this container.
+     * Anchor element that specifies the location of this container in the containing View.
+     * <!-- TODO: rename to anchorElement -->
+     * @abstract
+     * @return {?}
+     */
+    ViewContainerRef.prototype.element = function () { };
+    /**
+     * @abstract
+     * @return {?}
+     */
+    ViewContainerRef.prototype.injector = function () { };
+    /**
+     * @abstract
+     * @return {?}
+     */
+    ViewContainerRef.prototype.parentInjector = function () { };
+    /**
+     * Destroys all Views in this container.
      * @abstract
      * @return {?}
      */
     ViewContainerRef.prototype.clear = function () { };
     /**
-     *  Returns the {@link ViewRef} for the View located in this container at the specified index.
+     * Returns the {\@link ViewRef} for the View located in this container at the specified index.
      * @abstract
      * @param {?} index
      * @return {?}
      */
     ViewContainerRef.prototype.get = function (index) { };
-    Object.defineProperty(ViewContainerRef.prototype, "length", {
-        /**
-         *  Returns the number of Views currently attached to this container.
-         * @return {?}
-         */
-        get: function () { return (unimplemented()); },
-        enumerable: true,
-        configurable: true
-    });
-    ;
     /**
-     *  Instantiates an Embedded View based on the {@link TemplateRef `templateRef`} and inserts it
-      * into this container at the specified `index`.
-      * *
-      * If `index` is not specified, the new View will be inserted as the last View in the container.
-      * *
-      * Returns the {@link ViewRef} for the newly created View.
+     * Returns the number of Views currently attached to this container.
+     * @abstract
+     * @return {?}
+     */
+    ViewContainerRef.prototype.length = function () { };
+    /**
+     * Instantiates an Embedded View based on the {\@link TemplateRef `templateRef`} and inserts it
+     * into this container at the specified `index`.
+     *
+     * If `index` is not specified, the new View will be inserted as the last View in the container.
+     *
+     * Returns the {\@link ViewRef} for the newly created View.
      * @abstract
      * @param {?} templateRef
      * @param {?=} context
@@ -93,17 +80,17 @@ export var ViewContainerRef = (function () {
      */
     ViewContainerRef.prototype.createEmbeddedView = function (templateRef, context, index) { };
     /**
-     *  Instantiates a single {@link Component} and inserts its Host View into this container at the
-      * specified `index`.
-      * *
-      * The component is instantiated using its {@link ComponentFactory} which can be
-      * obtained via {@link ComponentFactoryResolver#resolveComponentFactory}.
-      * *
-      * If `index` is not specified, the new View will be inserted as the last View in the container.
-      * *
-      * You can optionally specify the {@link Injector} that will be used as parent for the Component.
-      * *
-      * Returns the {@link ComponentRef} of the Host View created for the newly instantiated Component.
+     * Instantiates a single {\@link Component} and inserts its Host View into this container at the
+     * specified `index`.
+     *
+     * The component is instantiated using its {\@link ComponentFactory} which can be
+     * obtained via {\@link ComponentFactoryResolver#resolveComponentFactory}.
+     *
+     * If `index` is not specified, the new View will be inserted as the last View in the container.
+     *
+     * You can optionally specify the {\@link Injector} that will be used as parent for the Component.
+     *
+     * Returns the {\@link ComponentRef} of the Host View created for the newly instantiated Component.
      * @abstract
      * @param {?} componentFactory
      * @param {?=} index
@@ -113,11 +100,11 @@ export var ViewContainerRef = (function () {
      */
     ViewContainerRef.prototype.createComponent = function (componentFactory, index, injector, projectableNodes) { };
     /**
-     *  Inserts a View identified by a {@link ViewRef} into the container at the specified `index`.
-      * *
-      * If `index` is not specified, the new View will be inserted as the last View in the container.
-      * *
-      * Returns the inserted {@link ViewRef}.
+     * Inserts a View identified by a {\@link ViewRef} into the container at the specified `index`.
+     *
+     * If `index` is not specified, the new View will be inserted as the last View in the container.
+     *
+     * Returns the inserted {\@link ViewRef}.
      * @abstract
      * @param {?} viewRef
      * @param {?=} index
@@ -125,9 +112,9 @@ export var ViewContainerRef = (function () {
      */
     ViewContainerRef.prototype.insert = function (viewRef, index) { };
     /**
-     *  Moves a View identified by a {@link ViewRef} into the container at the specified `index`.
-      * *
-      * Returns the inserted {@link ViewRef}.
+     * Moves a View identified by a {\@link ViewRef} into the container at the specified `index`.
+     *
+     * Returns the inserted {\@link ViewRef}.
      * @abstract
      * @param {?} viewRef
      * @param {?} currentIndex
@@ -135,26 +122,26 @@ export var ViewContainerRef = (function () {
      */
     ViewContainerRef.prototype.move = function (viewRef, currentIndex) { };
     /**
-     *  Returns the index of the View, specified via {@link ViewRef}, within the current container or
-      * `-1` if this container doesn't contain the View.
+     * Returns the index of the View, specified via {\@link ViewRef}, within the current container or
+     * `-1` if this container doesn't contain the View.
      * @abstract
      * @param {?} viewRef
      * @return {?}
      */
     ViewContainerRef.prototype.indexOf = function (viewRef) { };
     /**
-     *  Destroys a View attached to this container at the specified `index`.
-      * *
-      * If `index` is not specified, the last View in the container will be removed.
+     * Destroys a View attached to this container at the specified `index`.
+     *
+     * If `index` is not specified, the last View in the container will be removed.
      * @abstract
      * @param {?=} index
      * @return {?}
      */
     ViewContainerRef.prototype.remove = function (index) { };
     /**
-     *  Use along with {@link #insert} to move a View within the current container.
-      * *
-      * If the `index` param is omitted, the last {@link ViewRef} is detached.
+     * Use along with {\@link #insert} to move a View within the current container.
+     *
+     * If the `index` param is omitted, the last {\@link ViewRef} is detached.
      * @abstract
      * @param {?=} index
      * @return {?}
@@ -279,7 +266,8 @@ export var ViewContainerRef_ = (function () {
      * @return {?}
      */
     ViewContainerRef_.prototype.indexOf = function (viewRef) {
-        return this._element.nestedViews.indexOf(((viewRef)).internalView);
+        return this.length ? this._element.nestedViews.indexOf(((viewRef)).internalView) :
+            -1;
     };
     /**
      * @param {?=} index
@@ -318,13 +306,25 @@ export var ViewContainerRef_ = (function () {
     return ViewContainerRef_;
 }());
 function ViewContainerRef__tsickle_Closure_declarations() {
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     ViewContainerRef_.prototype._createComponentInContainerScope;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     ViewContainerRef_.prototype._insertScope;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     ViewContainerRef_.prototype._removeScope;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     ViewContainerRef_.prototype._detachScope;
     /** @type {?} */
     ViewContainerRef_.prototype._element;

@@ -205,5 +205,4 @@ export var Md2ToastModule = (function () {
     ], Md2ToastModule);
     return Md2ToastModule;
 }());
-
 //# sourceMappingURL=toast.js.map

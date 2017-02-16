@@ -34,5 +34,7 @@ export { __core_private__ } from './core_private_export';
 export { AUTO_STYLE, AnimationEntryMetadata, AnimationStateMetadata, AnimationStateDeclarationMetadata, AnimationStateTransitionMetadata, AnimationMetadata, AnimationKeyframesSequenceMetadata, AnimationStyleMetadata, AnimationAnimateMetadata, AnimationWithStepsMetadata, AnimationSequenceMetadata, AnimationGroupMetadata, animate, group, sequence, style, state, keyframes, transition, trigger } from './animation/metadata';
 export { AnimationTransitionEvent } from './animation/animation_transition_event';
 export { AnimationPlayer } from './animation/animation_player';
+export { AnimationStyles } from './animation/animation_styles';
+export { AnimationKeyframe } from './animation/animation_keyframe';
 export { Sanitizer, SecurityContext } from './security';
 //# sourceMappingURL=core.js.map

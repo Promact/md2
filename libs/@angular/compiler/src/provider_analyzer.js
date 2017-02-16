@@ -47,9 +47,15 @@ export var ProviderViewContext = (function () {
     return ProviderViewContext;
 }());
 function ProviderViewContext_tsickle_Closure_declarations() {
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     ProviderViewContext.prototype.viewQueries;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     ProviderViewContext.prototype.viewProviders;
     /** @type {?} */
     ProviderViewContext.prototype.errors;
@@ -166,7 +172,7 @@ export var ProviderElementContext = (function () {
         var /** @type {?} */ queries;
         while (currentEl !== null) {
             queries = currentEl._contentQueries.get(tokenReference(token));
-            if (isPresent(queries)) {
+            if (queries) {
                 result.push.apply(result, queries.filter(function (query) { return query.descendants || distance <= 1; }));
             }
             if (currentEl._directiveAsts.length > 0) {
@@ -175,7 +181,7 @@ export var ProviderElementContext = (function () {
             currentEl = currentEl._parent;
         }
         queries = this.viewContext.viewQueries.get(tokenReference(token));
-        if (isPresent(queries)) {
+        if (queries) {
             result.push.apply(result, queries);
         }
         return result;
@@ -198,7 +204,7 @@ export var ProviderElementContext = (function () {
             return null;
         }
         var /** @type {?} */ transformedProviderAst = this._transformedProviders.get(tokenReference(token));
-        if (isPresent(transformedProviderAst)) {
+        if (transformedProviderAst) {
             return transformedProviderAst;
         }
         if (isPresent(this._seenProviders.get(tokenReference(token)))) {
@@ -220,12 +226,12 @@ export var ProviderElementContext = (function () {
                     transformedUseValue = existingDiDep.value;
                 }
             }
-            else if (isPresent(provider.useFactory)) {
+            else if (provider.useFactory) {
                 var /** @type {?} */ deps = provider.deps || provider.useFactory.diDeps;
                 transformedDeps =
                     deps.map(function (dep) { return _this._getDependency(resolvedProvider.providerType, dep, eager); });
             }
-            else if (isPresent(provider.useClass)) {
+            else if (provider.useClass) {
                 var /** @type {?} */ deps = provider.deps || provider.useClass.diDeps;
                 transformedDeps =
                     deps.map(function (dep) { return _this._getDependency(resolvedProvider.providerType, dep, eager); });
@@ -299,7 +305,7 @@ export var ProviderElementContext = (function () {
         }
         else {
             // check parent elements
-            while (!result && isPresent(currElement._parent)) {
+            while (!result && currElement._parent) {
                 var /** @type {?} */ prevElement = currElement;
                 currElement = currElement._parent;
                 if (prevElement._isViewRoot) {
@@ -394,7 +400,7 @@ export var NgModuleProviderAnalyzer = (function () {
             return null;
         }
         var /** @type {?} */ transformedProviderAst = this._transformedProviders.get(tokenReference(token));
-        if (isPresent(transformedProviderAst)) {
+        if (transformedProviderAst) {
             return transformedProviderAst;
         }
         if (isPresent(this._seenProviders.get(tokenReference(token)))) {
@@ -416,12 +422,12 @@ export var NgModuleProviderAnalyzer = (function () {
                     transformedUseValue = existingDiDep.value;
                 }
             }
-            else if (isPresent(provider.useFactory)) {
+            else if (provider.useFactory) {
                 var /** @type {?} */ deps = provider.deps || provider.useFactory.diDeps;
                 transformedDeps =
                     deps.map(function (dep) { return _this._getDependency(dep, eager, resolvedProvider.sourceSpan); });
             }
-            else if (isPresent(provider.useClass)) {
+            else if (provider.useClass) {
                 var /** @type {?} */ deps = provider.deps || provider.useClass.diDeps;
                 transformedDeps =
                     deps.map(function (dep) { return _this._getDependency(dep, eager, resolvedProvider.sourceSpan); });
@@ -562,7 +568,7 @@ function _resolveProviders(providers, providerType, eager, sourceSpan, targetErr
  */
 function _getViewQueries(component) {
     var /** @type {?} */ viewQueries = new Map();
-    if (isPresent(component.viewQueries)) {
+    if (component.viewQueries) {
         component.viewQueries.forEach(function (query) { return _addQueryToTokenMap(viewQueries, query); });
     }
     return viewQueries;
@@ -574,7 +580,7 @@ function _getViewQueries(component) {
 function _getContentQueries(directives) {
     var /** @type {?} */ contentQueries = new Map();
     directives.forEach(function (directive) {
-        if (isPresent(directive.queries)) {
+        if (directive.queries) {
             directive.queries.forEach(function (query) { return _addQueryToTokenMap(contentQueries, query); });
         }
     });

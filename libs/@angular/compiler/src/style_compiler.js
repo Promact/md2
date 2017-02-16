@@ -5,8 +5,18 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { Injectable, ViewEncapsulation } from '@angular/core';
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+import { ViewEncapsulation } from '@angular/core';
 import { CompileStylesheetMetadata, identifierModuleUrl, identifierName } from './compile_metadata';
+import { CompilerInjectable } from './injectable';
 import * as o from './output/output_ast';
 import { ShadowCss } from './shadow_css';
 import { UrlResolver } from './url_resolver';
@@ -142,23 +152,13 @@ export var StyleCompiler = (function () {
     StyleCompiler.prototype._shimIfNeeded = function (style, shim) {
         return shim ? this._shadowCss.shimCssText(style, CONTENT_ATTR, HOST_ATTR) : style;
     };
-    StyleCompiler.decorators = [
-        { type: Injectable },
-    ];
-    /** @nocollapse */
-    StyleCompiler.ctorParameters = function () { return [
-        { type: UrlResolver, },
-    ]; };
+    StyleCompiler = __decorate([
+        CompilerInjectable(), 
+        __metadata('design:paramtypes', [UrlResolver])
+    ], StyleCompiler);
     return StyleCompiler;
 }());
 function StyleCompiler_tsickle_Closure_declarations() {
-    /** @type {?} */
-    StyleCompiler.decorators;
-    /**
-     * @nocollapse
-     * @type {?}
-     */
-    StyleCompiler.ctorParameters;
     /** @type {?} */
     StyleCompiler.prototype._shadowCss;
     /** @type {?} */

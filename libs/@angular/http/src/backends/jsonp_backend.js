@@ -20,16 +20,17 @@ import { BrowserJsonp } from './browser_jsonp';
 var /** @type {?} */ JSONP_ERR_NO_CALLBACK = 'JSONP injected script did not invoke callback.';
 var /** @type {?} */ JSONP_ERR_WRONG_METHOD = 'JSONP requests must use GET request method.';
 /**
- *  Abstract base class for an in-flight JSONP request.
-  * *
+ * Abstract base class for an in-flight JSONP request.
+ *
+ * \@experimental
  * @abstract
  */
 export var JSONPConnection = (function () {
     function JSONPConnection() {
     }
     /**
-     *  Callback called when the JSONP request completes, to notify the application
-      * of the new data.
+     * Callback called when the JSONP request completes, to notify the application
+     * of the new data.
      * @abstract
      * @param {?=} data
      * @return {?}
@@ -39,7 +40,7 @@ export var JSONPConnection = (function () {
 }());
 function JSONPConnection_tsickle_Closure_declarations() {
     /**
-     * The {@link ReadyState} of this request.
+     * The {\@link ReadyState} of this request.
      * @type {?}
      */
     JSONPConnection.prototype.readyState;
@@ -157,8 +158,9 @@ function JSONPConnection__tsickle_Closure_declarations() {
     JSONPConnection_.prototype.baseResponseOptions;
 }
 /**
- *  A {@link ConnectionBackend} that uses the JSONP strategy of making requests.
-  * *
+ * A {\@link ConnectionBackend} that uses the JSONP strategy of making requests.
+ *
+ * \@experimental
  * @abstract
  */
 export var JSONPBackend = (function (_super) {

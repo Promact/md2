@@ -10,12 +10,22 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-import { Inject, Injectable, OpaqueToken, Optional } from '@angular/core';
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+import { Inject, OpaqueToken, Optional } from '@angular/core';
 import { identifierName } from '../compile_metadata';
 import { Parser } from '../expression_parser/parser';
 import { isPresent } from '../facade/lang';
 import { I18NHtmlParser } from '../i18n/i18n_html_parser';
 import { Identifiers, createIdentifierToken, identifierToken } from '../identifiers';
+import { CompilerInjectable } from '../injectable';
 import * as html from '../ml_parser/ast';
 import { ParseTreeResult } from '../ml_parser/html_parser';
 import { expandNodes } from '../ml_parser/icu_ast_expander';
@@ -27,6 +37,7 @@ import { ProviderElementContext, ProviderViewContext } from '../provider_analyze
 import { ElementSchemaRegistry } from '../schema/element_schema_registry';
 import { CssSelector, SelectorMatcher } from '../selector';
 import { isStyleUrlResolvable } from '../style_url_resolver';
+import { SyntaxError } from '../util';
 import { BindingParser } from './binding_parser';
 import { AttrAst, BoundDirectivePropertyAst, BoundTextAst, DirectiveAst, ElementAst, EmbeddedTemplateAst, NgContentAst, PropertyBindingType, ReferenceAst, TextAst, VariableAst, templateVisitAll } from './template_ast';
 import { PreparsedElementType, preparseElement } from './template_preparser';
@@ -126,7 +137,7 @@ export var TemplateParser = (function () {
         }
         if (errors.length > 0) {
             var /** @type {?} */ errorString = errors.join('\n');
-            throw new Error("Template parse errors:\n" + errorString);
+            throw new SyntaxError("Template parse errors:\n" + errorString);
         }
         return result.templateAst;
     };
@@ -178,7 +189,7 @@ export var TemplateParser = (function () {
         if (errors.length > 0) {
             return new TemplateParseResult(result, errors);
         }
-        if (isPresent(this.transforms)) {
+        if (this.transforms) {
             this.transforms.forEach(function (transform) { result = templateVisitAll(transform, result); });
         }
         return new TemplateParseResult(result, errors);
@@ -209,6 +220,7 @@ export var TemplateParser = (function () {
         }
     };
     /**
+     * \@internal
      * @param {?} result
      * @param {?} errors
      * @return {?}
@@ -227,9 +239,6 @@ export var TemplateParser = (function () {
             }
         }); });
     };
-    TemplateParser.decorators = [
-        { type: Injectable },
-    ];
     /** @nocollapse */
     TemplateParser.ctorParameters = function () { return [
         { type: Parser, },
@@ -238,11 +247,13 @@ export var TemplateParser = (function () {
         { type: Console, },
         { type: Array, decorators: [{ type: Optional }, { type: Inject, args: [TEMPLATE_TRANSFORMS,] },] },
     ]; };
+    TemplateParser = __decorate([
+        CompilerInjectable(), 
+        __metadata('design:paramtypes', [Parser, ElementSchemaRegistry, I18NHtmlParser, Console, Array])
+    ], TemplateParser);
     return TemplateParser;
 }());
 function TemplateParser_tsickle_Closure_declarations() {
-    /** @type {?} */
-    TemplateParser.decorators;
     /**
      * @nocollapse
      * @type {?}
@@ -304,7 +315,7 @@ var TemplateParseVisitor = (function () {
     TemplateParseVisitor.prototype.visitText = function (text, parent) {
         var /** @type {?} */ ngContentIndex = parent.findNgContentIndex(TEXT_CSS_SELECTOR);
         var /** @type {?} */ expr = this._bindingParser.parseInterpolation(text.value, text.sourceSpan);
-        if (isPresent(expr)) {
+        if (expr) {
             return new BoundTextAst(expr, ngContentIndex, text.sourceSpan);
         }
         else {
@@ -361,14 +372,15 @@ var TemplateParseVisitor = (function () {
         var /** @type {?} */ isTemplateElement = lcElName == TEMPLATE_ELEMENT;
         element.attrs.forEach(function (attr) {
             var /** @type {?} */ hasBinding = _this._parseAttr(isTemplateElement, attr, matchableAttrs, elementOrDirectiveProps, events, elementOrDirectiveRefs, elementVars);
-            var /** @type {?} */ templateBindingsSource = undefined;
-            var /** @type {?} */ prefixToken = undefined;
-            if (_this._normalizeAttributeName(attr.name) == TEMPLATE_ATTR) {
+            var /** @type {?} */ templateBindingsSource;
+            var /** @type {?} */ prefixToken;
+            var /** @type {?} */ normalizedName = _this._normalizeAttributeName(attr.name);
+            if (normalizedName == TEMPLATE_ATTR) {
                 templateBindingsSource = attr.value;
             }
-            else if (attr.name.startsWith(TEMPLATE_ATTR_PREFIX)) {
+            else if (normalizedName.startsWith(TEMPLATE_ATTR_PREFIX)) {
                 templateBindingsSource = attr.value;
-                prefixToken = attr.name.substring(TEMPLATE_ATTR_PREFIX.length); // remove the star
+                prefixToken = normalizedName.substring(TEMPLATE_ATTR_PREFIX.length) + ':';
             }
             var /** @type {?} */ hasTemplateBinding = isPresent(templateBindingsSource);
             if (hasTemplateBinding) {
@@ -376,7 +388,7 @@ var TemplateParseVisitor = (function () {
                     _this._reportError("Can't have multiple template bindings on one element. Use only one attribute named 'template' or prefixed with *", attr.sourceSpan);
                 }
                 hasInlineTemplates = true;
-                _this._bindingParser.parseInlineTemplateBinding(attr.name, prefixToken, templateBindingsSource, attr.sourceSpan, templateMatchableAttrs, templateElementOrDirectiveProps, templateElementVars);
+                _this._bindingParser.parseInlineTemplateBinding(prefixToken, templateBindingsSource, attr.sourceSpan, templateMatchableAttrs, templateElementOrDirectiveProps, templateElementVars);
             }
             if (!hasBinding && !hasTemplateBinding) {
                 // don't include the bindings as attributes as well in the AST
@@ -635,7 +647,7 @@ var TemplateParseVisitor = (function () {
                 }
                 targetReferences.push(new ReferenceAst(elOrDirRef.name, refToken, elOrDirRef.sourceSpan));
             }
-        }); // fix syntax highlighting issue: `
+        });
         return directiveAsts;
     };
     /**
@@ -716,11 +728,11 @@ var TemplateParseVisitor = (function () {
         }
     };
     /**
-     *  Make sure that non-angular tags conform to the schemas.
-      * *
-      * Note: An element is considered an angular tag when at least one directive selector matches the
-      * tag name.
-      * *
+     * Make sure that non-angular tags conform to the schemas.
+     *
+     * Note: An element is considered an angular tag when at least one directive selector matches the
+     * tag name.
+     *
      * @param {?} matchElement Whether any directive has matched on the tag name
      * @param {?} element the html element
      * @return {?}
@@ -838,7 +850,7 @@ var NonBindableVisitor = (function () {
             // in the StyleCompiler
             return null;
         }
-        var /** @type {?} */ attrNameAndValues = ast.attrs.map(function (attrAst) { return [attrAst.name, attrAst.value]; });
+        var /** @type {?} */ attrNameAndValues = ast.attrs.map(function (attr) { return [attr.name, attr.value]; });
         var /** @type {?} */ selector = createElementCssSelector(ast.name, attrNameAndValues);
         var /** @type {?} */ ngContentIndex = parent.findNgContentIndex(selector);
         var /** @type {?} */ children = html.visitAll(this, ast.children, EMPTY_ELEMENT_CONTEXT);
@@ -973,17 +985,17 @@ function ElementContext_tsickle_Closure_declarations() {
 }
 /**
  * @param {?} elementName
- * @param {?} matchableAttrs
+ * @param {?} attributes
  * @return {?}
  */
-export function createElementCssSelector(elementName, matchableAttrs) {
+export function createElementCssSelector(elementName, attributes) {
     var /** @type {?} */ cssSelector = new CssSelector();
     var /** @type {?} */ elNameNoNs = splitNsName(elementName)[1];
     cssSelector.setElement(elNameNoNs);
-    for (var /** @type {?} */ i = 0; i < matchableAttrs.length; i++) {
-        var /** @type {?} */ attrName = matchableAttrs[i][0];
+    for (var /** @type {?} */ i = 0; i < attributes.length; i++) {
+        var /** @type {?} */ attrName = attributes[i][0];
         var /** @type {?} */ attrNameNoNs = splitNsName(attrName)[1];
-        var /** @type {?} */ attrValue = matchableAttrs[i][1];
+        var /** @type {?} */ attrValue = attributes[i][1];
         cssSelector.addAttribute(attrNameNoNs, attrValue);
         if (attrName.toLowerCase() == CLASS_ATTR) {
             var /** @type {?} */ classes = splitClasses(attrValue);

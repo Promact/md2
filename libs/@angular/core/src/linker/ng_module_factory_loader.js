@@ -6,7 +6,8 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /**
- *  Used to load ng module factories.
+ * Used to load ng module factories.
+ * \@stable
  * @abstract
  */
 export var NgModuleFactoryLoader = (function () {
@@ -22,7 +23,8 @@ export var NgModuleFactoryLoader = (function () {
 }());
 var /** @type {?} */ moduleFactories = new Map();
 /**
- *  Registers a loaded module. Should only be called from generated NgModuleFactory code.
+ * Registers a loaded module. Should only be called from generated NgModuleFactory code.
+ * \@experimental
  * @param {?} id
  * @param {?} factory
  * @return {?}
@@ -41,9 +43,10 @@ export function clearModulesForTest() {
     moduleFactories = new Map();
 }
 /**
- *  Returns the NgModuleFactory with the given id, if it exists and has been loaded.
-  * Factories for modules that do not specify an `id` cannot be retrieved. Throws if the module
-  * cannot be found.
+ * Returns the NgModuleFactory with the given id, if it exists and has been loaded.
+ * Factories for modules that do not specify an `id` cannot be retrieved. Throws if the module
+ * cannot be found.
+ * \@experimental
  * @param {?} id
  * @return {?}
  */

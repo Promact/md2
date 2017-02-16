@@ -1,6 +1,14 @@
-import { AfterContentInit, ElementRef, EventEmitter, ModuleWithProviders } from '@angular/core';
+import { AfterContentInit, ElementRef, OnDestroy, EventEmitter, Renderer, QueryList, ModuleWithProviders } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { Md2DateUtil } from './dateUtil';
+import { DateLocale } from './date-locale';
+import { Overlay, Portal } from '../core';
+/** Change event object emitted by Md2Select. */
+export declare class Md2DateChange {
+    source: Md2Datepicker;
+    date: Date;
+    constructor(source: Md2Datepicker, date: Date);
+}
 export interface IDay {
     year: number;
     month: string;
@@ -23,25 +31,60 @@ export interface IWeek {
     today: boolean;
     disabled: boolean;
 }
-export declare class Md2Datepicker implements AfterContentInit, ControlValueAccessor {
+export declare class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueAccessor {
+    private _element;
+    private overlay;
+    private _renderer;
     private _dateUtil;
-    private element;
+    private _locale;
     _control: NgControl;
-    constructor(_dateUtil: Md2DateUtil, element: ElementRef, _control: NgControl);
+    private _overlayRef;
+    private _backdropSubscription;
+    private _date;
+    private _panelOpen;
+    private _selected;
+    private _openOnFocus;
+    private mouseMoveListener;
+    private mouseUpListener;
+    _transformOrigin: string;
+    _panelDoneAnimating: boolean;
+    templatePortals: QueryList<Portal<any>>;
+    /** Event emitted when the select has been opened. */
+    onOpen: EventEmitter<void>;
+    /** Event emitted when the select has been closed. */
+    onClose: EventEmitter<void>;
+    /** Event emitted when the selected date has been changed by the user. */
+    change: EventEmitter<Md2DateChange>;
+    constructor(_element: ElementRef, overlay: Overlay, _renderer: Renderer, _dateUtil: Md2DateUtil, _locale: DateLocale, _control: NgControl);
     ngAfterContentInit(): void;
-    private _value;
-    private _readonly;
+    ngOnDestroy(): void;
+    date: Date;
+    selected: Date;
+    openOnFocus: boolean;
+    isOpen: boolean;
+    readonly panelOpen: boolean;
+    toggle(): void;
+    /** Opens the overlay panel. */
+    open(): void;
+    /** Closes the overlay panel and focuses the host element. */
+    close(): void;
+    /** Removes the panel from the DOM. */
+    destroyPanel(): void;
+    _onPanelDone(): void;
+    _onFadeInDone(): void;
+    private _focusPanel();
+    private _focusHost();
+    private coerceDateProperty(value, fallbackValue?);
+    private _format;
     private _required;
     private _disabled;
     private _isInitialized;
     _onChange: (value: any) => void;
     _onTouched: () => void;
-    _isDatepickerVisible: boolean;
     _isYearsVisible: boolean;
     _isCalendarVisible: boolean;
     _isHoursVisible: boolean;
-    private months;
-    _days: Array<string>;
+    _weekDays: Array<any>;
     _hours: Array<Object>;
     _minutes: Array<Object>;
     _prevMonth: number;
@@ -51,28 +94,25 @@ export declare class Md2Datepicker implements AfterContentInit, ControlValueAcce
     _dates: Array<Object>;
     private today;
     private _displayDate;
-    _selectedDate: Date;
     _viewDay: IDay;
     _viewValue: string;
     _clock: any;
     private _min;
     private _max;
-    change: EventEmitter<any>;
     type: 'date' | 'time' | 'datetime';
     name: string;
     id: string;
     placeholder: string;
-    format: string;
     tabindex: number;
-    readonly: boolean;
+    format: string;
     required: boolean;
     disabled: boolean;
     min: Date;
     max: Date;
-    value: any;
     displayDate: Date;
     _handleClick(event: MouseEvent): void;
     _handleKeydown(event: KeyboardEvent): void;
+    _onFocus(): void;
     _onBlur(): void;
     /**
      * Display Years
@@ -159,6 +199,9 @@ export declare class Md2Datepicker implements AfterContentInit, ControlValueAcce
      * @param minute number of minutes
      */
     private setMinute(minute);
+    _handleMousedown(event: MouseEvent): void;
+    _handleMousemove(event: MouseEvent): void;
+    _handleMouseup(event: MouseEvent): void;
     /**
      * reser clock hands
      */
@@ -191,9 +234,18 @@ export declare class Md2Datepicker implements AfterContentInit, ControlValueAcce
      * @return top, left offset from page
      */
     private _offset(element);
+    /** Emits an event when the user selects a date. */
+    _emitChangeEvent(): void;
     writeValue(value: any): void;
     registerOnChange(fn: (value: any) => void): void;
     registerOnTouched(fn: () => {}): void;
+    private _subscribeToBackdrop();
+    /**
+     *  This method creates the overlay from the provided panel's template and saves its
+     *  OverlayRef so that it can be attached to the DOM when open is called.
+     */
+    private _createOverlay();
+    private _cleanUpSubscriptions();
 }
 export declare const MD2_DATEPICKER_DIRECTIVES: typeof Md2Datepicker[];
 export declare class Md2DatepickerModule {

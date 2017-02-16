@@ -38,5 +38,4 @@ var TagsDemo = (function () {
     return TagsDemo;
 }());
 exports.TagsDemo = TagsDemo;
-
 //# sourceMappingURL=tags-demo.js.map

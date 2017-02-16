@@ -12,5 +12,4 @@ export var FakeViewportRuler = (function () {
     };
     return FakeViewportRuler;
 }());
-
 //# sourceMappingURL=fake-viewport-ruler.js.map

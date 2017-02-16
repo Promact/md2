@@ -56,6 +56,48 @@ export var ParseLocation = (function () {
         }
         return new ParseLocation(this.file, offset, line, col);
     };
+    /**
+     * @param {?} maxChars
+     * @param {?} maxLines
+     * @return {?}
+     */
+    ParseLocation.prototype.getContext = function (maxChars, maxLines) {
+        var /** @type {?} */ content = this.file.content;
+        var /** @type {?} */ startOffset = this.offset;
+        if (isPresent(startOffset)) {
+            if (startOffset > content.length - 1) {
+                startOffset = content.length - 1;
+            }
+            var /** @type {?} */ endOffset = startOffset;
+            var /** @type {?} */ ctxChars = 0;
+            var /** @type {?} */ ctxLines = 0;
+            while (ctxChars < maxChars && startOffset > 0) {
+                startOffset--;
+                ctxChars++;
+                if (content[startOffset] == '\n') {
+                    if (++ctxLines == maxLines) {
+                        break;
+                    }
+                }
+            }
+            ctxChars = 0;
+            ctxLines = 0;
+            while (ctxChars < maxChars && endOffset < content.length - 1) {
+                endOffset++;
+                ctxChars++;
+                if (content[endOffset] == '\n') {
+                    if (++ctxLines == maxLines) {
+                        break;
+                    }
+                }
+            }
+            return {
+                before: content.substring(startOffset, this.offset),
+                after: content.substring(this.offset, endOffset + 1),
+            };
+        }
+        return null;
+    };
     return ParseLocation;
 }());
 function ParseLocation_tsickle_Closure_declarations() {
@@ -134,44 +176,9 @@ export var ParseError = (function () {
      * @return {?}
      */
     ParseError.prototype.toString = function () {
-        var /** @type {?} */ source = this.span.start.file.content;
-        var /** @type {?} */ ctxStart = this.span.start.offset;
-        var /** @type {?} */ contextStr = '';
-        var /** @type {?} */ details = '';
-        if (isPresent(ctxStart)) {
-            if (ctxStart > source.length - 1) {
-                ctxStart = source.length - 1;
-            }
-            var /** @type {?} */ ctxEnd = ctxStart;
-            var /** @type {?} */ ctxLen = 0;
-            var /** @type {?} */ ctxLines = 0;
-            while (ctxLen < 100 && ctxStart > 0) {
-                ctxStart--;
-                ctxLen++;
-                if (source[ctxStart] == '\n') {
-                    if (++ctxLines == 3) {
-                        break;
-                    }
-                }
-            }
-            ctxLen = 0;
-            ctxLines = 0;
-            while (ctxLen < 100 && ctxEnd < source.length - 1) {
-                ctxEnd++;
-                ctxLen++;
-                if (source[ctxEnd] == '\n') {
-                    if (++ctxLines == 3) {
-                        break;
-                    }
-                }
-            }
-            var /** @type {?} */ context = source.substring(ctxStart, this.span.start.offset) + '[ERROR ->]' +
-                source.substring(this.span.start.offset, ctxEnd + 1);
-            contextStr = " (\"" + context + "\")";
-        }
-        if (this.span.details) {
-            details = ", " + this.span.details;
-        }
+        var /** @type {?} */ ctx = this.span.start.getContext(100, 3);
+        var /** @type {?} */ contextStr = ctx ? " (\"" + ctx.before + "[ERROR ->]" + ctx.after + "\")" : '';
+        var /** @type {?} */ details = this.span.details ? ", " + this.span.details : '';
         return "" + this.msg + contextStr + ": " + this.span.start + details;
     };
     return ParseError;

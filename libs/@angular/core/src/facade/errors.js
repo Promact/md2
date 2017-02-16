@@ -4,18 +4,14 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 /**
- * @license undefined
-  * Copyright Google Inc. All Rights Reserved.
-  * *
-  * Use of this source code is governed by an MIT-style license that can be
-  * found in the LICENSE file at https://angular.io/license
+ * Convenience to throw an Error with 'unimplemented' as the message.
  * @return {?}
  */
 export function unimplemented() {
     throw new Error('unimplemented');
 }
 /**
- * @stable
+ * \@stable
  */
 export var BaseError = (function (_super) {
     __extends(BaseError, _super);
@@ -72,11 +68,14 @@ export var BaseError = (function (_super) {
     return BaseError;
 }(Error));
 function BaseError_tsickle_Closure_declarations() {
-    /** @type {?} */
+    /**
+     * \@internal *
+     * @type {?}
+     */
     BaseError.prototype._nativeError;
 }
 /**
- * @stable
+ * \@stable
  */
 export var WrappedError = (function (_super) {
     __extends(WrappedError, _super);

@@ -1,0 +1,29 @@
+@import '../theming/palette';
+@import '../theming/theming';
+
+@mixin mat-option-theme($theme) {
+  $foreground: map-get($theme, foreground);
+  $background: map-get($theme, background);
+  $primary: map-get($theme, primary);
+
+  .mat-option {
+    &:hover:not(.mat-option-disabled), &:focus:not(.mat-option-disabled) {
+      background: mat-color($background, hover);
+    }
+
+    &.mat-selected {
+      background: mat-color($background, hover);
+      color: mat-color($primary);
+    }
+
+    &.mat-active {
+      background: mat-color($background, hover);
+      color: mat-color($foreground, text);
+    }
+
+    &.mat-option-disabled {
+      color: mat-color($foreground, hint-text);
+    }
+
+  }
+}

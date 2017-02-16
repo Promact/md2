@@ -47,23 +47,25 @@ function listLazyRoutesOfModule(entryModule, host, reflector) {
     var modulePath = "./" + containingFile.replace(/^(.*)\//, '');
     var className = entryRouteDef.className;
     // List loadChildren of this single module.
-    var staticSymbol = reflector.findDeclaration(modulePath, className, containingFile);
+    var appStaticSymbol = reflector.findDeclaration(modulePath, className, containingFile);
     var ROUTES = reflector.findDeclaration(ROUTER_MODULE_PATH, ROUTER_ROUTES_SYMBOL_NAME);
-    var lazyRoutes = _extractLazyRoutesFromStaticModule(staticSymbol, reflector, host, ROUTES);
-    var routes = {};
-    lazyRoutes.forEach(function (lazyRoute) {
+    var lazyRoutes = _extractLazyRoutesFromStaticModule(appStaticSymbol, reflector, host, ROUTES);
+    var allLazyRoutes = lazyRoutes.reduce(function includeLazyRouteAndSubRoutes(allRoutes, lazyRoute) {
         var route = lazyRoute.routeDef.toString();
-        _assertRoute(routes, lazyRoute);
-        routes[route] = lazyRoute;
+        _assertRoute(allRoutes, lazyRoute);
+        allRoutes[route] = lazyRoute;
+        // StaticReflector does not support discovering annotations like `NgModule` on default
+        // exports
+        // Which means: if a default export NgModule was lazy-loaded, we can discover it, but,
+        //  we cannot parse its routes to see if they have loadChildren or not.
+        if (!lazyRoute.routeDef.className) {
+            return allRoutes;
+        }
         var lazyModuleSymbol = reflector.findDeclaration(lazyRoute.absoluteFilePath, lazyRoute.routeDef.className || 'default');
         var subRoutes = _extractLazyRoutesFromStaticModule(lazyModuleSymbol, reflector, host, ROUTES);
-        // Populate the map using the routes we just found.
-        subRoutes.forEach(function (subRoute) {
-            _assertRoute(routes, subRoute);
-            routes[subRoute.routeDef.toString()] = subRoute;
-        });
-    });
-    return routes;
+        return subRoutes.reduce(includeLazyRouteAndSubRoutes, allRoutes);
+    }, {});
+    return allLazyRoutes;
 }
 exports.listLazyRoutesOfModule = listLazyRoutesOfModule;
 /**
@@ -150,7 +152,7 @@ function _collectRoutes(providers, reflector, ROUTES) {
  */
 function _collectLoadChildren(routes) {
     return routes.reduce(function (m, r) {
-        if (r.loadChildren) {
+        if (r.loadChildren && typeof r.loadChildren === 'string') {
             return m.concat(r.loadChildren);
         }
         else if (Array.isArray(r)) {

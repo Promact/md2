@@ -7,7 +7,6 @@
  */
 import { tokenReference } from '../compile_metadata';
 import { ListWrapper } from '../facade/collection';
-import { isPresent } from '../facade/lang';
 import { Identifiers, createIdentifier } from '../identifiers';
 import * as o from '../output/output_ast';
 import { getPropertyInView } from './util';
@@ -50,7 +49,7 @@ export var CompileQuery = (function () {
     CompileQuery.prototype.addValue = function (value, view) {
         var /** @type {?} */ currentView = view;
         var /** @type {?} */ elPath = [];
-        while (isPresent(currentView) && currentView !== this.view) {
+        while (currentView && currentView !== this.view) {
             var /** @type {?} */ parentEl = currentView.declarationElement;
             elPath.unshift(parentEl);
             currentView = parentEl.view;
@@ -84,10 +83,10 @@ export var CompileQuery = (function () {
      * @param {?} targetDynamicMethod
      * @return {?}
      */
-    CompileQuery.prototype.afterChildren = function (targetStaticMethod, targetDynamicMethod) {
+    CompileQuery.prototype.generateStatements = function (targetStaticMethod, targetDynamicMethod) {
         var /** @type {?} */ values = createQueryValues(this._values);
         var /** @type {?} */ updateStmts = [this.queryList.callMethod('reset', [o.literalArr(values)]).toStmt()];
-        if (isPresent(this.ownerDirectiveExpression)) {
+        if (this.ownerDirectiveExpression) {
             var /** @type {?} */ valueExpr = this.meta.first ? this.queryList.prop('first') : this.queryList;
             updateStmts.push(this.ownerDirectiveExpression.prop(this.meta.propertyName).set(valueExpr).toStmt());
         }
@@ -147,13 +146,11 @@ function mapNestedViews(viewContainer, view, expressions) {
     ]);
 }
 /**
- * @param {?} query
- * @param {?} directiveInstance
  * @param {?} propertyName
  * @param {?} compileView
  * @return {?}
  */
-export function createQueryList(query, directiveInstance, propertyName, compileView) {
+export function createQueryList(propertyName, compileView) {
     compileView.fields.push(new o.ClassField(propertyName, o.importType(createIdentifier(Identifiers.QueryList), [o.DYNAMIC_TYPE])));
     var /** @type {?} */ expr = o.THIS_EXPR.prop(propertyName);
     compileView.createMethod.addStmt(o.THIS_EXPR.prop(propertyName)

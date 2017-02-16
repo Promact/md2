@@ -68,12 +68,23 @@ export var WebAnimationsPlayer = (function () {
         });
         var /** @type {?} */ previousStyleProps = Object.keys(this.previousStyles);
         if (previousStyleProps.length) {
-            var /** @type {?} */ startingKeyframe_1 = findStartingKeyframe(keyframes);
+            var /** @type {?} */ startingKeyframe_1 = keyframes[0];
+            var /** @type {?} */ missingStyleProps_1 = [];
             previousStyleProps.forEach(function (prop) {
-                if (isPresent(startingKeyframe_1[prop])) {
-                    startingKeyframe_1[prop] = _this.previousStyles[prop];
+                if (!isPresent(startingKeyframe_1[prop])) {
+                    missingStyleProps_1.push(prop);
                 }
+                startingKeyframe_1[prop] = _this.previousStyles[prop];
             });
+            if (missingStyleProps_1.length) {
+                var _loop_1 = function(i) {
+                    var /** @type {?} */ kf = keyframes[i];
+                    missingStyleProps_1.forEach(function (prop) { kf[prop] = _computeStyle(_this.element, prop); });
+                };
+                for (var /** @type {?} */ i = 1; i < keyframes.length; i++) {
+                    _loop_1(i);
+                }
+            }
         }
         this._player = this._triggerWebAnimation(this.element, keyframes, this.options);
         this._finalKeyframe = _copyKeyframeStyles(keyframes[keyframes.length - 1]);
@@ -82,13 +93,16 @@ export var WebAnimationsPlayer = (function () {
         this._player.addEventListener('finish', function () { return _this._onFinish(); });
     };
     /**
+     * \@internal
      * @param {?} element
      * @param {?} keyframes
      * @param {?} options
      * @return {?}
      */
     WebAnimationsPlayer.prototype._triggerWebAnimation = function (element, keyframes, options) {
-        return (element.animate(keyframes, options));
+        // jscompiler doesn't seem to know animate is a native property because it's not fully
+        // supported yet across common browsers (we polyfill it for Edge/Safari) [CL #143630929]
+        return (element['animate'](keyframes, options));
     };
     Object.defineProperty(WebAnimationsPlayer.prototype, "domPlayer", {
         /**
@@ -147,7 +161,11 @@ export var WebAnimationsPlayer = (function () {
     /**
      * @return {?}
      */
-    WebAnimationsPlayer.prototype._resetDomPlayerState = function () { this._player.cancel(); };
+    WebAnimationsPlayer.prototype._resetDomPlayerState = function () {
+        if (this._player) {
+            this._player.cancel();
+        }
+    };
     /**
      * @return {?}
      */
@@ -254,22 +272,5 @@ function _copyKeyframeStyles(styles) {
         }
     });
     return newStyles;
-}
-/**
- * @param {?} keyframes
- * @return {?}
- */
-function findStartingKeyframe(keyframes) {
-    var /** @type {?} */ startingKeyframe = keyframes[0];
-    // it's important that we find the LAST keyframe
-    // to ensure that style overidding is final.
-    for (var /** @type {?} */ i = 1; i < keyframes.length; i++) {
-        var /** @type {?} */ kf = keyframes[i];
-        var /** @type {?} */ offset = kf['offset'];
-        if (offset !== 0)
-            break;
-        startingKeyframe = kf;
-    }
-    return startingKeyframe;
 }
 //# sourceMappingURL=web_animations_player.js.map

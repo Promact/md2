@@ -17,12 +17,6 @@ import { isPresent, stringify } from './facade/lang';
 import { reflector } from './private_import_core';
 import { CssSelector } from './selector';
 import { splitAtColon } from './util';
-/**
- * @return {?}
- */
-function unimplemented() {
-    throw new Error('unimplemented');
-}
 // group 0: "[prop] or (event) or @trigger"
 // group 1: "prop" from "[prop]"
 // group 2: "event" from "(event)"
@@ -245,14 +239,14 @@ export function identifierModuleUrl(compileIdentifier) {
     return reflector.importUri(ref);
 }
 export var CompileSummaryKind = {};
-CompileSummaryKind.Template = 0;
-CompileSummaryKind.Pipe = 1;
-CompileSummaryKind.Directive = 2;
-CompileSummaryKind.NgModule = 3;
-CompileSummaryKind[CompileSummaryKind.Template] = "Template";
+CompileSummaryKind.Pipe = 0;
+CompileSummaryKind.Directive = 1;
+CompileSummaryKind.NgModule = 2;
+CompileSummaryKind.Injectable = 3;
 CompileSummaryKind[CompileSummaryKind.Pipe] = "Pipe";
 CompileSummaryKind[CompileSummaryKind.Directive] = "Directive";
 CompileSummaryKind[CompileSummaryKind.NgModule] = "NgModule";
+CompileSummaryKind[CompileSummaryKind.Injectable] = "Injectable";
 /**
  * @param {?} token
  * @return {?}
@@ -274,7 +268,7 @@ export function tokenReference(token) {
     }
 }
 /**
- *  Metadata about a stylesheet
+ * Metadata about a stylesheet
  */
 export var CompileStylesheetMetadata = (function () {
     /**
@@ -297,7 +291,7 @@ function CompileStylesheetMetadata_tsickle_Closure_declarations() {
     CompileStylesheetMetadata.prototype.styleUrls;
 }
 /**
- *  Metadata regarding compilation of a template.
+ * Metadata regarding compilation of a template.
  */
 export var CompileTemplateMetadata = (function () {
     /**
@@ -323,7 +317,6 @@ export var CompileTemplateMetadata = (function () {
      */
     CompileTemplateMetadata.prototype.toSummary = function () {
         return {
-            summaryKind: CompileSummaryKind.Template,
             animations: this.animations.map(function (anim) { return anim.name; }),
             ngContentSelectors: this.ngContentSelectors,
             encapsulation: this.encapsulation
@@ -352,7 +345,7 @@ function CompileTemplateMetadata_tsickle_Closure_declarations() {
     CompileTemplateMetadata.prototype.interpolation;
 }
 /**
- *  Metadata regarding compilation of a directive.
+ * Metadata regarding compilation of a directive.
  */
 export var CompileDirectiveMetadata = (function () {
     /**
@@ -499,7 +492,7 @@ function CompileDirectiveMetadata_tsickle_Closure_declarations() {
     CompileDirectiveMetadata.prototype.template;
 }
 /**
- *  Construct {@link CompileDirectiveMetadata} from {@link ComponentTypeMetadata} and a selector.
+ * Construct {\@link CompileDirectiveMetadata} from {\@link ComponentTypeMetadata} and a selector.
  * @param {?} typeReference
  * @param {?} compMeta
  * @return {?}
@@ -562,7 +555,7 @@ function CompilePipeMetadata_tsickle_Closure_declarations() {
     CompilePipeMetadata.prototype.pure;
 }
 /**
- *  Metadata regarding compilation of a module.
+ * Metadata regarding compilation of a module.
  */
 export var CompileNgModuleMetadata = (function () {
     /**

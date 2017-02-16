@@ -1,5 +1,5 @@
 /*
- * SystemJS v0.19.38
+ * SystemJS v0.19.42
  */
 (function() {
 function bootstrap() {// from https://gist.github.com/Yaffle/1088850
@@ -7,7 +7,7 @@ function bootstrap() {// from https://gist.github.com/Yaffle/1088850
 function URLPolyfill(url, baseURL) {
   if (typeof url != 'string')
     throw new TypeError('URL must be a string');
-  var m = String(url).replace(/^\s+|\s+$/g, "").match(/^([^:\/?#]+:)?(?:\/\/(?:([^:@\/?#]*)(?::([^:@\/?#]*))?@)?(([^:\/?#]*)(?::(\d*))?))?([^?#]*)(\?[^#]*)?(#[\s\S]*)?/);
+  var m = String(url).replace(/^\s+|\s+$/g, "").replace(/\\/g, '/').match(/^([^:\/?#]+:)?(?:\/\/(?:([^:@\/?#]*)(?::([^:@\/?#]*))?@)?(([^:\/?#]*)(?::(\d*))?))?([^?#]*)(\?[^#]*)?(#[\s\S]*)?/);
   if (!m)
     throw new RangeError('Invalid URL format');
   var protocol = m[1] || "";
@@ -65,7 +65,8 @@ function URLPolyfill(url, baseURL) {
   this.hash = hash;
 }
 global.URLPolyfill = URLPolyfill;
-})(typeof self != 'undefined' ? self : global);(function(__global) {
+})(typeof self != 'undefined' ? self : global);
+(function(__global) {
 
   var isWorker = typeof window == 'undefined' && typeof self != 'undefined' && typeof importScripts != 'undefined';
   var isBrowser = typeof window != 'undefined' && typeof document != 'undefined';
@@ -1265,7 +1266,7 @@ function applyPaths(loader, name) {
     if (p.indexOf('*') === -1) {
       if (name == p)
         return paths[p];
-      
+
       // support trailing / in paths rules
       else if (name.substr(0, p.length - 1) == p.substr(0, p.length - 1) && (name.length < p.length || name[p.length - 1] == p[p.length - 1]) && (paths[p][paths[p].length - 1] == '/' || paths[p] == '')) {
         return paths[p].substr(0, paths[p].length - 1) + (name.length > p.length ? (paths[p] && '/' || '') + name.substr(p.length) : '');
@@ -1419,7 +1420,7 @@ function extendPkgConfig(pkgCfgA, pkgCfgB, pkgName, loader, warnInvalidPropertie
         loader.depCache[dNormalized] = (loader.depCache[dNormalized] || []).concat(pkgCfgB.depCache[d]);
       }
     }
-    else if (warnInvalidProperties && indexOf.call(['browserConfig', 'nodeConfig', 'devConfig', 'productionConfig'], prop) == -1 && 
+    else if (warnInvalidProperties && indexOf.call(['browserConfig', 'nodeConfig', 'devConfig', 'productionConfig'], prop) == -1 &&
         (!pkgCfgB.hasOwnProperty || pkgCfgB.hasOwnProperty(prop))) {
       warn.call(loader, '"' + prop + '" is not a valid package configuration option in package ' + pkgName);
     }
@@ -1441,7 +1442,7 @@ function setPkgConfig(loader, pkgName, cfg, prependConfig) {
     extendPkgConfig(pkg, prependConfig ? cfg : basePkg, pkgName, loader, prependConfig);
     extendPkgConfig(pkg, prependConfig ? basePkg : cfg, pkgName, loader, !prependConfig);
   }
-  
+
   // main object becomes main map
   if (typeof pkg.main == 'object') {
     pkg.map = pkg.map || {};
@@ -1456,6 +1457,15 @@ function setPkgConfig(loader, pkgName, cfg, prependConfig) {
 function warn(msg) {
   if (this.warnings && typeof console != 'undefined' && console.warn)
     console.warn(msg);
+}
+
+function createInstantiate (load, result) {
+  load.metadata.entry = createEntry();
+  load.metadata.entry.execute = function() {
+    return result;
+  }
+  load.metadata.entry.deps = [];
+  load.metadata.format = 'defined';
 }
 // we define a __exec for globally-scoped execution
 // used by module format implementations
@@ -1499,7 +1509,7 @@ var __exec;
 
     return (wrap ? '(function(System, SystemJS) {' : '') + load.source + (wrap ? '\n})(System, System);' : '')
         // adds the sourceURL comment if not already present
-        + (load.source.substr(lastLineIndex, 15) != '\n//# sourceURL=' 
+        + (load.source.substr(lastLineIndex, 15) != '\n//# sourceURL='
           ? '\n//# sourceURL=' + load.address + (sourceMap ? '!transpiled' : '') : '')
         // add sourceMappingURL if load.metadata.sourceMap is set
         + (sourceMap && inlineSourceMap(sourceMap) || '');
@@ -1526,7 +1536,7 @@ var __exec;
     curLoad = load;
     if (callCounter++ == 0)
       curSystem = __global.System;
-    __global.System = __global.SystemJS = loader; 
+    __global.System = __global.SystemJS = loader;
   }
   function postExec() {
     if (--callCounter == 0)
@@ -1556,16 +1566,13 @@ var __exec;
       postExec();
     }
     catch(e) {
-      postExec(); 
+      postExec();
       throw addToError(e, 'Evaluating ' + load.address);
     }
   };
 
   var supportsScriptExec = false;
   if (isBrowser && typeof document != 'undefined' && document.getElementsByTagName) {
-    var scripts = document.getElementsByTagName('script');
-    $__curScript = scripts[scripts.length - 1];
-
     if (!(window.chrome && window.chrome.extension || navigator.userAgent.match(/^Node\.js/)))
       supportsScriptExec = true;
   }
@@ -1630,7 +1637,7 @@ function prepareBaseURL(loader) {
   if (this._loader.baseURL !== this.baseURL) {
     if (this.baseURL[this.baseURL.length - 1] != '/')
       this.baseURL += '/';
-    
+
     this._loader.baseURL = this.baseURL = new URL(this.baseURL, baseURIObj).href;
   }
 }
@@ -1732,7 +1739,7 @@ function coreResolve(name, parentName) {
 
   if (this.has(name))
     return name;
-  
+
   // dynamically load node-core modules when requiring `@node/fs` for example
   if (name.substr(0, 6) == '@node/') {
     if (!this._nodeRequire)
@@ -1785,7 +1792,7 @@ hook('fetch', function() {
 
 /*
   __useDefault
-  
+
   When a module object looks like:
   newModule(
     __useDefault: true,
@@ -1975,7 +1982,7 @@ SystemJSLoader.prototype.config = function(cfg, isEnvConfig) {
     if (this.warnings) {
       for (var p in loader.paths)
         if (p.indexOf('*') != -1)
-          warn.call(loader, 'Paths configuration "' + p + '" -> "' + loader.paths[p] + '" uses wildcards which are being deprecated for simpler trailing "/" folder paths.');
+          warn.call(loader, 'Paths configuration "' + p + '" -> "' + loader.paths[p] + '" uses wildcards which are being deprecated for just leaving a trailing "/" to indicate folder paths.');
     }
   }
 
@@ -1988,14 +1995,11 @@ SystemJSLoader.prototype.config = function(cfg, isEnvConfig) {
     loader.pluginFirst = cfg.pluginFirst;
 
   if (cfg.map) {
-    var objMaps = '';
     for (var p in cfg.map) {
       var v = cfg.map[p];
 
       // object map backwards-compat into packages configuration
       if (typeof v !== 'string') {
-        objMaps += (objMaps.length ? ', ' : '') + '"' + p + '"';
-
         var defaultJSExtension = loader.defaultJSExtensions && p.substr(p.length - 3, 3) != '.js';
         var prop = loader.decanonicalize(p);
         if (defaultJSExtension && prop.substr(prop.length - 3, 3) == '.js')
@@ -2004,8 +2008,8 @@ SystemJSLoader.prototype.config = function(cfg, isEnvConfig) {
         // if a package main, revert it
         var pkgMatch = '';
         for (var pkg in loader.packages) {
-          if (prop.substr(0, pkg.length) == pkg 
-              && (!prop[pkg.length] || prop[pkg.length] == '/') 
+          if (prop.substr(0, pkg.length) == pkg
+              && (!prop[pkg.length] || prop[pkg.length] == '/')
               && pkgMatch.split('/').length < pkg.split('/').length)
             pkgMatch = pkg;
         }
@@ -2019,8 +2023,6 @@ SystemJSLoader.prototype.config = function(cfg, isEnvConfig) {
         loader.map[p] = v;
       }
     }
-    if (objMaps)
-      warn.call(loader, 'The map configuration for ' + objMaps + ' uses object submaps, which is deprecated in global map.\nUpdate this to use package contextual map with configs like SystemJS.config({ packages: { "' + p + '": { map: {...} } } }).');
   }
 
   if (cfg.packageConfigPaths) {
@@ -2066,7 +2068,7 @@ SystemJSLoader.prototype.config = function(cfg, isEnvConfig) {
   for (var c in cfg) {
     var v = cfg[c];
 
-    if (indexOf.call(['baseURL', 'map', 'packages', 'bundles', 'paths', 'warnings', 'packageConfigPaths', 
+    if (indexOf.call(['baseURL', 'map', 'packages', 'bundles', 'paths', 'warnings', 'packageConfigPaths',
           'loaderErrorStack', 'browserConfig', 'nodeConfig', 'devConfig', 'buildConfig', 'productionConfig'], c) != -1)
       continue;
 
@@ -2105,7 +2107,8 @@ SystemJSLoader.prototype.config = function(cfg, isEnvConfig) {
   envSet(loader, cfg, function(cfg) {
     loader.config(cfg, true);
   });
-};/*
+};
+/*
  * Package Configuration Extension
  *
  * Example:
@@ -3328,7 +3331,7 @@ function createEntry() {
       entry.esModule = loader.newModule(getESModule(exports));
     // just use the 'default' export
     else
-      entry.esModule = loader.newModule({ 'default': exports });
+      entry.esModule = loader.newModule({ 'default': exports, __useDefault: true });
   }
 
   /*
@@ -3576,9 +3579,27 @@ function createEntry() {
           // do transpilation
           return (loader._loader.transpilerPromise || (
             loader._loader.transpilerPromise = Promise.resolve(
-              __global[loader.transpiler == 'typescript' ? 'ts' : loader.transpiler] || (loader.pluginLoader || loader)['import'](loader.transpiler)
+              __global[loader.transpiler == 'typescript' ? 'ts' : loader.transpiler] || (loader.pluginLoader || loader).normalize(loader.transpiler)
+              .then(function(normalized) {
+                loader._loader.transpilerNormalized = normalized;
+                return (loader.pluginLoader || loader).load(normalized)
+                .then(function() {
+                  return (loader.pluginLoader || loader).get(normalized);
+                });
+              })
           ))).then(function(transpiler) {
             loader._loader.loadedTranspilerRuntime = true;
+
+            if (typeof transpiler.default === 'function' && !__global[loader.transpiler == 'typescript' ? 'ts' : loader.transpiler]) {
+              // instantiate plugins dont build
+              if (loader.builder)
+                return source;
+              return Promise.resolve(transpiler.default.call(loader, load.address, load.name))
+              .then(function (result) {
+                createInstantiate(load, result);
+                return '';
+              });
+            }
 
             // translate hooks means this is a transpiler plugin instead of a raw implementation
             if (transpiler.translate) {
@@ -3596,7 +3617,7 @@ function createEntry() {
                 var sourceMap = load.metadata.sourceMap;
                 if (sourceMap && typeof sourceMap == 'object') {
                   var originalName = load.address.split('!')[0];
-                  
+
                   // force set the filename of the original file
                   if (!sourceMap.file || sourceMap.file == load.address)
                     sourceMap.file = originalName + '!transpiled';
@@ -3615,14 +3636,14 @@ function createEntry() {
             // legacy builder support
             if (loader.builder)
               load.metadata.originalSource = load.source;
-            
+
             // defined in es6-module-loader/src/transpile.js
             return transpile.call(loader, load)
             .then(function(source) {
               // clear sourceMap as transpiler embeds it
               load.metadata.sourceMap = undefined;
               return source;
-            });            
+            });
           }, function(err) {
             throw addToError(err, 'Unable to load transpiler to transpile ' + load.name);
           });
@@ -4433,13 +4454,13 @@ hookConstructor(function(constructor) {
   // if so, remove for backwards compat
   // this is strange and sucks, but will be deprecated
   function checkDefaultExtension(loader, arg) {
-    return loader.defaultJSExtensions && arg.substr(arg.length - 3, 3) != '.js'; 
+    return loader.defaultJSExtensions && arg.substr(arg.length - 3, 3) != '.js';
   }
 
   function createNormalizeSync(normalizeSync) {
     return function(name, parentName, isPlugin) {
       var loader = this;
-      
+
       var parsed = parsePlugin(loader, name);
       parentName = getParentName(this, parentName);
 
@@ -4452,7 +4473,7 @@ hookConstructor(function(constructor) {
       return combinePluginParts(loader, argumentName, pluginName, checkDefaultExtension(loader, parsed.argument));
     };
   }
-  
+
   hook('decanonicalize', createNormalizeSync);
   hook('normalizeSync', createNormalizeSync);
 
@@ -4546,15 +4567,16 @@ hookConstructor(function(constructor) {
   hook('fetch', function(fetch) {
     return function(load) {
       var loader = this;
-      if (load.metadata.loaderModule && load.metadata.loaderModule.fetch && load.metadata.format != 'defined') {
+      if (load.metadata.loaderModule && load.metadata.format != 'defined') {
+        if (typeof load.metadata.loaderModule === 'function' || load.metadata.loaderModule instanceof Module && typeof load.metadata.loaderModule.default === 'function')
+          return '';
         load.metadata.scriptLoad = false;
-        return load.metadata.loaderModule.fetch.call(loader, load, function(load) {
-          return fetch.call(loader, load);
-        });
+        if (load.metadata.loaderModule.fetch)
+          return load.metadata.loaderModule.fetch.call(loader, load, function(load) {
+            return fetch.call(loader, load);
+          });
       }
-      else {
-        return fetch.call(loader, load);
-      }
+      return fetch.call(loader, load);
     };
   });
 
@@ -4572,7 +4594,7 @@ hookConstructor(function(constructor) {
               throw new Error('load.metadata.sourceMap must be set to an object.');
 
             var originalName = load.address.split('!')[0];
-            
+
             // force set the filename of the original file
             if (!sourceMap.file || sourceMap.file == load.address)
               sourceMap.file = originalName + '!transpiled';
@@ -4587,15 +4609,11 @@ hookConstructor(function(constructor) {
 
           if (typeof result == 'string')
             load.source = result;
-          else
-            warn.call(this, 'Plugin ' + load.metadata.loader + ' should return the source in translate, instead of setting load.source directly. This support will be deprecated.');
 
           return translate.apply(loader, args);
         });
       }
-      else {
-        return translate.apply(loader, args);
-      }
+      return translate.apply(loader, args);
     };
   });
 
@@ -4604,30 +4622,35 @@ hookConstructor(function(constructor) {
       var loader = this;
       var calledInstantiate = false;
 
-      if (load.metadata.loaderModule && load.metadata.loaderModule.instantiate && !loader.builder && load.metadata.format != 'defined')
-        return Promise.resolve(load.metadata.loaderModule.instantiate.call(loader, load, function(load) {
-          if (calledInstantiate)
-            throw new Error('Instantiate must only be called once.');
-          calledInstantiate = true;
-          return instantiate.call(loader, load);
-        })).then(function(result) {
-          if (calledInstantiate)
-            return result;
+      if (load.metadata.loaderModule && !loader.builder && load.metadata.format != 'defined') {
+        if (load.metadata.loaderModule.instantiate)
+          return Promise.resolve(load.metadata.loaderModule.instantiate.call(loader, load, function(load) {
+            if (calledInstantiate)
+              throw new Error('Instantiate must only be called once.');
+            calledInstantiate = true;
+            return instantiate.call(loader, load);
+          })).then(function(result) {
+            if (calledInstantiate)
+              return result;
 
-          load.metadata.entry = createEntry();
-          load.metadata.entry.execute = function() {
-            return result;
-          }
-          load.metadata.entry.deps = load.metadata.deps;
-          load.metadata.format = 'defined';
-          return instantiate.call(loader, load);
-        });
-      else
-        return instantiate.call(loader, load);
+            if (result !== undefined)
+              createInstantiate(load, result);
+            return instantiate.call(loader, load);
+          });
+        else if (typeof load.metadata.loaderModule === 'function' || load.metadata.loaderModule instanceof Module && typeof load.metadata.loaderModule.default === 'function')
+          return Promise.resolve((load.metadata.loaderModule.default || load.metadata.loaderModule).call(loader, load.address, load.name))
+          .then(function (result) {
+            if (result !== undefined)
+              createInstantiate(load, result);
+            return instantiate.call(loader, load);
+          });
+      }
+      return instantiate.call(loader, load);
     };
   });
 
-})();/*
+})();
+/*
  * Conditions Extension
  *
  *   Allows a condition module to alter the resolution of an import via syntax:
@@ -5100,7 +5123,7 @@ hookConstructor(function(constructor) {
 System = new SystemJSLoader();
 
 __global.SystemJS = System;
-System.version = '0.19.38 Standard';
+System.version = '0.19.42 Standard';
   if (typeof module == 'object' && module.exports && typeof exports == 'object')
     module.exports = System;
 
@@ -5115,8 +5138,10 @@ var doPolyfill = typeof Promise === 'undefined';
 if (typeof document !== 'undefined') {
   var scripts = document.getElementsByTagName('script');
   $__curScript = scripts[scripts.length - 1];
-  if ($__curScript.defer || $__curScript.async)
+  if (document.currentScript && ($__curScript.defer || $__curScript.async))
     $__curScript = document.currentScript;
+  if (!$__curScript.src)
+    $__curScript = undefined;
   if (doPolyfill) {
     var curPath = $__curScript.src;
     var basePath = curPath.substr(0, curPath.lastIndexOf('/') + 1);

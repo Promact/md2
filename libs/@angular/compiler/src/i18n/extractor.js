@@ -9,6 +9,8 @@ import { ViewEncapsulation } from '@angular/core';
 import { analyzeAndValidateNgModules, extractProgramSymbols } from '../aot/compiler';
 import { StaticAndDynamicReflectionCapabilities } from '../aot/static_reflection_capabilities';
 import { StaticReflector } from '../aot/static_reflector';
+import { StaticSymbolCache } from '../aot/static_symbol';
+import { StaticSymbolResolver } from '../aot/static_symbol_resolver';
 import { AotSummaryResolver } from '../aot/summary_resolver';
 import { CompilerConfig } from '../config';
 import { DirectiveNormalizer } from '../directive_normalizer';
@@ -24,16 +26,14 @@ import { I18NHtmlParser } from './i18n_html_parser';
 import { MessageBundle } from './message_bundle';
 export var Extractor = (function () {
     /**
-     * @param {?} options
      * @param {?} host
-     * @param {?} staticReflector
+     * @param {?} staticSymbolResolver
      * @param {?} messageBundle
      * @param {?} metadataResolver
      */
-    function Extractor(options, host, staticReflector, messageBundle, metadataResolver) {
-        this.options = options;
+    function Extractor(host, staticSymbolResolver, messageBundle, metadataResolver) {
         this.host = host;
-        this.staticReflector = staticReflector;
+        this.staticSymbolResolver = staticSymbolResolver;
         this.messageBundle = messageBundle;
         this.metadataResolver = metadataResolver;
     }
@@ -43,8 +43,8 @@ export var Extractor = (function () {
      */
     Extractor.prototype.extract = function (rootFiles) {
         var _this = this;
-        var /** @type {?} */ programSymbols = extractProgramSymbols(this.staticReflector, rootFiles, this.options);
-        var _a = analyzeAndValidateNgModules(programSymbols, this.options, this.metadataResolver), ngModuleByPipeOrDirective = _a.ngModuleByPipeOrDirective, files = _a.files, ngModules = _a.ngModules;
+        var /** @type {?} */ programSymbols = extractProgramSymbols(this.staticSymbolResolver, rootFiles, this.host);
+        var _a = analyzeAndValidateNgModules(programSymbols, this.host, this.metadataResolver), files = _a.files, ngModules = _a.ngModules;
         return Promise
             .all(ngModules.map(function (ngModule) { return _this.metadataResolver.loadNgModuleDirectiveAndPipeMetadata(ngModule.type.reference, false); }))
             .then(function () {
@@ -71,13 +71,15 @@ export var Extractor = (function () {
     };
     /**
      * @param {?} host
-     * @param {?} options
      * @return {?}
      */
-    Extractor.create = function (host, options) {
+    Extractor.create = function (host) {
         var /** @type {?} */ htmlParser = new I18NHtmlParser(new HtmlParser());
         var /** @type {?} */ urlResolver = createOfflineCompileUrlResolver();
-        var /** @type {?} */ staticReflector = new StaticReflector(host);
+        var /** @type {?} */ symbolCache = new StaticSymbolCache();
+        var /** @type {?} */ summaryResolver = new AotSummaryResolver(host, symbolCache);
+        var /** @type {?} */ staticSymbolResolver = new StaticSymbolResolver(host, symbolCache, summaryResolver);
+        var /** @type {?} */ staticReflector = new StaticReflector(staticSymbolResolver);
         StaticAndDynamicReflectionCapabilities.install(staticReflector);
         var /** @type {?} */ config = new CompilerConfig({
             genDebugInfo: false,
@@ -87,21 +89,19 @@ export var Extractor = (function () {
         });
         var /** @type {?} */ normalizer = new DirectiveNormalizer({ get: function (url) { return host.loadResource(url); } }, urlResolver, htmlParser, config);
         var /** @type {?} */ elementSchemaRegistry = new DomElementSchemaRegistry();
-        var /** @type {?} */ resolver = new CompileMetadataResolver(new NgModuleResolver(staticReflector), new DirectiveResolver(staticReflector), new PipeResolver(staticReflector), new AotSummaryResolver(host, staticReflector, options), elementSchemaRegistry, normalizer, staticReflector);
+        var /** @type {?} */ resolver = new CompileMetadataResolver(new NgModuleResolver(staticReflector), new DirectiveResolver(staticReflector), new PipeResolver(staticReflector), summaryResolver, elementSchemaRegistry, normalizer, staticReflector);
         // TODO(vicb): implicit tags & attributes
         var /** @type {?} */ messageBundle = new MessageBundle(htmlParser, [], {});
-        var /** @type {?} */ extractor = new Extractor(options, host, staticReflector, messageBundle, resolver);
+        var /** @type {?} */ extractor = new Extractor(host, staticSymbolResolver, messageBundle, resolver);
         return { extractor: extractor, staticReflector: staticReflector };
     };
     return Extractor;
 }());
 function Extractor_tsickle_Closure_declarations() {
     /** @type {?} */
-    Extractor.prototype.options;
-    /** @type {?} */
     Extractor.prototype.host;
     /** @type {?} */
-    Extractor.prototype.staticReflector;
+    Extractor.prototype.staticSymbolResolver;
     /** @type {?} */
     Extractor.prototype.messageBundle;
     /** @type {?} */

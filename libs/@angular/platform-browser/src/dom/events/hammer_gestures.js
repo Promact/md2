@@ -57,7 +57,7 @@ var /** @type {?} */ EVENT_NAMES = {
  */
 export var /** @type {?} */ HAMMER_GESTURE_CONFIG = new OpaqueToken('HammerGestureConfig');
 /**
- * @experimental
+ * \@experimental
  */
 export var HammerGestureConfig = (function () {
     function HammerGestureConfig() {

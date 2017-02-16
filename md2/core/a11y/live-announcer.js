@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { Injectable, OpaqueToken, Optional, Inject } from '@angular/core';
+import { Injectable, OpaqueToken, Optional, Inject, SkipSelf } from '@angular/core';
 export var LIVE_ANNOUNCER_ELEMENT_TOKEN = new OpaqueToken('liveAnnouncerElement');
 export var LiveAnnouncer = (function () {
     function LiveAnnouncer(elementToken) {
@@ -59,5 +59,17 @@ export var LiveAnnouncer = (function () {
     ], LiveAnnouncer);
     return LiveAnnouncer;
 }());
-
+export function LIVE_ANNOUNCER_PROVIDER_FACTORY(parentDispatcher, liveElement) {
+    return parentDispatcher || new LiveAnnouncer(liveElement);
+}
+;
+export var LIVE_ANNOUNCER_PROVIDER = {
+    // If there is already a LiveAnnouncer available, use that. Otherwise, provide a new one.
+    provide: LiveAnnouncer,
+    deps: [
+        [new Optional(), new SkipSelf(), LiveAnnouncer],
+        [new Optional(), new Inject(LIVE_ANNOUNCER_ELEMENT_TOKEN)]
+    ],
+    useFactory: LIVE_ANNOUNCER_PROVIDER_FACTORY
+};
 //# sourceMappingURL=live-announcer.js.map

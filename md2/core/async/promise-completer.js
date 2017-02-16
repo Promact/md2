@@ -9,5 +9,4 @@ export var PromiseCompleter = (function () {
     }
     return PromiseCompleter;
 }());
-
 //# sourceMappingURL=promise-completer.js.map

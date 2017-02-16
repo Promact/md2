@@ -35,5 +35,4 @@ var MultiselectDemo = (function () {
     return MultiselectDemo;
 }());
 exports.MultiselectDemo = MultiselectDemo;
-
 //# sourceMappingURL=multiselect-demo.js.map

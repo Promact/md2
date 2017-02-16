@@ -7,21 +7,26 @@
  */
 import { Directive, ElementRef, Input, KeyValueDiffers, Renderer } from '@angular/core';
 /**
- *  *
-  * *
-  * ```
-  * <some-element [ngStyle]="{'font-style': styleExp}">...</some-element>
-  * *
-  * <some-element [ngStyle]="{'max-width.px': widthExp}">...</some-element>
-  * *
-  * <some-element [ngStyle]="objExp">...</some-element>
-  * ```
-  * *
-  * *
-  * The styles are updated according to the value of the expression evaluation:
-  * - keys are style names with an optional `.<unit>` suffix (ie 'top.px', 'font-style.em'),
-  * - values are the values assigned to those properties (expressed in the given unit).
-  * *
+ * \@ngModule CommonModule
+ *
+ * \@whatItDoes Update an HTML element styles.
+ *
+ * \@howToUse
+ * ```
+ * <some-element [ngStyle]="{'font-style': styleExp}">...</some-element>
+ *
+ * <some-element [ngStyle]="{'max-width.px': widthExp}">...</some-element>
+ *
+ * <some-element [ngStyle]="objExp">...</some-element>
+ * ```
+ *
+ * \@description
+ *
+ * The styles are updated according to the value of the expression evaluation:
+ * - keys are style names with an optional `.<unit>` suffix (ie 'top.px', 'font-style.em'),
+ * - values are the values assigned to those properties (expressed in the given unit).
+ *
+ * \@stable
  */
 export var NgStyle = (function () {
     /**

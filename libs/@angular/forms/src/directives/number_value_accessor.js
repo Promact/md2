@@ -13,13 +13,13 @@ export var /** @type {?} */ NUMBER_VALUE_ACCESSOR = {
     multi: true
 };
 /**
- *  The accessor for writing a number value and listening to changes that is used by the
-  * {@link NgModel}, {@link FormControlDirective}, and {@link FormControlName} directives.
-  * *
-  * ### Example
-  * ```
-  * <input type="number" [(ngModel)]="age">
-  * ```
+ * The accessor for writing a number value and listening to changes that is used by the
+ * {\@link NgModel}, {\@link FormControlDirective}, and {\@link FormControlName} directives.
+ *
+ *  ### Example
+ *  ```
+ *  <input type="number" [(ngModel)]="age">
+ *  ```
  */
 export var NumberValueAccessor = (function () {
     /**

@@ -1,6 +1,6 @@
 /**
- * @license Angular v3.3.1
- * (c) 2010-2016 Google, Inc. https://angular.io/
+ * @license Angular v3.4.6
+ * (c) 2010-2017 Google, Inc. https://angular.io/
  * License: MIT
  */(function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/common'), require('@angular/common/testing'), require('@angular/core'), require('@angular/router')) :

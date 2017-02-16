@@ -23,5 +23,4 @@ var MenuDemo = (function () {
     return MenuDemo;
 }());
 exports.MenuDemo = MenuDemo;
-
 //# sourceMappingURL=menu-demo.js.map

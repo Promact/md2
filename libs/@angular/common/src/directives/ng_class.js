@@ -7,27 +7,34 @@
  */
 import { Directive, ElementRef, Input, IterableDiffers, KeyValueDiffers, Renderer } from '@angular/core';
 import { isListLikeIterable } from '../facade/collection';
-import { isPresent, stringify } from '../facade/lang';
+import { stringify } from '../facade/lang';
 /**
- *  *
-  * *
-  * ```
-  * <some-element [ngClass]="'first second'">...</some-element>
-  * *
-  * <some-element [ngClass]="['first', 'second']">...</some-element>
-  * *
-  * <some-element [ngClass]="{'first': true, 'second': true, 'third': false}">...</some-element>
-  * *
-  * <some-element [ngClass]="stringExp|arrayExp|objExp">...</some-element>
-  * ```
-  * *
-  * *
-  * The CSS classes are updated as follows, depending on the type of the expression evaluation:
-  * - `string` - the CSS classes listed in the string (space delimited) are added,
-  * - `Array` - the CSS classes declared as Array elements are added,
-  * - `Object` - keys are CSS classes that get added when the expression given in the value
-  * evaluates to a truthy value, otherwise they are removed.
-  * *
+ * \@ngModule CommonModule
+ *
+ * \@whatItDoes Adds and removes CSS classes on an HTML element.
+ *
+ * \@howToUse
+ * ```
+ *     <some-element [ngClass]="'first second'">...</some-element>
+ *
+ *     <some-element [ngClass]="['first', 'second']">...</some-element>
+ *
+ *     <some-element [ngClass]="{'first': true, 'second': true, 'third': false}">...</some-element>
+ *
+ *     <some-element [ngClass]="stringExp|arrayExp|objExp">...</some-element>
+ *
+ *     <some-element [ngClass]="{'class1 class2 class3' : true}">...</some-element>
+ * ```
+ *
+ * \@description
+ *
+ * The CSS classes are updated as follows, depending on the type of the expression evaluation:
+ * - `string` - the CSS classes listed in the string (space delimited) are added,
+ * - `Array` - the CSS classes declared as Array elements are added,
+ * - `Object` - keys are CSS classes that get added when the expression given in the value
+ *              evaluates to a truthy value, otherwise they are removed.
+ *
+ * \@stable
  */
 export var NgClass = (function () {
     /**
@@ -155,7 +162,7 @@ export var NgClass = (function () {
             }
             else {
                 Object.keys(rawClassVal).forEach(function (klass) {
-                    if (isPresent(rawClassVal[klass]))
+                    if (rawClassVal[klass] != null)
                         _this._toggleClass(klass, !isCleanup);
                 });
             }

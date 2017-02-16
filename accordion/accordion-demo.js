@@ -29,5 +29,4 @@ var AccordionDemo = (function () {
     return AccordionDemo;
 }());
 exports.AccordionDemo = AccordionDemo;
-
 //# sourceMappingURL=accordion-demo.js.map

@@ -12,8 +12,8 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 import { ReflectorReader } from './reflector_reader';
 /**
- *  Provides access to reflection data about symbols. Used internally by Angular
-  * to power dependency injection and compilation.
+ * Provides access to reflection data about symbols. Used internally by Angular
+ * to power dependency injection and compilation.
  */
 export var Reflector = (function (_super) {
     __extends(Reflector, _super);

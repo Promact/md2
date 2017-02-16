@@ -114,5 +114,4 @@ export var Md2MenuTrigger = (function () {
     ], Md2MenuTrigger);
     return Md2MenuTrigger;
 }());
-
 //# sourceMappingURL=menu-trigger.js.map

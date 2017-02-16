@@ -9,13 +9,18 @@ import { Pipe } from '@angular/core';
 import { isBlank } from '../facade/lang';
 import { InvalidPipeArgumentError } from './invalid_pipe_argument_error';
 /**
- *  *
-  * Converts value into an uppercase string using `String.prototype.toUpperCase()`.
-  * *
-  * ### Example
-  * *
-  * {@example common/pipes/ts/lowerupper_pipe.ts region='LowerUpperPipe'}
-  * *
+ * \@ngModule CommonModule
+ * \@whatItDoes Transforms string to uppercase.
+ * \@howToUse `expression | uppercase`
+ * \@description
+ *
+ * Converts value into an uppercase string using `String.prototype.toUpperCase()`.
+ *
+ * ### Example
+ *
+ * {\@example common/pipes/ts/lowerupper_pipe.ts region='LowerUpperPipe'}
+ *
+ * \@stable
  */
 export var UpperCasePipe = (function () {
     function UpperCasePipe() {

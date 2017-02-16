@@ -16,15 +16,16 @@ export var /** @type {?} */ CHECKBOX_REQUIRED_VALIDATOR = {
     multi: true
 };
 /**
- *  A Directive that adds the `required` validator to any controls marked with the
-  * `required` attribute, via the {@link NG_VALIDATORS} binding.
-  * *
-  * ### Example
-  * *
-  * ```
-  * <input name="fullName" ngModel required>
-  * ```
-  * *
+ * A Directive that adds the `required` validator to any controls marked with the
+ * `required` attribute, via the {\@link NG_VALIDATORS} binding.
+ *
+ * ### Example
+ *
+ * ```
+ * <input name="fullName" ngModel required>
+ * ```
+ *
+ * \@stable
  */
 export var RequiredValidator = (function () {
     function RequiredValidator() {
@@ -88,15 +89,16 @@ function RequiredValidator_tsickle_Closure_declarations() {
     RequiredValidator.prototype._onChange;
 }
 /**
- *  A Directive that adds the `required` validator to checkbox controls marked with the
-  * `required` attribute, via the {@link NG_VALIDATORS} binding.
-  * *
-  * ### Example
-  * *
-  * ```
-  * <input type="checkbox" name="active" ngModel required>
-  * ```
-  * *
+ * A Directive that adds the `required` validator to checkbox controls marked with the
+ * `required` attribute, via the {\@link NG_VALIDATORS} binding.
+ *
+ * ### Example
+ *
+ * ```
+ * <input type="checkbox" name="active" ngModel required>
+ * ```
+ *
+ * \@experimental
  */
 export var CheckboxRequiredValidator = (function (_super) {
     __extends(CheckboxRequiredValidator, _super);
@@ -143,9 +145,10 @@ export var /** @type {?} */ MIN_LENGTH_VALIDATOR = {
     multi: true
 };
 /**
- *  A directive which installs the {@link MinLengthValidator} for any `formControlName`,
-  * `formControl`, or control with `ngModel` that also has a `minlength` attribute.
-  * *
+ * A directive which installs the {\@link MinLengthValidator} for any `formControlName`,
+ * `formControl`, or control with `ngModel` that also has a `minlength` attribute.
+ *
+ * \@stable
  */
 export var MinLengthValidator = (function () {
     function MinLengthValidator() {
@@ -223,10 +226,11 @@ export var /** @type {?} */ MAX_LENGTH_VALIDATOR = {
     multi: true
 };
 /**
- *  A directive which installs the {@link MaxLengthValidator} for any `formControlName,
-  * `formControl`,
-  * or control with `ngModel` that also has a `maxlength` attribute.
-  * *
+ * A directive which installs the {\@link MaxLengthValidator} for any `formControlName,
+ * `formControl`,
+ * or control with `ngModel` that also has a `maxlength` attribute.
+ *
+ * \@stable
  */
 export var MaxLengthValidator = (function () {
     function MaxLengthValidator() {
@@ -297,16 +301,17 @@ export var /** @type {?} */ PATTERN_VALIDATOR = {
     multi: true
 };
 /**
- *  A Directive that adds the `pattern` validator to any controls marked with the
-  * `pattern` attribute, via the {@link NG_VALIDATORS} binding. Uses attribute value
-  * as the regex to validate Control value against.  Follows pattern attribute
-  * semantics; i.e. regex must match entire Control value.
-  * *
-  * ### Example
-  * *
-  * ```
-  * <input [name]="fullName" pattern="[a-zA-Z ]*" ngModel>
-  * ```
+ * A Directive that adds the `pattern` validator to any controls marked with the
+ * `pattern` attribute, via the {\@link NG_VALIDATORS} binding. Uses attribute value
+ * as the regex to validate Control value against.  Follows pattern attribute
+ * semantics; i.e. regex must match entire Control value.
+ *
+ * ### Example
+ *
+ * ```
+ * <input [name]="fullName" pattern="[a-zA-Z ]*" ngModel>
+ * ```
+ * \@stable
  */
 export var PatternValidator = (function () {
     function PatternValidator() {

@@ -37,8 +37,9 @@ export function jsonpFactory(jsonpBackend, requestOptions) {
     return new Jsonp(jsonpBackend, requestOptions);
 }
 /**
- *  The module that includes http's providers
-  * *
+ * The module that includes http's providers
+ *
+ * \@experimental
  */
 export var HttpModule = (function () {
     function HttpModule() {
@@ -71,8 +72,9 @@ function HttpModule_tsickle_Closure_declarations() {
     HttpModule.ctorParameters;
 }
 /**
- *  The module that includes jsonp's providers
-  * *
+ * The module that includes jsonp's providers
+ *
+ * \@experimental
  */
 export var JsonpModule = (function () {
     function JsonpModule() {

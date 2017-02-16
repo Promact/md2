@@ -27,10 +27,11 @@ export function decimalDigest(message) {
     return computeMsgId(parts.join(''), message.meaning);
 }
 /**
- *  Serialize the i18n ast to something xml-like in order to generate an UID.
-  * *
-  * The visitor is also used in the i18n parser tests
-  * *
+ * Serialize the i18n ast to something xml-like in order to generate an UID.
+ *
+ * The visitor is also used in the i18n parser tests
+ *
+ * \@internal
  */
 var _SerializerVisitor = (function () {
     function _SerializerVisitor() {
@@ -98,10 +99,11 @@ export function serializeNodes(nodes) {
     return nodes.map(function (a) { return a.visit(serializerVisitor, null); });
 }
 /**
- *  Serialize the i18n ast to something xml-like in order to generate an UID.
-  * *
-  * Ignore the ICU expressions so that message IDs stays identical if only the expression changes.
-  * *
+ * Serialize the i18n ast to something xml-like in order to generate an UID.
+ *
+ * Ignore the ICU expressions so that message IDs stays identical if only the expression changes.
+ *
+ * \@internal
  */
 var _SerializerIgnoreIcuExpVisitor = (function (_super) {
     __extends(_SerializerIgnoreIcuExpVisitor, _super);
@@ -122,12 +124,12 @@ var _SerializerIgnoreIcuExpVisitor = (function (_super) {
     return _SerializerIgnoreIcuExpVisitor;
 }(_SerializerVisitor));
 /**
- *  Compute the SHA1 of the given string
-  * *
-  * see http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf
-  * *
-  * WARNING: this function has not been designed not tested with security in mind.
-  * DO NOT USE IT IN A SECURITY SENSITIVE CONTEXT.
+ * Compute the SHA1 of the given string
+ *
+ * see http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf
+ *
+ * WARNING: this function has not been designed not tested with security in mind.
+ *          DO NOT USE IT IN A SECURITY SENSITIVE CONTEXT.
  * @param {?} str
  * @return {?}
  */
@@ -177,12 +179,12 @@ function fk(index, b, c, d) {
     return [b ^ c ^ d, 0xca62c1d6];
 }
 /**
- *  Compute the fingerprint of the given string
-  * *
-  * The output is 64 bit number encoded as a decimal string
-  * *
-  * based on:
-  * https://github.com/google/closure-compiler/blob/master/src/com/google/javascript/jscomp/GoogleJsMessageIdGenerator.java
+ * Compute the fingerprint of the given string
+ *
+ * The output is 64 bit number encoded as a decimal string
+ *
+ * based on:
+ * https://github.com/google/closure-compiler/blob/master/src/com/google/javascript/jscomp/GoogleJsMessageIdGenerator.java
  * @param {?} str
  * @return {?}
  */

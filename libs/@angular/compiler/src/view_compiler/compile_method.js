@@ -5,7 +5,6 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { isPresent } from '../facade/lang';
 import * as o from '../output/output_ast';
 var _DebugState = (function () {
     /**
@@ -43,7 +42,7 @@ export var CompileMethod = (function () {
         if (this._newState.nodeIndex !== this._currState.nodeIndex ||
             this._newState.sourceAst !== this._currState.sourceAst) {
             var /** @type {?} */ expr = this._updateDebugContext(this._newState);
-            if (isPresent(expr)) {
+            if (expr) {
                 this._bodyStatements.push(expr.toStmt());
             }
         }
@@ -55,11 +54,11 @@ export var CompileMethod = (function () {
     CompileMethod.prototype._updateDebugContext = function (newState) {
         this._currState = this._newState = newState;
         if (this._debugEnabled) {
-            var /** @type {?} */ sourceLocation = isPresent(newState.sourceAst) ? newState.sourceAst.sourceSpan.start : null;
+            var /** @type {?} */ sourceLocation = newState.sourceAst ? newState.sourceAst.sourceSpan.start : null;
             return o.THIS_EXPR.callMethod('debug', [
                 o.literal(newState.nodeIndex),
-                isPresent(sourceLocation) ? o.literal(sourceLocation.line) : o.NULL_EXPR,
-                isPresent(sourceLocation) ? o.literal(sourceLocation.col) : o.NULL_EXPR
+                sourceLocation ? o.literal(sourceLocation.line) : o.NULL_EXPR,
+                sourceLocation ? o.literal(sourceLocation.col) : o.NULL_EXPR
             ]);
         }
         else {

@@ -8,23 +8,24 @@
 import { stringify } from '../facade/lang';
 import { resolveForwardRef } from './forward_ref';
 /**
- *  A unique object used for retrieving items from the {@link ReflectiveInjector}.
-  * *
-  * Keys have:
-  * - a system-wide unique `id`.
-  * - a `token`.
-  * *
-  * `Key` is used internally by {@link ReflectiveInjector} because its system-wide unique `id` allows
-  * the
-  * injector to store created objects in a more efficient way.
-  * *
-  * `Key` should not be created directly. {@link ReflectiveInjector} creates keys automatically when
-  * resolving
-  * providers.
+ * A unique object used for retrieving items from the {\@link ReflectiveInjector}.
+ *
+ * Keys have:
+ * - a system-wide unique `id`.
+ * - a `token`.
+ *
+ * `Key` is used internally by {\@link ReflectiveInjector} because its system-wide unique `id` allows
+ * the
+ * injector to store created objects in a more efficient way.
+ *
+ * `Key` should not be created directly. {\@link ReflectiveInjector} creates keys automatically when
+ * resolving
+ * providers.
+ * \@experimental
  */
 export var ReflectiveKey = (function () {
     /**
-     *  Private
+     * Private
      * @param {?} token
      * @param {?} id
      */
@@ -37,7 +38,7 @@ export var ReflectiveKey = (function () {
     }
     Object.defineProperty(ReflectiveKey.prototype, "displayName", {
         /**
-         *  Returns a stringified token.
+         * Returns a stringified token.
          * @return {?}
          */
         get: function () { return stringify(this.token); },
@@ -45,7 +46,7 @@ export var ReflectiveKey = (function () {
         configurable: true
     });
     /**
-     *  Retrieves a `Key` for a token.
+     * Retrieves a `Key` for a token.
      * @param {?} token
      * @return {?}
      */
@@ -69,7 +70,7 @@ function ReflectiveKey_tsickle_Closure_declarations() {
     ReflectiveKey.prototype.id;
 }
 /**
- * @internal
+ * \@internal
  */
 export var KeyRegistry = (function () {
     function KeyRegistry() {

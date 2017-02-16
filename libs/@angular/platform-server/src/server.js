@@ -126,8 +126,9 @@ export var /** @type {?} */ SERVER_RENDER_PROVIDERS = [
     SharedStylesHost
 ];
 /**
- *  The ng module for the server.
-  * *
+ * The ng module for the server.
+ *
+ * \@experimental
  */
 export var ServerModule = (function () {
     function ServerModule() {

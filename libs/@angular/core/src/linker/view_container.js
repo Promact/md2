@@ -9,8 +9,8 @@ import { ElementRef } from './element_ref';
 import { ViewContainerRef_ } from './view_container_ref';
 import { ViewType } from './view_type';
 /**
- *  A ViewContainer is created for elements that have a ViewContainerRef
-  * to keep track of the nested views.
+ * A ViewContainer is created for elements that have a ViewContainerRef
+ * to keep track of the nested views.
  */
 export var ViewContainer = (function () {
     /**

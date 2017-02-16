@@ -65,85 +65,86 @@ function applyParams(fnOrArray, key) {
     throw new Error("Only Function or Array is supported in Class definition for key '" + key + "' is '" + stringify(fnOrArray) + "'");
 }
 /**
- *  Provides a way for expressing ES6 classes with parameter annotations in ES5.
-  * *
-  * ## Basic Example
-  * *
-  * ```
-  * var Greeter = ng.Class({
-  * constructor: function(name) {
-  * this.name = name;
-  * },
-  * *
-  * greet: function() {
-  * alert('Hello ' + this.name + '!');
-  * }
-  * });
-  * ```
-  * *
-  * is equivalent to ES6:
-  * *
-  * ```
-  * class Greeter {
-  * constructor(name) {
-  * this.name = name;
-  * }
-  * *
-  * greet() {
-  * alert('Hello ' + this.name + '!');
-  * }
-  * }
-  * ```
-  * *
-  * or equivalent to ES5:
-  * *
-  * ```
-  * var Greeter = function (name) {
-  * this.name = name;
-  * }
-  * *
-  * Greeter.prototype.greet = function () {
-  * alert('Hello ' + this.name + '!');
-  * }
-  * ```
-  * *
-  * ### Example with parameter annotations
-  * *
-  * ```
-  * var MyService = ng.Class({
-  * constructor: [String, [new Optional(), Service], function(name, myService) {
-  * ...
-  * }]
-  * });
-  * ```
-  * *
-  * is equivalent to ES6:
-  * *
-  * ```
-  * class MyService {
-  * constructor(name: string, @Optional() myService: Service) {
-  * ...
-  * }
-  * }
-  * ```
-  * *
-  * ### Example with inheritance
-  * *
-  * ```
-  * var Shape = ng.Class({
-  * constructor: (color) {
-  * this.color = color;
-  * }
-  * });
-  * *
-  * var Square = ng.Class({
-  * extends: Shape,
-  * constructor: function(color, size) {
-  * Shape.call(this, color);
-  * this.size = size;
-  * }
-  * });
-  * ```
+ * Provides a way for expressing ES6 classes with parameter annotations in ES5.
+ *
+ * ## Basic Example
+ *
+ * ```
+ * var Greeter = ng.Class({
+ *   constructor: function(name) {
+ *     this.name = name;
+ *   },
+ *
+ *   greet: function() {
+ *     alert('Hello ' + this.name + '!');
+ *   }
+ * });
+ * ```
+ *
+ * is equivalent to ES6:
+ *
+ * ```
+ * class Greeter {
+ *   constructor(name) {
+ *     this.name = name;
+ *   }
+ *
+ *   greet() {
+ *     alert('Hello ' + this.name + '!');
+ *   }
+ * }
+ * ```
+ *
+ * or equivalent to ES5:
+ *
+ * ```
+ * var Greeter = function (name) {
+ *   this.name = name;
+ * }
+ *
+ * Greeter.prototype.greet = function () {
+ *   alert('Hello ' + this.name + '!');
+ * }
+ * ```
+ *
+ * ### Example with parameter annotations
+ *
+ * ```
+ * var MyService = ng.Class({
+ *   constructor: [String, [new Optional(), Service], function(name, myService) {
+ *     ...
+ *   }]
+ * });
+ * ```
+ *
+ * is equivalent to ES6:
+ *
+ * ```
+ * class MyService {
+ *   constructor(name: string, \@Optional() myService: Service) {
+ *     ...
+ *   }
+ * }
+ * ```
+ *
+ * ### Example with inheritance
+ *
+ * ```
+ * var Shape = ng.Class({
+ *   constructor: (color) {
+ *     this.color = color;
+ *   }
+ * });
+ *
+ * var Square = ng.Class({
+ *   extends: Shape,
+ *   constructor: function(color, size) {
+ *     Shape.call(this, color);
+ *     this.size = size;
+ *   }
+ * });
+ * ```
+ * \@stable
  * @param {?} clsDef
  * @return {?}
  */

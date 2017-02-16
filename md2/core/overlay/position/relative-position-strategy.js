@@ -12,5 +12,4 @@ export var RelativePositionStrategy = (function () {
     };
     return RelativePositionStrategy;
 }());
-
 //# sourceMappingURL=relative-position-strategy.js.map

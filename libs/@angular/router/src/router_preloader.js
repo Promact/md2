@@ -16,7 +16,9 @@ import { mergeMap } from 'rxjs/operator/mergeMap';
 import { NavigationEnd, Router } from './router';
 import { RouterConfigLoader } from './router_config_loader';
 /**
- *  *
+ * \@whatItDoes Provides a preloading strategy.
+ *
+ * \@experimental
  * @abstract
  */
 export var PreloadingStrategy = (function () {
@@ -32,12 +34,15 @@ export var PreloadingStrategy = (function () {
     return PreloadingStrategy;
 }());
 /**
- *  *
-  * *
-  * ```
-  * RouteModule.forRoot(ROUTES, {preloadingStrategy: PreloadAllModules})
-  * ```
-  * *
+ * \@whatItDoes Provides a preloading strategy that preloads all modules as quicky as possible.
+ *
+ * \@howToUse
+ *
+ * ```
+ * RouteModule.forRoot(ROUTES, {preloadingStrategy: PreloadAllModules})
+ * ```
+ *
+ * \@experimental
  */
 export var PreloadAllModules = (function () {
     function PreloadAllModules() {
@@ -53,10 +58,13 @@ export var PreloadAllModules = (function () {
     return PreloadAllModules;
 }());
 /**
- *  *
-  * *
-  * This strategy is enabled by default.
-  * *
+ * \@whatItDoes Provides a preloading strategy that does not preload any modules.
+ *
+ * \@description
+ *
+ * This strategy is enabled by default.
+ *
+ * \@experimental
  */
 export var NoPreloading = (function () {
     function NoPreloading() {
@@ -70,15 +78,16 @@ export var NoPreloading = (function () {
     return NoPreloading;
 }());
 /**
- *  The preloader optimistically loads all router configurations to
-  * make navigations into lazily-loaded sections of the application faster.
-  * *
-  * The preloader runs in the background. When the router bootstraps, the preloader
-  * starts listening to all navigation events. After every such event, the preloader
-  * will check if any configurations can be loaded lazily.
-  * *
-  * If a route is protected by `canLoad` guards, the preloaded will not load it.
-  * *
+ * The preloader optimistically loads all router configurations to
+ * make navigations into lazily-loaded sections of the application faster.
+ *
+ * The preloader runs in the background. When the router bootstraps, the preloader
+ * starts listening to all navigation events. After every such event, the preloader
+ * will check if any configurations can be loaded lazily.
+ *
+ * If a route is protected by `canLoad` guards, the preloaded will not load it.
+ *
+ * \@stable
  */
 export var RouterPreloader = (function () {
     /**

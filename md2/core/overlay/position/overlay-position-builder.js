@@ -37,5 +37,4 @@ export var OverlayPositionBuilder = (function () {
     ], OverlayPositionBuilder);
     return OverlayPositionBuilder;
 }());
-
 //# sourceMappingURL=overlay-position-builder.js.map

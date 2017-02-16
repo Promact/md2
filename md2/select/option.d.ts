@@ -1,4 +1,13 @@
-import { ElementRef, EventEmitter, Renderer } from '@angular/core';
+import { ElementRef, EventEmitter, ModuleWithProviders, Renderer } from '@angular/core';
+/** Event object emitted by MdOption when selected. */
+export declare class Md2OptionSelectEvent {
+    source: Md2Option;
+    isUserInput: boolean;
+    constructor(source: Md2Option, isUserInput?: boolean);
+}
+/**
+ * Single option inside of a `<md2-select>` element.
+ */
 export declare class Md2Option {
     private _element;
     private _renderer;
@@ -10,16 +19,16 @@ export declare class Md2Option {
     readonly id: string;
     /** The form value of the option. */
     value: any;
+    /** Whether the option is disabled. */
     disabled: any;
     /** Event emitted when the option is selected. */
-    onSelect: EventEmitter<{}>;
+    onSelect: EventEmitter<Md2OptionSelectEvent>;
     constructor(_element: ElementRef, _renderer: Renderer);
     /** Whether or not the option is currently selected. */
     readonly selected: boolean;
     /**
      * The displayed value of the option. It is necessary to show the selected option in the
      * select's trigger.
-     * TODO(kara): Add input property alternative for node envs.
      */
     readonly viewValue: string;
     /** Selects the option. */
@@ -38,4 +47,7 @@ export declare class Md2Option {
     /** Returns the correct tabindex for the option depending on disabled state. */
     _getTabIndex(): string;
     _getHostElement(): HTMLElement;
+}
+export declare class Md2OptionModule {
+    static forRoot(): ModuleWithProviders;
 }

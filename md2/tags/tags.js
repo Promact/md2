@@ -501,5 +501,4 @@ export var Md2TagsModule = (function () {
     ], Md2TagsModule);
     return Md2TagsModule;
 }());
-
 //# sourceMappingURL=tags.js.map

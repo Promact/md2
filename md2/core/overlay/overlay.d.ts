@@ -1,10 +1,8 @@
-import { ComponentFactoryResolver, ApplicationRef, Injector, NgZone } from '@angular/core';
+import { ComponentFactoryResolver, ApplicationRef, Injector, NgZone, Provider } from '@angular/core';
 import { OverlayState } from './overlay-state';
 import { OverlayRef } from './overlay-ref';
 import { OverlayPositionBuilder } from './position/overlay-position-builder';
-import { ViewportRuler } from './position/viewport-ruler';
 import { OverlayContainer } from './overlay-container';
-import { ScrollDispatcher } from './scroll/scroll-dispatcher';
 /**
  * Service to create Overlays. Overlays are dynamically added pieces of floating UI, meant to be
  * used as a low-level building building block for other components. Dialogs, tooltips, menus,
@@ -51,4 +49,4 @@ export declare class Overlay {
     private _createOverlayRef(pane, state);
 }
 /** Providers for Overlay and its related injectables. */
-export declare const OVERLAY_PROVIDERS: (typeof ViewportRuler | typeof ScrollDispatcher | typeof OverlayPositionBuilder | typeof OverlayContainer | typeof Overlay)[];
+export declare const OVERLAY_PROVIDERS: Provider[];

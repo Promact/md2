@@ -76,5 +76,6 @@ export declare class ConnectedOverlayDirective implements OnDestroy {
     private _destroyOverlay();
 }
 export declare class OverlayModule {
+    /** @deprecated */
     static forRoot(): ModuleWithProviders;
 }

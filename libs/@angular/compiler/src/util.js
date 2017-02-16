@@ -5,6 +5,12 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+import { BaseError } from './facade/errors';
 import { isPrimitive, isStrictStringMap } from './facade/lang';
 export var /** @type {?} */ MODULE_SUFFIX = '';
 var /** @type {?} */ CAMEL_CASE_REGEXP = /([A-Z])/g;
@@ -139,4 +145,11 @@ function SyncAsyncResult_tsickle_Closure_declarations() {
     /** @type {?} */
     SyncAsyncResult.prototype.asyncResult;
 }
+export var SyntaxError = (function (_super) {
+    __extends(SyntaxError, _super);
+    function SyntaxError() {
+        _super.apply(this, arguments);
+    }
+    return SyntaxError;
+}(BaseError));
 //# sourceMappingURL=util.js.map

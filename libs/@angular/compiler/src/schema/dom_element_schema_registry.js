@@ -10,7 +10,17 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-import { CUSTOM_ELEMENTS_SCHEMA, Injectable, NO_ERRORS_SCHEMA, SecurityContext } from '@angular/core';
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, SecurityContext } from '@angular/core';
+import { CompilerInjectable } from '../injectable';
 import { dashCaseToCamelCase } from '../util';
 import { SECURITY_SCHEMA } from './dom_security_schema';
 import { ElementSchemaRegistry } from './element_schema_registry';
@@ -318,14 +328,14 @@ export var DomElementSchemaRegistry = (function (_super) {
         return !!this._schema[tagName.toLowerCase()];
     };
     /**
-     *  securityContext returns the security context for the given property on the given DOM tag.
-      * *
-      * Tag and property name are statically known and cannot change at runtime, i.e. it is not
-      * possible to bind a value into a changing attribute or tag name.
-      * *
-      * The filtering is white list based. All attributes in the schema above are assumed to have the
-      * 'NONE' security context, i.e. that they are safe inert string values. Only specific well known
-      * attack vectors are assigned their appropriate context.
+     * securityContext returns the security context for the given property on the given DOM tag.
+     *
+     * Tag and property name are statically known and cannot change at runtime, i.e. it is not
+     * possible to bind a value into a changing attribute or tag name.
+     *
+     * The filtering is white list based. All attributes in the schema above are assumed to have the
+     * 'NONE' security context, i.e. that they are safe inert string values. Only specific well known
+     * attack vectors are assigned their appropriate context.
      * @param {?} tagName
      * @param {?} propName
      * @param {?} isAttribute
@@ -420,21 +430,13 @@ export var DomElementSchemaRegistry = (function (_super) {
         }
         return { error: errorMsg, value: strVal + unit };
     };
-    DomElementSchemaRegistry.decorators = [
-        { type: Injectable },
-    ];
-    /** @nocollapse */
-    DomElementSchemaRegistry.ctorParameters = function () { return []; };
+    DomElementSchemaRegistry = __decorate([
+        CompilerInjectable(), 
+        __metadata('design:paramtypes', [])
+    ], DomElementSchemaRegistry);
     return DomElementSchemaRegistry;
 }(ElementSchemaRegistry));
 function DomElementSchemaRegistry_tsickle_Closure_declarations() {
-    /** @type {?} */
-    DomElementSchemaRegistry.decorators;
-    /**
-     * @nocollapse
-     * @type {?}
-     */
-    DomElementSchemaRegistry.ctorParameters;
     /** @type {?} */
     DomElementSchemaRegistry.prototype._schema;
 }

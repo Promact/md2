@@ -12,6 +12,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 import { APP_ID, Inject, Injectable, ViewEncapsulation } from '@angular/core';
 import { isPresent, stringify } from '../facade/lang';
+import { NoOpAnimationPlayer } from '../private_import_core';
 import { AnimationDriver } from './animation_driver';
 import { DOCUMENT } from './dom_tokens';
 import { EventManager } from './events/event_manager';
@@ -426,7 +427,10 @@ export var DomRenderer = (function () {
      */
     DomRenderer.prototype.animate = function (element, startingStyles, keyframes, duration, delay, easing, previousPlayers) {
         if (previousPlayers === void 0) { previousPlayers = []; }
-        return this._animationDriver.animate(element, startingStyles, keyframes, duration, delay, easing, previousPlayers);
+        if (this._rootRenderer.document.body.contains(element)) {
+            return this._animationDriver.animate(element, startingStyles, keyframes, duration, delay, easing, previousPlayers);
+        }
+        return new NoOpAnimationPlayer();
     };
     return DomRenderer;
 }());

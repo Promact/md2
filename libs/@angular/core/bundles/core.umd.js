@@ -1,13 +1,13 @@
 /**
- * @license Angular v2.3.1
- * (c) 2010-2016 Google, Inc. https://angular.io/
+ * @license Angular v2.4.6
+ * (c) 2010-2017 Google, Inc. https://angular.io/
  * License: MIT
  */
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('rxjs/Subject'), require('rxjs/Observable')) :
-    typeof define === 'function' && define.amd ? define(['exports', 'rxjs/Subject', 'rxjs/Observable'], factory) :
-    (factory((global.ng = global.ng || {}, global.ng.core = global.ng.core || {}),global.Rx,global.Rx));
-}(this, function (exports,rxjs_Subject,rxjs_Observable) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('rxjs/symbol/observable'), require('rxjs/Subject'), require('rxjs/Observable')) :
+    typeof define === 'function' && define.amd ? define(['exports', 'rxjs/symbol/observable', 'rxjs/Subject', 'rxjs/Observable'], factory) :
+    (factory((global.ng = global.ng || {}, global.ng.core = global.ng.core || {}),global.rxjs_symbol_observable,global.Rx,global.Rx));
+}(this, function (exports,rxjs_symbol_observable,rxjs_Subject,rxjs_Observable) { 'use strict';
 
     /**
      * @license
@@ -207,85 +207,86 @@
         throw new Error("Only Function or Array is supported in Class definition for key '" + key + "' is '" + stringify(fnOrArray) + "'");
     }
     /**
-     *  Provides a way for expressing ES6 classes with parameter annotations in ES5.
-      * *
-      * ## Basic Example
-      * *
-      * ```
-      * var Greeter = ng.Class({
-      * constructor: function(name) {
-      * this.name = name;
-      * },
-      * *
-      * greet: function() {
-      * alert('Hello ' + this.name + '!');
-      * }
-      * });
-      * ```
-      * *
-      * is equivalent to ES6:
-      * *
-      * ```
-      * class Greeter {
-      * constructor(name) {
-      * this.name = name;
-      * }
-      * *
-      * greet() {
-      * alert('Hello ' + this.name + '!');
-      * }
-      * }
-      * ```
-      * *
-      * or equivalent to ES5:
-      * *
-      * ```
-      * var Greeter = function (name) {
-      * this.name = name;
-      * }
-      * *
-      * Greeter.prototype.greet = function () {
-      * alert('Hello ' + this.name + '!');
-      * }
-      * ```
-      * *
-      * ### Example with parameter annotations
-      * *
-      * ```
-      * var MyService = ng.Class({
-      * constructor: [String, [new Optional(), Service], function(name, myService) {
-      * ...
-      * }]
-      * });
-      * ```
-      * *
-      * is equivalent to ES6:
-      * *
-      * ```
-      * class MyService {
-      * constructor(name: string, @Optional() myService: Service) {
-      * ...
-      * }
-      * }
-      * ```
-      * *
-      * ### Example with inheritance
-      * *
-      * ```
-      * var Shape = ng.Class({
-      * constructor: (color) {
-      * this.color = color;
-      * }
-      * });
-      * *
-      * var Square = ng.Class({
-      * extends: Shape,
-      * constructor: function(color, size) {
-      * Shape.call(this, color);
-      * this.size = size;
-      * }
-      * });
-      * ```
+     * Provides a way for expressing ES6 classes with parameter annotations in ES5.
+     *
+     * ## Basic Example
+     *
+     * ```
+     * var Greeter = ng.Class({
+     *   constructor: function(name) {
+     *     this.name = name;
+     *   },
+     *
+     *   greet: function() {
+     *     alert('Hello ' + this.name + '!');
+     *   }
+     * });
+     * ```
+     *
+     * is equivalent to ES6:
+     *
+     * ```
+     * class Greeter {
+     *   constructor(name) {
+     *     this.name = name;
+     *   }
+     *
+     *   greet() {
+     *     alert('Hello ' + this.name + '!');
+     *   }
+     * }
+     * ```
+     *
+     * or equivalent to ES5:
+     *
+     * ```
+     * var Greeter = function (name) {
+     *   this.name = name;
+     * }
+     *
+     * Greeter.prototype.greet = function () {
+     *   alert('Hello ' + this.name + '!');
+     * }
+     * ```
+     *
+     * ### Example with parameter annotations
+     *
+     * ```
+     * var MyService = ng.Class({
+     *   constructor: [String, [new Optional(), Service], function(name, myService) {
+     *     ...
+     *   }]
+     * });
+     * ```
+     *
+     * is equivalent to ES6:
+     *
+     * ```
+     * class MyService {
+     *   constructor(name: string, \@Optional() myService: Service) {
+     *     ...
+     *   }
+     * }
+     * ```
+     *
+     * ### Example with inheritance
+     *
+     * ```
+     * var Shape = ng.Class({
+     *   constructor: (color) {
+     *     this.color = color;
+     *   }
+     * });
+     *
+     * var Square = ng.Class({
+     *   extends: Shape,
+     *   constructor: function(color, size) {
+     *     Shape.call(this, color);
+     *     this.size = size;
+     *   }
+     * });
+     * ```
+     * \@stable
      * @param {?} clsDef
      * @return {?}
      */
@@ -517,29 +518,6 @@
      */
     var /** @type {?} */ Host = makeParamDecorator('Host', []);
 
-    /**
-     * Creates a token that can be used in a DI Provider.
-     *
-     * ### Example ([live demo](http://plnkr.co/edit/Ys9ezXpj2Mnoy3Uc8KBp?p=preview))
-     *
-     * ```typescript
-     * var t = new OpaqueToken("value");
-     *
-     * var injector = Injector.resolveAndCreate([
-     *   {provide: t, useValue: "bindingValue"}
-     * ]);
-     *
-     * expect(injector.get(t)).toEqual("bindingValue");
-     * ```
-     *
-     * Using an `OpaqueToken` is preferable to using strings as tokens because of possible collisions
-     * caused by multiple providers using the same string as two different tokens.
-     *
-     * Using an `OpaqueToken` is preferable to using an `Object` as tokens because it provides better
-     * error messages.
-     * @stable
-     */
-    // so that metadata is gathered for this class
     var OpaqueToken = (function () {
         /**
          * @param {?} _desc
@@ -604,11 +582,12 @@
      */
     var /** @type {?} */ Attribute = makeParamDecorator('Attribute', [['attributeName', undefined]]);
     /**
-     *  Base class for query metadata.
-      * *
-      * See {@link ContentChildren}, {@link ContentChild}, {@link ViewChildren}, {@link ViewChild} for
-      * more information.
-      * *
+     * Base class for query metadata.
+     *
+     * See {\@link ContentChildren}, {\@link ContentChild}, {\@link ViewChildren}, {\@link ViewChild} for
+     * more information.
+     *
+     * \@stable
      * @abstract
      */
     var Query = (function () {
@@ -631,30 +610,7 @@
         }
     ], Query));
     /**
-     * @whatItDoes Configures a content query.
-     *
-     * @howToUse
-     *
-     * {@example core/di/ts/contentChild/content_child_howto.ts region='HowTo'}
-     *
-     * @description
-     *
-     * You can use ContentChild to get the first element or the directive matching the selector from the
-     * content DOM. If the content DOM changes, and a new child matches the selector,
-     * the property will be updated.
-     *
-     * Content queries are set before the `ngAfterContentInit` callback is called.
-     *
-     * **Metadata Properties**:
-     *
-     * * **selector** - the directive type or the name used for querying.
-     * * **read** - read a different token from the queried element.
-     *
-     * Let's look at an example:
-     *
-     * {@example core/di/ts/contentChild/content_child_example.ts region='Component'}
-     *
-     * **npm package**: `@angular/core`
+     * ContentChild decorator and metadata.
      *
      * @stable
      * @Annotation
@@ -668,30 +624,7 @@
         }
     ], Query);
     /**
-     * @whatItDoes Configures a view query.
-     *
-     * @howToUse
-     *
-     * {@example core/di/ts/viewChildren/view_children_howto.ts region='HowTo'}
-     *
-     * @description
-     *
-     * You can use ViewChildren to get the {@link QueryList} of elements or directives from the
-     * view DOM. Any time a child element is added, removed, or moved, the query list will be updated,
-     * and the changes observable of the query list will emit a new value.
-     *
-     * View queries are set before the `ngAfterViewInit` callback is called.
-     *
-     * **Metadata Properties**:
-     *
-     * * **selector** - the directive type or the name used for querying.
-     * * **read** - read a different token from the queried elements.
-     *
-     * Let's look at an example:
-     *
-     * {@example core/di/ts/viewChildren/view_children_example.ts region='Component'}
-     *
-     * **npm package**: `@angular/core`
+     * ViewChildren decorator and metadata.
      *
      * @stable
      * @Annotation
@@ -856,14 +789,18 @@
         LifecycleHooks.AfterViewChecked
     ];
     /**
-     *  {@example core/ts/metadata/lifecycle_hooks_spec.ts region='OnChanges'}
-      * *
-      * `ngOnChanges` is called right after the data-bound properties have been checked and before view
-      * and content children are checked if at least one of them has changed.
-      * The `changes` parameter contains the changed properties.
-      * *
-      * See {@linkDocs guide/lifecycle-hooks#onchanges "Lifecycle Hooks Guide"}.
-      * *
+     * \@whatItDoes Lifecycle hook that is called when any data-bound property of a directive changes.
+     * \@howToUse
+     * {\@example core/ts/metadata/lifecycle_hooks_spec.ts region='OnChanges'}
+     *
+     * \@description
+     * `ngOnChanges` is called right after the data-bound properties have been checked and before view
+     * and content children are checked if at least one of them has changed.
+     * The `changes` parameter contains the changed properties.
+     *
+     * See {\@linkDocs guide/lifecycle-hooks#onchanges "Lifecycle Hooks Guide"}.
+     *
+     * \@stable
      * @abstract
      */
     var OnChanges = (function () {
@@ -878,15 +815,19 @@
         return OnChanges;
     }());
     /**
-     *  initialized.
-      * {@example core/ts/metadata/lifecycle_hooks_spec.ts region='OnInit'}
-      * *
-      * `ngOnInit` is called right after the directive's data-bound properties have been checked for the
-      * first time, and before any of its children have been checked. It is invoked only once when the
-      * directive is instantiated.
-      * *
-      * See {@linkDocs guide/lifecycle-hooks "Lifecycle Hooks Guide"}.
-      * *
+     * \@whatItDoes Lifecycle hook that is called after data-bound properties of a directive are
+     * initialized.
+     * \@howToUse
+     * {\@example core/ts/metadata/lifecycle_hooks_spec.ts region='OnInit'}
+     *
+     * \@description
+     * `ngOnInit` is called right after the directive's data-bound properties have been checked for the
+     * first time, and before any of its children have been checked. It is invoked only once when the
+     * directive is instantiated.
+     *
+     * See {\@linkDocs guide/lifecycle-hooks "Lifecycle Hooks Guide"}.
+     *
+     * \@stable
      * @abstract
      */
     var OnInit = (function () {
@@ -900,21 +841,25 @@
         return OnInit;
     }());
     /**
-     *  {@example core/ts/metadata/lifecycle_hooks_spec.ts region='DoCheck'}
-      * *
-      * `ngDoCheck` gets called to check the changes in the directives in addition to the default
-      * algorithm. The default change detection algorithm looks for differences by comparing
-      * bound-property values by reference across change detection runs.
-      * *
-      * Note that a directive typically should not use both `DoCheck` and {@link OnChanges} to respond to
-      * changes on the same input, as `ngOnChanges` will continue to be called when the default change
-      * detector detects changes.
-      * *
-      * See {@link KeyValueDiffers} and {@link IterableDiffers} for implementing custom dirty checking
-      * for collections.
-      * *
-      * See {@linkDocs guide/lifecycle-hooks#docheck "Lifecycle Hooks Guide"}.
-      * *
+     * \@whatItDoes Lifecycle hook that is called when Angular dirty checks a directive.
+     * \@howToUse
+     * {\@example core/ts/metadata/lifecycle_hooks_spec.ts region='DoCheck'}
+     *
+     * \@description
+     * `ngDoCheck` gets called to check the changes in the directives in addition to the default
+     * algorithm. The default change detection algorithm looks for differences by comparing
+     * bound-property values by reference across change detection runs.
+     *
+     * Note that a directive typically should not use both `DoCheck` and {\@link OnChanges} to respond to
+     * changes on the same input, as `ngOnChanges` will continue to be called when the default change
+     * detector detects changes.
+     *
+     * See {\@link KeyValueDiffers} and {\@link IterableDiffers} for implementing custom dirty checking
+     * for collections.
+     *
+     * See {\@linkDocs guide/lifecycle-hooks#docheck "Lifecycle Hooks Guide"}.
+     *
+     * \@stable
      * @abstract
      */
     var DoCheck = (function () {
@@ -928,13 +873,17 @@
         return DoCheck;
     }());
     /**
-     *  {@example core/ts/metadata/lifecycle_hooks_spec.ts region='OnDestroy'}
-      * *
-      * `ngOnDestroy` callback is typically used for any custom cleanup that needs to occur when the
-      * instance is destroyed.
-      * *
-      * See {@linkDocs guide/lifecycle-hooks "Lifecycle Hooks Guide"}.
-      * *
+     * \@whatItDoes Lifecycle hook that is called when a directive, pipe or service is destroyed.
+     * \@howToUse
+     * {\@example core/ts/metadata/lifecycle_hooks_spec.ts region='OnDestroy'}
+     *
+     * \@description
+     * `ngOnDestroy` callback is typically used for any custom cleanup that needs to occur when the
+     * instance is destroyed.
+     *
+     * See {\@linkDocs guide/lifecycle-hooks "Lifecycle Hooks Guide"}.
+     *
+     * \@stable
      * @abstract
      */
     var OnDestroy = (function () {
@@ -948,12 +897,16 @@
         return OnDestroy;
     }());
     /**
-     *  *
-      * initialized.
-      * {@example core/ts/metadata/lifecycle_hooks_spec.ts region='AfterContentInit'}
-      * *
-      * See {@linkDocs guide/lifecycle-hooks#aftercontent "Lifecycle Hooks Guide"}.
-      * *
+     *
+     * \@whatItDoes Lifecycle hook that is called after a directive's content has been fully
+     * initialized.
+     * \@howToUse
+     * {\@example core/ts/metadata/lifecycle_hooks_spec.ts region='AfterContentInit'}
+     *
+     * \@description
+     * See {\@linkDocs guide/lifecycle-hooks#aftercontent "Lifecycle Hooks Guide"}.
+     *
+     * \@stable
      * @abstract
      */
     var AfterContentInit = (function () {
@@ -967,10 +920,14 @@
         return AfterContentInit;
     }());
     /**
-     *  {@example core/ts/metadata/lifecycle_hooks_spec.ts region='AfterContentChecked'}
-      * *
-      * See {@linkDocs guide/lifecycle-hooks#aftercontent "Lifecycle Hooks Guide"}.
-      * *
+     * \@whatItDoes Lifecycle hook that is called after every check of a directive's content.
+     * \@howToUse
+     * {\@example core/ts/metadata/lifecycle_hooks_spec.ts region='AfterContentChecked'}
+     *
+     * \@description
+     * See {\@linkDocs guide/lifecycle-hooks#aftercontent "Lifecycle Hooks Guide"}.
+     *
+     * \@stable
      * @abstract
      */
     var AfterContentChecked = (function () {
@@ -984,11 +941,15 @@
         return AfterContentChecked;
     }());
     /**
-     *  initialized.
-      * {@example core/ts/metadata/lifecycle_hooks_spec.ts region='AfterViewInit'}
-      * *
-      * See {@linkDocs guide/lifecycle-hooks#afterview "Lifecycle Hooks Guide"}.
-      * *
+     * \@whatItDoes Lifecycle hook that is called after a component's view has been fully
+     * initialized.
+     * \@howToUse
+     * {\@example core/ts/metadata/lifecycle_hooks_spec.ts region='AfterViewInit'}
+     *
+     * \@description
+     * See {\@linkDocs guide/lifecycle-hooks#afterview "Lifecycle Hooks Guide"}.
+     *
+     * \@stable
      * @abstract
      */
     var AfterViewInit = (function () {
@@ -1002,10 +963,14 @@
         return AfterViewInit;
     }());
     /**
-     *  {@example core/ts/metadata/lifecycle_hooks_spec.ts region='AfterViewChecked'}
-      * *
-      * See {@linkDocs guide/lifecycle-hooks#afterview "Lifecycle Hooks Guide"}.
-      * *
+     * \@whatItDoes Lifecycle hook that is called after every check of a component's view.
+     * \@howToUse
+     * {\@example core/ts/metadata/lifecycle_hooks_spec.ts region='AfterViewChecked'}
+     *
+     * \@description
+     * See {\@linkDocs guide/lifecycle-hooks#afterview "Lifecycle Hooks Guide"}.
+     *
+     * \@stable
      * @abstract
      */
     var AfterViewChecked = (function () {
@@ -1070,28 +1035,29 @@
     ViewEncapsulation[ViewEncapsulation.Native] = "Native";
     ViewEncapsulation[ViewEncapsulation.None] = "None";
     /**
-     *  Metadata properties available for configuring Views.
-      * *
-      * For details on the `@Component` annotation, see {@link Component}.
-      * *
-      * ### Example
-      * *
-      * ```
-      * selector: 'greet',
-      * template: 'Hello {{name}}!',
-      * })
-      * class Greet {
-      * name: string;
-      * *
-      * constructor() {
-      * this.name = 'World';
-      * }
-      * }
-      * ```
-      * *
+     * Metadata properties available for configuring Views.
+     *
+     * For details on the `\@Component` annotation, see {\@link Component}.
+     *
+     * ### Example
+     *
+     * ```
+     * \@Component({
+     *   selector: 'greet',
+     *   template: 'Hello {{name}}!',
+     * })
+     * class Greet {
+     *   name: string;
+     *
+     *   constructor() {
+     *     this.name = 'World';
+     *   }
+     * }
+     * ```
+     *
      * @deprecated Use Component instead.
-      * *
-      * {@link Component}
+     *
+     * {\@link Component}
      */
     var ViewMetadata = (function () {
         /**
@@ -1111,7 +1077,9 @@
     }());
 
     /**
-     *  *
+     * \@whatItDoes Represents the version of Angular
+     *
+     * \@stable
      */
     var Version = (function () {
         /**
@@ -1149,18 +1117,19 @@
     /**
      * @stable
      */
-    var /** @type {?} */ VERSION = new Version('2.3.1');
+    var /** @type {?} */ VERSION = new Version('2.4.6');
 
     /**
-     *  Allows to refer to references which are not yet defined.
-      * *
-      * For instance, `forwardRef` is used when the `token` which we need to refer to for the purposes of
-      * DI is declared,
-      * but not yet defined. It is also used when the `token` which we use when creating a query is not
-      * yet defined.
-      * *
-      * ### Example
-      * {@example core/di/ts/forward_ref/forward_ref_spec.ts region='forward_ref'}
+     * Allows to refer to references which are not yet defined.
+     *
+     * For instance, `forwardRef` is used when the `token` which we need to refer to for the purposes of
+     * DI is declared,
+     * but not yet defined. It is also used when the `token` which we use when creating a query is not
+     * yet defined.
+     *
+     * ### Example
+     * {\@example core/di/ts/forward_ref/forward_ref_spec.ts region='forward_ref'}
+     * \@experimental
      * @param {?} forwardRefFn
      * @return {?}
      */
@@ -1170,15 +1139,16 @@
         return (((forwardRefFn)));
     }
     /**
-     *  Lazily retrieves the reference value from a forwardRef.
-      * *
-      * Acts as the identity function when given a non-forward-ref value.
-      * *
-      * ### Example ([live demo](http://plnkr.co/edit/GU72mJrk1fiodChcmiDR?p=preview))
-      * *
-      * {@example core/di/ts/forward_ref/forward_ref_spec.ts region='resolve_forward_ref'}
-      * *
-      * See: {@link forwardRef}
+     * Lazily retrieves the reference value from a forwardRef.
+     *
+     * Acts as the identity function when given a non-forward-ref value.
+     *
+     * ### Example ([live demo](http://plnkr.co/edit/GU72mJrk1fiodChcmiDR?p=preview))
+     *
+     * {\@example core/di/ts/forward_ref/forward_ref_spec.ts region='resolve_forward_ref'}
+     *
+     * See: {\@link forwardRef}
+     * \@experimental
      * @param {?} type
      * @return {?}
      */
@@ -1192,27 +1162,76 @@
         }
     }
 
-    var __extends = (this && this.__extends) || function (d, b) {
+    var /** @type {?} */ _THROW_IF_NOT_FOUND = new Object();
+    var /** @type {?} */ THROW_IF_NOT_FOUND = _THROW_IF_NOT_FOUND;
+    var _NullInjector = (function () {
+        function _NullInjector() {
+        }
+        /**
+         * @param {?} token
+         * @param {?=} notFoundValue
+         * @return {?}
+         */
+        _NullInjector.prototype.get = function (token, notFoundValue) {
+            if (notFoundValue === void 0) { notFoundValue = _THROW_IF_NOT_FOUND; }
+            if (notFoundValue === _THROW_IF_NOT_FOUND) {
+                throw new Error("No provider for " + stringify(token) + "!");
+            }
+            return notFoundValue;
+        };
+        return _NullInjector;
+    }());
+    /**
+     * \@whatItDoes Injector interface
+     * \@howToUse
+     * ```
+     * const injector: Injector = ...;
+     * injector.get(...);
+     * ```
+     *
+     * \@description
+     * For more details, see the {\@linkDocs guide/dependency-injection "Dependency Injection Guide"}.
+     *
+     * ### Example
+     *
+     * {\@example core/di/ts/injector_spec.ts region='Injector'}
+     *
+     * `Injector` returns itself when given `Injector` as a token:
+     * {\@example core/di/ts/injector_spec.ts region='injectInjector'}
+     *
+     * \@stable
+     * @abstract
+     */
+    var Injector = (function () {
+        function Injector() {
+        }
+        /**
+         * Retrieves an instance from the injector based on the provided token.
+         * If not found:
+         * - Throws {\@link NoProviderError} if no `notFoundValue` that is not equal to
+         * Injector.THROW_IF_NOT_FOUND is given
+         * - Returns the `notFoundValue` otherwise
+         * @abstract
+         * @param {?} token
+         * @param {?=} notFoundValue
+         * @return {?}
+         */
+        Injector.prototype.get = function (token, notFoundValue) { };
+        Injector.THROW_IF_NOT_FOUND = _THROW_IF_NOT_FOUND;
+        Injector.NULL = new _NullInjector();
+        return Injector;
+    }());
+
+    var __extends$1 = (this && this.__extends) || function (d, b) {
         for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
     /**
-     * @license undefined
-      * Copyright Google Inc. All Rights Reserved.
-      * *
-      * Use of this source code is governed by an MIT-style license that can be
-      * found in the LICENSE file at https://angular.io/license
-     * @return {?}
-     */
-    function unimplemented() {
-        throw new Error('unimplemented');
-    }
-    /**
-     * @stable
+     * \@stable
      */
     var BaseError = (function (_super) {
-        __extends(BaseError, _super);
+        __extends$1(BaseError, _super);
         /**
          * @param {?} message
          */
@@ -1266,10 +1285,10 @@
         return BaseError;
     }(Error));
     /**
-     * @stable
+     * \@stable
      */
     var WrappedError = (function (_super) {
-        __extends(WrappedError, _super);
+        __extends$1(WrappedError, _super);
         /**
          * @param {?} message
          * @param {?} error
@@ -1292,61 +1311,6 @@
         return WrappedError;
     }(BaseError));
 
-    var /** @type {?} */ _THROW_IF_NOT_FOUND = new Object();
-    var /** @type {?} */ THROW_IF_NOT_FOUND = _THROW_IF_NOT_FOUND;
-    var _NullInjector = (function () {
-        function _NullInjector() {
-        }
-        /**
-         * @param {?} token
-         * @param {?=} notFoundValue
-         * @return {?}
-         */
-        _NullInjector.prototype.get = function (token, notFoundValue) {
-            if (notFoundValue === void 0) { notFoundValue = _THROW_IF_NOT_FOUND; }
-            if (notFoundValue === _THROW_IF_NOT_FOUND) {
-                throw new Error("No provider for " + stringify(token) + "!");
-            }
-            return notFoundValue;
-        };
-        return _NullInjector;
-    }());
-    /**
-     *  ```
-      * const injector: Injector = ...;
-      * injector.get(...);
-      * ```
-      * *
-      * For more details, see the {@linkDocs guide/dependency-injection "Dependency Injection Guide"}.
-      * *
-      * ### Example
-      * *
-      * {@example core/di/ts/injector_spec.ts region='Injector'}
-      * *
-      * `Injector` returns itself when given `Injector` as a token:
-      * {@example core/di/ts/injector_spec.ts region='injectInjector'}
-      * *
-     * @abstract
-     */
-    var Injector = (function () {
-        function Injector() {
-        }
-        /**
-         *  Retrieves an instance from the injector based on the provided token.
-          * If not found:
-          * - Throws {@link NoProviderError} if no `notFoundValue` that is not equal to
-          * Injector.THROW_IF_NOT_FOUND is given
-          * - Returns the `notFoundValue` otherwise
-         * @param {?} token
-         * @param {?=} notFoundValue
-         * @return {?}
-         */
-        Injector.prototype.get = function (token, notFoundValue) { return unimplemented(); };
-        Injector.THROW_IF_NOT_FOUND = _THROW_IF_NOT_FOUND;
-        Injector.NULL = new _NullInjector();
-        return Injector;
-    }());
-
     /**
      * @license
      * Copyright Google Inc. All Rights Reserved.
@@ -1354,7 +1318,7 @@
      * Use of this source code is governed by an MIT-style license that can be
      * found in the LICENSE file at https://angular.io/license
      */
-    var __extends$1 = (this && this.__extends) || function (d, b) {
+    var __extends = (this && this.__extends) || function (d, b) {
         for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -1387,10 +1351,11 @@
         return '';
     }
     /**
-     *  Base class for all errors arising from misconfigured providers.
+     * Base class for all errors arising from misconfigured providers.
+     * \@stable
      */
     var AbstractProviderError = (function (_super) {
-        __extends$1(AbstractProviderError, _super);
+        __extends(AbstractProviderError, _super);
         /**
          * @param {?} injector
          * @param {?} key
@@ -1416,21 +1381,22 @@
         return AbstractProviderError;
     }(BaseError));
     /**
-     *  Thrown when trying to retrieve a dependency by key from {@link Injector}, but the
-      * {@link Injector} does not have a {@link Provider} for the given key.
-      * *
-      * ### Example ([live demo](http://plnkr.co/edit/vq8D3FRB9aGbnWJqtEPE?p=preview))
-      * *
-      * ```typescript
-      * class A {
-      * constructor(b:B) {}
-      * }
-      * *
-      * expect(() => Injector.resolveAndCreate([A])).toThrowError();
-      * ```
+     * Thrown when trying to retrieve a dependency by key from {\@link Injector}, but the
+     * {\@link Injector} does not have a {\@link Provider} for the given key.
+     *
+     * ### Example ([live demo](http://plnkr.co/edit/vq8D3FRB9aGbnWJqtEPE?p=preview))
+     *
+     * ```typescript
+     * class A {
+     *   constructor(b:B) {}
+     * }
+     *
+     * expect(() => Injector.resolveAndCreate([A])).toThrowError();
+     * ```
+     * \@stable
      */
     var NoProviderError = (function (_super) {
-        __extends$1(NoProviderError, _super);
+        __extends(NoProviderError, _super);
         /**
          * @param {?} injector
          * @param {?} key
@@ -1444,23 +1410,24 @@
         return NoProviderError;
     }(AbstractProviderError));
     /**
-     *  Thrown when dependencies form a cycle.
-      * *
-      * ### Example ([live demo](http://plnkr.co/edit/wYQdNos0Tzql3ei1EV9j?p=info))
-      * *
-      * ```typescript
-      * var injector = Injector.resolveAndCreate([
-      * {provide: "one", useFactory: (two) => "two", deps: [[new Inject("two")]]},
-      * {provide: "two", useFactory: (one) => "one", deps: [[new Inject("one")]]}
-      * ]);
-      * *
-      * expect(() => injector.get("one")).toThrowError();
-      * ```
-      * *
-      * Retrieving `A` or `B` throws a `CyclicDependencyError` as the graph above cannot be constructed.
+     * Thrown when dependencies form a cycle.
+     *
+     * ### Example ([live demo](http://plnkr.co/edit/wYQdNos0Tzql3ei1EV9j?p=info))
+     *
+     * ```typescript
+     * var injector = Injector.resolveAndCreate([
+     *   {provide: "one", useFactory: (two) => "two", deps: [[new Inject("two")]]},
+     *   {provide: "two", useFactory: (one) => "one", deps: [[new Inject("one")]]}
+     * ]);
+     *
+     * expect(() => injector.get("one")).toThrowError();
+     * ```
+     *
+     * Retrieving `A` or `B` throws a `CyclicDependencyError` as the graph above cannot be constructed.
+     * \@stable
      */
     var CyclicDependencyError = (function (_super) {
-        __extends$1(CyclicDependencyError, _super);
+        __extends(CyclicDependencyError, _super);
         /**
          * @param {?} injector
          * @param {?} key
@@ -1473,32 +1440,33 @@
         return CyclicDependencyError;
     }(AbstractProviderError));
     /**
-     *  Thrown when a constructing type returns with an Error.
-      * *
-      * The `InstantiationError` class contains the original error plus the dependency graph which caused
-      * this object to be instantiated.
-      * *
-      * ### Example ([live demo](http://plnkr.co/edit/7aWYdcqTQsP0eNqEdUAf?p=preview))
-      * *
-      * ```typescript
-      * class A {
-      * constructor() {
-      * throw new Error('message');
-      * }
-      * }
-      * *
-      * var injector = Injector.resolveAndCreate([A]);
-      * try {
-      * injector.get(A);
-      * } catch (e) {
-      * expect(e instanceof InstantiationError).toBe(true);
-      * expect(e.originalException.message).toEqual("message");
-      * expect(e.originalStack).toBeDefined();
-      * }
-      * ```
+     * Thrown when a constructing type returns with an Error.
+     *
+     * The `InstantiationError` class contains the original error plus the dependency graph which caused
+     * this object to be instantiated.
+     *
+     * ### Example ([live demo](http://plnkr.co/edit/7aWYdcqTQsP0eNqEdUAf?p=preview))
+     *
+     * ```typescript
+     * class A {
+     *   constructor() {
+     *     throw new Error('message');
+     *   }
+     * }
+     *
+     * var injector = Injector.resolveAndCreate([A]);
+     * try {
+     *   injector.get(A);
+     * } catch (e) {
+     *   expect(e instanceof InstantiationError).toBe(true);
+     *   expect(e.originalException.message).toEqual("message");
+     *   expect(e.originalStack).toBeDefined();
+     * }
+     * ```
+     * \@stable
      */
     var InstantiationError = (function (_super) {
-        __extends$1(InstantiationError, _super);
+        __extends(InstantiationError, _super);
         /**
          * @param {?} injector
          * @param {?} originalException
@@ -1541,17 +1509,18 @@
         return InstantiationError;
     }(WrappedError));
     /**
-     *  Thrown when an object other then {@link Provider} (or `Type`) is passed to {@link Injector}
-      * creation.
-      * *
-      * ### Example ([live demo](http://plnkr.co/edit/YatCFbPAMCL0JSSQ4mvH?p=preview))
-      * *
-      * ```typescript
-      * expect(() => Injector.resolveAndCreate(["not a type"])).toThrowError();
-      * ```
+     * Thrown when an object other then {\@link Provider} (or `Type`) is passed to {\@link Injector}
+     * creation.
+     *
+     * ### Example ([live demo](http://plnkr.co/edit/YatCFbPAMCL0JSSQ4mvH?p=preview))
+     *
+     * ```typescript
+     * expect(() => Injector.resolveAndCreate(["not a type"])).toThrowError();
+     * ```
+     * \@stable
      */
     var InvalidProviderError = (function (_super) {
-        __extends$1(InvalidProviderError, _super);
+        __extends(InvalidProviderError, _super);
         /**
          * @param {?} provider
          */
@@ -1561,35 +1530,36 @@
         return InvalidProviderError;
     }(BaseError));
     /**
-     *  Thrown when the class has no annotation information.
-      * *
-      * Lack of annotation information prevents the {@link Injector} from determining which dependencies
-      * need to be injected into the constructor.
-      * *
-      * ### Example ([live demo](http://plnkr.co/edit/rHnZtlNS7vJOPQ6pcVkm?p=preview))
-      * *
-      * ```typescript
-      * class A {
-      * constructor(b) {}
-      * }
-      * *
-      * expect(() => Injector.resolveAndCreate([A])).toThrowError();
-      * ```
-      * *
-      * This error is also thrown when the class not marked with {@link Injectable} has parameter types.
-      * *
-      * ```typescript
-      * class B {}
-      * *
-      * class A {
-      * constructor(b:B) {} // no information about the parameter types of A is available at runtime.
-      * }
-      * *
-      * expect(() => Injector.resolveAndCreate([A,B])).toThrowError();
-      * ```
+     * Thrown when the class has no annotation information.
+     *
+     * Lack of annotation information prevents the {\@link Injector} from determining which dependencies
+     * need to be injected into the constructor.
+     *
+     * ### Example ([live demo](http://plnkr.co/edit/rHnZtlNS7vJOPQ6pcVkm?p=preview))
+     *
+     * ```typescript
+     * class A {
+     *   constructor(b) {}
+     * }
+     *
+     * expect(() => Injector.resolveAndCreate([A])).toThrowError();
+     * ```
+     *
+     * This error is also thrown when the class not marked with {\@link Injectable} has parameter types.
+     *
+     * ```typescript
+     * class B {}
+     *
+     * class A {
+     *   constructor(b:B) {} // no information about the parameter types of A is available at runtime.
+     * }
+     *
+     * expect(() => Injector.resolveAndCreate([A,B])).toThrowError();
+     * ```
+     * \@stable
      */
     var NoAnnotationError = (function (_super) {
-        __extends$1(NoAnnotationError, _super);
+        __extends(NoAnnotationError, _super);
         /**
          * @param {?} typeOrFunc
          * @param {?} params
@@ -1621,20 +1591,21 @@
         return NoAnnotationError;
     }(BaseError));
     /**
-     *  Thrown when getting an object by index.
-      * *
-      * ### Example ([live demo](http://plnkr.co/edit/bRs0SX2OTQiJzqvjgl8P?p=preview))
-      * *
-      * ```typescript
-      * class A {}
-      * *
-      * var injector = Injector.resolveAndCreate([A]);
-      * *
-      * expect(() => injector.getAt(100)).toThrowError();
-      * ```
+     * Thrown when getting an object by index.
+     *
+     * ### Example ([live demo](http://plnkr.co/edit/bRs0SX2OTQiJzqvjgl8P?p=preview))
+     *
+     * ```typescript
+     * class A {}
+     *
+     * var injector = Injector.resolveAndCreate([A]);
+     *
+     * expect(() => injector.getAt(100)).toThrowError();
+     * ```
+     * \@stable
      */
     var OutOfBoundsError = (function (_super) {
-        __extends$1(OutOfBoundsError, _super);
+        __extends(OutOfBoundsError, _super);
         /**
          * @param {?} index
          */
@@ -1644,19 +1615,19 @@
         return OutOfBoundsError;
     }(BaseError));
     /**
-     *  Thrown when a multi provider and a regular provider are bound to the same token.
-      * *
-      * ### Example
-      * *
-      * ```typescript
-      * expect(() => Injector.resolveAndCreate([
-      * { provide: "Strings", useValue: "string1", multi: true},
-      * { provide: "Strings", useValue: "string2", multi: false}
-      * ])).toThrowError();
-      * ```
+     * Thrown when a multi provider and a regular provider are bound to the same token.
+     *
+     * ### Example
+     *
+     * ```typescript
+     * expect(() => Injector.resolveAndCreate([
+     *   { provide: "Strings", useValue: "string1", multi: true},
+     *   { provide: "Strings", useValue: "string2", multi: false}
+     * ])).toThrowError();
+     * ```
      */
     var MixingMultiProvidersWithRegularProvidersError = (function (_super) {
-        __extends$1(MixingMultiProvidersWithRegularProvidersError, _super);
+        __extends(MixingMultiProvidersWithRegularProvidersError, _super);
         /**
          * @param {?} provider1
          * @param {?} provider2
@@ -1669,23 +1640,24 @@
     }(BaseError));
 
     /**
-     *  A unique object used for retrieving items from the {@link ReflectiveInjector}.
-      * *
-      * Keys have:
-      * - a system-wide unique `id`.
-      * - a `token`.
-      * *
-      * `Key` is used internally by {@link ReflectiveInjector} because its system-wide unique `id` allows
-      * the
-      * injector to store created objects in a more efficient way.
-      * *
-      * `Key` should not be created directly. {@link ReflectiveInjector} creates keys automatically when
-      * resolving
-      * providers.
+     * A unique object used for retrieving items from the {\@link ReflectiveInjector}.
+     *
+     * Keys have:
+     * - a system-wide unique `id`.
+     * - a `token`.
+     *
+     * `Key` is used internally by {\@link ReflectiveInjector} because its system-wide unique `id` allows
+     * the
+     * injector to store created objects in a more efficient way.
+     *
+     * `Key` should not be created directly. {\@link ReflectiveInjector} creates keys automatically when
+     * resolving
+     * providers.
+     * \@experimental
      */
     var ReflectiveKey = (function () {
         /**
-         *  Private
+         * Private
          * @param {?} token
          * @param {?} id
          */
@@ -1698,7 +1670,7 @@
         }
         Object.defineProperty(ReflectiveKey.prototype, "displayName", {
             /**
-             *  Returns a stringified token.
+             * Returns a stringified token.
              * @return {?}
              */
             get: function () { return stringify(this.token); },
@@ -1706,7 +1678,7 @@
             configurable: true
         });
         /**
-         *  Retrieves a `Key` for a token.
+         * Retrieves a `Key` for a token.
          * @param {?} token
          * @return {?}
          */
@@ -1724,7 +1696,7 @@
         return ReflectiveKey;
     }());
     /**
-     * @internal
+     * \@internal
      */
     var KeyRegistry = (function () {
         function KeyRegistry() {
@@ -1774,6 +1746,13 @@
      * @stable
      */
     var /** @type {?} */ Type = Function;
+    /**
+     * @param {?} v
+     * @return {?}
+     */
+    function isType(v) {
+        return typeof v === 'function';
+    }
 
     /**
      * Attention: This regex has to hold even if the code is minified!
@@ -1802,6 +1781,7 @@
             return new (t.bind.apply(t, [void 0].concat(args)))();
         }; };
         /**
+         * \@internal
          * @param {?} paramTypes
          * @param {?} paramAnnotations
          * @return {?}
@@ -1886,7 +1866,10 @@
         ReflectionCapabilities.prototype.parameters = function (type) {
             // Note: only report metadata if we have at least one class decorator
             // to stay in sync with the static reflector.
-            var /** @type {?} */ parentCtor = Object.getPrototypeOf(type.prototype).constructor;
+            if (!isType(type)) {
+                return [];
+            }
+            var /** @type {?} */ parentCtor = getParentCtor(type);
             var /** @type {?} */ parameters = this._ownParameters(type, parentCtor);
             if (!parameters && parentCtor !== Object) {
                 parameters = this.parameters(parentCtor);
@@ -1921,7 +1904,10 @@
          * @return {?}
          */
         ReflectionCapabilities.prototype.annotations = function (typeOrFunc) {
-            var /** @type {?} */ parentCtor = Object.getPrototypeOf(typeOrFunc.prototype).constructor;
+            if (!isType(typeOrFunc)) {
+                return [];
+            }
+            var /** @type {?} */ parentCtor = getParentCtor(typeOrFunc);
             var /** @type {?} */ ownAnnotations = this._ownAnnotations(typeOrFunc, parentCtor) || [];
             var /** @type {?} */ parentAnnotations = parentCtor !== Object ? this.annotations(parentCtor) : [];
             return parentAnnotations.concat(ownAnnotations);
@@ -1961,7 +1947,10 @@
          * @return {?}
          */
         ReflectionCapabilities.prototype.propMetadata = function (typeOrFunc) {
-            var /** @type {?} */ parentCtor = Object.getPrototypeOf(typeOrFunc.prototype).constructor;
+            if (!isType(typeOrFunc)) {
+                return {};
+            }
+            var /** @type {?} */ parentCtor = getParentCtor(typeOrFunc);
             var /** @type {?} */ propMetadata = {};
             if (parentCtor !== Object) {
                 var /** @type {?} */ parentPropMetadata_1 = this.propMetadata(parentCtor);
@@ -2052,10 +2041,21 @@
             return new (annotationCls.bind.apply(annotationCls, [void 0].concat(annotationArgs)))();
         });
     }
+    /**
+     * @param {?} ctor
+     * @return {?}
+     */
+    function getParentCtor(ctor) {
+        var /** @type {?} */ parentProto = Object.getPrototypeOf(ctor.prototype);
+        var /** @type {?} */ parentCtor = parentProto ? parentProto.constructor : null;
+        // Note: We always use `Object` as the null value
+        // to simplify checking later on.
+        return parentCtor || Object;
+    }
 
     /**
-     *  Provides read-only access to reflection data about symbols. Used internally by Angular
-      * to power dependency injection and compilation.
+     * Provides read-only access to reflection data about symbols. Used internally by Angular
+     * to power dependency injection and compilation.
      * @abstract
      */
     var ReflectorReader = (function () {
@@ -2116,8 +2116,8 @@
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
     /**
-     *  Provides access to reflection data about symbols. Used internally by Angular
-      * to power dependency injection and compilation.
+     * Provides access to reflection data about symbols. Used internally by Angular
+     * to power dependency injection and compilation.
      */
     var Reflector = (function (_super) {
         __extends$2(Reflector, _super);
@@ -2214,30 +2214,26 @@
     var /** @type {?} */ reflector = new Reflector(new ReflectionCapabilities());
 
     /**
-     *  `Dependency` is used by the framework to extend DI.
-      * This is internal to Angular and should not be used directly.
+     * `Dependency` is used by the framework to extend DI.
+     * This is internal to Angular and should not be used directly.
      */
     var ReflectiveDependency = (function () {
         /**
          * @param {?} key
          * @param {?} optional
-         * @param {?} lowerBoundVisibility
-         * @param {?} upperBoundVisibility
-         * @param {?} properties
+         * @param {?} visibility
          */
-        function ReflectiveDependency(key, optional, lowerBoundVisibility, upperBoundVisibility, properties) {
+        function ReflectiveDependency(key, optional, visibility) {
             this.key = key;
             this.optional = optional;
-            this.lowerBoundVisibility = lowerBoundVisibility;
-            this.upperBoundVisibility = upperBoundVisibility;
-            this.properties = properties;
+            this.visibility = visibility;
         }
         /**
          * @param {?} key
          * @return {?}
          */
         ReflectiveDependency.fromKey = function (key) {
-            return new ReflectiveDependency(key, false, null, null, []);
+            return new ReflectiveDependency(key, false, null);
         };
         return ReflectiveDependency;
     }());
@@ -2264,8 +2260,9 @@
         return ResolvedReflectiveProvider_;
     }());
     /**
-     *  An internal resolved representation of a factory function created by resolving {@link
-      * Provider}.
+     * An internal resolved representation of a factory function created by resolving {\@link
+     * Provider}.
+     * \@experimental
      */
     var ResolvedReflectiveFactory = (function () {
         /**
@@ -2279,7 +2276,7 @@
         return ResolvedReflectiveFactory;
     }());
     /**
-     *  Resolve a single provider.
+     * Resolve a single provider.
      * @param {?} provider
      * @return {?}
      */
@@ -2306,10 +2303,10 @@
         return new ResolvedReflectiveFactory(factoryFn, resolvedDeps);
     }
     /**
-     *  Converts the {@link Provider} into {@link ResolvedProvider}.
-      * *
-      * {@link Injector} internally only uses {@link ResolvedProvider}, {@link Provider} contains
-      * convenience provider syntax.
+     * Converts the {\@link Provider} into {\@link ResolvedProvider}.
+     *
+     * {\@link Injector} internally only uses {\@link ResolvedProvider}, {\@link Provider} contains
+     * convenience provider syntax.
      * @param {?} provider
      * @return {?}
      */
@@ -2317,7 +2314,7 @@
         return new ResolvedReflectiveProvider_(ReflectiveKey.get(provider.provide), [resolveReflectiveFactory(provider)], provider.multi);
     }
     /**
-     *  Resolve a list of Providers.
+     * Resolve a list of Providers.
      * @param {?} providers
      * @return {?}
      */
@@ -2328,9 +2325,9 @@
         return Array.from(resolvedProviderMap.values());
     }
     /**
-     *  Merges a list of ResolvedProviders into a list where
-      * each key is contained exactly once and multi providers
-      * have been merged.
+     * Merges a list of ResolvedProviders into a list where
+     * each key is contained exactly once and multi providers
+     * have been merged.
      * @param {?} providers
      * @param {?} normalizedProvidersMap
      * @return {?}
@@ -2421,19 +2418,17 @@
      * @return {?}
      */
     function _extractToken(typeOrFunc, metadata, params) {
-        var /** @type {?} */ depProps = [];
         var /** @type {?} */ token = null;
         var /** @type {?} */ optional = false;
         if (!Array.isArray(metadata)) {
             if (metadata instanceof Inject) {
-                return _createDependency(metadata.token, optional, null, null, depProps);
+                return _createDependency(metadata.token, optional, null);
             }
             else {
-                return _createDependency(metadata, optional, null, null, depProps);
+                return _createDependency(metadata, optional, null);
             }
         }
-        var /** @type {?} */ lowerBoundVisibility = null;
-        var /** @type {?} */ upperBoundVisibility = null;
+        var /** @type {?} */ visibility = null;
         for (var /** @type {?} */ i = 0; i < metadata.length; ++i) {
             var /** @type {?} */ paramMetadata = metadata[i];
             if (paramMetadata instanceof Type) {
@@ -2445,19 +2440,13 @@
             else if (paramMetadata instanceof Optional) {
                 optional = true;
             }
-            else if (paramMetadata instanceof Self) {
-                upperBoundVisibility = paramMetadata;
-            }
-            else if (paramMetadata instanceof Host) {
-                upperBoundVisibility = paramMetadata;
-            }
-            else if (paramMetadata instanceof SkipSelf) {
-                lowerBoundVisibility = paramMetadata;
+            else if (paramMetadata instanceof Self || paramMetadata instanceof SkipSelf) {
+                visibility = paramMetadata;
             }
         }
         token = resolveForwardRef(token);
         if (token != null) {
-            return _createDependency(token, optional, lowerBoundVisibility, upperBoundVisibility, depProps);
+            return _createDependency(token, optional, visibility);
         }
         else {
             throw new NoAnnotationError(typeOrFunc, params);
@@ -2466,431 +2455,86 @@
     /**
      * @param {?} token
      * @param {?} optional
-     * @param {?} lowerBoundVisibility
-     * @param {?} upperBoundVisibility
-     * @param {?} depProps
+     * @param {?} visibility
      * @return {?}
      */
-    function _createDependency(token, optional, lowerBoundVisibility, upperBoundVisibility, depProps) {
-        return new ReflectiveDependency(ReflectiveKey.get(token), optional, lowerBoundVisibility, upperBoundVisibility, depProps);
+    function _createDependency(token, optional, visibility) {
+        return new ReflectiveDependency(ReflectiveKey.get(token), optional, visibility);
     }
 
     // Threshold for the dynamic version
-    var /** @type {?} */ _MAX_CONSTRUCTION_COUNTER = 10;
     var /** @type {?} */ UNDEFINED = new Object();
-    var ReflectiveProtoInjectorInlineStrategy = (function () {
-        /**
-         * @param {?} protoEI
-         * @param {?} providers
-         */
-        function ReflectiveProtoInjectorInlineStrategy(protoEI, providers) {
-            this.provider0 = null;
-            this.provider1 = null;
-            this.provider2 = null;
-            this.provider3 = null;
-            this.provider4 = null;
-            this.provider5 = null;
-            this.provider6 = null;
-            this.provider7 = null;
-            this.provider8 = null;
-            this.provider9 = null;
-            this.keyId0 = null;
-            this.keyId1 = null;
-            this.keyId2 = null;
-            this.keyId3 = null;
-            this.keyId4 = null;
-            this.keyId5 = null;
-            this.keyId6 = null;
-            this.keyId7 = null;
-            this.keyId8 = null;
-            this.keyId9 = null;
-            var length = providers.length;
-            if (length > 0) {
-                this.provider0 = providers[0];
-                this.keyId0 = providers[0].key.id;
-            }
-            if (length > 1) {
-                this.provider1 = providers[1];
-                this.keyId1 = providers[1].key.id;
-            }
-            if (length > 2) {
-                this.provider2 = providers[2];
-                this.keyId2 = providers[2].key.id;
-            }
-            if (length > 3) {
-                this.provider3 = providers[3];
-                this.keyId3 = providers[3].key.id;
-            }
-            if (length > 4) {
-                this.provider4 = providers[4];
-                this.keyId4 = providers[4].key.id;
-            }
-            if (length > 5) {
-                this.provider5 = providers[5];
-                this.keyId5 = providers[5].key.id;
-            }
-            if (length > 6) {
-                this.provider6 = providers[6];
-                this.keyId6 = providers[6].key.id;
-            }
-            if (length > 7) {
-                this.provider7 = providers[7];
-                this.keyId7 = providers[7].key.id;
-            }
-            if (length > 8) {
-                this.provider8 = providers[8];
-                this.keyId8 = providers[8].key.id;
-            }
-            if (length > 9) {
-                this.provider9 = providers[9];
-                this.keyId9 = providers[9].key.id;
-            }
-        }
-        /**
-         * @param {?} index
-         * @return {?}
-         */
-        ReflectiveProtoInjectorInlineStrategy.prototype.getProviderAtIndex = function (index) {
-            if (index == 0)
-                return this.provider0;
-            if (index == 1)
-                return this.provider1;
-            if (index == 2)
-                return this.provider2;
-            if (index == 3)
-                return this.provider3;
-            if (index == 4)
-                return this.provider4;
-            if (index == 5)
-                return this.provider5;
-            if (index == 6)
-                return this.provider6;
-            if (index == 7)
-                return this.provider7;
-            if (index == 8)
-                return this.provider8;
-            if (index == 9)
-                return this.provider9;
-            throw new OutOfBoundsError(index);
-        };
-        /**
-         * @param {?} injector
-         * @return {?}
-         */
-        ReflectiveProtoInjectorInlineStrategy.prototype.createInjectorStrategy = function (injector) {
-            return new ReflectiveInjectorInlineStrategy(injector, this);
-        };
-        return ReflectiveProtoInjectorInlineStrategy;
-    }());
-    var ReflectiveProtoInjectorDynamicStrategy = (function () {
-        /**
-         * @param {?} protoInj
-         * @param {?} providers
-         */
-        function ReflectiveProtoInjectorDynamicStrategy(protoInj, providers) {
-            this.providers = providers;
-            var len = providers.length;
-            this.keyIds = new Array(len);
-            for (var i = 0; i < len; i++) {
-                this.keyIds[i] = providers[i].key.id;
-            }
-        }
-        /**
-         * @param {?} index
-         * @return {?}
-         */
-        ReflectiveProtoInjectorDynamicStrategy.prototype.getProviderAtIndex = function (index) {
-            if (index < 0 || index >= this.providers.length) {
-                throw new OutOfBoundsError(index);
-            }
-            return this.providers[index];
-        };
-        /**
-         * @param {?} ei
-         * @return {?}
-         */
-        ReflectiveProtoInjectorDynamicStrategy.prototype.createInjectorStrategy = function (ei) {
-            return new ReflectiveInjectorDynamicStrategy(this, ei);
-        };
-        return ReflectiveProtoInjectorDynamicStrategy;
-    }());
-    var ReflectiveProtoInjector = (function () {
-        /**
-         * @param {?} providers
-         */
-        function ReflectiveProtoInjector(providers) {
-            this.numberOfProviders = providers.length;
-            this._strategy = providers.length > _MAX_CONSTRUCTION_COUNTER ?
-                new ReflectiveProtoInjectorDynamicStrategy(this, providers) :
-                new ReflectiveProtoInjectorInlineStrategy(this, providers);
-        }
-        /**
-         * @param {?} providers
-         * @return {?}
-         */
-        ReflectiveProtoInjector.fromResolvedProviders = function (providers) {
-            return new ReflectiveProtoInjector(providers);
-        };
-        /**
-         * @param {?} index
-         * @return {?}
-         */
-        ReflectiveProtoInjector.prototype.getProviderAtIndex = function (index) {
-            return this._strategy.getProviderAtIndex(index);
-        };
-        return ReflectiveProtoInjector;
-    }());
-    var ReflectiveInjectorInlineStrategy = (function () {
-        /**
-         * @param {?} injector
-         * @param {?} protoStrategy
-         */
-        function ReflectiveInjectorInlineStrategy(injector, protoStrategy) {
-            this.injector = injector;
-            this.protoStrategy = protoStrategy;
-            this.obj0 = UNDEFINED;
-            this.obj1 = UNDEFINED;
-            this.obj2 = UNDEFINED;
-            this.obj3 = UNDEFINED;
-            this.obj4 = UNDEFINED;
-            this.obj5 = UNDEFINED;
-            this.obj6 = UNDEFINED;
-            this.obj7 = UNDEFINED;
-            this.obj8 = UNDEFINED;
-            this.obj9 = UNDEFINED;
-        }
-        /**
-         * @return {?}
-         */
-        ReflectiveInjectorInlineStrategy.prototype.resetConstructionCounter = function () { this.injector._constructionCounter = 0; };
-        /**
-         * @param {?} provider
-         * @return {?}
-         */
-        ReflectiveInjectorInlineStrategy.prototype.instantiateProvider = function (provider) {
-            return this.injector._new(provider);
-        };
-        /**
-         * @param {?} keyId
-         * @return {?}
-         */
-        ReflectiveInjectorInlineStrategy.prototype.getObjByKeyId = function (keyId) {
-            var /** @type {?} */ p = this.protoStrategy;
-            var /** @type {?} */ inj = this.injector;
-            if (p.keyId0 === keyId) {
-                if (this.obj0 === UNDEFINED) {
-                    this.obj0 = inj._new(p.provider0);
-                }
-                return this.obj0;
-            }
-            if (p.keyId1 === keyId) {
-                if (this.obj1 === UNDEFINED) {
-                    this.obj1 = inj._new(p.provider1);
-                }
-                return this.obj1;
-            }
-            if (p.keyId2 === keyId) {
-                if (this.obj2 === UNDEFINED) {
-                    this.obj2 = inj._new(p.provider2);
-                }
-                return this.obj2;
-            }
-            if (p.keyId3 === keyId) {
-                if (this.obj3 === UNDEFINED) {
-                    this.obj3 = inj._new(p.provider3);
-                }
-                return this.obj3;
-            }
-            if (p.keyId4 === keyId) {
-                if (this.obj4 === UNDEFINED) {
-                    this.obj4 = inj._new(p.provider4);
-                }
-                return this.obj4;
-            }
-            if (p.keyId5 === keyId) {
-                if (this.obj5 === UNDEFINED) {
-                    this.obj5 = inj._new(p.provider5);
-                }
-                return this.obj5;
-            }
-            if (p.keyId6 === keyId) {
-                if (this.obj6 === UNDEFINED) {
-                    this.obj6 = inj._new(p.provider6);
-                }
-                return this.obj6;
-            }
-            if (p.keyId7 === keyId) {
-                if (this.obj7 === UNDEFINED) {
-                    this.obj7 = inj._new(p.provider7);
-                }
-                return this.obj7;
-            }
-            if (p.keyId8 === keyId) {
-                if (this.obj8 === UNDEFINED) {
-                    this.obj8 = inj._new(p.provider8);
-                }
-                return this.obj8;
-            }
-            if (p.keyId9 === keyId) {
-                if (this.obj9 === UNDEFINED) {
-                    this.obj9 = inj._new(p.provider9);
-                }
-                return this.obj9;
-            }
-            return UNDEFINED;
-        };
-        /**
-         * @param {?} index
-         * @return {?}
-         */
-        ReflectiveInjectorInlineStrategy.prototype.getObjAtIndex = function (index) {
-            if (index == 0)
-                return this.obj0;
-            if (index == 1)
-                return this.obj1;
-            if (index == 2)
-                return this.obj2;
-            if (index == 3)
-                return this.obj3;
-            if (index == 4)
-                return this.obj4;
-            if (index == 5)
-                return this.obj5;
-            if (index == 6)
-                return this.obj6;
-            if (index == 7)
-                return this.obj7;
-            if (index == 8)
-                return this.obj8;
-            if (index == 9)
-                return this.obj9;
-            throw new OutOfBoundsError(index);
-        };
-        /**
-         * @return {?}
-         */
-        ReflectiveInjectorInlineStrategy.prototype.getMaxNumberOfObjects = function () { return _MAX_CONSTRUCTION_COUNTER; };
-        return ReflectiveInjectorInlineStrategy;
-    }());
-    var ReflectiveInjectorDynamicStrategy = (function () {
-        /**
-         * @param {?} protoStrategy
-         * @param {?} injector
-         */
-        function ReflectiveInjectorDynamicStrategy(protoStrategy, injector) {
-            this.protoStrategy = protoStrategy;
-            this.injector = injector;
-            this.objs = new Array(protoStrategy.providers.length).fill(UNDEFINED);
-        }
-        /**
-         * @return {?}
-         */
-        ReflectiveInjectorDynamicStrategy.prototype.resetConstructionCounter = function () { this.injector._constructionCounter = 0; };
-        /**
-         * @param {?} provider
-         * @return {?}
-         */
-        ReflectiveInjectorDynamicStrategy.prototype.instantiateProvider = function (provider) {
-            return this.injector._new(provider);
-        };
-        /**
-         * @param {?} keyId
-         * @return {?}
-         */
-        ReflectiveInjectorDynamicStrategy.prototype.getObjByKeyId = function (keyId) {
-            var /** @type {?} */ p = this.protoStrategy;
-            for (var /** @type {?} */ i = 0; i < p.keyIds.length; i++) {
-                if (p.keyIds[i] === keyId) {
-                    if (this.objs[i] === UNDEFINED) {
-                        this.objs[i] = this.injector._new(p.providers[i]);
-                    }
-                    return this.objs[i];
-                }
-            }
-            return UNDEFINED;
-        };
-        /**
-         * @param {?} index
-         * @return {?}
-         */
-        ReflectiveInjectorDynamicStrategy.prototype.getObjAtIndex = function (index) {
-            if (index < 0 || index >= this.objs.length) {
-                throw new OutOfBoundsError(index);
-            }
-            return this.objs[index];
-        };
-        /**
-         * @return {?}
-         */
-        ReflectiveInjectorDynamicStrategy.prototype.getMaxNumberOfObjects = function () { return this.objs.length; };
-        return ReflectiveInjectorDynamicStrategy;
-    }());
     /**
-     *  A ReflectiveDependency injection container used for instantiating objects and resolving
-      * dependencies.
-      * *
-      * An `Injector` is a replacement for a `new` operator, which can automatically resolve the
-      * constructor dependencies.
-      * *
-      * In typical use, application code asks for the dependencies in the constructor and they are
-      * resolved by the `Injector`.
-      * *
-      * ### Example ([live demo](http://plnkr.co/edit/jzjec0?p=preview))
-      * *
-      * The following example creates an `Injector` configured to create `Engine` and `Car`.
-      * *
-      * ```typescript
-      * class Engine {
-      * }
-      * *
-      * class Car {
-      * constructor(public engine:Engine) {}
-      * }
-      * *
-      * var injector = ReflectiveInjector.resolveAndCreate([Car, Engine]);
-      * var car = injector.get(Car);
-      * expect(car instanceof Car).toBe(true);
-      * expect(car.engine instanceof Engine).toBe(true);
-      * ```
-      * *
-      * Notice, we don't use the `new` operator because we explicitly want to have the `Injector`
-      * resolve all of the object's dependencies automatically.
-      * *
+     * A ReflectiveDependency injection container used for instantiating objects and resolving
+     * dependencies.
+     *
+     * An `Injector` is a replacement for a `new` operator, which can automatically resolve the
+     * constructor dependencies.
+     *
+     * In typical use, application code asks for the dependencies in the constructor and they are
+     * resolved by the `Injector`.
+     *
+     * ### Example ([live demo](http://plnkr.co/edit/jzjec0?p=preview))
+     *
+     * The following example creates an `Injector` configured to create `Engine` and `Car`.
+     *
+     * ```typescript
+     * \@Injectable()
+     * class Engine {
+     * }
+     *
+     * \@Injectable()
+     * class Car {
+     *   constructor(public engine:Engine) {}
+     * }
+     *
+     * var injector = ReflectiveInjector.resolveAndCreate([Car, Engine]);
+     * var car = injector.get(Car);
+     * expect(car instanceof Car).toBe(true);
+     * expect(car.engine instanceof Engine).toBe(true);
+     * ```
+     *
+     * Notice, we don't use the `new` operator because we explicitly want to have the `Injector`
+     * resolve all of the object's dependencies automatically.
+     *
+     * \@stable
      * @abstract
      */
     var ReflectiveInjector = (function () {
         function ReflectiveInjector() {
         }
         /**
-         *  Turns an array of provider definitions into an array of resolved providers.
-          * *
-          * A resolution is a process of flattening multiple nested arrays and converting individual
-          * providers into an array of {@link ResolvedReflectiveProvider}s.
-          * *
-          * ### Example ([live demo](http://plnkr.co/edit/AiXTHi?p=preview))
-          * *
-          * ```typescript
-          * class Engine {
-          * }
-          * *
-          * class Car {
-          * constructor(public engine:Engine) {}
-          * }
-          * *
-          * var providers = ReflectiveInjector.resolve([Car, [[Engine]]]);
-          * *
-          * expect(providers.length).toEqual(2);
-          * *
-          * expect(providers[0] instanceof ResolvedReflectiveProvider).toBe(true);
-          * expect(providers[0].key.displayName).toBe("Car");
-          * expect(providers[0].dependencies.length).toEqual(1);
-          * expect(providers[0].factory).toBeDefined();
-          * *
-          * expect(providers[1].key.displayName).toBe("Engine");
-          * });
-          * ```
-          * *
-          * See {@link ReflectiveInjector#fromResolvedProviders} for more info.
+         * Turns an array of provider definitions into an array of resolved providers.
+         *
+         * A resolution is a process of flattening multiple nested arrays and converting individual
+         * providers into an array of {\@link ResolvedReflectiveProvider}s.
+         *
+         * ### Example ([live demo](http://plnkr.co/edit/AiXTHi?p=preview))
+         *
+         * ```typescript
+         * \@Injectable()
+         * class Engine {
+         * }
+         *
+         * \@Injectable()
+         * class Car {
+         *   constructor(public engine:Engine) {}
+         * }
+         *
+         * var providers = ReflectiveInjector.resolve([Car, [[Engine]]]);
+         *
+         * expect(providers.length).toEqual(2);
+         *
+         * expect(providers[0] instanceof ResolvedReflectiveProvider).toBe(true);
+         * expect(providers[0].key.displayName).toBe("Car");
+         * expect(providers[0].dependencies.length).toEqual(1);
+         * expect(providers[0].factory).toBeDefined();
+         *
+         * expect(providers[1].key.displayName).toBe("Engine");
+         * });
+         * ```
+         *
+         * See {\@link ReflectiveInjector#fromResolvedProviders} for more info.
          * @param {?} providers
          * @return {?}
          */
@@ -2898,28 +2542,30 @@
             return resolveReflectiveProviders(providers);
         };
         /**
-         *  Resolves an array of providers and creates an injector from those providers.
-          * *
-          * The passed-in providers can be an array of `Type`, {@link Provider},
-          * or a recursive array of more providers.
-          * *
-          * ### Example ([live demo](http://plnkr.co/edit/ePOccA?p=preview))
-          * *
-          * ```typescript
-          * class Engine {
-          * }
-          * *
-          * class Car {
-          * constructor(public engine:Engine) {}
-          * }
-          * *
-          * var injector = ReflectiveInjector.resolveAndCreate([Car, Engine]);
-          * expect(injector.get(Car) instanceof Car).toBe(true);
-          * ```
-          * *
-          * This function is slower than the corresponding `fromResolvedProviders`
-          * because it needs to resolve the passed-in providers first.
-          * See {@link Injector#resolve} and {@link Injector#fromResolvedProviders}.
+         * Resolves an array of providers and creates an injector from those providers.
+         *
+         * The passed-in providers can be an array of `Type`, {\@link Provider},
+         * or a recursive array of more providers.
+         *
+         * ### Example ([live demo](http://plnkr.co/edit/ePOccA?p=preview))
+         *
+         * ```typescript
+         * \@Injectable()
+         * class Engine {
+         * }
+         *
+         * \@Injectable()
+         * class Car {
+         *   constructor(public engine:Engine) {}
+         * }
+         *
+         * var injector = ReflectiveInjector.resolveAndCreate([Car, Engine]);
+         * expect(injector.get(Car) instanceof Car).toBe(true);
+         * ```
+         *
+         * This function is slower than the corresponding `fromResolvedProviders`
+         * because it needs to resolve the passed-in providers first.
+         * See {\@link Injector#resolve} and {\@link Injector#fromResolvedProviders}.
          * @param {?} providers
          * @param {?=} parent
          * @return {?}
@@ -2930,162 +2576,168 @@
             return ReflectiveInjector.fromResolvedProviders(ResolvedReflectiveProviders, parent);
         };
         /**
-         *  Creates an injector from previously resolved providers.
-          * *
-          * This API is the recommended way to construct injectors in performance-sensitive parts.
-          * *
-          * ### Example ([live demo](http://plnkr.co/edit/KrSMci?p=preview))
-          * *
-          * ```typescript
-          * class Engine {
-          * }
-          * *
-          * class Car {
-          * constructor(public engine:Engine) {}
-          * }
-          * *
-          * var providers = ReflectiveInjector.resolve([Car, Engine]);
-          * var injector = ReflectiveInjector.fromResolvedProviders(providers);
-          * expect(injector.get(Car) instanceof Car).toBe(true);
-          * ```
+         * Creates an injector from previously resolved providers.
+         *
+         * This API is the recommended way to construct injectors in performance-sensitive parts.
+         *
+         * ### Example ([live demo](http://plnkr.co/edit/KrSMci?p=preview))
+         *
+         * ```typescript
+         * \@Injectable()
+         * class Engine {
+         * }
+         *
+         * \@Injectable()
+         * class Car {
+         *   constructor(public engine:Engine) {}
+         * }
+         *
+         * var providers = ReflectiveInjector.resolve([Car, Engine]);
+         * var injector = ReflectiveInjector.fromResolvedProviders(providers);
+         * expect(injector.get(Car) instanceof Car).toBe(true);
+         * ```
+         * \@experimental
          * @param {?} providers
          * @param {?=} parent
          * @return {?}
          */
         ReflectiveInjector.fromResolvedProviders = function (providers, parent) {
             if (parent === void 0) { parent = null; }
-            return new ReflectiveInjector_(ReflectiveProtoInjector.fromResolvedProviders(providers), parent);
+            return new ReflectiveInjector_(providers, parent);
         };
-        Object.defineProperty(ReflectiveInjector.prototype, "parent", {
-            /**
-             *  Parent of this injector.
-              * *
-              * <!-- TODO: Add a link to the section of the user guide talking about hierarchical injection.
-              * -->
-              * *
-              * ### Example ([live demo](http://plnkr.co/edit/eosMGo?p=preview))
-              * *
-              * ```typescript
-              * var parent = ReflectiveInjector.resolveAndCreate([]);
-              * var child = parent.resolveAndCreateChild([]);
-              * expect(child.parent).toBe(parent);
-              * ```
-             * @return {?}
-             */
-            get: function () { return unimplemented(); },
-            enumerable: true,
-            configurable: true
-        });
         /**
-         *  Resolves an array of providers and creates a child injector from those providers.
-          * *
-          * <!-- TODO: Add a link to the section of the user guide talking about hierarchical injection.
-          * -->
-          * *
-          * The passed-in providers can be an array of `Type`, {@link Provider},
-          * or a recursive array of more providers.
-          * *
-          * ### Example ([live demo](http://plnkr.co/edit/opB3T4?p=preview))
-          * *
-          * ```typescript
-          * class ParentProvider {}
-          * class ChildProvider {}
-          * *
-          * var parent = ReflectiveInjector.resolveAndCreate([ParentProvider]);
-          * var child = parent.resolveAndCreateChild([ChildProvider]);
-          * *
-          * expect(child.get(ParentProvider) instanceof ParentProvider).toBe(true);
-          * expect(child.get(ChildProvider) instanceof ChildProvider).toBe(true);
-          * expect(child.get(ParentProvider)).toBe(parent.get(ParentProvider));
-          * ```
-          * *
-          * This function is slower than the corresponding `createChildFromResolved`
-          * because it needs to resolve the passed-in providers first.
-          * See {@link Injector#resolve} and {@link Injector#createChildFromResolved}.
+         * Parent of this injector.
+         *
+         * <!-- TODO: Add a link to the section of the user guide talking about hierarchical injection.
+         * -->
+         *
+         * ### Example ([live demo](http://plnkr.co/edit/eosMGo?p=preview))
+         *
+         * ```typescript
+         * var parent = ReflectiveInjector.resolveAndCreate([]);
+         * var child = parent.resolveAndCreateChild([]);
+         * expect(child.parent).toBe(parent);
+         * ```
+         * @abstract
+         * @return {?}
+         */
+        ReflectiveInjector.prototype.parent = function () { };
+        /**
+         * Resolves an array of providers and creates a child injector from those providers.
+         *
+         * <!-- TODO: Add a link to the section of the user guide talking about hierarchical injection.
+         * -->
+         *
+         * The passed-in providers can be an array of `Type`, {\@link Provider},
+         * or a recursive array of more providers.
+         *
+         * ### Example ([live demo](http://plnkr.co/edit/opB3T4?p=preview))
+         *
+         * ```typescript
+         * class ParentProvider {}
+         * class ChildProvider {}
+         *
+         * var parent = ReflectiveInjector.resolveAndCreate([ParentProvider]);
+         * var child = parent.resolveAndCreateChild([ChildProvider]);
+         *
+         * expect(child.get(ParentProvider) instanceof ParentProvider).toBe(true);
+         * expect(child.get(ChildProvider) instanceof ChildProvider).toBe(true);
+         * expect(child.get(ParentProvider)).toBe(parent.get(ParentProvider));
+         * ```
+         *
+         * This function is slower than the corresponding `createChildFromResolved`
+         * because it needs to resolve the passed-in providers first.
+         * See {\@link Injector#resolve} and {\@link Injector#createChildFromResolved}.
+         * @abstract
          * @param {?} providers
          * @return {?}
          */
-        ReflectiveInjector.prototype.resolveAndCreateChild = function (providers) { return unimplemented(); };
+        ReflectiveInjector.prototype.resolveAndCreateChild = function (providers) { };
         /**
-         *  Creates a child injector from previously resolved providers.
-          * *
-          * <!-- TODO: Add a link to the section of the user guide talking about hierarchical injection.
-          * -->
-          * *
-          * This API is the recommended way to construct injectors in performance-sensitive parts.
-          * *
-          * ### Example ([live demo](http://plnkr.co/edit/VhyfjN?p=preview))
-          * *
-          * ```typescript
-          * class ParentProvider {}
-          * class ChildProvider {}
-          * *
-          * var parentProviders = ReflectiveInjector.resolve([ParentProvider]);
-          * var childProviders = ReflectiveInjector.resolve([ChildProvider]);
-          * *
-          * var parent = ReflectiveInjector.fromResolvedProviders(parentProviders);
-          * var child = parent.createChildFromResolved(childProviders);
-          * *
-          * expect(child.get(ParentProvider) instanceof ParentProvider).toBe(true);
-          * expect(child.get(ChildProvider) instanceof ChildProvider).toBe(true);
-          * expect(child.get(ParentProvider)).toBe(parent.get(ParentProvider));
-          * ```
+         * Creates a child injector from previously resolved providers.
+         *
+         * <!-- TODO: Add a link to the section of the user guide talking about hierarchical injection.
+         * -->
+         *
+         * This API is the recommended way to construct injectors in performance-sensitive parts.
+         *
+         * ### Example ([live demo](http://plnkr.co/edit/VhyfjN?p=preview))
+         *
+         * ```typescript
+         * class ParentProvider {}
+         * class ChildProvider {}
+         *
+         * var parentProviders = ReflectiveInjector.resolve([ParentProvider]);
+         * var childProviders = ReflectiveInjector.resolve([ChildProvider]);
+         *
+         * var parent = ReflectiveInjector.fromResolvedProviders(parentProviders);
+         * var child = parent.createChildFromResolved(childProviders);
+         *
+         * expect(child.get(ParentProvider) instanceof ParentProvider).toBe(true);
+         * expect(child.get(ChildProvider) instanceof ChildProvider).toBe(true);
+         * expect(child.get(ParentProvider)).toBe(parent.get(ParentProvider));
+         * ```
+         * @abstract
          * @param {?} providers
          * @return {?}
          */
-        ReflectiveInjector.prototype.createChildFromResolved = function (providers) {
-            return unimplemented();
-        };
+        ReflectiveInjector.prototype.createChildFromResolved = function (providers) { };
         /**
-         *  Resolves a provider and instantiates an object in the context of the injector.
-          * *
-          * The created object does not get cached by the injector.
-          * *
-          * ### Example ([live demo](http://plnkr.co/edit/yvVXoB?p=preview))
-          * *
-          * ```typescript
-          * class Engine {
-          * }
-          * *
-          * class Car {
-          * constructor(public engine:Engine) {}
-          * }
-          * *
-          * var injector = ReflectiveInjector.resolveAndCreate([Engine]);
-          * *
-          * var car = injector.resolveAndInstantiate(Car);
-          * expect(car.engine).toBe(injector.get(Engine));
-          * expect(car).not.toBe(injector.resolveAndInstantiate(Car));
-          * ```
+         * Resolves a provider and instantiates an object in the context of the injector.
+         *
+         * The created object does not get cached by the injector.
+         *
+         * ### Example ([live demo](http://plnkr.co/edit/yvVXoB?p=preview))
+         *
+         * ```typescript
+         * \@Injectable()
+         * class Engine {
+         * }
+         *
+         * \@Injectable()
+         * class Car {
+         *   constructor(public engine:Engine) {}
+         * }
+         *
+         * var injector = ReflectiveInjector.resolveAndCreate([Engine]);
+         *
+         * var car = injector.resolveAndInstantiate(Car);
+         * expect(car.engine).toBe(injector.get(Engine));
+         * expect(car).not.toBe(injector.resolveAndInstantiate(Car));
+         * ```
+         * @abstract
          * @param {?} provider
          * @return {?}
          */
-        ReflectiveInjector.prototype.resolveAndInstantiate = function (provider) { return unimplemented(); };
+        ReflectiveInjector.prototype.resolveAndInstantiate = function (provider) { };
         /**
-         *  Instantiates an object using a resolved provider in the context of the injector.
-          * *
-          * The created object does not get cached by the injector.
-          * *
-          * ### Example ([live demo](http://plnkr.co/edit/ptCImQ?p=preview))
-          * *
-          * ```typescript
-          * class Engine {
-          * }
-          * *
-          * class Car {
-          * constructor(public engine:Engine) {}
-          * }
-          * *
-          * var injector = ReflectiveInjector.resolveAndCreate([Engine]);
-          * var carProvider = ReflectiveInjector.resolve([Car])[0];
-          * var car = injector.instantiateResolved(carProvider);
-          * expect(car.engine).toBe(injector.get(Engine));
-          * expect(car).not.toBe(injector.instantiateResolved(carProvider));
-          * ```
+         * Instantiates an object using a resolved provider in the context of the injector.
+         *
+         * The created object does not get cached by the injector.
+         *
+         * ### Example ([live demo](http://plnkr.co/edit/ptCImQ?p=preview))
+         *
+         * ```typescript
+         * \@Injectable()
+         * class Engine {
+         * }
+         *
+         * \@Injectable()
+         * class Car {
+         *   constructor(public engine:Engine) {}
+         * }
+         *
+         * var injector = ReflectiveInjector.resolveAndCreate([Engine]);
+         * var carProvider = ReflectiveInjector.resolve([Car])[0];
+         * var car = injector.instantiateResolved(carProvider);
+         * expect(car.engine).toBe(injector.get(Engine));
+         * expect(car).not.toBe(injector.instantiateResolved(carProvider));
+         * ```
+         * @abstract
          * @param {?} provider
          * @return {?}
          */
-        ReflectiveInjector.prototype.instantiateResolved = function (provider) { return unimplemented(); };
+        ReflectiveInjector.prototype.instantiateResolved = function (provider) { };
         /**
          * @abstract
          * @param {?} token
@@ -3097,17 +2749,23 @@
     }());
     var ReflectiveInjector_ = (function () {
         /**
-         *  Private
-         * @param {?} _proto
+         * Private
+         * @param {?} _providers
          * @param {?=} _parent
          */
-        function ReflectiveInjector_(_proto /* ProtoInjector */, _parent) {
+        function ReflectiveInjector_(_providers, _parent) {
             if (_parent === void 0) { _parent = null; }
             /** @internal */
             this._constructionCounter = 0;
-            this._proto = _proto;
+            this._providers = _providers;
             this._parent = _parent;
-            this._strategy = _proto._strategy.createInjectorStrategy(this);
+            var len = _providers.length;
+            this.keyIds = new Array(len);
+            this.objs = new Array(len);
+            for (var i = 0; i < len; i++) {
+                this.keyIds[i] = _providers[i].key.id;
+                this.objs[i] = UNDEFINED;
+            }
         }
         /**
          * @param {?} token
@@ -3116,28 +2774,13 @@
          */
         ReflectiveInjector_.prototype.get = function (token, notFoundValue) {
             if (notFoundValue === void 0) { notFoundValue = THROW_IF_NOT_FOUND; }
-            return this._getByKey(ReflectiveKey.get(token), null, null, notFoundValue);
+            return this._getByKey(ReflectiveKey.get(token), null, notFoundValue);
         };
-        /**
-         * @param {?} index
-         * @return {?}
-         */
-        ReflectiveInjector_.prototype.getAt = function (index) { return this._strategy.getObjAtIndex(index); };
         Object.defineProperty(ReflectiveInjector_.prototype, "parent", {
             /**
              * @return {?}
              */
             get: function () { return this._parent; },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(ReflectiveInjector_.prototype, "internalStrategy", {
-            /**
-             *  Internal. Do not use.
-              * We return `any` not to export the InjectorStrategy type.
-             * @return {?}
-             */
-            get: function () { return this._strategy; },
             enumerable: true,
             configurable: true
         });
@@ -3154,8 +2797,7 @@
          * @return {?}
          */
         ReflectiveInjector_.prototype.createChildFromResolved = function (providers) {
-            var /** @type {?} */ proto = new ReflectiveProtoInjector(providers);
-            var /** @type {?} */ inj = new ReflectiveInjector_(proto);
+            var /** @type {?} */ inj = new ReflectiveInjector_(providers);
             inj._parent = this;
             return inj;
         };
@@ -3174,15 +2816,30 @@
             return this._instantiateProvider(provider);
         };
         /**
+         * @param {?} index
+         * @return {?}
+         */
+        ReflectiveInjector_.prototype.getProviderAtIndex = function (index) {
+            if (index < 0 || index >= this._providers.length) {
+                throw new OutOfBoundsError(index);
+            }
+            return this._providers[index];
+        };
+        /**
+         * \@internal
          * @param {?} provider
          * @return {?}
          */
         ReflectiveInjector_.prototype._new = function (provider) {
-            if (this._constructionCounter++ > this._strategy.getMaxNumberOfObjects()) {
+            if (this._constructionCounter++ > this._getMaxNumberOfObjects()) {
                 throw new CyclicDependencyError(this, provider.key);
             }
             return this._instantiateProvider(provider);
         };
+        /**
+         * @return {?}
+         */
+        ReflectiveInjector_.prototype._getMaxNumberOfObjects = function () { return this.objs.length; };
         /**
          * @param {?} provider
          * @return {?}
@@ -3205,50 +2862,12 @@
          * @return {?}
          */
         ReflectiveInjector_.prototype._instantiate = function (provider, ResolvedReflectiveFactory) {
+            var _this = this;
             var /** @type {?} */ factory = ResolvedReflectiveFactory.factory;
-            var /** @type {?} */ deps = ResolvedReflectiveFactory.dependencies;
-            var /** @type {?} */ length = deps.length;
-            var /** @type {?} */ d0;
-            var /** @type {?} */ d1;
-            var /** @type {?} */ d2;
-            var /** @type {?} */ d3;
-            var /** @type {?} */ d4;
-            var /** @type {?} */ d5;
-            var /** @type {?} */ d6;
-            var /** @type {?} */ d7;
-            var /** @type {?} */ d8;
-            var /** @type {?} */ d9;
-            var /** @type {?} */ d10;
-            var /** @type {?} */ d11;
-            var /** @type {?} */ d12;
-            var /** @type {?} */ d13;
-            var /** @type {?} */ d14;
-            var /** @type {?} */ d15;
-            var /** @type {?} */ d16;
-            var /** @type {?} */ d17;
-            var /** @type {?} */ d18;
-            var /** @type {?} */ d19;
+            var /** @type {?} */ deps;
             try {
-                d0 = length > 0 ? this._getByReflectiveDependency(provider, deps[0]) : null;
-                d1 = length > 1 ? this._getByReflectiveDependency(provider, deps[1]) : null;
-                d2 = length > 2 ? this._getByReflectiveDependency(provider, deps[2]) : null;
-                d3 = length > 3 ? this._getByReflectiveDependency(provider, deps[3]) : null;
-                d4 = length > 4 ? this._getByReflectiveDependency(provider, deps[4]) : null;
-                d5 = length > 5 ? this._getByReflectiveDependency(provider, deps[5]) : null;
-                d6 = length > 6 ? this._getByReflectiveDependency(provider, deps[6]) : null;
-                d7 = length > 7 ? this._getByReflectiveDependency(provider, deps[7]) : null;
-                d8 = length > 8 ? this._getByReflectiveDependency(provider, deps[8]) : null;
-                d9 = length > 9 ? this._getByReflectiveDependency(provider, deps[9]) : null;
-                d10 = length > 10 ? this._getByReflectiveDependency(provider, deps[10]) : null;
-                d11 = length > 11 ? this._getByReflectiveDependency(provider, deps[11]) : null;
-                d12 = length > 12 ? this._getByReflectiveDependency(provider, deps[12]) : null;
-                d13 = length > 13 ? this._getByReflectiveDependency(provider, deps[13]) : null;
-                d14 = length > 14 ? this._getByReflectiveDependency(provider, deps[14]) : null;
-                d15 = length > 15 ? this._getByReflectiveDependency(provider, deps[15]) : null;
-                d16 = length > 16 ? this._getByReflectiveDependency(provider, deps[16]) : null;
-                d17 = length > 17 ? this._getByReflectiveDependency(provider, deps[17]) : null;
-                d18 = length > 18 ? this._getByReflectiveDependency(provider, deps[18]) : null;
-                d19 = length > 19 ? this._getByReflectiveDependency(provider, deps[19]) : null;
+                deps =
+                    ResolvedReflectiveFactory.dependencies.map(function (dep) { return _this._getByReflectiveDependency(dep); });
             }
             catch (e) {
                 if (e instanceof AbstractProviderError || e instanceof InstantiationError) {
@@ -3258,73 +2877,7 @@
             }
             var /** @type {?} */ obj;
             try {
-                switch (length) {
-                    case 0:
-                        obj = factory();
-                        break;
-                    case 1:
-                        obj = factory(d0);
-                        break;
-                    case 2:
-                        obj = factory(d0, d1);
-                        break;
-                    case 3:
-                        obj = factory(d0, d1, d2);
-                        break;
-                    case 4:
-                        obj = factory(d0, d1, d2, d3);
-                        break;
-                    case 5:
-                        obj = factory(d0, d1, d2, d3, d4);
-                        break;
-                    case 6:
-                        obj = factory(d0, d1, d2, d3, d4, d5);
-                        break;
-                    case 7:
-                        obj = factory(d0, d1, d2, d3, d4, d5, d6);
-                        break;
-                    case 8:
-                        obj = factory(d0, d1, d2, d3, d4, d5, d6, d7);
-                        break;
-                    case 9:
-                        obj = factory(d0, d1, d2, d3, d4, d5, d6, d7, d8);
-                        break;
-                    case 10:
-                        obj = factory(d0, d1, d2, d3, d4, d5, d6, d7, d8, d9);
-                        break;
-                    case 11:
-                        obj = factory(d0, d1, d2, d3, d4, d5, d6, d7, d8, d9, d10);
-                        break;
-                    case 12:
-                        obj = factory(d0, d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11);
-                        break;
-                    case 13:
-                        obj = factory(d0, d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12);
-                        break;
-                    case 14:
-                        obj = factory(d0, d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13);
-                        break;
-                    case 15:
-                        obj = factory(d0, d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14);
-                        break;
-                    case 16:
-                        obj = factory(d0, d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15);
-                        break;
-                    case 17:
-                        obj = factory(d0, d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15, d16);
-                        break;
-                    case 18:
-                        obj = factory(d0, d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15, d16, d17);
-                        break;
-                    case 19:
-                        obj = factory(d0, d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15, d16, d17, d18);
-                        break;
-                    case 20:
-                        obj = factory(d0, d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15, d16, d17, d18, d19);
-                        break;
-                    default:
-                        throw new Error("Cannot instantiate '" + provider.key.displayName + "' because it has more than 20 dependencies");
-                }
+                obj = factory.apply(void 0, deps);
             }
             catch (e) {
                 throw new InstantiationError(this, e, e.stack, provider.key);
@@ -3332,32 +2885,46 @@
             return obj;
         };
         /**
-         * @param {?} provider
          * @param {?} dep
          * @return {?}
          */
-        ReflectiveInjector_.prototype._getByReflectiveDependency = function (provider, dep) {
-            return this._getByKey(dep.key, dep.lowerBoundVisibility, dep.upperBoundVisibility, dep.optional ? null : THROW_IF_NOT_FOUND);
+        ReflectiveInjector_.prototype._getByReflectiveDependency = function (dep) {
+            return this._getByKey(dep.key, dep.visibility, dep.optional ? null : THROW_IF_NOT_FOUND);
         };
         /**
          * @param {?} key
-         * @param {?} lowerBoundVisibility
-         * @param {?} upperBoundVisibility
+         * @param {?} visibility
          * @param {?} notFoundValue
          * @return {?}
          */
-        ReflectiveInjector_.prototype._getByKey = function (key, lowerBoundVisibility, upperBoundVisibility, notFoundValue) {
+        ReflectiveInjector_.prototype._getByKey = function (key, visibility, notFoundValue) {
             if (key === INJECTOR_KEY) {
                 return this;
             }
-            if (upperBoundVisibility instanceof Self) {
+            if (visibility instanceof Self) {
                 return this._getByKeySelf(key, notFoundValue);
             }
             else {
-                return this._getByKeyDefault(key, notFoundValue, lowerBoundVisibility);
+                return this._getByKeyDefault(key, notFoundValue, visibility);
             }
         };
         /**
+         * @param {?} keyId
+         * @return {?}
+         */
+        ReflectiveInjector_.prototype._getObjByKeyId = function (keyId) {
+            for (var /** @type {?} */ i = 0; i < this.keyIds.length; i++) {
+                if (this.keyIds[i] === keyId) {
+                    if (this.objs[i] === UNDEFINED) {
+                        this.objs[i] = this._new(this._providers[i]);
+                    }
+                    return this.objs[i];
+                }
+            }
+            return UNDEFINED;
+        };
+        /**
+         * \@internal
          * @param {?} key
          * @param {?} notFoundValue
          * @return {?}
@@ -3371,23 +2938,25 @@
             }
         };
         /**
+         * \@internal
          * @param {?} key
          * @param {?} notFoundValue
          * @return {?}
          */
         ReflectiveInjector_.prototype._getByKeySelf = function (key, notFoundValue) {
-            var /** @type {?} */ obj = this._strategy.getObjByKeyId(key.id);
+            var /** @type {?} */ obj = this._getObjByKeyId(key.id);
             return (obj !== UNDEFINED) ? obj : this._throwOrNull(key, notFoundValue);
         };
         /**
+         * \@internal
          * @param {?} key
          * @param {?} notFoundValue
-         * @param {?} lowerBoundVisibility
+         * @param {?} visibility
          * @return {?}
          */
-        ReflectiveInjector_.prototype._getByKeyDefault = function (key, notFoundValue, lowerBoundVisibility) {
+        ReflectiveInjector_.prototype._getByKeyDefault = function (key, notFoundValue, visibility) {
             var /** @type {?} */ inj;
-            if (lowerBoundVisibility instanceof SkipSelf) {
+            if (visibility instanceof SkipSelf) {
                 inj = this._parent;
             }
             else {
@@ -3395,7 +2964,7 @@
             }
             while (inj instanceof ReflectiveInjector_) {
                 var /** @type {?} */ inj_ = (inj);
-                var /** @type {?} */ obj = inj_._strategy.getObjByKeyId(key.id);
+                var /** @type {?} */ obj = inj_._getObjByKeyId(key.id);
                 if (obj !== UNDEFINED)
                     return obj;
                 inj = inj_._parent;
@@ -3432,9 +3001,9 @@
      * @return {?}
      */
     function _mapProviders(injector, fn) {
-        var /** @type {?} */ res = new Array(injector._proto.numberOfProviders);
-        for (var /** @type {?} */ i = 0; i < injector._proto.numberOfProviders; ++i) {
-            res[i] = fn(injector._proto.getProviderAtIndex(i));
+        var /** @type {?} */ res = new Array(injector._providers.length);
+        for (var /** @type {?} */ i = 0; i < injector._providers.length; ++i) {
+            res[i] = fn(injector.getProviderAtIndex(i));
         }
         return res;
     }
@@ -3447,26 +3016,30 @@
      * found in the LICENSE file at https://angular.io/license
      */
     /**
-     *  *
-      * *
-      * The default implementation of `ErrorHandler` prints error messages to the `console`. To
-      * intercept error handling, write a custom exception handler that replaces this default as
-      * appropriate for your app.
-      * *
-      * ### Example
-      * *
-      * ```
-      * class MyErrorHandler implements ErrorHandler {
-      * handleError(error) {
-      * // do something with the exception
-      * }
-      * }
-      * *
-      * providers: [{provide: ErrorHandler, useClass: MyErrorHandler}]
-      * })
-      * class MyModule {}
-      * ```
-      * *
+     * \@whatItDoes Provides a hook for centralized exception handling.
+     *
+     * \@description
+     *
+     * The default implementation of `ErrorHandler` prints error messages to the `console`. To
+     * intercept error handling, write a custom exception handler that replaces this default as
+     * appropriate for your app.
+     *
+     * ### Example
+     *
+     * ```
+     * class MyErrorHandler implements ErrorHandler {
+     *   handleError(error) {
+     *     // do something with the exception
+     *   }
+     * }
+     *
+     * \@NgModule({
+     *   providers: [{provide: ErrorHandler, useClass: MyErrorHandler}]
+     * })
+     * class MyModule {}
+     * ```
+     *
+     * \@stable
      */
     var ErrorHandler = (function () {
         /**
@@ -3506,6 +3079,7 @@
                 throw error;
         };
         /**
+         * \@internal
          * @param {?} error
          * @return {?}
          */
@@ -3513,6 +3087,7 @@
             return error instanceof Error ? error.message : error.toString();
         };
         /**
+         * \@internal
          * @param {?} error
          * @return {?}
          */
@@ -3524,6 +3099,7 @@
             return null;
         };
         /**
+         * \@internal
          * @param {?} error
          * @return {?}
          */
@@ -3535,6 +3111,7 @@
             return e;
         };
         /**
+         * \@internal
          * @param {?} error
          * @return {?}
          */
@@ -3555,7 +3132,7 @@
     }());
 
     /**
-     *  Wraps Javascript Objects
+     * Wraps Javascript Objects
      */
     var StringMapWrapper = (function () {
         function StringMapWrapper() {
@@ -3718,11 +3295,7 @@
     }
 
     /**
-     * @license undefined
-      * Copyright Google Inc. All Rights Reserved.
-      * *
-      * Use of this source code is governed by an MIT-style license that can be
-      * found in the LICENSE file at https://angular.io/license
+     * Determine if the argument is shaped like a Promise
      * @param {?} obj
      * @return {?}
      */
@@ -3731,6 +3304,14 @@
         // It's up to the caller to ensure that obj.then conforms to the spec
         return !!obj && typeof obj.then === 'function';
     }
+    /**
+     * Determine if the argument is an Observable
+     * @param {?} obj
+     * @return {?}
+     */
+    function isObservable(obj) {
+        return !!(obj && obj[rxjs_symbol_observable.$$observable]);
+    }
 
     /**
      * A function that will be executed when an application is initialized.
@@ -3738,8 +3319,9 @@
      */
     var /** @type {?} */ APP_INITIALIZER = new OpaqueToken('Application Initializer');
     /**
-     *  A class that reflects the state of running {@link APP_INITIALIZER}s.
-      * *
+     * A class that reflects the state of running {\@link APP_INITIALIZER}s.
+     *
+     * \@experimental
      */
     var ApplicationInitStatus = (function () {
         /**
@@ -3874,8 +3456,9 @@
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
     /**
-     *  Indicates that a component is still being loaded in a synchronous compile.
-      * *
+     * Indicates that a component is still being loaded in a synchronous compile.
+     *
+     * \@stable
      */
     var ComponentStillLoadingError = (function (_super) {
         __extends$4(ComponentStillLoadingError, _super);
@@ -3889,8 +3472,9 @@
         return ComponentStillLoadingError;
     }(BaseError));
     /**
-     *  Combination of NgModuleFactory and ComponentFactorys.
-      * *
+     * Combination of NgModuleFactory and ComponentFactorys.
+     *
+     * \@experimental
      */
     var ModuleWithComponentFactories = (function () {
         /**
@@ -3910,33 +3494,34 @@
         throw new Error("Runtime compiler is not loaded");
     }
     /**
-     *  Low-level service for running the angular compiler during runtime
-      * to create {@link ComponentFactory}s, which
-      * can later be used to create and render a Component instance.
-      * *
-      * Each `@NgModule` provides an own `Compiler` to its injector,
-      * that will use the directives/pipes of the ng module for compilation
-      * of components.
+     * Low-level service for running the angular compiler during runtime
+     * to create {\@link ComponentFactory}s, which
+     * can later be used to create and render a Component instance.
+     *
+     * Each `\@NgModule` provides an own `Compiler` to its injector,
+     * that will use the directives/pipes of the ng module for compilation
+     * of components.
+     * \@stable
      */
     var Compiler = (function () {
         function Compiler() {
         }
         /**
-         *  Compiles the given NgModule and all of its components. All templates of the components listed
-          * in `entryComponents`
-          * have to be inlined. Otherwise throws a {@link ComponentStillLoadingError}.
+         * Compiles the given NgModule and all of its components. All templates of the components listed
+         * in `entryComponents`
+         * have to be inlined. Otherwise throws a {\@link ComponentStillLoadingError}.
          * @param {?} moduleType
          * @return {?}
          */
         Compiler.prototype.compileModuleSync = function (moduleType) { throw _throwError(); };
         /**
-         *  Compiles the given NgModule and all of its components
+         * Compiles the given NgModule and all of its components
          * @param {?} moduleType
          * @return {?}
          */
         Compiler.prototype.compileModuleAsync = function (moduleType) { throw _throwError(); };
         /**
-         *  Same as {@link compileModuleSync} but also creates ComponentFactories for all components.
+         * Same as {\@link compileModuleSync} but also creates ComponentFactories for all components.
          * @param {?} moduleType
          * @return {?}
          */
@@ -3944,7 +3529,7 @@
             throw _throwError();
         };
         /**
-         *  Same as {@link compileModuleAsync} but also creates ComponentFactories for all components.
+         * Same as {\@link compileModuleAsync} but also creates ComponentFactories for all components.
          * @param {?} moduleType
          * @return {?}
          */
@@ -3952,25 +3537,30 @@
             throw _throwError();
         };
         /**
-         *  Exposes the CSS-style selectors that have been used in `ngContent` directives within
-          * the template of the given component.
-          * This is used by the `upgrade` library to compile the appropriate transclude content
-          * in the Angular 1 wrapper component.
+         * Exposes the CSS-style selectors that have been used in `ngContent` directives within
+         * the template of the given component.
+         * This is used by the `upgrade` library to compile the appropriate transclude content
+         * in the Angular 1 wrapper component.
          * @param {?} component
          * @return {?}
          */
         Compiler.prototype.getNgContentSelectors = function (component) { throw _throwError(); };
         /**
-         *  Clears all caches.
+         * Clears all caches.
          * @return {?}
          */
         Compiler.prototype.clearCache = function () { };
         /**
-         *  Clears the cache for the given component/ngModule.
+         * Clears the cache for the given component/ngModule.
          * @param {?} type
          * @return {?}
          */
         Compiler.prototype.clearCacheFor = function (type) { };
+        Compiler.decorators = [
+            { type: Injectable },
+        ];
+        /** @nocollapse */
+        Compiler.ctorParameters = function () { return []; };
         return Compiler;
     }());
     /**
@@ -3980,8 +3570,9 @@
      */
     var /** @type {?} */ COMPILER_OPTIONS = new OpaqueToken('compilerOptions');
     /**
-     *  A factory for creating a Compiler
-      * *
+     * A factory for creating a Compiler
+     *
+     * \@experimental
      * @abstract
      */
     var CompilerFactory = (function () {
@@ -3996,28 +3587,6 @@
         return CompilerFactory;
     }());
 
-    /**
-     * @license
-     * Copyright Google Inc. All Rights Reserved.
-     *
-     * Use of this source code is governed by an MIT-style license that can be
-     * found in the LICENSE file at https://angular.io/license
-     */
-    /**
-     * A wrapper around a native element inside of a View.
-     *
-     * An `ElementRef` is backed by a render-specific element. In the browser, this is usually a DOM
-     * element.
-     *
-     * @security Permitting direct access to the DOM can make your application more vulnerable to
-     * XSS attacks. Carefully review any use of `ElementRef` in your code. For more detail, see the
-     * [Security Guide](http://g.co/ng/security).
-     *
-     * @stable
-     */
-    // Note: We don't expose things like `Injector`, `ViewContainer`, ... here,
-    // i.e. users have to ask for what they need. With that, we can build better analysis tools
-    // and could do better codegen in the future.
     var ElementRef = (function () {
         /**
          * @param {?} nativeElement
@@ -4041,55 +3610,57 @@
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
     /**
-     *  Use by directives and components to emit custom Events.
-      * *
-      * ### Examples
-      * *
-      * In the following example, `Zippy` alternatively emits `open` and `close` events when its
-      * title gets clicked:
-      * *
-      * ```
-      * selector: 'zippy',
-      * template: `
-      * <div class="zippy">
-      * <div (click)="toggle()">Toggle</div>
-      * <div [hidden]="!visible">
-      * <ng-content></ng-content>
-      * </div>
-      * </div>`})
-      * export class Zippy {
-      * visible: boolean = true;
-      * @Output() open: EventEmitter<any> = new EventEmitter();
-      * @Output() close: EventEmitter<any> = new EventEmitter();
-      * *
-      * toggle() {
-      * this.visible = !this.visible;
-      * if (this.visible) {
-      * this.open.emit(null);
-      * } else {
-      * this.close.emit(null);
-      * }
-      * }
-      * }
-      * ```
-      * *
-      * The events payload can be accessed by the parameter `$event` on the components output event
-      * handler:
-      * *
-      * ```
-      * <zippy (open)="onOpen($event)" (close)="onClose($event)"></zippy>
-      * ```
-      * *
-      * Uses Rx.Observable but provides an adapter to make it work as specified here:
-      * https://github.com/jhusain/observable-spec
-      * *
-      * Once a reference implementation of the spec is available, switch to it.
+     * Use by directives and components to emit custom Events.
+     *
+     * ### Examples
+     *
+     * In the following example, `Zippy` alternatively emits `open` and `close` events when its
+     * title gets clicked:
+     *
+     * ```
+     * \@Component({
+     *   selector: 'zippy',
+     *   template: `
+     *   <div class="zippy">
+     *     <div (click)="toggle()">Toggle</div>
+     *     <div [hidden]="!visible">
+     *       <ng-content></ng-content>
+     *     </div>
+     *  </div>`})
+     * export class Zippy {
+     *   visible: boolean = true;
+     *   \@Output() open: EventEmitter<any> = new EventEmitter();
+     *   \@Output() close: EventEmitter<any> = new EventEmitter();
+     *
+     *   toggle() {
+     *     this.visible = !this.visible;
+     *     if (this.visible) {
+     *       this.open.emit(null);
+     *     } else {
+     *       this.close.emit(null);
+     *     }
+     *   }
+     * }
+     * ```
+     *
+     * The events payload can be accessed by the parameter `$event` on the components output event
+     * handler:
+     *
+     * ```
+     * <zippy (open)="onOpen($event)" (close)="onClose($event)"></zippy>
+     * ```
+     *
+     * Uses Rx.Observable but provides an adapter to make it work as specified here:
+     * https://github.com/jhusain/observable-spec
+     *
+     * Once a reference implementation of the spec is available, switch to it.
+     * \@stable
      */
     var EventEmitter = (function (_super) {
         __extends$6(EventEmitter, _super);
         /**
-         *  Creates an instance of [EventEmitter], which depending on [isAsync],
-          * delivers events synchronously or asynchronously.
+         * Creates an instance of [EventEmitter], which depending on [isAsync],
+         * delivers events synchronously or asynchronously.
          * @param {?=} isAsync
          */
         function EventEmitter(isAsync) {
@@ -4143,72 +3714,74 @@
     }(rxjs_Subject.Subject));
 
     /**
-     *  An injectable service for executing work inside or outside of the Angular zone.
-      * *
-      * The most common use of this service is to optimize performance when starting a work consisting of
-      * one or more asynchronous tasks that don't require UI updates or error handling to be handled by
-      * Angular. Such tasks can be kicked off via {@link runOutsideAngular} and if needed, these tasks
-      * can reenter the Angular zone via {@link run}.
-      * *
-      * <!-- TODO: add/fix links to:
-      * - docs explaining zones and the use of zones in Angular and change-detection
-      * - link to runOutsideAngular/run (throughout this file!)
-      * -->
-      * *
-      * ### Example
-      * ```
-      * import {Component, NgZone} from '@angular/core';
-      * import {NgIf} from '@angular/common';
-      * *
-      * selector: 'ng-zone-demo'.
-      * template: `
-      * <h2>Demo: NgZone</h2>
-      * *
-      * <p>Progress: {{progress}}%</p>
-      * <p *ngIf="progress >= 100">Done processing {{label}} of Angular zone!</p>
-      * *
-      * <button (click)="processWithinAngularZone()">Process within Angular zone</button>
-      * <button (click)="processOutsideOfAngularZone()">Process outside of Angular zone</button>
-      * `,
-      * })
-      * export class NgZoneDemo {
-      * progress: number = 0;
-      * label: string;
-      * *
-      * constructor(private _ngZone: NgZone) {}
-      * *
-      * // Loop inside the Angular zone
-      * // so the UI DOES refresh after each setTimeout cycle
-      * processWithinAngularZone() {
-      * this.label = 'inside';
-      * this.progress = 0;
-      * this._increaseProgress(() => console.log('Inside Done!'));
-      * }
-      * *
-      * // Loop outside of the Angular zone
-      * // so the UI DOES NOT refresh after each setTimeout cycle
-      * processOutsideOfAngularZone() {
-      * this.label = 'outside';
-      * this.progress = 0;
-      * this._ngZone.runOutsideAngular(() => {
-      * this._increaseProgress(() => {
-      * // reenter the Angular zone and display done
-      * this._ngZone.run(() => {console.log('Outside Done!') });
-      * }}));
-      * }
-      * *
-      * _increaseProgress(doneCallback: () => void) {
-      * this.progress += 1;
-      * console.log(`Current progress: ${this.progress}%`);
-      * *
-      * if (this.progress < 100) {
-      * window.setTimeout(() => this._increaseProgress(doneCallback)), 10)
-      * } else {
-      * doneCallback();
-      * }
-      * }
-      * }
-      * ```
+     * An injectable service for executing work inside or outside of the Angular zone.
+     *
+     * The most common use of this service is to optimize performance when starting a work consisting of
+     * one or more asynchronous tasks that don't require UI updates or error handling to be handled by
+     * Angular. Such tasks can be kicked off via {\@link runOutsideAngular} and if needed, these tasks
+     * can reenter the Angular zone via {\@link run}.
+     *
+     * <!-- TODO: add/fix links to:
+     *   - docs explaining zones and the use of zones in Angular and change-detection
+     *   - link to runOutsideAngular/run (throughout this file!)
+     *   -->
+     *
+     * ### Example
+     * ```
+     * import {Component, NgZone} from '\@angular/core';
+     * import {NgIf} from '\@angular/common';
+     *
+     * \@Component({
+     *   selector: 'ng-zone-demo'.
+     *   template: `
+     *     <h2>Demo: NgZone</h2>
+     *
+     *     <p>Progress: {{progress}}%</p>
+     *     <p *ngIf="progress >= 100">Done processing {{label}} of Angular zone!</p>
+     *
+     *     <button (click)="processWithinAngularZone()">Process within Angular zone</button>
+     *     <button (click)="processOutsideOfAngularZone()">Process outside of Angular zone</button>
+     *   `,
+     * })
+     * export class NgZoneDemo {
+     *   progress: number = 0;
+     *   label: string;
+     *
+     *   constructor(private _ngZone: NgZone) {}
+     *
+     *   // Loop inside the Angular zone
+     *   // so the UI DOES refresh after each setTimeout cycle
+     *   processWithinAngularZone() {
+     *     this.label = 'inside';
+     *     this.progress = 0;
+     *     this._increaseProgress(() => console.log('Inside Done!'));
+     *   }
+     *
+     *   // Loop outside of the Angular zone
+     *   // so the UI DOES NOT refresh after each setTimeout cycle
+     *   processOutsideOfAngularZone() {
+     *     this.label = 'outside';
+     *     this.progress = 0;
+     *     this._ngZone.runOutsideAngular(() => {
+     *       this._increaseProgress(() => {
+     *       // reenter the Angular zone and display done
+     *       this._ngZone.run(() => {console.log('Outside Done!') });
+     *     }}));
+     *   }
+     *
+     *   _increaseProgress(doneCallback: () => void) {
+     *     this.progress += 1;
+     *     console.log(`Current progress: ${this.progress}%`);
+     *
+     *     if (this.progress < 100) {
+     *       window.setTimeout(() => this._increaseProgress(doneCallback)), 10)
+     *     } else {
+     *       doneCallback();
+     *     }
+     *   }
+     * }
+     * ```
+     * \@experimental
      */
     var NgZone = (function () {
         /**
@@ -4258,45 +3831,45 @@
             }
         };
         /**
-         *  Executes the `fn` function synchronously within the Angular zone and returns value returned by
-          * the function.
-          * *
-          * Running functions via `run` allows you to reenter Angular zone from a task that was executed
-          * outside of the Angular zone (typically started via {@link runOutsideAngular}).
-          * *
-          * Any future tasks or microtasks scheduled from within this function will continue executing from
-          * within the Angular zone.
-          * *
-          * If a synchronous error happens it will be rethrown and not reported via `onError`.
+         * Executes the `fn` function synchronously within the Angular zone and returns value returned by
+         * the function.
+         *
+         * Running functions via `run` allows you to reenter Angular zone from a task that was executed
+         * outside of the Angular zone (typically started via {\@link runOutsideAngular}).
+         *
+         * Any future tasks or microtasks scheduled from within this function will continue executing from
+         * within the Angular zone.
+         *
+         * If a synchronous error happens it will be rethrown and not reported via `onError`.
          * @param {?} fn
          * @return {?}
          */
         NgZone.prototype.run = function (fn) { return this.inner.run(fn); };
         /**
-         *  Same as `run`, except that synchronous errors are caught and forwarded via `onError` and not
-          * rethrown.
+         * Same as `run`, except that synchronous errors are caught and forwarded via `onError` and not
+         * rethrown.
          * @param {?} fn
          * @return {?}
          */
         NgZone.prototype.runGuarded = function (fn) { return this.inner.runGuarded(fn); };
         /**
-         *  Executes the `fn` function synchronously in Angular's parent zone and returns value returned by
-          * the function.
-          * *
-          * Running functions via `runOutsideAngular` allows you to escape Angular's zone and do work that
-          * doesn't trigger Angular change-detection or is subject to Angular's error handling.
-          * *
-          * Any future tasks or microtasks scheduled from within this function will continue executing from
-          * outside of the Angular zone.
-          * *
-          * Use {@link run} to reenter the Angular zone and do work that updates the application model.
+         * Executes the `fn` function synchronously in Angular's parent zone and returns value returned by
+         * the function.
+         *
+         * Running functions via `runOutsideAngular` allows you to escape Angular's zone and do work that
+         * doesn't trigger Angular change-detection or is subject to Angular's error handling.
+         *
+         * Any future tasks or microtasks scheduled from within this function will continue executing from
+         * outside of the Angular zone.
+         *
+         * Use {\@link run} to reenter the Angular zone and do work that updates the application model.
          * @param {?} fn
          * @return {?}
          */
         NgZone.prototype.runOutsideAngular = function (fn) { return this.outer.run(fn); };
         Object.defineProperty(NgZone.prototype, "onUnstable", {
             /**
-             *  Notifies when code enters Angular Zone. This gets fired first on VM Turn.
+             * Notifies when code enters Angular Zone. This gets fired first on VM Turn.
              * @return {?}
              */
             get: function () { return this._onUnstable; },
@@ -4305,9 +3878,9 @@
         });
         Object.defineProperty(NgZone.prototype, "onMicrotaskEmpty", {
             /**
-             *  Notifies when there is no more microtasks enqueue in the current VM Turn.
-              * This is a hint for Angular to do change detection, which may enqueue more microtasks.
-              * For this reason this event can fire multiple times per VM Turn.
+             * Notifies when there is no more microtasks enqueue in the current VM Turn.
+             * This is a hint for Angular to do change detection, which may enqueue more microtasks.
+             * For this reason this event can fire multiple times per VM Turn.
              * @return {?}
              */
             get: function () { return this._onMicrotaskEmpty; },
@@ -4316,9 +3889,9 @@
         });
         Object.defineProperty(NgZone.prototype, "onStable", {
             /**
-             *  Notifies when the last `onMicrotaskEmpty` has run and there are no more microtasks, which
-              * implies we are about to relinquish VM turn.
-              * This event gets called just once.
+             * Notifies when the last `onMicrotaskEmpty` has run and there are no more microtasks, which
+             * implies we are about to relinquish VM turn.
+             * This event gets called just once.
              * @return {?}
              */
             get: function () { return this._onStable; },
@@ -4327,7 +3900,7 @@
         });
         Object.defineProperty(NgZone.prototype, "onError", {
             /**
-             *  Notify that an error has been delivered.
+             * Notify that an error has been delivered.
              * @return {?}
              */
             get: function () { return this._onErrorEvents; },
@@ -4336,7 +3909,7 @@
         });
         Object.defineProperty(NgZone.prototype, "isStable", {
             /**
-             *  Whether there are no outstanding microtasks or macrotasks.
+             * Whether there are no outstanding microtasks or macrotasks.
              * @return {?}
              */
             get: function () { return this._isStable; },
@@ -4545,7 +4118,7 @@
     }());
     var /** @type {?} */ trackByIdentity = function (index, item) { return item; };
     /**
-     * @stable
+     * \@stable
      */
     var DefaultIterableDiffer = (function () {
         /**
@@ -4790,11 +4363,12 @@
             configurable: true
         });
         /**
-         *  Reset the state of the change objects to show no changes. This means set previousKey to
-          * currentKey, and clear all of the queues (additions, moves, removals).
-          * Set the previousIndexes of moved and added items to their currentIndexes
-          * Reset the list of additions, moves and removals
-          * *
+         * Reset the state of the change objects to show no changes. This means set previousKey to
+         * currentKey, and clear all of the queues (additions, moves, removals).
+         * Set the previousIndexes of moved and added items to their currentIndexes
+         * Reset the list of additions, moves and removals
+         *
+         * \@internal
          * @return {?}
          */
         DefaultIterableDiffer.prototype._reset = function () {
@@ -4818,13 +4392,14 @@
             }
         };
         /**
-         *  This is the core function which handles differences between collections.
-          * *
-          * - `record` is the record which we saw at this position last time. If null then it is a new
-          * item.
-          * - `item` is the current item in the collection
-          * - `index` is the position of the item in the collection
-          * *
+         * This is the core function which handles differences between collections.
+         *
+         * - `record` is the record which we saw at this position last time. If null then it is a new
+         *   item.
+         * - `item` is the current item in the collection
+         * - `index` is the position of the item in the collection
+         *
+         * \@internal
          * @param {?} record
          * @param {?} item
          * @param {?} itemTrackBy
@@ -4870,30 +4445,31 @@
             return record;
         };
         /**
-         *  This check is only needed if an array contains duplicates. (Short circuit of nothing dirty)
-          * *
-          * Use case: `[a, a]` => `[b, a, a]`
-          * *
-          * If we did not have this check then the insertion of `b` would:
-          * 1) evict first `a`
-          * 2) insert `b` at `0` index.
-          * 3) leave `a` at index `1` as is. <-- this is wrong!
-          * 3) reinsert `a` at index 2. <-- this is wrong!
-          * *
-          * The correct behavior is:
-          * 1) evict first `a`
-          * 2) insert `b` at `0` index.
-          * 3) reinsert `a` at index 1.
-          * 3) move `a` at from `1` to `2`.
-          * *
-          * *
-          * Double check that we have not evicted a duplicate item. We need to check if the item type may
-          * have already been removed:
-          * The insertion of b will evict the first 'a'. If we don't reinsert it now it will be reinserted
-          * at the end. Which will show up as the two 'a's switching position. This is incorrect, since a
-          * better way to think of it is as insert of 'b' rather then switch 'a' with 'b' and then add 'a'
-          * at the end.
-          * *
+         * This check is only needed if an array contains duplicates. (Short circuit of nothing dirty)
+         *
+         * Use case: `[a, a]` => `[b, a, a]`
+         *
+         * If we did not have this check then the insertion of `b` would:
+         *   1) evict first `a`
+         *   2) insert `b` at `0` index.
+         *   3) leave `a` at index `1` as is. <-- this is wrong!
+         *   3) reinsert `a` at index 2. <-- this is wrong!
+         *
+         * The correct behavior is:
+         *   1) evict first `a`
+         *   2) insert `b` at `0` index.
+         *   3) reinsert `a` at index 1.
+         *   3) move `a` at from `1` to `2`.
+         *
+         *
+         * Double check that we have not evicted a duplicate item. We need to check if the item type may
+         * have already been removed:
+         * The insertion of b will evict the first 'a'. If we don't reinsert it now it will be reinserted
+         * at the end. Which will show up as the two 'a's switching position. This is incorrect, since a
+         * better way to think of it is as insert of 'b' rather then switch 'a' with 'b' and then add 'a'
+         * at the end.
+         *
+         * \@internal
          * @param {?} record
          * @param {?} item
          * @param {?} itemTrackBy
@@ -4912,10 +4488,11 @@
             return record;
         };
         /**
-         *  Get rid of any excess {@link CollectionChangeRecord}s from the previous collection
-          * *
-          * - `record` The first excess {@link CollectionChangeRecord}.
-          * *
+         * Get rid of any excess {\@link CollectionChangeRecord}s from the previous collection
+         *
+         * - `record` The first excess {\@link CollectionChangeRecord}.
+         *
+         * \@internal
          * @param {?} record
          * @return {?}
          */
@@ -4946,6 +4523,7 @@
             }
         };
         /**
+         * \@internal
          * @param {?} record
          * @param {?} prevRecord
          * @param {?} index
@@ -4974,6 +4552,7 @@
             return record;
         };
         /**
+         * \@internal
          * @param {?} record
          * @param {?} prevRecord
          * @param {?} index
@@ -4986,6 +4565,7 @@
             return record;
         };
         /**
+         * \@internal
          * @param {?} record
          * @param {?} prevRecord
          * @param {?} index
@@ -5007,6 +4587,7 @@
             return record;
         };
         /**
+         * \@internal
          * @param {?} record
          * @param {?} prevRecord
          * @param {?} index
@@ -5043,6 +4624,7 @@
             return record;
         };
         /**
+         * \@internal
          * @param {?} record
          * @return {?}
          */
@@ -5050,6 +4632,7 @@
             return this._addToRemovals(this._unlink(record));
         };
         /**
+         * \@internal
          * @param {?} record
          * @return {?}
          */
@@ -5077,6 +4660,7 @@
             return record;
         };
         /**
+         * \@internal
          * @param {?} record
          * @param {?} toIndex
          * @return {?}
@@ -5100,6 +4684,7 @@
             return record;
         };
         /**
+         * \@internal
          * @param {?} record
          * @return {?}
          */
@@ -5126,6 +4711,7 @@
             return record;
         };
         /**
+         * \@internal
          * @param {?} record
          * @param {?} item
          * @return {?}
@@ -5166,7 +4752,7 @@
         return DefaultIterableDiffer;
     }());
     /**
-     * @stable
+     * \@stable
      */
     var CollectionChangeRecord = (function () {
         /**
@@ -5209,7 +4795,6 @@
         };
         return CollectionChangeRecord;
     }());
-    // A linked list of CollectionChangeRecords with the same CollectionChangeRecord.item
     var _DuplicateItemRecordList = (function () {
         function _DuplicateItemRecordList() {
             /** @internal */
@@ -5218,9 +4803,9 @@
             this._tail = null;
         }
         /**
-         *  Append the record to the list of duplicates.
-          * *
-          * Note: by design all records in the list of duplicates hold the same value in record.item.
+         * Append the record to the list of duplicates.
+         *
+         * Note: by design all records in the list of duplicates hold the same value in record.item.
          * @param {?} record
          * @return {?}
          */
@@ -5256,9 +4841,9 @@
             return null;
         };
         /**
-         *  Remove one {@link CollectionChangeRecord} from the list of duplicates.
-          * *
-          * Returns whether the list of duplicates is empty.
+         * Remove one {\@link CollectionChangeRecord} from the list of duplicates.
+         *
+         * Returns whether the list of duplicates is empty.
          * @param {?} record
          * @return {?}
          */
@@ -5307,11 +4892,11 @@
             duplicates.add(record);
         };
         /**
-         *  Retrieve the `value` using key. Because the CollectionChangeRecord value may be one which we
-          * have already iterated over, we use the afterIndex to pretend it is not there.
-          * *
-          * Use case: `[a, b, c, a, a]` if we are at index `3` which is the second `a` then asking if we
-          * have any more `a`s needs to return the last `a` not the first or second.
+         * Retrieve the `value` using key. Because the CollectionChangeRecord value may be one which we
+         * have already iterated over, we use the afterIndex to pretend it is not there.
+         *
+         * Use case: `[a, b, c, a, a]` if we are at index `3` which is the second `a` then asking if we
+         * have any more `a`s needs to return the last `a` not the first or second.
          * @param {?} trackById
          * @param {?=} afterIndex
          * @return {?}
@@ -5323,9 +4908,9 @@
             return recordList ? recordList.get(trackById, afterIndex) : null;
         };
         /**
-         *  Removes a {@link CollectionChangeRecord} from the list of duplicates.
-          * *
-          * The list of duplicates also is removed from the map if it gets empty.
+         * Removes a {\@link CollectionChangeRecord} from the list of duplicates.
+         *
+         * The list of duplicates also is removed from the map if it gets empty.
          * @param {?} record
          * @return {?}
          */
@@ -5532,6 +5117,7 @@
             return this.isDirty;
         };
         /**
+         * \@internal
          * @return {?}
          */
         DefaultKeyValueDiffer.prototype._reset = function () {
@@ -5553,6 +5139,7 @@
             }
         };
         /**
+         * \@internal
          * @param {?} lastRecord
          * @param {?} record
          * @return {?}
@@ -5589,6 +5176,7 @@
             }
         };
         /**
+         * \@internal
          * @param {?} record
          * @return {?}
          */
@@ -5597,6 +5185,7 @@
                 record._prevRemoved !== null;
         };
         /**
+         * \@internal
          * @param {?} record
          * @return {?}
          */
@@ -5611,6 +5200,7 @@
             }
         };
         /**
+         * \@internal
          * @param {?} prev
          * @param {?} record
          * @return {?}
@@ -5626,6 +5216,7 @@
             record._next = null;
         };
         /**
+         * \@internal
          * @param {?} record
          * @return {?}
          */
@@ -5647,6 +5238,7 @@
             record._prevRemoved = record._nextRemoved = null;
         };
         /**
+         * \@internal
          * @param {?} record
          * @return {?}
          */
@@ -5660,6 +5252,7 @@
             }
         };
         /**
+         * \@internal
          * @param {?} record
          * @return {?}
          */
@@ -5704,6 +5297,7 @@
                 'removals: ' + removals.join(', ') + '\n';
         };
         /**
+         * \@internal
          * @param {?} obj
          * @param {?} fn
          * @return {?}
@@ -5719,7 +5313,7 @@
         return DefaultKeyValueDiffer;
     }());
     /**
-     * @stable
+     * \@stable
      */
     var KeyValueChangeRecord = (function () {
         /**
@@ -5755,7 +5349,8 @@
     }());
 
     /**
-     *  A repository of different iterable diffing strategies used by NgFor, NgClass, and others.
+     * A repository of different iterable diffing strategies used by NgFor, NgClass, and others.
+     * \@stable
      */
     var IterableDiffers = (function () {
         /**
@@ -5780,22 +5375,23 @@
             }
         };
         /**
-         *  Takes an array of {@link IterableDifferFactory} and returns a provider used to extend the
-          * inherited {@link IterableDiffers} instance with the provided factories and return a new
-          * {@link IterableDiffers} instance.
-          * *
-          * The following example shows how to extend an existing list of factories,
-          * which will only be applied to the injector for this component and its children.
-          * This step is all that's required to make a new {@link IterableDiffer} available.
-          * *
-          * ### Example
-          * *
-          * ```
-          * viewProviders: [
-          * IterableDiffers.extend([new ImmutableListDiffer()])
-          * ]
-          * })
-          * ```
+         * Takes an array of {\@link IterableDifferFactory} and returns a provider used to extend the
+         * inherited {\@link IterableDiffers} instance with the provided factories and return a new
+         * {\@link IterableDiffers} instance.
+         *
+         * The following example shows how to extend an existing list of factories,
+         * which will only be applied to the injector for this component and its children.
+         * This step is all that's required to make a new {\@link IterableDiffer} available.
+         *
+         * ### Example
+         *
+         * ```
+         * \@Component({
+         *   viewProviders: [
+         *     IterableDiffers.extend([new ImmutableListDiffer()])
+         *   ]
+         * })
+         * ```
          * @param {?} factories
          * @return {?}
          */
@@ -5832,7 +5428,8 @@
     }());
 
     /**
-     *  A repository of different Map diffing strategies used by NgClass, NgStyle, and others.
+     * A repository of different Map diffing strategies used by NgClass, NgStyle, and others.
+     * \@stable
      */
     var KeyValueDiffers = (function () {
         /**
@@ -5857,22 +5454,23 @@
             }
         };
         /**
-         *  Takes an array of {@link KeyValueDifferFactory} and returns a provider used to extend the
-          * inherited {@link KeyValueDiffers} instance with the provided factories and return a new
-          * {@link KeyValueDiffers} instance.
-          * *
-          * The following example shows how to extend an existing list of factories,
-          * which will only be applied to the injector for this component and its children.
-          * This step is all that's required to make a new {@link KeyValueDiffer} available.
-          * *
-          * ### Example
-          * *
-          * ```
-          * viewProviders: [
-          * KeyValueDiffers.extend([new ImmutableMapDiffer()])
-          * ]
-          * })
-          * ```
+         * Takes an array of {\@link KeyValueDifferFactory} and returns a provider used to extend the
+         * inherited {\@link KeyValueDiffers} instance with the provided factories and return a new
+         * {\@link KeyValueDiffers} instance.
+         *
+         * The following example shows how to extend an existing list of factories,
+         * which will only be applied to the injector for this component and its children.
+         * This step is all that's required to make a new {\@link KeyValueDiffer} available.
+         *
+         * ### Example
+         *
+         * ```
+         * \@Component({
+         *   viewProviders: [
+         *     KeyValueDiffers.extend([new ImmutableMapDiffer()])
+         *   ]
+         * })
+         * ```
          * @param {?} factories
          * @return {?}
          */
@@ -5928,22 +5526,23 @@
         }
     }
     /**
-     *  Indicates that the result of a {@link Pipe} transformation has changed even though the
-      * reference
-      * has not changed.
-      * *
-      * The wrapped value will be unwrapped by change detection, and the unwrapped value will be stored.
-      * *
-      * Example:
-      * *
-      * ```
-      * if (this._latestValue === this._latestReturnedValue) {
-      * return this._latestReturnedValue;
-      * } else {
-      * this._latestReturnedValue = this._latestValue;
-      * return WrappedValue.wrap(this._latestValue); // this will force update
-      * }
-      * ```
+     * Indicates that the result of a {\@link Pipe} transformation has changed even though the
+     * reference
+     * has not changed.
+     *
+     * The wrapped value will be unwrapped by change detection, and the unwrapped value will be stored.
+     *
+     * Example:
+     *
+     * ```
+     * if (this._latestValue === this._latestReturnedValue) {
+     *    return this._latestReturnedValue;
+     *  } else {
+     *    this._latestReturnedValue = this._latestValue;
+     *    return WrappedValue.wrap(this._latestValue); // this will force update
+     *  }
+     * ```
+     * \@stable
      */
     var WrappedValue = (function () {
         /**
@@ -5960,7 +5559,7 @@
         return WrappedValue;
     }());
     /**
-     *  Helper class for unwrapping WrappedValue s
+     * Helper class for unwrapping WrappedValue s
      */
     var ValueUnwrapper = (function () {
         function ValueUnwrapper() {
@@ -5984,7 +5583,8 @@
         return ValueUnwrapper;
     }());
     /**
-     *  Represents a basic change from a previous to a new value.
+     * Represents a basic change from a previous to a new value.
+     * \@stable
      */
     var SimpleChange = (function () {
         /**
@@ -5996,7 +5596,7 @@
             this.currentValue = currentValue;
         }
         /**
-         *  Check whether the new value is the first value assigned.
+         * Check whether the new value is the first value assigned.
          * @return {?}
          */
         SimpleChange.prototype.isFirstChange = function () { return this.previousValue === UNINITIALIZED; };
@@ -6004,187 +5604,194 @@
     }());
 
     /**
+     * \@stable
      * @abstract
      */
     var ChangeDetectorRef = (function () {
         function ChangeDetectorRef() {
         }
         /**
-         *  Marks all {@link ChangeDetectionStrategy#OnPush} ancestors as to be checked.
-          * *
-          * <!-- TODO: Add a link to a chapter on OnPush components -->
-          * *
-          * ### Example ([live demo](http://plnkr.co/edit/GC512b?p=preview))
-          * *
-          * ```typescript
-          * selector: 'cmp',
-          * changeDetection: ChangeDetectionStrategy.OnPush,
-          * template: `Number of ticks: {{numberOfTicks}}`
-          * })
-          * class Cmp {
-          * numberOfTicks = 0;
-          * *
-          * constructor(ref: ChangeDetectorRef) {
-          * setInterval(() => {
-          * this.numberOfTicks ++
-          * // the following is required, otherwise the view will not be updated
-          * this.ref.markForCheck();
-          * }, 1000);
-          * }
-          * }
-          * *
-          * selector: 'app',
-          * changeDetection: ChangeDetectionStrategy.OnPush,
-          * template: `
-          * <cmp><cmp>
-          * `,
-          * })
-          * class App {
-          * }
-          * ```
+         * Marks all {\@link ChangeDetectionStrategy#OnPush} ancestors as to be checked.
+         *
+         * <!-- TODO: Add a link to a chapter on OnPush components -->
+         *
+         * ### Example ([live demo](http://plnkr.co/edit/GC512b?p=preview))
+         *
+         * ```typescript
+         * \@Component({
+         *   selector: 'cmp',
+         *   changeDetection: ChangeDetectionStrategy.OnPush,
+         *   template: `Number of ticks: {{numberOfTicks}}`
+         * })
+         * class Cmp {
+         *   numberOfTicks = 0;
+         *
+         *   constructor(ref: ChangeDetectorRef) {
+         *     setInterval(() => {
+         *       this.numberOfTicks ++
+         *       // the following is required, otherwise the view will not be updated
+         *       this.ref.markForCheck();
+         *     }, 1000);
+         *   }
+         * }
+         *
+         * \@Component({
+         *   selector: 'app',
+         *   changeDetection: ChangeDetectionStrategy.OnPush,
+         *   template: `
+         *     <cmp><cmp>
+         *   `,
+         * })
+         * class App {
+         * }
+         * ```
          * @abstract
          * @return {?}
          */
         ChangeDetectorRef.prototype.markForCheck = function () { };
         /**
-         *  Detaches the change detector from the change detector tree.
-          * *
-          * The detached change detector will not be checked until it is reattached.
-          * *
-          * This can also be used in combination with {@link ChangeDetectorRef#detectChanges} to implement
-          * local change
-          * detection checks.
-          * *
-          * <!-- TODO: Add a link to a chapter on detach/reattach/local digest -->
-          * <!-- TODO: Add a live demo once ref.detectChanges is merged into master -->
-          * *
-          * ### Example
-          * *
-          * The following example defines a component with a large list of readonly data.
-          * Imagine the data changes constantly, many times per second. For performance reasons,
-          * we want to check and update the list every five seconds. We can do that by detaching
-          * the component's change detector and doing a local check every five seconds.
-          * *
-          * ```typescript
-          * class DataProvider {
-          * // in a real application the returned data will be different every time
-          * get data() {
-          * return [1,2,3,4,5];
-          * }
-          * }
-          * *
-          * selector: 'giant-list',
-          * template: `
-          * <li *ngFor="let d of dataProvider.data">Data {{d}}</lig>
-          * `,
-          * })
-          * class GiantList {
-          * constructor(private ref: ChangeDetectorRef, private dataProvider:DataProvider) {
-          * ref.detach();
-          * setInterval(() => {
-          * this.ref.detectChanges();
-          * }, 5000);
-          * }
-          * }
-          * *
-          * selector: 'app',
-          * providers: [DataProvider],
-          * template: `
-          * <giant-list><giant-list>
-          * `,
-          * })
-          * class App {
-          * }
-          * ```
+         * Detaches the change detector from the change detector tree.
+         *
+         * The detached change detector will not be checked until it is reattached.
+         *
+         * This can also be used in combination with {\@link ChangeDetectorRef#detectChanges} to implement
+         * local change
+         * detection checks.
+         *
+         * <!-- TODO: Add a link to a chapter on detach/reattach/local digest -->
+         * <!-- TODO: Add a live demo once ref.detectChanges is merged into master -->
+         *
+         * ### Example
+         *
+         * The following example defines a component with a large list of readonly data.
+         * Imagine the data changes constantly, many times per second. For performance reasons,
+         * we want to check and update the list every five seconds. We can do that by detaching
+         * the component's change detector and doing a local check every five seconds.
+         *
+         * ```typescript
+         * class DataProvider {
+         *   // in a real application the returned data will be different every time
+         *   get data() {
+         *     return [1,2,3,4,5];
+         *   }
+         * }
+         *
+         * \@Component({
+         *   selector: 'giant-list',
+         *   template: `
+         *     <li *ngFor="let d of dataProvider.data">Data {{d}}</lig>
+         *   `,
+         * })
+         * class GiantList {
+         *   constructor(private ref: ChangeDetectorRef, private dataProvider:DataProvider) {
+         *     ref.detach();
+         *     setInterval(() => {
+         *       this.ref.detectChanges();
+         *     }, 5000);
+         *   }
+         * }
+         *
+         * \@Component({
+         *   selector: 'app',
+         *   providers: [DataProvider],
+         *   template: `
+         *     <giant-list><giant-list>
+         *   `,
+         * })
+         * class App {
+         * }
+         * ```
          * @abstract
          * @return {?}
          */
         ChangeDetectorRef.prototype.detach = function () { };
         /**
-         *  Checks the change detector and its children.
-          * *
-          * This can also be used in combination with {@link ChangeDetectorRef#detach} to implement local
-          * change detection
-          * checks.
-          * *
-          * <!-- TODO: Add a link to a chapter on detach/reattach/local digest -->
-          * <!-- TODO: Add a live demo once ref.detectChanges is merged into master -->
-          * *
-          * ### Example
-          * *
-          * The following example defines a component with a large list of readonly data.
-          * Imagine, the data changes constantly, many times per second. For performance reasons,
-          * we want to check and update the list every five seconds.
-          * *
-          * We can do that by detaching the component's change detector and doing a local change detection
-          * check
-          * every five seconds.
-          * *
-          * See {@link ChangeDetectorRef#detach} for more information.
+         * Checks the change detector and its children.
+         *
+         * This can also be used in combination with {\@link ChangeDetectorRef#detach} to implement local
+         * change detection
+         * checks.
+         *
+         * <!-- TODO: Add a link to a chapter on detach/reattach/local digest -->
+         * <!-- TODO: Add a live demo once ref.detectChanges is merged into master -->
+         *
+         * ### Example
+         *
+         * The following example defines a component with a large list of readonly data.
+         * Imagine, the data changes constantly, many times per second. For performance reasons,
+         * we want to check and update the list every five seconds.
+         *
+         * We can do that by detaching the component's change detector and doing a local change detection
+         * check
+         * every five seconds.
+         *
+         * See {\@link ChangeDetectorRef#detach} for more information.
          * @abstract
          * @return {?}
          */
         ChangeDetectorRef.prototype.detectChanges = function () { };
         /**
-         *  Checks the change detector and its children, and throws if any changes are detected.
-          * *
-          * This is used in development mode to verify that running change detection doesn't introduce
-          * other changes.
+         * Checks the change detector and its children, and throws if any changes are detected.
+         *
+         * This is used in development mode to verify that running change detection doesn't introduce
+         * other changes.
          * @abstract
          * @return {?}
          */
         ChangeDetectorRef.prototype.checkNoChanges = function () { };
         /**
-         *  Reattach the change detector to the change detector tree.
-          * *
-          * This also marks OnPush ancestors as to be checked. This reattached change detector will be
-          * checked during the next change detection run.
-          * *
-          * <!-- TODO: Add a link to a chapter on detach/reattach/local digest -->
-          * *
-          * ### Example ([live demo](http://plnkr.co/edit/aUhZha?p=preview))
-          * *
-          * The following example creates a component displaying `live` data. The component will detach
-          * its change detector from the main change detector tree when the component's live property
-          * is set to false.
-          * *
-          * ```typescript
-          * class DataProvider {
-          * data = 1;
-          * *
-          * constructor() {
-          * setInterval(() => {
-          * this.data = this.data * 2;
-          * }, 500);
-          * }
-          * }
-          * *
-          * selector: 'live-data',
-          * inputs: ['live'],
-          * template: 'Data: {{dataProvider.data}}'
-          * })
-          * class LiveData {
-          * constructor(private ref: ChangeDetectorRef, private dataProvider:DataProvider) {}
-          * *
-          * set live(value) {
-          * if (value)
-          * this.ref.reattach();
-          * else
-          * this.ref.detach();
-          * }
-          * }
-          * *
-          * selector: 'app',
-          * providers: [DataProvider],
-          * template: `
-          * Live Update: <input type="checkbox" [(ngModel)]="live">
-          * <live-data [live]="live"><live-data>
-          * `,
-          * })
-          * class App {
-          * live = true;
-          * }
-          * ```
+         * Reattach the change detector to the change detector tree.
+         *
+         * This also marks OnPush ancestors as to be checked. This reattached change detector will be
+         * checked during the next change detection run.
+         *
+         * <!-- TODO: Add a link to a chapter on detach/reattach/local digest -->
+         *
+         * ### Example ([live demo](http://plnkr.co/edit/aUhZha?p=preview))
+         *
+         * The following example creates a component displaying `live` data. The component will detach
+         * its change detector from the main change detector tree when the component's live property
+         * is set to false.
+         *
+         * ```typescript
+         * class DataProvider {
+         *   data = 1;
+         *
+         *   constructor() {
+         *     setInterval(() => {
+         *       this.data = this.data * 2;
+         *     }, 500);
+         *   }
+         * }
+         *
+         * \@Component({
+         *   selector: 'live-data',
+         *   inputs: ['live'],
+         *   template: 'Data: {{dataProvider.data}}'
+         * })
+         * class LiveData {
+         *   constructor(private ref: ChangeDetectorRef, private dataProvider:DataProvider) {}
+         *
+         *   set live(value) {
+         *     if (value)
+         *       this.ref.reattach();
+         *     else
+         *       this.ref.detach();
+         *   }
+         * }
+         *
+         * \@Component({
+         *   selector: 'app',
+         *   providers: [DataProvider],
+         *   template: `
+         *     Live Update: <input type="checkbox" [(ngModel)]="live">
+         *     <live-data [live]="live"><live-data>
+         *   `,
+         * })
+         * class App {
+         *   live = true;
+         * }
+         * ```
          * @abstract
          * @return {?}
          */
@@ -6204,9 +5811,12 @@
     var /** @type {?} */ defaultKeyValueDiffers = new KeyValueDiffers(keyValDiff);
 
     /**
-     * @experimental
+     * @license
+     * Copyright Google Inc. All Rights Reserved.
+     *
+     * Use of this source code is governed by an MIT-style license that can be
+     * found in the LICENSE file at https://angular.io/license
      */
-    // TODO (matsko): add typing for the animation function
     var RenderComponentType = (function () {
         /**
          * @param {?} id
@@ -6232,57 +5842,40 @@
     var RenderDebugInfo = (function () {
         function RenderDebugInfo() {
         }
-        Object.defineProperty(RenderDebugInfo.prototype, "injector", {
-            /**
-             * @return {?}
-             */
-            get: function () { return unimplemented(); },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(RenderDebugInfo.prototype, "component", {
-            /**
-             * @return {?}
-             */
-            get: function () { return unimplemented(); },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(RenderDebugInfo.prototype, "providerTokens", {
-            /**
-             * @return {?}
-             */
-            get: function () { return unimplemented(); },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(RenderDebugInfo.prototype, "references", {
-            /**
-             * @return {?}
-             */
-            get: function () { return unimplemented(); },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(RenderDebugInfo.prototype, "context", {
-            /**
-             * @return {?}
-             */
-            get: function () { return unimplemented(); },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(RenderDebugInfo.prototype, "source", {
-            /**
-             * @return {?}
-             */
-            get: function () { return unimplemented(); },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+         * @abstract
+         * @return {?}
+         */
+        RenderDebugInfo.prototype.injector = function () { };
+        /**
+         * @abstract
+         * @return {?}
+         */
+        RenderDebugInfo.prototype.component = function () { };
+        /**
+         * @abstract
+         * @return {?}
+         */
+        RenderDebugInfo.prototype.providerTokens = function () { };
+        /**
+         * @abstract
+         * @return {?}
+         */
+        RenderDebugInfo.prototype.references = function () { };
+        /**
+         * @abstract
+         * @return {?}
+         */
+        RenderDebugInfo.prototype.context = function () { };
+        /**
+         * @abstract
+         * @return {?}
+         */
+        RenderDebugInfo.prototype.source = function () { };
         return RenderDebugInfo;
     }());
     /**
+     * \@experimental
      * @abstract
      */
     var Renderer = (function () {
@@ -6384,7 +5977,7 @@
          */
         Renderer.prototype.setElementAttribute = function (renderElement, attributeName, attributeValue) { };
         /**
-         *  Used only in debug mode to serialize property changes to dom nodes as attributes.
+         * Used only in debug mode to serialize property changes to dom nodes as attributes.
          * @abstract
          * @param {?} renderElement
          * @param {?} propertyName
@@ -6438,16 +6031,17 @@
         return Renderer;
     }());
     /**
-     *  Injectable service that provides a low-level interface for modifying the UI.
-      * *
-      * Use this service to bypass Angular's templating and make custom UI changes that can't be
-      * expressed declaratively. For example if you need to set a property or an attribute whose name is
-      * not statically known, use {@link #setElementProperty} or {@link #setElementAttribute}
-      * respectively.
-      * *
-      * If you are implementing a custom renderer, you must implement this interface.
-      * *
-      * The default Renderer implementation is `DomRenderer`. Also available is `WebWorkerRenderer`.
+     * Injectable service that provides a low-level interface for modifying the UI.
+     *
+     * Use this service to bypass Angular's templating and make custom UI changes that can't be
+     * expressed declaratively. For example if you need to set a property or an attribute whose name is
+     * not statically known, use {\@link #setElementProperty} or {\@link #setElementAttribute}
+     * respectively.
+     *
+     * If you are implementing a custom renderer, you must implement this interface.
+     *
+     * The default Renderer implementation is `DomRenderer`. Also available is `WebWorkerRenderer`.
+     * \@experimental
      * @abstract
      */
     var RootRenderer = (function () {
@@ -6476,8 +6070,9 @@
     SecurityContext[SecurityContext.URL] = "URL";
     SecurityContext[SecurityContext.RESOURCE_URL] = "RESOURCE_URL";
     /**
-     *  Sanitizer is used by the views to sanitize potentially dangerous values.
-      * *
+     * Sanitizer is used by the views to sanitize potentially dangerous values.
+     *
+     * \@stable
      * @abstract
      */
     var Sanitizer = (function () {
@@ -6506,32 +6101,35 @@
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
     /**
-     *  An error thrown if application changes model breaking the top-down data flow.
-      * *
-      * This exception is only thrown in dev mode.
-      * *
-      * <!-- TODO: Add a link once the dev mode option is configurable -->
-      * *
-      * ### Example
-      * *
-      * ```typescript
-      * selector: 'parent',
-      * template: '<child [prop]="parentProp"></child>',
-      * })
-      * class Parent {
-      * parentProp = 'init';
-      * }
-      * *
-      * class Child {
-      * constructor(public parent: Parent) {}
-      * *
-      * set prop(v) {
-      * // this updates the parent property, which is disallowed during change detection
-      * // this will result in ExpressionChangedAfterItHasBeenCheckedError
-      * this.parent.parentProp = 'updated';
-      * }
-      * }
-      * ```
+     * An error thrown if application changes model breaking the top-down data flow.
+     *
+     * This exception is only thrown in dev mode.
+     *
+     * <!-- TODO: Add a link once the dev mode option is configurable -->
+     *
+     * ### Example
+     *
+     * ```typescript
+     * \@Component({
+     *   selector: 'parent',
+     *   template: '<child [prop]="parentProp"></child>',
+     * })
+     * class Parent {
+     *   parentProp = 'init';
+     * }
+     *
+     * \@Directive({selector: 'child', inputs: ['prop']})
+     * class Child {
+     *   constructor(public parent: Parent) {}
+     *
+     *   set prop(v) {
+     *     // this updates the parent property, which is disallowed during change detection
+     *     // this will result in ExpressionChangedAfterItHasBeenCheckedError
+     *     this.parent.parentProp = 'updated';
+     *   }
+     * }
+     * ```
+     * \@stable
      */
     var ExpressionChangedAfterItHasBeenCheckedError = (function (_super) {
         __extends$7(ExpressionChangedAfterItHasBeenCheckedError, _super);
@@ -6551,10 +6149,11 @@
         return ExpressionChangedAfterItHasBeenCheckedError;
     }(BaseError));
     /**
-     *  Thrown when an exception was raised during view creation, change detection or destruction.
-      * *
-      * This error wraps the original exception to attach additional contextual information that can
-      * be useful for debugging.
+     * Thrown when an exception was raised during view creation, change detection or destruction.
+     *
+     * This error wraps the original exception to attach additional contextual information that can
+     * be useful for debugging.
+     * \@stable
      */
     var ViewWrappedError = (function (_super) {
         __extends$7(ViewWrappedError, _super);
@@ -6569,11 +6168,12 @@
         return ViewWrappedError;
     }(WrappedError));
     /**
-     *  Thrown when a destroyed view is used.
-      * *
-      * This error indicates a bug in the framework.
-      * *
-      * This is an internal Angular error.
+     * Thrown when a destroyed view is used.
+     *
+     * This error indicates a bug in the framework.
+     *
+     * This is an internal Angular error.
+     * \@stable
      */
     var ViewDestroyedError = (function (_super) {
         __extends$7(ViewDestroyedError, _super);
@@ -6595,10 +6195,10 @@
         function ViewUtils(_renderer, sanitizer, animationQueue) {
             this._renderer = _renderer;
             this.animationQueue = animationQueue;
-            this._nextCompTypeId = 0;
             this.sanitizer = sanitizer;
         }
         /**
+         * \@internal
          * @param {?} renderComponentType
          * @return {?}
          */
@@ -7507,80 +7107,61 @@
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
     /**
-     *  Represents an instance of a Component created via a {@link ComponentFactory}.
-      * *
-      * `ComponentRef` provides access to the Component Instance as well other objects related to this
-      * Component Instance and allows you to destroy the Component Instance via the {@link #destroy}
-      * method.
+     * Represents an instance of a Component created via a {\@link ComponentFactory}.
+     *
+     * `ComponentRef` provides access to the Component Instance as well other objects related to this
+     * Component Instance and allows you to destroy the Component Instance via the {\@link #destroy}
+     * method.
+     * \@stable
      * @abstract
      */
     var ComponentRef = (function () {
         function ComponentRef() {
         }
-        Object.defineProperty(ComponentRef.prototype, "location", {
-            /**
-             *  Location of the Host Element of this Component Instance.
-             * @return {?}
-             */
-            get: function () { return unimplemented(); },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(ComponentRef.prototype, "injector", {
-            /**
-             *  The injector on which the component instance exists.
-             * @return {?}
-             */
-            get: function () { return unimplemented(); },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(ComponentRef.prototype, "instance", {
-            /**
-             *  The instance of the Component.
-             * @return {?}
-             */
-            get: function () { return unimplemented(); },
-            enumerable: true,
-            configurable: true
-        });
-        ;
-        Object.defineProperty(ComponentRef.prototype, "hostView", {
-            /**
-             *  The {@link ViewRef} of the Host View of this Component instance.
-             * @return {?}
-             */
-            get: function () { return unimplemented(); },
-            enumerable: true,
-            configurable: true
-        });
-        ;
-        Object.defineProperty(ComponentRef.prototype, "changeDetectorRef", {
-            /**
-             *  The {@link ChangeDetectorRef} of the Component instance.
-             * @return {?}
-             */
-            get: function () { return unimplemented(); },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(ComponentRef.prototype, "componentType", {
-            /**
-             *  The component type.
-             * @return {?}
-             */
-            get: function () { return unimplemented(); },
-            enumerable: true,
-            configurable: true
-        });
         /**
-         *  Destroys the component instance and all of the data structures associated with it.
+         * Location of the Host Element of this Component Instance.
+         * @abstract
+         * @return {?}
+         */
+        ComponentRef.prototype.location = function () { };
+        /**
+         * The injector on which the component instance exists.
+         * @abstract
+         * @return {?}
+         */
+        ComponentRef.prototype.injector = function () { };
+        /**
+         * The instance of the Component.
+         * @abstract
+         * @return {?}
+         */
+        ComponentRef.prototype.instance = function () { };
+        /**
+         * The {\@link ViewRef} of the Host View of this Component instance.
+         * @abstract
+         * @return {?}
+         */
+        ComponentRef.prototype.hostView = function () { };
+        /**
+         * The {\@link ChangeDetectorRef} of the Component instance.
+         * @abstract
+         * @return {?}
+         */
+        ComponentRef.prototype.changeDetectorRef = function () { };
+        /**
+         * The component type.
+         * @abstract
+         * @return {?}
+         */
+        ComponentRef.prototype.componentType = function () { };
+        /**
+         * Destroys the component instance and all of the data structures associated with it.
          * @abstract
          * @return {?}
          */
         ComponentRef.prototype.destroy = function () { };
         /**
-         *  Allows to register a callback that will be called when the component is destroyed.
+         * Allows to register a callback that will be called when the component is destroyed.
          * @abstract
          * @param {?} callback
          * @return {?}
@@ -7666,7 +7247,7 @@
         return ComponentRef_;
     }(ComponentRef));
     /**
-     * @stable
+     * \@stable
      */
     var ComponentFactory = (function () {
         /**
@@ -7688,7 +7269,7 @@
             configurable: true
         });
         /**
-         *  Creates a new component.
+         * Creates a new component.
          * @param {?} injector
          * @param {?=} projectableNodes
          * @param {?=} rootSelectorOrNode
@@ -7720,7 +7301,7 @@
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
     /**
-     * @stable
+     * \@stable
      */
     var NoComponentFactoryError = (function (_super) {
         __extends$8(NoComponentFactoryError, _super);
@@ -7728,7 +7309,7 @@
          * @param {?} component
          */
         function NoComponentFactoryError(component) {
-            _super.call(this, "No component factory found for " + stringify(component));
+            _super.call(this, "No component factory found for " + stringify(component) + ". Did you add it to @NgModule.entryComponents?");
             this.component = component;
         }
         return NoComponentFactoryError;
@@ -7746,6 +7327,7 @@
         return _NullComponentFactoryResolver;
     }());
     /**
+     * \@stable
      * @abstract
      */
     var ComponentFactoryResolver = (function () {
@@ -7913,9 +7495,10 @@
     var /** @type {?} */ wtfEndTimeRange = wtfEnabled ? endTimeRange : function (r) { return null; };
 
     /**
-     *  The Testability service provides testing hooks that can be accessed from
-      * the browser and by services such as Protractor. Each bootstrapped Angular
-      * application on the page will have an instance of Testability.
+     * The Testability service provides testing hooks that can be accessed from
+     * the browser and by services such as Protractor. Each bootstrapped Angular
+     * application on the page will have an instance of Testability.
+     * \@experimental
      */
     var Testability = (function () {
         /**
@@ -7939,6 +7522,7 @@
             this._watchAngularEvents();
         }
         /**
+         * \@internal
          * @return {?}
          */
         Testability.prototype._watchAngularEvents = function () {
@@ -7987,6 +7571,7 @@
             return this._isZoneStable && this._pendingCount == 0 && !this._ngZone.hasPendingMacrotasks;
         };
         /**
+         * \@internal
          * @return {?}
          */
         Testability.prototype._runCallbacksIfReady = function () {
@@ -8048,7 +7633,8 @@
         return Testability;
     }());
     /**
-     *  A global registry of {@link Testability} instances for specific elements.
+     * A global registry of {\@link Testability} instances for specific elements.
+     * \@experimental
      */
     var TestabilityRegistry = (function () {
         function TestabilityRegistry() {
@@ -8113,7 +7699,8 @@
         return _NoopGetTestability;
     }());
     /**
-     *  Set the {@link GetTestability} implementation used by the Angular testing framework.
+     * Set the {\@link GetTestability} implementation used by the Angular testing framework.
+     * \@experimental
      * @param {?} getter
      * @return {?}
      */
@@ -8138,13 +7725,14 @@
     var /** @type {?} */ _runModeLocked = false;
     var /** @type {?} */ _platform;
     /**
-     *  Disable Angular's development mode, which turns off assertions and other
-      * checks within the framework.
-      * *
-      * One important assertion this disables verifies that a change detection pass
-      * does not result in additional changes to any bindings (also known as
-      * unidirectional data flow).
-      * *
+     * Disable Angular's development mode, which turns off assertions and other
+     * checks within the framework.
+     *
+     * One important assertion this disables verifies that a change detection pass
+     * does not result in additional changes to any bindings (also known as
+     * unidirectional data flow).
+     *
+     * \@stable
      * @return {?}
      */
     function enableProdMode() {
@@ -8154,11 +7742,12 @@
         _devMode = false;
     }
     /**
-     *  Returns whether Angular is in development mode. After called once,
-      * the value is locked and won't change any more.
-      * *
-      * By default, this is true, unless a user calls `enableProdMode` before calling this.
-      * *
+     * Returns whether Angular is in development mode. After called once,
+     * the value is locked and won't change any more.
+     *
+     * By default, this is true, unless a user calls `enableProdMode` before calling this.
+     *
+     * \@experimental APIs related to application bootstrap are currently under review.
      * @return {?}
      */
     function isDevMode() {
@@ -8166,8 +7755,9 @@
         return _devMode;
     }
     /**
-     *  A token for third-party components that can register themselves with NgProbe.
-      * *
+     * A token for third-party components that can register themselves with NgProbe.
+     *
+     * \@experimental
      */
     var NgProbeToken = (function () {
         /**
@@ -8181,9 +7771,10 @@
         return NgProbeToken;
     }());
     /**
-     *  Creates a platform.
-      * Platforms have to be eagerly created via this function.
-      * *
+     * Creates a platform.
+     * Platforms have to be eagerly created via this function.
+     *
+     * \@experimental APIs related to application bootstrap are currently under review.
      * @param {?} injector
      * @return {?}
      */
@@ -8198,21 +7789,22 @@
         return _platform;
     }
     /**
-     *  Creates a factory for a platform
-      * *
-     * @param {?} parentPlaformFactory
+     * Creates a factory for a platform
+     *
+     * \@experimental APIs related to application bootstrap are currently under review.
+     * @param {?} parentPlatformFactory
      * @param {?} name
      * @param {?=} providers
      * @return {?}
      */
-    function createPlatformFactory(parentPlaformFactory, name, providers) {
+    function createPlatformFactory(parentPlatformFactory, name, providers) {
         if (providers === void 0) { providers = []; }
         var /** @type {?} */ marker = new OpaqueToken("Platform: " + name);
         return function (extraProviders) {
             if (extraProviders === void 0) { extraProviders = []; }
             if (!getPlatform()) {
-                if (parentPlaformFactory) {
-                    parentPlaformFactory(providers.concat(extraProviders).concat({ provide: marker, useValue: true }));
+                if (parentPlatformFactory) {
+                    parentPlatformFactory(providers.concat(extraProviders).concat({ provide: marker, useValue: true }));
                 }
                 else {
                     createPlatform(ReflectiveInjector.resolveAndCreate(providers.concat(extraProviders).concat({ provide: marker, useValue: true })));
@@ -8222,9 +7814,10 @@
         };
     }
     /**
-     *  Checks that there currently is a platform
-      * which contains the given token as a provider.
-      * *
+     * Checks that there currently is a platform
+     * which contains the given token as a provider.
+     *
+     * \@experimental APIs related to application bootstrap are currently under review.
      * @param {?} requiredToken
      * @return {?}
      */
@@ -8239,8 +7832,9 @@
         return platform;
     }
     /**
-     *  Destroy the existing platform.
-      * *
+     * Destroy the existing platform.
+     *
+     * \@experimental APIs related to application bootstrap are currently under review.
      * @return {?}
      */
     function destroyPlatform() {
@@ -8249,104 +7843,100 @@
         }
     }
     /**
-     *  Returns the current platform.
-      * *
+     * Returns the current platform.
+     *
+     * \@experimental APIs related to application bootstrap are currently under review.
      * @return {?}
      */
     function getPlatform() {
         return _platform && !_platform.destroyed ? _platform : null;
     }
     /**
-     *  The Angular platform is the entry point for Angular on a web page. Each page
-      * has exactly one platform, and services (such as reflection) which are common
-      * to every Angular application running on the page are bound in its scope.
-      * *
-      * A page's platform is initialized implicitly when {@link bootstrap}() is called, or
-      * explicitly by calling {@link createPlatform}().
-      * *
+     * The Angular platform is the entry point for Angular on a web page. Each page
+     * has exactly one platform, and services (such as reflection) which are common
+     * to every Angular application running on the page are bound in its scope.
+     *
+     * A page's platform is initialized implicitly when {\@link bootstrap}() is called, or
+     * explicitly by calling {\@link createPlatform}().
+     *
+     * \@stable
      * @abstract
      */
     var PlatformRef = (function () {
         function PlatformRef() {
         }
         /**
-         *  Creates an instance of an `@NgModule` for the given platform
-          * for offline compilation.
-          * *
-          * ## Simple Example
-          * *
-          * ```typescript
-          * my_module.ts:
-          * *
-          * imports: [BrowserModule]
-          * })
-          * class MyModule {}
-          * *
-          * main.ts:
-          * import {MyModuleNgFactory} from './my_module.ngfactory';
-          * import {platformBrowser} from '@angular/platform-browser';
-          * *
-          * let moduleRef = platformBrowser().bootstrapModuleFactory(MyModuleNgFactory);
-          * ```
-          * *
+         * Creates an instance of an `\@NgModule` for the given platform
+         * for offline compilation.
+         *
+         * ## Simple Example
+         *
+         * ```typescript
+         * my_module.ts:
+         *
+         * \@NgModule({
+         *   imports: [BrowserModule]
+         * })
+         * class MyModule {}
+         *
+         * main.ts:
+         * import {MyModuleNgFactory} from './my_module.ngfactory';
+         * import {platformBrowser} from '\@angular/platform-browser';
+         *
+         * let moduleRef = platformBrowser().bootstrapModuleFactory(MyModuleNgFactory);
+         * ```
+         *
+         * \@experimental APIs related to application bootstrap are currently under review.
+         * @abstract
          * @param {?} moduleFactory
          * @return {?}
          */
-        PlatformRef.prototype.bootstrapModuleFactory = function (moduleFactory) {
-            throw unimplemented();
-        };
+        PlatformRef.prototype.bootstrapModuleFactory = function (moduleFactory) { };
         /**
-         *  Creates an instance of an `@NgModule` for a given platform using the given runtime compiler.
-          * *
-          * ## Simple Example
-          * *
-          * ```typescript
-          * imports: [BrowserModule]
-          * })
-          * class MyModule {}
-          * *
-          * let moduleRef = platformBrowser().bootstrapModule(MyModule);
-          * ```
+         * Creates an instance of an `\@NgModule` for a given platform using the given runtime compiler.
+         *
+         * ## Simple Example
+         *
+         * ```typescript
+         * \@NgModule({
+         *   imports: [BrowserModule]
+         * })
+         * class MyModule {}
+         *
+         * let moduleRef = platformBrowser().bootstrapModule(MyModule);
+         * ```
+         * \@stable
+         * @abstract
          * @param {?} moduleType
          * @param {?=} compilerOptions
          * @return {?}
          */
-        PlatformRef.prototype.bootstrapModule = function (moduleType, compilerOptions) {
-            if (compilerOptions === void 0) { compilerOptions = []; }
-            throw unimplemented();
-        };
+        PlatformRef.prototype.bootstrapModule = function (moduleType, compilerOptions) { };
         /**
-         *  Register a listener to be called when the platform is disposed.
+         * Register a listener to be called when the platform is disposed.
          * @abstract
          * @param {?} callback
          * @return {?}
          */
         PlatformRef.prototype.onDestroy = function (callback) { };
-        Object.defineProperty(PlatformRef.prototype, "injector", {
-            /**
-             *  Retrieve the platform {@link Injector}, which is the parent injector for
-              * every Angular application on the page and provides singleton providers.
-             * @return {?}
-             */
-            get: function () { throw unimplemented(); },
-            enumerable: true,
-            configurable: true
-        });
-        ;
         /**
-         *  Destroy the Angular platform and all Angular applications on the page.
+         * Retrieve the platform {\@link Injector}, which is the parent injector for
+         * every Angular application on the page and provides singleton providers.
+         * @abstract
+         * @return {?}
+         */
+        PlatformRef.prototype.injector = function () { };
+        /**
+         * Destroy the Angular platform and all Angular applications on the page.
          * @abstract
          * @return {?}
          */
         PlatformRef.prototype.destroy = function () { };
-        Object.defineProperty(PlatformRef.prototype, "destroyed", {
-            /**
-             * @return {?}
-             */
-            get: function () { throw unimplemented(); },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+         * @abstract
+         * @return {?}
+         */
+        PlatformRef.prototype.destroyed = function () { };
         return PlatformRef;
     }());
     /**
@@ -8507,6 +8097,7 @@
                 throw new Error(("The module " + stringify(moduleRef.instance.constructor) + " was bootstrapped, but it does not declare \"@NgModule.bootstrap\" components nor a \"ngDoBootstrap\" method. ") +
                     "Please define one of these.");
             }
+            this._modules.push(moduleRef);
         };
         PlatformRef_.decorators = [
             { type: Injectable },
@@ -8518,88 +8109,80 @@
         return PlatformRef_;
     }(PlatformRef));
     /**
-     *  A reference to an Angular application running on a page.
-      * *
-      * For more about Angular applications, see the documentation for {@link bootstrap}.
-      * *
+     * A reference to an Angular application running on a page.
+     *
+     * For more about Angular applications, see the documentation for {\@link bootstrap}.
+     *
+     * \@stable
      * @abstract
      */
     var ApplicationRef = (function () {
         function ApplicationRef() {
         }
         /**
-         *  Bootstrap a new component at the root level of the application.
-          * *
-          * ### Bootstrap process
-          * *
-          * When bootstrapping a new root component into an application, Angular mounts the
-          * specified application component onto DOM elements identified by the [componentType]'s
-          * selector and kicks off automatic change detection to finish initializing the component.
-          * *
-          * ### Example
-          * {@example core/ts/platform/platform.ts region='longform'}
+         * Bootstrap a new component at the root level of the application.
+         *
+         * ### Bootstrap process
+         *
+         * When bootstrapping a new root component into an application, Angular mounts the
+         * specified application component onto DOM elements identified by the [componentType]'s
+         * selector and kicks off automatic change detection to finish initializing the component.
+         *
+         * ### Example
+         * {\@example core/ts/platform/platform.ts region='longform'}
          * @abstract
          * @param {?} componentFactory
          * @return {?}
          */
         ApplicationRef.prototype.bootstrap = function (componentFactory) { };
         /**
-         *  Invoke this method to explicitly process change detection and its side-effects.
-          * *
-          * In development mode, `tick()` also performs a second change detection cycle to ensure that no
-          * further changes are detected. If additional changes are picked up during this second cycle,
-          * bindings in the app have side-effects that cannot be resolved in a single change detection
-          * pass.
-          * In this case, Angular throws an error, since an Angular application can only have one change
-          * detection pass during which all change detection must complete.
+         * Invoke this method to explicitly process change detection and its side-effects.
+         *
+         * In development mode, `tick()` also performs a second change detection cycle to ensure that no
+         * further changes are detected. If additional changes are picked up during this second cycle,
+         * bindings in the app have side-effects that cannot be resolved in a single change detection
+         * pass.
+         * In this case, Angular throws an error, since an Angular application can only have one change
+         * detection pass during which all change detection must complete.
          * @abstract
          * @return {?}
          */
         ApplicationRef.prototype.tick = function () { };
-        Object.defineProperty(ApplicationRef.prototype, "componentTypes", {
-            /**
-             *  Get a list of component types registered to this application.
-              * This list is populated even before the component is created.
-             * @return {?}
-             */
-            get: function () { return (unimplemented()); },
-            enumerable: true,
-            configurable: true
-        });
-        ;
-        Object.defineProperty(ApplicationRef.prototype, "components", {
-            /**
-             *  Get a list of components registered to this application.
-             * @return {?}
-             */
-            get: function () { return (unimplemented()); },
-            enumerable: true,
-            configurable: true
-        });
-        ;
         /**
-         *  Attaches a view so that it will be dirty checked.
-          * The view will be automatically detached when it is destroyed.
-          * This will throw if the view is already attached to a ViewContainer.
+         * Get a list of component types registered to this application.
+         * This list is populated even before the component is created.
+         * @abstract
+         * @return {?}
+         */
+        ApplicationRef.prototype.componentTypes = function () { };
+        /**
+         * Get a list of components registered to this application.
+         * @abstract
+         * @return {?}
+         */
+        ApplicationRef.prototype.components = function () { };
+        /**
+         * Attaches a view so that it will be dirty checked.
+         * The view will be automatically detached when it is destroyed.
+         * This will throw if the view is already attached to a ViewContainer.
+         * @abstract
          * @param {?} view
          * @return {?}
          */
-        ApplicationRef.prototype.attachView = function (view) { unimplemented(); };
+        ApplicationRef.prototype.attachView = function (view) { };
         /**
-         *  Detaches a view from dirty checking again.
+         * Detaches a view from dirty checking again.
+         * @abstract
          * @param {?} view
          * @return {?}
          */
-        ApplicationRef.prototype.detachView = function (view) { unimplemented(); };
-        Object.defineProperty(ApplicationRef.prototype, "viewCount", {
-            /**
-             *  Returns the number of attached views.
-             * @return {?}
-             */
-            get: function () { return unimplemented(); },
-            enumerable: true,
-            configurable: true
-        });
+        ApplicationRef.prototype.detachView = function (view) { };
+        /**
+         * Returns the number of attached views.
+         * @abstract
+         * @return {?}
+         */
+        ApplicationRef.prototype.viewCount = function () { };
         return ApplicationRef;
     }());
     var ApplicationRef_ = (function (_super) {
@@ -8678,7 +8261,7 @@
             }
             this._loadComponent(compRef);
             if (isDevMode()) {
-                this._console.log("Angular 2 is running in the development mode. Call enableProdMode() to enable the production mode.");
+                this._console.log("Angular is running in the development mode. Call enableProdMode() to enable the production mode.");
             }
             return compRef;
         };
@@ -8786,52 +8369,44 @@
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
     /**
-     *  Represents an instance of an NgModule created via a {@link NgModuleFactory}.
-      * *
-      * `NgModuleRef` provides access to the NgModule Instance as well other objects related to this
-      * NgModule Instance.
-      * *
+     * Represents an instance of an NgModule created via a {\@link NgModuleFactory}.
+     *
+     * `NgModuleRef` provides access to the NgModule Instance as well other objects related to this
+     * NgModule Instance.
+     *
+     * \@stable
      * @abstract
      */
     var NgModuleRef = (function () {
         function NgModuleRef() {
         }
-        Object.defineProperty(NgModuleRef.prototype, "injector", {
-            /**
-             *  The injector that contains all of the providers of the NgModule.
-             * @return {?}
-             */
-            get: function () { return unimplemented(); },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(NgModuleRef.prototype, "componentFactoryResolver", {
-            /**
-             *  The ComponentFactoryResolver to get hold of the ComponentFactories
-              * declared in the `entryComponents` property of the module.
-             * @return {?}
-             */
-            get: function () { return unimplemented(); },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(NgModuleRef.prototype, "instance", {
-            /**
-             *  The NgModule instance.
-             * @return {?}
-             */
-            get: function () { return unimplemented(); },
-            enumerable: true,
-            configurable: true
-        });
         /**
-         *  Destroys the module instance and all of the data structures associated with it.
+         * The injector that contains all of the providers of the NgModule.
+         * @abstract
+         * @return {?}
+         */
+        NgModuleRef.prototype.injector = function () { };
+        /**
+         * The ComponentFactoryResolver to get hold of the ComponentFactories
+         * declared in the `entryComponents` property of the module.
+         * @abstract
+         * @return {?}
+         */
+        NgModuleRef.prototype.componentFactoryResolver = function () { };
+        /**
+         * The NgModule instance.
+         * @abstract
+         * @return {?}
+         */
+        NgModuleRef.prototype.instance = function () { };
+        /**
+         * Destroys the module instance and all of the data structures associated with it.
          * @abstract
          * @return {?}
          */
         NgModuleRef.prototype.destroy = function () { };
         /**
-         *  Allows to register a callback that will be called when the module is destroyed.
+         * Allows to register a callback that will be called when the module is destroyed.
          * @abstract
          * @param {?} callback
          * @return {?}
@@ -8840,7 +8415,7 @@
         return NgModuleRef;
     }());
     /**
-     * @experimental
+     * \@experimental
      */
     var NgModuleFactory = (function () {
         /**
@@ -8968,7 +8543,8 @@
      * found in the LICENSE file at https://angular.io/license
      */
     /**
-     *  Used to load ng module factories.
+     * Used to load ng module factories.
+     * \@stable
      * @abstract
      */
     var NgModuleFactoryLoader = (function () {
@@ -8984,7 +8560,8 @@
     }());
     var /** @type {?} */ moduleFactories = new Map();
     /**
-     *  Registers a loaded module. Should only be called from generated NgModuleFactory code.
+     * Registers a loaded module. Should only be called from generated NgModuleFactory code.
+     * \@experimental
      * @param {?} id
      * @param {?} factory
      * @return {?}
@@ -8997,9 +8574,10 @@
         moduleFactories.set(id, factory);
     }
     /**
-     *  Returns the NgModuleFactory with the given id, if it exists and has been loaded.
-      * Factories for modules that do not specify an `id` cannot be retrieved. Throws if the module
-      * cannot be found.
+     * Returns the NgModuleFactory with the given id, if it exists and has been loaded.
+     * Factories for modules that do not specify an `id` cannot be retrieved. Throws if the module
+     * cannot be found.
+     * \@experimental
      * @param {?} id
      * @return {?}
      */
@@ -9011,25 +8589,27 @@
     }
 
     /**
-     *  An unmodifiable list of items that Angular keeps up to date when the state
-      * of the application changes.
-      * *
-      * The type of object that {@link Query} and {@link ViewQueryMetadata} provide.
-      * *
-      * Implements an iterable interface, therefore it can be used in both ES6
-      * javascript `for (var i of items)` loops as well as in Angular templates with
-      * `*ngFor="let i of myList"`.
-      * *
-      * Changes can be observed by subscribing to the changes `Observable`.
-      * *
-      * NOTE: In the future this class will implement an `Observable` interface.
-      * *
-      * ### Example ([live demo](http://plnkr.co/edit/RX8sJnQYl9FWuSCWme5z?p=preview))
-      * ```typescript
-      * class Container {
-      * @ViewChildren(Item) items:QueryList<Item>;
-      * }
-      * ```
+     * An unmodifiable list of items that Angular keeps up to date when the state
+     * of the application changes.
+     *
+     * The type of object that {\@link Query} and {\@link ViewQueryMetadata} provide.
+     *
+     * Implements an iterable interface, therefore it can be used in both ES6
+     * javascript `for (var i of items)` loops as well as in Angular templates with
+     * `*ngFor="let i of myList"`.
+     *
+     * Changes can be observed by subscribing to the changes `Observable`.
+     *
+     * NOTE: In the future this class will implement an `Observable` interface.
+     *
+     * ### Example ([live demo](http://plnkr.co/edit/RX8sJnQYl9FWuSCWme5z?p=preview))
+     * ```typescript
+     * \@Component({...})
+     * class Container {
+     *   \@ViewChildren(Item) items:QueryList<Item>;
+     * }
+     * ```
+     * \@stable
      */
     var QueryList = (function () {
         function QueryList() {
@@ -9070,15 +8650,15 @@
             configurable: true
         });
         /**
-         *  See
-          * [Array.map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map)
+         * See
+         * [Array.map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map)
          * @param {?} fn
          * @return {?}
          */
         QueryList.prototype.map = function (fn) { return this._results.map(fn); };
         /**
-         *  See
-          * [Array.filter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter)
+         * See
+         * [Array.filter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter)
          * @param {?} fn
          * @return {?}
          */
@@ -9086,15 +8666,15 @@
             return this._results.filter(fn);
         };
         /**
-         *  See
-          * [Array.find](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find)
+         * See
+         * [Array.find](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find)
          * @param {?} fn
          * @return {?}
          */
         QueryList.prototype.find = function (fn) { return this._results.find(fn); };
         /**
-         *  See
-          * [Array.reduce](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)
+         * See
+         * [Array.reduce](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)
          * @param {?} fn
          * @param {?} init
          * @return {?}
@@ -9103,15 +8683,15 @@
             return this._results.reduce(fn, init);
         };
         /**
-         *  See
-          * [Array.forEach](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach)
+         * See
+         * [Array.forEach](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach)
          * @param {?} fn
          * @return {?}
          */
         QueryList.prototype.forEach = function (fn) { this._results.forEach(fn); };
         /**
-         *  See
-          * [Array.some](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some)
+         * See
+         * [Array.some](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some)
          * @param {?} fn
          * @return {?}
          */
@@ -9143,13 +8723,13 @@
          */
         QueryList.prototype.notifyOnChanges = function () { this._emitter.emit(this); };
         /**
-         *  internal
+         * internal
          * @return {?}
          */
         QueryList.prototype.setDirty = function () { this._dirty = true; };
         Object.defineProperty(QueryList.prototype, "dirty", {
             /**
-             *  internal
+             * internal
              * @return {?}
              */
             get: function () { return this._dirty; },
@@ -9162,9 +8742,10 @@
     var /** @type {?} */ _SEPARATOR = '#';
     var /** @type {?} */ FACTORY_CLASS_SUFFIX = 'NgFactory';
     /**
-     *  Configuration for SystemJsNgModuleLoader.
-      * token.
-      * *
+     * Configuration for SystemJsNgModuleLoader.
+     * token.
+     *
+     * \@experimental
      * @abstract
      */
     var SystemJsNgModuleLoaderConfig = (function () {
@@ -9177,7 +8758,8 @@
         factoryPathSuffix: '.ngfactory',
     };
     /**
-     *  NgModuleFactoryLoader that uses SystemJS to load NgModuleFactory
+     * NgModuleFactoryLoader that uses SystemJS to load NgModuleFactory
+     * \@experimental
      */
     var SystemJsNgModuleLoader = (function () {
         /**
@@ -9262,29 +8844,27 @@
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
     /**
-     *  Represents an Embedded Template that can be used to instantiate Embedded Views.
-      * *
-      * You can access a `TemplateRef`, in two ways. Via a directive placed on a `<template>` element (or
-      * directive prefixed with `*`) and have the `TemplateRef` for this Embedded View injected into the
-      * constructor of the directive using the `TemplateRef` Token. Alternatively you can query for the
-      * `TemplateRef` from a Component or a Directive via {@link Query}.
-      * *
-      * To instantiate Embedded Views based on a Template, use
-      * {@link ViewContainerRef#createEmbeddedView}, which will create the View and attach it to the
-      * View Container.
+     * Represents an Embedded Template that can be used to instantiate Embedded Views.
+     *
+     * You can access a `TemplateRef`, in two ways. Via a directive placed on a `<template>` element (or
+     * directive prefixed with `*`) and have the `TemplateRef` for this Embedded View injected into the
+     * constructor of the directive using the `TemplateRef` Token. Alternatively you can query for the
+     * `TemplateRef` from a Component or a Directive via {\@link Query}.
+     *
+     * To instantiate Embedded Views based on a Template, use
+     * {\@link ViewContainerRef#createEmbeddedView}, which will create the View and attach it to the
+     * View Container.
+     * \@stable
      * @abstract
      */
     var TemplateRef = (function () {
         function TemplateRef() {
         }
-        Object.defineProperty(TemplateRef.prototype, "elementRef", {
-            /**
-             * @return {?}
-             */
-            get: function () { return null; },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+         * @abstract
+         * @return {?}
+         */
+        TemplateRef.prototype.elementRef = function () { };
         /**
          * @abstract
          * @param {?} context
@@ -9327,82 +8907,70 @@
     }(TemplateRef));
 
     /**
-     *  Represents a container where one or more Views can be attached.
-      * *
-      * The container can contain two kinds of Views. Host Views, created by instantiating a
-      * {@link Component} via {@link #createComponent}, and Embedded Views, created by instantiating an
-      * {@link TemplateRef Embedded Template} via {@link #createEmbeddedView}.
-      * *
-      * The location of the View Container within the containing View is specified by the Anchor
-      * `element`. Each View Container can have only one Anchor Element and each Anchor Element can only
-      * have a single View Container.
-      * *
-      * Root elements of Views attached to this container become siblings of the Anchor Element in
-      * the Rendered View.
-      * *
-      * To access a `ViewContainerRef` of an Element, you can either place a {@link Directive} injected
-      * with `ViewContainerRef` on the Element, or you obtain it via a {@link ViewChild} query.
+     * Represents a container where one or more Views can be attached.
+     *
+     * The container can contain two kinds of Views. Host Views, created by instantiating a
+     * {\@link Component} via {\@link #createComponent}, and Embedded Views, created by instantiating an
+     * {\@link TemplateRef Embedded Template} via {\@link #createEmbeddedView}.
+     *
+     * The location of the View Container within the containing View is specified by the Anchor
+     * `element`. Each View Container can have only one Anchor Element and each Anchor Element can only
+     * have a single View Container.
+     *
+     * Root elements of Views attached to this container become siblings of the Anchor Element in
+     * the Rendered View.
+     *
+     * To access a `ViewContainerRef` of an Element, you can either place a {\@link Directive} injected
+     * with `ViewContainerRef` on the Element, or you obtain it via a {\@link ViewChild} query.
+     * \@stable
      * @abstract
      */
     var ViewContainerRef = (function () {
         function ViewContainerRef() {
         }
-        Object.defineProperty(ViewContainerRef.prototype, "element", {
-            /**
-             *  Anchor element that specifies the location of this container in the containing View.
-              * <!-- TODO: rename to anchorElement -->
-             * @return {?}
-             */
-            get: function () { return (unimplemented()); },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(ViewContainerRef.prototype, "injector", {
-            /**
-             * @return {?}
-             */
-            get: function () { return (unimplemented()); },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(ViewContainerRef.prototype, "parentInjector", {
-            /**
-             * @return {?}
-             */
-            get: function () { return (unimplemented()); },
-            enumerable: true,
-            configurable: true
-        });
         /**
-         *  Destroys all Views in this container.
+         * Anchor element that specifies the location of this container in the containing View.
+         * <!-- TODO: rename to anchorElement -->
+         * @abstract
+         * @return {?}
+         */
+        ViewContainerRef.prototype.element = function () { };
+        /**
+         * @abstract
+         * @return {?}
+         */
+        ViewContainerRef.prototype.injector = function () { };
+        /**
+         * @abstract
+         * @return {?}
+         */
+        ViewContainerRef.prototype.parentInjector = function () { };
+        /**
+         * Destroys all Views in this container.
          * @abstract
          * @return {?}
          */
         ViewContainerRef.prototype.clear = function () { };
         /**
-         *  Returns the {@link ViewRef} for the View located in this container at the specified index.
+         * Returns the {\@link ViewRef} for the View located in this container at the specified index.
          * @abstract
          * @param {?} index
          * @return {?}
          */
         ViewContainerRef.prototype.get = function (index) { };
-        Object.defineProperty(ViewContainerRef.prototype, "length", {
-            /**
-             *  Returns the number of Views currently attached to this container.
-             * @return {?}
-             */
-            get: function () { return (unimplemented()); },
-            enumerable: true,
-            configurable: true
-        });
-        ;
         /**
-         *  Instantiates an Embedded View based on the {@link TemplateRef `templateRef`} and inserts it
-          * into this container at the specified `index`.
-          * *
-          * If `index` is not specified, the new View will be inserted as the last View in the container.
-          * *
-          * Returns the {@link ViewRef} for the newly created View.
+         * Returns the number of Views currently attached to this container.
+         * @abstract
+         * @return {?}
+         */
+        ViewContainerRef.prototype.length = function () { };
+        /**
+         * Instantiates an Embedded View based on the {\@link TemplateRef `templateRef`} and inserts it
+         * into this container at the specified `index`.
+         *
+         * If `index` is not specified, the new View will be inserted as the last View in the container.
+         *
+         * Returns the {\@link ViewRef} for the newly created View.
          * @abstract
          * @param {?} templateRef
          * @param {?=} context
@@ -9411,17 +8979,17 @@
          */
         ViewContainerRef.prototype.createEmbeddedView = function (templateRef, context, index) { };
         /**
-         *  Instantiates a single {@link Component} and inserts its Host View into this container at the
-          * specified `index`.
-          * *
-          * The component is instantiated using its {@link ComponentFactory} which can be
-          * obtained via {@link ComponentFactoryResolver#resolveComponentFactory}.
-          * *
-          * If `index` is not specified, the new View will be inserted as the last View in the container.
-          * *
-          * You can optionally specify the {@link Injector} that will be used as parent for the Component.
-          * *
-          * Returns the {@link ComponentRef} of the Host View created for the newly instantiated Component.
+         * Instantiates a single {\@link Component} and inserts its Host View into this container at the
+         * specified `index`.
+         *
+         * The component is instantiated using its {\@link ComponentFactory} which can be
+         * obtained via {\@link ComponentFactoryResolver#resolveComponentFactory}.
+         *
+         * If `index` is not specified, the new View will be inserted as the last View in the container.
+         *
+         * You can optionally specify the {\@link Injector} that will be used as parent for the Component.
+         *
+         * Returns the {\@link ComponentRef} of the Host View created for the newly instantiated Component.
          * @abstract
          * @param {?} componentFactory
          * @param {?=} index
@@ -9431,11 +8999,11 @@
          */
         ViewContainerRef.prototype.createComponent = function (componentFactory, index, injector, projectableNodes) { };
         /**
-         *  Inserts a View identified by a {@link ViewRef} into the container at the specified `index`.
-          * *
-          * If `index` is not specified, the new View will be inserted as the last View in the container.
-          * *
-          * Returns the inserted {@link ViewRef}.
+         * Inserts a View identified by a {\@link ViewRef} into the container at the specified `index`.
+         *
+         * If `index` is not specified, the new View will be inserted as the last View in the container.
+         *
+         * Returns the inserted {\@link ViewRef}.
          * @abstract
          * @param {?} viewRef
          * @param {?=} index
@@ -9443,9 +9011,9 @@
          */
         ViewContainerRef.prototype.insert = function (viewRef, index) { };
         /**
-         *  Moves a View identified by a {@link ViewRef} into the container at the specified `index`.
-          * *
-          * Returns the inserted {@link ViewRef}.
+         * Moves a View identified by a {\@link ViewRef} into the container at the specified `index`.
+         *
+         * Returns the inserted {\@link ViewRef}.
          * @abstract
          * @param {?} viewRef
          * @param {?} currentIndex
@@ -9453,26 +9021,26 @@
          */
         ViewContainerRef.prototype.move = function (viewRef, currentIndex) { };
         /**
-         *  Returns the index of the View, specified via {@link ViewRef}, within the current container or
-          * `-1` if this container doesn't contain the View.
+         * Returns the index of the View, specified via {\@link ViewRef}, within the current container or
+         * `-1` if this container doesn't contain the View.
          * @abstract
          * @param {?} viewRef
          * @return {?}
          */
         ViewContainerRef.prototype.indexOf = function (viewRef) { };
         /**
-         *  Destroys a View attached to this container at the specified `index`.
-          * *
-          * If `index` is not specified, the last View in the container will be removed.
+         * Destroys a View attached to this container at the specified `index`.
+         *
+         * If `index` is not specified, the last View in the container will be removed.
          * @abstract
          * @param {?=} index
          * @return {?}
          */
         ViewContainerRef.prototype.remove = function (index) { };
         /**
-         *  Use along with {@link #insert} to move a View within the current container.
-          * *
-          * If the `index` param is omitted, the last {@link ViewRef} is detached.
+         * Use along with {\@link #insert} to move a View within the current container.
+         *
+         * If the `index` param is omitted, the last {\@link ViewRef} is detached.
          * @abstract
          * @param {?=} index
          * @return {?}
@@ -9597,7 +9165,8 @@
          * @return {?}
          */
         ViewContainerRef_.prototype.indexOf = function (viewRef) {
-            return this._element.nestedViews.indexOf(((viewRef)).internalView);
+            return this.length ? this._element.nestedViews.indexOf(((viewRef)).internalView) :
+                -1;
         };
         /**
          * @param {?=} index
@@ -9649,6 +9218,7 @@
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
     /**
+     * \@stable
      * @abstract
      */
     var ViewRef = (function (_super) {
@@ -9657,19 +9227,16 @@
             _super.apply(this, arguments);
         }
         /**
-         *  Destroys the view and all of the data structures associated with it.
+         * Destroys the view and all of the data structures associated with it.
          * @abstract
          * @return {?}
          */
         ViewRef.prototype.destroy = function () { };
-        Object.defineProperty(ViewRef.prototype, "destroyed", {
-            /**
-             * @return {?}
-             */
-            get: function () { return (unimplemented()); },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+         * @abstract
+         * @return {?}
+         */
+        ViewRef.prototype.destroyed = function () { };
         /**
          * @abstract
          * @param {?} callback
@@ -9679,57 +9246,58 @@
         return ViewRef;
     }(ChangeDetectorRef));
     /**
-     *  Represents an Angular View.
-      * *
-      * <!-- TODO: move the next two paragraphs to the dev guide -->
-      * A View is a fundamental building block of the application UI. It is the smallest grouping of
-      * Elements which are created and destroyed together.
-      * *
-      * Properties of elements in a View can change, but the structure (number and order) of elements in
-      * a View cannot. Changing the structure of Elements can only be done by inserting, moving or
-      * removing nested Views via a {@link ViewContainerRef}. Each View can contain many View Containers.
-      * <!-- /TODO -->
-      * *
-      * ### Example
-      * *
-      * Given this template...
-      * *
-      * ```
-      * Count: {{items.length}}
-      * <ul>
-      * <li *ngFor="let  item of items">{{item}}</li>
-      * </ul>
-      * ```
-      * *
-      * We have two {@link TemplateRef}s:
-      * *
-      * Outer {@link TemplateRef}:
-      * ```
-      * Count: {{items.length}}
-      * <ul>
-      * <template ngFor let-item [ngForOf]="items"></template>
-      * </ul>
-      * ```
-      * *
-      * Inner {@link TemplateRef}:
-      * ```
-      * <li>{{item}}</li>
-      * ```
-      * *
-      * Notice that the original template is broken down into two separate {@link TemplateRef}s.
-      * *
-      * The outer/inner {@link TemplateRef}s are then assembled into views like so:
-      * *
-      * ```
-      * <!-- ViewRef: outer-0 -->
-      * Count: 2
-      * <ul>
-      * <template view-container-ref></template>
-      * <!-- ViewRef: inner-1 --><li>first</li><!-- /ViewRef: inner-1 -->
-      * <!-- ViewRef: inner-2 --><li>second</li><!-- /ViewRef: inner-2 -->
-      * </ul>
-      * <!-- /ViewRef: outer-0 -->
-      * ```
+     * Represents an Angular View.
+     *
+     * <!-- TODO: move the next two paragraphs to the dev guide -->
+     * A View is a fundamental building block of the application UI. It is the smallest grouping of
+     * Elements which are created and destroyed together.
+     *
+     * Properties of elements in a View can change, but the structure (number and order) of elements in
+     * a View cannot. Changing the structure of Elements can only be done by inserting, moving or
+     * removing nested Views via a {\@link ViewContainerRef}. Each View can contain many View Containers.
+     * <!-- /TODO -->
+     *
+     * ### Example
+     *
+     * Given this template...
+     *
+     * ```
+     * Count: {{items.length}}
+     * <ul>
+     *   <li *ngFor="let  item of items">{{item}}</li>
+     * </ul>
+     * ```
+     *
+     * We have two {\@link TemplateRef}s:
+     *
+     * Outer {\@link TemplateRef}:
+     * ```
+     * Count: {{items.length}}
+     * <ul>
+     *   <template ngFor let-item [ngForOf]="items"></template>
+     * </ul>
+     * ```
+     *
+     * Inner {\@link TemplateRef}:
+     * ```
+     *   <li>{{item}}</li>
+     * ```
+     *
+     * Notice that the original template is broken down into two separate {\@link TemplateRef}s.
+     *
+     * The outer/inner {\@link TemplateRef}s are then assembled into views like so:
+     *
+     * ```
+     * <!-- ViewRef: outer-0 -->
+     * Count: 2
+     * <ul>
+     *   <template view-container-ref></template>
+     *   <!-- ViewRef: inner-1 --><li>first</li><!-- /ViewRef: inner-1 -->
+     *   <!-- ViewRef: inner-2 --><li>second</li><!-- /ViewRef: inner-2 -->
+     * </ul>
+     * <!-- /ViewRef: outer-0 -->
+     * ```
+     * \@experimental
      * @abstract
      */
     var EmbeddedViewRef = (function (_super) {
@@ -9737,23 +9305,16 @@
         function EmbeddedViewRef() {
             _super.apply(this, arguments);
         }
-        Object.defineProperty(EmbeddedViewRef.prototype, "context", {
-            /**
-             * @return {?}
-             */
-            get: function () { return unimplemented(); },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(EmbeddedViewRef.prototype, "rootNodes", {
-            /**
-             * @return {?}
-             */
-            get: function () { return (unimplemented()); },
-            enumerable: true,
-            configurable: true
-        });
-        ;
+        /**
+         * @abstract
+         * @return {?}
+         */
+        EmbeddedViewRef.prototype.context = function () { };
+        /**
+         * @abstract
+         * @return {?}
+         */
+        EmbeddedViewRef.prototype.rootNodes = function () { };
         return EmbeddedViewRef;
     }(ViewRef));
     var ViewRef_ = (function () {
@@ -9867,7 +9428,7 @@
         return EventListener;
     }());
     /**
-     * @experimental All debugging apis are currently experimental.
+     * \@experimental All debugging apis are currently experimental.
      */
     var DebugNode = (function () {
         /**
@@ -9939,7 +9500,7 @@
         return DebugNode;
     }());
     /**
-     * @experimental All debugging apis are currently experimental.
+     * \@experimental All debugging apis are currently experimental.
      */
     var DebugElement = (function (_super) {
         __extends$12(DebugElement, _super);
@@ -10049,6 +9610,7 @@
         return DebugElement;
     }(DebugNode));
     /**
+     * \@experimental
      * @param {?} debugEls
      * @return {?}
      */
@@ -10092,6 +9654,7 @@
     // Need to keep the nodes in a global Map so that multiple angular apps are supported.
     var /** @type {?} */ _nativeNodeToDebugNode = new Map();
     /**
+     * \@experimental
      * @param {?} nativeNode
      * @return {?}
      */
@@ -10160,9 +9723,17 @@
         return defaultKeyValueDiffers;
     }
     /**
-     *  This module includes the providers of @angular/core that are needed
-      * to bootstrap components via `ApplicationRef`.
-      * *
+     * @param {?=} locale
+     * @return {?}
+     */
+    function _localeFactory(locale) {
+        return locale || 'en-US';
+    }
+    /**
+     * This module includes the providers of \@angular/core that are needed
+     * to bootstrap components via `ApplicationRef`.
+     *
+     * \@experimental
      */
     var ApplicationModule = (function () {
         function ApplicationModule() {
@@ -10179,7 +9750,11 @@
                             AnimationQueue,
                             { provide: IterableDiffers, useFactory: _iterableDiffersFactory },
                             { provide: KeyValueDiffers, useFactory: _keyValueDiffersFactory },
-                            { provide: LOCALE_ID, useValue: 'en-US' },
+                            {
+                                provide: LOCALE_ID,
+                                useFactory: _localeFactory,
+                                deps: [[new Inject(LOCALE_ID), new Optional(), new SkipSelf()]]
+                            },
                         ]
                     },] },
         ];
@@ -10341,6 +9916,16 @@
      * Use of this source code is governed by an MIT-style license that can be
      * found in the LICENSE file at https://angular.io/license
      */
+    /**
+     * `AnimationKeyframe` consists of a series of styles (contained within {\@link AnimationStyles
+     * `AnimationStyles`})
+     * and an offset value indicating when those styles are applied within the `duration/delay/easing`
+     * timings.
+     * `AnimationKeyframe` is mostly an internal class which is designed to be used alongside {\@link
+     * Renderer#animate-anchor `Renderer.animate`}.
+     *
+     * \@experimental Animation support is experimental
+     */
     var AnimationKeyframe = (function () {
         /**
          * @param {?} offset
@@ -10354,6 +9939,7 @@
     }());
 
     /**
+     * \@experimental Animation support is experimental.
      * @abstract
      */
     var AnimationPlayer = (function () {
@@ -10447,6 +10033,7 @@
             scheduleMicroTask(function () { return _this._onFinish(); });
         }
         /**
+         * \@internal
          * @return {?}
          */
         NoOpAnimationPlayer.prototype._onFinish = function () {
@@ -10674,10 +10261,11 @@
      */
     var /** @type {?} */ AUTO_STYLE = '*';
     /**
-     *  Metadata representing the entry of animations.
-      * Instances of this class are provided via the animation DSL when the {@link trigger trigger
-      * animation function} is called.
-      * *
+     * Metadata representing the entry of animations.
+     * Instances of this class are provided via the animation DSL when the {\@link trigger trigger
+     * animation function} is called.
+     *
+     * \@experimental Animation support is experimental.
      */
     var AnimationEntryMetadata = (function () {
         /**
@@ -10691,6 +10279,7 @@
         return AnimationEntryMetadata;
     }());
     /**
+     * \@experimental Animation support is experimental.
      * @abstract
      */
     var AnimationStateMetadata = (function () {
@@ -10699,10 +10288,11 @@
         return AnimationStateMetadata;
     }());
     /**
-     *  Metadata representing the entry of animations.
-      * Instances of this class are provided via the animation DSL when the {@link state state animation
-      * function} is called.
-      * *
+     * Metadata representing the entry of animations.
+     * Instances of this class are provided via the animation DSL when the {\@link state state animation
+     * function} is called.
+     *
+     * \@experimental Animation support is experimental.
      */
     var AnimationStateDeclarationMetadata = (function (_super) {
         __extends$13(AnimationStateDeclarationMetadata, _super);
@@ -10718,10 +10308,11 @@
         return AnimationStateDeclarationMetadata;
     }(AnimationStateMetadata));
     /**
-     *  Metadata representing the entry of animations.
-      * Instances of this class are provided via the animation DSL when the
-      * {@link transition transition animation function} is called.
-      * *
+     * Metadata representing the entry of animations.
+     * Instances of this class are provided via the animation DSL when the
+     * {\@link transition transition animation function} is called.
+     *
+     * \@experimental Animation support is experimental.
      */
     var AnimationStateTransitionMetadata = (function (_super) {
         __extends$13(AnimationStateTransitionMetadata, _super);
@@ -10737,6 +10328,7 @@
         return AnimationStateTransitionMetadata;
     }(AnimationStateMetadata));
     /**
+     * \@experimental Animation support is experimental.
      * @abstract
      */
     var AnimationMetadata = (function () {
@@ -10745,10 +10337,11 @@
         return AnimationMetadata;
     }());
     /**
-     *  Metadata representing the entry of animations.
-      * Instances of this class are provided via the animation DSL when the {@link keyframes keyframes
-      * animation function} is called.
-      * *
+     * Metadata representing the entry of animations.
+     * Instances of this class are provided via the animation DSL when the {\@link keyframes keyframes
+     * animation function} is called.
+     *
+     * \@experimental Animation support is experimental.
      */
     var AnimationKeyframesSequenceMetadata = (function (_super) {
         __extends$13(AnimationKeyframesSequenceMetadata, _super);
@@ -10762,10 +10355,11 @@
         return AnimationKeyframesSequenceMetadata;
     }(AnimationMetadata));
     /**
-     *  Metadata representing the entry of animations.
-      * Instances of this class are provided via the animation DSL when the {@link style style animation
-      * function} is called.
-      * *
+     * Metadata representing the entry of animations.
+     * Instances of this class are provided via the animation DSL when the {\@link style style animation
+     * function} is called.
+     *
+     * \@experimental Animation support is experimental.
      */
     var AnimationStyleMetadata = (function (_super) {
         __extends$13(AnimationStyleMetadata, _super);
@@ -10782,10 +10376,11 @@
         return AnimationStyleMetadata;
     }(AnimationMetadata));
     /**
-     *  Metadata representing the entry of animations.
-      * Instances of this class are provided via the animation DSL when the {@link animate animate
-      * animation function} is called.
-      * *
+     * Metadata representing the entry of animations.
+     * Instances of this class are provided via the animation DSL when the {\@link animate animate
+     * animation function} is called.
+     *
+     * \@experimental Animation support is experimental.
      */
     var AnimationAnimateMetadata = (function (_super) {
         __extends$13(AnimationAnimateMetadata, _super);
@@ -10801,6 +10396,7 @@
         return AnimationAnimateMetadata;
     }(AnimationMetadata));
     /**
+     * \@experimental Animation support is experimental.
      * @abstract
      */
     var AnimationWithStepsMetadata = (function (_super) {
@@ -10819,10 +10415,11 @@
         return AnimationWithStepsMetadata;
     }(AnimationMetadata));
     /**
-     *  Metadata representing the entry of animations.
-      * Instances of this class are provided via the animation DSL when the {@link sequence sequence
-      * animation function} is called.
-      * *
+     * Metadata representing the entry of animations.
+     * Instances of this class are provided via the animation DSL when the {\@link sequence sequence
+     * animation function} is called.
+     *
+     * \@experimental Animation support is experimental.
      */
     var AnimationSequenceMetadata = (function (_super) {
         __extends$13(AnimationSequenceMetadata, _super);
@@ -10844,10 +10441,11 @@
         return AnimationSequenceMetadata;
     }(AnimationWithStepsMetadata));
     /**
-     *  Metadata representing the entry of animations.
-      * Instances of this class are provided via the animation DSL when the {@link group group animation
-      * function} is called.
-      * *
+     * Metadata representing the entry of animations.
+     * Instances of this class are provided via the animation DSL when the {\@link group group animation
+     * function} is called.
+     *
+     * \@experimental Animation support is experimental.
      */
     var AnimationGroupMetadata = (function (_super) {
         __extends$13(AnimationGroupMetadata, _super);
@@ -10869,55 +10467,56 @@
         return AnimationGroupMetadata;
     }(AnimationWithStepsMetadata));
     /**
-     *  `animate` is an animation-specific function that is designed to be used inside of Angular2's
-      * animation
-      * DSL language. If this information is new, please navigate to the
-      * {@link Component#animations-anchor component animations metadata
-      * page} to gain a better understanding of how animations in Angular2 are used.
-      * *
-      * `animate` specifies an animation step that will apply the provided `styles` data for a given
-      * amount of
-      * time based on the provided `timing` expression value. Calls to `animate` are expected to be
-      * used within {@link sequence an animation sequence}, {@link group group}, or {@link transition
-      * transition}.
-      * *
-      * ### Usage
-      * *
-      * The `animate` function accepts two input parameters: `timing` and `styles`:
-      * *
-      * - `timing` is a string based value that can be a combination of a duration with optional
-      * delay and easing values. The format for the expression breaks down to `duration delay easing`
-      * (therefore a value such as `1s 100ms ease-out` will be parse itself into `duration=1000,
-      * delay=100, easing=ease-out`.
-      * If a numeric value is provided then that will be used as the `duration` value in millisecond
-      * form.
-      * - `styles` is the style input data which can either be a call to {@link style style} or {@link
-      * keyframes keyframes}.
-      * If left empty then the styles from the destination state will be collected and used (this is
-      * useful when
-      * describing an animation step that will complete an animation by {@link
-      * transition#the-final-animate-call animating to the final state}).
-      * *
-      * ```typescript
-      * // various functions for specifying timing data
-      * animate(500, style(...))
-      * animate("1s", style(...))
-      * animate("100ms 0.5s", style(...))
-      * animate("5s ease", style(...))
-      * animate("5s 10ms cubic-bezier(.17,.67,.88,.1)", style(...))
-      * *
-      * // either style() of keyframes() can be used
-      * animate(500, style({ background: "red" }))
-      * animate(500, keyframes([
-      * style({ background: "blue" })),
-      * style({ background: "red" }))
-      * ])
-      * ```
-      * *
-      * ### Example ([live demo](http://plnkr.co/edit/Kez8XGWBxWue7qP7nNvF?p=preview))
-      * *
-      * {@example core/animation/ts/dsl/animation_example.ts region='Component'}
-      * *
+     * `animate` is an animation-specific function that is designed to be used inside of Angular2's
+     * animation
+     * DSL language. If this information is new, please navigate to the
+     * {\@link Component#animations-anchor component animations metadata
+     * page} to gain a better understanding of how animations in Angular2 are used.
+     *
+     * `animate` specifies an animation step that will apply the provided `styles` data for a given
+     * amount of
+     * time based on the provided `timing` expression value. Calls to `animate` are expected to be
+     * used within {\@link sequence an animation sequence}, {\@link group group}, or {\@link transition
+     * transition}.
+     *
+     * ### Usage
+     *
+     * The `animate` function accepts two input parameters: `timing` and `styles`:
+     *
+     * - `timing` is a string based value that can be a combination of a duration with optional
+     * delay and easing values. The format for the expression breaks down to `duration delay easing`
+     * (therefore a value such as `1s 100ms ease-out` will be parse itself into `duration=1000,
+     * delay=100, easing=ease-out`.
+     * If a numeric value is provided then that will be used as the `duration` value in millisecond
+     * form.
+     * - `styles` is the style input data which can either be a call to {\@link style style} or {\@link
+     * keyframes keyframes}.
+     * If left empty then the styles from the destination state will be collected and used (this is
+     * useful when
+     * describing an animation step that will complete an animation by {\@link
+     * transition#the-final-animate-call animating to the final state}).
+     *
+     * ```typescript
+     * // various functions for specifying timing data
+     * animate(500, style(...))
+     * animate("1s", style(...))
+     * animate("100ms 0.5s", style(...))
+     * animate("5s ease", style(...))
+     * animate("5s 10ms cubic-bezier(.17,.67,.88,.1)", style(...))
+     *
+     * // either style() of keyframes() can be used
+     * animate(500, style({ background: "red" }))
+     * animate(500, keyframes([
+     *   style({ background: "blue" })),
+     *   style({ background: "red" }))
+     * ])
+     * ```
+     *
+     * ### Example ([live demo](http://plnkr.co/edit/Kez8XGWBxWue7qP7nNvF?p=preview))
+     *
+     * {\@example core/animation/ts/dsl/animation_example.ts region='Component'}
+     *
+     * \@experimental Animation support is experimental.
      * @param {?} timing
      * @param {?=} styles
      * @return {?}
@@ -10932,41 +10531,42 @@
         return new AnimationAnimateMetadata(timing, stylesEntry);
     }
     /**
-     *  `group` is an animation-specific function that is designed to be used inside of Angular2's
-      * animation
-      * DSL language. If this information is new, please navigate to the
-      * {@link Component#animations-anchor component animations metadata
-      * page} to gain a better understanding of how animations in Angular2 are used.
-      * *
-      * `group` specifies a list of animation steps that are all run in parallel. Grouped animations
-      * are useful when a series of styles must be animated/closed off
-      * at different statrting/ending times.
-      * *
-      * The `group` function can either be used within a {@link sequence sequence} or a {@link transition
-      * transition}
-      * and it will only continue to the next instruction once all of the inner animation steps
-      * have completed.
-      * *
-      * ### Usage
-      * *
-      * The `steps` data that is passed into the `group` animation function can either consist
-      * of {@link style style} or {@link animate animate} function calls. Each call to `style()` or
-      * `animate()`
-      * within a group will be executed instantly (use {@link keyframes keyframes} or a
-      * {@link animate#usage animate() with a delay value} to offset styles to be applied at a later
-      * time).
-      * *
-      * ```typescript
-      * group([
-      * animate("1s", { background: "black" }))
-      * animate("2s", { color: "white" }))
-      * ])
-      * ```
-      * *
-      * ### Example ([live demo](http://plnkr.co/edit/Kez8XGWBxWue7qP7nNvF?p=preview))
-      * *
-      * {@example core/animation/ts/dsl/animation_example.ts region='Component'}
-      * *
+     * `group` is an animation-specific function that is designed to be used inside of Angular2's
+     * animation
+     * DSL language. If this information is new, please navigate to the
+     * {\@link Component#animations-anchor component animations metadata
+     * page} to gain a better understanding of how animations in Angular2 are used.
+     *
+     * `group` specifies a list of animation steps that are all run in parallel. Grouped animations
+     * are useful when a series of styles must be animated/closed off
+     * at different statrting/ending times.
+     *
+     * The `group` function can either be used within a {\@link sequence sequence} or a {\@link transition
+     * transition}
+     * and it will only continue to the next instruction once all of the inner animation steps
+     * have completed.
+     *
+     * ### Usage
+     *
+     * The `steps` data that is passed into the `group` animation function can either consist
+     * of {\@link style style} or {\@link animate animate} function calls. Each call to `style()` or
+     * `animate()`
+     * within a group will be executed instantly (use {\@link keyframes keyframes} or a
+     * {\@link animate#usage animate() with a delay value} to offset styles to be applied at a later
+     * time).
+     *
+     * ```typescript
+     * group([
+     *   animate("1s", { background: "black" }))
+     *   animate("2s", { color: "white" }))
+     * ])
+     * ```
+     *
+     * ### Example ([live demo](http://plnkr.co/edit/Kez8XGWBxWue7qP7nNvF?p=preview))
+     *
+     * {\@example core/animation/ts/dsl/animation_example.ts region='Component'}
+     *
+     * \@experimental Animation support is experimental.
      * @param {?} steps
      * @return {?}
      */
@@ -10974,42 +10574,43 @@
         return new AnimationGroupMetadata(steps);
     }
     /**
-     *  `sequence` is an animation-specific function that is designed to be used inside of Angular2's
-      * animation
-      * DSL language. If this information is new, please navigate to the
-      * {@link Component#animations-anchor component animations metadata
-      * page} to gain a better understanding of how animations in Angular2 are used.
-      * *
-      * `sequence` Specifies a list of animation steps that are run one by one. (`sequence` is used
-      * by default when an array is passed as animation data into {@link transition transition}.)
-      * *
-      * The `sequence` function can either be used within a {@link group group} or a {@link transition
-      * transition}
-      * and it will only continue to the next instruction once each of the inner animation steps
-      * have completed.
-      * *
-      * To perform animation styling in parallel with other animation steps then
-      * have a look at the {@link group group} animation function.
-      * *
-      * ### Usage
-      * *
-      * The `steps` data that is passed into the `sequence` animation function can either consist
-      * of {@link style style} or {@link animate animate} function calls. A call to `style()` will apply
-      * the
-      * provided styling data immediately while a call to `animate()` will apply its styling
-      * data over a given time depending on its timing data.
-      * *
-      * ```typescript
-      * sequence([
-      * style({ opacity: 0 })),
-      * animate("1s", { opacity: 1 }))
-      * ])
-      * ```
-      * *
-      * ### Example ([live demo](http://plnkr.co/edit/Kez8XGWBxWue7qP7nNvF?p=preview))
-      * *
-      * {@example core/animation/ts/dsl/animation_example.ts region='Component'}
-      * *
+     * `sequence` is an animation-specific function that is designed to be used inside of Angular2's
+     * animation
+     * DSL language. If this information is new, please navigate to the
+     * {\@link Component#animations-anchor component animations metadata
+     * page} to gain a better understanding of how animations in Angular2 are used.
+     *
+     * `sequence` Specifies a list of animation steps that are run one by one. (`sequence` is used
+     * by default when an array is passed as animation data into {\@link transition transition}.)
+     *
+     * The `sequence` function can either be used within a {\@link group group} or a {\@link transition
+     * transition}
+     * and it will only continue to the next instruction once each of the inner animation steps
+     * have completed.
+     *
+     * To perform animation styling in parallel with other animation steps then
+     * have a look at the {\@link group group} animation function.
+     *
+     * ### Usage
+     *
+     * The `steps` data that is passed into the `sequence` animation function can either consist
+     * of {\@link style style} or {\@link animate animate} function calls. A call to `style()` will apply
+     * the
+     * provided styling data immediately while a call to `animate()` will apply its styling
+     * data over a given time depending on its timing data.
+     *
+     * ```typescript
+     * sequence([
+     *   style({ opacity: 0 })),
+     *   animate("1s", { opacity: 1 }))
+     * ])
+     * ```
+     *
+     * ### Example ([live demo](http://plnkr.co/edit/Kez8XGWBxWue7qP7nNvF?p=preview))
+     *
+     * {\@example core/animation/ts/dsl/animation_example.ts region='Component'}
+     *
+     * \@experimental Animation support is experimental.
      * @param {?} steps
      * @return {?}
      */
@@ -11017,50 +10618,51 @@
         return new AnimationSequenceMetadata(steps);
     }
     /**
-     *  `style` is an animation-specific function that is designed to be used inside of Angular2's
-      * animation
-      * DSL language. If this information is new, please navigate to the
-      * {@link Component#animations-anchor component animations metadata
-      * page} to gain a better understanding of how animations in Angular2 are used.
-      * *
-      * `style` declares a key/value object containing CSS properties/styles that can then
-      * be used for {@link state animation states}, within an {@link sequence animation sequence}, or as
-      * styling data for both {@link animate animate} and {@link keyframes keyframes}.
-      * *
-      * ### Usage
-      * *
-      * `style` takes in a key/value string map as data and expects one or more CSS property/value
-      * pairs to be defined.
-      * *
-      * ```typescript
-      * // string values are used for css properties
-      * style({ background: "red", color: "blue" })
-      * *
-      * // numerical (pixel) values are also supported
-      * style({ width: 100, height: 0 })
-      * ```
-      * *
-      * #### Auto-styles (using `*`)
-      * *
-      * When an asterix (`*`) character is used as a value then it will be detected from the element
-      * being animated
-      * and applied as animation data when the animation starts.
-      * *
-      * This feature proves useful for a state depending on layout and/or environment factors; in such
-      * cases
-      * the styles are calculated just before the animation starts.
-      * *
-      * ```typescript
-      * // the steps below will animate from 0 to the
-      * // actual height of the element
-      * style({ height: 0 }),
-      * animate("1s", style({ height: "*" }))
-      * ```
-      * *
-      * ### Example ([live demo](http://plnkr.co/edit/Kez8XGWBxWue7qP7nNvF?p=preview))
-      * *
-      * {@example core/animation/ts/dsl/animation_example.ts region='Component'}
-      * *
+     * `style` is an animation-specific function that is designed to be used inside of Angular2's
+     * animation
+     * DSL language. If this information is new, please navigate to the
+     * {\@link Component#animations-anchor component animations metadata
+     * page} to gain a better understanding of how animations in Angular2 are used.
+     *
+     * `style` declares a key/value object containing CSS properties/styles that can then
+     * be used for {\@link state animation states}, within an {\@link sequence animation sequence}, or as
+     * styling data for both {\@link animate animate} and {\@link keyframes keyframes}.
+     *
+     * ### Usage
+     *
+     * `style` takes in a key/value string map as data and expects one or more CSS property/value
+     * pairs to be defined.
+     *
+     * ```typescript
+     * // string values are used for css properties
+     * style({ background: "red", color: "blue" })
+     *
+     * // numerical (pixel) values are also supported
+     * style({ width: 100, height: 0 })
+     * ```
+     *
+     * #### Auto-styles (using `*`)
+     *
+     * When an asterix (`*`) character is used as a value then it will be detected from the element
+     * being animated
+     * and applied as animation data when the animation starts.
+     *
+     * This feature proves useful for a state depending on layout and/or environment factors; in such
+     * cases
+     * the styles are calculated just before the animation starts.
+     *
+     * ```typescript
+     * // the steps below will animate from 0 to the
+     * // actual height of the element
+     * style({ height: 0 }),
+     * animate("1s", style({ height: "*" }))
+     * ```
+     *
+     * ### Example ([live demo](http://plnkr.co/edit/Kez8XGWBxWue7qP7nNvF?p=preview))
+     *
+     * {\@example core/animation/ts/dsl/animation_example.ts region='Component'}
+     *
+     * \@experimental Animation support is experimental.
      * @param {?} tokens
      * @return {?}
      */
@@ -11087,57 +10689,58 @@
         return new AnimationStyleMetadata(input, offset);
     }
     /**
-     *  `state` is an animation-specific function that is designed to be used inside of Angular2's
-      * animation
-      * DSL language. If this information is new, please navigate to the
-      * {@link Component#animations-anchor component animations metadata
-      * page} to gain a better understanding of how animations in Angular2 are used.
-      * *
-      * `state` declares an animation state within the given trigger. When a state is
-      * active within a component then its associated styles will persist on
-      * the element that the trigger is attached to (even when the animation ends).
-      * *
-      * To animate between states, have a look at the animation {@link transition transition}
-      * DSL function. To register states to an animation trigger please have a look
-      * at the {@link trigger trigger} function.
-      * *
-      * #### The `void` state
-      * *
-      * The `void` state value is a reserved word that angular uses to determine when the element is not
-      * apart
-      * of the application anymore (e.g. when an `ngIf` evaluates to false then the state of the
-      * associated element
-      * is void).
-      * *
-      * #### The `*` (default) state
-      * *
-      * The `*` state (when styled) is a fallback state that will be used if
-      * the state that is being animated is not declared within the trigger.
-      * *
-      * ### Usage
-      * *
-      * `state` will declare an animation state with its associated styles
-      * within the given trigger.
-      * *
-      * - `stateNameExpr` can be one or more state names separated by commas.
-      * - `styles` refers to the {@link style styling data} that will be persisted on the element once
-      * the state
-      * has been reached.
-      * *
-      * ```typescript
-      * // "void" is a reserved name for a state and is used to represent
-      * // the state in which an element is detached from from the application.
-      * state("void", style({ height: 0 }))
-      * *
-      * // user-defined states
-      * state("closed", style({ height: 0 }))
-      * state("open, visible", style({ height: "*" }))
-      * ```
-      * *
-      * ### Example ([live demo](http://plnkr.co/edit/Kez8XGWBxWue7qP7nNvF?p=preview))
-      * *
-      * {@example core/animation/ts/dsl/animation_example.ts region='Component'}
-      * *
+     * `state` is an animation-specific function that is designed to be used inside of Angular2's
+     * animation
+     * DSL language. If this information is new, please navigate to the
+     * {\@link Component#animations-anchor component animations metadata
+     * page} to gain a better understanding of how animations in Angular2 are used.
+     *
+     * `state` declares an animation state within the given trigger. When a state is
+     * active within a component then its associated styles will persist on
+     * the element that the trigger is attached to (even when the animation ends).
+     *
+     * To animate between states, have a look at the animation {\@link transition transition}
+     * DSL function. To register states to an animation trigger please have a look
+     * at the {\@link trigger trigger} function.
+     *
+     * #### The `void` state
+     *
+     * The `void` state value is a reserved word that angular uses to determine when the element is not
+     * apart
+     * of the application anymore (e.g. when an `ngIf` evaluates to false then the state of the
+     * associated element
+     * is void).
+     *
+     * #### The `*` (default) state
+     *
+     * The `*` state (when styled) is a fallback state that will be used if
+     * the state that is being animated is not declared within the trigger.
+     *
+     * ### Usage
+     *
+     * `state` will declare an animation state with its associated styles
+     * within the given trigger.
+     *
+     * - `stateNameExpr` can be one or more state names separated by commas.
+     * - `styles` refers to the {\@link style styling data} that will be persisted on the element once
+     * the state
+     * has been reached.
+     *
+     * ```typescript
+     * // "void" is a reserved name for a state and is used to represent
+     * // the state in which an element is detached from from the application.
+     * state("void", style({ height: 0 }))
+     *
+     * // user-defined states
+     * state("closed", style({ height: 0 }))
+     * state("open, visible", style({ height: "*" }))
+     * ```
+     *
+     * ### Example ([live demo](http://plnkr.co/edit/Kez8XGWBxWue7qP7nNvF?p=preview))
+     *
+     * {\@example core/animation/ts/dsl/animation_example.ts region='Component'}
+     *
+     * \@experimental Animation support is experimental.
      * @param {?} stateNameExpr
      * @param {?} styles
      * @return {?}
@@ -11146,52 +10749,53 @@
         return new AnimationStateDeclarationMetadata(stateNameExpr, styles);
     }
     /**
-     *  `keyframes` is an animation-specific function that is designed to be used inside of Angular2's
-      * animation
-      * DSL language. If this information is new, please navigate to the
-      * {@link Component#animations-anchor component animations metadata
-      * page} to gain a better understanding of how animations in Angular2 are used.
-      * *
-      * `keyframes` specifies a collection of {@link style style} entries each optionally characterized
-      * by an `offset` value.
-      * *
-      * ### Usage
-      * *
-      * The `keyframes` animation function is designed to be used alongside the {@link animate animate}
-      * animation function. Instead of applying animations from where they are
-      * currently to their destination, keyframes can describe how each style entry is applied
-      * and at what point within the animation arc (much like CSS Keyframe Animations do).
-      * *
-      * For each `style()` entry an `offset` value can be set. Doing so allows to specifiy at
-      * what percentage of the animate time the styles will be applied.
-      * *
-      * ```typescript
-      * // the provided offset values describe when each backgroundColor value is applied.
-      * animate("5s", keyframes([
-      * style({ backgroundColor: "red", offset: 0 }),
-      * style({ backgroundColor: "blue", offset: 0.2 }),
-      * style({ backgroundColor: "orange", offset: 0.3 }),
-      * style({ backgroundColor: "black", offset: 1 })
-      * ]))
-      * ```
-      * *
-      * Alternatively, if there are no `offset` values used within the style entries then the offsets
-      * will
-      * be calculated automatically.
-      * *
-      * ```typescript
-      * animate("5s", keyframes([
-      * style({ backgroundColor: "red" }) // offset = 0
-      * style({ backgroundColor: "blue" }) // offset = 0.33
-      * style({ backgroundColor: "orange" }) // offset = 0.66
-      * style({ backgroundColor: "black" }) // offset = 1
-      * ]))
-      * ```
-      * *
-      * ### Example ([live demo](http://plnkr.co/edit/Kez8XGWBxWue7qP7nNvF?p=preview))
-      * *
-      * {@example core/animation/ts/dsl/animation_example.ts region='Component'}
-      * *
+     * `keyframes` is an animation-specific function that is designed to be used inside of Angular2's
+     * animation
+     * DSL language. If this information is new, please navigate to the
+     * {\@link Component#animations-anchor component animations metadata
+     * page} to gain a better understanding of how animations in Angular2 are used.
+     *
+     * `keyframes` specifies a collection of {\@link style style} entries each optionally characterized
+     * by an `offset` value.
+     *
+     * ### Usage
+     *
+     * The `keyframes` animation function is designed to be used alongside the {\@link animate animate}
+     * animation function. Instead of applying animations from where they are
+     * currently to their destination, keyframes can describe how each style entry is applied
+     * and at what point within the animation arc (much like CSS Keyframe Animations do).
+     *
+     * For each `style()` entry an `offset` value can be set. Doing so allows to specifiy at
+     * what percentage of the animate time the styles will be applied.
+     *
+     * ```typescript
+     * // the provided offset values describe when each backgroundColor value is applied.
+     * animate("5s", keyframes([
+     *   style({ backgroundColor: "red", offset: 0 }),
+     *   style({ backgroundColor: "blue", offset: 0.2 }),
+     *   style({ backgroundColor: "orange", offset: 0.3 }),
+     *   style({ backgroundColor: "black", offset: 1 })
+     * ]))
+     * ```
+     *
+     * Alternatively, if there are no `offset` values used within the style entries then the offsets
+     * will
+     * be calculated automatically.
+     *
+     * ```typescript
+     * animate("5s", keyframes([
+     *   style({ backgroundColor: "red" }) // offset = 0
+     *   style({ backgroundColor: "blue" }) // offset = 0.33
+     *   style({ backgroundColor: "orange" }) // offset = 0.66
+     *   style({ backgroundColor: "black" }) // offset = 1
+     * ]))
+     * ```
+     *
+     * ### Example ([live demo](http://plnkr.co/edit/Kez8XGWBxWue7qP7nNvF?p=preview))
+     *
+     * {\@example core/animation/ts/dsl/animation_example.ts region='Component'}
+     *
+     * \@experimental Animation support is experimental.
      * @param {?} steps
      * @return {?}
      */
@@ -11199,107 +10803,108 @@
         return new AnimationKeyframesSequenceMetadata(steps);
     }
     /**
-     *  `transition` is an animation-specific function that is designed to be used inside of Angular2's
-      * animation
-      * DSL language. If this information is new, please navigate to the
-      * {@link Component#animations-anchor component animations metadata
-      * page} to gain a better understanding of how animations in Angular2 are used.
-      * *
-      * `transition` declares the {@link sequence sequence of animation steps} that will be run when the
-      * provided
-      * `stateChangeExpr` value is satisfied. The `stateChangeExpr` consists of a `state1 => state2`
-      * which consists
-      * of two known states (use an asterix (`*`) to refer to a dynamic starting and/or ending state).
-      * *
-      * Animation transitions are placed within an {@link trigger animation trigger}. For an transition
-      * to animate to
-      * a state value and persist its styles then one or more {@link state animation states} is expected
-      * to be defined.
-      * *
-      * ### Usage
-      * *
-      * An animation transition is kicked off the `stateChangeExpr` predicate evaluates to true based on
-      * what the
-      * previous state is and what the current state has become. In other words, if a transition is
-      * defined that
-      * matches the old/current state criteria then the associated animation will be triggered.
-      * *
-      * ```typescript
-      * // all transition/state changes are defined within an animation trigger
-      * trigger("myAnimationTrigger", [
-      * // if a state is defined then its styles will be persisted when the
-      * // animation has fully completed itself
-      * state("on", style({ background: "green" })),
-      * state("off", style({ background: "grey" })),
-      * *
-      * // a transition animation that will be kicked off when the state value
-      * // bound to "myAnimationTrigger" changes from "on" to "off"
-      * transition("on => off", animate(500)),
-      * *
-      * // it is also possible to do run the same animation for both directions
-      * transition("on <=> off", animate(500)),
-      * *
-      * // or to define multiple states pairs separated by commas
-      * transition("on => off, off => void", animate(500)),
-      * *
-      * // this is a catch-all state change for when an element is inserted into
-      * // the page and the destination state is unknown
-      * transition("void => *", [
-      * style({ opacity: 0 }),
-      * animate(500)
-      * ]),
-      * *
-      * // this will capture a state change between any states
-      * transition("* => *", animate("1s 0s")),
-      * ])
-      * ```
-      * *
-      * The template associated with this component will make use of the `myAnimationTrigger`
-      * animation trigger by binding to an element within its template code.
-      * *
-      * ```html
-      * <!-- somewhere inside of my-component-tpl.html -->
-      * <div [@myAnimationTrigger]="myStatusExp">...</div>
-      * ```
-      * *
-      * #### The final `animate` call
-      * *
-      * If the final step within the transition steps is a call to `animate()` that **only**
-      * uses a timing value with **no style data** then it will be automatically used as the final
-      * animation
-      * arc for the element to animate itself to the final state. This involves an automatic mix of
-      * adding/removing CSS styles so that the element will be in the exact state it should be for the
-      * applied state to be presented correctly.
-      * *
-      * ```
-      * // start off by hiding the element, but make sure that it animates properly to whatever state
-      * // is currently active for "myAnimationTrigger"
-      * transition("void => *", [
-      * style({ opacity: 0 }),
-      * animate(500)
-      * ])
-      * ```
-      * *
-      * ### Transition Aliases (`:enter` and `:leave`)
-      * *
-      * Given that enter (insertion) and leave (removal) animations are so common,
-      * the `transition` function accepts both `:enter` and `:leave` values which
-      * are aliases for the `void => *` and `* => void` state changes.
-      * *
-      * ```
-      * transition(":enter", [
-      * style({ opacity: 0 }),
-      * animate(500, style({ opacity: 1 }))
-      * ])
-      * transition(":leave", [
-      * animate(500, style({ opacity: 0 }))
-      * ])
-      * ```
-      * *
-      * ### Example ([live demo](http://plnkr.co/edit/Kez8XGWBxWue7qP7nNvF?p=preview))
-      * *
-      * {@example core/animation/ts/dsl/animation_example.ts region='Component'}
-      * *
+     * `transition` is an animation-specific function that is designed to be used inside of Angular2's
+     * animation
+     * DSL language. If this information is new, please navigate to the
+     * {\@link Component#animations-anchor component animations metadata
+     * page} to gain a better understanding of how animations in Angular2 are used.
+     *
+     * `transition` declares the {\@link sequence sequence of animation steps} that will be run when the
+     * provided
+     * `stateChangeExpr` value is satisfied. The `stateChangeExpr` consists of a `state1 => state2`
+     * which consists
+     * of two known states (use an asterix (`*`) to refer to a dynamic starting and/or ending state).
+     *
+     * Animation transitions are placed within an {\@link trigger animation trigger}. For an transition
+     * to animate to
+     * a state value and persist its styles then one or more {\@link state animation states} is expected
+     * to be defined.
+     *
+     * ### Usage
+     *
+     * An animation transition is kicked off the `stateChangeExpr` predicate evaluates to true based on
+     * what the
+     * previous state is and what the current state has become. In other words, if a transition is
+     * defined that
+     * matches the old/current state criteria then the associated animation will be triggered.
+     *
+     * ```typescript
+     * // all transition/state changes are defined within an animation trigger
+     * trigger("myAnimationTrigger", [
+     *   // if a state is defined then its styles will be persisted when the
+     *   // animation has fully completed itself
+     *   state("on", style({ background: "green" })),
+     *   state("off", style({ background: "grey" })),
+     *
+     *   // a transition animation that will be kicked off when the state value
+     *   // bound to "myAnimationTrigger" changes from "on" to "off"
+     *   transition("on => off", animate(500)),
+     *
+     *   // it is also possible to do run the same animation for both directions
+     *   transition("on <=> off", animate(500)),
+     *
+     *   // or to define multiple states pairs separated by commas
+     *   transition("on => off, off => void", animate(500)),
+     *
+     *   // this is a catch-all state change for when an element is inserted into
+     *   // the page and the destination state is unknown
+     *   transition("void => *", [
+     *     style({ opacity: 0 }),
+     *     animate(500)
+     *   ]),
+     *
+     *   // this will capture a state change between any states
+     *   transition("* => *", animate("1s 0s")),
+     * ])
+     * ```
+     *
+     * The template associated with this component will make use of the `myAnimationTrigger`
+     * animation trigger by binding to an element within its template code.
+     *
+     * ```html
+     * <!-- somewhere inside of my-component-tpl.html -->
+     * <div [\@myAnimationTrigger]="myStatusExp">...</div>
+     * ```
+     *
+     * #### The final `animate` call
+     *
+     * If the final step within the transition steps is a call to `animate()` that **only**
+     * uses a timing value with **no style data** then it will be automatically used as the final
+     * animation
+     * arc for the element to animate itself to the final state. This involves an automatic mix of
+     * adding/removing CSS styles so that the element will be in the exact state it should be for the
+     * applied state to be presented correctly.
+     *
+     * ```
+     * // start off by hiding the element, but make sure that it animates properly to whatever state
+     * // is currently active for "myAnimationTrigger"
+     * transition("void => *", [
+     *   style({ opacity: 0 }),
+     *   animate(500)
+     * ])
+     * ```
+     *
+     * ### Transition Aliases (`:enter` and `:leave`)
+     *
+     * Given that enter (insertion) and leave (removal) animations are so common,
+     * the `transition` function accepts both `:enter` and `:leave` values which
+     * are aliases for the `void => *` and `* => void` state changes.
+     *
+     * ```
+     * transition(":enter", [
+     *   style({ opacity: 0 }),
+     *   animate(500, style({ opacity: 1 }))
+     * ])
+     * transition(":leave", [
+     *   animate(500, style({ opacity: 0 }))
+     * ])
+     * ```
+     *
+     * ### Example ([live demo](http://plnkr.co/edit/Kez8XGWBxWue7qP7nNvF?p=preview))
+     *
+     * {\@example core/animation/ts/dsl/animation_example.ts region='Component'}
+     *
+     * \@experimental Animation support is experimental.
      * @param {?} stateChangeExpr
      * @param {?} steps
      * @return {?}
@@ -11309,58 +10914,60 @@
         return new AnimationStateTransitionMetadata(stateChangeExpr, animationData);
     }
     /**
-     *  `trigger` is an animation-specific function that is designed to be used inside of Angular2's
-      * animation
-      * DSL language. If this information is new, please navigate to the
-      * {@link Component#animations-anchor component animations metadata
-      * page} to gain a better understanding of how animations in Angular2 are used.
-      * *
-      * `trigger` Creates an animation trigger which will a list of {@link state state} and {@link
-      * transition transition}
-      * entries that will be evaluated when the expression bound to the trigger changes.
-      * *
-      * Triggers are registered within the component annotation data under the
-      * {@link Component#animations-anchor animations section}. An animation trigger can
-      * be placed on an element within a template by referencing the name of the
-      * trigger followed by the expression value that the trigger is bound to
-      * (in the form of `[@triggerName]="expression"`.
-      * *
-      * ### Usage
-      * *
-      * `trigger` will create an animation trigger reference based on the provided `name` value.
-      * The provided `animation` value is expected to be an array consisting of {@link state state} and
-      * {@link transition transition}
-      * declarations.
-      * *
-      * ```typescript
-      * selector: 'my-component',
-      * templateUrl: 'my-component-tpl.html',
-      * animations: [
-      * trigger("myAnimationTrigger", [
-      * state(...),
-      * state(...),
-      * transition(...),
-      * transition(...)
-      * ])
-      * ]
-      * })
-      * class MyComponent {
-      * myStatusExp = "something";
-      * }
-      * ```
-      * *
-      * The template associated with this component will make use of the `myAnimationTrigger`
-      * animation trigger by binding to an element within its template code.
-      * *
-      * ```html
-      * <!-- somewhere inside of my-component-tpl.html -->
-      * <div [@myAnimationTrigger]="myStatusExp">...</div>
-      * ```
-      * *
-      * ### Example ([live demo](http://plnkr.co/edit/Kez8XGWBxWue7qP7nNvF?p=preview))
-      * *
-      * {@example core/animation/ts/dsl/animation_example.ts region='Component'}
-      * *
+     * `trigger` is an animation-specific function that is designed to be used inside of Angular2's
+     * animation
+     * DSL language. If this information is new, please navigate to the
+     * {\@link Component#animations-anchor component animations metadata
+     * page} to gain a better understanding of how animations in Angular2 are used.
+     *
+     * `trigger` Creates an animation trigger which will a list of {\@link state state} and {\@link
+     * transition transition}
+     * entries that will be evaluated when the expression bound to the trigger changes.
+     *
+     * Triggers are registered within the component annotation data under the
+     * {\@link Component#animations-anchor animations section}. An animation trigger can
+     * be placed on an element within a template by referencing the name of the
+     * trigger followed by the expression value that the trigger is bound to
+     * (in the form of `[\@triggerName]="expression"`.
+     *
+     * ### Usage
+     *
+     * `trigger` will create an animation trigger reference based on the provided `name` value.
+     * The provided `animation` value is expected to be an array consisting of {\@link state state} and
+     * {\@link transition transition}
+     * declarations.
+     *
+     * ```typescript
+     * \@Component({
+     *   selector: 'my-component',
+     *   templateUrl: 'my-component-tpl.html',
+     *   animations: [
+     *     trigger("myAnimationTrigger", [
+     *       state(...),
+     *       state(...),
+     *       transition(...),
+     *       transition(...)
+     *     ])
+     *   ]
+     * })
+     * class MyComponent {
+     *   myStatusExp = "something";
+     * }
+     * ```
+     *
+     * The template associated with this component will make use of the `myAnimationTrigger`
+     * animation trigger by binding to an element within its template code.
+     *
+     * ```html
+     * <!-- somewhere inside of my-component-tpl.html -->
+     * <div [\@myAnimationTrigger]="myStatusExp">...</div>
+     * ```
+     *
+     * ### Example ([live demo](http://plnkr.co/edit/Kez8XGWBxWue7qP7nNvF?p=preview))
+     *
+     * {\@example core/animation/ts/dsl/animation_example.ts region='Component'}
+     *
+     * \@experimental Animation support is experimental.
      * @param {?} name
      * @param {?} animation
      * @return {?}
@@ -11493,11 +11100,21 @@
     }
 
     /**
-     * @license undefined
-      * Copyright Google Inc. All Rights Reserved.
-      * *
-      * Use of this source code is governed by an MIT-style license that can be
-      * found in the LICENSE file at https://angular.io/license
+     * @license
+     * Copyright Google Inc. All Rights Reserved.
+     *
+     * Use of this source code is governed by an MIT-style license that can be
+     * found in the LICENSE file at https://angular.io/license
+     */
+    /**
+     * `AnimationStyles` consists of a collection of key/value maps containing CSS-based style data
+     * that can either be used as initial styling data or apart of a series of keyframes within an
+     * animation.
+     * This class is mostly internal, and it is designed to be used alongside
+     * {\@link AnimationKeyframe `AnimationKeyframe`} and {\@link Renderer#animate-anchor
+     * `Renderer.animate`}.
+     *
+     * \@experimental Animation support is experimental
      */
     var AnimationStyles = (function () {
         /**
@@ -11510,33 +11127,35 @@
     }());
 
     /**
-     *  An instance of this class is returned as an event parameter when an animation
-      * callback is captured for an animation either during the start or done phase.
-      * *
-      * ```typescript
-      * host: {
-      * '[@myAnimationTrigger]': 'someExpression',
-      * '(@myAnimationTrigger.start)': 'captureStartEvent($event)',
-      * '(@myAnimationTrigger.done)': 'captureDoneEvent($event)',
-      * },
-      * animations: [
-      * trigger("myAnimationTrigger", [
-      * // ...
-      * ])
-      * ]
-      * })
-      * class MyComponent {
-      * someExpression: any = false;
-      * captureStartEvent(event: AnimationTransitionEvent) {
-      * // the toState, fromState and totalTime data is accessible from the event variable
-      * }
-      * *
-      * captureDoneEvent(event: AnimationTransitionEvent) {
-      * // the toState, fromState and totalTime data is accessible from the event variable
-      * }
-      * }
-      * ```
-      * *
+     * An instance of this class is returned as an event parameter when an animation
+     * callback is captured for an animation either during the start or done phase.
+     *
+     * ```typescript
+     * \@Component({
+     *   host: {
+     *     '[\@myAnimationTrigger]': 'someExpression',
+     *     '(\@myAnimationTrigger.start)': 'captureStartEvent($event)',
+     *     '(\@myAnimationTrigger.done)': 'captureDoneEvent($event)',
+     *   },
+     *   animations: [
+     *     trigger("myAnimationTrigger", [
+     *        // ...
+     *     ])
+     *   ]
+     * })
+     * class MyComponent {
+     *   someExpression: any = false;
+     *   captureStartEvent(event: AnimationTransitionEvent) {
+     *     // the toState, fromState and totalTime data is accessible from the event variable
+     *   }
+     *
+     *   captureDoneEvent(event: AnimationTransitionEvent) {
+     *     // the toState, fromState and totalTime data is accessible from the event variable
+     *   }
+     * }
+     * ```
+     *
+     * \@experimental Animation support is experimental.
      */
     var AnimationTransitionEvent = (function () {
         /**
@@ -12187,11 +11806,11 @@
     /**
      * @experimental
      */
-    var /** @type {?} */ EMPTY_CONTEXT$1 = new Object();
+    var /** @type {?} */ EMPTY_CONTEXT = new Object();
     var /** @type {?} */ UNDEFINED$1 = new Object();
     /**
-     *  Cost of making objects: http://jsperf.com/instantiate-size-of-object
-      * *
+     * Cost of making objects: http://jsperf.com/instantiate-size-of-object
+     *
      * @abstract
      */
     var AppView = (function () {
@@ -12263,21 +11882,21 @@
          * @return {?}
          */
         AppView.prototype.createHostView = function (rootSelectorOrNode, hostInjector, projectableNodes) {
-            this.context = (EMPTY_CONTEXT$1);
+            this.context = (EMPTY_CONTEXT);
             this._hasExternalHostElement = isPresent(rootSelectorOrNode);
             this._hostInjector = hostInjector;
             this._hostProjectableNodes = projectableNodes;
             return this.createInternal(rootSelectorOrNode);
         };
         /**
-         *  Overwritten by implementations.
-          * Returns the ComponentRef for the host element for ViewType.HOST.
+         * Overwritten by implementations.
+         * Returns the ComponentRef for the host element for ViewType.HOST.
          * @param {?} rootSelectorOrNode
          * @return {?}
          */
         AppView.prototype.createInternal = function (rootSelectorOrNode) { return null; };
         /**
-         *  Overwritten by implementations.
+         * Overwritten by implementations.
          * @param {?} templateNodeIndex
          * @return {?}
          */
@@ -12319,7 +11938,7 @@
             return result;
         };
         /**
-         *  Overwritten by implementations
+         * Overwritten by implementations
          * @param {?} token
          * @param {?} nodeIndex
          * @param {?} notFoundResult
@@ -12373,12 +11992,12 @@
             this.cdMode = ChangeDetectorStatus.Destroyed;
         };
         /**
-         *  Overwritten by implementations
+         * Overwritten by implementations
          * @return {?}
          */
         AppView.prototype.destroyInternal = function () { };
         /**
-         *  Overwritten by implementations
+         * Overwritten by implementations
          * @return {?}
          */
         AppView.prototype.detachInternal = function () { };
@@ -12543,14 +12162,14 @@
             }
         };
         /**
-         *  Overwritten by implementations
+         * Overwritten by implementations
          * @param {?} cb
          * @param {?} c
          * @return {?}
          */
         AppView.prototype.visitRootNodesInternal = function (cb, c) { };
         /**
-         *  Overwritten by implementations
+         * Overwritten by implementations
          * @param {?} nodeIndex
          * @param {?} ngContentIndex
          * @param {?} cb
@@ -12559,7 +12178,7 @@
          */
         AppView.prototype.visitProjectableNodesInternal = function (nodeIndex, ngContentIndex, cb, c) { };
         /**
-         *  Overwritten by implementations
+         * Overwritten by implementations
          * @return {?}
          */
         AppView.prototype.dirtyParentQueriesInternal = function () { };
@@ -12591,7 +12210,7 @@
             wtfLeave(s);
         };
         /**
-         *  Overwritten by implementations
+         * Overwritten by implementations
          * @param {?} throwOnChange
          * @return {?}
          */
@@ -12787,8 +12406,8 @@
     }(AppView));
 
     /**
-     *  A ViewContainer is created for elements that have a ViewContainerRef
-      * to keep track of the nested views.
+     * A ViewContainer is created for elements that have a ViewContainerRef
+     * to keep track of the nested views.
      */
     var ViewContainer = (function () {
         /**
@@ -13008,6 +12627,7 @@
         FILL_STYLE_FLAG: FILL_STYLE_FLAG,
         ComponentStillLoadingError: ComponentStillLoadingError,
         isPromise: isPromise,
+        isObservable: isObservable,
         AnimationTransition: AnimationTransition
     };
 
@@ -13047,6 +12667,8 @@
     exports.ErrorHandler = ErrorHandler;
     exports.AnimationTransitionEvent = AnimationTransitionEvent;
     exports.AnimationPlayer = AnimationPlayer;
+    exports.AnimationStyles = AnimationStyles;
+    exports.AnimationKeyframe = AnimationKeyframe;
     exports.Sanitizer = Sanitizer;
     exports.SecurityContext = SecurityContext;
     exports.ANALYZE_FOR_ENTRY_COMPONENTS = ANALYZE_FOR_ENTRY_COMPONENTS;

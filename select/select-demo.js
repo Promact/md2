@@ -43,5 +43,4 @@ var SelectDemo = (function () {
     return SelectDemo;
 }());
 exports.SelectDemo = SelectDemo;
-
 //# sourceMappingURL=select-demo.js.map

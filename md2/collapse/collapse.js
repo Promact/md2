@@ -95,5 +95,4 @@ export var Md2CollapseModule = (function () {
     ], Md2CollapseModule);
     return Md2CollapseModule;
 }());
-
 //# sourceMappingURL=collapse.js.map

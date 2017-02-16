@@ -129,6 +129,7 @@ export var PortalHostDirective = (function (_super) {
 export var PortalModule = (function () {
     function PortalModule() {
     }
+    /** @deprecated */
     PortalModule.forRoot = function () {
         return {
             ngModule: PortalModule,
@@ -144,5 +145,4 @@ export var PortalModule = (function () {
     ], PortalModule);
     return PortalModule;
 }());
-
 //# sourceMappingURL=portal-directives.js.map

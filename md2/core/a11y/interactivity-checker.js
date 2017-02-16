@@ -206,5 +206,4 @@ function isPotentiallyFocusable(element) {
 function getWindow(node) {
     return node.ownerDocument.defaultView || window;
 }
-
 //# sourceMappingURL=interactivity-checker.js.map

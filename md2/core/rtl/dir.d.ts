@@ -17,5 +17,6 @@ export declare class Dir {
     value: LayoutDirection;
 }
 export declare class RtlModule {
+    /** @deprecated */
     static forRoot(): ModuleWithProviders;
 }

@@ -1,0 +1,8 @@
+// Import all the theming functionality.
+@import '../core';
+
+
+// Create a theme.
+@mixin angular-material-theme($theme) {
+  @include mat-core-theme($theme);
+}

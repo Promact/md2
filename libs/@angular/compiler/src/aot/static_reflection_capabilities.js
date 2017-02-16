@@ -90,7 +90,7 @@ export var StaticAndDynamicReflectionCapabilities = (function () {
      * @return {?}
      */
     StaticAndDynamicReflectionCapabilities.prototype.resolveIdentifier = function (name, moduleUrl, runtime) {
-        return this.staticDelegate.resolveIdentifier(name, moduleUrl, runtime);
+        return this.staticDelegate.resolveIdentifier(name, moduleUrl);
     };
     /**
      * @param {?} enumIdentifier

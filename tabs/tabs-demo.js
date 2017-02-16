@@ -32,5 +32,4 @@ var TabsDemo = (function () {
     return TabsDemo;
 }());
 exports.TabsDemo = TabsDemo;
-
 //# sourceMappingURL=tabs-demo.js.map

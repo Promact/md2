@@ -22,5 +22,4 @@ export var Md2MenuContent = (function () {
     ], Md2MenuContent);
     return Md2MenuContent;
 }());
-
 //# sourceMappingURL=menu-content.js.map

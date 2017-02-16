@@ -225,7 +225,7 @@ export var CompileElement = (function (_super) {
                 }
             });
             var /** @type {?} */ propName = "_" + tokenName(resolvedProvider.token) + "_" + _this.nodeIndex + "_" + _this.instances.size;
-            var /** @type {?} */ instance = createProviderProperty(propName, resolvedProvider, providerValueExpressions, resolvedProvider.multiProvider, resolvedProvider.eager, _this);
+            var /** @type {?} */ instance = createProviderProperty(propName, providerValueExpressions, resolvedProvider.multiProvider, resolvedProvider.eager, _this);
             if (isDirectiveWrapper) {
                 _this.directiveWrapperInstance.set(tokenReference(resolvedProvider.token), instance);
                 _this.instances.set(tokenReference(resolvedProvider.token), DirectiveWrapperExpressions.context(instance));
@@ -243,11 +243,6 @@ export var CompileElement = (function (_super) {
         for (var /** @type {?} */ i = 0; i < this._directives.length; i++) {
             _loop_1(i);
         }
-        var /** @type {?} */ queriesWithReads = [];
-        Array.from(this._resolvedProviders.values()).forEach(function (resolvedProvider) {
-            var /** @type {?} */ queriesForProvider = _this._getQueriesFor(resolvedProvider.token);
-            queriesWithReads.push.apply(queriesWithReads, queriesForProvider.map(function (query) { return new _QueryWithRead(query, resolvedProvider.token); }));
-        });
         Object.keys(this.referenceTokens).forEach(function (varName) {
             var /** @type {?} */ token = _this.referenceTokens[varName];
             var /** @type {?} */ varValue;
@@ -258,28 +253,6 @@ export var CompileElement = (function (_super) {
                 varValue = _this.renderNode;
             }
             _this.view.locals.set(varName, varValue);
-            var /** @type {?} */ varToken = { value: varName };
-            queriesWithReads.push.apply(queriesWithReads, _this._getQueriesFor(varToken).map(function (query) { return new _QueryWithRead(query, varToken); }));
-        });
-        queriesWithReads.forEach(function (queryWithRead) {
-            var /** @type {?} */ value;
-            if (isPresent(queryWithRead.read.identifier)) {
-                // query for an identifier
-                value = _this.instances.get(tokenReference(queryWithRead.read));
-            }
-            else {
-                // query for a reference
-                var /** @type {?} */ token = _this.referenceTokens[queryWithRead.read.value];
-                if (isPresent(token)) {
-                    value = _this.instances.get(tokenReference(token));
-                }
-                else {
-                    value = _this.elementRef;
-                }
-            }
-            if (isPresent(value)) {
-                queryWithRead.query.addValue(value, _this.view);
-            }
         });
     };
     /**
@@ -300,10 +273,14 @@ export var CompileElement = (function (_super) {
             var /** @type {?} */ providerChildNodeCount = resolvedProvider.providerType === ProviderAstType.PrivateService ? 0 : childNodeCount;
             _this.view.injectorGetMethod.addStmt(createInjectInternalCondition(_this.nodeIndex, providerChildNodeCount, resolvedProvider, providerExpr));
         });
+    };
+    /**
+     * @return {?}
+     */
+    CompileElement.prototype.finish = function () {
+        var _this = this;
         Array.from(this._queries.values())
-            .forEach(function (queries) { return queries.forEach(function (q) {
-            return q.afterChildren(_this.view.createMethod, _this.view.updateContentQueriesMethod);
-        }); });
+            .forEach(function (queries) { return queries.forEach(function (q) { return q.generateStatements(_this.view.createMethod, _this.view.updateContentQueriesMethod); }); });
     };
     /**
      * @param {?} ngContentIndex
@@ -325,14 +302,13 @@ export var CompileElement = (function (_super) {
      * @return {?}
      */
     CompileElement.prototype.getProviderTokens = function () {
-        return Array.from(this._resolvedProviders.values())
-            .map(function (resolvedProvider) { return createDiTokenExpression(resolvedProvider.token); });
+        return Array.from(this._resolvedProviders.values()).map(function (provider) { return provider.token; });
     };
     /**
      * @param {?} token
      * @return {?}
      */
-    CompileElement.prototype._getQueriesFor = function (token) {
+    CompileElement.prototype.getQueriesFor = function (token) {
         var /** @type {?} */ result = [];
         var /** @type {?} */ currentEl = this;
         var /** @type {?} */ distance = 0;
@@ -360,7 +336,7 @@ export var CompileElement = (function (_super) {
      */
     CompileElement.prototype._addQuery = function (queryMeta, directiveInstance) {
         var /** @type {?} */ propName = "_query_" + tokenName(queryMeta.selectors[0]) + "_" + this.nodeIndex + "_" + this._queryCount++;
-        var /** @type {?} */ queryList = createQueryList(queryMeta, directiveInstance, propName, this.view);
+        var /** @type {?} */ queryList = createQueryList(propName, this.view);
         var /** @type {?} */ query = new CompileQuery(queryMeta, queryList, directiveInstance, this.view);
         addQueryToTokenMap(this._queries, query);
         return query;
@@ -483,14 +459,13 @@ function createInjectInternalCondition(nodeIndex, childNodeCount, provider, prov
 }
 /**
  * @param {?} propName
- * @param {?} provider
  * @param {?} providerValueExpressions
  * @param {?} isMulti
  * @param {?} isEager
  * @param {?} compileElement
  * @return {?}
  */
-function createProviderProperty(propName, provider, providerValueExpressions, isMulti, isEager, compileElement) {
+function createProviderProperty(propName, providerValueExpressions, isMulti, isEager, compileElement) {
     var /** @type {?} */ view = compileElement.view;
     var /** @type {?} */ resolvedProviderValueExpr;
     var /** @type {?} */ type;
@@ -520,22 +495,5 @@ function createProviderProperty(propName, provider, providerValueExpressions, is
         view.getters.push(new o.ClassGetter(propName, getter.finish(), type));
     }
     return o.THIS_EXPR.prop(propName);
-}
-var _QueryWithRead = (function () {
-    /**
-     * @param {?} query
-     * @param {?} match
-     */
-    function _QueryWithRead(query, match) {
-        this.query = query;
-        this.read = query.meta.read || match;
-    }
-    return _QueryWithRead;
-}());
-function _QueryWithRead_tsickle_Closure_declarations() {
-    /** @type {?} */
-    _QueryWithRead.prototype.read;
-    /** @type {?} */
-    _QueryWithRead.prototype.query;
 }
 //# sourceMappingURL=compile_element.js.map

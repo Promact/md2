@@ -7,4 +7,5 @@
  */
 import { __core_private__ as r } from '@angular/core';
 export var /** @type {?} */ isPromise = r.isPromise;
+export var /** @type {?} */ isObservable = r.isObservable;
 //# sourceMappingURL=private_import_core.js.map

@@ -13,7 +13,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 import { BaseError } from '../facade/errors';
 import { stringify } from '../facade/lang';
 /**
- * @stable
+ * \@stable
  */
 export var NoComponentFactoryError = (function (_super) {
     __extends(NoComponentFactoryError, _super);
@@ -21,7 +21,7 @@ export var NoComponentFactoryError = (function (_super) {
      * @param {?} component
      */
     function NoComponentFactoryError(component) {
-        _super.call(this, "No component factory found for " + stringify(component));
+        _super.call(this, "No component factory found for " + stringify(component) + ". Did you add it to @NgModule.entryComponents?");
         this.component = component;
     }
     return NoComponentFactoryError;
@@ -43,6 +43,7 @@ var _NullComponentFactoryResolver = (function () {
     return _NullComponentFactoryResolver;
 }());
 /**
+ * \@stable
  * @abstract
  */
 export var ComponentFactoryResolver = (function () {

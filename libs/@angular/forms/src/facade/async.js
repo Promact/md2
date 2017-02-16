@@ -14,55 +14,57 @@ import { Subject } from 'rxjs/Subject';
 export { Observable } from 'rxjs/Observable';
 export { Subject } from 'rxjs/Subject';
 /**
- *  Use by directives and components to emit custom Events.
-  * *
-  * ### Examples
-  * *
-  * In the following example, `Zippy` alternatively emits `open` and `close` events when its
-  * title gets clicked:
-  * *
-  * ```
-  * selector: 'zippy',
-  * template: `
-  * <div class="zippy">
-  * <div (click)="toggle()">Toggle</div>
-  * <div [hidden]="!visible">
-  * <ng-content></ng-content>
-  * </div>
-  * </div>`})
-  * export class Zippy {
-  * visible: boolean = true;
-  * @Output() open: EventEmitter<any> = new EventEmitter();
-  * @Output() close: EventEmitter<any> = new EventEmitter();
-  * *
-  * toggle() {
-  * this.visible = !this.visible;
-  * if (this.visible) {
-  * this.open.emit(null);
-  * } else {
-  * this.close.emit(null);
-  * }
-  * }
-  * }
-  * ```
-  * *
-  * The events payload can be accessed by the parameter `$event` on the components output event
-  * handler:
-  * *
-  * ```
-  * <zippy (open)="onOpen($event)" (close)="onClose($event)"></zippy>
-  * ```
-  * *
-  * Uses Rx.Observable but provides an adapter to make it work as specified here:
-  * https://github.com/jhusain/observable-spec
-  * *
-  * Once a reference implementation of the spec is available, switch to it.
+ * Use by directives and components to emit custom Events.
+ *
+ * ### Examples
+ *
+ * In the following example, `Zippy` alternatively emits `open` and `close` events when its
+ * title gets clicked:
+ *
+ * ```
+ * \@Component({
+ *   selector: 'zippy',
+ *   template: `
+ *   <div class="zippy">
+ *     <div (click)="toggle()">Toggle</div>
+ *     <div [hidden]="!visible">
+ *       <ng-content></ng-content>
+ *     </div>
+ *  </div>`})
+ * export class Zippy {
+ *   visible: boolean = true;
+ *   \@Output() open: EventEmitter<any> = new EventEmitter();
+ *   \@Output() close: EventEmitter<any> = new EventEmitter();
+ *
+ *   toggle() {
+ *     this.visible = !this.visible;
+ *     if (this.visible) {
+ *       this.open.emit(null);
+ *     } else {
+ *       this.close.emit(null);
+ *     }
+ *   }
+ * }
+ * ```
+ *
+ * The events payload can be accessed by the parameter `$event` on the components output event
+ * handler:
+ *
+ * ```
+ * <zippy (open)="onOpen($event)" (close)="onClose($event)"></zippy>
+ * ```
+ *
+ * Uses Rx.Observable but provides an adapter to make it work as specified here:
+ * https://github.com/jhusain/observable-spec
+ *
+ * Once a reference implementation of the spec is available, switch to it.
+ * \@stable
  */
 export var EventEmitter = (function (_super) {
     __extends(EventEmitter, _super);
     /**
-     *  Creates an instance of [EventEmitter], which depending on [isAsync],
-      * delivers events synchronously or asynchronously.
+     * Creates an instance of [EventEmitter], which depending on [isAsync],
+     * delivers events synchronously or asynchronously.
      * @param {?=} isAsync
      */
     function EventEmitter(isAsync) {

@@ -62,5 +62,4 @@ export var fadeInContent = trigger('fadeInContent', [
         animate("150ms 100ms cubic-bezier(0.55, 0, 0.55, 0.2)")
     ])
 ]);
-
 //# sourceMappingURL=select-animations.js.map

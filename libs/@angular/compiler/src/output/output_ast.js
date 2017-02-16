@@ -2053,11 +2053,13 @@ export function literalArr(values, type) {
 /**
  * @param {?} values
  * @param {?=} type
+ * @param {?=} quoted
  * @return {?}
  */
-export function literalMap(values, type) {
+export function literalMap(values, type, quoted) {
     if (type === void 0) { type = null; }
-    return new LiteralMapExpr(values.map(function (entry) { return new LiteralMapEntry(entry[0], entry[1]); }), type);
+    if (quoted === void 0) { quoted = false; }
+    return new LiteralMapExpr(values.map(function (entry) { return new LiteralMapEntry(entry[0], entry[1], quoted); }), type);
 }
 /**
  * @param {?} expr

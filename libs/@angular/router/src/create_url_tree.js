@@ -35,7 +35,7 @@ export function createUrlTree(route, urlTree, commands, queryParams, fragment) {
  * @return {?}
  */
 function isMatrixParams(command) {
-    return typeof command === 'object' && !command.outlets && !command.segmentPath;
+    return typeof command === 'object' && command != null && !command.outlets && !command.segmentPath;
 }
 /**
  * @param {?} oldSegmentGroup
@@ -82,7 +82,7 @@ var Navigation = (function () {
         if (isAbsolute && commands.length > 0 && isMatrixParams(commands[0])) {
             throw new Error('Root segment cannot have matrix parameters');
         }
-        var cmdWithOutlet = commands.find(function (c) { return typeof c === 'object' && c.outlets; });
+        var cmdWithOutlet = commands.find(function (c) { return typeof c === 'object' && c != null && c.outlets; });
         if (cmdWithOutlet && cmdWithOutlet !== last(commands)) {
             throw new Error('{outlets:{}} has to be the last command');
         }
@@ -104,7 +104,7 @@ function Navigation_tsickle_Closure_declarations() {
     Navigation.prototype.commands;
 }
 /**
- *  Transforms commands to a normalized `Navigation`
+ * Transforms commands to a normalized `Navigation`
  * @param {?} commands
  * @return {?}
  */
@@ -115,7 +115,7 @@ function computeNavigation(commands) {
     var /** @type {?} */ numberOfDoubleDots = 0;
     var /** @type {?} */ isAbsolute = false;
     var /** @type {?} */ res = commands.reduce(function (res, cmd, cmdIdx) {
-        if (typeof cmd === 'object') {
+        if (typeof cmd === 'object' && cmd != null) {
             if (cmd.outlets) {
                 var /** @type {?} */ outlets_1 = {};
                 forEach(cmd.outlets, function (commands, name) {
@@ -213,8 +213,9 @@ function createPositionApplyingDoubleDots(group, index, numberOfDoubleDots) {
  * @return {?}
  */
 function getPath(command) {
-    if (typeof command === 'object' && command.outlets)
+    if (typeof command === 'object' && command != null && command.outlets) {
         return command.outlets[PRIMARY_OUTLET];
+    }
     return "" + command;
 }
 /**

@@ -1,6 +1,6 @@
 import { AfterContentInit, ElementRef, EventEmitter, OnDestroy, QueryList, Renderer } from '@angular/core';
 import { Md2Option } from './option';
-import { ListKeyManager } from '../core/a11y/list-key-manager';
+import { FocusKeyManager } from '../core/a11y/focus-key-manager';
 import { Dir } from '../core/rtl/dir';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { ConnectedOverlayDirective } from '../core/overlay/overlay-directives';
@@ -36,10 +36,11 @@ export declare const SELECT_PANEL_PADDING_Y: number;
  * this value or more away from the viewport boundary.
  */
 export declare const SELECT_PANEL_VIEWPORT_PADDING: number;
-/** Change event object emitted by Md2Select. */
+/** Change event object that is emitted when the select value has changed. */
 export declare class Md2SelectChange {
     source: Md2Select;
     value: any;
+    constructor(source: Md2Select, value: any);
 }
 export declare class Md2Select implements AfterContentInit, ControlValueAccessor, OnDestroy {
     private _element;
@@ -80,7 +81,7 @@ export declare class Md2Select implements AfterContentInit, ControlValueAccessor
      */
     _selectedValueWidth: number;
     /** Manages keyboard events for options in the panel. */
-    _keyManager: ListKeyManager;
+    _keyManager: FocusKeyManager;
     /** View -> model callback called when value changes */
     _onChange: (value: any) => void;
     /** View -> model callback called when select has been touched */
@@ -89,6 +90,8 @@ export declare class Md2Select implements AfterContentInit, ControlValueAccessor
     _optionIds: string;
     /** The value of the select panel's transform-origin property. */
     _transformOrigin: string;
+    /** Whether the panel's animation is done. */
+    _panelDoneAnimating: boolean;
     /**
      * The x-offset of the overlay panel in relation to the trigger's top start corner.
      * This must be adjusted to align the selected option text over the trigger text when
@@ -113,16 +116,26 @@ export declare class Md2Select implements AfterContentInit, ControlValueAccessor
         overlayX: string;
         overlayY: string;
     }[];
+    /** Trigger that opens the select. */
     trigger: ElementRef;
+    /** Overlay pane containing the options. */
     overlayDir: ConnectedOverlayDirective;
+    /** All of the defined select options. */
     options: QueryList<Md2Option>;
-    change: EventEmitter<Md2SelectChange>;
+    /** Placeholder to be shown if no value has been selected. */
     placeholder: string;
+    /** Whether the component is disabled. */
     disabled: any;
+    /** Whether the component is multiple. */
     multiple: any;
+    /** Whether the component is required. */
     required: any;
+    /** Event emitted when the select has been opened. */
     onOpen: EventEmitter<void>;
+    /** Event emitted when the select has been closed. */
     onClose: EventEmitter<void>;
+    /** Event emitted when the selected value has been changed by the user. */
+    change: EventEmitter<Md2SelectChange>;
     constructor(_element: ElementRef, _renderer: Renderer, _viewportRuler: ViewportRuler, _dir: Dir, _control: NgControl);
     ngAfterContentInit(): void;
     ngOnDestroy(): void;
@@ -132,28 +145,34 @@ export declare class Md2Select implements AfterContentInit, ControlValueAccessor
     open(): void;
     /** Closes the overlay panel and focuses the host element. */
     close(): void;
-    /** Dispatch change event with current select and value. */
-    _emitChangeEvent(): void;
     /**
      * Sets the select's value. Part of the ControlValueAccessor interface
      * required to integrate with Angular's core forms API.
+     *
+     * @param value New value to be written to the model.
      */
     writeValue(value: any): void;
     /**
      * Saves a callback function to be invoked when the select's value
      * changes from user input. Part of the ControlValueAccessor interface
      * required to integrate with Angular's core forms API.
+     *
+     * @param fn Callback to be triggered when the value changes.
      */
     registerOnChange(fn: (value: any) => void): void;
     /**
      * Saves a callback function to be invoked when the select is blurred
      * by the user. Part of the ControlValueAccessor interface required
      * to integrate with Angular's core forms API.
+     *
+     * @param fn Callback to be triggered when the component has been touched.
      */
     registerOnTouched(fn: () => {}): void;
     /**
      * Disables the select. Part of the ControlValueAccessor interface required
      * to integrate with Angular's core forms API.
+     *
+     * @param isDisabled Sets whether the component is disabled.
      */
     setDisabledState(isDisabled: boolean): void;
     /** Whether or not the overlay panel is open. */
@@ -168,10 +187,15 @@ export declare class Md2Select implements AfterContentInit, ControlValueAccessor
     /** Ensures the panel opens if activated by the keyboard. */
     _handleKeydown(event: KeyboardEvent): void;
     /**
-     * When the panel is finished animating, emits an event and focuses
-     * an option if the panel is open.
+     * When the panel element is finished transforming in (though not fading in), it
+     * emits an event and focuses an option if the panel is open.
      */
     _onPanelDone(): void;
+    /**
+     * When the panel content is done fading in, the _panelDoneAnimating property is
+     * set so the proper class can be added to the panel.
+     */
+    _onFadeInDone(): void;
     /**
      * Calls the touched callback only if the panel is closed. Otherwise, the trigger will
      * "blur" to the panel when it opens, causing a false positive.
@@ -201,6 +225,8 @@ export declare class Md2Select implements AfterContentInit, ControlValueAccessor
     private _listenToOptions();
     /** Unsubscribes from all option subscriptions. */
     private _dropSubscriptions();
+    /** Emits an event when the user selects an option. */
+    _emitChangeEvent(): void;
     /** Records option IDs to pass to the aria-owns property. */
     private _setOptionIds();
     /** Deselect each option that doesn't match the current selection. */

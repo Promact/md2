@@ -9,6 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 import { Component, Directive, Input, ViewEncapsulation } from '@angular/core';
 import { Md2Accordion } from './accordionpanel';
+import { coerceBooleanProperty } from '../core';
 export var Md2AccordionHeader = (function () {
     function Md2AccordionHeader() {
     }
@@ -21,8 +22,31 @@ export var Md2AccordionHeader = (function () {
 export var Md2AccordionTab = (function () {
     function Md2AccordionTab(_accordion) {
         this._accordion = _accordion;
+        this._disabled = false;
+        this._active = false;
         this._accordion.addTab(this);
     }
+    Object.defineProperty(Md2AccordionTab.prototype, "active", {
+        get: function () { return this._active; },
+        set: function (value) {
+            this._active = coerceBooleanProperty(value);
+            if (this._active) {
+                for (var i = 0; i < this._accordion.tabs.length; i++) {
+                    if (this._accordion.tabs[i] !== this) {
+                        this._accordion.tabs[i].active = false;
+                    }
+                }
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Md2AccordionTab.prototype, "disabled", {
+        get: function () { return this._disabled; },
+        set: function (value) { this._disabled = coerceBooleanProperty(value); },
+        enumerable: true,
+        configurable: true
+    });
     /**
      * Toggle the accordion
      * @param event
@@ -42,11 +66,11 @@ export var Md2AccordionTab = (function () {
             for (var i = 0; i < this._accordion.tabs.length; i++) {
                 this._accordion.tabs[i].active = false;
             }
-            this.active = true;
+            this._active = true;
             this._accordion.open.emit({ originalEvent: event, index: index });
         }
         else {
-            this.active = true;
+            this._active = true;
             this._accordion.open.emit({ originalEvent: event, index: index });
         }
         event.preventDefault();
@@ -72,11 +96,11 @@ export var Md2AccordionTab = (function () {
     __decorate([
         Input(), 
         __metadata('design:type', Boolean)
-    ], Md2AccordionTab.prototype, "active", void 0);
+    ], Md2AccordionTab.prototype, "active", null);
     __decorate([
         Input(), 
         __metadata('design:type', Boolean)
-    ], Md2AccordionTab.prototype, "disabled", void 0);
+    ], Md2AccordionTab.prototype, "disabled", null);
     Md2AccordionTab = __decorate([
         Component({selector: 'md2-accordion-tab',
             template: "\n    <div class=\"md2-accordion-header\" (click)=\"_handleClick($event)\">\n      <span>{{header}}</span>\n      <ng-content select=\"md2-accordion-header\"></ng-content>\n      <span class=\"md2-accordion-header-icon\"></span>\n    </div>\n    <div class=\"md2-accordion-tab-content\">\n      <ng-content></ng-content>\n    </div>\n  ",
@@ -92,5 +116,4 @@ export var Md2AccordionTab = (function () {
     ], Md2AccordionTab);
     return Md2AccordionTab;
 }());
-
 //# sourceMappingURL=accordiontab.js.map

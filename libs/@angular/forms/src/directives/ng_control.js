@@ -18,11 +18,12 @@ function unimplemented() {
     throw new Error('unimplemented');
 }
 /**
- *  A base class that all control directive extend.
-  * It binds a {@link FormControl} object to a DOM element.
-  * *
-  * Used internally by Angular forms.
-  * *
+ * A base class that all control directive extend.
+ * It binds a {\@link FormControl} object to a DOM element.
+ *
+ * Used internally by Angular forms.
+ *
+ * \@stable
  * @abstract
  */
 export var NgControl = (function (_super) {
@@ -63,15 +64,24 @@ export var NgControl = (function (_super) {
     return NgControl;
 }(AbstractControlDirective));
 function NgControl_tsickle_Closure_declarations() {
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     NgControl.prototype._parent;
     /** @type {?} */
     NgControl.prototype.name;
     /** @type {?} */
     NgControl.prototype.valueAccessor;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     NgControl.prototype._rawValidators;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     NgControl.prototype._rawAsyncValidators;
 }
 //# sourceMappingURL=ng_control.js.map

@@ -28,5 +28,4 @@ var ToastDemo = (function () {
     return ToastDemo;
 }());
 exports.ToastDemo = ToastDemo;
-
 //# sourceMappingURL=toast-demo.js.map

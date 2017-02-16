@@ -6,26 +6,30 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /**
- *  *
-  * *
-  * The default implementation of `ErrorHandler` prints error messages to the `console`. To
-  * intercept error handling, write a custom exception handler that replaces this default as
-  * appropriate for your app.
-  * *
-  * ### Example
-  * *
-  * ```
-  * class MyErrorHandler implements ErrorHandler {
-  * handleError(error) {
-  * // do something with the exception
-  * }
-  * }
-  * *
-  * providers: [{provide: ErrorHandler, useClass: MyErrorHandler}]
-  * })
-  * class MyModule {}
-  * ```
-  * *
+ * \@whatItDoes Provides a hook for centralized exception handling.
+ *
+ * \@description
+ *
+ * The default implementation of `ErrorHandler` prints error messages to the `console`. To
+ * intercept error handling, write a custom exception handler that replaces this default as
+ * appropriate for your app.
+ *
+ * ### Example
+ *
+ * ```
+ * class MyErrorHandler implements ErrorHandler {
+ *   handleError(error) {
+ *     // do something with the exception
+ *   }
+ * }
+ *
+ * \@NgModule({
+ *   providers: [{provide: ErrorHandler, useClass: MyErrorHandler}]
+ * })
+ * class MyModule {}
+ * ```
+ *
+ * \@stable
  */
 export var ErrorHandler = (function () {
     /**
@@ -65,6 +69,7 @@ export var ErrorHandler = (function () {
             throw error;
     };
     /**
+     * \@internal
      * @param {?} error
      * @return {?}
      */
@@ -72,6 +77,7 @@ export var ErrorHandler = (function () {
         return error instanceof Error ? error.message : error.toString();
     };
     /**
+     * \@internal
      * @param {?} error
      * @return {?}
      */
@@ -83,6 +89,7 @@ export var ErrorHandler = (function () {
         return null;
     };
     /**
+     * \@internal
      * @param {?} error
      * @return {?}
      */
@@ -94,6 +101,7 @@ export var ErrorHandler = (function () {
         return e;
     };
     /**
+     * \@internal
      * @param {?} error
      * @return {?}
      */
@@ -113,9 +121,15 @@ export var ErrorHandler = (function () {
     return ErrorHandler;
 }());
 function ErrorHandler_tsickle_Closure_declarations() {
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     ErrorHandler.prototype._console;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     ErrorHandler.prototype.rethrowError;
 }
 //# sourceMappingURL=error_handler.js.map

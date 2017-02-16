@@ -59,13 +59,6 @@ var /** @type {?} */ _chromeNumKeyPadMap = {
     '\x60': '0',
     '\x90': 'NumLock'
 };
-/**
- * A `DomAdapter` powered by full browser DOM APIs.
- *
- * @security Tread carefully! Interacting with the DOM directly is dangerous and
- * can introduce XSS risks.
- */
-/* tslint:disable:requireParameterType */
 export var BrowserDomAdapter = (function (_super) {
     __extends(BrowserDomAdapter, _super);
     function BrowserDomAdapter() {
@@ -116,7 +109,6 @@ export var BrowserDomAdapter = (function (_super) {
                 console.error(error);
             }
             else {
-                // tslint:disable-next-line:no-console
                 console.log(error);
             }
         }
@@ -127,7 +119,6 @@ export var BrowserDomAdapter = (function (_super) {
      */
     BrowserDomAdapter.prototype.log = function (error) {
         if (window.console) {
-            // tslint:disable-next-line:no-console
             window.console.log && window.console.log(error);
         }
     };

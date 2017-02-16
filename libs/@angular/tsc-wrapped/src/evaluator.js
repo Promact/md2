@@ -8,6 +8,8 @@
 "use strict";
 var ts = require('typescript');
 var schema_1 = require('./schema');
+// In TypeScript 2.1 the spread element kind was renamed.
+var spreadElementSyntaxKind = ts.SyntaxKind.SpreadElement || ts.SyntaxKind.SpreadElementExpression;
 function isMethodCallOf(callExpression, memberName) {
     var expression = callExpression.expression;
     if (expression.kind === ts.SyntaxKind.PropertyAccessExpression) {
@@ -257,9 +259,8 @@ var Evaluator = (function () {
                 if (error)
                     return error;
                 return arr_1;
-            case ts.SyntaxKind.SpreadElementExpression:
-                var spread = node;
-                var spreadExpression = this.evaluateNode(spread.expression);
+            case spreadElementSyntaxKind:
+                var spreadExpression = this.evaluateNode(node.expression);
                 return recordEntry({ __symbolic: 'spread', expression: spreadExpression }, node);
             case ts.SyntaxKind.CallExpression:
                 var callExpression = node;

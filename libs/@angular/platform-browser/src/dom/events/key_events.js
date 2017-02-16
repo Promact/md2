@@ -21,7 +21,7 @@ var /** @type {?} */ MODIFIER_KEY_GETTERS = {
     'shift': function (event) { return event.shiftKey; }
 };
 /**
- * @experimental
+ * \@experimental
  */
 export var KeyEventsPlugin = (function (_super) {
     __extends(KeyEventsPlugin, _super);
@@ -114,6 +114,7 @@ export var KeyEventsPlugin = (function (_super) {
         };
     };
     /**
+     * \@internal
      * @param {?} keyName
      * @return {?}
      */

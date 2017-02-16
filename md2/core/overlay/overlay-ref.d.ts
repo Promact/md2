@@ -49,6 +49,8 @@ export declare class OverlayRef implements PortalHost {
     private updateDirection();
     /** Updates the size of the overlay based on the overlay config. */
     updateSize(): void;
+    /** Toggles the pointer events for the overlay pane element. */
+    private _togglePointerEvents(enablePointer);
     /** Attaches a backdrop for this overlay. */
     private _attachBackdrop();
     /** Detaches the backdrop (if any) associated with the overlay. */

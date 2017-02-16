@@ -9,10 +9,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 import { Component, ContentChildren, Directive, ElementRef, EventEmitter, Input, Output, QueryList, TemplateRef, ViewContainerRef, ViewEncapsulation, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-export var Md2TabChangeEvent = (function () {
-    function Md2TabChangeEvent() {
+/** Change event object that is emitted when the tab has changed. */
+export var Md2TabChange = (function () {
+    function Md2TabChange(tab, index) {
+        this.tab = tab;
+        this.index = index;
     }
-    return Md2TabChangeEvent;
+    return Md2TabChange;
 }());
 export var Md2Transclude = (function () {
     function Md2Transclude(viewRef) {
@@ -92,6 +95,7 @@ export var Md2Tabs = (function () {
         this._inkBarLeft = '0';
         this._inkBarWidth = '0';
         this.change = new EventEmitter();
+        this.selectedIndexChange = new EventEmitter();
     }
     Object.defineProperty(Md2Tabs.prototype, "selectedIndex", {
         get: function () { return this._selectedIndex; },
@@ -99,7 +103,7 @@ export var Md2Tabs = (function () {
             if (typeof value === 'string') {
                 value = parseInt(value);
             }
-            if (value != this._selectedIndex) {
+            if (value !== this._selectedIndex) {
                 this._selectedIndex = value;
                 this.adjustOffset(value);
                 this._updateInkBar();
@@ -111,7 +115,8 @@ export var Md2Tabs = (function () {
                     }
                 }
                 if (this._isInitialized) {
-                    this.change.emit(this._createChangeEvent(value));
+                    this._emitChangeEvent();
+                    this.selectedIndexChange.emit(value);
                 }
             }
         },
@@ -156,6 +161,9 @@ export var Md2Tabs = (function () {
         setTimeout(function () {
             var tabs = _this.tabs.toArray();
             if (_this.selectedIndex) {
+                if (_this.selectedIndex >= tabs.length) {
+                    _this.selectedIndex = 0;
+                }
                 tabs.forEach(function (tab) { return tab.active = false; });
                 tabs[_this.selectedIndex].active = true;
                 _this.adjustOffset(_this.selectedIndex);
@@ -185,18 +193,10 @@ export var Md2Tabs = (function () {
         this._inkBarLeft = tab.offsetLeft + 'px';
         this._inkBarWidth = tab.offsetWidth + 'px';
     };
-    /**
-     * Create Change Event
-     * @param index
-     * @return event of Md2TabChangeEvent
-     */
-    Md2Tabs.prototype._createChangeEvent = function (index) {
-        var event = new Md2TabChangeEvent;
-        event.index = index;
-        if (this.tabs && this.tabs.length) {
-            event.tab = this.tabs.toArray()[index];
-        }
-        return event;
+    /** Emits an event when the user selects an option. */
+    Md2Tabs.prototype._emitChangeEvent = function () {
+        var index = this._selectedIndex;
+        this.change.emit(new Md2TabChange(this.tabs.toArray()[index], index));
     };
     /**
      * Focus next Tab
@@ -325,13 +325,16 @@ export var Md2Tabs = (function () {
     ], Md2Tabs.prototype, "class", void 0);
     __decorate([
         Input(), 
-        __metadata('design:type', Object), 
-        __metadata('design:paramtypes', [Object])
+        __metadata('design:type', Object)
     ], Md2Tabs.prototype, "selectedIndex", null);
     __decorate([
         Output(), 
         __metadata('design:type', EventEmitter)
     ], Md2Tabs.prototype, "change", void 0);
+    __decorate([
+        Output(), 
+        __metadata('design:type', EventEmitter)
+    ], Md2Tabs.prototype, "selectedIndexChange", void 0);
     Md2Tabs = __decorate([
         Component({selector: 'md2-tabs',
             template: "<div class=\"md2-tabs-header-wrapper\"> <div role=\"button\" class=\"md2-prev-button\" [class.disabled]=\"!canPageBack()\" *ngIf=\"_shouldPaginate\" (click)=\"previousPage()\"> <em class=\"prev-icon\">Prev</em> </div> <div role=\"button\" class=\"md2-next-button\" [class.disabled]=\"!canPageForward()\" *ngIf=\"_shouldPaginate\" (click)=\"nextPage()\"> <em class=\"next-icon\">Next</em> </div> <div class=\"md2-tabs-canvas\" [class.md2-paginated]=\"_shouldPaginate\" role=\"tablist\" tabindex=\"0\" (keydown.arrowRight)=\"focusNextTab()\" (keydown.arrowLeft)=\"focusPreviousTab()\" (keydown.enter)=\"selectedIndex = focusIndex\" (mousewheel)=\"scroll($event)\"> <div class=\"md2-tabs-header\" [style.marginLeft]=\"-_offsetLeft + 'px'\"> <div class=\"md2-tab-label\" role=\"tab\" *ngFor=\"let tab of tabs; let i = index\" [class.focus]=\"focusIndex === i\" [class.active]=\"selectedIndex === i\" [class.disabled]=\"tab.disabled\" (click)=\"focusIndex = selectedIndex = i\"> <span [md2Transclude]=\"tab.labelRef\">{{tab.label}}</span> </div> <div class=\"md2-tab-ink-bar\" [style.left]=\"_inkBarLeft\" [style.width]=\"_inkBarWidth\"></div> </div> </div> </div> <div class=\"md2-tabs-body-wrapper\"> <ng-content></ng-content> </div> ",
@@ -366,5 +369,4 @@ export var Md2TabsModule = (function () {
     ], Md2TabsModule);
     return Md2TabsModule;
 }());
-
 //# sourceMappingURL=tabs.js.map

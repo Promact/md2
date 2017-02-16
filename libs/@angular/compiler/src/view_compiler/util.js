@@ -12,7 +12,6 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 import { identifierName } from '../compile_metadata';
 import { createDiTokenExpression } from '../compiler_util/identifier_util';
-import { isPresent } from '../facade/lang';
 import * as o from '../output/output_ast';
 import { ViewType } from '../private_import_core';
 /**
@@ -28,7 +27,7 @@ export function getPropertyInView(property, callingView, definedView) {
     else {
         var /** @type {?} */ viewProp = o.THIS_EXPR;
         var /** @type {?} */ currView = callingView;
-        while (currView !== definedView && isPresent(currView.declarationElement.view)) {
+        while (currView !== definedView && currView.declarationElement.view) {
             currView = currView.declarationElement.view;
             viewProp = viewProp.prop('parentView');
         }

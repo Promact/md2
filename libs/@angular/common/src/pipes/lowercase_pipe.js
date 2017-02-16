@@ -9,13 +9,18 @@ import { Pipe } from '@angular/core';
 import { isBlank } from '../facade/lang';
 import { InvalidPipeArgumentError } from './invalid_pipe_argument_error';
 /**
- *  *
-  * Converts value into a lowercase string using `String.prototype.toLowerCase()`.
-  * *
-  * ### Example
-  * *
-  * {@example common/pipes/ts/lowerupper_pipe.ts region='LowerUpperPipe'}
-  * *
+ * \@ngModule CommonModule
+ * \@whatItDoes Transforms string to lowercase.
+ * \@howToUse `expression | lowercase`
+ * \@description
+ *
+ * Converts value into a lowercase string using `String.prototype.toLowerCase()`.
+ *
+ * ### Example
+ *
+ * {\@example common/pipes/ts/lowerupper_pipe.ts region='LowerUpperPipe'}
+ *
+ * \@stable
  */
 export var LowerCasePipe = (function () {
     function LowerCasePipe() {

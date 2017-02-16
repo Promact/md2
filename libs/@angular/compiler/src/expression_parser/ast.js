@@ -80,17 +80,17 @@ function AST_tsickle_Closure_declarations() {
     AST.prototype.span;
 }
 /**
- *  Represents a quoted expression of the form:
-  * *
-  * quote = prefix `:` uninterpretedExpression
-  * prefix = identifier
-  * uninterpretedExpression = arbitrary string
-  * *
-  * A quoted expression is meant to be pre-processed by an AST transformer that
-  * converts it into another AST that no longer contains quoted expressions.
-  * It is meant to allow third-party developers to extend Angular template
-  * expression language. The `uninterpretedExpression` part of the quote is
-  * therefore not interpreted by the Angular's own expression parser.
+ * Represents a quoted expression of the form:
+ *
+ * quote = prefix `:` uninterpretedExpression
+ * prefix = identifier
+ * uninterpretedExpression = arbitrary string
+ *
+ * A quoted expression is meant to be pre-processed by an AST transformer that
+ * converts it into another AST that no longer contains quoted expressions.
+ * It is meant to allow third-party developers to extend Angular template
+ * expression language. The `uninterpretedExpression` part of the quote is
+ * therefore not interpreted by the Angular's own expression parser.
  */
 export var Quote = (function (_super) {
     __extends(Quote, _super);
@@ -162,7 +162,7 @@ export var ImplicitReceiver = (function (_super) {
     return ImplicitReceiver;
 }(AST));
 /**
- *  Multiple expressions separated by a semicolon.
+ * Multiple expressions separated by a semicolon.
  */
 export var Chain = (function (_super) {
     __extends(Chain, _super);

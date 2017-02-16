@@ -19,8 +19,11 @@ var EXT = /(\.ts|\.d\.ts|\.js|\.jsx|\.tsx)$/;
 var DTS = /\.d\.ts$/;
 var NODE_MODULES = '/node_modules/';
 var IS_GENERATED = /\.(ngfactory|ngstyle)$/;
+var GENERATED_FILES = /\.ngfactory\.ts$|\.ngstyle\.ts$/;
+var GENERATED_OR_DTS_FILES = /\.d\.ts$|\.ngfactory\.ts$|\.ngstyle\.ts$/;
 var CompilerHost = (function () {
     function CompilerHost(program, options, context) {
+        var _this = this;
         this.program = program;
         this.options = options;
         this.context = context;
@@ -31,6 +34,24 @@ var CompilerHost = (function () {
         this.genDir = path.normalize(path.join(this.options.genDir, '.')).replace(/\\/g, '/');
         var genPath = path.relative(this.basePath, this.genDir);
         this.isGenDirChildOfRootDir = genPath === '' || !genPath.startsWith('..');
+        this.resolveModuleNameHost = Object.create(this.context);
+        // When calling ts.resolveModuleName,
+        // additional allow checks for .d.ts files to be done based on
+        // checks for .ngsummary.json files,
+        // so that our codegen depends on fewer inputs and requires to be called
+        // less often.
+        // This is needed as we use ts.resolveModuleName in reflector_host
+        // and it should be able to resolve summary file names.
+        this.resolveModuleNameHost.fileExists = function (fileName) {
+            if (_this.context.fileExists(fileName)) {
+                return true;
+            }
+            if (DTS.test(fileName)) {
+                var base = fileName.substring(0, fileName.length - 5);
+                return _this.context.fileExists(base + '.ngsummary.json');
+            }
+            return false;
+        };
     }
     // We use absolute paths on disk as canonical.
     CompilerHost.prototype.getCanonicalFileName = function (fileName) { return fileName; };
@@ -43,7 +64,7 @@ var CompilerHost = (function () {
             containingFile = this.getCanonicalFileName(path.join(this.basePath, 'index.ts'));
         }
         m = m.replace(EXT, '');
-        var resolved = ts.resolveModuleName(m, containingFile.replace(/\\/g, '/'), this.options, this.context)
+        var resolved = ts.resolveModuleName(m, containingFile.replace(/\\/g, '/'), this.options, this.resolveModuleNameHost)
             .resolvedModule;
         return resolved ? this.getCanonicalFileName(resolved.resolvedFileName) : null;
     };
@@ -146,6 +167,12 @@ var CompilerHost = (function () {
             if (this.context.fileExists(metadataPath)) {
                 return this.readMetadata(metadataPath, filePath);
             }
+            else {
+                // If there is a .d.ts file but no metadata file we need to produce a
+                // v3 metadata from the .d.ts file as v3 includes the exports we need
+                // to resolve symbols.
+                return [this.upgradeVersion1Metadata({ '__symbolic': 'module', 'version': 1, 'metadata': {} }, filePath)];
+            }
         }
         else {
             var sf = this.getSourceFile(filePath);
@@ -163,31 +190,10 @@ var CompilerHost = (function () {
             var metadatas_1 = metadataOrMetadatas ?
                 (Array.isArray(metadataOrMetadatas) ? metadataOrMetadatas : [metadataOrMetadatas]) :
                 [];
-            var v1Metadata = metadatas_1.find(function (m) { return m['version'] === 1; });
-            var v3Metadata = metadatas_1.find(function (m) { return m['version'] === 3; });
+            var v1Metadata = metadatas_1.find(function (m) { return m.version === 1; });
+            var v3Metadata = metadatas_1.find(function (m) { return m.version === 3; });
             if (!v3Metadata && v1Metadata) {
-                // patch up v1 to v3 by merging the metadata with metadata collected from the d.ts file
-                // as the only difference between the versions is whether all exports are contained in
-                // the metadata and the `extends` clause.
-                v3Metadata = { '__symbolic': 'module', 'version': 3, 'metadata': {} };
-                if (v1Metadata.exports) {
-                    v3Metadata.exports = v1Metadata.exports;
-                }
-                for (var prop in v1Metadata.metadata) {
-                    v3Metadata.metadata[prop] = v1Metadata.metadata[prop];
-                }
-                var exports_1 = this.metadataCollector.getMetadata(this.getSourceFile(dtsFilePath));
-                if (exports_1) {
-                    for (var prop in exports_1.metadata) {
-                        if (!v3Metadata.metadata[prop]) {
-                            v3Metadata.metadata[prop] = exports_1.metadata[prop];
-                        }
-                    }
-                    if (exports_1.exports) {
-                        v3Metadata.exports = exports_1.exports;
-                    }
-                }
-                metadatas_1.push(v3Metadata);
+                metadatas_1.push(this.upgradeVersion1Metadata(v1Metadata, dtsFilePath));
             }
             this.resolverCache.set(filePath, metadatas_1);
             return metadatas_1;
@@ -197,10 +203,63 @@ var CompilerHost = (function () {
             throw e;
         }
     };
+    CompilerHost.prototype.upgradeVersion1Metadata = function (v1Metadata, dtsFilePath) {
+        // patch up v1 to v3 by merging the metadata with metadata collected from the d.ts file
+        // as the only difference between the versions is whether all exports are contained in
+        // the metadata and the `extends` clause.
+        var v3Metadata = { '__symbolic': 'module', 'version': 3, 'metadata': {} };
+        if (v1Metadata.exports) {
+            v3Metadata.exports = v1Metadata.exports;
+        }
+        for (var prop in v1Metadata.metadata) {
+            v3Metadata.metadata[prop] = v1Metadata.metadata[prop];
+        }
+        var exports = this.metadataCollector.getMetadata(this.getSourceFile(dtsFilePath));
+        if (exports) {
+            for (var prop in exports.metadata) {
+                if (!v3Metadata.metadata[prop]) {
+                    v3Metadata.metadata[prop] = exports.metadata[prop];
+                }
+            }
+            if (exports.exports) {
+                v3Metadata.exports = exports.exports;
+            }
+        }
+        return v3Metadata;
+    };
     CompilerHost.prototype.loadResource = function (filePath) { return this.context.readResource(filePath); };
-    CompilerHost.prototype.loadSummary = function (filePath) { return this.context.readFile(filePath); };
+    CompilerHost.prototype.loadSummary = function (filePath) {
+        if (this.context.fileExists(filePath)) {
+            return this.context.readFile(filePath);
+        }
+    };
     CompilerHost.prototype.getOutputFileName = function (sourceFilePath) {
         return sourceFilePath.replace(EXT, '') + '.d.ts';
+    };
+    CompilerHost.prototype.isSourceFile = function (filePath) {
+        var excludeRegex = this.options.generateCodeForLibraries === false ? GENERATED_OR_DTS_FILES : GENERATED_FILES;
+        return !excludeRegex.test(filePath);
+    };
+    CompilerHost.prototype.calculateEmitPath = function (filePath) {
+        // Write codegen in a directory structure matching the sources.
+        var root = this.options.basePath;
+        for (var _i = 0, _a = this.options.rootDirs || []; _i < _a.length; _i++) {
+            var eachRootDir = _a[_i];
+            if (this.options.trace) {
+                console.error("Check if " + filePath + " is under rootDirs element " + eachRootDir);
+            }
+            if (path.relative(eachRootDir, filePath).indexOf('.') !== 0) {
+                root = eachRootDir;
+            }
+        }
+        // transplant the codegen path to be inside the `genDir`
+        var relativePath = path.relative(root, filePath);
+        while (relativePath.startsWith('..' + path.sep)) {
+            // Strip out any `..` path such as: `../node_modules/@foo` as we want to put everything
+            // into `genDir`.
+            relativePath = relativePath.substr(3);
+        }
+        return path.join(this.options.genDir, relativePath);
     };
     return CompilerHost;
 }());

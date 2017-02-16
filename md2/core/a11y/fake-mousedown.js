@@ -8,5 +8,4 @@
 export function isFakeMousedownFromScreenReader(event) {
     return event.buttons === 0;
 }
-
 //# sourceMappingURL=fake-mousedown.js.map

@@ -59,5 +59,4 @@ export var Md2Accordion = (function () {
     ], Md2Accordion);
     return Md2Accordion;
 }());
-
 //# sourceMappingURL=accordionpanel.js.map

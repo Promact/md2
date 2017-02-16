@@ -29,7 +29,7 @@ function EventListener_tsickle_Closure_declarations() {
     EventListener.prototype.callback;
 }
 /**
- * @experimental All debugging apis are currently experimental.
+ * \@experimental All debugging apis are currently experimental.
  */
 export var DebugNode = (function () {
     /**
@@ -111,7 +111,7 @@ function DebugNode_tsickle_Closure_declarations() {
     DebugNode.prototype._debugInfo;
 }
 /**
- * @experimental All debugging apis are currently experimental.
+ * \@experimental All debugging apis are currently experimental.
  */
 export var DebugElement = (function (_super) {
     __extends(DebugElement, _super);
@@ -237,6 +237,7 @@ function DebugElement_tsickle_Closure_declarations() {
     DebugElement.prototype.nativeElement;
 }
 /**
+ * \@experimental
  * @param {?} debugEls
  * @return {?}
  */
@@ -280,6 +281,7 @@ function _queryNodeChildren(parentNode, predicate, matches) {
 // Need to keep the nodes in a global Map so that multiple angular apps are supported.
 var /** @type {?} */ _nativeNodeToDebugNode = new Map();
 /**
+ * \@experimental
  * @param {?} nativeNode
  * @return {?}
  */

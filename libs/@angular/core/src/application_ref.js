@@ -12,7 +12,6 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 import { ErrorHandler } from '../src/error_handler';
 import { ListWrapper } from '../src/facade/collection';
-import { unimplemented } from '../src/facade/errors';
 import { stringify } from '../src/facade/lang';
 import { isPromise } from '../src/util/lang';
 import { ApplicationInitStatus } from './application_init';
@@ -29,13 +28,14 @@ var /** @type {?} */ _devMode = true;
 var /** @type {?} */ _runModeLocked = false;
 var /** @type {?} */ _platform;
 /**
- *  Disable Angular's development mode, which turns off assertions and other
-  * checks within the framework.
-  * *
-  * One important assertion this disables verifies that a change detection pass
-  * does not result in additional changes to any bindings (also known as
-  * unidirectional data flow).
-  * *
+ * Disable Angular's development mode, which turns off assertions and other
+ * checks within the framework.
+ *
+ * One important assertion this disables verifies that a change detection pass
+ * does not result in additional changes to any bindings (also known as
+ * unidirectional data flow).
+ *
+ * \@stable
  * @return {?}
  */
 export function enableProdMode() {
@@ -45,11 +45,12 @@ export function enableProdMode() {
     _devMode = false;
 }
 /**
- *  Returns whether Angular is in development mode. After called once,
-  * the value is locked and won't change any more.
-  * *
-  * By default, this is true, unless a user calls `enableProdMode` before calling this.
-  * *
+ * Returns whether Angular is in development mode. After called once,
+ * the value is locked and won't change any more.
+ *
+ * By default, this is true, unless a user calls `enableProdMode` before calling this.
+ *
+ * \@experimental APIs related to application bootstrap are currently under review.
  * @return {?}
  */
 export function isDevMode() {
@@ -57,8 +58,9 @@ export function isDevMode() {
     return _devMode;
 }
 /**
- *  A token for third-party components that can register themselves with NgProbe.
-  * *
+ * A token for third-party components that can register themselves with NgProbe.
+ *
+ * \@experimental
  */
 export var NgProbeToken = (function () {
     /**
@@ -78,9 +80,10 @@ function NgProbeToken_tsickle_Closure_declarations() {
     NgProbeToken.prototype.token;
 }
 /**
- *  Creates a platform.
-  * Platforms have to be eagerly created via this function.
-  * *
+ * Creates a platform.
+ * Platforms have to be eagerly created via this function.
+ *
+ * \@experimental APIs related to application bootstrap are currently under review.
  * @param {?} injector
  * @return {?}
  */
@@ -95,21 +98,22 @@ export function createPlatform(injector) {
     return _platform;
 }
 /**
- *  Creates a factory for a platform
-  * *
- * @param {?} parentPlaformFactory
+ * Creates a factory for a platform
+ *
+ * \@experimental APIs related to application bootstrap are currently under review.
+ * @param {?} parentPlatformFactory
  * @param {?} name
  * @param {?=} providers
  * @return {?}
  */
-export function createPlatformFactory(parentPlaformFactory, name, providers) {
+export function createPlatformFactory(parentPlatformFactory, name, providers) {
     if (providers === void 0) { providers = []; }
     var /** @type {?} */ marker = new OpaqueToken("Platform: " + name);
     return function (extraProviders) {
         if (extraProviders === void 0) { extraProviders = []; }
         if (!getPlatform()) {
-            if (parentPlaformFactory) {
-                parentPlaformFactory(providers.concat(extraProviders).concat({ provide: marker, useValue: true }));
+            if (parentPlatformFactory) {
+                parentPlatformFactory(providers.concat(extraProviders).concat({ provide: marker, useValue: true }));
             }
             else {
                 createPlatform(ReflectiveInjector.resolveAndCreate(providers.concat(extraProviders).concat({ provide: marker, useValue: true })));
@@ -119,9 +123,10 @@ export function createPlatformFactory(parentPlaformFactory, name, providers) {
     };
 }
 /**
- *  Checks that there currently is a platform
-  * which contains the given token as a provider.
-  * *
+ * Checks that there currently is a platform
+ * which contains the given token as a provider.
+ *
+ * \@experimental APIs related to application bootstrap are currently under review.
  * @param {?} requiredToken
  * @return {?}
  */
@@ -136,8 +141,9 @@ export function assertPlatform(requiredToken) {
     return platform;
 }
 /**
- *  Destroy the existing platform.
-  * *
+ * Destroy the existing platform.
+ *
+ * \@experimental APIs related to application bootstrap are currently under review.
  * @return {?}
  */
 export function destroyPlatform() {
@@ -146,104 +152,100 @@ export function destroyPlatform() {
     }
 }
 /**
- *  Returns the current platform.
-  * *
+ * Returns the current platform.
+ *
+ * \@experimental APIs related to application bootstrap are currently under review.
  * @return {?}
  */
 export function getPlatform() {
     return _platform && !_platform.destroyed ? _platform : null;
 }
 /**
- *  The Angular platform is the entry point for Angular on a web page. Each page
-  * has exactly one platform, and services (such as reflection) which are common
-  * to every Angular application running on the page are bound in its scope.
-  * *
-  * A page's platform is initialized implicitly when {@link bootstrap}() is called, or
-  * explicitly by calling {@link createPlatform}().
-  * *
+ * The Angular platform is the entry point for Angular on a web page. Each page
+ * has exactly one platform, and services (such as reflection) which are common
+ * to every Angular application running on the page are bound in its scope.
+ *
+ * A page's platform is initialized implicitly when {\@link bootstrap}() is called, or
+ * explicitly by calling {\@link createPlatform}().
+ *
+ * \@stable
  * @abstract
  */
 export var PlatformRef = (function () {
     function PlatformRef() {
     }
     /**
-     *  Creates an instance of an `@NgModule` for the given platform
-      * for offline compilation.
-      * *
-      * ## Simple Example
-      * *
-      * ```typescript
-      * my_module.ts:
-      * *
-      * imports: [BrowserModule]
-      * })
-      * class MyModule {}
-      * *
-      * main.ts:
-      * import {MyModuleNgFactory} from './my_module.ngfactory';
-      * import {platformBrowser} from '@angular/platform-browser';
-      * *
-      * let moduleRef = platformBrowser().bootstrapModuleFactory(MyModuleNgFactory);
-      * ```
-      * *
+     * Creates an instance of an `\@NgModule` for the given platform
+     * for offline compilation.
+     *
+     * ## Simple Example
+     *
+     * ```typescript
+     * my_module.ts:
+     *
+     * \@NgModule({
+     *   imports: [BrowserModule]
+     * })
+     * class MyModule {}
+     *
+     * main.ts:
+     * import {MyModuleNgFactory} from './my_module.ngfactory';
+     * import {platformBrowser} from '\@angular/platform-browser';
+     *
+     * let moduleRef = platformBrowser().bootstrapModuleFactory(MyModuleNgFactory);
+     * ```
+     *
+     * \@experimental APIs related to application bootstrap are currently under review.
+     * @abstract
      * @param {?} moduleFactory
      * @return {?}
      */
-    PlatformRef.prototype.bootstrapModuleFactory = function (moduleFactory) {
-        throw unimplemented();
-    };
+    PlatformRef.prototype.bootstrapModuleFactory = function (moduleFactory) { };
     /**
-     *  Creates an instance of an `@NgModule` for a given platform using the given runtime compiler.
-      * *
-      * ## Simple Example
-      * *
-      * ```typescript
-      * imports: [BrowserModule]
-      * })
-      * class MyModule {}
-      * *
-      * let moduleRef = platformBrowser().bootstrapModule(MyModule);
-      * ```
+     * Creates an instance of an `\@NgModule` for a given platform using the given runtime compiler.
+     *
+     * ## Simple Example
+     *
+     * ```typescript
+     * \@NgModule({
+     *   imports: [BrowserModule]
+     * })
+     * class MyModule {}
+     *
+     * let moduleRef = platformBrowser().bootstrapModule(MyModule);
+     * ```
+     * \@stable
+     * @abstract
      * @param {?} moduleType
      * @param {?=} compilerOptions
      * @return {?}
      */
-    PlatformRef.prototype.bootstrapModule = function (moduleType, compilerOptions) {
-        if (compilerOptions === void 0) { compilerOptions = []; }
-        throw unimplemented();
-    };
+    PlatformRef.prototype.bootstrapModule = function (moduleType, compilerOptions) { };
     /**
-     *  Register a listener to be called when the platform is disposed.
+     * Register a listener to be called when the platform is disposed.
      * @abstract
      * @param {?} callback
      * @return {?}
      */
     PlatformRef.prototype.onDestroy = function (callback) { };
-    Object.defineProperty(PlatformRef.prototype, "injector", {
-        /**
-         *  Retrieve the platform {@link Injector}, which is the parent injector for
-          * every Angular application on the page and provides singleton providers.
-         * @return {?}
-         */
-        get: function () { throw unimplemented(); },
-        enumerable: true,
-        configurable: true
-    });
-    ;
     /**
-     *  Destroy the Angular platform and all Angular applications on the page.
+     * Retrieve the platform {\@link Injector}, which is the parent injector for
+     * every Angular application on the page and provides singleton providers.
+     * @abstract
+     * @return {?}
+     */
+    PlatformRef.prototype.injector = function () { };
+    /**
+     * Destroy the Angular platform and all Angular applications on the page.
      * @abstract
      * @return {?}
      */
     PlatformRef.prototype.destroy = function () { };
-    Object.defineProperty(PlatformRef.prototype, "destroyed", {
-        /**
-         * @return {?}
-         */
-        get: function () { throw unimplemented(); },
-        enumerable: true,
-        configurable: true
-    });
+    /**
+     * @abstract
+     * @return {?}
+     */
+    PlatformRef.prototype.destroyed = function () { };
     return PlatformRef;
 }());
 /**
@@ -404,6 +406,7 @@ export var PlatformRef_ = (function (_super) {
             throw new Error(("The module " + stringify(moduleRef.instance.constructor) + " was bootstrapped, but it does not declare \"@NgModule.bootstrap\" components nor a \"ngDoBootstrap\" method. ") +
                 "Please define one of these.");
         }
+        this._modules.push(moduleRef);
     };
     PlatformRef_.decorators = [
         { type: Injectable },
@@ -432,88 +435,80 @@ function PlatformRef__tsickle_Closure_declarations() {
     PlatformRef_.prototype._injector;
 }
 /**
- *  A reference to an Angular application running on a page.
-  * *
-  * For more about Angular applications, see the documentation for {@link bootstrap}.
-  * *
+ * A reference to an Angular application running on a page.
+ *
+ * For more about Angular applications, see the documentation for {\@link bootstrap}.
+ *
+ * \@stable
  * @abstract
  */
 export var ApplicationRef = (function () {
     function ApplicationRef() {
     }
     /**
-     *  Bootstrap a new component at the root level of the application.
-      * *
-      * ### Bootstrap process
-      * *
-      * When bootstrapping a new root component into an application, Angular mounts the
-      * specified application component onto DOM elements identified by the [componentType]'s
-      * selector and kicks off automatic change detection to finish initializing the component.
-      * *
-      * ### Example
-      * {@example core/ts/platform/platform.ts region='longform'}
+     * Bootstrap a new component at the root level of the application.
+     *
+     * ### Bootstrap process
+     *
+     * When bootstrapping a new root component into an application, Angular mounts the
+     * specified application component onto DOM elements identified by the [componentType]'s
+     * selector and kicks off automatic change detection to finish initializing the component.
+     *
+     * ### Example
+     * {\@example core/ts/platform/platform.ts region='longform'}
      * @abstract
      * @param {?} componentFactory
      * @return {?}
      */
     ApplicationRef.prototype.bootstrap = function (componentFactory) { };
     /**
-     *  Invoke this method to explicitly process change detection and its side-effects.
-      * *
-      * In development mode, `tick()` also performs a second change detection cycle to ensure that no
-      * further changes are detected. If additional changes are picked up during this second cycle,
-      * bindings in the app have side-effects that cannot be resolved in a single change detection
-      * pass.
-      * In this case, Angular throws an error, since an Angular application can only have one change
-      * detection pass during which all change detection must complete.
+     * Invoke this method to explicitly process change detection and its side-effects.
+     *
+     * In development mode, `tick()` also performs a second change detection cycle to ensure that no
+     * further changes are detected. If additional changes are picked up during this second cycle,
+     * bindings in the app have side-effects that cannot be resolved in a single change detection
+     * pass.
+     * In this case, Angular throws an error, since an Angular application can only have one change
+     * detection pass during which all change detection must complete.
      * @abstract
      * @return {?}
      */
     ApplicationRef.prototype.tick = function () { };
-    Object.defineProperty(ApplicationRef.prototype, "componentTypes", {
-        /**
-         *  Get a list of component types registered to this application.
-          * This list is populated even before the component is created.
-         * @return {?}
-         */
-        get: function () { return (unimplemented()); },
-        enumerable: true,
-        configurable: true
-    });
-    ;
-    Object.defineProperty(ApplicationRef.prototype, "components", {
-        /**
-         *  Get a list of components registered to this application.
-         * @return {?}
-         */
-        get: function () { return (unimplemented()); },
-        enumerable: true,
-        configurable: true
-    });
-    ;
     /**
-     *  Attaches a view so that it will be dirty checked.
-      * The view will be automatically detached when it is destroyed.
-      * This will throw if the view is already attached to a ViewContainer.
+     * Get a list of component types registered to this application.
+     * This list is populated even before the component is created.
+     * @abstract
+     * @return {?}
+     */
+    ApplicationRef.prototype.componentTypes = function () { };
+    /**
+     * Get a list of components registered to this application.
+     * @abstract
+     * @return {?}
+     */
+    ApplicationRef.prototype.components = function () { };
+    /**
+     * Attaches a view so that it will be dirty checked.
+     * The view will be automatically detached when it is destroyed.
+     * This will throw if the view is already attached to a ViewContainer.
+     * @abstract
      * @param {?} view
      * @return {?}
      */
-    ApplicationRef.prototype.attachView = function (view) { unimplemented(); };
+    ApplicationRef.prototype.attachView = function (view) { };
     /**
-     *  Detaches a view from dirty checking again.
+     * Detaches a view from dirty checking again.
+     * @abstract
      * @param {?} view
      * @return {?}
      */
-    ApplicationRef.prototype.detachView = function (view) { unimplemented(); };
-    Object.defineProperty(ApplicationRef.prototype, "viewCount", {
-        /**
-         *  Returns the number of attached views.
-         * @return {?}
-         */
-        get: function () { return unimplemented(); },
-        enumerable: true,
-        configurable: true
-    });
+    ApplicationRef.prototype.detachView = function (view) { };
+    /**
+     * Returns the number of attached views.
+     * @abstract
+     * @return {?}
+     */
+    ApplicationRef.prototype.viewCount = function () { };
     return ApplicationRef;
 }());
 export var ApplicationRef_ = (function (_super) {
@@ -592,7 +587,7 @@ export var ApplicationRef_ = (function (_super) {
         }
         this._loadComponent(compRef);
         if (isDevMode()) {
-            this._console.log("Angular 2 is running in the development mode. Call enableProdMode() to enable the production mode.");
+            this._console.log("Angular is running in the development mode. Call enableProdMode() to enable the production mode.");
         }
         return compRef;
     };
@@ -687,7 +682,10 @@ export var ApplicationRef_ = (function (_super) {
     return ApplicationRef_;
 }(ApplicationRef));
 function ApplicationRef__tsickle_Closure_declarations() {
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     ApplicationRef_._tickScope;
     /** @type {?} */
     ApplicationRef_.decorators;

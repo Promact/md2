@@ -10,6 +10,7 @@ import { templateVisitAll } from '../template_parser/template_ast';
 import { bindOutputs } from './event_binder';
 import { bindDirectiveAfterContentLifecycleCallbacks, bindDirectiveAfterViewLifecycleCallbacks, bindDirectiveWrapperLifecycleCallbacks, bindInjectableDestroyLifecycleCallbacks, bindPipeDestroyLifecycleCallbacks } from './lifecycle_binder';
 import { bindDirectiveHostProps, bindDirectiveInputs, bindRenderInputs, bindRenderText } from './property_binder';
+import { bindQueryValues } from './query_binder';
 /**
  * @param {?} view
  * @param {?} parsedTemplate
@@ -64,6 +65,7 @@ var ViewBinderVisitor = (function () {
     ViewBinderVisitor.prototype.visitElement = function (ast, parent) {
         var _this = this;
         var /** @type {?} */ compileElement = (this.view.nodes[this._nodeIndex++]);
+        bindQueryValues(compileElement);
         var /** @type {?} */ hasEvents = bindOutputs(ast.outputs, ast.directives, compileElement, true);
         bindRenderInputs(ast.inputs, ast.outputs, hasEvents, compileElement);
         ast.directives.forEach(function (directiveAst, dirIndex) {
@@ -94,6 +96,7 @@ var ViewBinderVisitor = (function () {
      */
     ViewBinderVisitor.prototype.visitEmbeddedTemplate = function (ast, parent) {
         var /** @type {?} */ compileElement = (this.view.nodes[this._nodeIndex++]);
+        bindQueryValues(compileElement);
         bindOutputs(ast.outputs, ast.directives, compileElement, false);
         ast.directives.forEach(function (directiveAst, dirIndex) {
             var /** @type {?} */ directiveInstance = compileElement.instances.get(directiveAst.directive.type.reference);

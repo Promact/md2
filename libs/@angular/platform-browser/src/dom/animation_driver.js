@@ -7,7 +7,7 @@
  */
 import { NoOpAnimationPlayer } from '../private_import_core';
 /**
- * @experimental
+ * \@experimental
  */
 export var NoOpAnimationDriver = (function () {
     function NoOpAnimationDriver() {
@@ -29,6 +29,7 @@ export var NoOpAnimationDriver = (function () {
     return NoOpAnimationDriver;
 }());
 /**
+ * \@experimental
  * @abstract
  */
 export var AnimationDriver = (function () {

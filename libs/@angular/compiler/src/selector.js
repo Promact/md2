@@ -9,14 +9,15 @@ import { getHtmlTagDefinition } from './ml_parser/html_tags';
 var /** @type {?} */ _SELECTOR_REGEXP = new RegExp('(\\:not\\()|' +
     '([-\\w]+)|' +
     '(?:\\.([-\\w]+))|' +
-    '(?:\\[([-\\w*]+)(?:=([^\\]]*))?\\])|' +
+    // "-" should appear first in the regexp below as FF31 parses "[.-\w]" as a range
+    '(?:\\[([-.\\w*]+)(?:=([^\\]]*))?\\])|' +
     '(\\))|' +
     '(\\s*,\\s*)', // ","
 'g');
 /**
- *  A css selector contains an element name,
-  * css classes and attribute/value pairs with the purpose
-  * of selecting subsets out of them.
+ * A css selector contains an element name,
+ * css classes and attribute/value pairs with the purpose
+ * of selecting subsets out of them.
  */
 export var CssSelector = (function () {
     function CssSelector() {
@@ -96,7 +97,7 @@ export var CssSelector = (function () {
         this.element = element;
     };
     /**
-     *  Gets a template string for an element that matches the selector.
+     * Gets a template string for an element that matches the selector.
      * @return {?}
      */
     CssSelector.prototype.getMatchingElementTemplate = function () {
@@ -156,8 +157,8 @@ function CssSelector_tsickle_Closure_declarations() {
     CssSelector.prototype.notSelectors;
 }
 /**
- *  Reads a list of CssSelectors and allows to calculate which ones
-  * are contained in a given CssSelector.
+ * Reads a list of CssSelectors and allows to calculate which ones
+ * are contained in a given CssSelector.
  */
 export var SelectorMatcher = (function () {
     function SelectorMatcher() {
@@ -194,7 +195,7 @@ export var SelectorMatcher = (function () {
         }
     };
     /**
-     *  Add an object that can be found later on by calling `match`.
+     * Add an object that can be found later on by calling `match`.
      * @param {?} cssSelector A css selector
      * @param {?} callbackCtxt An opaque object that will be given to the callback of the `match` function
      * @param {?} listContext
@@ -281,8 +282,8 @@ export var SelectorMatcher = (function () {
         return matcher;
     };
     /**
-     *  Find the objects that have been added via `addSelectable`
-      * whose css selector is contained in the given css selector.
+     * Find the objects that have been added via `addSelectable`
+     * whose css selector is contained in the given css selector.
      * @param {?} cssSelector A css selector
      * @param {?} matchedCallback This callback will be called with the object handed into `addSelectable`
      * @return {?} boolean true if a match was found
@@ -330,6 +331,7 @@ export var SelectorMatcher = (function () {
         return result;
     };
     /**
+     * \@internal
      * @param {?} map
      * @param {?} name
      * @param {?} cssSelector
@@ -357,6 +359,7 @@ export var SelectorMatcher = (function () {
         return result;
     };
     /**
+     * \@internal
      * @param {?} map
      * @param {?} name
      * @param {?} cssSelector
@@ -410,7 +413,6 @@ function SelectorListContext_tsickle_Closure_declarations() {
     /** @type {?} */
     SelectorListContext.prototype.selectors;
 }
-// Store context to pass back selector and context when a selector is matched
 export var SelectorContext = (function () {
     /**
      * @param {?} selector

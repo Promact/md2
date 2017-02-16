@@ -13,7 +13,7 @@ import * as i18n from './i18n_ast';
 import { PlaceholderRegistry } from './serializers/placeholder';
 var /** @type {?} */ _expParser = new ExpressionParser(new ExpressionLexer());
 /**
- *  Returns a function converting html nodes to an i18n Message given an interpolationConfig
+ * Returns a function converting html nodes to an i18n Message given an interpolationConfig
  * @param {?} interpolationConfig
  * @return {?}
  */

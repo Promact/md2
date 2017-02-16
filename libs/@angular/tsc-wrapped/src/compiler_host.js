@@ -148,8 +148,16 @@ var MetadataWriterHost = (function (_super) {
         // released
         if (/\.js$/.test(emitFilePath)) {
             var path_1 = emitFilePath.replace(/*DTS*/ /\.js$/, '.metadata.json');
-            var metadata = this.metadataCollector.getMetadata(sourceFile, !!this.ngOptions.strictMetadataEmit);
-            var metadata1 = this.metadataCollector1.getMetadata(sourceFile, false);
+            // Beginning with 2.1, TypeScript transforms the source tree before emitting it.
+            // We need the original, unmodified, tree which might be several levels back
+            // depending on the number of transforms performed. All SourceFile's prior to 2.1
+            // will appear to be the original source since they didn't include an original field.
+            var collectableFile = sourceFile;
+            while (collectableFile.original) {
+                collectableFile = collectableFile.original;
+            }
+            var metadata = this.metadataCollector.getMetadata(collectableFile, !!this.ngOptions.strictMetadataEmit);
+            var metadata1 = this.metadataCollector1.getMetadata(collectableFile, false);
             var metadatas = [metadata, metadata1].filter(function (e) { return !!e; });
             if (metadatas.length) {
                 var metadataText = JSON.stringify(metadatas);

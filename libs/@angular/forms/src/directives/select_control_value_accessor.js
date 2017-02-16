@@ -33,39 +33,42 @@ function _extractId(valueString) {
     return valueString.split(':')[0];
 }
 /**
- *  *
-  * Used by {@link NgModel}, {@link FormControlDirective}, and {@link FormControlName}
-  * to keep the view synced with the {@link FormControl} model.
-  * *
-  * *
-  * If you have imported the {@link FormsModule} or the {@link ReactiveFormsModule}, this
-  * value accessor will be active on any select control that has a form directive. You do
-  * **not** need to add a special selector to activate it.
-  * *
-  * ### How to use select controls with form directives
-  * *
-  * To use a select in a template-driven form, simply add an `ngModel` and a `name`
-  * attribute to the main `<select>` tag.
-  * *
-  * If your option values are simple strings, you can bind to the normal `value` property
-  * on the option.  If your option values happen to be objects (and you'd like to save the
-  * selection in your form as an object), use `ngValue` instead:
-  * *
-  * {@example forms/ts/selectControl/select_control_example.ts region='Component'}
-  * *
-  * In reactive forms, you'll also want to add your form directive (`formControlName` or
-  * `formControl`) on the main `<select>` tag. Like in the former example, you have the
-  * choice of binding to the  `value` or `ngValue` property on the select's options.
-  * *
-  * {@example forms/ts/reactiveSelectControl/reactive_select_control_example.ts region='Component'}
-  * *
-  * Note: We listen to the 'change' event because 'input' events aren't fired
-  * for selects in Firefox and IE:
-  * https://bugzilla.mozilla.org/show_bug.cgi?id=1024350
-  * https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/4660045/
-  * *
-  * * **npm package**: `@angular/forms`
-  * *
+ * \@whatItDoes Writes values and listens to changes on a select element.
+ *
+ * Used by {\@link NgModel}, {\@link FormControlDirective}, and {\@link FormControlName}
+ * to keep the view synced with the {\@link FormControl} model.
+ *
+ * \@howToUse
+ *
+ * If you have imported the {\@link FormsModule} or the {\@link ReactiveFormsModule}, this
+ * value accessor will be active on any select control that has a form directive. You do
+ * **not** need to add a special selector to activate it.
+ *
+ * ### How to use select controls with form directives
+ *
+ * To use a select in a template-driven form, simply add an `ngModel` and a `name`
+ * attribute to the main `<select>` tag.
+ *
+ * If your option values are simple strings, you can bind to the normal `value` property
+ * on the option.  If your option values happen to be objects (and you'd like to save the
+ * selection in your form as an object), use `ngValue` instead:
+ *
+ * {\@example forms/ts/selectControl/select_control_example.ts region='Component'}
+ *
+ * In reactive forms, you'll also want to add your form directive (`formControlName` or
+ * `formControl`) on the main `<select>` tag. Like in the former example, you have the
+ * choice of binding to the  `value` or `ngValue` property on the select's options.
+ *
+ * {\@example forms/ts/reactiveSelectControl/reactive_select_control_example.ts region='Component'}
+ *
+ * Note: We listen to the 'change' event because 'input' events aren't fired
+ * for selects in Firefox and IE:
+ * https://bugzilla.mozilla.org/show_bug.cgi?id=1024350
+ * https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/4660045/
+ *
+ * * **npm package**: `\@angular/forms`
+ *
+ * \@stable
  */
 export var SelectControlValueAccessor = (function () {
     /**
@@ -88,7 +91,11 @@ export var SelectControlValueAccessor = (function () {
      */
     SelectControlValueAccessor.prototype.writeValue = function (value) {
         this.value = value;
-        var /** @type {?} */ valueString = _buildValueString(this._getOptionId(value), value);
+        var /** @type {?} */ id = this._getOptionId(value);
+        if (id == null) {
+            this._renderer.setElementProperty(this._elementRef.nativeElement, 'selectedIndex', -1);
+        }
+        var /** @type {?} */ valueString = _buildValueString(id, value);
         this._renderer.setElementProperty(this._elementRef.nativeElement, 'value', valueString);
     };
     /**
@@ -115,10 +122,12 @@ export var SelectControlValueAccessor = (function () {
         this._renderer.setElementProperty(this._elementRef.nativeElement, 'disabled', isDisabled);
     };
     /**
+     * \@internal
      * @return {?}
      */
     SelectControlValueAccessor.prototype._registerOption = function () { return (this._idCounter++).toString(); };
     /**
+     * \@internal
      * @param {?} value
      * @return {?}
      */
@@ -131,6 +140,7 @@ export var SelectControlValueAccessor = (function () {
         return null;
     };
     /**
+     * \@internal
      * @param {?} valueString
      * @return {?}
      */
@@ -162,9 +172,15 @@ function SelectControlValueAccessor_tsickle_Closure_declarations() {
     SelectControlValueAccessor.ctorParameters;
     /** @type {?} */
     SelectControlValueAccessor.prototype.value;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     SelectControlValueAccessor.prototype._optionMap;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     SelectControlValueAccessor.prototype._idCounter;
     /** @type {?} */
     SelectControlValueAccessor.prototype.onChange;
@@ -176,10 +192,13 @@ function SelectControlValueAccessor_tsickle_Closure_declarations() {
     SelectControlValueAccessor.prototype._elementRef;
 }
 /**
- *  *
-  * *
-  * See docs for {@link SelectControlValueAccessor} for usage examples.
-  * *
+ * \@whatItDoes Marks `<option>` as dynamic, so Angular can be notified when options change.
+ *
+ * \@howToUse
+ *
+ * See docs for {\@link SelectControlValueAccessor} for usage examples.
+ *
+ * \@stable
  */
 export var NgSelectOption = (function () {
     /**
@@ -223,6 +242,7 @@ export var NgSelectOption = (function () {
         configurable: true
     });
     /**
+     * \@internal
      * @param {?} value
      * @return {?}
      */

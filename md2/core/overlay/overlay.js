@@ -12,9 +12,9 @@ import { OverlayState } from './overlay-state';
 import { DomPortalHost } from '../portal/dom-portal-host';
 import { OverlayRef } from './overlay-ref';
 import { OverlayPositionBuilder } from './position/overlay-position-builder';
-import { ViewportRuler } from './position/viewport-ruler';
-import { OverlayContainer } from './overlay-container';
-import { ScrollDispatcher } from './scroll/scroll-dispatcher';
+import { VIEWPORT_RULER_PROVIDER } from './position/viewport-ruler';
+import { OverlayContainer, OVERLAY_CONTAINER_PROVIDER } from './overlay-container';
+import { SCROLL_DISPATCHER_PROVIDER } from './scroll/scroll-dispatcher';
 /** Next overlay unique ID. */
 var nextUniqueId = 0;
 /** The default state for newly created overlays. */
@@ -87,11 +87,10 @@ export var Overlay = (function () {
 }());
 /** Providers for Overlay and its related injectables. */
 export var OVERLAY_PROVIDERS = [
-    ViewportRuler,
-    OverlayPositionBuilder,
     Overlay,
-    OverlayContainer,
-    ScrollDispatcher,
+    OverlayPositionBuilder,
+    VIEWPORT_RULER_PROVIDER,
+    SCROLL_DISPATCHER_PROVIDER,
+    OVERLAY_CONTAINER_PROVIDER,
 ];
-
 //# sourceMappingURL=overlay.js.map

@@ -345,5 +345,4 @@ export var Md2DataTableModule = (function () {
     ], Md2DataTableModule);
     return Md2DataTableModule;
 }());
-
 //# sourceMappingURL=data-table.js.map

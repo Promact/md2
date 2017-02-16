@@ -17,5 +17,4 @@ export var AnimationDurations = (function () {
     AnimationDurations.EXITING = '195ms';
     return AnimationDurations;
 }());
-
 //# sourceMappingURL=animation.js.map

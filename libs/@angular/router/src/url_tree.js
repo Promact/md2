@@ -59,7 +59,7 @@ function equalSegmentGroups(container, containee) {
  * @return {?}
  */
 function containsQueryParams(container, containee) {
-    return Object.keys(containee) <= Object.keys(container) &&
+    return Object.keys(containee).length <= Object.keys(container).length &&
         Object.keys(containee).every(function (key) { return containee[key] === container[key]; });
 }
 /**
@@ -107,31 +107,37 @@ function containsSegmentGroupHelper(container, containee, containeePaths) {
     }
 }
 /**
- *  *
-  * *
-  * ```
-  * class MyComponent {
-  * constructor(router: Router) {
-  * const tree: UrlTree =
-  * router.parseUrl('/team/33/(user/victor//support:help)?debug=true#fragment');
-  * const f = tree.fragment; // return 'fragment'
-  * const q = tree.queryParams; // returns {debug: 'true'}
-  * const g: UrlSegmentGroup = tree.root.children[PRIMARY_OUTLET];
-  * const s: UrlSegment[] = g.segments; // returns 2 segments 'team' and '33'
-  * g.children[PRIMARY_OUTLET].segments; // returns 2 segments 'user' and 'victor'
-  * g.children['support'].segments; // return 1 segment 'help'
-  * }
-  * }
-  * ```
-  * *
-  * *
-  * Since a router state is a tree, and the URL is nothing but a serialized state, the URL is a
-  * serialized tree.
-  * UrlTree is a data structure that provides a lot of affordances in dealing with URLs
-  * *
+ * \@whatItDoes Represents the parsed URL.
+ *
+ * \@howToUse
+ *
+ * ```
+ * \@Component({templateUrl:'template.html'})
+ * class MyComponent {
+ *   constructor(router: Router) {
+ *     const tree: UrlTree =
+ *       router.parseUrl('/team/33/(user/victor//support:help)?debug=true#fragment');
+ *     const f = tree.fragment; // return 'fragment'
+ *     const q = tree.queryParams; // returns {debug: 'true'}
+ *     const g: UrlSegmentGroup = tree.root.children[PRIMARY_OUTLET];
+ *     const s: UrlSegment[] = g.segments; // returns 2 segments 'team' and '33'
+ *     g.children[PRIMARY_OUTLET].segments; // returns 2 segments 'user' and 'victor'
+ *     g.children['support'].segments; // return 1 segment 'help'
+ *   }
+ * }
+ * ```
+ *
+ * \@description
+ *
+ * Since a router state is a tree, and the URL is nothing but a serialized state, the URL is a
+ * serialized tree.
+ * UrlTree is a data structure that provides a lot of affordances in dealing with URLs
+ *
+ * \@stable
  */
 export var UrlTree = (function () {
     /**
+     * \@internal
      * @param {?} root
      * @param {?} queryParams
      * @param {?} fragment
@@ -142,6 +148,7 @@ export var UrlTree = (function () {
         this.fragment = fragment;
     }
     /**
+     * \@docsNotRequired
      * @return {?}
      */
     UrlTree.prototype.toString = function () { return new DefaultUrlSerializer().serialize(this); };
@@ -165,9 +172,11 @@ function UrlTree_tsickle_Closure_declarations() {
     UrlTree.prototype.fragment;
 }
 /**
- *  *
-  * See {@link UrlTree} for more information.
-  * *
+ * \@whatItDoes Represents the parsed URL segment group.
+ *
+ * See {\@link UrlTree} for more information.
+ *
+ * \@stable
  */
 export var UrlSegmentGroup = (function () {
     /**
@@ -183,13 +192,13 @@ export var UrlSegmentGroup = (function () {
         forEach(children, function (v, k) { return v.parent = _this; });
     }
     /**
-     *  Wether the segment has child segments
+     * Wether the segment has child segments
      * @return {?}
      */
     UrlSegmentGroup.prototype.hasChildren = function () { return this.numberOfChildren > 0; };
     Object.defineProperty(UrlSegmentGroup.prototype, "numberOfChildren", {
         /**
-         *  Number of child segments
+         * Number of child segments
          * @return {?}
          */
         get: function () { return Object.keys(this.children).length; },
@@ -197,15 +206,22 @@ export var UrlSegmentGroup = (function () {
         configurable: true
     });
     /**
+     * \@docsNotRequired
      * @return {?}
      */
     UrlSegmentGroup.prototype.toString = function () { return serializePaths(this); };
     return UrlSegmentGroup;
 }());
 function UrlSegmentGroup_tsickle_Closure_declarations() {
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     UrlSegmentGroup.prototype._sourceSegment;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     UrlSegmentGroup.prototype._segmentIndexShift;
     /**
      * The parent node in the url tree
@@ -213,7 +229,7 @@ function UrlSegmentGroup_tsickle_Closure_declarations() {
      */
     UrlSegmentGroup.prototype.parent;
     /**
-     * The URL segments of this group. See {@link UrlSegment} for more information
+     * The URL segments of this group. See {\@link UrlSegment} for more information
      * @type {?}
      */
     UrlSegmentGroup.prototype.segments;
@@ -224,24 +240,29 @@ function UrlSegmentGroup_tsickle_Closure_declarations() {
     UrlSegmentGroup.prototype.children;
 }
 /**
- *  *
-  * *
-  * ```
-  * class MyComponent {
-  * constructor(router: Router) {
-  * const tree: UrlTree = router.parseUrl('/team;id=33');
-  * const g: UrlSegmentGroup = tree.root.children[PRIMARY_OUTLET];
-  * const s: UrlSegment[] = g.segments;
-  * s[0].path; // returns 'team'
-  * s[0].parameters; // returns {id: 33}
-  * }
-  * }
-  * ```
-  * *
-  * *
-  * A UrlSegment is a part of a URL between the two slashes. It contains a path and the matrix
-  * parameters associated with the segment.
-  * *
+ * \@whatItDoes Represents a single URL segment.
+ *
+ * \@howToUse
+ *
+ * ```
+ * \@Component({templateUrl:'template.html'})
+ * class MyComponent {
+ *   constructor(router: Router) {
+ *     const tree: UrlTree = router.parseUrl('/team;id=33');
+ *     const g: UrlSegmentGroup = tree.root.children[PRIMARY_OUTLET];
+ *     const s: UrlSegment[] = g.segments;
+ *     s[0].path; // returns 'team'
+ *     s[0].parameters; // returns {id: 33}
+ *   }
+ * }
+ * ```
+ *
+ * \@description
+ *
+ * A UrlSegment is a part of a URL between the two slashes. It contains a path and the matrix
+ * parameters associated with the segment.
+ *
+ * \@stable
  */
 export var UrlSegment = (function () {
     /**
@@ -253,6 +274,7 @@ export var UrlSegment = (function () {
         this.parameters = parameters;
     }
     /**
+     * \@docsNotRequired
      * @return {?}
      */
     UrlSegment.prototype.toString = function () { return serializePath(this); };
@@ -320,25 +342,28 @@ export function mapChildrenIntoArray(segment, fn) {
     return res;
 }
 /**
- *  *
-  * make all URLs case insensitive by providing a custom UrlSerializer.
-  * *
-  * See {@link DefaultUrlSerializer} for an example of a URL serializer.
-  * *
+ * \@whatItDoes Serializes and deserializes a URL string into a URL tree.
+ *
+ * \@description The url serialization strategy is customizable. You can
+ * make all URLs case insensitive by providing a custom UrlSerializer.
+ *
+ * See {\@link DefaultUrlSerializer} for an example of a URL serializer.
+ *
+ * \@stable
  * @abstract
  */
 export var UrlSerializer = (function () {
     function UrlSerializer() {
     }
     /**
-     *  Parse a url into a {@link UrlTree}
+     * Parse a url into a {\@link UrlTree}
      * @abstract
      * @param {?} url
      * @return {?}
      */
     UrlSerializer.prototype.parse = function (url) { };
     /**
-     *  Converts a {@link UrlTree} into a url
+     * Converts a {\@link UrlTree} into a url
      * @abstract
      * @param {?} tree
      * @return {?}
@@ -347,25 +372,28 @@ export var UrlSerializer = (function () {
     return UrlSerializer;
 }());
 /**
- *  *
-  * *
-  * Example URLs:
-  * *
-  * ```
-  * /inbox/33(popup:compose)
-  * /inbox/33;open=true/messages/44
-  * ```
-  * *
-  * DefaultUrlSerializer uses parentheses to serialize secondary segments (e.g., popup:compose), the
-  * colon syntax to specify the outlet, and the ';parameter=value' syntax (e.g., open=true) to
-  * specify route specific parameters.
-  * *
+ * \@whatItDoes A default implementation of the {\@link UrlSerializer}.
+ *
+ * \@description
+ *
+ * Example URLs:
+ *
+ * ```
+ * /inbox/33(popup:compose)
+ * /inbox/33;open=true/messages/44
+ * ```
+ *
+ * DefaultUrlSerializer uses parentheses to serialize secondary segments (e.g., popup:compose), the
+ * colon syntax to specify the outlet, and the ';parameter=value' syntax (e.g., open=true) to
+ * specify route specific parameters.
+ *
+ * \@stable
  */
 export var DefaultUrlSerializer = (function () {
     function DefaultUrlSerializer() {
     }
     /**
-     *  Parses a url into a {@link UrlTree}
+     * Parses a url into a {\@link UrlTree}
      * @param {?} url
      * @return {?}
      */
@@ -374,7 +402,7 @@ export var DefaultUrlSerializer = (function () {
         return new UrlTree(p.parseRootSegment(), p.parseQueryParams(), p.parseFragment());
     };
     /**
-     *  Converts a {@link UrlTree} into a url
+     * Converts a {\@link UrlTree} into a url
      * @param {?} tree
      * @return {?}
      */

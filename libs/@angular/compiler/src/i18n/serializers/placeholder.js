@@ -38,10 +38,11 @@ var /** @type {?} */ TAG_TO_PLACEHOLDER_NAMES = {
     'UL': 'UNORDERED_LIST',
 };
 /**
- *  Creates unique names for placeholder with different content.
-  * *
-  * Returns the same placeholder name when the content is identical.
-  * *
+ * Creates unique names for placeholder with different content.
+ *
+ * Returns the same placeholder name when the content is identical.
+ *
+ * \@internal
  */
 export var PlaceholderRegistry = (function () {
     function PlaceholderRegistry() {
@@ -124,9 +125,14 @@ export var PlaceholderRegistry = (function () {
      * @return {?}
      */
     PlaceholderRegistry.prototype._generateUniqueName = function (base) {
-        var /** @type {?} */ next = this._placeHolderNameCounts[base];
-        this._placeHolderNameCounts[base] = next ? next + 1 : 1;
-        return next ? base + "_" + next : base;
+        var /** @type {?} */ seen = this._placeHolderNameCounts.hasOwnProperty(base);
+        if (!seen) {
+            this._placeHolderNameCounts[base] = 1;
+            return base;
+        }
+        var /** @type {?} */ id = this._placeHolderNameCounts[base];
+        this._placeHolderNameCounts[base] = id + 1;
+        return base + "_" + id;
     };
     return PlaceholderRegistry;
 }());

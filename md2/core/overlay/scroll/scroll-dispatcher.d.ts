@@ -1,9 +1,12 @@
-import { ElementRef } from '@angular/core';
+import { ElementRef, Optional } from '@angular/core';
 import { Scrollable } from './scrollable';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/observable/fromEvent';
+import 'rxjs/add/operator/auditTime';
+/** Time in ms to throttle the scrolling events by default. */
+export declare const DEFAULT_SCROLL_TIME: number;
 /**
  * Service contained all registered Scrollable references and emits an event when any one of the
  * Scrollable references emit a scrolled event.
@@ -32,9 +35,10 @@ export declare class ScrollDispatcher {
     deregister(scrollable: Scrollable): void;
     /**
      * Returns an observable that emits an event whenever any of the registered Scrollable
-     * references (or window, document, or body) fire a scrolled event.
+     * references (or window, document, or body) fire a scrolled event. Can provide a time in ms
+     * to override the default "throttle" time.
      */
-    scrolled(): Observable<void>;
+    scrolled(auditTimeInMs?: number): Observable<void>;
     /** Returns all registered Scrollables that contain the provided element. */
     getScrollContainers(elementRef: ElementRef): Scrollable[];
     /** Returns true if the element is contained within the provided Scrollable. */
@@ -42,3 +46,9 @@ export declare class ScrollDispatcher {
     /** Sends a notification that a scroll event has been fired. */
     _notify(): void;
 }
+export declare function SCROLL_DISPATCHER_PROVIDER_FACTORY(parentDispatcher: ScrollDispatcher): ScrollDispatcher;
+export declare const SCROLL_DISPATCHER_PROVIDER: {
+    provide: typeof ScrollDispatcher;
+    deps: Optional[][];
+    useFactory: (parentDispatcher: ScrollDispatcher) => ScrollDispatcher;
+};

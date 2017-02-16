@@ -1,6 +1,6 @@
 /**
- * @license Angular v2.3.1
- * (c) 2010-2016 Google, Inc. https://angular.io/
+ * @license Angular v2.4.6
+ * (c) 2010-2017 Google, Inc. https://angular.io/
  * License: MIT
  */
 (function (global, factory) {
@@ -10,10 +10,11 @@
 }(this, function (exports,_angular_core,rxjs_Observable,_angular_platformBrowser) { 'use strict';
 
     /**
-     *  A backend for http that uses the `XMLHttpRequest` browser API.
-      * *
-      * Take care not to evaluate this in non-browser contexts.
-      * *
+     * A backend for http that uses the `XMLHttpRequest` browser API.
+     *
+     * Take care not to evaluate this in non-browser contexts.
+     *
+     * \@experimental
      */
     var BrowserXhr = (function () {
         function BrowserXhr() {
@@ -95,31 +96,32 @@
     ResponseContentType[ResponseContentType.Blob] = "Blob";
 
     /**
-     *  Polyfill for [Headers](https://developer.mozilla.org/en-US/docs/Web/API/Headers/Headers), as
-      * specified in the [Fetch Spec](https://fetch.spec.whatwg.org/#headers-class).
-      * *
-      * The only known difference between this `Headers` implementation and the spec is the
-      * lack of an `entries` method.
-      * *
-      * ### Example
-      * *
-      * ```
-      * import {Headers} from '@angular/http';
-      * *
-      * var firstHeaders = new Headers();
-      * firstHeaders.append('Content-Type', 'image/jpeg');
-      * console.log(firstHeaders.get('Content-Type')) //'image/jpeg'
-      * *
-      * // Create headers from Plain Old JavaScript Object
-      * var secondHeaders = new Headers({
-      * 'X-My-Custom-Header': 'Angular'
-      * });
-      * console.log(secondHeaders.get('X-My-Custom-Header')); //'Angular'
-      * *
-      * var thirdHeaders = new Headers(secondHeaders);
-      * console.log(thirdHeaders.get('X-My-Custom-Header')); //'Angular'
-      * ```
-      * *
+     * Polyfill for [Headers](https://developer.mozilla.org/en-US/docs/Web/API/Headers/Headers), as
+     * specified in the [Fetch Spec](https://fetch.spec.whatwg.org/#headers-class).
+     *
+     * The only known difference between this `Headers` implementation and the spec is the
+     * lack of an `entries` method.
+     *
+     * ### Example
+     *
+     * ```
+     * import {Headers} from '\@angular/http';
+     *
+     * var firstHeaders = new Headers();
+     * firstHeaders.append('Content-Type', 'image/jpeg');
+     * console.log(firstHeaders.get('Content-Type')) //'image/jpeg'
+     *
+     * // Create headers from Plain Old JavaScript Object
+     * var secondHeaders = new Headers({
+     *   'X-My-Custom-Header': 'Angular'
+     * });
+     * console.log(secondHeaders.get('X-My-Custom-Header')); //'Angular'
+     *
+     * var thirdHeaders = new Headers(secondHeaders);
+     * console.log(thirdHeaders.get('X-My-Custom-Header')); //'Angular'
+     * ```
+     *
+     * \@experimental
      */
     var Headers = (function () {
         /**
@@ -147,7 +149,7 @@
             });
         }
         /**
-         *  Returns a new Headers instance from the given DOMString of Response Headers
+         * Returns a new Headers instance from the given DOMString of Response Headers
          * @param {?} headersString
          * @return {?}
          */
@@ -164,7 +166,7 @@
             return headers;
         };
         /**
-         *  Appends a header to existing list of header values for a given header name.
+         * Appends a header to existing list of header values for a given header name.
          * @param {?} name
          * @param {?} value
          * @return {?}
@@ -179,7 +181,7 @@
             }
         };
         /**
-         *  Deletes all header values for the given name.
+         * Deletes all header values for the given name.
          * @param {?} name
          * @return {?}
          */
@@ -197,7 +199,7 @@
             this._headers.forEach(function (values, lcName) { return fn(values, _this._normalizedNames.get(lcName), _this._headers); });
         };
         /**
-         *  Returns first header that matches given name.
+         * Returns first header that matches given name.
          * @param {?} name
          * @return {?}
          */
@@ -209,18 +211,18 @@
             return values.length > 0 ? values[0] : null;
         };
         /**
-         *  Checks for existence of header by given name.
+         * Checks for existence of header by given name.
          * @param {?} name
          * @return {?}
          */
         Headers.prototype.has = function (name) { return this._headers.has(name.toLowerCase()); };
         /**
-         *  Returns the names of the headers
+         * Returns the names of the headers
          * @return {?}
          */
         Headers.prototype.keys = function () { return Array.from(this._normalizedNames.values()); };
         /**
-         *  Sets or overrides header value for given name.
+         * Sets or overrides header value for given name.
          * @param {?} name
          * @param {?} value
          * @return {?}
@@ -237,7 +239,7 @@
             this.mayBeSetNormalizedName(name);
         };
         /**
-         *  Returns values of all headers.
+         * Returns values of all headers.
          * @return {?}
          */
         Headers.prototype.values = function () { return Array.from(this._headers.values()); };
@@ -255,7 +257,7 @@
             return serialized;
         };
         /**
-         *  Returns list of header values for a given name.
+         * Returns list of header values for a given name.
          * @param {?} name
          * @return {?}
          */
@@ -263,7 +265,7 @@
             return this.has(name) ? this._headers.get(name.toLowerCase()) : null;
         };
         /**
-         *  This method is not implemented.
+         * This method is not implemented.
          * @return {?}
          */
         Headers.prototype.entries = function () { throw new Error('"entries" method is not implemented on Headers class'); };
@@ -293,31 +295,32 @@
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
     /**
-     *  Creates a response options object to be optionally provided when instantiating a
-      * {@link Response}.
-      * *
-      * This class is based on the `ResponseInit` description in the [Fetch
-      * Spec](https://fetch.spec.whatwg.org/#responseinit).
-      * *
-      * All values are null by default. Typical defaults can be found in the
-      * {@link BaseResponseOptions} class, which sub-classes `ResponseOptions`.
-      * *
-      * This class may be used in tests to build {@link Response Responses} for
-      * mock responses (see {@link MockBackend}).
-      * *
-      * ### Example ([live demo](http://plnkr.co/edit/P9Jkk8e8cz6NVzbcxEsD?p=preview))
-      * *
-      * ```typescript
-      * import {ResponseOptions, Response} from '@angular/http';
-      * *
-      * var options = new ResponseOptions({
-      * body: '{"name":"Jeff"}'
-      * });
-      * var res = new Response(options);
-      * *
-      * console.log('res.json():', res.json()); // Object {name: "Jeff"}
-      * ```
-      * *
+     * Creates a response options object to be optionally provided when instantiating a
+     * {\@link Response}.
+     *
+     * This class is based on the `ResponseInit` description in the [Fetch
+     * Spec](https://fetch.spec.whatwg.org/#responseinit).
+     *
+     * All values are null by default. Typical defaults can be found in the
+     * {\@link BaseResponseOptions} class, which sub-classes `ResponseOptions`.
+     *
+     * This class may be used in tests to build {\@link Response Responses} for
+     * mock responses (see {\@link MockBackend}).
+     *
+     * ### Example ([live demo](http://plnkr.co/edit/P9Jkk8e8cz6NVzbcxEsD?p=preview))
+     *
+     * ```typescript
+     * import {ResponseOptions, Response} from '\@angular/http';
+     *
+     * var options = new ResponseOptions({
+     *   body: '{"name":"Jeff"}'
+     * });
+     * var res = new Response(options);
+     *
+     * console.log('res.json():', res.json()); // Object {name: "Jeff"}
+     * ```
+     *
+     * \@experimental
      */
     var ResponseOptions = (function () {
         /**
@@ -333,29 +336,29 @@
             this.url = url != null ? url : null;
         }
         /**
-         *  Creates a copy of the `ResponseOptions` instance, using the optional input as values to
-          * override
-          * existing values. This method will not change the values of the instance on which it is being
-          * called.
-          * *
-          * This may be useful when sharing a base `ResponseOptions` object inside tests,
-          * where certain properties may change from test to test.
-          * *
-          * ### Example ([live demo](http://plnkr.co/edit/1lXquqFfgduTFBWjNoRE?p=preview))
-          * *
-          * ```typescript
-          * import {ResponseOptions, Response} from '@angular/http';
-          * *
-          * var options = new ResponseOptions({
-          * body: {name: 'Jeff'}
-          * });
-          * var res = new Response(options.merge({
-          * url: 'https://google.com'
-          * }));
-          * console.log('options.url:', options.url); // null
-          * console.log('res.json():', res.json()); // Object {name: "Jeff"}
-          * console.log('res.url:', res.url); // https://google.com
-          * ```
+         * Creates a copy of the `ResponseOptions` instance, using the optional input as values to
+         * override
+         * existing values. This method will not change the values of the instance on which it is being
+         * called.
+         *
+         * This may be useful when sharing a base `ResponseOptions` object inside tests,
+         * where certain properties may change from test to test.
+         *
+         * ### Example ([live demo](http://plnkr.co/edit/1lXquqFfgduTFBWjNoRE?p=preview))
+         *
+         * ```typescript
+         * import {ResponseOptions, Response} from '\@angular/http';
+         *
+         * var options = new ResponseOptions({
+         *   body: {name: 'Jeff'}
+         * });
+         * var res = new Response(options.merge({
+         *   url: 'https://google.com'
+         * }));
+         * console.log('options.url:', options.url); // null
+         * console.log('res.json():', res.json()); // Object {name: "Jeff"}
+         * console.log('res.url:', res.url); // https://google.com
+         * ```
          * @param {?=} options
          * @return {?}
          */
@@ -372,49 +375,50 @@
         return ResponseOptions;
     }());
     /**
-     *  Subclass of {@link ResponseOptions}, with default values.
-      * *
-      * Default values:
-      * * status: 200
-      * * headers: empty {@link Headers} object
-      * *
-      * This class could be extended and bound to the {@link ResponseOptions} class
-      * when configuring an {@link Injector}, in order to override the default options
-      * used by {@link Http} to create {@link Response Responses}.
-      * *
-      * ### Example ([live demo](http://plnkr.co/edit/qv8DLT?p=preview))
-      * *
-      * ```typescript
-      * import {provide} from '@angular/core';
-      * import {bootstrap} from '@angular/platform-browser/browser';
-      * import {HTTP_PROVIDERS, Headers, Http, BaseResponseOptions, ResponseOptions} from
-      * '@angular/http';
-      * import {App} from './myapp';
-      * *
-      * class MyOptions extends BaseResponseOptions {
-      * headers:Headers = new Headers({network: 'github'});
-      * }
-      * *
-      * bootstrap(App, [HTTP_PROVIDERS, {provide: ResponseOptions, useClass: MyOptions}]);
-      * ```
-      * *
-      * The options could also be extended when manually creating a {@link Response}
-      * object.
-      * *
-      * ### Example ([live demo](http://plnkr.co/edit/VngosOWiaExEtbstDoix?p=preview))
-      * *
-      * ```
-      * import {BaseResponseOptions, Response} from '@angular/http';
-      * *
-      * var options = new BaseResponseOptions();
-      * var res = new Response(options.merge({
-      * body: 'Angular',
-      * headers: new Headers({framework: 'angular'})
-      * }));
-      * console.log('res.headers.get("framework"):', res.headers.get('framework')); // angular
-      * console.log('res.text():', res.text()); // Angular;
-      * ```
-      * *
+     * Subclass of {\@link ResponseOptions}, with default values.
+     *
+     * Default values:
+     *  * status: 200
+     *  * headers: empty {\@link Headers} object
+     *
+     * This class could be extended and bound to the {\@link ResponseOptions} class
+     * when configuring an {\@link Injector}, in order to override the default options
+     * used by {\@link Http} to create {\@link Response Responses}.
+     *
+     * ### Example ([live demo](http://plnkr.co/edit/qv8DLT?p=preview))
+     *
+     * ```typescript
+     * import {provide} from '\@angular/core';
+     * import {bootstrap} from '\@angular/platform-browser/browser';
+     * import {HTTP_PROVIDERS, Headers, Http, BaseResponseOptions, ResponseOptions} from
+     * '\@angular/http';
+     * import {App} from './myapp';
+     *
+     * class MyOptions extends BaseResponseOptions {
+     *   headers:Headers = new Headers({network: 'github'});
+     * }
+     *
+     * bootstrap(App, [HTTP_PROVIDERS, {provide: ResponseOptions, useClass: MyOptions}]);
+     * ```
+     *
+     * The options could also be extended when manually creating a {\@link Response}
+     * object.
+     *
+     * ### Example ([live demo](http://plnkr.co/edit/VngosOWiaExEtbstDoix?p=preview))
+     *
+     * ```
+     * import {BaseResponseOptions, Response} from '\@angular/http';
+     *
+     * var options = new BaseResponseOptions();
+     * var res = new Response(options.merge({
+     *   body: 'Angular',
+     *   headers: new Headers({framework: 'angular'})
+     * }));
+     * console.log('res.headers.get("framework"):', res.headers.get('framework')); // angular
+     * console.log('res.text():', res.text()); // Angular;
+     * ```
+     *
+     * \@experimental
      */
     var BaseResponseOptions = (function (_super) {
         __extends$1(BaseResponseOptions, _super);
@@ -437,11 +441,12 @@
      * found in the LICENSE file at https://angular.io/license
      */
     /**
-     *  Abstract class from which real backends are derived.
-      * *
-      * The primary purpose of a `ConnectionBackend` is to create new connections to fulfill a given
-      * {@link Request}.
-      * *
+     * Abstract class from which real backends are derived.
+     *
+     * The primary purpose of a `ConnectionBackend` is to create new connections to fulfill a given
+     * {\@link Request}.
+     *
+     * \@experimental
      * @abstract
      */
     var ConnectionBackend = (function () {
@@ -456,8 +461,9 @@
         return ConnectionBackend;
     }());
     /**
-     *  Abstract class from which real connections are derived.
-      * *
+     * Abstract class from which real connections are derived.
+     *
+     * \@experimental
      * @abstract
      */
     var Connection = (function () {
@@ -466,8 +472,9 @@
         return Connection;
     }());
     /**
-     *  An XSRFStrategy configures XSRF protection (e.g. via headers) on an HTTP request.
-      * *
+     * An XSRFStrategy configures XSRF protection (e.g. via headers) on an HTTP request.
+     *
+     * \@experimental
      * @abstract
      */
     var XSRFStrategy = (function () {
@@ -534,11 +541,11 @@
     }
 
     /**
-     * @license undefined
-      * Copyright Google Inc. All Rights Reserved.
-      * *
-      * Use of this source code is governed by an MIT-style license that can be
-      * found in the LICENSE file at https://angular.io/license
+     * @license
+     * Copyright Google Inc. All Rights Reserved.
+     *
+     * Use of this source code is governed by an MIT-style license that can be
+     * found in the LICENSE file at https://angular.io/license
      * @param {?=} rawParams
      * @return {?}
      */
@@ -558,7 +565,8 @@
         return map;
     }
     /**
-     *  *
+     * \@experimental
+     *
      */
     var QueryEncoder = (function () {
         function QueryEncoder() {
@@ -592,38 +600,39 @@
             .replace(/%2F/gi, '/');
     }
     /**
-     *  Map-like representation of url search parameters, based on
-      * [URLSearchParams](https://url.spec.whatwg.org/#urlsearchparams) in the url living standard,
-      * with several extensions for merging URLSearchParams objects:
-      * - setAll()
-      * - appendAll()
-      * - replaceAll()
-      * *
-      * This class accepts an optional second parameter of ${@link QueryEncoder},
-      * which is used to serialize parameters before making a request. By default,
-      * `QueryEncoder` encodes keys and values of parameters using `encodeURIComponent`,
-      * and then un-encodes certain characters that are allowed to be part of the query
-      * according to IETF RFC 3986: https://tools.ietf.org/html/rfc3986.
-      * *
-      * These are the characters that are not encoded: `! $ \' ( ) * + , ; A 9 - . _ ~ ? /`
-      * *
-      * If the set of allowed query characters is not acceptable for a particular backend,
-      * `QueryEncoder` can be subclassed and provided as the 2nd argument to URLSearchParams.
-      * *
-      * ```
-      * import {URLSearchParams, QueryEncoder} from '@angular/http';
-      * class MyQueryEncoder extends QueryEncoder {
-      * encodeKey(k: string): string {
-      * return myEncodingFunction(k);
-      * }
-      * *
-      * encodeValue(v: string): string {
-      * return myEncodingFunction(v);
-      * }
-      * }
-      * *
-      * let params = new URLSearchParams('', new MyQueryEncoder());
-      * ```
+     * Map-like representation of url search parameters, based on
+     * [URLSearchParams](https://url.spec.whatwg.org/#urlsearchparams) in the url living standard,
+     * with several extensions for merging URLSearchParams objects:
+     *   - setAll()
+     *   - appendAll()
+     *   - replaceAll()
+     *
+     * This class accepts an optional second parameter of ${\@link QueryEncoder},
+     * which is used to serialize parameters before making a request. By default,
+     * `QueryEncoder` encodes keys and values of parameters using `encodeURIComponent`,
+     * and then un-encodes certain characters that are allowed to be part of the query
+     * according to IETF RFC 3986: https://tools.ietf.org/html/rfc3986.
+     *
+     * These are the characters that are not encoded: `! $ \' ( ) * + , ; A 9 - . _ ~ ? /`
+     *
+     * If the set of allowed query characters is not acceptable for a particular backend,
+     * `QueryEncoder` can be subclassed and provided as the 2nd argument to URLSearchParams.
+     *
+     * ```
+     * import {URLSearchParams, QueryEncoder} from '\@angular/http';
+     * class MyQueryEncoder extends QueryEncoder {
+     *   encodeKey(k: string): string {
+     *     return myEncodingFunction(k);
+     *   }
+     *
+     *   encodeValue(v: string): string {
+     *     return myEncodingFunction(v);
+     *   }
+     * }
+     *
+     * let params = new URLSearchParams('', new MyQueryEncoder());
+     * ```
+     * \@experimental
      */
     var URLSearchParams = (function () {
         /**
@@ -752,15 +761,15 @@
     }());
 
     /**
-     *  HTTP request body used by both {@link Request} and {@link Response}
-      * https://fetch.spec.whatwg.org/#body
+     * HTTP request body used by both {\@link Request} and {\@link Response}
+     * https://fetch.spec.whatwg.org/#body
      * @abstract
      */
     var Body = (function () {
         function Body() {
         }
         /**
-         *  Attempts to return body as parsed `JSON` object, or raises an exception.
+         * Attempts to return body as parsed `JSON` object, or raises an exception.
          * @return {?}
          */
         Body.prototype.json = function () {
@@ -773,7 +782,7 @@
             return this._body;
         };
         /**
-         *  Returns the body as a string, presuming `toString()` can be called on the response body.
+         * Returns the body as a string, presuming `toString()` can be called on the response body.
          * @return {?}
          */
         Body.prototype.text = function () {
@@ -792,7 +801,7 @@
             return this._body.toString();
         };
         /**
-         *  Return the body as an ArrayBuffer
+         * Return the body as an ArrayBuffer
          * @return {?}
          */
         Body.prototype.arrayBuffer = function () {
@@ -802,7 +811,7 @@
             return stringToArrayBuffer(this.text());
         };
         /**
-         *  Returns the request's body as a Blob, assuming that body exists.
+         * Returns the request's body as a Blob, assuming that body exists.
          * @return {?}
          */
         Body.prototype.blob = function () {
@@ -830,23 +839,24 @@
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
     /**
-     *  Creates `Response` instances from provided values.
-      * *
-      * Though this object isn't
-      * usually instantiated by end-users, it is the primary object interacted with when it comes time to
-      * add data to a view.
-      * *
-      * ### Example
-      * *
-      * ```
-      * http.request('my-friends.txt').subscribe(response => this.friends = response.text());
-      * ```
-      * *
-      * The Response's interface is inspired by the Response constructor defined in the [Fetch
-      * Spec](https://fetch.spec.whatwg.org/#response-class), but is considered a static value whose body
-      * can be accessed many times. There are other differences in the implementation, but this is the
-      * most significant.
-      * *
+     * Creates `Response` instances from provided values.
+     *
+     * Though this object isn't
+     * usually instantiated by end-users, it is the primary object interacted with when it comes time to
+     * add data to a view.
+     *
+     * ### Example
+     *
+     * ```
+     * http.request('my-friends.txt').subscribe(response => this.friends = response.text());
+     * ```
+     *
+     * The Response's interface is inspired by the Response constructor defined in the [Fetch
+     * Spec](https://fetch.spec.whatwg.org/#response-class), but is considered a static value whose body
+     * can be accessed many times. There are other differences in the implementation, but this is the
+     * most significant.
+     *
+     * \@experimental
      */
     var Response = (function (_super) {
         __extends$2(Response, _super);
@@ -885,7 +895,6 @@
         }
         return _jsonpConnections;
     }
-    // Make sure not to evaluate this in a non-browser environment!
     var BrowserJsonp = (function () {
         function BrowserJsonp() {
         }
@@ -906,7 +915,7 @@
          * @param {?} id
          * @return {?}
          */
-        BrowserJsonp.prototype.requestCallback = function (id) { return JSONP_HOME + "." + id + ".finished"; };
+        BrowserJsonp.prototype.requestCallback = function (id) { return "" + JSONP_HOME + id + "_finished"; };
         /**
          * @param {?} id
          * @param {?} connection
@@ -961,16 +970,17 @@
     var /** @type {?} */ JSONP_ERR_NO_CALLBACK = 'JSONP injected script did not invoke callback.';
     var /** @type {?} */ JSONP_ERR_WRONG_METHOD = 'JSONP requests must use GET request method.';
     /**
-     *  Abstract base class for an in-flight JSONP request.
-      * *
+     * Abstract base class for an in-flight JSONP request.
+     *
+     * \@experimental
      * @abstract
      */
     var JSONPConnection = (function () {
         function JSONPConnection() {
         }
         /**
-         *  Callback called when the JSONP request completes, to notify the application
-          * of the new data.
+         * Callback called when the JSONP request completes, to notify the application
+         * of the new data.
          * @abstract
          * @param {?=} data
          * @return {?}
@@ -1067,8 +1077,9 @@
         return JSONPConnection_;
     }(JSONPConnection));
     /**
-     *  A {@link ConnectionBackend} that uses the JSONP strategy of making requests.
-      * *
+     * A {\@link ConnectionBackend} that uses the JSONP strategy of making requests.
+     *
+     * \@experimental
      * @abstract
      */
     var JSONPBackend = (function (_super) {
@@ -1109,13 +1120,14 @@
 
     var /** @type {?} */ XSSI_PREFIX = /^\)\]\}',?\n/;
     /**
-     *  Creates connections using `XMLHttpRequest`. Given a fully-qualified
-      * request, an `XHRConnection` will immediately create an `XMLHttpRequest` object and send the
-      * request.
-      * *
-      * This class would typically not be created or interacted with directly inside applications, though
-      * the {@link MockConnection} may be interacted with in tests.
-      * *
+     * Creates connections using `XMLHttpRequest`. Given a fully-qualified
+     * request, an `XHRConnection` will immediately create an `XMLHttpRequest` object and send the
+     * request.
+     *
+     * This class would typically not be created or interacted with directly inside applications, though
+     * the {\@link MockConnection} may be interacted with in tests.
+     *
+     * \@experimental
      */
     var XHRConnection = (function () {
         /**
@@ -1256,14 +1268,15 @@
         return XHRConnection;
     }());
     /**
-     *  `XSRFConfiguration` sets up Cross Site Request Forgery (XSRF) protection for the application
-      * using a cookie. See {@link https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)}
-      * for more information on XSRF.
-      * *
-      * Applications can configure custom cookie and header names by binding an instance of this class
-      * with different `cookieName` and `headerName` values. See the main HTTP documentation for more
-      * details.
-      * *
+     * `XSRFConfiguration` sets up Cross Site Request Forgery (XSRF) protection for the application
+     * using a cookie. See https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)
+     * for more information on XSRF.
+     *
+     * Applications can configure custom cookie and header names by binding an instance of this class
+     * with different `cookieName` and `headerName` values. See the main HTTP documentation for more
+     * details.
+     *
+     * \@experimental
      */
     var CookieXSRFStrategy = (function () {
         /**
@@ -1289,28 +1302,30 @@
         return CookieXSRFStrategy;
     }());
     /**
-     *  Creates {@link XHRConnection} instances.
-      * *
-      * This class would typically not be used by end users, but could be
-      * overridden if a different backend implementation should be used,
-      * such as in a node backend.
-      * *
-      * ### Example
-      * *
-      * ```
-      * import {Http, MyNodeBackend, HTTP_PROVIDERS, BaseRequestOptions} from '@angular/http';
-      * viewProviders: [
-      * HTTP_PROVIDERS,
-      * {provide: Http, useFactory: (backend, options) => {
-      * return new Http(backend, options);
-      * }, deps: [MyNodeBackend, BaseRequestOptions]}]
-      * })
-      * class MyComponent {
-      * constructor(http:Http) {
-      * http.request('people.json').subscribe(res => this.people = res.json());
-      * }
-      * }
-      * ```
+     * Creates {\@link XHRConnection} instances.
+     *
+     * This class would typically not be used by end users, but could be
+     * overridden if a different backend implementation should be used,
+     * such as in a node backend.
+     *
+     * ### Example
+     *
+     * ```
+     * import {Http, MyNodeBackend, HTTP_PROVIDERS, BaseRequestOptions} from '\@angular/http';
+     * \@Component({
+     *   viewProviders: [
+     *     HTTP_PROVIDERS,
+     *     {provide: Http, useFactory: (backend, options) => {
+     *       return new Http(backend, options);
+     *     }, deps: [MyNodeBackend, BaseRequestOptions]}]
+     * })
+     * class MyComponent {
+     *   constructor(http:Http) {
+     *     http.request('people.json').subscribe(res => this.people = res.json());
+     *   }
+     * }
+     * ```
+     * \@experimental
      */
     var XHRBackend = (function () {
         /**
@@ -1356,29 +1371,30 @@
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
     /**
-     *  Creates a request options object to be optionally provided when instantiating a
-      * {@link Request}.
-      * *
-      * This class is based on the `RequestInit` description in the [Fetch
-      * Spec](https://fetch.spec.whatwg.org/#requestinit).
-      * *
-      * All values are null by default. Typical defaults can be found in the {@link BaseRequestOptions}
-      * class, which sub-classes `RequestOptions`.
-      * *
-      * ### Example ([live demo](http://plnkr.co/edit/7Wvi3lfLq41aQPKlxB4O?p=preview))
-      * *
-      * ```typescript
-      * import {RequestOptions, Request, RequestMethod} from '@angular/http';
-      * *
-      * var options = new RequestOptions({
-      * method: RequestMethod.Post,
-      * url: 'https://google.com'
-      * });
-      * var req = new Request(options);
-      * console.log('req.method:', RequestMethod[req.method]); // Post
-      * console.log('options.url:', options.url); // https://google.com
-      * ```
-      * *
+     * Creates a request options object to be optionally provided when instantiating a
+     * {\@link Request}.
+     *
+     * This class is based on the `RequestInit` description in the [Fetch
+     * Spec](https://fetch.spec.whatwg.org/#requestinit).
+     *
+     * All values are null by default. Typical defaults can be found in the {\@link BaseRequestOptions}
+     * class, which sub-classes `RequestOptions`.
+     *
+     * ### Example ([live demo](http://plnkr.co/edit/7Wvi3lfLq41aQPKlxB4O?p=preview))
+     *
+     * ```typescript
+     * import {RequestOptions, Request, RequestMethod} from '\@angular/http';
+     *
+     * var options = new RequestOptions({
+     *   method: RequestMethod.Post,
+     *   url: 'https://google.com'
+     * });
+     * var req = new Request(options);
+     * console.log('req.method:', RequestMethod[req.method]); // Post
+     * console.log('options.url:', options.url); // https://google.com
+     * ```
+     *
+     * \@experimental
      */
     var RequestOptions = (function () {
         /**
@@ -1396,29 +1412,29 @@
             this.responseType = responseType != null ? responseType : null;
         }
         /**
-         *  Creates a copy of the `RequestOptions` instance, using the optional input as values to override
-          * existing values. This method will not change the values of the instance on which it is being
-          * called.
-          * *
-          * Note that `headers` and `search` will override existing values completely if present in
-          * the `options` object. If these values should be merged, it should be done prior to calling
-          * `merge` on the `RequestOptions` instance.
-          * *
-          * ### Example ([live demo](http://plnkr.co/edit/6w8XA8YTkDRcPYpdB9dk?p=preview))
-          * *
-          * ```typescript
-          * import {RequestOptions, Request, RequestMethod} from '@angular/http';
-          * *
-          * var options = new RequestOptions({
-          * method: RequestMethod.Post
-          * });
-          * var req = new Request(options.merge({
-          * url: 'https://google.com'
-          * }));
-          * console.log('req.method:', RequestMethod[req.method]); // Post
-          * console.log('options.url:', options.url); // null
-          * console.log('req.url:', req.url); // https://google.com
-          * ```
+         * Creates a copy of the `RequestOptions` instance, using the optional input as values to override
+         * existing values. This method will not change the values of the instance on which it is being
+         * called.
+         *
+         * Note that `headers` and `search` will override existing values completely if present in
+         * the `options` object. If these values should be merged, it should be done prior to calling
+         * `merge` on the `RequestOptions` instance.
+         *
+         * ### Example ([live demo](http://plnkr.co/edit/6w8XA8YTkDRcPYpdB9dk?p=preview))
+         *
+         * ```typescript
+         * import {RequestOptions, Request, RequestMethod} from '\@angular/http';
+         *
+         * var options = new RequestOptions({
+         *   method: RequestMethod.Post
+         * });
+         * var req = new Request(options.merge({
+         *   url: 'https://google.com'
+         * }));
+         * console.log('req.method:', RequestMethod[req.method]); // Post
+         * console.log('options.url:', options.url); // null
+         * console.log('req.url:', req.url); // https://google.com
+         * ```
          * @param {?=} options
          * @return {?}
          */
@@ -1441,49 +1457,50 @@
         return RequestOptions;
     }());
     /**
-     *  Subclass of {@link RequestOptions}, with default values.
-      * *
-      * Default values:
-      * * method: {@link RequestMethod RequestMethod.Get}
-      * * headers: empty {@link Headers} object
-      * *
-      * This class could be extended and bound to the {@link RequestOptions} class
-      * when configuring an {@link Injector}, in order to override the default options
-      * used by {@link Http} to create and send {@link Request Requests}.
-      * *
-      * ### Example ([live demo](http://plnkr.co/edit/LEKVSx?p=preview))
-      * *
-      * ```typescript
-      * import {provide} from '@angular/core';
-      * import {bootstrap} from '@angular/platform-browser/browser';
-      * import {HTTP_PROVIDERS, Http, BaseRequestOptions, RequestOptions} from '@angular/http';
-      * import {App} from './myapp';
-      * *
-      * class MyOptions extends BaseRequestOptions {
-      * search: string = 'coreTeam=true';
-      * }
-      * *
-      * bootstrap(App, [HTTP_PROVIDERS, {provide: RequestOptions, useClass: MyOptions}]);
-      * ```
-      * *
-      * The options could also be extended when manually creating a {@link Request}
-      * object.
-      * *
-      * ### Example ([live demo](http://plnkr.co/edit/oyBoEvNtDhOSfi9YxaVb?p=preview))
-      * *
-      * ```
-      * import {BaseRequestOptions, Request, RequestMethod} from '@angular/http';
-      * *
-      * var options = new BaseRequestOptions();
-      * var req = new Request(options.merge({
-      * method: RequestMethod.Post,
-      * url: 'https://google.com'
-      * }));
-      * console.log('req.method:', RequestMethod[req.method]); // Post
-      * console.log('options.url:', options.url); // null
-      * console.log('req.url:', req.url); // https://google.com
-      * ```
-      * *
+     * Subclass of {\@link RequestOptions}, with default values.
+     *
+     * Default values:
+     *  * method: {\@link RequestMethod RequestMethod.Get}
+     *  * headers: empty {\@link Headers} object
+     *
+     * This class could be extended and bound to the {\@link RequestOptions} class
+     * when configuring an {\@link Injector}, in order to override the default options
+     * used by {\@link Http} to create and send {\@link Request Requests}.
+     *
+     * ### Example ([live demo](http://plnkr.co/edit/LEKVSx?p=preview))
+     *
+     * ```typescript
+     * import {provide} from '\@angular/core';
+     * import {bootstrap} from '\@angular/platform-browser/browser';
+     * import {HTTP_PROVIDERS, Http, BaseRequestOptions, RequestOptions} from '\@angular/http';
+     * import {App} from './myapp';
+     *
+     * class MyOptions extends BaseRequestOptions {
+     *   search: string = 'coreTeam=true';
+     * }
+     *
+     * bootstrap(App, [HTTP_PROVIDERS, {provide: RequestOptions, useClass: MyOptions}]);
+     * ```
+     *
+     * The options could also be extended when manually creating a {\@link Request}
+     * object.
+     *
+     * ### Example ([live demo](http://plnkr.co/edit/oyBoEvNtDhOSfi9YxaVb?p=preview))
+     *
+     * ```
+     * import {BaseRequestOptions, Request, RequestMethod} from '\@angular/http';
+     *
+     * var options = new BaseRequestOptions();
+     * var req = new Request(options.merge({
+     *   method: RequestMethod.Post,
+     *   url: 'https://google.com'
+     * }));
+     * console.log('req.method:', RequestMethod[req.method]); // Post
+     * console.log('options.url:', options.url); // null
+     * console.log('req.url:', req.url); // https://google.com
+     * ```
+     *
+     * \@experimental
      */
     var BaseRequestOptions = (function (_super) {
         __extends$3(BaseRequestOptions, _super);
@@ -1511,41 +1528,43 @@
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
     /**
-     *  Creates `Request` instances from provided values.
-      * *
-      * The Request's interface is inspired by the Request constructor defined in the [Fetch
-      * Spec](https://fetch.spec.whatwg.org/#request-class),
-      * but is considered a static value whose body can be accessed many times. There are other
-      * differences in the implementation, but this is the most significant.
-      * *
-      * `Request` instances are typically created by higher-level classes, like {@link Http} and
-      * {@link Jsonp}, but it may occasionally be useful to explicitly create `Request` instances.
-      * One such example is when creating services that wrap higher-level services, like {@link Http},
-      * where it may be useful to generate a `Request` with arbitrary headers and search params.
-      * *
-      * ```typescript
-      * import {Injectable, Injector} from '@angular/core';
-      * import {HTTP_PROVIDERS, Http, Request, RequestMethod} from '@angular/http';
-      * *
-      * class AutoAuthenticator {
-      * constructor(public http:Http) {}
-      * request(url:string) {
-      * return this.http.request(new Request({
-      * method: RequestMethod.Get,
-      * url: url,
-      * search: 'password=123'
-      * }));
-      * }
-      * }
-      * *
-      * var injector = Injector.resolveAndCreate([HTTP_PROVIDERS, AutoAuthenticator]);
-      * var authenticator = injector.get(AutoAuthenticator);
-      * authenticator.request('people.json').subscribe(res => {
-      * //URL should have included '?password=123'
-      * console.log('people', res.json());
-      * });
-      * ```
-      * *
+     * Creates `Request` instances from provided values.
+     *
+     * The Request's interface is inspired by the Request constructor defined in the [Fetch
+     * Spec](https://fetch.spec.whatwg.org/#request-class),
+     * but is considered a static value whose body can be accessed many times. There are other
+     * differences in the implementation, but this is the most significant.
+     *
+     * `Request` instances are typically created by higher-level classes, like {\@link Http} and
+     * {\@link Jsonp}, but it may occasionally be useful to explicitly create `Request` instances.
+     * One such example is when creating services that wrap higher-level services, like {\@link Http},
+     * where it may be useful to generate a `Request` with arbitrary headers and search params.
+     *
+     * ```typescript
+     * import {Injectable, Injector} from '\@angular/core';
+     * import {HTTP_PROVIDERS, Http, Request, RequestMethod} from '\@angular/http';
+     *
+     * \@Injectable()
+     * class AutoAuthenticator {
+     *   constructor(public http:Http) {}
+     *   request(url:string) {
+     *     return this.http.request(new Request({
+     *       method: RequestMethod.Get,
+     *       url: url,
+     *       search: 'password=123'
+     *     }));
+     *   }
+     * }
+     *
+     * var injector = Injector.resolveAndCreate([HTTP_PROVIDERS, AutoAuthenticator]);
+     * var authenticator = injector.get(AutoAuthenticator);
+     * authenticator.request('people.json').subscribe(res => {
+     *   //URL should have included '?password=123'
+     *   console.log('people', res.json());
+     * });
+     * ```
+     *
+     * \@experimental
      */
     var Request = (function (_super) {
         __extends$5(Request, _super);
@@ -1578,7 +1597,7 @@
             this.responseType = requestOptions.responseType;
         }
         /**
-         *  Returns the content type enum based on header options.
+         * Returns the content type enum based on header options.
          * @return {?}
          */
         Request.prototype.detectContentType = function () {
@@ -1593,13 +1612,13 @@
                 case 'text/html':
                     return ContentType.TEXT;
                 case 'application/octet-stream':
-                    return ContentType.BLOB;
+                    return this._body instanceof ArrayBuffer$1 ? ContentType.ARRAY_BUFFER : ContentType.BLOB;
                 default:
                     return this.detectContentTypeFromBody();
             }
         };
         /**
-         *  Returns the content type of request's body based on its type.
+         * Returns the content type of request's body based on its type.
          * @return {?}
          */
         Request.prototype.detectContentTypeFromBody = function () {
@@ -1618,7 +1637,7 @@
             else if (this._body instanceof ArrayBuffer$1) {
                 return ContentType.ARRAY_BUFFER;
             }
-            else if (this._body && typeof this._body == 'object') {
+            else if (this._body && typeof this._body === 'object') {
                 return ContentType.JSON;
             }
             else {
@@ -1626,8 +1645,8 @@
             }
         };
         /**
-         *  Returns the request's body according to its type. If body is undefined, return
-          * null.
+         * Returns the request's body according to its type. If body is undefined, return
+         * null.
          * @return {?}
          */
         Request.prototype.getBody = function () {
@@ -1700,62 +1719,64 @@
         return newOptions.merge(new RequestOptions({ method: method, url: url }));
     }
     /**
-     *  Performs http requests using `XMLHttpRequest` as the default backend.
-      * *
-      * `Http` is available as an injectable class, with methods to perform http requests. Calling
-      * `request` returns an `Observable` which will emit a single {@link Response} when a
-      * response is received.
-      * *
-      * ### Example
-      * *
-      * ```typescript
-      * import {Http, HTTP_PROVIDERS} from '@angular/http';
-      * import 'rxjs/add/operator/map'
-      * selector: 'http-app',
-      * viewProviders: [HTTP_PROVIDERS],
-      * templateUrl: 'people.html'
-      * })
-      * class PeopleComponent {
-      * constructor(http: Http) {
-      * http.get('people.json')
-      * // Call map on the response observable to get the parsed people object
-      * .map(res => res.json())
-      * // Subscribe to the observable to get the parsed people object and attach it to the
-      * // component
-      * .subscribe(people => this.people = people);
-      * }
-      * }
-      * ```
-      * *
-      * *
-      * ### Example
-      * *
-      * ```
-      * http.get('people.json').subscribe((res:Response) => this.people = res.json());
-      * ```
-      * *
-      * The default construct used to perform requests, `XMLHttpRequest`, is abstracted as a "Backend" (
-      * {@link XHRBackend} in this case), which could be mocked with dependency injection by replacing
-      * the {@link XHRBackend} provider, as in the following example:
-      * *
-      * ### Example
-      * *
-      * ```typescript
-      * import {BaseRequestOptions, Http} from '@angular/http';
-      * import {MockBackend} from '@angular/http/testing';
-      * var injector = Injector.resolveAndCreate([
-      * BaseRequestOptions,
-      * MockBackend,
-      * {provide: Http, useFactory:
-      * function(backend, defaultOptions) {
-      * return new Http(backend, defaultOptions);
-      * },
-      * deps: [MockBackend, BaseRequestOptions]}
-      * ]);
-      * var http = injector.get(Http);
-      * http.get('request-from-mock-backend.json').subscribe((res:Response) => doSomething(res));
-      * ```
-      * *
+     * Performs http requests using `XMLHttpRequest` as the default backend.
+     *
+     * `Http` is available as an injectable class, with methods to perform http requests. Calling
+     * `request` returns an `Observable` which will emit a single {\@link Response} when a
+     * response is received.
+     *
+     * ### Example
+     *
+     * ```typescript
+     * import {Http, HTTP_PROVIDERS} from '\@angular/http';
+     * import 'rxjs/add/operator/map'
+     * \@Component({
+     *   selector: 'http-app',
+     *   viewProviders: [HTTP_PROVIDERS],
+     *   templateUrl: 'people.html'
+     * })
+     * class PeopleComponent {
+     *   constructor(http: Http) {
+     *     http.get('people.json')
+     *       // Call map on the response observable to get the parsed people object
+     *       .map(res => res.json())
+     *       // Subscribe to the observable to get the parsed people object and attach it to the
+     *       // component
+     *       .subscribe(people => this.people = people);
+     *   }
+     * }
+     * ```
+     *
+     *
+     * ### Example
+     *
+     * ```
+     * http.get('people.json').subscribe((res:Response) => this.people = res.json());
+     * ```
+     *
+     * The default construct used to perform requests, `XMLHttpRequest`, is abstracted as a "Backend" (
+     * {\@link XHRBackend} in this case), which could be mocked with dependency injection by replacing
+     * the {\@link XHRBackend} provider, as in the following example:
+     *
+     * ### Example
+     *
+     * ```typescript
+     * import {BaseRequestOptions, Http} from '\@angular/http';
+     * import {MockBackend} from '\@angular/http/testing';
+     * var injector = Injector.resolveAndCreate([
+     *   BaseRequestOptions,
+     *   MockBackend,
+     *   {provide: Http, useFactory:
+     *       function(backend, defaultOptions) {
+     *         return new Http(backend, defaultOptions);
+     *       },
+     *       deps: [MockBackend, BaseRequestOptions]}
+     * ]);
+     * var http = injector.get(Http);
+     * http.get('request-from-mock-backend.json').subscribe((res:Response) => doSomething(res));
+     * ```
+     *
+     * \@experimental
      */
     var Http = (function () {
         /**
@@ -1767,10 +1788,10 @@
             this._defaultOptions = _defaultOptions;
         }
         /**
-         *  Performs any type of http request. First argument is required, and can either be a url or
-          * a {@link Request} instance. If the first argument is a url, an optional {@link RequestOptions}
-          * object can be provided as the 2nd argument. The options object will be merged with the values
-          * of {@link BaseRequestOptions} before performing the request.
+         * Performs any type of http request. First argument is required, and can either be a url or
+         * a {\@link Request} instance. If the first argument is a url, an optional {\@link RequestOptions}
+         * object can be provided as the 2nd argument. The options object will be merged with the values
+         * of {\@link BaseRequestOptions} before performing the request.
          * @param {?} url
          * @param {?=} options
          * @return {?}
@@ -1789,7 +1810,7 @@
             return responseObservable;
         };
         /**
-         *  Performs a request with `get` http method.
+         * Performs a request with `get` http method.
          * @param {?} url
          * @param {?=} options
          * @return {?}
@@ -1798,7 +1819,7 @@
             return this.request(new Request(mergeOptions(this._defaultOptions, options, RequestMethod.Get, url)));
         };
         /**
-         *  Performs a request with `post` http method.
+         * Performs a request with `post` http method.
          * @param {?} url
          * @param {?} body
          * @param {?=} options
@@ -1808,7 +1829,7 @@
             return this.request(new Request(mergeOptions(this._defaultOptions.merge(new RequestOptions({ body: body })), options, RequestMethod.Post, url)));
         };
         /**
-         *  Performs a request with `put` http method.
+         * Performs a request with `put` http method.
          * @param {?} url
          * @param {?} body
          * @param {?=} options
@@ -1818,7 +1839,7 @@
             return this.request(new Request(mergeOptions(this._defaultOptions.merge(new RequestOptions({ body: body })), options, RequestMethod.Put, url)));
         };
         /**
-         *  Performs a request with `delete` http method.
+         * Performs a request with `delete` http method.
          * @param {?} url
          * @param {?=} options
          * @return {?}
@@ -1827,7 +1848,7 @@
             return this.request(new Request(mergeOptions(this._defaultOptions, options, RequestMethod.Delete, url)));
         };
         /**
-         *  Performs a request with `patch` http method.
+         * Performs a request with `patch` http method.
          * @param {?} url
          * @param {?} body
          * @param {?=} options
@@ -1837,7 +1858,7 @@
             return this.request(new Request(mergeOptions(this._defaultOptions.merge(new RequestOptions({ body: body })), options, RequestMethod.Patch, url)));
         };
         /**
-         *  Performs a request with `head` http method.
+         * Performs a request with `head` http method.
          * @param {?} url
          * @param {?=} options
          * @return {?}
@@ -1846,7 +1867,7 @@
             return this.request(new Request(mergeOptions(this._defaultOptions, options, RequestMethod.Head, url)));
         };
         /**
-         *  Performs a request with `options` http method.
+         * Performs a request with `options` http method.
          * @param {?} url
          * @param {?=} options
          * @return {?}
@@ -1865,7 +1886,7 @@
         return Http;
     }());
     /**
-     * @experimental
+     * \@experimental
      */
     var Jsonp = (function (_super) {
         __extends$4(Jsonp, _super);
@@ -1877,17 +1898,18 @@
             _super.call(this, backend, defaultOptions);
         }
         /**
-         *  Performs any type of http request. First argument is required, and can either be a url or
-          * a {@link Request} instance. If the first argument is a url, an optional {@link RequestOptions}
-          * object can be provided as the 2nd argument. The options object will be merged with the values
-          * of {@link BaseRequestOptions} before performing the request.
-          * *
-          * supported by all current browsers. Because JSONP creates a `<script>` element with
-          * contents retrieved from a remote source, attacker-controlled data introduced by an untrusted
-          * source could expose your application to XSS risks. Data exposed by JSONP may also be
-          * readable by malicious third-party websites. In addition, JSONP introduces potential risk for
-          * future security issues (e.g. content sniffing).  For more detail, see the
-          * [Security Guide](http://g.co/ng/security).
+         * Performs any type of http request. First argument is required, and can either be a url or
+         * a {\@link Request} instance. If the first argument is a url, an optional {\@link RequestOptions}
+         * object can be provided as the 2nd argument. The options object will be merged with the values
+         * of {\@link BaseRequestOptions} before performing the request.
+         *
+         * \@security Regular XHR is the safest alternative to JSONP for most applications, and is
+         * supported by all current browsers. Because JSONP creates a `<script>` element with
+         * contents retrieved from a remote source, attacker-controlled data introduced by an untrusted
+         * source could expose your application to XSS risks. Data exposed by JSONP may also be
+         * readable by malicious third-party websites. In addition, JSONP introduces potential risk for
+         * future security issues (e.g. content sniffing).  For more detail, see the
+         * [Security Guide](http://g.co/ng/security).
          * @param {?} url
          * @param {?=} options
          * @return {?}
@@ -1943,8 +1965,9 @@
         return new Jsonp(jsonpBackend, requestOptions);
     }
     /**
-     *  The module that includes http's providers
-      * *
+     * The module that includes http's providers
+     *
+     * \@experimental
      */
     var HttpModule = (function () {
         function HttpModule() {
@@ -1968,8 +1991,9 @@
         return HttpModule;
     }());
     /**
-     *  The module that includes jsonp's providers
-      * *
+     * The module that includes jsonp's providers
+     *
+     * \@experimental
      */
     var JsonpModule = (function () {
         function JsonpModule() {
@@ -1995,7 +2019,7 @@
     /**
      * @stable
      */
-    var /** @type {?} */ VERSION = new _angular_core.Version('2.3.1');
+    var /** @type {?} */ VERSION = new _angular_core.Version('2.4.6');
 
     exports.BrowserXhr = BrowserXhr;
     exports.JSONPBackend = JSONPBackend;

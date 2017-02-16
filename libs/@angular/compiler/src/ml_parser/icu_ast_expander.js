@@ -15,27 +15,27 @@ import * as html from './ast';
 // http://cldr.unicode.org/index/cldr-spec/plural-rules
 var /** @type {?} */ PLURAL_CASES = ['zero', 'one', 'two', 'few', 'many', 'other'];
 /**
- *  Expands special forms into elements.
-  * *
-  * For example,
-  * *
-  * ```
-  * { messages.length, plural,
-  * =0 {zero}
-  * =1 {one}
-  * other {more than one}
-  * }
-  * ```
-  * *
-  * will be expanded into
-  * *
-  * ```
-  * <ng-container [ngPlural]="messages.length">
-  * <template ngPluralCase="=0">zero</ng-container>
-  * <template ngPluralCase="=1">one</ng-container>
-  * <template ngPluralCase="other">more than one</ng-container>
-  * </ng-container>
-  * ```
+ * Expands special forms into elements.
+ *
+ * For example,
+ *
+ * ```
+ * { messages.length, plural,
+ *   =0 {zero}
+ *   =1 {one}
+ *   other {more than one}
+ * }
+ * ```
+ *
+ * will be expanded into
+ *
+ * ```
+ * <ng-container [ngPlural]="messages.length">
+ *   <template ngPluralCase="=0">zero</template>
+ *   <template ngPluralCase="=1">one</template>
+ *   <template ngPluralCase="other">more than one</template>
+ * </ng-container>
+ * ```
  * @param {?} nodes
  * @return {?}
  */
@@ -76,8 +76,9 @@ export var ExpansionError = (function (_super) {
     return ExpansionError;
 }(ParseError));
 /**
- *  Expand expansion forms (plural, select) to directives
-  * *
+ * Expand expansion forms (plural, select) to directives
+ *
+ * \@internal
  */
 var _Expander = (function () {
     function _Expander() {

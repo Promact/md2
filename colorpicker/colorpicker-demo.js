@@ -28,5 +28,4 @@ var ColorpickerDemo = (function () {
     return ColorpickerDemo;
 }());
 exports.ColorpickerDemo = ColorpickerDemo;
-
 //# sourceMappingURL=colorpicker-demo.js.map

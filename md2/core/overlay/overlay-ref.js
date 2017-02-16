@@ -30,9 +30,12 @@ export var OverlayRef = (function () {
             this._attachBackdrop();
         }
         var attachResult = this._portalHost.attach(portal);
+        // Update the pane element with the given state configuration.
         this.updateSize();
         this.updateDirection();
         this.updatePosition();
+        // Enable pointer events for the overlay pane element.
+        this._togglePointerEvents(true);
         return attachResult;
     };
     /**
@@ -41,6 +44,10 @@ export var OverlayRef = (function () {
      */
     OverlayRef.prototype.detach = function () {
         this._detachBackdrop();
+        // When the overlay is detached, the pane element should disable pointer events.
+        // This is necessary because otherwise the pane element will cover the page and disable
+        // pointer events therefore. Depends on the position strategy and the applied pane boundaries.
+        this._togglePointerEvents(false);
         return this._portalHost.detach();
     };
     /**
@@ -95,6 +102,10 @@ export var OverlayRef = (function () {
         if (this._state.minHeight || this._state.minHeight === 0) {
             this._pane.style.minHeight = formatCssUnit(this._state.minHeight);
         }
+    };
+    /** Toggles the pointer events for the overlay pane element. */
+    OverlayRef.prototype._togglePointerEvents = function (enablePointer) {
+        this._pane.style.pointerEvents = enablePointer ? 'auto' : 'none';
     };
     /** Attaches a backdrop for this overlay. */
     OverlayRef.prototype._attachBackdrop = function () {
@@ -151,5 +162,4 @@ export var OverlayRef = (function () {
 function formatCssUnit(value) {
     return typeof value === 'string' ? value : value + "px";
 }
-
 //# sourceMappingURL=overlay-ref.js.map

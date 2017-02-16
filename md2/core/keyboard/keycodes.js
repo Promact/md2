@@ -30,5 +30,4 @@ export var KeyCodes;
     KeyCodes[KeyCodes["ESCAPE"] = 27] = "ESCAPE";
     KeyCodes[KeyCodes["COMMA"] = 188] = "COMMA";
 })(KeyCodes || (KeyCodes = {}));
-
 //# sourceMappingURL=keycodes.js.map

@@ -77,5 +77,4 @@ var DemoAppModule = (function () {
     return DemoAppModule;
 }());
 exports.DemoAppModule = DemoAppModule;
-
 //# sourceMappingURL=demo-app-module.js.map

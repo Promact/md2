@@ -37,5 +37,4 @@ var ChipsDemo = (function () {
     return ChipsDemo;
 }());
 exports.ChipsDemo = ChipsDemo;
-
 //# sourceMappingURL=chips-demo.js.map

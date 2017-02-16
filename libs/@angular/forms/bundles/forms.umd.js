@@ -1,6 +1,6 @@
 /**
- * @license Angular v2.3.1
- * (c) 2010-2016 Google, Inc. https://angular.io/
+ * @license Angular v2.4.6
+ * (c) 2010-2017 Google, Inc. https://angular.io/
  * License: MIT
  */
 (function (global, factory) {
@@ -17,10 +17,11 @@
      * found in the LICENSE file at https://angular.io/license
      */
     /**
-     *  Base class for control directives.
-      * *
-      * Only used internally in the forms module.
-      * *
+     * Base class for control directives.
+     *
+     * Only used internally in the forms module.
+     *
+     * \@stable
      * @abstract
      */
     var AbstractControlDirective = (function () {
@@ -189,10 +190,11 @@
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
     /**
-     *  A directive that contains multiple {@link NgControl}s.
-      * *
-      * Only used by the forms module.
-      * *
+     * A directive that contains multiple {\@link NgControl}s.
+     *
+     * Only used by the forms module.
+     *
+     * \@stable
      */
     var ControlContainer = (function (_super) {
         __extends$1(ControlContainer, _super);
@@ -201,7 +203,7 @@
         }
         Object.defineProperty(ControlContainer.prototype, "formDirective", {
             /**
-             *  Get the form to which this container belongs.
+             * Get the form to which this container belongs.
              * @return {?}
              */
             get: function () { return null; },
@@ -210,7 +212,7 @@
         });
         Object.defineProperty(ControlContainer.prototype, "path", {
             /**
-             *  Get the path to this container.
+             * Get the path to this container.
              * @return {?}
              */
             get: function () { return null; },
@@ -258,7 +260,7 @@
     }
 
     /**
-     *  Wraps Javascript Objects
+     * Wraps Javascript Objects
      */
     var StringMapWrapper = (function () {
         function StringMapWrapper() {
@@ -371,13 +373,15 @@
     }());
 
     var /** @type {?} */ isPromise = _angular_core.__core_private__.isPromise;
+    var /** @type {?} */ isObservable = _angular_core.__core_private__.isObservable;
 
     /**
      * @param {?} value
      * @return {?}
      */
     function isEmptyInputValue(value) {
-        return value == null || typeof value === 'string' && value.length === 0;
+        // we don't check for string here so it also works with arrays
+        return value == null || value.length === 0;
     }
     /**
      * Providers for validators to be used for {@link FormControl}s in a form.
@@ -402,23 +406,24 @@
      */
     var /** @type {?} */ NG_ASYNC_VALIDATORS = new _angular_core.OpaqueToken('NgAsyncValidators');
     /**
-     *  Provides a set of validators used by form controls.
-      * *
-      * A validator is a function that processes a {@link FormControl} or collection of
-      * controls and returns a map of errors. A null map means that validation has passed.
-      * *
-      * ### Example
-      * *
-      * ```typescript
-      * var loginControl = new FormControl("", Validators.required)
-      * ```
-      * *
+     * Provides a set of validators used by form controls.
+     *
+     * A validator is a function that processes a {\@link FormControl} or collection of
+     * controls and returns a map of errors. A null map means that validation has passed.
+     *
+     * ### Example
+     *
+     * ```typescript
+     * var loginControl = new FormControl("", Validators.required)
+     * ```
+     *
+     * \@stable
      */
     var Validators = (function () {
         function Validators() {
         }
         /**
-         *  Validator that requires controls to have a non-empty value.
+         * Validator that requires controls to have a non-empty value.
          * @param {?} control
          * @return {?}
          */
@@ -426,7 +431,7 @@
             return isEmptyInputValue(control.value) ? { 'required': true } : null;
         };
         /**
-         *  Validator that requires control value to be true.
+         * Validator that requires control value to be true.
          * @param {?} control
          * @return {?}
          */
@@ -434,7 +439,7 @@
             return control.value === true ? null : { 'required': true };
         };
         /**
-         *  Validator that requires controls to have a value of a minimum length.
+         * Validator that requires controls to have a value of a minimum length.
          * @param {?} minLength
          * @return {?}
          */
@@ -450,7 +455,7 @@
             };
         };
         /**
-         *  Validator that requires controls to have a value of a maximum length.
+         * Validator that requires controls to have a value of a maximum length.
          * @param {?} maxLength
          * @return {?}
          */
@@ -463,7 +468,7 @@
             };
         };
         /**
-         *  Validator that requires a control to match a regex to its value.
+         * Validator that requires a control to match a regex to its value.
          * @param {?} pattern
          * @return {?}
          */
@@ -490,14 +495,14 @@
             };
         };
         /**
-         *  No-op validator.
+         * No-op validator.
          * @param {?} c
          * @return {?}
          */
         Validators.nullValidator = function (c) { return null; };
         /**
-         *  Compose multiple validators into a single function that returns the union
-          * of the individual error maps.
+         * Compose multiple validators into a single function that returns the union
+         * of the individual error maps.
          * @param {?} validators
          * @return {?}
          */
@@ -576,14 +581,14 @@
         multi: true,
     };
     /**
-     *  The accessor for writing a value and listening to changes on a checkbox input element.
-      * *
-      * ### Example
-      * ```
-      * <input type="checkbox" name="rememberLogin" ngModel>
-      * ```
-      * *
-      * @stable
+     * The accessor for writing a value and listening to changes on a checkbox input element.
+     *
+     *  ### Example
+     *  ```
+     *  <input type="checkbox" name="rememberLogin" ngModel>
+     *  ```
+     *
+     *  \@stable
      */
     var CheckboxControlValueAccessor = (function () {
         /**
@@ -641,15 +646,15 @@
         multi: true
     };
     /**
-     *  The default accessor for writing a value and listening to changes that is used by the
-      * {@link NgModel}, {@link FormControlDirective}, and {@link FormControlName} directives.
-      * *
-      * ### Example
-      * ```
-      * <input type="text" name="searchQuery" ngModel>
-      * ```
-      * *
-      * @stable
+     * The default accessor for writing a value and listening to changes that is used by the
+     * {\@link NgModel}, {\@link FormControlDirective}, and {\@link FormControlName} directives.
+     *
+     *  ### Example
+     *  ```
+     *  <input type="text" name="searchQuery" ngModel>
+     *  ```
+     *
+     *  \@stable
      */
     var DefaultValueAccessor = (function () {
         /**
@@ -743,13 +748,13 @@
         multi: true
     };
     /**
-     *  The accessor for writing a number value and listening to changes that is used by the
-      * {@link NgModel}, {@link FormControlDirective}, and {@link FormControlName} directives.
-      * *
-      * ### Example
-      * ```
-      * <input type="number" [(ngModel)]="age">
-      * ```
+     * The accessor for writing a number value and listening to changes that is used by the
+     * {\@link NgModel}, {\@link FormControlDirective}, and {\@link FormControlName} directives.
+     *
+     *  ### Example
+     *  ```
+     *  <input type="number" [(ngModel)]="age">
+     *  ```
      */
     var NumberValueAccessor = (function () {
         /**
@@ -828,11 +833,12 @@
         throw new Error('unimplemented');
     }
     /**
-     *  A base class that all control directive extend.
-      * It binds a {@link FormControl} object to a DOM element.
-      * *
-      * Used internally by Angular forms.
-      * *
+     * A base class that all control directive extend.
+     * It binds a {\@link FormControl} object to a DOM element.
+     *
+     * Used internally by Angular forms.
+     *
+     * \@stable
      * @abstract
      */
     var NgControl = (function (_super) {
@@ -879,7 +885,7 @@
         multi: true
     };
     /**
-     *  Internal class used by Angular to uncheck radio buttons with the matching name.
+     * Internal class used by Angular to uncheck radio buttons with the matching name.
      */
     var RadioControlRegistry = (function () {
         function RadioControlRegistry() {
@@ -936,31 +942,33 @@
         return RadioControlRegistry;
     }());
     /**
-     *  *
-      * Used by {@link NgModel}, {@link FormControlDirective}, and {@link FormControlName}
-      * to keep the view synced with the {@link FormControl} model.
-      * *
-      * *
-      * If you have imported the {@link FormsModule} or the {@link ReactiveFormsModule}, this
-      * value accessor will be active on any radio control that has a form directive. You do
-      * **not** need to add a special selector to activate it.
-      * *
-      * ### How to use radio buttons with form directives
-      * *
-      * To use radio buttons in a template-driven form, you'll want to ensure that radio buttons
-      * in the same group have the same `name` attribute.  Radio buttons with different `name`
-      * attributes do not affect each other.
-      * *
-      * {@example forms/ts/radioButtons/radio_button_example.ts region='TemplateDriven'}
-      * *
-      * When using radio buttons in a reactive form, radio buttons in the same group should have the
-      * same `formControlName`. You can also add a `name` attribute, but it's optional.
-      * *
-      * {@example forms/ts/reactiveRadioButtons/reactive_radio_button_example.ts region='Reactive'}
-      * *
-      * * **npm package**: `@angular/forms`
-      * *
-      * @stable
+     * \@whatItDoes Writes radio control values and listens to radio control changes.
+     *
+     * Used by {\@link NgModel}, {\@link FormControlDirective}, and {\@link FormControlName}
+     * to keep the view synced with the {\@link FormControl} model.
+     *
+     * \@howToUse
+     *
+     * If you have imported the {\@link FormsModule} or the {\@link ReactiveFormsModule}, this
+     * value accessor will be active on any radio control that has a form directive. You do
+     * **not** need to add a special selector to activate it.
+     *
+     * ### How to use radio buttons with form directives
+     *
+     * To use radio buttons in a template-driven form, you'll want to ensure that radio buttons
+     * in the same group have the same `name` attribute.  Radio buttons with different `name`
+     * attributes do not affect each other.
+     *
+     * {\@example forms/ts/radioButtons/radio_button_example.ts region='TemplateDriven'}
+     *
+     * When using radio buttons in a reactive form, radio buttons in the same group should have the
+     * same `formControlName`. You can also add a `name` attribute, but it's optional.
+     *
+     * {\@example forms/ts/reactiveRadioButtons/reactive_radio_button_example.ts region='Reactive'}
+     *
+     *  * **npm package**: `\@angular/forms`
+     *
+     *  \@stable
      */
     var RadioControlValueAccessor = (function () {
         /**
@@ -1070,13 +1078,13 @@
         multi: true
     };
     /**
-     *  The accessor for writing a range value and listening to changes that is used by the
-      * {@link NgModel}, {@link FormControlDirective}, and {@link FormControlName} directives.
-      * *
-      * ### Example
-      * ```
-      * <input type="range" [(ngModel)]="age" >
-      * ```
+     * The accessor for writing a range value and listening to changes that is used by the
+     * {\@link NgModel}, {\@link FormControlDirective}, and {\@link FormControlName} directives.
+     *
+     *  ### Example
+     *  ```
+     *  <input type="range" [(ngModel)]="age" >
+     *  ```
      */
     var RangeValueAccessor = (function () {
         /**
@@ -1159,39 +1167,42 @@
         return valueString.split(':')[0];
     }
     /**
-     *  *
-      * Used by {@link NgModel}, {@link FormControlDirective}, and {@link FormControlName}
-      * to keep the view synced with the {@link FormControl} model.
-      * *
-      * *
-      * If you have imported the {@link FormsModule} or the {@link ReactiveFormsModule}, this
-      * value accessor will be active on any select control that has a form directive. You do
-      * **not** need to add a special selector to activate it.
-      * *
-      * ### How to use select controls with form directives
-      * *
-      * To use a select in a template-driven form, simply add an `ngModel` and a `name`
-      * attribute to the main `<select>` tag.
-      * *
-      * If your option values are simple strings, you can bind to the normal `value` property
-      * on the option.  If your option values happen to be objects (and you'd like to save the
-      * selection in your form as an object), use `ngValue` instead:
-      * *
-      * {@example forms/ts/selectControl/select_control_example.ts region='Component'}
-      * *
-      * In reactive forms, you'll also want to add your form directive (`formControlName` or
-      * `formControl`) on the main `<select>` tag. Like in the former example, you have the
-      * choice of binding to the  `value` or `ngValue` property on the select's options.
-      * *
-      * {@example forms/ts/reactiveSelectControl/reactive_select_control_example.ts region='Component'}
-      * *
-      * Note: We listen to the 'change' event because 'input' events aren't fired
-      * for selects in Firefox and IE:
-      * https://bugzilla.mozilla.org/show_bug.cgi?id=1024350
-      * https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/4660045/
-      * *
-      * * **npm package**: `@angular/forms`
-      * *
+     * \@whatItDoes Writes values and listens to changes on a select element.
+     *
+     * Used by {\@link NgModel}, {\@link FormControlDirective}, and {\@link FormControlName}
+     * to keep the view synced with the {\@link FormControl} model.
+     *
+     * \@howToUse
+     *
+     * If you have imported the {\@link FormsModule} or the {\@link ReactiveFormsModule}, this
+     * value accessor will be active on any select control that has a form directive. You do
+     * **not** need to add a special selector to activate it.
+     *
+     * ### How to use select controls with form directives
+     *
+     * To use a select in a template-driven form, simply add an `ngModel` and a `name`
+     * attribute to the main `<select>` tag.
+     *
+     * If your option values are simple strings, you can bind to the normal `value` property
+     * on the option.  If your option values happen to be objects (and you'd like to save the
+     * selection in your form as an object), use `ngValue` instead:
+     *
+     * {\@example forms/ts/selectControl/select_control_example.ts region='Component'}
+     *
+     * In reactive forms, you'll also want to add your form directive (`formControlName` or
+     * `formControl`) on the main `<select>` tag. Like in the former example, you have the
+     * choice of binding to the  `value` or `ngValue` property on the select's options.
+     *
+     * {\@example forms/ts/reactiveSelectControl/reactive_select_control_example.ts region='Component'}
+     *
+     * Note: We listen to the 'change' event because 'input' events aren't fired
+     * for selects in Firefox and IE:
+     * https://bugzilla.mozilla.org/show_bug.cgi?id=1024350
+     * https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/4660045/
+     *
+     * * **npm package**: `\@angular/forms`
+     *
+     * \@stable
      */
     var SelectControlValueAccessor = (function () {
         /**
@@ -1214,7 +1225,11 @@
          */
         SelectControlValueAccessor.prototype.writeValue = function (value) {
             this.value = value;
-            var /** @type {?} */ valueString = _buildValueString(this._getOptionId(value), value);
+            var /** @type {?} */ id = this._getOptionId(value);
+            if (id == null) {
+                this._renderer.setElementProperty(this._elementRef.nativeElement, 'selectedIndex', -1);
+            }
+            var /** @type {?} */ valueString = _buildValueString(id, value);
             this._renderer.setElementProperty(this._elementRef.nativeElement, 'value', valueString);
         };
         /**
@@ -1241,10 +1256,12 @@
             this._renderer.setElementProperty(this._elementRef.nativeElement, 'disabled', isDisabled);
         };
         /**
+         * \@internal
          * @return {?}
          */
         SelectControlValueAccessor.prototype._registerOption = function () { return (this._idCounter++).toString(); };
         /**
+         * \@internal
          * @param {?} value
          * @return {?}
          */
@@ -1257,6 +1274,7 @@
             return null;
         };
         /**
+         * \@internal
          * @param {?} valueString
          * @return {?}
          */
@@ -1279,10 +1297,13 @@
         return SelectControlValueAccessor;
     }());
     /**
-     *  *
-      * *
-      * See docs for {@link SelectControlValueAccessor} for usage examples.
-      * *
+     * \@whatItDoes Marks `<option>` as dynamic, so Angular can be notified when options change.
+     *
+     * \@howToUse
+     *
+     * See docs for {\@link SelectControlValueAccessor} for usage examples.
+     *
+     * \@stable
      */
     var NgSelectOption = (function () {
         /**
@@ -1326,6 +1347,7 @@
             configurable: true
         });
         /**
+         * \@internal
          * @param {?} value
          * @return {?}
          */
@@ -1384,8 +1406,9 @@
         return valueString.split(':')[0];
     }
     /**
-     *  The accessor for writing a value and listening to changes on a select element.
-      * *
+     * The accessor for writing a value and listening to changes on a select element.
+     *
+     * \@stable
      */
     var SelectMultipleControlValueAccessor = (function () {
         /**
@@ -1463,6 +1486,7 @@
             this._renderer.setElementProperty(this._elementRef.nativeElement, 'disabled', isDisabled);
         };
         /**
+         * \@internal
          * @param {?} value
          * @return {?}
          */
@@ -1472,6 +1496,7 @@
             return id;
         };
         /**
+         * \@internal
          * @param {?} value
          * @return {?}
          */
@@ -1484,6 +1509,7 @@
             return null;
         };
         /**
+         * \@internal
          * @param {?} valueString
          * @return {?}
          */
@@ -1506,15 +1532,15 @@
         return SelectMultipleControlValueAccessor;
     }());
     /**
-     *  Marks `<option>` as dynamic, so Angular can be notified when options change.
-      * *
-      * ### Example
-      * *
-      * ```
-      * <select multiple name="city" ngModel>
-      * <option *ngFor="let c of cities" [value]="c"></option>
-      * </select>
-      * ```
+     * Marks `<option>` as dynamic, so Angular can be notified when options change.
+     *
+     * ### Example
+     *
+     * ```
+     * <select multiple name="city" ngModel>
+     *   <option *ngFor="let c of cities" [value]="c"></option>
+     * </select>
+     * ```
      */
     var NgSelectMultipleOption = (function () {
         /**
@@ -1564,6 +1590,7 @@
             configurable: true
         });
         /**
+         * \@internal
          * @param {?} value
          * @return {?}
          */
@@ -1571,6 +1598,7 @@
             this._renderer.setElementProperty(this._element.nativeElement, 'value', value);
         };
         /**
+         * \@internal
          * @param {?} selected
          * @return {?}
          */
@@ -1800,8 +1828,9 @@
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
     /**
-     *  This is a base class for code shared between {@link NgModelGroup} and {@link FormGroupName}.
-      * *
+     * This is a base class for code shared between {\@link NgModelGroup} and {\@link FormGroupName}.
+     *
+     * \@stable
      */
     var AbstractFormGroupDirective = (function (_super) {
         __extends(AbstractFormGroupDirective, _super);
@@ -1825,7 +1854,7 @@
         };
         Object.defineProperty(AbstractFormGroupDirective.prototype, "control", {
             /**
-             *  Get the {@link FormGroup} backing this binding.
+             * Get the {\@link FormGroup} backing this binding.
              * @return {?}
              */
             get: function () { return this.formDirective.getFormGroup(this); },
@@ -1834,7 +1863,7 @@
         });
         Object.defineProperty(AbstractFormGroupDirective.prototype, "path", {
             /**
-             *  Get the path to this control group.
+             * Get the path to this control group.
              * @return {?}
              */
             get: function () { return controlPath(this.name, this._parent); },
@@ -1843,7 +1872,7 @@
         });
         Object.defineProperty(AbstractFormGroupDirective.prototype, "formDirective", {
             /**
-             *  Get the {@link Form} to which this group belongs.
+             * Get the {\@link Form} to which this group belongs.
              * @return {?}
              */
             get: function () { return this._parent ? this._parent.formDirective : null; },
@@ -1867,6 +1896,7 @@
             configurable: true
         });
         /**
+         * \@internal
          * @return {?}
          */
         AbstractFormGroupDirective.prototype._checkParentType = function () { };
@@ -1960,9 +1990,10 @@
         '[class.ng-pending]': 'ngClassPending',
     };
     /**
-     *  Directive automatically applied to Angular form controls that sets CSS classes
-      * based on control status (valid/invalid/dirty/etc).
-      * *
+     * Directive automatically applied to Angular form controls that sets CSS classes
+     * based on control status (valid/invalid/dirty/etc).
+     *
+     * \@stable
      */
     var NgControlStatus = (function (_super) {
         __extends$3(NgControlStatus, _super);
@@ -1982,9 +2013,10 @@
         return NgControlStatus;
     }(AbstractControlStatus));
     /**
-     *  Directive automatically applied to Angular form groups that sets CSS classes
-      * based on control status (valid/invalid/dirty/etc).
-      * *
+     * Directive automatically applied to Angular form groups that sets CSS classes
+     * based on control status (valid/invalid/dirty/etc).
+     *
+     * \@stable
      */
     var NgControlStatusGroup = (function (_super) {
         __extends$3(NgControlStatusGroup, _super);
@@ -2020,55 +2052,57 @@
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
     /**
-     *  Use by directives and components to emit custom Events.
-      * *
-      * ### Examples
-      * *
-      * In the following example, `Zippy` alternatively emits `open` and `close` events when its
-      * title gets clicked:
-      * *
-      * ```
-      * selector: 'zippy',
-      * template: `
-      * <div class="zippy">
-      * <div (click)="toggle()">Toggle</div>
-      * <div [hidden]="!visible">
-      * <ng-content></ng-content>
-      * </div>
-      * </div>`})
-      * export class Zippy {
-      * visible: boolean = true;
-      * @Output() open: EventEmitter<any> = new EventEmitter();
-      * @Output() close: EventEmitter<any> = new EventEmitter();
-      * *
-      * toggle() {
-      * this.visible = !this.visible;
-      * if (this.visible) {
-      * this.open.emit(null);
-      * } else {
-      * this.close.emit(null);
-      * }
-      * }
-      * }
-      * ```
-      * *
-      * The events payload can be accessed by the parameter `$event` on the components output event
-      * handler:
-      * *
-      * ```
-      * <zippy (open)="onOpen($event)" (close)="onClose($event)"></zippy>
-      * ```
-      * *
-      * Uses Rx.Observable but provides an adapter to make it work as specified here:
-      * https://github.com/jhusain/observable-spec
-      * *
-      * Once a reference implementation of the spec is available, switch to it.
+     * Use by directives and components to emit custom Events.
+     *
+     * ### Examples
+     *
+     * In the following example, `Zippy` alternatively emits `open` and `close` events when its
+     * title gets clicked:
+     *
+     * ```
+     * \@Component({
+     *   selector: 'zippy',
+     *   template: `
+     *   <div class="zippy">
+     *     <div (click)="toggle()">Toggle</div>
+     *     <div [hidden]="!visible">
+     *       <ng-content></ng-content>
+     *     </div>
+     *  </div>`})
+     * export class Zippy {
+     *   visible: boolean = true;
+     *   \@Output() open: EventEmitter<any> = new EventEmitter();
+     *   \@Output() close: EventEmitter<any> = new EventEmitter();
+     *
+     *   toggle() {
+     *     this.visible = !this.visible;
+     *     if (this.visible) {
+     *       this.open.emit(null);
+     *     } else {
+     *       this.close.emit(null);
+     *     }
+     *   }
+     * }
+     * ```
+     *
+     * The events payload can be accessed by the parameter `$event` on the components output event
+     * handler:
+     *
+     * ```
+     * <zippy (open)="onOpen($event)" (close)="onClose($event)"></zippy>
+     * ```
+     *
+     * Uses Rx.Observable but provides an adapter to make it work as specified here:
+     * https://github.com/jhusain/observable-spec
+     *
+     * Once a reference implementation of the spec is available, switch to it.
+     * \@stable
      */
     var EventEmitter = (function (_super) {
         __extends$5(EventEmitter, _super);
         /**
-         *  Creates an instance of [EventEmitter], which depending on [isAsync],
-          * delivers events synchronously or asynchronously.
+         * Creates an instance of [EventEmitter], which depending on [isAsync],
+         * delivers events synchronously or asynchronously.
          * @param {?=} isAsync
          */
         function EventEmitter(isAsync) {
@@ -2197,13 +2231,15 @@
         return Array.isArray(asyncValidator) ? composeAsyncValidators(asyncValidator) : asyncValidator;
     }
     /**
-     *  {@link FormArray}.
-      * *
-      * It provides some of the shared behavior that all controls and groups of controls have, like
-      * running validators, calculating status, and resetting state. It also defines the properties
-      * that are shared between all sub-classes, like `value`, `valid`, and `dirty`. It shouldn't be
-      * instantiated directly.
-      * *
+     * \@whatItDoes This is the base class for {\@link FormControl}, {\@link FormGroup}, and
+     * {\@link FormArray}.
+     *
+     * It provides some of the shared behavior that all controls and groups of controls have, like
+     * running validators, calculating status, and resetting state. It also defines the properties
+     * that are shared between all sub-classes, like `value`, `valid`, and `dirty`. It shouldn't be
+     * instantiated directly.
+     *
+     * \@stable
      * @abstract
      */
     var AbstractControl = (function () {
@@ -2223,7 +2259,7 @@
         }
         Object.defineProperty(AbstractControl.prototype, "value", {
             /**
-             *  The value of the control.
+             * The value of the control.
              * @return {?}
              */
             get: function () { return this._value; },
@@ -2232,7 +2268,7 @@
         });
         Object.defineProperty(AbstractControl.prototype, "parent", {
             /**
-             *  The parent control.
+             * The parent control.
              * @return {?}
              */
             get: function () { return this._parent; },
@@ -2241,16 +2277,16 @@
         });
         Object.defineProperty(AbstractControl.prototype, "status", {
             /**
-             *  The validation status of the control. There are four possible
-              * validation statuses:
-              * *
-              * * **VALID**:  control has passed all validation checks
-              * * **INVALID**: control has failed at least one validation check
-              * * **PENDING**: control is in the midst of conducting a validation check
-              * * **DISABLED**: control is exempt from validation checks
-              * *
-              * These statuses are mutually exclusive, so a control cannot be
-              * both valid AND invalid or invalid AND disabled.
+             * The validation status of the control. There are four possible
+             * validation statuses:
+             *
+             * * **VALID**:  control has passed all validation checks
+             * * **INVALID**: control has failed at least one validation check
+             * * **PENDING**: control is in the midst of conducting a validation check
+             * * **DISABLED**: control is exempt from validation checks
+             *
+             * These statuses are mutually exclusive, so a control cannot be
+             * both valid AND invalid or invalid AND disabled.
              * @return {?}
              */
             get: function () { return this._status; },
@@ -2259,10 +2295,10 @@
         });
         Object.defineProperty(AbstractControl.prototype, "valid", {
             /**
-             *  A control is `valid` when its `status === VALID`.
-              * *
-              * In order to have this status, the control must have passed all its
-              * validation checks.
+             * A control is `valid` when its `status === VALID`.
+             *
+             * In order to have this status, the control must have passed all its
+             * validation checks.
              * @return {?}
              */
             get: function () { return this._status === VALID; },
@@ -2271,10 +2307,10 @@
         });
         Object.defineProperty(AbstractControl.prototype, "invalid", {
             /**
-             *  A control is `invalid` when its `status === INVALID`.
-              * *
-              * In order to have this status, the control must have failed
-              * at least one of its validation checks.
+             * A control is `invalid` when its `status === INVALID`.
+             *
+             * In order to have this status, the control must have failed
+             * at least one of its validation checks.
              * @return {?}
              */
             get: function () { return this._status === INVALID; },
@@ -2283,10 +2319,10 @@
         });
         Object.defineProperty(AbstractControl.prototype, "pending", {
             /**
-             *  A control is `pending` when its `status === PENDING`.
-              * *
-              * In order to have this status, the control must be in the
-              * middle of conducting a validation check.
+             * A control is `pending` when its `status === PENDING`.
+             *
+             * In order to have this status, the control must be in the
+             * middle of conducting a validation check.
              * @return {?}
              */
             get: function () { return this._status == PENDING; },
@@ -2295,11 +2331,11 @@
         });
         Object.defineProperty(AbstractControl.prototype, "disabled", {
             /**
-             *  A control is `disabled` when its `status === DISABLED`.
-              * *
-              * Disabled controls are exempt from validation checks and
-              * are not included in the aggregate value of their ancestor
-              * controls.
+             * A control is `disabled` when its `status === DISABLED`.
+             *
+             * Disabled controls are exempt from validation checks and
+             * are not included in the aggregate value of their ancestor
+             * controls.
              * @return {?}
              */
             get: function () { return this._status === DISABLED; },
@@ -2308,10 +2344,10 @@
         });
         Object.defineProperty(AbstractControl.prototype, "enabled", {
             /**
-             *  A control is `enabled` as long as its `status !== DISABLED`.
-              * *
-              * In other words, it has a status of `VALID`, `INVALID`, or
-              * `PENDING`.
+             * A control is `enabled` as long as its `status !== DISABLED`.
+             *
+             * In other words, it has a status of `VALID`, `INVALID`, or
+             * `PENDING`.
              * @return {?}
              */
             get: function () { return this._status !== DISABLED; },
@@ -2320,8 +2356,8 @@
         });
         Object.defineProperty(AbstractControl.prototype, "errors", {
             /**
-             *  Returns any errors generated by failing validation. If there
-              * are no errors, it will return null.
+             * Returns any errors generated by failing validation. If there
+             * are no errors, it will return null.
              * @return {?}
              */
             get: function () { return this._errors; },
@@ -2330,11 +2366,11 @@
         });
         Object.defineProperty(AbstractControl.prototype, "pristine", {
             /**
-             *  A control is `pristine` if the user has not yet changed
-              * the value in the UI.
-              * *
-              * Note that programmatic changes to a control's value will
-              * *not* mark it dirty.
+             * A control is `pristine` if the user has not yet changed
+             * the value in the UI.
+             *
+             * Note that programmatic changes to a control's value will
+             * *not* mark it dirty.
              * @return {?}
              */
             get: function () { return this._pristine; },
@@ -2343,11 +2379,11 @@
         });
         Object.defineProperty(AbstractControl.prototype, "dirty", {
             /**
-             *  A control is `dirty` if the user has changed the value
-              * in the UI.
-              * *
-              * Note that programmatic changes to a control's value will
-              * *not* mark it dirty.
+             * A control is `dirty` if the user has changed the value
+             * in the UI.
+             *
+             * Note that programmatic changes to a control's value will
+             * *not* mark it dirty.
              * @return {?}
              */
             get: function () { return !this.pristine; },
@@ -2356,8 +2392,8 @@
         });
         Object.defineProperty(AbstractControl.prototype, "touched", {
             /**
-             *  A control is marked `touched` once the user has triggered
-              * a `blur` event on it.
+             * A control is marked `touched` once the user has triggered
+             * a `blur` event on it.
              * @return {?}
              */
             get: function () { return this._touched; },
@@ -2366,8 +2402,8 @@
         });
         Object.defineProperty(AbstractControl.prototype, "untouched", {
             /**
-             *  A control is `untouched` if the user has not yet triggered
-              * a `blur` event on it.
+             * A control is `untouched` if the user has not yet triggered
+             * a `blur` event on it.
              * @return {?}
              */
             get: function () { return !this._touched; },
@@ -2376,8 +2412,8 @@
         });
         Object.defineProperty(AbstractControl.prototype, "valueChanges", {
             /**
-             *  Emits an event every time the value of the control changes, in
-              * the UI or programmatically.
+             * Emits an event every time the value of the control changes, in
+             * the UI or programmatically.
              * @return {?}
              */
             get: function () { return this._valueChanges; },
@@ -2386,8 +2422,8 @@
         });
         Object.defineProperty(AbstractControl.prototype, "statusChanges", {
             /**
-             *  Emits an event every time the validation status of the control
-              * is re-calculated.
+             * Emits an event every time the validation status of the control
+             * is re-calculated.
              * @return {?}
              */
             get: function () { return this._statusChanges; },
@@ -2395,8 +2431,8 @@
             configurable: true
         });
         /**
-         *  Sets the synchronous validators that are active on this control.  Calling
-          * this will overwrite any existing sync validators.
+         * Sets the synchronous validators that are active on this control.  Calling
+         * this will overwrite any existing sync validators.
          * @param {?} newValidator
          * @return {?}
          */
@@ -2404,8 +2440,8 @@
             this.validator = coerceToValidator(newValidator);
         };
         /**
-         *  Sets the async validators that are active on this control. Calling this
-          * will overwrite any existing async validators.
+         * Sets the async validators that are active on this control. Calling this
+         * will overwrite any existing async validators.
          * @param {?} newValidator
          * @return {?}
          */
@@ -2413,20 +2449,20 @@
             this.asyncValidator = coerceToAsyncValidator(newValidator);
         };
         /**
-         *  Empties out the sync validator list.
+         * Empties out the sync validator list.
          * @return {?}
          */
         AbstractControl.prototype.clearValidators = function () { this.validator = null; };
         /**
-         *  Empties out the async validator list.
+         * Empties out the async validator list.
          * @return {?}
          */
         AbstractControl.prototype.clearAsyncValidators = function () { this.asyncValidator = null; };
         /**
-         *  Marks the control as `touched`.
-          * *
-          * This will also mark all direct ancestors as `touched` to maintain
-          * the model.
+         * Marks the control as `touched`.
+         *
+         * This will also mark all direct ancestors as `touched` to maintain
+         * the model.
          * @param {?=} __0
          * @return {?}
          */
@@ -2438,11 +2474,11 @@
             }
         };
         /**
-         *  Marks the control as `untouched`.
-          * *
-          * If the control has any children, it will also mark all children as `untouched`
-          * to maintain the model, and re-calculate the `touched` status of all parent
-          * controls.
+         * Marks the control as `untouched`.
+         *
+         * If the control has any children, it will also mark all children as `untouched`
+         * to maintain the model, and re-calculate the `touched` status of all parent
+         * controls.
          * @param {?=} __0
          * @return {?}
          */
@@ -2455,10 +2491,10 @@
             }
         };
         /**
-         *  Marks the control as `dirty`.
-          * *
-          * This will also mark all direct ancestors as `dirty` to maintain
-          * the model.
+         * Marks the control as `dirty`.
+         *
+         * This will also mark all direct ancestors as `dirty` to maintain
+         * the model.
          * @param {?=} __0
          * @return {?}
          */
@@ -2470,11 +2506,11 @@
             }
         };
         /**
-         *  Marks the control as `pristine`.
-          * *
-          * If the control has any children, it will also mark all children as `pristine`
-          * to maintain the model, and re-calculate the `pristine` status of all parent
-          * controls.
+         * Marks the control as `pristine`.
+         *
+         * If the control has any children, it will also mark all children as `pristine`
+         * to maintain the model, and re-calculate the `pristine` status of all parent
+         * controls.
          * @param {?=} __0
          * @return {?}
          */
@@ -2487,7 +2523,7 @@
             }
         };
         /**
-         *  Marks the control as `pending`.
+         * Marks the control as `pending`.
          * @param {?=} __0
          * @return {?}
          */
@@ -2499,10 +2535,10 @@
             }
         };
         /**
-         *  Disables the control. This means the control will be exempt from validation checks and
-          * excluded from the aggregate value of any parent. Its status is `DISABLED`.
-          * *
-          * If the control has children, all children will be disabled to maintain the model.
+         * Disables the control. This means the control will be exempt from validation checks and
+         * excluded from the aggregate value of any parent. Its status is `DISABLED`.
+         *
+         * If the control has children, all children will be disabled to maintain the model.
          * @param {?=} __0
          * @return {?}
          */
@@ -2520,11 +2556,11 @@
             this._onDisabledChange.forEach(function (changeFn) { return changeFn(true); });
         };
         /**
-         *  Enables the control. This means the control will be included in validation checks and
-          * the aggregate value of its parent. Its status is re-calculated based on its value and
-          * its validators.
-          * *
-          * If the control has children, all children will be enabled.
+         * Enables the control. This means the control will be included in validation checks and
+         * the aggregate value of its parent. Its status is re-calculated based on its value and
+         * its validators.
+         *
+         * If the control has children, all children will be enabled.
          * @param {?=} __0
          * @return {?}
          */
@@ -2553,7 +2589,7 @@
          */
         AbstractControl.prototype.setParent = function (parent) { this._parent = parent; };
         /**
-         *  Sets the value of the control. Abstract method (implemented in sub-classes).
+         * Sets the value of the control. Abstract method (implemented in sub-classes).
          * @abstract
          * @param {?} value
          * @param {?=} options
@@ -2561,7 +2597,7 @@
          */
         AbstractControl.prototype.setValue = function (value, options) { };
         /**
-         *  Patches the value of the control. Abstract method (implemented in sub-classes).
+         * Patches the value of the control. Abstract method (implemented in sub-classes).
          * @abstract
          * @param {?} value
          * @param {?=} options
@@ -2569,7 +2605,7 @@
          */
         AbstractControl.prototype.patchValue = function (value, options) { };
         /**
-         *  Resets the control. Abstract method (implemented in sub-classes).
+         * Resets the control. Abstract method (implemented in sub-classes).
          * @abstract
          * @param {?=} value
          * @param {?=} options
@@ -2577,9 +2613,9 @@
          */
         AbstractControl.prototype.reset = function (value, options) { };
         /**
-         *  Re-calculates the value and validation status of the control.
-          * *
-          * By default, it will also update the value and validity of its ancestors.
+         * Re-calculates the value and validation status of the control.
+         *
+         * By default, it will also update the value and validity of its ancestors.
          * @param {?=} __0
          * @return {?}
          */
@@ -2603,6 +2639,7 @@
             }
         };
         /**
+         * \@internal
          * @param {?=} __0
          * @return {?}
          */
@@ -2631,6 +2668,9 @@
                 this._status = PENDING;
                 this._cancelExistingSubscription();
                 var /** @type {?} */ obs = toObservable(this.asyncValidator(this));
+                if (!(isObservable(obs))) {
+                    throw new Error("expected the following validator to return Promise or Observable: " + this.asyncValidator + ". If you are using FormBuilder; did you forget to brace your validators in an array?");
+                }
                 this._asyncValidationSubscription =
                     obs.subscribe({ next: function (res) { return _this.setErrors(res, { emitEvent: emitEvent }); } });
             }
@@ -2644,27 +2684,27 @@
             }
         };
         /**
-         *  Sets errors on a form control.
-          * *
-          * This is used when validations are run manually by the user, rather than automatically.
-          * *
-          * Calling `setErrors` will also update the validity of the parent control.
-          * *
-          * ### Example
-          * *
-          * ```
-          * const login = new FormControl("someLogin");
-          * login.setErrors({
-          * "notUnique": true
-          * });
-          * *
-          * expect(login.valid).toEqual(false);
-          * expect(login.errors).toEqual({"notUnique": true});
-          * *
-          * login.setValue("someOtherLogin");
-          * *
-          * expect(login.valid).toEqual(true);
-          * ```
+         * Sets errors on a form control.
+         *
+         * This is used when validations are run manually by the user, rather than automatically.
+         *
+         * Calling `setErrors` will also update the validity of the parent control.
+         *
+         * ### Example
+         *
+         * ```
+         * const login = new FormControl("someLogin");
+         * login.setErrors({
+         *   "notUnique": true
+         * });
+         *
+         * expect(login.valid).toEqual(false);
+         * expect(login.errors).toEqual({"notUnique": true});
+         *
+         * login.setValue("someOtherLogin");
+         *
+         * expect(login.valid).toEqual(true);
+         * ```
          * @param {?} errors
          * @param {?=} __1
          * @return {?}
@@ -2675,26 +2715,26 @@
             this._updateControlsErrors(emitEvent !== false);
         };
         /**
-         *  Retrieves a child control given the control's name or path.
-          * *
-          * Paths can be passed in as an array or a string delimited by a dot.
-          * *
-          * To get a control nested within a `person` sub-group:
-          * *
-          * * `this.form.get('person.name');`
-          * *
-          * -OR-
-          * *
-          * * `this.form.get(['person', 'name']);`
+         * Retrieves a child control given the control's name or path.
+         *
+         * Paths can be passed in as an array or a string delimited by a dot.
+         *
+         * To get a control nested within a `person` sub-group:
+         *
+         * * `this.form.get('person.name');`
+         *
+         * -OR-
+         *
+         * * `this.form.get(['person', 'name']);`
          * @param {?} path
          * @return {?}
          */
         AbstractControl.prototype.get = function (path) { return _find(this, path, '.'); };
         /**
-         *  Returns true if the control with the given path has the error specified. Otherwise
-          * returns null or undefined.
-          * *
-          * If no path is given, it checks for the error on the present control.
+         * Returns true if the control with the given path has the error specified. Otherwise
+         * returns null or undefined.
+         *
+         * If no path is given, it checks for the error on the present control.
          * @param {?} errorCode
          * @param {?=} path
          * @return {?}
@@ -2705,10 +2745,10 @@
             return control && control._errors ? control._errors[errorCode] : null;
         };
         /**
-         *  Returns true if the control with the given path has the error specified. Otherwise
-          * returns false.
-          * *
-          * If no path is given, it checks for the error on the present control.
+         * Returns true if the control with the given path has the error specified. Otherwise
+         * returns false.
+         *
+         * If no path is given, it checks for the error on the present control.
          * @param {?} errorCode
          * @param {?=} path
          * @return {?}
@@ -2719,7 +2759,7 @@
         };
         Object.defineProperty(AbstractControl.prototype, "root", {
             /**
-             *  Retrieves the top-level ancestor of this control.
+             * Retrieves the top-level ancestor of this control.
              * @return {?}
              */
             get: function () {
@@ -2733,6 +2773,7 @@
             configurable: true
         });
         /**
+         * \@internal
          * @param {?} emitEvent
          * @return {?}
          */
@@ -2746,6 +2787,7 @@
             }
         };
         /**
+         * \@internal
          * @return {?}
          */
         AbstractControl.prototype._initObservables = function () {
@@ -2767,28 +2809,33 @@
             return VALID;
         };
         /**
+         * \@internal
          * @abstract
          * @return {?}
          */
         AbstractControl.prototype._updateValue = function () { };
         /**
+         * \@internal
          * @abstract
          * @param {?} cb
          * @return {?}
          */
         AbstractControl.prototype._forEachChild = function (cb) { };
         /**
+         * \@internal
          * @abstract
          * @param {?} condition
          * @return {?}
          */
         AbstractControl.prototype._anyControls = function (condition) { };
         /**
+         * \@internal
          * @abstract
          * @return {?}
          */
         AbstractControl.prototype._allControlsDisabled = function () { };
         /**
+         * \@internal
          * @param {?} status
          * @return {?}
          */
@@ -2796,18 +2843,21 @@
             return this._anyControls(function (control) { return control.status === status; });
         };
         /**
+         * \@internal
          * @return {?}
          */
         AbstractControl.prototype._anyControlsDirty = function () {
             return this._anyControls(function (control) { return control.dirty; });
         };
         /**
+         * \@internal
          * @return {?}
          */
         AbstractControl.prototype._anyControlsTouched = function () {
             return this._anyControls(function (control) { return control.touched; });
         };
         /**
+         * \@internal
          * @param {?=} __0
          * @return {?}
          */
@@ -2819,6 +2869,7 @@
             }
         };
         /**
+         * \@internal
          * @param {?=} __0
          * @return {?}
          */
@@ -2830,6 +2881,7 @@
             }
         };
         /**
+         * \@internal
          * @param {?} formState
          * @return {?}
          */
@@ -2838,6 +2890,7 @@
                 Object.keys(formState).length === 2 && 'value' in formState && 'disabled' in formState;
         };
         /**
+         * \@internal
          * @param {?} fn
          * @return {?}
          */
@@ -2845,44 +2898,47 @@
         return AbstractControl;
     }());
     /**
-     *  *
-      * It is one of the three fundamental building blocks of Angular forms, along with
-      * {@link FormGroup} and {@link FormArray}.
-      * *
-      * *
-      * When instantiating a {@link FormControl}, you can pass in an initial value as the
-      * first argument. Example:
-      * *
-      * ```ts
-      * const ctrl = new FormControl('some value');
-      * console.log(ctrl.value);     // 'some value'
-      * *```
-      * *
-      * You can also initialize the control with a form state object on instantiation,
-      * which includes both the value and whether or not the control is disabled.
-      * You can't use the value key without the disabled key; both are required
-      * to use this way of initialization.
-      * *
-      * ```ts
-      * const ctrl = new FormControl({value: 'n/a', disabled: true});
-      * console.log(ctrl.value);     // 'n/a'
-      * console.log(ctrl.status);   // 'DISABLED'
-      * ```
-      * *
-      * To include a sync validator (or an array of sync validators) with the control,
-      * pass it in as the second argument. Async validators are also supported, but
-      * have to be passed in separately as the third arg.
-      * *
-      * ```ts
-      * const ctrl = new FormControl('', Validators.required);
-      * console.log(ctrl.value);     // ''
-      * console.log(ctrl.status);   // 'INVALID'
-      * ```
-      * *
-      * See its superclass, {@link AbstractControl}, for more properties and methods.
-      * *
-      * * **npm package**: `@angular/forms`
-      * *
+     * \@whatItDoes Tracks the value and validation status of an individual form control.
+     *
+     * It is one of the three fundamental building blocks of Angular forms, along with
+     * {\@link FormGroup} and {\@link FormArray}.
+     *
+     * \@howToUse
+     *
+     * When instantiating a {\@link FormControl}, you can pass in an initial value as the
+     * first argument. Example:
+     *
+     * ```ts
+     * const ctrl = new FormControl('some value');
+     * console.log(ctrl.value);     // 'some value'
+     * ```
+     *
+     * You can also initialize the control with a form state object on instantiation,
+     * which includes both the value and whether or not the control is disabled.
+     * You can't use the value key without the disabled key; both are required
+     * to use this way of initialization.
+     *
+     * ```ts
+     * const ctrl = new FormControl({value: 'n/a', disabled: true});
+     * console.log(ctrl.value);     // 'n/a'
+     * console.log(ctrl.status);   // 'DISABLED'
+     * ```
+     *
+     * To include a sync validator (or an array of sync validators) with the control,
+     * pass it in as the second argument. Async validators are also supported, but
+     * have to be passed in separately as the third arg.
+     *
+     * ```ts
+     * const ctrl = new FormControl('', Validators.required);
+     * console.log(ctrl.value);     // ''
+     * console.log(ctrl.status);   // 'INVALID'
+     * ```
+     *
+     * See its superclass, {\@link AbstractControl}, for more properties and methods.
+     *
+     * * **npm package**: `\@angular/forms`
+     *
+     * \@stable
      */
     var FormControl = (function (_super) {
         __extends$6(FormControl, _super);
@@ -2903,21 +2959,21 @@
             this._initObservables();
         }
         /**
-         *  Set the value of the form control to `value`.
-          * *
-          * If `onlySelf` is `true`, this change will only affect the validation of this `FormControl`
-          * and not its parent component. This defaults to false.
-          * *
-          * If `emitEvent` is `true`, this
-          * change will cause a `valueChanges` event on the `FormControl` to be emitted. This defaults
-          * to true (as it falls through to `updateValueAndValidity`).
-          * *
-          * If `emitModelToViewChange` is `true`, the view will be notified about the new value
-          * via an `onChange` event. This is the default behavior if `emitModelToViewChange` is not
-          * specified.
-          * *
-          * If `emitViewToModelChange` is `true`, an ngModelChange event will be fired to update the
-          * model.  This is the default behavior if `emitViewToModelChange` is not specified.
+         * Set the value of the form control to `value`.
+         *
+         * If `onlySelf` is `true`, this change will only affect the validation of this `FormControl`
+         * and not its parent component. This defaults to false.
+         *
+         * If `emitEvent` is `true`, this
+         * change will cause a `valueChanges` event on the `FormControl` to be emitted. This defaults
+         * to true (as it falls through to `updateValueAndValidity`).
+         *
+         * If `emitModelToViewChange` is `true`, the view will be notified about the new value
+         * via an `onChange` event. This is the default behavior if `emitModelToViewChange` is not
+         * specified.
+         *
+         * If `emitViewToModelChange` is `true`, an ngModelChange event will be fired to update the
+         * model.  This is the default behavior if `emitViewToModelChange` is not specified.
          * @param {?} value
          * @param {?=} __1
          * @return {?}
@@ -2932,11 +2988,11 @@
             this.updateValueAndValidity({ onlySelf: onlySelf, emitEvent: emitEvent });
         };
         /**
-         *  Patches the value of a control.
-          * *
-          * This function is functionally the same as {@link FormControl.setValue} at this level.
-          * It exists for symmetry with {@link FormGroup.patchValue} on `FormGroups` and `FormArrays`,
-          * where it does behave differently.
+         * Patches the value of a control.
+         *
+         * This function is functionally the same as {\@link FormControl.setValue} at this level.
+         * It exists for symmetry with {\@link FormGroup.patchValue} on `FormGroups` and `FormArrays`,
+         * where it does behave differently.
          * @param {?} value
          * @param {?=} options
          * @return {?}
@@ -2946,32 +3002,32 @@
             this.setValue(value, options);
         };
         /**
-         *  Resets the form control. This means by default:
-          * *
-          * * it is marked as `pristine`
-          * * it is marked as `untouched`
-          * * value is set to null
-          * *
-          * You can also reset to a specific form state by passing through a standalone
-          * value or a form state object that contains both a value and a disabled state
-          * (these are the only two properties that cannot be calculated).
-          * *
-          * Ex:
-          * *
-          * ```ts
-          * this.control.reset('Nancy');
-          * *
-          * console.log(this.control.value);  // 'Nancy'
-          * ```
-          * *
-          * OR
-          * *
-          * ```
-          * this.control.reset({value: 'Nancy', disabled: true});
-          * *
-          * console.log(this.control.value);  // 'Nancy'
-          * console.log(this.control.status);  // 'DISABLED'
-          * ```
+         * Resets the form control. This means by default:
+         *
+         * * it is marked as `pristine`
+         * * it is marked as `untouched`
+         * * value is set to null
+         *
+         * You can also reset to a specific form state by passing through a standalone
+         * value or a form state object that contains both a value and a disabled state
+         * (these are the only two properties that cannot be calculated).
+         *
+         * Ex:
+         *
+         * ```ts
+         * this.control.reset('Nancy');
+         *
+         * console.log(this.control.value);  // 'Nancy'
+         * ```
+         *
+         * OR
+         *
+         * ```
+         * this.control.reset({value: 'Nancy', disabled: true});
+         *
+         * console.log(this.control.value);  // 'Nancy'
+         * console.log(this.control.status);  // 'DISABLED'
+         * ```
          * @param {?=} formState
          * @param {?=} __1
          * @return {?}
@@ -2985,25 +3041,29 @@
             this.setValue(this._value, { onlySelf: onlySelf, emitEvent: emitEvent });
         };
         /**
+         * \@internal
          * @return {?}
          */
         FormControl.prototype._updateValue = function () { };
         /**
+         * \@internal
          * @param {?} condition
          * @return {?}
          */
         FormControl.prototype._anyControls = function (condition) { return false; };
         /**
+         * \@internal
          * @return {?}
          */
         FormControl.prototype._allControlsDisabled = function () { return this.disabled; };
         /**
-         *  Register a listener for change events.
+         * Register a listener for change events.
          * @param {?} fn
          * @return {?}
          */
         FormControl.prototype.registerOnChange = function (fn) { this._onChange.push(fn); };
         /**
+         * \@internal
          * @return {?}
          */
         FormControl.prototype._clearChangeFns = function () {
@@ -3012,7 +3072,7 @@
             this._onCollectionChange = function () { };
         };
         /**
-         *  Register a listener for disabled events.
+         * Register a listener for disabled events.
          * @param {?} fn
          * @return {?}
          */
@@ -3020,6 +3080,7 @@
             this._onDisabledChange.push(fn);
         };
         /**
+         * \@internal
          * @param {?} cb
          * @return {?}
          */
@@ -3041,53 +3102,56 @@
         return FormControl;
     }(AbstractControl));
     /**
-     *  instances.
-      * *
-      * A `FormGroup` aggregates the values of each child {@link FormControl} into one object,
-      * with each control name as the key.  It calculates its status by reducing the statuses
-      * of its children. For example, if one of the controls in a group is invalid, the entire
-      * group becomes invalid.
-      * *
-      * `FormGroup` is one of the three fundamental building blocks used to define forms in Angular,
-      * along with {@link FormControl} and {@link FormArray}.
-      * *
-      * *
-      * When instantiating a {@link FormGroup}, pass in a collection of child controls as the first
-      * argument. The key for each child will be the name under which it is registered.
-      * *
-      * ### Example
-      * *
-      * ```
-      * const form = new FormGroup({
-      * first: new FormControl('Nancy', Validators.minLength(2)),
-      * last: new FormControl('Drew'),
-      * });
-      * *
-      * console.log(form.value);   // {first: 'Nancy', last; 'Drew'}
-      * console.log(form.status);  // 'VALID'
-      * ```
-      * *
-      * You can also include group-level validators as the second arg, or group-level async
-      * validators as the third arg. These come in handy when you want to perform validation
-      * that considers the value of more than one child control.
-      * *
-      * ### Example
-      * *
-      * ```
-      * const form = new FormGroup({
-      * password: new FormControl('', Validators.minLength(2)),
-      * passwordConfirm: new FormControl('', Validators.minLength(2)),
-      * }, passwordMatchValidator);
-      * *
-      * *
-      * function passwordMatchValidator(g: FormGroup) {
-      * return g.get('password').value === g.get('passwordConfirm').value
-      * ? null : {'mismatch': true};
-      * }
-      * ```
-      * *
-      * * **npm package**: `@angular/forms`
-      * *
+     * \@whatItDoes Tracks the value and validity state of a group of {\@link FormControl}
+     * instances.
+     *
+     * A `FormGroup` aggregates the values of each child {\@link FormControl} into one object,
+     * with each control name as the key.  It calculates its status by reducing the statuses
+     * of its children. For example, if one of the controls in a group is invalid, the entire
+     * group becomes invalid.
+     *
+     * `FormGroup` is one of the three fundamental building blocks used to define forms in Angular,
+     * along with {\@link FormControl} and {\@link FormArray}.
+     *
+     * \@howToUse
+     *
+     * When instantiating a {\@link FormGroup}, pass in a collection of child controls as the first
+     * argument. The key for each child will be the name under which it is registered.
+     *
+     * ### Example
+     *
+     * ```
+     * const form = new FormGroup({
+     *   first: new FormControl('Nancy', Validators.minLength(2)),
+     *   last: new FormControl('Drew'),
+     * });
+     *
+     * console.log(form.value);   // {first: 'Nancy', last; 'Drew'}
+     * console.log(form.status);  // 'VALID'
+     * ```
+     *
+     * You can also include group-level validators as the second arg, or group-level async
+     * validators as the third arg. These come in handy when you want to perform validation
+     * that considers the value of more than one child control.
+     *
+     * ### Example
+     *
+     * ```
+     * const form = new FormGroup({
+     *   password: new FormControl('', Validators.minLength(2)),
+     *   passwordConfirm: new FormControl('', Validators.minLength(2)),
+     * }, passwordMatchValidator);
+     *
+     *
+     * function passwordMatchValidator(g: FormGroup) {
+     *    return g.get('password').value === g.get('passwordConfirm').value
+     *       ? null : {'mismatch': true};
+     * }
+     * ```
+     *
+     * * **npm package**: `\@angular/forms`
+     *
+     * \@stable
      */
     var FormGroup = (function (_super) {
         __extends$6(FormGroup, _super);
@@ -3106,10 +3170,10 @@
             this.updateValueAndValidity({ onlySelf: true, emitEvent: false });
         }
         /**
-         *  Registers a control with the group's list of controls.
-          * *
-          * This method does not update value or validity of the control, so for
-          * most cases you'll want to use {@link FormGroup.addControl} instead.
+         * Registers a control with the group's list of controls.
+         *
+         * This method does not update value or validity of the control, so for
+         * most cases you'll want to use {\@link FormGroup.addControl} instead.
          * @param {?} name
          * @param {?} control
          * @return {?}
@@ -3123,7 +3187,7 @@
             return control;
         };
         /**
-         *  Add a control to this group.
+         * Add a control to this group.
          * @param {?} name
          * @param {?} control
          * @return {?}
@@ -3134,7 +3198,7 @@
             this._onCollectionChange();
         };
         /**
-         *  Remove a control from this group.
+         * Remove a control from this group.
          * @param {?} name
          * @return {?}
          */
@@ -3146,7 +3210,7 @@
             this._onCollectionChange();
         };
         /**
-         *  Replace an existing control.
+         * Replace an existing control.
          * @param {?} name
          * @param {?} control
          * @return {?}
@@ -3161,10 +3225,10 @@
             this._onCollectionChange();
         };
         /**
-         *  Check whether there is an enabled control with the given name in the group.
-          * *
-          * It will return false for disabled controls. If you'd like to check for
-          * existence in the group only, use {@link AbstractControl.get} instead.
+         * Check whether there is an enabled control with the given name in the group.
+         *
+         * It will return false for disabled controls. If you'd like to check for
+         * existence in the group only, use {\@link AbstractControl.get} instead.
          * @param {?} controlName
          * @return {?}
          */
@@ -3172,26 +3236,26 @@
             return this.controls.hasOwnProperty(controlName) && this.controls[controlName].enabled;
         };
         /**
-         *  Sets the value of the {@link FormGroup}. It accepts an object that matches
-          * the structure of the group, with control names as keys.
-          * *
-          * This method performs strict checks, so it will throw an error if you try
-          * to set the value of a control that doesn't exist or if you exclude the
-          * value of a control.
-          * *
-          * ### Example
-          * *
-          * ```
-          * const form = new FormGroup({
-          * first: new FormControl(),
-          * last: new FormControl()
-          * });
-          * console.log(form.value);   // {first: null, last: null}
-          * *
-          * form.setValue({first: 'Nancy', last: 'Drew'});
-          * console.log(form.value);   // {first: 'Nancy', last: 'Drew'}
-          * *
-          * ```
+         *  Sets the value of the {\@link FormGroup}. It accepts an object that matches
+         *  the structure of the group, with control names as keys.
+         *
+         * This method performs strict checks, so it will throw an error if you try
+         * to set the value of a control that doesn't exist or if you exclude the
+         * value of a control.
+         *
+         *  ### Example
+         *
+         *  ```
+         *  const form = new FormGroup({
+         *     first: new FormControl(),
+         *     last: new FormControl()
+         *  });
+         *  console.log(form.value);   // {first: null, last: null}
+         *
+         *  form.setValue({first: 'Nancy', last: 'Drew'});
+         *  console.log(form.value);   // {first: 'Nancy', last: 'Drew'}
+         *
+         *  ```
          * @param {?} value
          * @param {?=} __1
          * @return {?}
@@ -3207,25 +3271,25 @@
             this.updateValueAndValidity({ onlySelf: onlySelf, emitEvent: emitEvent });
         };
         /**
-         *  Patches the value of the {@link FormGroup}. It accepts an object with control
-          * names as keys, and will do its best to match the values to the correct controls
-          * in the group.
-          * *
-          * It accepts both super-sets and sub-sets of the group without throwing an error.
-          * *
-          * ### Example
-          * *
-          * ```
-          * const form = new FormGroup({
-          * first: new FormControl(),
-          * last: new FormControl()
-          * });
-          * console.log(form.value);   // {first: null, last: null}
-          * *
-          * form.patchValue({first: 'Nancy'});
-          * console.log(form.value);   // {first: 'Nancy', last: null}
-          * *
-          * ```
+         *  Patches the value of the {\@link FormGroup}. It accepts an object with control
+         *  names as keys, and will do its best to match the values to the correct controls
+         *  in the group.
+         *
+         *  It accepts both super-sets and sub-sets of the group without throwing an error.
+         *
+         *  ### Example
+         *
+         *  ```
+         *  const form = new FormGroup({
+         *     first: new FormControl(),
+         *     last: new FormControl()
+         *  });
+         *  console.log(form.value);   // {first: null, last: null}
+         *
+         *  form.patchValue({first: 'Nancy'});
+         *  console.log(form.value);   // {first: 'Nancy', last: null}
+         *
+         *  ```
          * @param {?} value
          * @param {?=} __1
          * @return {?}
@@ -3241,36 +3305,36 @@
             this.updateValueAndValidity({ onlySelf: onlySelf, emitEvent: emitEvent });
         };
         /**
-         *  Resets the {@link FormGroup}. This means by default:
-          * *
-          * * The group and all descendants are marked `pristine`
-          * * The group and all descendants are marked `untouched`
-          * * The value of all descendants will be null or null maps
-          * *
-          * You can also reset to a specific form state by passing in a map of states
-          * that matches the structure of your form, with control names as keys. The state
-          * can be a standalone value or a form state object with both a value and a disabled
-          * status.
-          * *
-          * ### Example
-          * *
-          * ```ts
-          * this.form.reset({first: 'name', last: 'last name'});
-          * *
-          * console.log(this.form.value);  // {first: 'name', last: 'last name'}
-          * ```
-          * *
-          * - OR -
-          * *
-          * ```
-          * this.form.reset({
-          * first: {value: 'name', disabled: true},
-          * last: 'last'
-          * });
-          * *
-          * console.log(this.form.value);  // {first: 'name', last: 'last name'}
-          * console.log(this.form.get('first').status);  // 'DISABLED'
-          * ```
+         * Resets the {\@link FormGroup}. This means by default:
+         *
+         * * The group and all descendants are marked `pristine`
+         * * The group and all descendants are marked `untouched`
+         * * The value of all descendants will be null or null maps
+         *
+         * You can also reset to a specific form state by passing in a map of states
+         * that matches the structure of your form, with control names as keys. The state
+         * can be a standalone value or a form state object with both a value and a disabled
+         * status.
+         *
+         * ### Example
+         *
+         * ```ts
+         * this.form.reset({first: 'name', last: 'last name'});
+         *
+         * console.log(this.form.value);  // {first: 'name', last: 'last name'}
+         * ```
+         *
+         * - OR -
+         *
+         * ```
+         * this.form.reset({
+         *   first: {value: 'name', disabled: true},
+         *   last: 'last'
+         * });
+         *
+         * console.log(this.form.value);  // {first: 'name', last: 'last name'}
+         * console.log(this.form.get('first').status);  // 'DISABLED'
+         * ```
          * @param {?=} value
          * @param {?=} __1
          * @return {?}
@@ -3286,10 +3350,10 @@
             this._updateTouched({ onlySelf: onlySelf });
         };
         /**
-         *  The aggregate value of the {@link FormGroup}, including any disabled controls.
-          * *
-          * If you'd like to include all values regardless of disabled status, use this method.
-          * Otherwise, the `value` property is the best way to get the value of the group.
+         * The aggregate value of the {\@link FormGroup}, including any disabled controls.
+         *
+         * If you'd like to include all values regardless of disabled status, use this method.
+         * Otherwise, the `value` property is the best way to get the value of the group.
          * @return {?}
          */
         FormGroup.prototype.getRawValue = function () {
@@ -3299,6 +3363,7 @@
             });
         };
         /**
+         * \@internal
          * @param {?} name
          * @return {?}
          */
@@ -3311,6 +3376,7 @@
             }
         };
         /**
+         * \@internal
          * @param {?} cb
          * @return {?}
          */
@@ -3319,6 +3385,7 @@
             Object.keys(this.controls).forEach(function (k) { return cb(_this.controls[k], k); });
         };
         /**
+         * \@internal
          * @return {?}
          */
         FormGroup.prototype._setUpControls = function () {
@@ -3329,10 +3396,12 @@
             });
         };
         /**
+         * \@internal
          * @return {?}
          */
         FormGroup.prototype._updateValue = function () { this._value = this._reduceValue(); };
         /**
+         * \@internal
          * @param {?} condition
          * @return {?}
          */
@@ -3345,6 +3414,7 @@
             return res;
         };
         /**
+         * \@internal
          * @return {?}
          */
         FormGroup.prototype._reduceValue = function () {
@@ -3357,6 +3427,7 @@
             });
         };
         /**
+         * \@internal
          * @param {?} initValue
          * @param {?} fn
          * @return {?}
@@ -3367,6 +3438,7 @@
             return res;
         };
         /**
+         * \@internal
          * @return {?}
          */
         FormGroup.prototype._allControlsDisabled = function () {
@@ -3379,6 +3451,7 @@
             return Object.keys(this.controls).length > 0 || this.disabled;
         };
         /**
+         * \@internal
          * @param {?} value
          * @return {?}
          */
@@ -3392,45 +3465,48 @@
         return FormGroup;
     }(AbstractControl));
     /**
-     *  instances.
-      * *
-      * A `FormArray` aggregates the values of each child {@link FormControl} into an array.
-      * It calculates its status by reducing the statuses of its children. For example, if one of
-      * the controls in a `FormArray` is invalid, the entire array becomes invalid.
-      * *
-      * `FormArray` is one of the three fundamental building blocks used to define forms in Angular,
-      * along with {@link FormControl} and {@link FormGroup}.
-      * *
-      * *
-      * When instantiating a {@link FormArray}, pass in an array of child controls as the first
-      * argument.
-      * *
-      * ### Example
-      * *
-      * ```
-      * const arr = new FormArray([
-      * new FormControl('Nancy', Validators.minLength(2)),
-      * new FormControl('Drew'),
-      * ]);
-      * *
-      * console.log(arr.value);   // ['Nancy', 'Drew']
-      * console.log(arr.status);  // 'VALID'
-      * ```
-      * *
-      * You can also include array-level validators as the second arg, or array-level async
-      * validators as the third arg. These come in handy when you want to perform validation
-      * that considers the value of more than one child control.
-      * *
-      * ### Adding or removing controls
-      * *
-      * To change the controls in the array, use the `push`, `insert`, or `removeAt` methods
-      * in `FormArray` itself. These methods ensure the controls are properly tracked in the
-      * form's hierarchy. Do not modify the array of `AbstractControl`s used to instantiate
-      * the `FormArray` directly, as that will result in strange and unexpected behavior such
-      * as broken change detection.
-      * *
-      * * **npm package**: `@angular/forms`
-      * *
+     * \@whatItDoes Tracks the value and validity state of an array of {\@link FormControl},
+     * {\@link FormGroup} or {\@link FormArray} instances.
+     *
+     * A `FormArray` aggregates the values of each child {\@link FormControl} into an array.
+     * It calculates its status by reducing the statuses of its children. For example, if one of
+     * the controls in a `FormArray` is invalid, the entire array becomes invalid.
+     *
+     * `FormArray` is one of the three fundamental building blocks used to define forms in Angular,
+     * along with {\@link FormControl} and {\@link FormGroup}.
+     *
+     * \@howToUse
+     *
+     * When instantiating a {\@link FormArray}, pass in an array of child controls as the first
+     * argument.
+     *
+     * ### Example
+     *
+     * ```
+     * const arr = new FormArray([
+     *   new FormControl('Nancy', Validators.minLength(2)),
+     *   new FormControl('Drew'),
+     * ]);
+     *
+     * console.log(arr.value);   // ['Nancy', 'Drew']
+     * console.log(arr.status);  // 'VALID'
+     * ```
+     *
+     * You can also include array-level validators as the second arg, or array-level async
+     * validators as the third arg. These come in handy when you want to perform validation
+     * that considers the value of more than one child control.
+     *
+     * ### Adding or removing controls
+     *
+     * To change the controls in the array, use the `push`, `insert`, or `removeAt` methods
+     * in `FormArray` itself. These methods ensure the controls are properly tracked in the
+     * form's hierarchy. Do not modify the array of `AbstractControl`s used to instantiate
+     * the `FormArray` directly, as that will result in strange and unexpected behavior such
+     * as broken change detection.
+     *
+     * * **npm package**: `\@angular/forms`
+     *
+     * \@stable
      */
     var FormArray = (function (_super) {
         __extends$6(FormArray, _super);
@@ -3449,13 +3525,13 @@
             this.updateValueAndValidity({ onlySelf: true, emitEvent: false });
         }
         /**
-         *  Get the {@link AbstractControl} at the given `index` in the array.
+         * Get the {\@link AbstractControl} at the given `index` in the array.
          * @param {?} index
          * @return {?}
          */
         FormArray.prototype.at = function (index) { return this.controls[index]; };
         /**
-         *  Insert a new {@link AbstractControl} at the end of the array.
+         * Insert a new {\@link AbstractControl} at the end of the array.
          * @param {?} control
          * @return {?}
          */
@@ -3466,7 +3542,7 @@
             this._onCollectionChange();
         };
         /**
-         *  Insert a new {@link AbstractControl} at the given `index` in the array.
+         * Insert a new {\@link AbstractControl} at the given `index` in the array.
          * @param {?} index
          * @param {?} control
          * @return {?}
@@ -3478,7 +3554,7 @@
             this._onCollectionChange();
         };
         /**
-         *  Remove the control at the given `index` in the array.
+         * Remove the control at the given `index` in the array.
          * @param {?} index
          * @return {?}
          */
@@ -3490,7 +3566,7 @@
             this._onCollectionChange();
         };
         /**
-         *  Replace an existing control.
+         * Replace an existing control.
          * @param {?} index
          * @param {?} control
          * @return {?}
@@ -3508,7 +3584,7 @@
         };
         Object.defineProperty(FormArray.prototype, "length", {
             /**
-             *  Length of the control array.
+             * Length of the control array.
              * @return {?}
              */
             get: function () { return this.controls.length; },
@@ -3516,25 +3592,25 @@
             configurable: true
         });
         /**
-         *  Sets the value of the {@link FormArray}. It accepts an array that matches
-          * the structure of the control.
-          * *
-          * This method performs strict checks, so it will throw an error if you try
-          * to set the value of a control that doesn't exist or if you exclude the
-          * value of a control.
-          * *
-          * ### Example
-          * *
-          * ```
-          * const arr = new FormArray([
-          * new FormControl(),
-          * new FormControl()
-          * ]);
-          * console.log(arr.value);   // [null, null]
-          * *
-          * arr.setValue(['Nancy', 'Drew']);
-          * console.log(arr.value);   // ['Nancy', 'Drew']
-          * ```
+         *  Sets the value of the {\@link FormArray}. It accepts an array that matches
+         *  the structure of the control.
+         *
+         * This method performs strict checks, so it will throw an error if you try
+         * to set the value of a control that doesn't exist or if you exclude the
+         * value of a control.
+         *
+         *  ### Example
+         *
+         *  ```
+         *  const arr = new FormArray([
+         *     new FormControl(),
+         *     new FormControl()
+         *  ]);
+         *  console.log(arr.value);   // [null, null]
+         *
+         *  arr.setValue(['Nancy', 'Drew']);
+         *  console.log(arr.value);   // ['Nancy', 'Drew']
+         *  ```
          * @param {?} value
          * @param {?=} __1
          * @return {?}
@@ -3550,24 +3626,24 @@
             this.updateValueAndValidity({ onlySelf: onlySelf, emitEvent: emitEvent });
         };
         /**
-         *  Patches the value of the {@link FormArray}. It accepts an array that matches the
-          * structure of the control, and will do its best to match the values to the correct
-          * controls in the group.
-          * *
-          * It accepts both super-sets and sub-sets of the array without throwing an error.
-          * *
-          * ### Example
-          * *
-          * ```
-          * const arr = new FormArray([
-          * new FormControl(),
-          * new FormControl()
-          * ]);
-          * console.log(arr.value);   // [null, null]
-          * *
-          * arr.patchValue(['Nancy']);
-          * console.log(arr.value);   // ['Nancy', null]
-          * ```
+         *  Patches the value of the {\@link FormArray}. It accepts an array that matches the
+         *  structure of the control, and will do its best to match the values to the correct
+         *  controls in the group.
+         *
+         *  It accepts both super-sets and sub-sets of the array without throwing an error.
+         *
+         *  ### Example
+         *
+         *  ```
+         *  const arr = new FormArray([
+         *     new FormControl(),
+         *     new FormControl()
+         *  ]);
+         *  console.log(arr.value);   // [null, null]
+         *
+         *  arr.patchValue(['Nancy']);
+         *  console.log(arr.value);   // ['Nancy', null]
+         *  ```
          * @param {?} value
          * @param {?=} __1
          * @return {?}
@@ -3583,35 +3659,35 @@
             this.updateValueAndValidity({ onlySelf: onlySelf, emitEvent: emitEvent });
         };
         /**
-         *  Resets the {@link FormArray}. This means by default:
-          * *
-          * * The array and all descendants are marked `pristine`
-          * * The array and all descendants are marked `untouched`
-          * * The value of all descendants will be null or null maps
-          * *
-          * You can also reset to a specific form state by passing in an array of states
-          * that matches the structure of the control. The state can be a standalone value
-          * or a form state object with both a value and a disabled status.
-          * *
-          * ### Example
-          * *
-          * ```ts
-          * this.arr.reset(['name', 'last name']);
-          * *
-          * console.log(this.arr.value);  // ['name', 'last name']
-          * ```
-          * *
-          * - OR -
-          * *
-          * ```
-          * this.arr.reset([
-          * {value: 'name', disabled: true},
-          * 'last'
-          * ]);
-          * *
-          * console.log(this.arr.value);  // ['name', 'last name']
-          * console.log(this.arr.get(0).status);  // 'DISABLED'
-          * ```
+         * Resets the {\@link FormArray}. This means by default:
+         *
+         * * The array and all descendants are marked `pristine`
+         * * The array and all descendants are marked `untouched`
+         * * The value of all descendants will be null or null maps
+         *
+         * You can also reset to a specific form state by passing in an array of states
+         * that matches the structure of the control. The state can be a standalone value
+         * or a form state object with both a value and a disabled status.
+         *
+         * ### Example
+         *
+         * ```ts
+         * this.arr.reset(['name', 'last name']);
+         *
+         * console.log(this.arr.value);  // ['name', 'last name']
+         * ```
+         *
+         * - OR -
+         *
+         * ```
+         * this.arr.reset([
+         *   {value: 'name', disabled: true},
+         *   'last'
+         * ]);
+         *
+         * console.log(this.arr.value);  // ['name', 'last name']
+         * console.log(this.arr.get(0).status);  // 'DISABLED'
+         * ```
          * @param {?=} value
          * @param {?=} __1
          * @return {?}
@@ -3627,14 +3703,15 @@
             this._updateTouched({ onlySelf: onlySelf });
         };
         /**
-         *  The aggregate value of the array, including any disabled controls.
-          * *
-          * If you'd like to include all values regardless of disabled status, use this method.
-          * Otherwise, the `value` property is the best way to get the value of the array.
+         * The aggregate value of the array, including any disabled controls.
+         *
+         * If you'd like to include all values regardless of disabled status, use this method.
+         * Otherwise, the `value` property is the best way to get the value of the array.
          * @return {?}
          */
         FormArray.prototype.getRawValue = function () { return this.controls.map(function (control) { return control.value; }); };
         /**
+         * \@internal
          * @param {?} index
          * @return {?}
          */
@@ -3647,6 +3724,7 @@
             }
         };
         /**
+         * \@internal
          * @param {?} cb
          * @return {?}
          */
@@ -3654,6 +3732,7 @@
             this.controls.forEach(function (control, index) { cb(control, index); });
         };
         /**
+         * \@internal
          * @return {?}
          */
         FormArray.prototype._updateValue = function () {
@@ -3662,6 +3741,7 @@
                 .map(function (control) { return control.value; });
         };
         /**
+         * \@internal
          * @param {?} condition
          * @return {?}
          */
@@ -3669,6 +3749,7 @@
             return this.controls.some(function (control) { return control.enabled && condition(control); });
         };
         /**
+         * \@internal
          * @return {?}
          */
         FormArray.prototype._setUpControls = function () {
@@ -3676,6 +3757,7 @@
             this._forEachChild(function (control) { return _this._registerControl(control); });
         };
         /**
+         * \@internal
          * @param {?} value
          * @return {?}
          */
@@ -3687,6 +3769,7 @@
             });
         };
         /**
+         * \@internal
          * @return {?}
          */
         FormArray.prototype._allControlsDisabled = function () {
@@ -3726,33 +3809,35 @@
     };
     var /** @type {?} */ resolvedPromise = Promise.resolve(null);
     /**
-     *  to track aggregate form value and validation status.
-      * *
-      * *
-      * As soon as you import the `FormsModule`, this directive becomes active by default on
-      * all `<form>` tags.  You don't need to add a special selector.
-      * *
-      * You can export the directive into a local template variable using `ngForm` as the key
-      * (ex: `#myForm="ngForm"`). This is optional, but useful.  Many properties from the underlying
-      * {@link FormGroup} instance are duplicated on the directive itself, so a reference to it
-      * will give you access to the aggregate value and validity status of the form, as well as
-      * user interaction properties like `dirty` and `touched`.
-      * *
-      * To register child controls with the form, you'll want to use {@link NgModel} with a
-      * `name` attribute.  You can also use {@link NgModelGroup} if you'd like to create
-      * sub-groups within the form.
-      * *
-      * You can listen to the directive's `ngSubmit` event to be notified when the user has
-      * triggered a form submission. The `ngSubmit` event will be emitted with the original form
-      * submission event.
-      * *
-      * {@example forms/ts/simpleForm/simple_form_example.ts region='Component'}
-      * *
-      * * **npm package**: `@angular/forms`
-      * *
-      * * **NgModule**: `FormsModule`
-      * *
-      * @stable
+     * \@whatItDoes Creates a top-level {\@link FormGroup} instance and binds it to a form
+     * to track aggregate form value and validation status.
+     *
+     * \@howToUse
+     *
+     * As soon as you import the `FormsModule`, this directive becomes active by default on
+     * all `<form>` tags.  You don't need to add a special selector.
+     *
+     * You can export the directive into a local template variable using `ngForm` as the key
+     * (ex: `#myForm="ngForm"`). This is optional, but useful.  Many properties from the underlying
+     * {\@link FormGroup} instance are duplicated on the directive itself, so a reference to it
+     * will give you access to the aggregate value and validity status of the form, as well as
+     * user interaction properties like `dirty` and `touched`.
+     *
+     * To register child controls with the form, you'll want to use {\@link NgModel} with a
+     * `name` attribute.  You can also use {\@link NgModelGroup} if you'd like to create
+     * sub-groups within the form.
+     *
+     * You can listen to the directive's `ngSubmit` event to be notified when the user has
+     * triggered a form submission. The `ngSubmit` event will be emitted with the original form
+     * submission event.
+     *
+     * {\@example forms/ts/simpleForm/simple_form_example.ts region='Component'}
+     *
+     * * **npm package**: `\@angular/forms`
+     *
+     * * **NgModule**: `FormsModule`
+     *
+     *  \@stable
      */
     var NgForm = (function (_super) {
         __extends$4(NgForm, _super);
@@ -3910,6 +3995,7 @@
             this._submitted = false;
         };
         /**
+         * \@internal
          * @param {?} path
          * @return {?}
          */
@@ -3996,26 +4082,29 @@
         useExisting: _angular_core.forwardRef(function () { return NgModelGroup; })
     };
     /**
-     *  *
-      * *
-      * This directive can only be used as a child of {@link NgForm} (or in other words,
-      * within `<form>` tags).
-      * *
-      * Use this directive if you'd like to create a sub-group within a form. This can
-      * come in handy if you want to validate a sub-group of your form separately from
-      * the rest of your form, or if some values in your domain model make more sense to
-      * consume together in a nested object.
-      * *
-      * Pass in the name you'd like this sub-group to have and it will become the key
-      * for the sub-group in the form's full value. You can also export the directive into
-      * a local template variable using `ngModelGroup` (ex: `#myGroup="ngModelGroup"`).
-      * *
-      * {@example forms/ts/ngModelGroup/ng_model_group_example.ts region='Component'}
-      * *
-      * * **npm package**: `@angular/forms`
-      * *
-      * * **NgModule**: `FormsModule`
-      * *
+     * \@whatItDoes Creates and binds a {\@link FormGroup} instance to a DOM element.
+     *
+     * \@howToUse
+     *
+     * This directive can only be used as a child of {\@link NgForm} (or in other words,
+     * within `<form>` tags).
+     *
+     * Use this directive if you'd like to create a sub-group within a form. This can
+     * come in handy if you want to validate a sub-group of your form separately from
+     * the rest of your form, or if some values in your domain model make more sense to
+     * consume together in a nested object.
+     *
+     * Pass in the name you'd like this sub-group to have and it will become the key
+     * for the sub-group in the form's full value. You can also export the directive into
+     * a local template variable using `ngModelGroup` (ex: `#myGroup="ngModelGroup"`).
+     *
+     * {\@example forms/ts/ngModelGroup/ng_model_group_example.ts region='Component'}
+     *
+     * * **npm package**: `\@angular/forms`
+     *
+     * * **NgModule**: `FormsModule`
+     *
+     * \@stable
      */
     var NgModelGroup = (function (_super) {
         __extends$8(NgModelGroup, _super);
@@ -4031,6 +4120,7 @@
             this._asyncValidators = asyncValidators;
         }
         /**
+         * \@internal
          * @return {?}
          */
         NgModelGroup.prototype._checkParentType = function () {
@@ -4088,60 +4178,62 @@
      */
     var /** @type {?} */ resolvedPromise$1 = Promise.resolve(null);
     /**
-     *  to a form control element.
-      * *
-      * The {@link FormControl} instance will track the value, user interaction, and
-      * validation status of the control and keep the view synced with the model. If used
-      * within a parent form, the directive will also register itself with the form as a child
-      * control.
-      * *
-      * *
-      * This directive can be used by itself or as part of a larger form. All you need is the
-      * `ngModel` selector to activate it.
-      * *
-      * It accepts a domain model as an optional {@link @Input}. If you have a one-way binding
-      * to `ngModel` with `[]` syntax, changing the value of the domain model in the component
-      * class will set the value in the view. If you have a two-way binding with `[()]` syntax
-      * (also known as 'banana-box syntax'), the value in the UI will always be synced back to
-      * the domain model in your class as well.
-      * *
-      * If you wish to inspect the properties of the associated {@link FormControl} (like
-      * validity state), you can also export the directive into a local template variable using
-      * `ngModel` as the key (ex: `#myVar="ngModel"`). You can then access the control using the
-      * directive's `control` property, but most properties you'll need (like `valid` and `dirty`)
-      * will fall through to the control anyway, so you can access them directly. You can see a
-      * full list of properties directly available in {@link AbstractControlDirective}.
-      * *
-      * The following is an example of a simple standalone control using `ngModel`:
-      * *
-      * {@example forms/ts/simpleNgModel/simple_ng_model_example.ts region='Component'}
-      * *
-      * When using the `ngModel` within `<form>` tags, you'll also need to supply a `name` attribute
-      * so that the control can be registered with the parent form under that name.
-      * *
-      * It's worth noting that in the context of a parent form, you often can skip one-way or
-      * two-way binding because the parent form will sync the value for you. You can access
-      * its properties by exporting it into a local template variable using `ngForm` (ex:
-      * `#f="ngForm"`). Then you can pass it where it needs to go on submit.
-      * *
-      * If you do need to populate initial values into your form, using a one-way binding for
-      * `ngModel` tends to be sufficient as long as you use the exported form's value rather
-      * than the domain model's value on submit.
-      * *
-      * Take a look at an example of using `ngModel` within a form:
-      * *
-      * {@example forms/ts/simpleForm/simple_form_example.ts region='Component'}
-      * *
-      * To see `ngModel` examples with different form control types, see:
-      * *
-      * * Radio buttons: {@link RadioControlValueAccessor}
-      * * Selects: {@link SelectControlValueAccessor}
-      * *
-      * **npm package**: `@angular/forms`
-      * *
-      * **NgModule**: `FormsModule`
-      * *
-      * @stable
+     * \@whatItDoes Creates a {\@link FormControl} instance from a domain model and binds it
+     * to a form control element.
+     *
+     * The {\@link FormControl} instance will track the value, user interaction, and
+     * validation status of the control and keep the view synced with the model. If used
+     * within a parent form, the directive will also register itself with the form as a child
+     * control.
+     *
+     * \@howToUse
+     *
+     * This directive can be used by itself or as part of a larger form. All you need is the
+     * `ngModel` selector to activate it.
+     *
+     * It accepts a domain model as an optional {\@link \@Input}. If you have a one-way binding
+     * to `ngModel` with `[]` syntax, changing the value of the domain model in the component
+     * class will set the value in the view. If you have a two-way binding with `[()]` syntax
+     * (also known as 'banana-box syntax'), the value in the UI will always be synced back to
+     * the domain model in your class as well.
+     *
+     * If you wish to inspect the properties of the associated {\@link FormControl} (like
+     * validity state), you can also export the directive into a local template variable using
+     * `ngModel` as the key (ex: `#myVar="ngModel"`). You can then access the control using the
+     * directive's `control` property, but most properties you'll need (like `valid` and `dirty`)
+     * will fall through to the control anyway, so you can access them directly. You can see a
+     * full list of properties directly available in {\@link AbstractControlDirective}.
+     *
+     * The following is an example of a simple standalone control using `ngModel`:
+     *
+     * {\@example forms/ts/simpleNgModel/simple_ng_model_example.ts region='Component'}
+     *
+     * When using the `ngModel` within `<form>` tags, you'll also need to supply a `name` attribute
+     * so that the control can be registered with the parent form under that name.
+     *
+     * It's worth noting that in the context of a parent form, you often can skip one-way or
+     * two-way binding because the parent form will sync the value for you. You can access
+     * its properties by exporting it into a local template variable using `ngForm` (ex:
+     * `#f="ngForm"`). Then you can pass it where it needs to go on submit.
+     *
+     * If you do need to populate initial values into your form, using a one-way binding for
+     * `ngModel` tends to be sufficient as long as you use the exported form's value rather
+     * than the domain model's value on submit.
+     *
+     * Take a look at an example of using `ngModel` within a form:
+     *
+     * {\@example forms/ts/simpleForm/simple_form_example.ts region='Component'}
+     *
+     * To see `ngModel` examples with different form control types, see:
+     *
+     * * Radio buttons: {\@link RadioControlValueAccessor}
+     * * Selects: {\@link SelectControlValueAccessor}
+     *
+     * **npm package**: `\@angular/forms`
+     *
+     * **NgModule**: `FormsModule`
+     *
+     *  \@stable
      */
     var NgModel = (function (_super) {
         __extends$7(NgModel, _super);
@@ -4395,44 +4487,46 @@
         useExisting: _angular_core.forwardRef(function () { return FormControlDirective; })
     };
     /**
-     *  *
-      * In other words, this directive ensures that any values written to the {@link FormControl}
-      * instance programmatically will be written to the DOM element (model -> view). Conversely,
-      * any values written to the DOM element through user input will be reflected in the
-      * {@link FormControl} instance (view -> model).
-      * *
-      * *
-      * Use this directive if you'd like to create and manage a {@link FormControl} instance directly.
-      * Simply create a {@link FormControl}, save it to your component class, and pass it into the
-      * {@link FormControlDirective}.
-      * *
-      * This directive is designed to be used as a standalone control.  Unlike {@link FormControlName},
-      * it does not require that your {@link FormControl} instance be part of any parent
-      * {@link FormGroup}, and it won't be registered to any {@link FormGroupDirective} that
-      * exists above it.
-      * *
-      * **Get the value**: the `value` property is always synced and available on the
-      * {@link FormControl} instance. See a full list of available properties in
-      * {@link AbstractControl}.
-      * *
-      * **Set the value**: You can pass in an initial value when instantiating the {@link FormControl},
-      * or you can set it programmatically later using {@link AbstractControl.setValue} or
-      * {@link AbstractControl.patchValue}.
-      * *
-      * **Listen to value**: If you want to listen to changes in the value of the control, you can
-      * subscribe to the {@link AbstractControl.valueChanges} event.  You can also listen to
-      * {@link AbstractControl.statusChanges} to be notified when the validation status is
-      * re-calculated.
-      * *
-      * ### Example
-      * *
-      * {@example forms/ts/simpleFormControl/simple_form_control_example.ts region='Component'}
-      * *
-      * * **npm package**: `@angular/forms`
-      * *
-      * * **NgModule**: `ReactiveFormsModule`
-      * *
-      * @stable
+     * \@whatItDoes Syncs a standalone {\@link FormControl} instance to a form control element.
+     *
+     * In other words, this directive ensures that any values written to the {\@link FormControl}
+     * instance programmatically will be written to the DOM element (model -> view). Conversely,
+     * any values written to the DOM element through user input will be reflected in the
+     * {\@link FormControl} instance (view -> model).
+     *
+     * \@howToUse
+     *
+     * Use this directive if you'd like to create and manage a {\@link FormControl} instance directly.
+     * Simply create a {\@link FormControl}, save it to your component class, and pass it into the
+     * {\@link FormControlDirective}.
+     *
+     * This directive is designed to be used as a standalone control.  Unlike {\@link FormControlName},
+     * it does not require that your {\@link FormControl} instance be part of any parent
+     * {\@link FormGroup}, and it won't be registered to any {\@link FormGroupDirective} that
+     * exists above it.
+     *
+     * **Get the value**: the `value` property is always synced and available on the
+     * {\@link FormControl} instance. See a full list of available properties in
+     * {\@link AbstractControl}.
+     *
+     * **Set the value**: You can pass in an initial value when instantiating the {\@link FormControl},
+     * or you can set it programmatically later using {\@link AbstractControl.setValue} or
+     * {\@link AbstractControl.patchValue}.
+     *
+     * **Listen to value**: If you want to listen to changes in the value of the control, you can
+     * subscribe to the {\@link AbstractControl.valueChanges} event.  You can also listen to
+     * {\@link AbstractControl.statusChanges} to be notified when the validation status is
+     * re-calculated.
+     *
+     * ### Example
+     *
+     * {\@example forms/ts/simpleFormControl/simple_form_control_example.ts region='Component'}
+     *
+     * * **npm package**: `\@angular/forms`
+     *
+     * * **NgModule**: `ReactiveFormsModule`
+     *
+     *  \@stable
      */
     var FormControlDirective = (function (_super) {
         __extends$9(FormControlDirective, _super);
@@ -4558,37 +4652,39 @@
         useExisting: _angular_core.forwardRef(function () { return FormGroupDirective; })
     };
     /**
-     *  *
-      * *
-      * This directive accepts an existing {@link FormGroup} instance. It will then use this
-      * {@link FormGroup} instance to match any child {@link FormControl}, {@link FormGroup},
-      * and {@link FormArray} instances to child {@link FormControlName}, {@link FormGroupName},
-      * and {@link FormArrayName} directives.
-      * *
-      * **Set value**: You can set the form's initial value when instantiating the
-      * {@link FormGroup}, or you can set it programmatically later using the {@link FormGroup}'s
-      * {@link AbstractControl.setValue} or {@link AbstractControl.patchValue} methods.
-      * *
-      * **Listen to value**: If you want to listen to changes in the value of the form, you can subscribe
-      * to the {@link FormGroup}'s {@link AbstractControl.valueChanges} event.  You can also listen to
-      * its {@link AbstractControl.statusChanges} event to be notified when the validation status is
-      * re-calculated.
-      * *
-      * Furthermore, you can listen to the directive's `ngSubmit` event to be notified when the user has
-      * triggered a form submission. The `ngSubmit` event will be emitted with the original form
-      * submission event.
-      * *
-      * ### Example
-      * *
-      * In this example, we create form controls for first name and last name.
-      * *
-      * {@example forms/ts/simpleFormGroup/simple_form_group_example.ts region='Component'}
-      * *
-      * **npm package**: `@angular/forms`
-      * *
-      * **NgModule**: {@link ReactiveFormsModule}
-      * *
-      * @stable
+     * \@whatItDoes Binds an existing {\@link FormGroup} to a DOM element.
+     *
+     * \@howToUse
+     *
+     * This directive accepts an existing {\@link FormGroup} instance. It will then use this
+     * {\@link FormGroup} instance to match any child {\@link FormControl}, {\@link FormGroup},
+     * and {\@link FormArray} instances to child {\@link FormControlName}, {\@link FormGroupName},
+     * and {\@link FormArrayName} directives.
+     *
+     * **Set value**: You can set the form's initial value when instantiating the
+     * {\@link FormGroup}, or you can set it programmatically later using the {\@link FormGroup}'s
+     * {\@link AbstractControl.setValue} or {\@link AbstractControl.patchValue} methods.
+     *
+     * **Listen to value**: If you want to listen to changes in the value of the form, you can subscribe
+     * to the {\@link FormGroup}'s {\@link AbstractControl.valueChanges} event.  You can also listen to
+     * its {\@link AbstractControl.statusChanges} event to be notified when the validation status is
+     * re-calculated.
+     *
+     * Furthermore, you can listen to the directive's `ngSubmit` event to be notified when the user has
+     * triggered a form submission. The `ngSubmit` event will be emitted with the original form
+     * submission event.
+     *
+     * ### Example
+     *
+     * In this example, we create form controls for first name and last name.
+     *
+     * {\@example forms/ts/simpleFormGroup/simple_form_group_example.ts region='Component'}
+     *
+     * **npm package**: `\@angular/forms`
+     *
+     * **NgModule**: {\@link ReactiveFormsModule}
+     *
+     *  \@stable
      */
     var FormGroupDirective = (function (_super) {
         __extends$11(FormGroupDirective, _super);
@@ -4740,6 +4836,7 @@
             this._submitted = false;
         };
         /**
+         * \@internal
          * @return {?}
          */
         FormGroupDirective.prototype._updateDomValue = function () {
@@ -4819,45 +4916,48 @@
         useExisting: _angular_core.forwardRef(function () { return FormGroupName; })
     };
     /**
-     *  *
-      * *
-      * This directive can only be used with a parent {@link FormGroupDirective} (selector:
-      * `[formGroup]`).
-      * *
-      * It accepts the string name of the nested {@link FormGroup} you want to link, and
-      * will look for a {@link FormGroup} registered with that name in the parent
-      * {@link FormGroup} instance you passed into {@link FormGroupDirective}.
-      * *
-      * Nested form groups can come in handy when you want to validate a sub-group of a
-      * form separately from the rest or when you'd like to group the values of certain
-      * controls into their own nested object.
-      * *
-      * **Access the group**: You can access the associated {@link FormGroup} using the
-      * {@link AbstractControl.get} method. Ex: `this.form.get('name')`.
-      * *
-      * You can also access individual controls within the group using dot syntax.
-      * Ex: `this.form.get('name.first')`
-      * *
-      * **Get the value**: the `value` property is always synced and available on the
-      * {@link FormGroup}. See a full list of available properties in {@link AbstractControl}.
-      * *
-      * **Set the value**: You can set an initial value for each child control when instantiating
-      * the {@link FormGroup}, or you can set it programmatically later using
-      * {@link AbstractControl.setValue} or {@link AbstractControl.patchValue}.
-      * *
-      * **Listen to value**: If you want to listen to changes in the value of the group, you can
-      * subscribe to the {@link AbstractControl.valueChanges} event.  You can also listen to
-      * {@link AbstractControl.statusChanges} to be notified when the validation status is
-      * re-calculated.
-      * *
-      * ### Example
-      * *
-      * {@example forms/ts/nestedFormGroup/nested_form_group_example.ts region='Component'}
-      * *
-      * * **npm package**: `@angular/forms`
-      * *
-      * * **NgModule**: `ReactiveFormsModule`
-      * *
+     * \@whatItDoes Syncs a nested {\@link FormGroup} to a DOM element.
+     *
+     * \@howToUse
+     *
+     * This directive can only be used with a parent {\@link FormGroupDirective} (selector:
+     * `[formGroup]`).
+     *
+     * It accepts the string name of the nested {\@link FormGroup} you want to link, and
+     * will look for a {\@link FormGroup} registered with that name in the parent
+     * {\@link FormGroup} instance you passed into {\@link FormGroupDirective}.
+     *
+     * Nested form groups can come in handy when you want to validate a sub-group of a
+     * form separately from the rest or when you'd like to group the values of certain
+     * controls into their own nested object.
+     *
+     * **Access the group**: You can access the associated {\@link FormGroup} using the
+     * {\@link AbstractControl.get} method. Ex: `this.form.get('name')`.
+     *
+     * You can also access individual controls within the group using dot syntax.
+     * Ex: `this.form.get('name.first')`
+     *
+     * **Get the value**: the `value` property is always synced and available on the
+     * {\@link FormGroup}. See a full list of available properties in {\@link AbstractControl}.
+     *
+     * **Set the value**: You can set an initial value for each child control when instantiating
+     * the {\@link FormGroup}, or you can set it programmatically later using
+     * {\@link AbstractControl.setValue} or {\@link AbstractControl.patchValue}.
+     *
+     * **Listen to value**: If you want to listen to changes in the value of the group, you can
+     * subscribe to the {\@link AbstractControl.valueChanges} event.  You can also listen to
+     * {\@link AbstractControl.statusChanges} to be notified when the validation status is
+     * re-calculated.
+     *
+     * ### Example
+     *
+     * {\@example forms/ts/nestedFormGroup/nested_form_group_example.ts region='Component'}
+     *
+     * * **npm package**: `\@angular/forms`
+     *
+     * * **NgModule**: `ReactiveFormsModule`
+     *
+     * \@stable
      */
     var FormGroupName = (function (_super) {
         __extends$12(FormGroupName, _super);
@@ -4873,6 +4973,7 @@
             this._asyncValidators = asyncValidators;
         }
         /**
+         * \@internal
          * @return {?}
          */
         FormGroupName.prototype._checkParentType = function () {
@@ -4899,48 +5000,51 @@
         useExisting: _angular_core.forwardRef(function () { return FormArrayName; })
     };
     /**
-     *  *
-      * *
-      * This directive is designed to be used with a parent {@link FormGroupDirective} (selector:
-      * `[formGroup]`).
-      * *
-      * It accepts the string name of the nested {@link FormArray} you want to link, and
-      * will look for a {@link FormArray} registered with that name in the parent
-      * {@link FormGroup} instance you passed into {@link FormGroupDirective}.
-      * *
-      * Nested form arrays can come in handy when you have a group of form controls but
-      * you're not sure how many there will be. Form arrays allow you to create new
-      * form controls dynamically.
-      * *
-      * **Access the array**: You can access the associated {@link FormArray} using the
-      * {@link AbstractControl.get} method on the parent {@link FormGroup}.
-      * Ex: `this.form.get('cities')`.
-      * *
-      * **Get the value**: the `value` property is always synced and available on the
-      * {@link FormArray}. See a full list of available properties in {@link AbstractControl}.
-      * *
-      * **Set the value**: You can set an initial value for each child control when instantiating
-      * the {@link FormArray}, or you can set the value programmatically later using the
-      * {@link FormArray}'s {@link AbstractControl.setValue} or {@link AbstractControl.patchValue}
-      * methods.
-      * *
-      * **Listen to value**: If you want to listen to changes in the value of the array, you can
-      * subscribe to the {@link FormArray}'s {@link AbstractControl.valueChanges} event.  You can also
-      * listen to its {@link AbstractControl.statusChanges} event to be notified when the validation
-      * status is re-calculated.
-      * *
-      * **Add new controls**: You can add new controls to the {@link FormArray} dynamically by
-      * calling its {@link FormArray.push} method.
-      * Ex: `this.form.get('cities').push(new FormControl());`
-      * *
-      * ### Example
-      * *
-      * {@example forms/ts/nestedFormArray/nested_form_array_example.ts region='Component'}
-      * *
-      * * **npm package**: `@angular/forms`
-      * *
-      * * **NgModule**: `ReactiveFormsModule`
-      * *
+     * \@whatItDoes Syncs a nested {\@link FormArray} to a DOM element.
+     *
+     * \@howToUse
+     *
+     * This directive is designed to be used with a parent {\@link FormGroupDirective} (selector:
+     * `[formGroup]`).
+     *
+     * It accepts the string name of the nested {\@link FormArray} you want to link, and
+     * will look for a {\@link FormArray} registered with that name in the parent
+     * {\@link FormGroup} instance you passed into {\@link FormGroupDirective}.
+     *
+     * Nested form arrays can come in handy when you have a group of form controls but
+     * you're not sure how many there will be. Form arrays allow you to create new
+     * form controls dynamically.
+     *
+     * **Access the array**: You can access the associated {\@link FormArray} using the
+     * {\@link AbstractControl.get} method on the parent {\@link FormGroup}.
+     * Ex: `this.form.get('cities')`.
+     *
+     * **Get the value**: the `value` property is always synced and available on the
+     * {\@link FormArray}. See a full list of available properties in {\@link AbstractControl}.
+     *
+     * **Set the value**: You can set an initial value for each child control when instantiating
+     * the {\@link FormArray}, or you can set the value programmatically later using the
+     * {\@link FormArray}'s {\@link AbstractControl.setValue} or {\@link AbstractControl.patchValue}
+     * methods.
+     *
+     * **Listen to value**: If you want to listen to changes in the value of the array, you can
+     * subscribe to the {\@link FormArray}'s {\@link AbstractControl.valueChanges} event.  You can also
+     * listen to its {\@link AbstractControl.statusChanges} event to be notified when the validation
+     * status is re-calculated.
+     *
+     * **Add new controls**: You can add new controls to the {\@link FormArray} dynamically by
+     * calling its {\@link FormArray.push} method.
+     *  Ex: `this.form.get('cities').push(new FormControl());`
+     *
+     * ### Example
+     *
+     * {\@example forms/ts/nestedFormArray/nested_form_array_example.ts region='Component'}
+     *
+     * * **npm package**: `\@angular/forms`
+     *
+     * * **NgModule**: `ReactiveFormsModule`
+     *
+     * \@stable
      */
     var FormArrayName = (function (_super) {
         __extends$12(FormArrayName, _super);
@@ -5060,53 +5164,55 @@
         useExisting: _angular_core.forwardRef(function () { return FormControlName; })
     };
     /**
-     *  element by name.
-      * *
-      * In other words, this directive ensures that any values written to the {@link FormControl}
-      * instance programmatically will be written to the DOM element (model -> view). Conversely,
-      * any values written to the DOM element through user input will be reflected in the
-      * {@link FormControl} instance (view -> model).
-      * *
-      * *
-      * This directive is designed to be used with a parent {@link FormGroupDirective} (selector:
-      * `[formGroup]`).
-      * *
-      * It accepts the string name of the {@link FormControl} instance you want to
-      * link, and will look for a {@link FormControl} registered with that name in the
-      * closest {@link FormGroup} or {@link FormArray} above it.
-      * *
-      * **Access the control**: You can access the {@link FormControl} associated with
-      * this directive by using the {@link AbstractControl.get} method.
-      * Ex: `this.form.get('first');`
-      * *
-      * **Get value**: the `value` property is always synced and available on the {@link FormControl}.
-      * See a full list of available properties in {@link AbstractControl}.
-      * *
-      * **Set value**: You can set an initial value for the control when instantiating the
-      * {@link FormControl}, or you can set it programmatically later using
-      * {@link AbstractControl.setValue} or {@link AbstractControl.patchValue}.
-      * *
-      * **Listen to value**: If you want to listen to changes in the value of the control, you can
-      * subscribe to the {@link AbstractControl.valueChanges} event.  You can also listen to
-      * {@link AbstractControl.statusChanges} to be notified when the validation status is
-      * re-calculated.
-      * *
-      * ### Example
-      * *
-      * In this example, we create form controls for first name and last name.
-      * *
-      * {@example forms/ts/simpleFormGroup/simple_form_group_example.ts region='Component'}
-      * *
-      * To see `formControlName` examples with different form control types, see:
-      * *
-      * * Radio buttons: {@link RadioControlValueAccessor}
-      * * Selects: {@link SelectControlValueAccessor}
-      * *
-      * **npm package**: `@angular/forms`
-      * *
-      * **NgModule**: {@link ReactiveFormsModule}
-      * *
-      * @stable
+     * \@whatItDoes Syncs a {\@link FormControl} in an existing {\@link FormGroup} to a form control
+     * element by name.
+     *
+     * In other words, this directive ensures that any values written to the {\@link FormControl}
+     * instance programmatically will be written to the DOM element (model -> view). Conversely,
+     * any values written to the DOM element through user input will be reflected in the
+     * {\@link FormControl} instance (view -> model).
+     *
+     * \@howToUse
+     *
+     * This directive is designed to be used with a parent {\@link FormGroupDirective} (selector:
+     * `[formGroup]`).
+     *
+     * It accepts the string name of the {\@link FormControl} instance you want to
+     * link, and will look for a {\@link FormControl} registered with that name in the
+     * closest {\@link FormGroup} or {\@link FormArray} above it.
+     *
+     * **Access the control**: You can access the {\@link FormControl} associated with
+     * this directive by using the {\@link AbstractControl.get} method.
+     * Ex: `this.form.get('first');`
+     *
+     * **Get value**: the `value` property is always synced and available on the {\@link FormControl}.
+     * See a full list of available properties in {\@link AbstractControl}.
+     *
+     *  **Set value**: You can set an initial value for the control when instantiating the
+     *  {\@link FormControl}, or you can set it programmatically later using
+     *  {\@link AbstractControl.setValue} or {\@link AbstractControl.patchValue}.
+     *
+     * **Listen to value**: If you want to listen to changes in the value of the control, you can
+     * subscribe to the {\@link AbstractControl.valueChanges} event.  You can also listen to
+     * {\@link AbstractControl.statusChanges} to be notified when the validation status is
+     * re-calculated.
+     *
+     * ### Example
+     *
+     * In this example, we create form controls for first name and last name.
+     *
+     * {\@example forms/ts/simpleFormGroup/simple_form_group_example.ts region='Component'}
+     *
+     * To see `formControlName` examples with different form control types, see:
+     *
+     * * Radio buttons: {\@link RadioControlValueAccessor}
+     * * Selects: {\@link SelectControlValueAccessor}
+     *
+     * **npm package**: `\@angular/forms`
+     *
+     * **NgModule**: {\@link ReactiveFormsModule}
+     *
+     *  \@stable
      */
     var FormControlName = (function (_super) {
         __extends$10(FormControlName, _super);
@@ -5263,15 +5369,16 @@
         multi: true
     };
     /**
-     *  A Directive that adds the `required` validator to any controls marked with the
-      * `required` attribute, via the {@link NG_VALIDATORS} binding.
-      * *
-      * ### Example
-      * *
-      * ```
-      * <input name="fullName" ngModel required>
-      * ```
-      * *
+     * A Directive that adds the `required` validator to any controls marked with the
+     * `required` attribute, via the {\@link NG_VALIDATORS} binding.
+     *
+     * ### Example
+     *
+     * ```
+     * <input name="fullName" ngModel required>
+     * ```
+     *
+     * \@stable
      */
     var RequiredValidator = (function () {
         function RequiredValidator() {
@@ -5320,15 +5427,16 @@
         return RequiredValidator;
     }());
     /**
-     *  A Directive that adds the `required` validator to checkbox controls marked with the
-      * `required` attribute, via the {@link NG_VALIDATORS} binding.
-      * *
-      * ### Example
-      * *
-      * ```
-      * <input type="checkbox" name="active" ngModel required>
-      * ```
-      * *
+     * A Directive that adds the `required` validator to checkbox controls marked with the
+     * `required` attribute, via the {\@link NG_VALIDATORS} binding.
+     *
+     * ### Example
+     *
+     * ```
+     * <input type="checkbox" name="active" ngModel required>
+     * ```
+     *
+     * \@experimental
      */
     var CheckboxRequiredValidator = (function (_super) {
         __extends$13(CheckboxRequiredValidator, _super);
@@ -5366,9 +5474,10 @@
         multi: true
     };
     /**
-     *  A directive which installs the {@link MinLengthValidator} for any `formControlName`,
-      * `formControl`, or control with `ngModel` that also has a `minlength` attribute.
-      * *
+     * A directive which installs the {\@link MinLengthValidator} for any `formControlName`,
+     * `formControl`, or control with `ngModel` that also has a `minlength` attribute.
+     *
+     * \@stable
      */
     var MinLengthValidator = (function () {
         function MinLengthValidator() {
@@ -5429,10 +5538,11 @@
         multi: true
     };
     /**
-     *  A directive which installs the {@link MaxLengthValidator} for any `formControlName,
-      * `formControl`,
-      * or control with `ngModel` that also has a `maxlength` attribute.
-      * *
+     * A directive which installs the {\@link MaxLengthValidator} for any `formControlName,
+     * `formControl`,
+     * or control with `ngModel` that also has a `maxlength` attribute.
+     *
+     * \@stable
      */
     var MaxLengthValidator = (function () {
         function MaxLengthValidator() {
@@ -5486,16 +5596,17 @@
         multi: true
     };
     /**
-     *  A Directive that adds the `pattern` validator to any controls marked with the
-      * `pattern` attribute, via the {@link NG_VALIDATORS} binding. Uses attribute value
-      * as the regex to validate Control value against.  Follows pattern attribute
-      * semantics; i.e. regex must match entire Control value.
-      * *
-      * ### Example
-      * *
-      * ```
-      * <input [name]="fullName" pattern="[a-zA-Z ]*" ngModel>
-      * ```
+     * A Directive that adds the `pattern` validator to any controls marked with the
+     * `pattern` attribute, via the {\@link NG_VALIDATORS} binding. Uses attribute value
+     * as the regex to validate Control value against.  Follows pattern attribute
+     * semantics; i.e. regex must match entire Control value.
+     *
+     * ### Example
+     *
+     * ```
+     * <input [name]="fullName" pattern="[a-zA-Z ]*" ngModel>
+     * ```
+     * \@stable
      */
     var PatternValidator = (function () {
         function PatternValidator() {
@@ -5541,30 +5652,33 @@
     }());
 
     /**
-     *  *
-      * It is essentially syntactic sugar that shortens the `new FormGroup()`,
-      * `new FormControl()`, and `new FormArray()` boilerplate that can build up in larger
-      * forms.
-      * *
-      * *
-      * To use, inject `FormBuilder` into your component class. You can then call its methods
-      * directly.
-      * *
-      * {@example forms/ts/formBuilder/form_builder_example.ts region='Component'}
-      * *
-      * * **npm package**: `@angular/forms`
-      * *
-      * * **NgModule**: {@link ReactiveFormsModule}
-      * *
+     * \@whatItDoes Creates an {\@link AbstractControl} from a user-specified configuration.
+     *
+     * It is essentially syntactic sugar that shortens the `new FormGroup()`,
+     * `new FormControl()`, and `new FormArray()` boilerplate that can build up in larger
+     * forms.
+     *
+     * \@howToUse
+     *
+     * To use, inject `FormBuilder` into your component class. You can then call its methods
+     * directly.
+     *
+     * {\@example forms/ts/formBuilder/form_builder_example.ts region='Component'}
+     *
+     *  * **npm package**: `\@angular/forms`
+     *
+     *  * **NgModule**: {\@link ReactiveFormsModule}
+     *
+     * \@stable
      */
     var FormBuilder = (function () {
         function FormBuilder() {
         }
         /**
-         *  Construct a new {@link FormGroup} with the given map of configuration.
-          * Valid keys for the `extra` parameter map are `validator` and `asyncValidator`.
-          * *
-          * See the {@link FormGroup} constructor for more details.
+         * Construct a new {\@link FormGroup} with the given map of configuration.
+         * Valid keys for the `extra` parameter map are `validator` and `asyncValidator`.
+         *
+         * See the {\@link FormGroup} constructor for more details.
          * @param {?} controlsConfig
          * @param {?=} extra
          * @return {?}
@@ -5577,12 +5691,12 @@
             return new FormGroup(controls, validator, asyncValidator);
         };
         /**
-         *  Construct a new {@link FormControl} with the given `formState`,`validator`, and
-          * `asyncValidator`.
-          * *
-          * `formState` can either be a standalone value for the form control or an object
-          * that contains both a value and a disabled status.
-          * *
+         * Construct a new {\@link FormControl} with the given `formState`,`validator`, and
+         * `asyncValidator`.
+         *
+         * `formState` can either be a standalone value for the form control or an object
+         * that contains both a value and a disabled status.
+         *
          * @param {?} formState
          * @param {?=} validator
          * @param {?=} asyncValidator
@@ -5594,8 +5708,8 @@
             return new FormControl(formState, validator, asyncValidator);
         };
         /**
-         *  Construct a {@link FormArray} from the given `controlsConfig` array of
-          * configuration, with the given optional `validator` and `asyncValidator`.
+         * Construct a {\@link FormArray} from the given `controlsConfig` array of
+         * configuration, with the given optional `validator` and `asyncValidator`.
          * @param {?} controlsConfig
          * @param {?=} validator
          * @param {?=} asyncValidator
@@ -5609,6 +5723,7 @@
             return new FormArray(controls, validator, asyncValidator);
         };
         /**
+         * \@internal
          * @param {?} controlsConfig
          * @return {?}
          */
@@ -5621,6 +5736,7 @@
             return controls;
         };
         /**
+         * \@internal
          * @param {?} controlConfig
          * @return {?}
          */
@@ -5650,7 +5766,7 @@
     /**
      * @stable
      */
-    var /** @type {?} */ VERSION = new _angular_core.Version('2.3.1');
+    var /** @type {?} */ VERSION = new _angular_core.Version('2.4.6');
 
     var /** @type {?} */ SHARED_FORM_DIRECTIVES = [
         NgSelectOption,
@@ -5673,7 +5789,7 @@
     var /** @type {?} */ TEMPLATE_DRIVEN_DIRECTIVES = [NgModel, NgModelGroup, NgForm];
     var /** @type {?} */ REACTIVE_DRIVEN_DIRECTIVES = [FormControlDirective, FormGroupDirective, FormControlName, FormGroupName, FormArrayName];
     /**
-     *  Internal module used for sharing directives between FormsModule and ReactiveFormsModule
+     * Internal module used for sharing directives between FormsModule and ReactiveFormsModule
      */
     var InternalFormsSharedModule = (function () {
         function InternalFormsSharedModule() {
@@ -5690,7 +5806,8 @@
     }());
 
     /**
-     *  The ng module for forms.
+     * The ng module for forms.
+     * \@stable
      */
     var FormsModule = (function () {
         function FormsModule() {
@@ -5707,7 +5824,8 @@
         return FormsModule;
     }());
     /**
-     *  The ng module for reactive forms.
+     * The ng module for reactive forms.
+     * \@stable
      */
     var ReactiveFormsModule = (function () {
         function ReactiveFormsModule() {

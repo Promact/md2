@@ -13,14 +13,14 @@ export var /** @type {?} */ CHECKBOX_VALUE_ACCESSOR = {
     multi: true,
 };
 /**
- *  The accessor for writing a value and listening to changes on a checkbox input element.
-  * *
-  * ### Example
-  * ```
-  * <input type="checkbox" name="rememberLogin" ngModel>
-  * ```
-  * *
-  * @stable
+ * The accessor for writing a value and listening to changes on a checkbox input element.
+ *
+ *  ### Example
+ *  ```
+ *  <input type="checkbox" name="rememberLogin" ngModel>
+ *  ```
+ *
+ *  \@stable
  */
 export var CheckboxControlValueAccessor = (function () {
     /**

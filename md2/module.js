@@ -8,7 +8,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import { NgModule } from '@angular/core';
-import { MdRippleModule, RtlModule, ObserveContentModule, PortalModule, OverlayModule, A11yModule, ProjectionModule, DefaultStyleCompatibilityModeModule } from './core/index';
+import { MdRippleModule, RtlModule, ObserveContentModule, PortalModule, OverlayModule, A11yModule, ProjectionModule, CompatibilityModule } from './core/index';
 import { Md2AccordionModule } from './accordion/index';
 import { Md2AutocompleteModule } from './autocomplete/index';
 import { Md2ChipsModule } from './chips/index';
@@ -48,7 +48,7 @@ var MD2_MODULES = [
     A11yModule,
     PlatformModule,
     ProjectionModule,
-    DefaultStyleCompatibilityModeModule,
+    CompatibilityModule,
     ObserveContentModule
 ];
 export var Md2RootModule = (function () {
@@ -80,7 +80,7 @@ export var Md2RootModule = (function () {
                 ProjectionModule.forRoot(),
                 RtlModule.forRoot(),
                 ObserveContentModule.forRoot(),
-                DefaultStyleCompatibilityModeModule.forRoot(),
+                CompatibilityModule.forRoot(),
             ],
             exports: MD2_MODULES,
         }), 
@@ -91,6 +91,7 @@ export var Md2RootModule = (function () {
 export var Md2Module = (function () {
     function Md2Module() {
     }
+    /** @deprecated */
     Md2Module.forRoot = function () {
         return { ngModule: Md2RootModule };
     };
@@ -103,5 +104,4 @@ export var Md2Module = (function () {
     ], Md2Module);
     return Md2Module;
 }());
-
 //# sourceMappingURL=module.js.map

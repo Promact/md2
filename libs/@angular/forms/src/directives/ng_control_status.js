@@ -92,9 +92,10 @@ export var /** @type {?} */ ngControlStatusHost = {
     '[class.ng-pending]': 'ngClassPending',
 };
 /**
- *  Directive automatically applied to Angular form controls that sets CSS classes
-  * based on control status (valid/invalid/dirty/etc).
-  * *
+ * Directive automatically applied to Angular form controls that sets CSS classes
+ * based on control status (valid/invalid/dirty/etc).
+ *
+ * \@stable
  */
 export var NgControlStatus = (function (_super) {
     __extends(NgControlStatus, _super);
@@ -123,9 +124,10 @@ function NgControlStatus_tsickle_Closure_declarations() {
     NgControlStatus.ctorParameters;
 }
 /**
- *  Directive automatically applied to Angular form groups that sets CSS classes
-  * based on control status (valid/invalid/dirty/etc).
-  * *
+ * Directive automatically applied to Angular form groups that sets CSS classes
+ * based on control status (valid/invalid/dirty/etc).
+ *
+ * \@stable
  */
 export var NgControlStatusGroup = (function (_super) {
     __extends(NgControlStatusGroup, _super);

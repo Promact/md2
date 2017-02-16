@@ -7,7 +7,7 @@
  */
 import { getSymbolIterator, isJsObject } from './lang';
 /**
- *  Wraps Javascript Objects
+ * Wraps Javascript Objects
  */
 export var StringMapWrapper = (function () {
     function StringMapWrapper() {

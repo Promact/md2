@@ -25,8 +25,12 @@ import { sanitizeUrl } from './url_sanitizer';
 var /** @type {?} */ VALUES = '[-,."\'%_!# a-zA-Z0-9]+';
 var /** @type {?} */ TRANSFORMATION_FNS = '(?:matrix|translate|scale|rotate|skew|perspective)(?:X|Y|3d)?';
 var /** @type {?} */ COLOR_FNS = '(?:rgb|hsl)a?';
-var /** @type {?} */ FN_ARGS = '\\([-0-9.%, a-zA-Z]+\\)';
-var /** @type {?} */ SAFE_STYLE_VALUE = new RegExp("^(" + VALUES + "|(?:" + TRANSFORMATION_FNS + "|" + COLOR_FNS + ")" + FN_ARGS + ")$", 'g');
+var /** @type {?} */ GRADIENTS = '(?:repeating-)?(?:linear|radial)-gradient';
+var /** @type {?} */ CSS3_FNS = '(?:calc|attr)';
+var /** @type {?} */ FN_ARGS = '\\([-0-9.%, #a-zA-Z]+\\)';
+var /** @type {?} */ SAFE_STYLE_VALUE = new RegExp(("^(" + VALUES + "|") +
+    ("(?:" + TRANSFORMATION_FNS + "|" + COLOR_FNS + "|" + GRADIENTS + "|" + CSS3_FNS + ")") +
+    (FN_ARGS + ")$"), 'g');
 /**
  * Matches a `url(...)` value with an arbitrary argument as long as it does
  * not contain parentheses.
@@ -47,12 +51,12 @@ var /** @type {?} */ SAFE_STYLE_VALUE = new RegExp("^(" + VALUES + "|(?:" + TRAN
  */
 var /** @type {?} */ URL_RE = /^url\(([^)]+)\)$/;
 /**
- *  Checks that quotes (" and ') are properly balanced inside a string. Assumes
-  * that neither escape (\) nor any other character that could result in
-  * breaking out of a string parsing context are allowed;
-  * see http://www.w3.org/TR/css3-syntax/#string-token-diagram.
-  * *
-  * This code was taken from the Closure sanitization library.
+ * Checks that quotes (" and ') are properly balanced inside a string. Assumes
+ * that neither escape (\) nor any other character that could result in
+ * breaking out of a string parsing context are allowed;
+ * see http://www.w3.org/TR/css3-syntax/#string-token-diagram.
+ *
+ * This code was taken from the Closure sanitization library.
  * @param {?} value
  * @return {?}
  */
@@ -71,8 +75,8 @@ function hasBalancedQuotes(value) {
     return outsideSingle && outsideDouble;
 }
 /**
- *  Sanitizes the given untrusted CSS style property value (i.e. not an entire object, just a single
-  * value) and returns a value that is safe to use in a browser environment.
+ * Sanitizes the given untrusted CSS style property value (i.e. not an entire object, just a single
+ * value) and returns a value that is safe to use in a browser environment.
  * @param {?} value
  * @return {?}
  */

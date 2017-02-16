@@ -7,6 +7,7 @@
  */
 import { scheduleMicroTask } from '../facade/lang';
 /**
+ * \@experimental Animation support is experimental.
  * @abstract
  */
 export var AnimationPlayer = (function () {
@@ -100,6 +101,7 @@ export var NoOpAnimationPlayer = (function () {
         scheduleMicroTask(function () { return _this._onFinish(); });
     }
     /**
+     * \@internal
      * @return {?}
      */
     NoOpAnimationPlayer.prototype._onFinish = function () {

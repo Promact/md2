@@ -12,6 +12,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 import { Inject, Injectable, LOCALE_ID } from '@angular/core';
 /**
+ * \@experimental
  * @abstract
  */
 export var NgLocalization = (function () {
@@ -26,10 +27,11 @@ export var NgLocalization = (function () {
     return NgLocalization;
 }());
 /**
- *  Returns the plural category for a given value.
-  * - "=value" when the case exists,
-  * - the plural category otherwise
-  * *
+ * Returns the plural category for a given value.
+ * - "=value" when the case exists,
+ * - the plural category otherwise
+ *
+ * \@internal
  * @param {?} value
  * @param {?} cases
  * @param {?} ngLocalization
@@ -50,8 +52,9 @@ export function getPluralCategory(value, cases, ngLocalization) {
     throw new Error("No plural message found for value \"" + value + "\"");
 }
 /**
- *  Returns the plural case based on the locale
-  * *
+ * Returns the plural case based on the locale
+ *
+ * \@experimental
  */
 export var NgLocaleLocalization = (function (_super) {
     __extends(NgLocaleLocalization, _super);
@@ -117,8 +120,9 @@ Plural[Plural.Few] = "Few";
 Plural[Plural.Many] = "Many";
 Plural[Plural.Other] = "Other";
 /**
- *  Returns the plural case based on the locale
-  * *
+ * Returns the plural case based on the locale
+ *
+ * \@experimental
  * @param {?} locale
  * @param {?} nLike
  * @return {?}

@@ -10,5 +10,4 @@ export function applyCssTransform(element, transformValue) {
     element.style.transform = value;
     element.style.webkitTransform = value;
 }
-
 //# sourceMappingURL=apply-transform.js.map

@@ -5,13 +5,23 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { Compiler, ComponentFactory, Injectable, Injector, ModuleWithComponentFactories } from '@angular/core';
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+import { Compiler, ComponentFactory, Injector, ModuleWithComponentFactories } from '@angular/core';
 import { AnimationCompiler } from '../animation/animation_compiler';
 import { AnimationParser } from '../animation/animation_parser';
 import { ProviderMeta, createHostComponentMeta, identifierName } from '../compile_metadata';
 import { CompilerConfig } from '../config';
 import { DirectiveWrapperCompiler } from '../directive_wrapper_compiler';
 import { stringify } from '../facade/lang';
+import { CompilerInjectable } from '../injectable';
 import { CompileMetadataResolver } from '../metadata_resolver';
 import { NgModuleCompiler } from '../ng_module_compiler';
 import * as ir from '../output/output_ast';
@@ -22,12 +32,13 @@ import { TemplateParser } from '../template_parser/template_parser';
 import { SyncAsyncResult } from '../util';
 import { ComponentFactoryDependency, DirectiveWrapperDependency, ViewClassDependency, ViewCompiler } from '../view_compiler/view_compiler';
 /**
- *  An internal module of the Angular compiler that begins with component types,
-  * extracts templates, and eventually produces a compiled version of the component
-  * ready for linking into an application.
-  * *
-  * from a trusted source. Attacker-controlled data introduced by a template could expose your
-  * application to XSS risks.  For more detail, see the [Security Guide](http://g.co/ng/security).
+ * An internal module of the Angular compiler that begins with component types,
+ * extracts templates, and eventually produces a compiled version of the component
+ * ready for linking into an application.
+ *
+ * \@security When compiling templates at runtime, you must ensure that the entire template comes
+ * from a trusted source. Attacker-controlled data introduced by a template could expose your
+ * application to XSS risks.  For more detail, see the [Security Guide](http://g.co/ng/security).
  */
 export var JitCompiler = (function () {
     /**
@@ -189,6 +200,7 @@ export var JitCompiler = (function () {
         return ngModuleFactory;
     };
     /**
+     * \@internal
      * @param {?} mainModule
      * @param {?} allComponentFactories
      * @return {?}
@@ -406,31 +418,13 @@ export var JitCompiler = (function () {
             return jitStatements("/" + result.meta.moduleUrl + ".ngstyle.js", result.statements, result.stylesVar);
         }
     };
-    JitCompiler.decorators = [
-        { type: Injectable },
-    ];
-    /** @nocollapse */
-    JitCompiler.ctorParameters = function () { return [
-        { type: Injector, },
-        { type: CompileMetadataResolver, },
-        { type: TemplateParser, },
-        { type: StyleCompiler, },
-        { type: ViewCompiler, },
-        { type: NgModuleCompiler, },
-        { type: DirectiveWrapperCompiler, },
-        { type: CompilerConfig, },
-        { type: AnimationParser, },
-    ]; };
+    JitCompiler = __decorate([
+        CompilerInjectable(), 
+        __metadata('design:paramtypes', [Injector, CompileMetadataResolver, TemplateParser, StyleCompiler, ViewCompiler, NgModuleCompiler, DirectiveWrapperCompiler, CompilerConfig, AnimationParser])
+    ], JitCompiler);
     return JitCompiler;
 }());
 function JitCompiler_tsickle_Closure_declarations() {
-    /** @type {?} */
-    JitCompiler.decorators;
-    /**
-     * @nocollapse
-     * @type {?}
-     */
-    JitCompiler.ctorParameters;
     /** @type {?} */
     JitCompiler.prototype._compiledTemplateCache;
     /** @type {?} */
@@ -529,7 +523,7 @@ function assertComponent(meta) {
     }
 }
 /**
- *  Implements `Compiler` by delegating to the JitCompiler using a known module.
+ * Implements `Compiler` by delegating to the JitCompiler using a known module.
  */
 var ModuleBoundCompiler = (function () {
     /**
@@ -584,12 +578,12 @@ var ModuleBoundCompiler = (function () {
         return this._delegate.getNgContentSelectors(component);
     };
     /**
-     *  Clears all caches
+     * Clears all caches
      * @return {?}
      */
     ModuleBoundCompiler.prototype.clearCache = function () { this._delegate.clearCache(); };
     /**
-     *  Clears the cache for the given component/ngModule.
+     * Clears the cache for the given component/ngModule.
      * @param {?} type
      * @return {?}
      */

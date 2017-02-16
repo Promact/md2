@@ -9,21 +9,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 import { NgModule } from '@angular/core';
 import { FocusTrap } from './focus-trap';
-import { LiveAnnouncer } from './live-announcer';
+import { LIVE_ANNOUNCER_PROVIDER } from './live-announcer';
 import { InteractivityChecker } from './interactivity-checker';
 import { CommonModule } from '@angular/common';
 import { PlatformModule } from '../platform/index';
-export var A11Y_PROVIDERS = [LiveAnnouncer, InteractivityChecker];
 export var A11yModule = (function () {
     function A11yModule() {
     }
+    /** @deprecated */
     A11yModule.forRoot = function () {
         return {
             ngModule: A11yModule,
-            providers: [
-                PlatformModule.forRoot().providers,
-                A11Y_PROVIDERS,
-            ],
+            providers: [],
         };
     };
     A11yModule = __decorate([
@@ -31,10 +28,10 @@ export var A11yModule = (function () {
             imports: [CommonModule, PlatformModule],
             declarations: [FocusTrap],
             exports: [FocusTrap],
+            providers: [InteractivityChecker, LIVE_ANNOUNCER_PROVIDER]
         }), 
         __metadata('design:paramtypes', [])
     ], A11yModule);
     return A11yModule;
 }());
-
 //# sourceMappingURL=index.js.map

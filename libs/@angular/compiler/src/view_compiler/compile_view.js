@@ -110,7 +110,7 @@ export var CompileView = (function () {
             var directiveInstance_1 = o.THIS_EXPR.prop('context');
             this.component.viewQueries.forEach(function (queryMeta, queryIndex) {
                 var propName = "_viewQuery_" + tokenName(queryMeta.selectors[0]) + "_" + queryIndex;
-                var queryList = createQueryList(queryMeta, directiveInstance_1, propName, _this);
+                var queryList = createQueryList(propName, _this);
                 var query = new CompileQuery(queryMeta, queryList, directiveInstance_1, _this);
                 addQueryToTokenMap(viewQueries, query);
             });
@@ -154,10 +154,10 @@ export var CompileView = (function () {
     /**
      * @return {?}
      */
-    CompileView.prototype.afterNodes = function () {
+    CompileView.prototype.finish = function () {
         var _this = this;
         Array.from(this.viewQueries.values())
-            .forEach(function (queries) { return queries.forEach(function (q) { return q.afterChildren(_this.createMethod, _this.updateViewQueriesMethod); }); });
+            .forEach(function (queries) { return queries.forEach(function (q) { return q.generateStatements(_this.createMethod, _this.updateViewQueriesMethod); }); });
     };
     return CompileView;
 }());

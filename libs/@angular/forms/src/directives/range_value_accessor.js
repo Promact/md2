@@ -13,13 +13,13 @@ export var /** @type {?} */ RANGE_VALUE_ACCESSOR = {
     multi: true
 };
 /**
- *  The accessor for writing a range value and listening to changes that is used by the
-  * {@link NgModel}, {@link FormControlDirective}, and {@link FormControlName} directives.
-  * *
-  * ### Example
-  * ```
-  * <input type="range" [(ngModel)]="age" >
-  * ```
+ * The accessor for writing a range value and listening to changes that is used by the
+ * {\@link NgModel}, {\@link FormControlDirective}, and {\@link FormControlName} directives.
+ *
+ *  ### Example
+ *  ```
+ *  <input type="range" [(ngModel)]="age" >
+ *  ```
  */
 export var RangeValueAccessor = (function () {
     /**

@@ -45,5 +45,6 @@ export declare class PortalHostDirective extends BasePortalHost implements OnDes
     private _replaceAttachedPortal(p);
 }
 export declare class PortalModule {
+    /** @deprecated */
     static forRoot(): ModuleWithProviders;
 }

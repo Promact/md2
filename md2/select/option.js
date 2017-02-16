@@ -7,7 +7,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Component, ElementRef, EventEmitter, Input, Output, Renderer, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, NgModule, Renderer, ViewEncapsulation } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ENTER, SPACE } from '../core/keyboard/keycodes';
 import { coerceBooleanProperty } from '../core/coercion/boolean-property';
 /**
@@ -15,6 +16,18 @@ import { coerceBooleanProperty } from '../core/coercion/boolean-property';
  * the component definition.
  */
 var _uniqueIdCounter = 0;
+/** Event object emitted by MdOption when selected. */
+export var Md2OptionSelectEvent = (function () {
+    function Md2OptionSelectEvent(source, isUserInput) {
+        if (isUserInput === void 0) { isUserInput = false; }
+        this.source = source;
+        this.isUserInput = isUserInput;
+    }
+    return Md2OptionSelectEvent;
+}());
+/**
+ * Single option inside of a `<md2-select>` element.
+ */
 export var Md2Option = (function () {
     function Md2Option(_element, _renderer) {
         this._element = _element;
@@ -22,7 +35,7 @@ export var Md2Option = (function () {
         this._selected = false;
         /** Whether the option is disabled.  */
         this._disabled = false;
-        this._id = "md2-select-option-" + _uniqueIdCounter++;
+        this._id = "md2-option-" + _uniqueIdCounter++;
         /** Event emitted when the option is selected. */
         this.onSelect = new EventEmitter();
     }
@@ -33,12 +46,9 @@ export var Md2Option = (function () {
         configurable: true
     });
     Object.defineProperty(Md2Option.prototype, "disabled", {
-        get: function () {
-            return this._disabled;
-        },
-        set: function (value) {
-            this._disabled = coerceBooleanProperty(value);
-        },
+        /** Whether the option is disabled. */
+        get: function () { return this._disabled; },
+        set: function (value) { this._disabled = coerceBooleanProperty(value); },
         enumerable: true,
         configurable: true
     });
@@ -54,7 +64,6 @@ export var Md2Option = (function () {
         /**
          * The displayed value of the option. It is necessary to show the selected option in the
          * select's trigger.
-         * TODO(kara): Add input property alternative for node envs.
          */
         get: function () {
             return this._getHostElement().textContent.trim();
@@ -65,7 +74,7 @@ export var Md2Option = (function () {
     /** Selects the option. */
     Md2Option.prototype.select = function () {
         this._selected = true;
-        this.onSelect.emit();
+        this.onSelect.emit(new Md2OptionSelectEvent(this, false));
     };
     /** Deselects the option. */
     Md2Option.prototype.deselect = function () {
@@ -88,7 +97,7 @@ export var Md2Option = (function () {
     Md2Option.prototype._selectViaInteraction = function () {
         if (!this.disabled) {
             this._selected = true;
-            this.onSelect.emit(true);
+            this.onSelect.emit(new Md2OptionSelectEvent(this, true));
         }
     };
     /** Returns the correct tabindex for the option depending on disabled state. */
@@ -131,5 +140,23 @@ export var Md2Option = (function () {
     ], Md2Option);
     return Md2Option;
 }());
-
+export var Md2OptionModule = (function () {
+    function Md2OptionModule() {
+    }
+    Md2OptionModule.forRoot = function () {
+        return {
+            ngModule: Md2OptionModule,
+            providers: []
+        };
+    };
+    Md2OptionModule = __decorate([
+        NgModule({
+            imports: [CommonModule],
+            exports: [Md2Option],
+            declarations: [Md2Option]
+        }), 
+        __metadata('design:paramtypes', [])
+    ], Md2OptionModule);
+    return Md2OptionModule;
+}());
 //# sourceMappingURL=option.js.map

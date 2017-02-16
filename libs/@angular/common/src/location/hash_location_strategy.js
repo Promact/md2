@@ -16,18 +16,21 @@ import { Location } from './location';
 import { APP_BASE_HREF, LocationStrategy } from './location_strategy';
 import { PlatformLocation } from './platform_location';
 /**
- *  `HashLocationStrategy` is a {@link LocationStrategy} used to configure the
-  * {@link Location} service to represent its state in the
-  * [hash fragment](https://en.wikipedia.org/wiki/Uniform_Resource_Locator#Syntax)
-  * of the browser's URL.
-  * *
-  * For instance, if you call `location.go('/foo')`, the browser's URL will become
-  * `example.com#/foo`.
-  * *
-  * ### Example
-  * *
-  * {@example common/location/ts/hash_location_component.ts region='LocationComponent'}
-  * *
+ * \@whatItDoes Use URL hash for storing application location data.
+ * \@description
+ * `HashLocationStrategy` is a {\@link LocationStrategy} used to configure the
+ * {\@link Location} service to represent its state in the
+ * [hash fragment](https://en.wikipedia.org/wiki/Uniform_Resource_Locator#Syntax)
+ * of the browser's URL.
+ *
+ * For instance, if you call `location.go('/foo')`, the browser's URL will become
+ * `example.com#/foo`.
+ *
+ * ### Example
+ *
+ * {\@example common/location/ts/hash_location_component.ts region='LocationComponent'}
+ *
+ * \@stable
  */
 export var HashLocationStrategy = (function (_super) {
     __extends(HashLocationStrategy, _super);

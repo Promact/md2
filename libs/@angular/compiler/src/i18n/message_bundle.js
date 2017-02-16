@@ -7,7 +7,7 @@
  */
 import { extractMessages } from './extractor_merger';
 /**
- *  A container for message extracted from the templates.
+ * A container for message extracted from the templates.
  */
 export var MessageBundle = (function () {
     /**

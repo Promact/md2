@@ -8,34 +8,30 @@
 import { reflector } from '../reflection/reflection';
 import { Type } from '../type';
 import { resolveForwardRef } from './forward_ref';
-import { Host, Inject, Optional, Self, SkipSelf } from './metadata';
+import { Inject, Optional, Self, SkipSelf } from './metadata';
 import { InvalidProviderError, MixingMultiProvidersWithRegularProvidersError, NoAnnotationError } from './reflective_errors';
 import { ReflectiveKey } from './reflective_key';
 /**
- *  `Dependency` is used by the framework to extend DI.
-  * This is internal to Angular and should not be used directly.
+ * `Dependency` is used by the framework to extend DI.
+ * This is internal to Angular and should not be used directly.
  */
 export var ReflectiveDependency = (function () {
     /**
      * @param {?} key
      * @param {?} optional
-     * @param {?} lowerBoundVisibility
-     * @param {?} upperBoundVisibility
-     * @param {?} properties
+     * @param {?} visibility
      */
-    function ReflectiveDependency(key, optional, lowerBoundVisibility, upperBoundVisibility, properties) {
+    function ReflectiveDependency(key, optional, visibility) {
         this.key = key;
         this.optional = optional;
-        this.lowerBoundVisibility = lowerBoundVisibility;
-        this.upperBoundVisibility = upperBoundVisibility;
-        this.properties = properties;
+        this.visibility = visibility;
     }
     /**
      * @param {?} key
      * @return {?}
      */
     ReflectiveDependency.fromKey = function (key) {
-        return new ReflectiveDependency(key, false, null, null, []);
+        return new ReflectiveDependency(key, false, null);
     };
     return ReflectiveDependency;
 }());
@@ -45,11 +41,7 @@ function ReflectiveDependency_tsickle_Closure_declarations() {
     /** @type {?} */
     ReflectiveDependency.prototype.optional;
     /** @type {?} */
-    ReflectiveDependency.prototype.lowerBoundVisibility;
-    /** @type {?} */
-    ReflectiveDependency.prototype.upperBoundVisibility;
-    /** @type {?} */
-    ReflectiveDependency.prototype.properties;
+    ReflectiveDependency.prototype.visibility;
 }
 var /** @type {?} */ _EMPTY_LIST = [];
 export var ResolvedReflectiveProvider_ = (function () {
@@ -82,8 +74,9 @@ function ResolvedReflectiveProvider__tsickle_Closure_declarations() {
     ResolvedReflectiveProvider_.prototype.multiProvider;
 }
 /**
- *  An internal resolved representation of a factory function created by resolving {@link
-  * Provider}.
+ * An internal resolved representation of a factory function created by resolving {\@link
+ * Provider}.
+ * \@experimental
  */
 export var ResolvedReflectiveFactory = (function () {
     /**
@@ -109,7 +102,7 @@ function ResolvedReflectiveFactory_tsickle_Closure_declarations() {
     ResolvedReflectiveFactory.prototype.dependencies;
 }
 /**
- *  Resolve a single provider.
+ * Resolve a single provider.
  * @param {?} provider
  * @return {?}
  */
@@ -136,10 +129,10 @@ function resolveReflectiveFactory(provider) {
     return new ResolvedReflectiveFactory(factoryFn, resolvedDeps);
 }
 /**
- *  Converts the {@link Provider} into {@link ResolvedProvider}.
-  * *
-  * {@link Injector} internally only uses {@link ResolvedProvider}, {@link Provider} contains
-  * convenience provider syntax.
+ * Converts the {\@link Provider} into {\@link ResolvedProvider}.
+ *
+ * {\@link Injector} internally only uses {\@link ResolvedProvider}, {\@link Provider} contains
+ * convenience provider syntax.
  * @param {?} provider
  * @return {?}
  */
@@ -147,7 +140,7 @@ function resolveReflectiveProvider(provider) {
     return new ResolvedReflectiveProvider_(ReflectiveKey.get(provider.provide), [resolveReflectiveFactory(provider)], provider.multi);
 }
 /**
- *  Resolve a list of Providers.
+ * Resolve a list of Providers.
  * @param {?} providers
  * @return {?}
  */
@@ -158,9 +151,9 @@ export function resolveReflectiveProviders(providers) {
     return Array.from(resolvedProviderMap.values());
 }
 /**
- *  Merges a list of ResolvedProviders into a list where
-  * each key is contained exactly once and multi providers
-  * have been merged.
+ * Merges a list of ResolvedProviders into a list where
+ * each key is contained exactly once and multi providers
+ * have been merged.
  * @param {?} providers
  * @param {?} normalizedProvidersMap
  * @return {?}
@@ -251,19 +244,17 @@ function _dependenciesFor(typeOrFunc) {
  * @return {?}
  */
 function _extractToken(typeOrFunc, metadata, params) {
-    var /** @type {?} */ depProps = [];
     var /** @type {?} */ token = null;
     var /** @type {?} */ optional = false;
     if (!Array.isArray(metadata)) {
         if (metadata instanceof Inject) {
-            return _createDependency(metadata.token, optional, null, null, depProps);
+            return _createDependency(metadata.token, optional, null);
         }
         else {
-            return _createDependency(metadata, optional, null, null, depProps);
+            return _createDependency(metadata, optional, null);
         }
     }
-    var /** @type {?} */ lowerBoundVisibility = null;
-    var /** @type {?} */ upperBoundVisibility = null;
+    var /** @type {?} */ visibility = null;
     for (var /** @type {?} */ i = 0; i < metadata.length; ++i) {
         var /** @type {?} */ paramMetadata = metadata[i];
         if (paramMetadata instanceof Type) {
@@ -275,19 +266,13 @@ function _extractToken(typeOrFunc, metadata, params) {
         else if (paramMetadata instanceof Optional) {
             optional = true;
         }
-        else if (paramMetadata instanceof Self) {
-            upperBoundVisibility = paramMetadata;
-        }
-        else if (paramMetadata instanceof Host) {
-            upperBoundVisibility = paramMetadata;
-        }
-        else if (paramMetadata instanceof SkipSelf) {
-            lowerBoundVisibility = paramMetadata;
+        else if (paramMetadata instanceof Self || paramMetadata instanceof SkipSelf) {
+            visibility = paramMetadata;
         }
     }
     token = resolveForwardRef(token);
     if (token != null) {
-        return _createDependency(token, optional, lowerBoundVisibility, upperBoundVisibility, depProps);
+        return _createDependency(token, optional, visibility);
     }
     else {
         throw new NoAnnotationError(typeOrFunc, params);
@@ -296,12 +281,10 @@ function _extractToken(typeOrFunc, metadata, params) {
 /**
  * @param {?} token
  * @param {?} optional
- * @param {?} lowerBoundVisibility
- * @param {?} upperBoundVisibility
- * @param {?} depProps
+ * @param {?} visibility
  * @return {?}
  */
-function _createDependency(token, optional, lowerBoundVisibility, upperBoundVisibility, depProps) {
-    return new ReflectiveDependency(ReflectiveKey.get(token), optional, lowerBoundVisibility, upperBoundVisibility, depProps);
+function _createDependency(token, optional, visibility) {
+    return new ReflectiveDependency(ReflectiveKey.get(token), optional, visibility);
 }
 //# sourceMappingURL=reflective_provider.js.map

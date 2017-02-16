@@ -13,8 +13,9 @@ var __extends = (this && this.__extends) || function (d, b) {
 import { ControlContainer } from './control_container';
 import { composeAsyncValidators, composeValidators, controlPath } from './shared';
 /**
- *  This is a base class for code shared between {@link NgModelGroup} and {@link FormGroupName}.
-  * *
+ * This is a base class for code shared between {\@link NgModelGroup} and {\@link FormGroupName}.
+ *
+ * \@stable
  */
 export var AbstractFormGroupDirective = (function (_super) {
     __extends(AbstractFormGroupDirective, _super);
@@ -38,7 +39,7 @@ export var AbstractFormGroupDirective = (function (_super) {
     };
     Object.defineProperty(AbstractFormGroupDirective.prototype, "control", {
         /**
-         *  Get the {@link FormGroup} backing this binding.
+         * Get the {\@link FormGroup} backing this binding.
          * @return {?}
          */
         get: function () { return this.formDirective.getFormGroup(this); },
@@ -47,7 +48,7 @@ export var AbstractFormGroupDirective = (function (_super) {
     });
     Object.defineProperty(AbstractFormGroupDirective.prototype, "path", {
         /**
-         *  Get the path to this control group.
+         * Get the path to this control group.
          * @return {?}
          */
         get: function () { return controlPath(this.name, this._parent); },
@@ -56,7 +57,7 @@ export var AbstractFormGroupDirective = (function (_super) {
     });
     Object.defineProperty(AbstractFormGroupDirective.prototype, "formDirective", {
         /**
-         *  Get the {@link Form} to which this group belongs.
+         * Get the {\@link Form} to which this group belongs.
          * @return {?}
          */
         get: function () { return this._parent ? this._parent.formDirective : null; },
@@ -80,17 +81,27 @@ export var AbstractFormGroupDirective = (function (_super) {
         configurable: true
     });
     /**
+     * \@internal
      * @return {?}
      */
     AbstractFormGroupDirective.prototype._checkParentType = function () { };
     return AbstractFormGroupDirective;
 }(ControlContainer));
 function AbstractFormGroupDirective_tsickle_Closure_declarations() {
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     AbstractFormGroupDirective.prototype._parent;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     AbstractFormGroupDirective.prototype._validators;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     AbstractFormGroupDirective.prototype._asyncValidators;
 }
 //# sourceMappingURL=abstract_form_group_directive.js.map

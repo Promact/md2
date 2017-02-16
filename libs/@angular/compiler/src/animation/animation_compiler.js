@@ -87,7 +87,7 @@ var _AnimationBuilder = (function () {
         }
         ast.styles.forEach(function (entry) {
             var /** @type {?} */ entries = Object.keys(entry).map(function (key) { return [key, o.literal(entry[key])]; });
-            stylesArr.push(o.literalMap(entries));
+            stylesArr.push(o.literalMap(entries, null, true));
         });
         return o.importExpr(createIdentifier(Identifiers.AnimationStyles)).instantiate([
             o.importExpr(createIdentifier(Identifiers.collectAndResolveStyles)).callFn([
@@ -120,6 +120,7 @@ var _AnimationBuilder = (function () {
         return this._callAnimateMethod(ast, startingStylesExpr, o.literalArr(keyframeExpressions), context);
     };
     /**
+     * \@internal
      * @param {?} ast
      * @param {?} context
      * @return {?}
@@ -135,6 +136,7 @@ var _AnimationBuilder = (function () {
         return this._callAnimateMethod(ast, startingStylesExpr, keyframesExpr, context);
     };
     /**
+     * \@internal
      * @param {?} ast
      * @param {?} startingStylesExpr
      * @param {?} keyframesExpr
@@ -321,11 +323,11 @@ var _AnimationBuilder = (function () {
             if (isPresent(value)) {
                 var /** @type {?} */ styleMap_1 = [];
                 Object.keys(value).forEach(function (key) { styleMap_1.push([key, o.literal(value[key])]); });
-                variableValue = o.literalMap(styleMap_1);
+                variableValue = o.literalMap(styleMap_1, null, true);
             }
             lookupMap.push([stateName, variableValue]);
         });
-        var /** @type {?} */ compiledStatesMapStmt = this._statesMapVar.set(o.literalMap(lookupMap)).toDeclStmt();
+        var /** @type {?} */ compiledStatesMapStmt = this._statesMapVar.set(o.literalMap(lookupMap, null, true)).toDeclStmt();
         var /** @type {?} */ statements = [compiledStatesMapStmt, fnStatement];
         return new AnimationEntryCompileResult(this.animationName, statements, fnVariable);
     };

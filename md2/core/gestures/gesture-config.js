@@ -81,5 +81,4 @@ export var GestureConfig = (function (_super) {
     ], GestureConfig);
     return GestureConfig;
 }(HammerGestureConfig));
-
 //# sourceMappingURL=gesture-config.js.map

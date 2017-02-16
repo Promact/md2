@@ -6,21 +6,23 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /**
- *  *
+ * \@whatItDoes Provides a way to customize when activated routes get reused.
+ *
+ * \@experimental
  * @abstract
  */
 export var RouteReuseStrategy = (function () {
     function RouteReuseStrategy() {
     }
     /**
-     *  Determines if this route (and its subtree) should be detached to be reused later
+     * Determines if this route (and its subtree) should be detached to be reused later
      * @abstract
      * @param {?} route
      * @return {?}
      */
     RouteReuseStrategy.prototype.shouldDetach = function (route) { };
     /**
-     *  Stores the detached route
+     * Stores the detached route
      * @abstract
      * @param {?} route
      * @param {?} handle
@@ -28,21 +30,21 @@ export var RouteReuseStrategy = (function () {
      */
     RouteReuseStrategy.prototype.store = function (route, handle) { };
     /**
-     *  Determines if this route (and its subtree) should be reattached
+     * Determines if this route (and its subtree) should be reattached
      * @abstract
      * @param {?} route
      * @return {?}
      */
     RouteReuseStrategy.prototype.shouldAttach = function (route) { };
     /**
-     *  Retrieves the previously stored route
+     * Retrieves the previously stored route
      * @abstract
      * @param {?} route
      * @return {?}
      */
     RouteReuseStrategy.prototype.retrieve = function (route) { };
     /**
-     *  Determines if a route should be reused
+     * Determines if a route should be reused
      * @abstract
      * @param {?} future
      * @param {?} curr

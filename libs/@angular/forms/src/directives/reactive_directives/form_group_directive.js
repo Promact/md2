@@ -22,37 +22,39 @@ export var /** @type {?} */ formDirectiveProvider = {
     useExisting: forwardRef(function () { return FormGroupDirective; })
 };
 /**
- *  *
-  * *
-  * This directive accepts an existing {@link FormGroup} instance. It will then use this
-  * {@link FormGroup} instance to match any child {@link FormControl}, {@link FormGroup},
-  * and {@link FormArray} instances to child {@link FormControlName}, {@link FormGroupName},
-  * and {@link FormArrayName} directives.
-  * *
-  * **Set value**: You can set the form's initial value when instantiating the
-  * {@link FormGroup}, or you can set it programmatically later using the {@link FormGroup}'s
-  * {@link AbstractControl.setValue} or {@link AbstractControl.patchValue} methods.
-  * *
-  * **Listen to value**: If you want to listen to changes in the value of the form, you can subscribe
-  * to the {@link FormGroup}'s {@link AbstractControl.valueChanges} event.  You can also listen to
-  * its {@link AbstractControl.statusChanges} event to be notified when the validation status is
-  * re-calculated.
-  * *
-  * Furthermore, you can listen to the directive's `ngSubmit` event to be notified when the user has
-  * triggered a form submission. The `ngSubmit` event will be emitted with the original form
-  * submission event.
-  * *
-  * ### Example
-  * *
-  * In this example, we create form controls for first name and last name.
-  * *
-  * {@example forms/ts/simpleFormGroup/simple_form_group_example.ts region='Component'}
-  * *
-  * **npm package**: `@angular/forms`
-  * *
-  * **NgModule**: {@link ReactiveFormsModule}
-  * *
-  * @stable
+ * \@whatItDoes Binds an existing {\@link FormGroup} to a DOM element.
+ *
+ * \@howToUse
+ *
+ * This directive accepts an existing {\@link FormGroup} instance. It will then use this
+ * {\@link FormGroup} instance to match any child {\@link FormControl}, {\@link FormGroup},
+ * and {\@link FormArray} instances to child {\@link FormControlName}, {\@link FormGroupName},
+ * and {\@link FormArrayName} directives.
+ *
+ * **Set value**: You can set the form's initial value when instantiating the
+ * {\@link FormGroup}, or you can set it programmatically later using the {\@link FormGroup}'s
+ * {\@link AbstractControl.setValue} or {\@link AbstractControl.patchValue} methods.
+ *
+ * **Listen to value**: If you want to listen to changes in the value of the form, you can subscribe
+ * to the {\@link FormGroup}'s {\@link AbstractControl.valueChanges} event.  You can also listen to
+ * its {\@link AbstractControl.statusChanges} event to be notified when the validation status is
+ * re-calculated.
+ *
+ * Furthermore, you can listen to the directive's `ngSubmit` event to be notified when the user has
+ * triggered a form submission. The `ngSubmit` event will be emitted with the original form
+ * submission event.
+ *
+ * ### Example
+ *
+ * In this example, we create form controls for first name and last name.
+ *
+ * {\@example forms/ts/simpleFormGroup/simple_form_group_example.ts region='Component'}
+ *
+ * **npm package**: `\@angular/forms`
+ *
+ * **NgModule**: {\@link ReactiveFormsModule}
+ *
+ *  \@stable
  */
 export var FormGroupDirective = (function (_super) {
     __extends(FormGroupDirective, _super);
@@ -204,6 +206,7 @@ export var FormGroupDirective = (function (_super) {
         this._submitted = false;
     };
     /**
+     * \@internal
      * @return {?}
      */
     FormGroupDirective.prototype._updateDomValue = function () {

@@ -13,28 +13,29 @@ ViewEncapsulation[ViewEncapsulation.Emulated] = "Emulated";
 ViewEncapsulation[ViewEncapsulation.Native] = "Native";
 ViewEncapsulation[ViewEncapsulation.None] = "None";
 /**
- *  Metadata properties available for configuring Views.
-  * *
-  * For details on the `@Component` annotation, see {@link Component}.
-  * *
-  * ### Example
-  * *
-  * ```
-  * selector: 'greet',
-  * template: 'Hello {{name}}!',
-  * })
-  * class Greet {
-  * name: string;
-  * *
-  * constructor() {
-  * this.name = 'World';
-  * }
-  * }
-  * ```
-  * *
+ * Metadata properties available for configuring Views.
+ *
+ * For details on the `\@Component` annotation, see {\@link Component}.
+ *
+ * ### Example
+ *
+ * ```
+ * \@Component({
+ *   selector: 'greet',
+ *   template: 'Hello {{name}}!',
+ * })
+ * class Greet {
+ *   name: string;
+ *
+ *   constructor() {
+ *     this.name = 'World';
+ *   }
+ * }
+ * ```
+ *
  * @deprecated Use Component instead.
-  * *
-  * {@link Component}
+ *
+ * {\@link Component}
  */
 export var ViewMetadata = (function () {
     /**
@@ -54,37 +55,37 @@ export var ViewMetadata = (function () {
 }());
 function ViewMetadata_tsickle_Closure_declarations() {
     /**
-     * {@link Component.templateUrl}
+     * {\@link Component.templateUrl}
      * @type {?}
      */
     ViewMetadata.prototype.templateUrl;
     /**
-     * {@link Component.template}
+     * {\@link Component.template}
      * @type {?}
      */
     ViewMetadata.prototype.template;
     /**
-     * {@link Component.stylesUrl}
+     * {\@link Component.stylesUrl}
      * @type {?}
      */
     ViewMetadata.prototype.styleUrls;
     /**
-     * {@link Component.styles}
+     * {\@link Component.styles}
      * @type {?}
      */
     ViewMetadata.prototype.styles;
     /**
-     * {@link Component.encapsulation}
+     * {\@link Component.encapsulation}
      * @type {?}
      */
     ViewMetadata.prototype.encapsulation;
     /**
-     * {@link Component.animation}
+     * {\@link Component.animation}
      * @type {?}
      */
     ViewMetadata.prototype.animations;
     /**
-     * {@link Component.interpolation}
+     * {\@link Component.interpolation}
      * @type {?}
      */
     ViewMetadata.prototype.interpolation;

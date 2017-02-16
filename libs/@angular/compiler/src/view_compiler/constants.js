@@ -32,18 +32,6 @@ export var ViewEncapsulationEnum = (function () {
     };
     return ViewEncapsulationEnum;
 }());
-export var ChangeDetectionStrategyEnum = (function () {
-    function ChangeDetectionStrategyEnum() {
-    }
-    /**
-     * @param {?} value
-     * @return {?}
-     */
-    ChangeDetectionStrategyEnum.fromValue = function (value) {
-        return createEnumExpression(Identifiers.ChangeDetectionStrategy, value);
-    };
-    return ChangeDetectionStrategyEnum;
-}());
 export var ChangeDetectorStatusEnum = (function () {
     function ChangeDetectorStatusEnum() {
     }

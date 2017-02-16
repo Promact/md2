@@ -29,9 +29,10 @@ export function setRootDomAdapter(adapter) {
     }
 }
 /**
- *  Provides DOM operations in an environment-agnostic way.
-  * *
-  * can introduce XSS risks.
+ * Provides DOM operations in an environment-agnostic way.
+ *
+ * \@security Tread carefully! Interacting with the DOM directly is dangerous and
+ * can introduce XSS risks.
  * @abstract
  */
 export var DomAdapter = (function () {
@@ -93,8 +94,8 @@ export var DomAdapter = (function () {
     DomAdapter.prototype.logGroupEnd = function () { };
     Object.defineProperty(DomAdapter.prototype, "attrToPropMap", {
         /**
-         *  Maps attribute names to their corresponding property names for cases
-          * where attribute name doesn't match property name.
+         * Maps attribute names to their corresponding property names for cases
+         * where attribute name doesn't match property name.
          * @return {?}
          */
         get: function () { return this._attrToPropMap; },
@@ -188,7 +189,7 @@ export var DomAdapter = (function () {
      */
     DomAdapter.prototype.getInnerHTML = function (el) { };
     /**
-     *  Returns content if el is a <template> element, null otherwise.
+     * Returns content if el is a <template> element, null otherwise.
      * @abstract
      * @param {?} el
      * @return {?}
@@ -804,7 +805,10 @@ export var DomAdapter = (function () {
 function DomAdapter_tsickle_Closure_declarations() {
     /** @type {?} */
     DomAdapter.prototype.resourceLoaderType;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     DomAdapter.prototype._attrToPropMap;
 }
 //# sourceMappingURL=dom_adapter.js.map

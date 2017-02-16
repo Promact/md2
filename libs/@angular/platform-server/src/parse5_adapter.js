@@ -32,9 +32,10 @@ function _notImplemented(methodName) {
     return new Error('This method is not implemented in Parse5DomAdapter: ' + methodName);
 }
 /**
- *  A `DomAdapter` powered by the `parse5` NodeJS module.
-  * *
-  * can introduce XSS risks.
+ * A `DomAdapter` powered by the `parse5` NodeJS module.
+ *
+ * \@security Tread carefully! Interacting with the DOM directly is dangerous and
+ * can introduce XSS risks.
  */
 export var Parse5DomAdapter = (function (_super) {
     __extends(Parse5DomAdapter, _super);
@@ -678,6 +679,7 @@ export var Parse5DomAdapter = (function (_super) {
         return styleValue ? value == styleValue : value.length > 0;
     };
     /**
+     * \@internal
      * @param {?} element
      * @return {?}
      */
@@ -697,6 +699,7 @@ export var Parse5DomAdapter = (function (_super) {
         return styleMap;
     };
     /**
+     * \@internal
      * @param {?} element
      * @param {?} styleMap
      * @return {?}
@@ -930,6 +933,7 @@ export var Parse5DomAdapter = (function (_super) {
         }
     };
     /**
+     * \@internal
      * @param {?} parsedRules
      * @param {?=} css
      * @return {?}

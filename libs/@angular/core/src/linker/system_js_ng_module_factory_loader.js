@@ -10,9 +10,10 @@ import { Compiler } from './compiler';
 var /** @type {?} */ _SEPARATOR = '#';
 var /** @type {?} */ FACTORY_CLASS_SUFFIX = 'NgFactory';
 /**
- *  Configuration for SystemJsNgModuleLoader.
-  * token.
-  * *
+ * Configuration for SystemJsNgModuleLoader.
+ * token.
+ *
+ * \@experimental
  * @abstract
  */
 export var SystemJsNgModuleLoaderConfig = (function () {
@@ -37,7 +38,8 @@ var /** @type {?} */ DEFAULT_CONFIG = {
     factoryPathSuffix: '.ngfactory',
 };
 /**
- *  NgModuleFactoryLoader that uses SystemJS to load NgModuleFactory
+ * NgModuleFactoryLoader that uses SystemJS to load NgModuleFactory
+ * \@experimental
  */
 export var SystemJsNgModuleLoader = (function () {
     /**

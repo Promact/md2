@@ -13,9 +13,10 @@ var __extends = (this && this.__extends) || function (d, b) {
 import { DomAdapter } from '../dom/dom_adapter';
 import { isPresent } from '../facade/lang';
 /**
- *  Provides DOM operations in any browser environment.
-  * *
-  * can introduce XSS risks.
+ * Provides DOM operations in any browser environment.
+ *
+ * \@security Tread carefully! Interacting with the DOM directly is dangerous and
+ * can introduce XSS risks.
  * @abstract
  */
 export var GenericBrowserDomAdapter = (function (_super) {

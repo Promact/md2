@@ -7,7 +7,7 @@
  */
 import * as o from './output_ast';
 /**
- *  Create a new class stmts based on the given data.
+ * Create a new class stmts based on the given data.
  * @param {?} config
  * @return {?}
  */

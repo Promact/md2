@@ -28,8 +28,8 @@ var /** @type {?} */ _scope_check = wtfCreateScope("AppView#check(ascii id)");
 var /** @type {?} */ EMPTY_CONTEXT = new Object();
 var /** @type {?} */ UNDEFINED = new Object();
 /**
- *  Cost of making objects: http://jsperf.com/instantiate-size-of-object
-  * *
+ * Cost of making objects: http://jsperf.com/instantiate-size-of-object
+ *
  * @abstract
  */
 export var AppView = (function () {
@@ -108,14 +108,14 @@ export var AppView = (function () {
         return this.createInternal(rootSelectorOrNode);
     };
     /**
-     *  Overwritten by implementations.
-      * Returns the ComponentRef for the host element for ViewType.HOST.
+     * Overwritten by implementations.
+     * Returns the ComponentRef for the host element for ViewType.HOST.
      * @param {?} rootSelectorOrNode
      * @return {?}
      */
     AppView.prototype.createInternal = function (rootSelectorOrNode) { return null; };
     /**
-     *  Overwritten by implementations.
+     * Overwritten by implementations.
      * @param {?} templateNodeIndex
      * @return {?}
      */
@@ -157,7 +157,7 @@ export var AppView = (function () {
         return result;
     };
     /**
-     *  Overwritten by implementations
+     * Overwritten by implementations
      * @param {?} token
      * @param {?} nodeIndex
      * @param {?} notFoundResult
@@ -211,12 +211,12 @@ export var AppView = (function () {
         this.cdMode = ChangeDetectorStatus.Destroyed;
     };
     /**
-     *  Overwritten by implementations
+     * Overwritten by implementations
      * @return {?}
      */
     AppView.prototype.destroyInternal = function () { };
     /**
-     *  Overwritten by implementations
+     * Overwritten by implementations
      * @return {?}
      */
     AppView.prototype.detachInternal = function () { };
@@ -381,14 +381,14 @@ export var AppView = (function () {
         }
     };
     /**
-     *  Overwritten by implementations
+     * Overwritten by implementations
      * @param {?} cb
      * @param {?} c
      * @return {?}
      */
     AppView.prototype.visitRootNodesInternal = function (cb, c) { };
     /**
-     *  Overwritten by implementations
+     * Overwritten by implementations
      * @param {?} nodeIndex
      * @param {?} ngContentIndex
      * @param {?} cb
@@ -397,7 +397,7 @@ export var AppView = (function () {
      */
     AppView.prototype.visitProjectableNodesInternal = function (nodeIndex, ngContentIndex, cb, c) { };
     /**
-     *  Overwritten by implementations
+     * Overwritten by implementations
      * @return {?}
      */
     AppView.prototype.dirtyParentQueriesInternal = function () { };
@@ -429,7 +429,7 @@ export var AppView = (function () {
         wtfLeave(s);
     };
     /**
-     *  Overwritten by implementations
+     * Overwritten by implementations
      * @param {?} throwOnChange
      * @return {?}
      */

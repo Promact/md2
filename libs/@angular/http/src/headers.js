@@ -1,29 +1,30 @@
 /**
- *  Polyfill for [Headers](https://developer.mozilla.org/en-US/docs/Web/API/Headers/Headers), as
-  * specified in the [Fetch Spec](https://fetch.spec.whatwg.org/#headers-class).
-  * *
-  * The only known difference between this `Headers` implementation and the spec is the
-  * lack of an `entries` method.
-  * *
-  * ### Example
-  * *
-  * ```
-  * import {Headers} from '@angular/http';
-  * *
-  * var firstHeaders = new Headers();
-  * firstHeaders.append('Content-Type', 'image/jpeg');
-  * console.log(firstHeaders.get('Content-Type')) //'image/jpeg'
-  * *
-  * // Create headers from Plain Old JavaScript Object
-  * var secondHeaders = new Headers({
-  * 'X-My-Custom-Header': 'Angular'
-  * });
-  * console.log(secondHeaders.get('X-My-Custom-Header')); //'Angular'
-  * *
-  * var thirdHeaders = new Headers(secondHeaders);
-  * console.log(thirdHeaders.get('X-My-Custom-Header')); //'Angular'
-  * ```
-  * *
+ * Polyfill for [Headers](https://developer.mozilla.org/en-US/docs/Web/API/Headers/Headers), as
+ * specified in the [Fetch Spec](https://fetch.spec.whatwg.org/#headers-class).
+ *
+ * The only known difference between this `Headers` implementation and the spec is the
+ * lack of an `entries` method.
+ *
+ * ### Example
+ *
+ * ```
+ * import {Headers} from '\@angular/http';
+ *
+ * var firstHeaders = new Headers();
+ * firstHeaders.append('Content-Type', 'image/jpeg');
+ * console.log(firstHeaders.get('Content-Type')) //'image/jpeg'
+ *
+ * // Create headers from Plain Old JavaScript Object
+ * var secondHeaders = new Headers({
+ *   'X-My-Custom-Header': 'Angular'
+ * });
+ * console.log(secondHeaders.get('X-My-Custom-Header')); //'Angular'
+ *
+ * var thirdHeaders = new Headers(secondHeaders);
+ * console.log(thirdHeaders.get('X-My-Custom-Header')); //'Angular'
+ * ```
+ *
+ * \@experimental
  */
 export var Headers = (function () {
     /**
@@ -51,7 +52,7 @@ export var Headers = (function () {
         });
     }
     /**
-     *  Returns a new Headers instance from the given DOMString of Response Headers
+     * Returns a new Headers instance from the given DOMString of Response Headers
      * @param {?} headersString
      * @return {?}
      */
@@ -68,7 +69,7 @@ export var Headers = (function () {
         return headers;
     };
     /**
-     *  Appends a header to existing list of header values for a given header name.
+     * Appends a header to existing list of header values for a given header name.
      * @param {?} name
      * @param {?} value
      * @return {?}
@@ -83,7 +84,7 @@ export var Headers = (function () {
         }
     };
     /**
-     *  Deletes all header values for the given name.
+     * Deletes all header values for the given name.
      * @param {?} name
      * @return {?}
      */
@@ -101,7 +102,7 @@ export var Headers = (function () {
         this._headers.forEach(function (values, lcName) { return fn(values, _this._normalizedNames.get(lcName), _this._headers); });
     };
     /**
-     *  Returns first header that matches given name.
+     * Returns first header that matches given name.
      * @param {?} name
      * @return {?}
      */
@@ -113,18 +114,18 @@ export var Headers = (function () {
         return values.length > 0 ? values[0] : null;
     };
     /**
-     *  Checks for existence of header by given name.
+     * Checks for existence of header by given name.
      * @param {?} name
      * @return {?}
      */
     Headers.prototype.has = function (name) { return this._headers.has(name.toLowerCase()); };
     /**
-     *  Returns the names of the headers
+     * Returns the names of the headers
      * @return {?}
      */
     Headers.prototype.keys = function () { return Array.from(this._normalizedNames.values()); };
     /**
-     *  Sets or overrides header value for given name.
+     * Sets or overrides header value for given name.
      * @param {?} name
      * @param {?} value
      * @return {?}
@@ -141,7 +142,7 @@ export var Headers = (function () {
         this.mayBeSetNormalizedName(name);
     };
     /**
-     *  Returns values of all headers.
+     * Returns values of all headers.
      * @return {?}
      */
     Headers.prototype.values = function () { return Array.from(this._headers.values()); };
@@ -159,7 +160,7 @@ export var Headers = (function () {
         return serialized;
     };
     /**
-     *  Returns list of header values for a given name.
+     * Returns list of header values for a given name.
      * @param {?} name
      * @return {?}
      */
@@ -167,7 +168,7 @@ export var Headers = (function () {
         return this.has(name) ? this._headers.get(name.toLowerCase()) : null;
     };
     /**
-     *  This method is not implemented.
+     * This method is not implemented.
      * @return {?}
      */
     Headers.prototype.entries = function () { throw new Error('"entries" method is not implemented on Headers class'); };
@@ -184,9 +185,15 @@ export var Headers = (function () {
     return Headers;
 }());
 function Headers_tsickle_Closure_declarations() {
-    /** @type {?} */
+    /**
+     * \@internal header names are lower case
+     * @type {?}
+     */
     Headers.prototype._headers;
-    /** @type {?} */
+    /**
+     * \@internal map lower case names to actual names
+     * @type {?}
+     */
     Headers.prototype._normalizedNames;
 }
 //# sourceMappingURL=headers.js.map

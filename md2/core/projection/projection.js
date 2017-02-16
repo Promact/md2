@@ -92,20 +92,20 @@ export var DomProjection = (function () {
 export var ProjectionModule = (function () {
     function ProjectionModule() {
     }
+    /** @deprecated */
     ProjectionModule.forRoot = function () {
         return {
             ngModule: ProjectionModule,
-            providers: [DomProjection]
         };
     };
     ProjectionModule = __decorate([
         NgModule({
             exports: [DomProjectionHost],
             declarations: [DomProjectionHost],
+            providers: [DomProjection],
         }), 
         __metadata('design:paramtypes', [])
     ], ProjectionModule);
     return ProjectionModule;
 }());
-
 //# sourceMappingURL=projection.js.map

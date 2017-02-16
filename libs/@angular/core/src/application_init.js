@@ -13,8 +13,9 @@ import { Inject, Injectable, OpaqueToken, Optional } from './di';
  */
 export var /** @type {?} */ APP_INITIALIZER = new OpaqueToken('Application Initializer');
 /**
- *  A class that reflects the state of running {@link APP_INITIALIZER}s.
-  * *
+ * A class that reflects the state of running {\@link APP_INITIALIZER}s.
+ *
+ * \@experimental
  */
 export var ApplicationInitStatus = (function () {
     /**

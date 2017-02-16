@@ -71,5 +71,4 @@ export var NoPortalAttachedError = (function (_super) {
     }
     return NoPortalAttachedError;
 }(MdError));
-
 //# sourceMappingURL=portal-errors.js.map

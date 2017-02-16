@@ -8,15 +8,15 @@
 import { stringToArrayBuffer } from './http_utils';
 import { URLSearchParams } from './url_search_params';
 /**
- *  HTTP request body used by both {@link Request} and {@link Response}
-  * https://fetch.spec.whatwg.org/#body
+ * HTTP request body used by both {\@link Request} and {\@link Response}
+ * https://fetch.spec.whatwg.org/#body
  * @abstract
  */
 export var Body = (function () {
     function Body() {
     }
     /**
-     *  Attempts to return body as parsed `JSON` object, or raises an exception.
+     * Attempts to return body as parsed `JSON` object, or raises an exception.
      * @return {?}
      */
     Body.prototype.json = function () {
@@ -29,7 +29,7 @@ export var Body = (function () {
         return this._body;
     };
     /**
-     *  Returns the body as a string, presuming `toString()` can be called on the response body.
+     * Returns the body as a string, presuming `toString()` can be called on the response body.
      * @return {?}
      */
     Body.prototype.text = function () {
@@ -48,7 +48,7 @@ export var Body = (function () {
         return this._body.toString();
     };
     /**
-     *  Return the body as an ArrayBuffer
+     * Return the body as an ArrayBuffer
      * @return {?}
      */
     Body.prototype.arrayBuffer = function () {
@@ -58,7 +58,7 @@ export var Body = (function () {
         return stringToArrayBuffer(this.text());
     };
     /**
-     *  Returns the request's body as a Blob, assuming that body exists.
+     * Returns the request's body as a Blob, assuming that body exists.
      * @return {?}
      */
     Body.prototype.blob = function () {
@@ -73,7 +73,10 @@ export var Body = (function () {
     return Body;
 }());
 function Body_tsickle_Closure_declarations() {
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     Body.prototype._body;
 }
 //# sourceMappingURL=body.js.map

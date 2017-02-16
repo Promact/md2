@@ -21,26 +21,29 @@ export var /** @type {?} */ modelGroupProvider = {
     useExisting: forwardRef(function () { return NgModelGroup; })
 };
 /**
- *  *
-  * *
-  * This directive can only be used as a child of {@link NgForm} (or in other words,
-  * within `<form>` tags).
-  * *
-  * Use this directive if you'd like to create a sub-group within a form. This can
-  * come in handy if you want to validate a sub-group of your form separately from
-  * the rest of your form, or if some values in your domain model make more sense to
-  * consume together in a nested object.
-  * *
-  * Pass in the name you'd like this sub-group to have and it will become the key
-  * for the sub-group in the form's full value. You can also export the directive into
-  * a local template variable using `ngModelGroup` (ex: `#myGroup="ngModelGroup"`).
-  * *
-  * {@example forms/ts/ngModelGroup/ng_model_group_example.ts region='Component'}
-  * *
-  * * **npm package**: `@angular/forms`
-  * *
-  * * **NgModule**: `FormsModule`
-  * *
+ * \@whatItDoes Creates and binds a {\@link FormGroup} instance to a DOM element.
+ *
+ * \@howToUse
+ *
+ * This directive can only be used as a child of {\@link NgForm} (or in other words,
+ * within `<form>` tags).
+ *
+ * Use this directive if you'd like to create a sub-group within a form. This can
+ * come in handy if you want to validate a sub-group of your form separately from
+ * the rest of your form, or if some values in your domain model make more sense to
+ * consume together in a nested object.
+ *
+ * Pass in the name you'd like this sub-group to have and it will become the key
+ * for the sub-group in the form's full value. You can also export the directive into
+ * a local template variable using `ngModelGroup` (ex: `#myGroup="ngModelGroup"`).
+ *
+ * {\@example forms/ts/ngModelGroup/ng_model_group_example.ts region='Component'}
+ *
+ * * **npm package**: `\@angular/forms`
+ *
+ * * **NgModule**: `FormsModule`
+ *
+ * \@stable
  */
 export var NgModelGroup = (function (_super) {
     __extends(NgModelGroup, _super);
@@ -56,6 +59,7 @@ export var NgModelGroup = (function (_super) {
         this._asyncValidators = asyncValidators;
     }
     /**
+     * \@internal
      * @return {?}
      */
     NgModelGroup.prototype._checkParentType = function () {

@@ -153,7 +153,6 @@ function _ControlFlowError_tsickle_Closure_declarations() {
     /** @type {?} */
     _ControlFlowError.prototype.error;
 }
-// See http://www.w3.org/TR/html51/syntax.html#writing
 var _Tokenizer = (function () {
     /**
      * @param {?} _file The html source
@@ -217,7 +216,7 @@ var _Tokenizer = (function () {
                         this._consumeTagOpen(start);
                     }
                 }
-                else if (!this._tokenizeIcu || !this._tokenizeExpansionForm()) {
+                else if (!(this._tokenizeIcu && this._tokenizeExpansionForm())) {
                     this._consumeText();
                 }
             }
@@ -235,6 +234,7 @@ var _Tokenizer = (function () {
         return new TokenizeResult(mergeTextTokens(this.tokens), this.errors);
     };
     /**
+     * \@internal
      * @return {?}
      */
     _Tokenizer.prototype._tokenizeExpansionForm = function () {
@@ -763,8 +763,8 @@ var _Tokenizer = (function () {
                 parts.push(this._interpolationConfig.start);
                 this._inInterpolation = true;
             }
-            else if (this._interpolationConfig && this._attemptStr(this._interpolationConfig.end) &&
-                this._inInterpolation) {
+            else if (this._interpolationConfig && this._inInterpolation &&
+                this._attemptStr(this._interpolationConfig.end)) {
                 parts.push(this._interpolationConfig.end);
                 this._inInterpolation = false;
             }

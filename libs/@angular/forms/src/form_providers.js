@@ -10,7 +10,8 @@ import { InternalFormsSharedModule, REACTIVE_DRIVEN_DIRECTIVES, TEMPLATE_DRIVEN_
 import { RadioControlRegistry } from './directives/radio_control_value_accessor';
 import { FormBuilder } from './form_builder';
 /**
- *  The ng module for forms.
+ * The ng module for forms.
+ * \@stable
  */
 export var FormsModule = (function () {
     function FormsModule() {
@@ -36,7 +37,8 @@ function FormsModule_tsickle_Closure_declarations() {
     FormsModule.ctorParameters;
 }
 /**
- *  The ng module for reactive forms.
+ * The ng module for reactive forms.
+ * \@stable
  */
 export var ReactiveFormsModule = (function () {
     function ReactiveFormsModule() {

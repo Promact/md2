@@ -5,11 +5,6 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { unimplemented } from '../facade/errors';
-/**
- * @experimental
- */
-// TODO (matsko): add typing for the animation function
 export var RenderComponentType = (function () {
     /**
      * @param {?} id
@@ -49,57 +44,40 @@ function RenderComponentType_tsickle_Closure_declarations() {
 export var RenderDebugInfo = (function () {
     function RenderDebugInfo() {
     }
-    Object.defineProperty(RenderDebugInfo.prototype, "injector", {
-        /**
-         * @return {?}
-         */
-        get: function () { return unimplemented(); },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(RenderDebugInfo.prototype, "component", {
-        /**
-         * @return {?}
-         */
-        get: function () { return unimplemented(); },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(RenderDebugInfo.prototype, "providerTokens", {
-        /**
-         * @return {?}
-         */
-        get: function () { return unimplemented(); },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(RenderDebugInfo.prototype, "references", {
-        /**
-         * @return {?}
-         */
-        get: function () { return unimplemented(); },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(RenderDebugInfo.prototype, "context", {
-        /**
-         * @return {?}
-         */
-        get: function () { return unimplemented(); },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(RenderDebugInfo.prototype, "source", {
-        /**
-         * @return {?}
-         */
-        get: function () { return unimplemented(); },
-        enumerable: true,
-        configurable: true
-    });
+    /**
+     * @abstract
+     * @return {?}
+     */
+    RenderDebugInfo.prototype.injector = function () { };
+    /**
+     * @abstract
+     * @return {?}
+     */
+    RenderDebugInfo.prototype.component = function () { };
+    /**
+     * @abstract
+     * @return {?}
+     */
+    RenderDebugInfo.prototype.providerTokens = function () { };
+    /**
+     * @abstract
+     * @return {?}
+     */
+    RenderDebugInfo.prototype.references = function () { };
+    /**
+     * @abstract
+     * @return {?}
+     */
+    RenderDebugInfo.prototype.context = function () { };
+    /**
+     * @abstract
+     * @return {?}
+     */
+    RenderDebugInfo.prototype.source = function () { };
     return RenderDebugInfo;
 }());
 /**
+ * \@experimental
  * @abstract
  */
 export var Renderer = (function () {
@@ -201,7 +179,7 @@ export var Renderer = (function () {
      */
     Renderer.prototype.setElementAttribute = function (renderElement, attributeName, attributeValue) { };
     /**
-     *  Used only in debug mode to serialize property changes to dom nodes as attributes.
+     * Used only in debug mode to serialize property changes to dom nodes as attributes.
      * @abstract
      * @param {?} renderElement
      * @param {?} propertyName
@@ -255,16 +233,17 @@ export var Renderer = (function () {
     return Renderer;
 }());
 /**
- *  Injectable service that provides a low-level interface for modifying the UI.
-  * *
-  * Use this service to bypass Angular's templating and make custom UI changes that can't be
-  * expressed declaratively. For example if you need to set a property or an attribute whose name is
-  * not statically known, use {@link #setElementProperty} or {@link #setElementAttribute}
-  * respectively.
-  * *
-  * If you are implementing a custom renderer, you must implement this interface.
-  * *
-  * The default Renderer implementation is `DomRenderer`. Also available is `WebWorkerRenderer`.
+ * Injectable service that provides a low-level interface for modifying the UI.
+ *
+ * Use this service to bypass Angular's templating and make custom UI changes that can't be
+ * expressed declaratively. For example if you need to set a property or an attribute whose name is
+ * not statically known, use {\@link #setElementProperty} or {\@link #setElementAttribute}
+ * respectively.
+ *
+ * If you are implementing a custom renderer, you must implement this interface.
+ *
+ * The default Renderer implementation is `DomRenderer`. Also available is `WebWorkerRenderer`.
+ * \@experimental
  * @abstract
  */
 export var RootRenderer = (function () {

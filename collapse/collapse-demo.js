@@ -27,5 +27,4 @@ var CollapseDemo = (function () {
     return CollapseDemo;
 }());
 exports.CollapseDemo = CollapseDemo;
-
 //# sourceMappingURL=collapse-demo.js.map

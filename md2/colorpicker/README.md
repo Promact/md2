@@ -7,6 +7,7 @@ Colorpicker allow the user to select color.
 | Name | Type | Description |
 | --- | --- | --- |
 | `disabled` | `boolean` | Whether or not the colorpicker is disabled |
+| `format` | `string` | 	Color format:'hex', 'rgb', 'hsl'.Default :hex |
 | `id` | `number` | The unique ID of this colorpicker. |
 | `tabindex` | `number` | The tabIndex of the colorpicker. |
 
@@ -20,4 +21,10 @@ Colorpicker allow the user to select color.
 A colorpicker would have the following markup.
 ```html
 <md2-colorpicker [(ngModel)]="color"></md2-colorpicker>
+```
+```html
+<md2-colorpicker [(ngModel)]="color" format="hsla"></md2-colorpicker>
+```
+```html
+<md2-colorpicker [(ngModel)]="color" [disabled]="true"></md2-colorpicker>
 ```

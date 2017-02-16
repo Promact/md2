@@ -14,7 +14,7 @@ export var /** @type {?} */ RADIO_VALUE_ACCESSOR = {
     multi: true
 };
 /**
- *  Internal class used by Angular to uncheck radio buttons with the matching name.
+ * Internal class used by Angular to uncheck radio buttons with the matching name.
  */
 export var RadioControlRegistry = (function () {
     function RadioControlRegistry() {
@@ -82,31 +82,33 @@ function RadioControlRegistry_tsickle_Closure_declarations() {
     RadioControlRegistry.prototype._accessors;
 }
 /**
- *  *
-  * Used by {@link NgModel}, {@link FormControlDirective}, and {@link FormControlName}
-  * to keep the view synced with the {@link FormControl} model.
-  * *
-  * *
-  * If you have imported the {@link FormsModule} or the {@link ReactiveFormsModule}, this
-  * value accessor will be active on any radio control that has a form directive. You do
-  * **not** need to add a special selector to activate it.
-  * *
-  * ### How to use radio buttons with form directives
-  * *
-  * To use radio buttons in a template-driven form, you'll want to ensure that radio buttons
-  * in the same group have the same `name` attribute.  Radio buttons with different `name`
-  * attributes do not affect each other.
-  * *
-  * {@example forms/ts/radioButtons/radio_button_example.ts region='TemplateDriven'}
-  * *
-  * When using radio buttons in a reactive form, radio buttons in the same group should have the
-  * same `formControlName`. You can also add a `name` attribute, but it's optional.
-  * *
-  * {@example forms/ts/reactiveRadioButtons/reactive_radio_button_example.ts region='Reactive'}
-  * *
-  * * **npm package**: `@angular/forms`
-  * *
-  * @stable
+ * \@whatItDoes Writes radio control values and listens to radio control changes.
+ *
+ * Used by {\@link NgModel}, {\@link FormControlDirective}, and {\@link FormControlName}
+ * to keep the view synced with the {\@link FormControl} model.
+ *
+ * \@howToUse
+ *
+ * If you have imported the {\@link FormsModule} or the {\@link ReactiveFormsModule}, this
+ * value accessor will be active on any radio control that has a form directive. You do
+ * **not** need to add a special selector to activate it.
+ *
+ * ### How to use radio buttons with form directives
+ *
+ * To use radio buttons in a template-driven form, you'll want to ensure that radio buttons
+ * in the same group have the same `name` attribute.  Radio buttons with different `name`
+ * attributes do not affect each other.
+ *
+ * {\@example forms/ts/radioButtons/radio_button_example.ts region='TemplateDriven'}
+ *
+ * When using radio buttons in a reactive form, radio buttons in the same group should have the
+ * same `formControlName`. You can also add a `name` attribute, but it's optional.
+ *
+ * {\@example forms/ts/reactiveRadioButtons/reactive_radio_button_example.ts region='Reactive'}
+ *
+ *  * **npm package**: `\@angular/forms`
+ *
+ *  \@stable
  */
 export var RadioControlValueAccessor = (function () {
     /**
@@ -219,11 +221,20 @@ function RadioControlValueAccessor_tsickle_Closure_declarations() {
     RadioControlValueAccessor.ctorParameters;
     /** @type {?} */
     RadioControlValueAccessor.propDecorators;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     RadioControlValueAccessor.prototype._state;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     RadioControlValueAccessor.prototype._control;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     RadioControlValueAccessor.prototype._fn;
     /** @type {?} */
     RadioControlValueAccessor.prototype.onChange;

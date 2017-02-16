@@ -59,7 +59,7 @@ export var /** @type {?} */ SHARED_FORM_DIRECTIVES = [
 export var /** @type {?} */ TEMPLATE_DRIVEN_DIRECTIVES = [NgModel, NgModelGroup, NgForm];
 export var /** @type {?} */ REACTIVE_DRIVEN_DIRECTIVES = [FormControlDirective, FormGroupDirective, FormControlName, FormGroupName, FormArrayName];
 /**
- *  Internal module used for sharing directives between FormsModule and ReactiveFormsModule
+ * Internal module used for sharing directives between FormsModule and ReactiveFormsModule
  */
 export var InternalFormsSharedModule = (function () {
     function InternalFormsSharedModule() {

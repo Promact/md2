@@ -16,5 +16,4 @@ export var MdError = (function (_super) {
     }
     return MdError;
 }(Error));
-
 //# sourceMappingURL=error.js.map

@@ -65,13 +65,6 @@ export function isStrictStringMap(obj) {
     return typeof obj === 'object' && obj !== null && Object.getPrototypeOf(obj) === STRING_MAP_PROTO;
 }
 /**
- * @param {?} obj
- * @return {?}
- */
-export function isDate(obj) {
-    return obj instanceof Date && !isNaN(obj.valueOf());
-}
-/**
  * @param {?} token
  * @return {?}
  */

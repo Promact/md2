@@ -181,7 +181,7 @@ export var ColorpickerService = (function () {
     ColorpickerService.prototype.outputFormat = function (hsva, outputFormat) {
         if (hsva.a < 1) {
             switch (outputFormat) {
-                case 'hsla':
+                case 'hsl':
                     var hsla = this.hsva2hsla(hsva);
                     var hslaText = new Hsla(Math.round((hsla.h) * 360), Math.round(hsla.s * 100), Math.round(hsla.l * 100), Math.round(hsla.a * 100) / 100);
                     return 'hsla(' + hslaText.h + ',' + hslaText.s + '%,' +
@@ -194,11 +194,11 @@ export var ColorpickerService = (function () {
         }
         else {
             switch (outputFormat) {
-                case 'hsla':
+                case 'hsl':
                     var hsla = this.hsva2hsla(hsva);
                     var hslaText = new Hsla(Math.round((hsla.h) * 360), Math.round(hsla.s * 100), Math.round(hsla.l * 100), Math.round(hsla.a * 100) / 100);
                     return 'hsl(' + hslaText.h + ',' + hslaText.s + '%,' + hslaText.l + '%)';
-                case 'rgba':
+                case 'rgb':
                     var rgba = this.denormalizeRGBA(this.hsvaToRgba(hsva));
                     return 'rgb(' + rgba.r + ',' + rgba.g + ',' + rgba.b + ')';
                 default:
@@ -209,10 +209,7 @@ export var ColorpickerService = (function () {
     ColorpickerService.prototype.hexText = function (rgba) {
         var mainText = ((1 << 24) | (rgba.r << 16) | (rgba.g << 8) | rgba.b).toString(16);
         var hexText = '#' + mainText.substr(1);
-        if (hexText[1] === hexText[2] && hexText[3] === hexText[4] && hexText[5] === hexText[6]) {
-            hexText = '#' + hexText[1] + hexText[3] + hexText[5];
-        }
-        return hexText.toUpperCase();
+        return hexText.toLowerCase();
     };
     ColorpickerService.prototype.denormalizeRGBA = function (rgba) {
         return new Rgba(Math.round(rgba.r * 255), Math.round(rgba.g * 255), Math.round(rgba.b * 255), rgba.a);
@@ -223,5 +220,4 @@ export var ColorpickerService = (function () {
     ], ColorpickerService);
     return ColorpickerService;
 }());
-
 //# sourceMappingURL=calculateColor.js.map

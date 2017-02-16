@@ -5,16 +5,24 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 import * as ml from '../../ml_parser/ast';
 import { XmlParser } from '../../ml_parser/xml_parser';
 import * as i18n from '../i18n_ast';
 import { I18nError } from '../parse_util';
-import { digest } from './xmb';
+import { Serializer } from './serializer';
+import { XmbPlaceholderMapper, digest } from './xmb';
 var /** @type {?} */ _TRANSLATIONS_TAG = 'translationbundle';
 var /** @type {?} */ _TRANSLATION_TAG = 'translation';
 var /** @type {?} */ _PLACEHOLDER_TAG = 'ph';
-export var Xtb = (function () {
+export var Xtb = (function (_super) {
+    __extends(Xtb, _super);
     function Xtb() {
+        _super.apply(this, arguments);
     }
     /**
      * @param {?} messages
@@ -48,9 +56,15 @@ export var Xtb = (function () {
      * @return {?}
      */
     Xtb.prototype.digest = function (message) { return digest(message); };
+    /**
+     * @param {?} message
+     * @return {?}
+     */
+    Xtb.prototype.createNameMapper = function (message) {
+        return new XmbPlaceholderMapper(message);
+    };
     return Xtb;
-}());
-// Extract messages as xml nodes from the xtb file
+}(Serializer));
 var XtbParser = (function () {
     function XtbParser() {
     }
@@ -152,7 +166,6 @@ function XtbParser_tsickle_Closure_declarations() {
     /** @type {?} */
     XtbParser.prototype._mlNodesByMsgId;
 }
-// Convert ml nodes (xtb syntax) to i18n nodes
 var XmlToI18n = (function () {
     function XmlToI18n() {
     }

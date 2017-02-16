@@ -16,27 +16,30 @@ import { Location } from './location';
 import { APP_BASE_HREF, LocationStrategy } from './location_strategy';
 import { PlatformLocation } from './platform_location';
 /**
- *  `PathLocationStrategy` is a {@link LocationStrategy} used to configure the
-  * {@link Location} service to represent its state in the
-  * [path](https://en.wikipedia.org/wiki/Uniform_Resource_Locator#Syntax) of the
-  * browser's URL.
-  * *
-  * If you're using `PathLocationStrategy`, you must provide a {@link APP_BASE_HREF}
-  * or add a base element to the document. This URL prefix that will be preserved
-  * when generating and recognizing URLs.
-  * *
-  * For instance, if you provide an `APP_BASE_HREF` of `'/my/app'` and call
-  * `location.go('/foo')`, the browser's URL will become
-  * `example.com/my/app/foo`.
-  * *
-  * Similarly, if you add `<base href='/my/app'/>` to the document and call
-  * `location.go('/foo')`, the browser's URL will become
-  * `example.com/my/app/foo`.
-  * *
-  * ### Example
-  * *
-  * {@example common/location/ts/path_location_component.ts region='LocationComponent'}
-  * *
+ * \@whatItDoes Use URL for storing application location data.
+ * \@description
+ * `PathLocationStrategy` is a {\@link LocationStrategy} used to configure the
+ * {\@link Location} service to represent its state in the
+ * [path](https://en.wikipedia.org/wiki/Uniform_Resource_Locator#Syntax) of the
+ * browser's URL.
+ *
+ * If you're using `PathLocationStrategy`, you must provide a {\@link APP_BASE_HREF}
+ * or add a base element to the document. This URL prefix that will be preserved
+ * when generating and recognizing URLs.
+ *
+ * For instance, if you provide an `APP_BASE_HREF` of `'/my/app'` and call
+ * `location.go('/foo')`, the browser's URL will become
+ * `example.com/my/app/foo`.
+ *
+ * Similarly, if you add `<base href='/my/app'/>` to the document and call
+ * `location.go('/foo')`, the browser's URL will become
+ * `example.com/my/app/foo`.
+ *
+ * ### Example
+ *
+ * {\@example common/location/ts/path_location_component.ts region='LocationComponent'}
+ *
+ * \@stable
  */
 export var PathLocationStrategy = (function (_super) {
     __extends(PathLocationStrategy, _super);

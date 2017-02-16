@@ -405,5 +405,4 @@ export var Md2MultiselectModule = (function () {
     ], Md2MultiselectModule);
     return Md2MultiselectModule;
 }());
-
 //# sourceMappingURL=multiselect.js.map

@@ -481,5 +481,4 @@ export var Md2ChipsModule = (function () {
     ], Md2ChipsModule);
     return Md2ChipsModule;
 }());
-
 //# sourceMappingURL=chips.js.map

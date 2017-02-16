@@ -47,13 +47,16 @@ export function buildView(view, template, targetDependencies) {
  * @return {?}
  */
 export function finishView(view, targetStatements) {
-    view.afterNodes();
-    createViewTopLevelStmts(view, targetStatements);
     view.nodes.forEach(function (node) {
-        if (node instanceof CompileElement && node.hasEmbeddedView) {
-            finishView(node.embeddedView, targetStatements);
+        if (node instanceof CompileElement) {
+            node.finish();
+            if (node.hasEmbeddedView) {
+                finishView(node.embeddedView, targetStatements);
+            }
         }
     });
+    view.finish();
+    createViewTopLevelStmts(view, targetStatements);
 }
 var ViewBuilderVisitor = (function () {
     /**
@@ -335,10 +338,11 @@ function ViewBuilderVisitor_tsickle_Closure_declarations() {
     ViewBuilderVisitor.prototype.targetDependencies;
 }
 /**
- *  Walks up the nodes while the direct parent is a container.
-  * *
-  * Returns the outer container or the node itself when it is not a direct child of a container.
-  * *
+ * Walks up the nodes while the direct parent is a container.
+ *
+ * Returns the outer container or the node itself when it is not a direct child of a container.
+ *
+ * \@internal
  * @param {?} node
  * @return {?}
  */
@@ -350,10 +354,11 @@ function _getOuterContainerOrSelf(node) {
     return node;
 }
 /**
- *  Walks up the nodes while they are container and returns the first parent which is not.
-  * *
-  * Returns the parent of the outer container or the node itself when it is not a container.
-  * *
+ * Walks up the nodes while they are container and returns the first parent which is not.
+ *
+ * Returns the parent of the outer container or the node itself when it is not a container.
+ *
+ * \@internal
  * @param {?} el
  * @return {?}
  */
@@ -448,7 +453,7 @@ function createViewTopLevelStmts(view, targetStatements) {
             o.literal(view.component.template.ngContentSelectors.length),
             ViewEncapsulationEnum.fromValue(view.component.template.encapsulation),
             view.styles,
-            o.literalMap(view.animations.map(function (entry) { return [entry.name, entry.fnExp]; })),
+            o.literalMap(view.animations.map(function (entry) { return [entry.name, entry.fnExp]; }), null, true),
         ]))
             .toDeclStmt(o.importType(createIdentifier(Identifiers.RenderComponentType))));
     }
@@ -465,7 +470,8 @@ function createStaticNodeDebugInfo(node) {
     var /** @type {?} */ componentToken = o.NULL_EXPR;
     var /** @type {?} */ varTokenEntries = [];
     if (isPresent(compileElement)) {
-        providerTokens = compileElement.getProviderTokens();
+        providerTokens =
+            compileElement.getProviderTokens().map(function (token) { return createDiTokenExpression(token); });
         if (isPresent(compileElement.component)) {
             componentToken = createDiTokenExpression(identifierToken(compileElement.component.type));
         }
@@ -736,7 +742,6 @@ function generateCreateEmbeddedViewsMethod(view) {
     view.nodes.forEach(function (node) {
         if (node instanceof CompileElement) {
             if (node.embeddedView) {
-                var /** @type {?} */ parentNodeIndex = node.isRootElement() ? null : node.parent.nodeIndex;
                 stmts.push(new o.IfStmt(nodeIndexVar.equals(o.literal(node.nodeIndex)), [new o.ReturnStatement(node.embeddedView.classExpr.instantiate([
                         ViewProperties.viewUtils, o.THIS_EXPR, o.literal(node.nodeIndex), node.renderNode,
                         node.viewContainer

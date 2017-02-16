@@ -35,7 +35,7 @@ function _extractId(valueString) {
     return valueString.split(':')[0];
 }
 /**
- *  Mock interface for HTMLCollection
+ * Mock interface for HTMLCollection
  * @abstract
  */
 var HTMLCollection = (function () {
@@ -54,8 +54,9 @@ function HTMLCollection_tsickle_Closure_declarations() {
     HTMLCollection.prototype.length;
 }
 /**
- *  The accessor for writing a value and listening to changes on a select element.
-  * *
+ * The accessor for writing a value and listening to changes on a select element.
+ *
+ * \@stable
  */
 export var SelectMultipleControlValueAccessor = (function () {
     /**
@@ -133,6 +134,7 @@ export var SelectMultipleControlValueAccessor = (function () {
         this._renderer.setElementProperty(this._elementRef.nativeElement, 'disabled', isDisabled);
     };
     /**
+     * \@internal
      * @param {?} value
      * @return {?}
      */
@@ -142,6 +144,7 @@ export var SelectMultipleControlValueAccessor = (function () {
         return id;
     };
     /**
+     * \@internal
      * @param {?} value
      * @return {?}
      */
@@ -154,6 +157,7 @@ export var SelectMultipleControlValueAccessor = (function () {
         return null;
     };
     /**
+     * \@internal
      * @param {?} valueString
      * @return {?}
      */
@@ -185,9 +189,15 @@ function SelectMultipleControlValueAccessor_tsickle_Closure_declarations() {
     SelectMultipleControlValueAccessor.ctorParameters;
     /** @type {?} */
     SelectMultipleControlValueAccessor.prototype.value;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     SelectMultipleControlValueAccessor.prototype._optionMap;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     SelectMultipleControlValueAccessor.prototype._idCounter;
     /** @type {?} */
     SelectMultipleControlValueAccessor.prototype.onChange;
@@ -199,15 +209,15 @@ function SelectMultipleControlValueAccessor_tsickle_Closure_declarations() {
     SelectMultipleControlValueAccessor.prototype._elementRef;
 }
 /**
- *  Marks `<option>` as dynamic, so Angular can be notified when options change.
-  * *
-  * ### Example
-  * *
-  * ```
-  * <select multiple name="city" ngModel>
-  * <option *ngFor="let c of cities" [value]="c"></option>
-  * </select>
-  * ```
+ * Marks `<option>` as dynamic, so Angular can be notified when options change.
+ *
+ * ### Example
+ *
+ * ```
+ * <select multiple name="city" ngModel>
+ *   <option *ngFor="let c of cities" [value]="c"></option>
+ * </select>
+ * ```
  */
 export var NgSelectMultipleOption = (function () {
     /**
@@ -257,6 +267,7 @@ export var NgSelectMultipleOption = (function () {
         configurable: true
     });
     /**
+     * \@internal
      * @param {?} value
      * @return {?}
      */
@@ -264,6 +275,7 @@ export var NgSelectMultipleOption = (function () {
         this._renderer.setElementProperty(this._element.nativeElement, 'value', value);
     };
     /**
+     * \@internal
      * @param {?} selected
      * @return {?}
      */
@@ -306,7 +318,10 @@ function NgSelectMultipleOption_tsickle_Closure_declarations() {
     NgSelectMultipleOption.propDecorators;
     /** @type {?} */
     NgSelectMultipleOption.prototype.id;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     NgSelectMultipleOption.prototype._value;
     /** @type {?} */
     NgSelectMultipleOption.prototype._element;

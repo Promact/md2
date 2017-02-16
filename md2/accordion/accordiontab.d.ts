@@ -3,6 +3,8 @@ export declare class Md2AccordionHeader {
 }
 export declare class Md2AccordionTab {
     private _accordion;
+    private _disabled;
+    private _active;
     header: string;
     active: boolean;
     disabled: boolean;

@@ -30,41 +30,18 @@ export var DomPortalHost = (function (_super) {
         // If the portal specifies a ViewContainerRef, we will use that as the attachment point
         // for the component (in terms of Angular's component tree, not rendering).
         // When the ViewContainerRef is missing, we use the factory to create the component directly
-        // and then manually attach the ChangeDetector for that component to the application (which
-        // happens automatically when using a ViewContainer).
+        // and then manually attach the view to the application.
         if (portal.viewContainerRef) {
             componentRef = portal.viewContainerRef.createComponent(componentFactory, portal.viewContainerRef.length, portal.injector || portal.viewContainerRef.parentInjector);
             this.setDisposeFn(function () { return componentRef.destroy(); });
         }
         else {
             componentRef = componentFactory.create(portal.injector || this._defaultInjector);
-            // ApplicationRef's attachView and detachView methods are in Angular ^2.3.0 but not before.
-            // The `else` clause here can be removed once 2.3.0 is released.
-            if (this._appRef['attachView']) {
-                this._appRef.attachView(componentRef.hostView);
-                this.setDisposeFn(function () {
-                    _this._appRef.detachView(componentRef.hostView);
-                    componentRef.destroy();
-                });
-            }
-            else {
-                // When creating a component outside of a ViewContainer, we need to manually register
-                // its ChangeDetector with the application. This API is unfortunately not published
-                // in Angular < 2.3.0. The change detector must also be deregistered when the component
-                // is destroyed to prevent memory leaks.
-                var changeDetectorRef_1 = componentRef.changeDetectorRef;
-                this._appRef.registerChangeDetector(changeDetectorRef_1);
-                this.setDisposeFn(function () {
-                    _this._appRef.unregisterChangeDetector(changeDetectorRef_1);
-                    // Normally the ViewContainer will remove the component's nodes from the DOM.
-                    // Without a ViewContainer, we need to manually remove the nodes.
-                    var componentRootNode = _this._getComponentRootNode(componentRef);
-                    if (componentRootNode.parentNode) {
-                        componentRootNode.parentNode.removeChild(componentRootNode);
-                    }
-                    componentRef.destroy();
-                });
-            }
+            this._appRef.attachView(componentRef.hostView);
+            this.setDisposeFn(function () {
+                _this._appRef.detachView(componentRef.hostView);
+                componentRef.destroy();
+            });
         }
         // At this point the component has been instantiated, so we move it to the location in the DOM
         // where we want it to be rendered.
@@ -79,10 +56,13 @@ export var DomPortalHost = (function (_super) {
         var _this = this;
         var viewContainer = portal.viewContainerRef;
         var viewRef = viewContainer.createEmbeddedView(portal.templateRef);
+        // The method `createEmbeddedView` will add the view as a child of the viewContainer.
+        // But for the DomPortalHost the view can be added everywhere in the DOM (e.g Overlay Container)
+        // To move the view to the specified host element. We just re-append the existing root nodes.
         viewRef.rootNodes.forEach(function (rootNode) { return _this._hostDomElement.appendChild(rootNode); });
         this.setDisposeFn((function () {
             var index = viewContainer.indexOf(viewRef);
-            if (index != -1) {
+            if (index !== -1) {
                 viewContainer.remove(index);
             }
         }));
@@ -104,5 +84,4 @@ export var DomPortalHost = (function (_super) {
     };
     return DomPortalHost;
 }(BasePortalHost));
-
 //# sourceMappingURL=dom-portal-host.js.map

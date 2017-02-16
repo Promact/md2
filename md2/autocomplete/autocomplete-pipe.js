@@ -37,5 +37,4 @@ export var HighlightPipe = (function () {
     ], HighlightPipe);
     return HighlightPipe;
 }());
-
 //# sourceMappingURL=autocomplete-pipe.js.map

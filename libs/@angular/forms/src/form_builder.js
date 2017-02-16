@@ -9,30 +9,33 @@ import { Injectable } from '@angular/core';
 import { isPresent } from './facade/lang';
 import { FormArray, FormControl, FormGroup } from './model';
 /**
- *  *
-  * It is essentially syntactic sugar that shortens the `new FormGroup()`,
-  * `new FormControl()`, and `new FormArray()` boilerplate that can build up in larger
-  * forms.
-  * *
-  * *
-  * To use, inject `FormBuilder` into your component class. You can then call its methods
-  * directly.
-  * *
-  * {@example forms/ts/formBuilder/form_builder_example.ts region='Component'}
-  * *
-  * * **npm package**: `@angular/forms`
-  * *
-  * * **NgModule**: {@link ReactiveFormsModule}
-  * *
+ * \@whatItDoes Creates an {\@link AbstractControl} from a user-specified configuration.
+ *
+ * It is essentially syntactic sugar that shortens the `new FormGroup()`,
+ * `new FormControl()`, and `new FormArray()` boilerplate that can build up in larger
+ * forms.
+ *
+ * \@howToUse
+ *
+ * To use, inject `FormBuilder` into your component class. You can then call its methods
+ * directly.
+ *
+ * {\@example forms/ts/formBuilder/form_builder_example.ts region='Component'}
+ *
+ *  * **npm package**: `\@angular/forms`
+ *
+ *  * **NgModule**: {\@link ReactiveFormsModule}
+ *
+ * \@stable
  */
 export var FormBuilder = (function () {
     function FormBuilder() {
     }
     /**
-     *  Construct a new {@link FormGroup} with the given map of configuration.
-      * Valid keys for the `extra` parameter map are `validator` and `asyncValidator`.
-      * *
-      * See the {@link FormGroup} constructor for more details.
+     * Construct a new {\@link FormGroup} with the given map of configuration.
+     * Valid keys for the `extra` parameter map are `validator` and `asyncValidator`.
+     *
+     * See the {\@link FormGroup} constructor for more details.
      * @param {?} controlsConfig
      * @param {?=} extra
      * @return {?}
@@ -45,12 +48,12 @@ export var FormBuilder = (function () {
         return new FormGroup(controls, validator, asyncValidator);
     };
     /**
-     *  Construct a new {@link FormControl} with the given `formState`,`validator`, and
-      * `asyncValidator`.
-      * *
-      * `formState` can either be a standalone value for the form control or an object
-      * that contains both a value and a disabled status.
-      * *
+     * Construct a new {\@link FormControl} with the given `formState`,`validator`, and
+     * `asyncValidator`.
+     *
+     * `formState` can either be a standalone value for the form control or an object
+     * that contains both a value and a disabled status.
+     *
      * @param {?} formState
      * @param {?=} validator
      * @param {?=} asyncValidator
@@ -62,8 +65,8 @@ export var FormBuilder = (function () {
         return new FormControl(formState, validator, asyncValidator);
     };
     /**
-     *  Construct a {@link FormArray} from the given `controlsConfig` array of
-      * configuration, with the given optional `validator` and `asyncValidator`.
+     * Construct a {\@link FormArray} from the given `controlsConfig` array of
+     * configuration, with the given optional `validator` and `asyncValidator`.
      * @param {?} controlsConfig
      * @param {?=} validator
      * @param {?=} asyncValidator
@@ -77,6 +80,7 @@ export var FormBuilder = (function () {
         return new FormArray(controls, validator, asyncValidator);
     };
     /**
+     * \@internal
      * @param {?} controlsConfig
      * @return {?}
      */
@@ -89,6 +93,7 @@ export var FormBuilder = (function () {
         return controls;
     };
     /**
+     * \@internal
      * @param {?} controlConfig
      * @return {?}
      */

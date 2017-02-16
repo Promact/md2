@@ -1,6 +1,6 @@
 /**
- *  An interface for retrieving documents by URL that the compiler uses
-  * to load templates.
+ * An interface for retrieving documents by URL that the compiler uses
+ * to load templates.
  */
 export var ResourceLoader = (function () {
     function ResourceLoader() {

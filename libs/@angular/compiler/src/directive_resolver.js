@@ -5,18 +5,21 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { Component, Directive, HostBinding, HostListener, Injectable, Input, Output, Query, resolveForwardRef } from '@angular/core';
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+import { Component, Directive, HostBinding, HostListener, Input, Output, Query, resolveForwardRef } from '@angular/core';
 import { ListWrapper, StringMapWrapper } from './facade/collection';
 import { stringify } from './facade/lang';
+import { CompilerInjectable } from './injectable';
 import { ReflectorReader, reflector } from './private_import_core';
 import { splitAtColon } from './util';
-/*
- * Resolve a `Type` for {@link Directive}.
- *
- * This interface can be overridden by the application developer to create custom behavior.
- *
- * See {@link Compiler}
- */
 export var DirectiveResolver = (function () {
     /**
      * @param {?=} _reflector
@@ -34,7 +37,7 @@ export var DirectiveResolver = (function () {
         return typeMetadata && typeMetadata.some(isDirectiveMetadata);
     };
     /**
-     *  Return {@link Directive} for a given `Type`.
+     * Return {\@link Directive} for a given `Type`.
      * @param {?} type
      * @param {?=} throwIfNotFound
      * @return {?}
@@ -183,23 +186,13 @@ export var DirectiveResolver = (function () {
             });
         }
     };
-    DirectiveResolver.decorators = [
-        { type: Injectable },
-    ];
-    /** @nocollapse */
-    DirectiveResolver.ctorParameters = function () { return [
-        { type: ReflectorReader, },
-    ]; };
+    DirectiveResolver = __decorate([
+        CompilerInjectable(), 
+        __metadata('design:paramtypes', [ReflectorReader])
+    ], DirectiveResolver);
     return DirectiveResolver;
 }());
 function DirectiveResolver_tsickle_Closure_declarations() {
-    /** @type {?} */
-    DirectiveResolver.decorators;
-    /**
-     * @nocollapse
-     * @type {?}
-     */
-    DirectiveResolver.ctorParameters;
     /** @type {?} */
     DirectiveResolver.prototype._reflector;
 }

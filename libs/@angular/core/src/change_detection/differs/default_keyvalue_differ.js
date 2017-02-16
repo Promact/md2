@@ -165,6 +165,7 @@ export var DefaultKeyValueDiffer = (function () {
         return this.isDirty;
     };
     /**
+     * \@internal
      * @return {?}
      */
     DefaultKeyValueDiffer.prototype._reset = function () {
@@ -186,6 +187,7 @@ export var DefaultKeyValueDiffer = (function () {
         }
     };
     /**
+     * \@internal
      * @param {?} lastRecord
      * @param {?} record
      * @return {?}
@@ -222,6 +224,7 @@ export var DefaultKeyValueDiffer = (function () {
         }
     };
     /**
+     * \@internal
      * @param {?} record
      * @return {?}
      */
@@ -230,6 +233,7 @@ export var DefaultKeyValueDiffer = (function () {
             record._prevRemoved !== null;
     };
     /**
+     * \@internal
      * @param {?} record
      * @return {?}
      */
@@ -244,6 +248,7 @@ export var DefaultKeyValueDiffer = (function () {
         }
     };
     /**
+     * \@internal
      * @param {?} prev
      * @param {?} record
      * @return {?}
@@ -259,6 +264,7 @@ export var DefaultKeyValueDiffer = (function () {
         record._next = null;
     };
     /**
+     * \@internal
      * @param {?} record
      * @return {?}
      */
@@ -280,6 +286,7 @@ export var DefaultKeyValueDiffer = (function () {
         record._prevRemoved = record._nextRemoved = null;
     };
     /**
+     * \@internal
      * @param {?} record
      * @return {?}
      */
@@ -293,6 +300,7 @@ export var DefaultKeyValueDiffer = (function () {
         }
     };
     /**
+     * \@internal
      * @param {?} record
      * @return {?}
      */
@@ -337,6 +345,7 @@ export var DefaultKeyValueDiffer = (function () {
             'removals: ' + removals.join(', ') + '\n';
     };
     /**
+     * \@internal
      * @param {?} obj
      * @param {?} fn
      * @return {?}
@@ -372,7 +381,7 @@ function DefaultKeyValueDiffer_tsickle_Closure_declarations() {
     DefaultKeyValueDiffer.prototype._removalsTail;
 }
 /**
- * @stable
+ * \@stable
  */
 export var KeyValueChangeRecord = (function () {
     /**
@@ -411,17 +420,35 @@ function KeyValueChangeRecord_tsickle_Closure_declarations() {
     KeyValueChangeRecord.prototype.previousValue;
     /** @type {?} */
     KeyValueChangeRecord.prototype.currentValue;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     KeyValueChangeRecord.prototype._nextPrevious;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     KeyValueChangeRecord.prototype._next;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     KeyValueChangeRecord.prototype._nextAdded;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     KeyValueChangeRecord.prototype._nextRemoved;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     KeyValueChangeRecord.prototype._prevRemoved;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     KeyValueChangeRecord.prototype._nextChanged;
     /** @type {?} */
     KeyValueChangeRecord.prototype.key;

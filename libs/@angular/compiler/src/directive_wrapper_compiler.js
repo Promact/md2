@@ -5,7 +5,15 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { Injectable } from '@angular/core';
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 import { identifierModuleUrl, identifierName } from './compile_metadata';
 import { createCheckBindingField, createCheckBindingStmt } from './compiler_util/binding_util';
 import { EventHandlerVars, convertActionBinding, convertPropertyBinding } from './compiler_util/expression_converter';
@@ -13,6 +21,7 @@ import { triggerAnimation, writeToRenderer } from './compiler_util/render_util';
 import { CompilerConfig } from './config';
 import { Parser } from './expression_parser/parser';
 import { Identifiers, createIdentifier } from './identifiers';
+import { CompilerInjectable } from './injectable';
 import { DEFAULT_INTERPOLATION_CONFIG } from './ml_parser/interpolation_config';
 import { createClassStmt } from './output/class_builder';
 import * as o from './output/output_ast';
@@ -50,12 +59,12 @@ var /** @type {?} */ RENDER_EL_VAR = o.variable('el');
 var /** @type {?} */ EVENT_NAME_VAR = o.variable('eventName');
 var /** @type {?} */ RESET_CHANGES_STMT = o.THIS_EXPR.prop(CHANGES_FIELD_NAME).set(o.literalMap([])).toStmt();
 /**
- *  We generate directive wrappers to prevent code bloat when a directive is used.
-  * A directive wrapper encapsulates
-  * the dirty checking for `@Input`, the handling of `@HostListener` / `@HostBinding`
-  * and calling the lifecyclehooks `ngOnInit`, `ngOnChanges`, `ngDoCheck`.
-  * *
-  * So far, only `@Input` and the lifecycle hooks have been implemented.
+ * We generate directive wrappers to prevent code bloat when a directive is used.
+ * A directive wrapper encapsulates
+ * the dirty checking for `\@Input`, the handling of `\@HostListener` / `\@HostBinding`
+ * and calling the lifecyclehooks `ngOnInit`, `ngOnChanges`, `ngDoCheck`.
+ *
+ * So far, only `\@Input` and the lifecycle hooks have been implemented.
  */
 export var DirectiveWrapperCompiler = (function () {
     /**
@@ -95,26 +104,13 @@ export var DirectiveWrapperCompiler = (function () {
         var /** @type {?} */ classStmt = builder.build();
         return new DirectiveWrapperCompileResult([classStmt], classStmt.name);
     };
-    DirectiveWrapperCompiler.decorators = [
-        { type: Injectable },
-    ];
-    /** @nocollapse */
-    DirectiveWrapperCompiler.ctorParameters = function () { return [
-        { type: CompilerConfig, },
-        { type: Parser, },
-        { type: ElementSchemaRegistry, },
-        { type: Console, },
-    ]; };
+    DirectiveWrapperCompiler = __decorate([
+        CompilerInjectable(), 
+        __metadata('design:paramtypes', [CompilerConfig, Parser, ElementSchemaRegistry, Console])
+    ], DirectiveWrapperCompiler);
     return DirectiveWrapperCompiler;
 }());
 function DirectiveWrapperCompiler_tsickle_Closure_declarations() {
-    /** @type {?} */
-    DirectiveWrapperCompiler.decorators;
-    /**
-     * @nocollapse
-     * @type {?}
-     */
-    DirectiveWrapperCompiler.ctorParameters;
     /** @type {?} */
     DirectiveWrapperCompiler.prototype.compilerConfig;
     /** @type {?} */

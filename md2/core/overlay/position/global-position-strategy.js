@@ -144,5 +144,4 @@ export var GlobalPositionStrategy = (function () {
     };
     return GlobalPositionStrategy;
 }());
-
 //# sourceMappingURL=global-position-strategy.js.map

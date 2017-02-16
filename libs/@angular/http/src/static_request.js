@@ -16,41 +16,43 @@ import { Headers } from './headers';
 import { normalizeMethodName } from './http_utils';
 import { URLSearchParams } from './url_search_params';
 /**
- *  Creates `Request` instances from provided values.
-  * *
-  * The Request's interface is inspired by the Request constructor defined in the [Fetch
-  * Spec](https://fetch.spec.whatwg.org/#request-class),
-  * but is considered a static value whose body can be accessed many times. There are other
-  * differences in the implementation, but this is the most significant.
-  * *
-  * `Request` instances are typically created by higher-level classes, like {@link Http} and
-  * {@link Jsonp}, but it may occasionally be useful to explicitly create `Request` instances.
-  * One such example is when creating services that wrap higher-level services, like {@link Http},
-  * where it may be useful to generate a `Request` with arbitrary headers and search params.
-  * *
-  * ```typescript
-  * import {Injectable, Injector} from '@angular/core';
-  * import {HTTP_PROVIDERS, Http, Request, RequestMethod} from '@angular/http';
-  * *
-  * class AutoAuthenticator {
-  * constructor(public http:Http) {}
-  * request(url:string) {
-  * return this.http.request(new Request({
-  * method: RequestMethod.Get,
-  * url: url,
-  * search: 'password=123'
-  * }));
-  * }
-  * }
-  * *
-  * var injector = Injector.resolveAndCreate([HTTP_PROVIDERS, AutoAuthenticator]);
-  * var authenticator = injector.get(AutoAuthenticator);
-  * authenticator.request('people.json').subscribe(res => {
-  * //URL should have included '?password=123'
-  * console.log('people', res.json());
-  * });
-  * ```
-  * *
+ * Creates `Request` instances from provided values.
+ *
+ * The Request's interface is inspired by the Request constructor defined in the [Fetch
+ * Spec](https://fetch.spec.whatwg.org/#request-class),
+ * but is considered a static value whose body can be accessed many times. There are other
+ * differences in the implementation, but this is the most significant.
+ *
+ * `Request` instances are typically created by higher-level classes, like {\@link Http} and
+ * {\@link Jsonp}, but it may occasionally be useful to explicitly create `Request` instances.
+ * One such example is when creating services that wrap higher-level services, like {\@link Http},
+ * where it may be useful to generate a `Request` with arbitrary headers and search params.
+ *
+ * ```typescript
+ * import {Injectable, Injector} from '\@angular/core';
+ * import {HTTP_PROVIDERS, Http, Request, RequestMethod} from '\@angular/http';
+ *
+ * \@Injectable()
+ * class AutoAuthenticator {
+ *   constructor(public http:Http) {}
+ *   request(url:string) {
+ *     return this.http.request(new Request({
+ *       method: RequestMethod.Get,
+ *       url: url,
+ *       search: 'password=123'
+ *     }));
+ *   }
+ * }
+ *
+ * var injector = Injector.resolveAndCreate([HTTP_PROVIDERS, AutoAuthenticator]);
+ * var authenticator = injector.get(AutoAuthenticator);
+ * authenticator.request('people.json').subscribe(res => {
+ *   //URL should have included '?password=123'
+ *   console.log('people', res.json());
+ * });
+ * ```
+ *
+ * \@experimental
  */
 export var Request = (function (_super) {
     __extends(Request, _super);
@@ -83,7 +85,7 @@ export var Request = (function (_super) {
         this.responseType = requestOptions.responseType;
     }
     /**
-     *  Returns the content type enum based on header options.
+     * Returns the content type enum based on header options.
      * @return {?}
      */
     Request.prototype.detectContentType = function () {
@@ -98,13 +100,13 @@ export var Request = (function (_super) {
             case 'text/html':
                 return ContentType.TEXT;
             case 'application/octet-stream':
-                return ContentType.BLOB;
+                return this._body instanceof ArrayBuffer ? ContentType.ARRAY_BUFFER : ContentType.BLOB;
             default:
                 return this.detectContentTypeFromBody();
         }
     };
     /**
-     *  Returns the content type of request's body based on its type.
+     * Returns the content type of request's body based on its type.
      * @return {?}
      */
     Request.prototype.detectContentTypeFromBody = function () {
@@ -123,7 +125,7 @@ export var Request = (function (_super) {
         else if (this._body instanceof ArrayBuffer) {
             return ContentType.ARRAY_BUFFER;
         }
-        else if (this._body && typeof this._body == 'object') {
+        else if (this._body && typeof this._body === 'object') {
             return ContentType.JSON;
         }
         else {
@@ -131,8 +133,8 @@ export var Request = (function (_super) {
         }
     };
     /**
-     *  Returns the request's body according to its type. If body is undefined, return
-      * null.
+     * Returns the request's body according to its type. If body is undefined, return
+     * null.
      * @return {?}
      */
     Request.prototype.getBody = function () {
@@ -162,7 +164,7 @@ function Request_tsickle_Closure_declarations() {
      */
     Request.prototype.method;
     /**
-     * {@link Headers} instance
+     * {\@link Headers} instance
      * @type {?}
      */
     Request.prototype.headers;
@@ -191,5 +193,5 @@ var /** @type {?} */ noop = function () { };
 var /** @type {?} */ w = typeof window == 'object' ? window : noop;
 var /** @type {?} */ FormData = ((w) /** TODO #9100 */)['FormData'] || noop;
 var /** @type {?} */ Blob = ((w) /** TODO #9100 */)['Blob'] || noop;
-var /** @type {?} */ ArrayBuffer = ((w) /** TODO #9100 */)['ArrayBuffer'] || noop;
+export var /** @type {?} */ ArrayBuffer = ((w) /** TODO #9100 */)['ArrayBuffer'] || noop;
 //# sourceMappingURL=static_request.js.map

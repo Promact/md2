@@ -5,9 +5,18 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { Injectable } from '@angular/core';
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 import * as chars from '../chars';
 import { escapeRegExp, isBlank, isPresent } from '../facade/lang';
+import { CompilerInjectable } from '../injectable';
 import { DEFAULT_INTERPOLATION_CONFIG } from '../ml_parser/interpolation_config';
 import { ASTWithSource, Binary, BindingPipe, Chain, Conditional, EmptyExpr, FunctionCall, ImplicitReceiver, Interpolation, KeyedRead, KeyedWrite, LiteralArray, LiteralMap, LiteralPrimitive, MethodCall, ParseSpan, ParserError, PrefixNot, PropertyRead, PropertyWrite, Quote, SafeMethodCall, SafePropertyRead, TemplateBinding } from './ast';
 import { EOF, Lexer, TokenType, isIdentifier, isQuote } from './lexer';
@@ -299,23 +308,13 @@ export var Parser = (function () {
         }
         return errLocation.length;
     };
-    Parser.decorators = [
-        { type: Injectable },
-    ];
-    /** @nocollapse */
-    Parser.ctorParameters = function () { return [
-        { type: Lexer, },
-    ]; };
+    Parser = __decorate([
+        CompilerInjectable(), 
+        __metadata('design:paramtypes', [Lexer])
+    ], Parser);
     return Parser;
 }());
 function Parser_tsickle_Closure_declarations() {
-    /** @type {?} */
-    Parser.decorators;
-    /**
-     * @nocollapse
-     * @type {?}
-     */
-    Parser.ctorParameters;
     /** @type {?} */
     Parser.prototype.errors;
     /** @type {?} */
@@ -850,7 +849,7 @@ export var _ParseAST = (function () {
         return (positionals);
     };
     /**
-     *  An identifier, a keyword, a string with an optional `-` inbetween.
+     * An identifier, a keyword, a string with an optional `-` inbetween.
      * @return {?}
      */
     _ParseAST.prototype.expectTemplateBindingKey = function () {

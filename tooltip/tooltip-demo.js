@@ -25,5 +25,4 @@ var TooltipDemo = (function () {
     return TooltipDemo;
 }());
 exports.TooltipDemo = TooltipDemo;
-
 //# sourceMappingURL=tooltip-demo.js.map

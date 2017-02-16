@@ -17,13 +17,14 @@ import { Response } from '../static_response';
 import { BrowserXhr } from './browser_xhr';
 var /** @type {?} */ XSSI_PREFIX = /^\)\]\}',?\n/;
 /**
- *  Creates connections using `XMLHttpRequest`. Given a fully-qualified
-  * request, an `XHRConnection` will immediately create an `XMLHttpRequest` object and send the
-  * request.
-  * *
-  * This class would typically not be created or interacted with directly inside applications, though
-  * the {@link MockConnection} may be interacted with in tests.
-  * *
+ * Creates connections using `XMLHttpRequest`. Given a fully-qualified
+ * request, an `XHRConnection` will immediately create an `XMLHttpRequest` object and send the
+ * request.
+ *
+ * This class would typically not be created or interacted with directly inside applications, though
+ * the {\@link MockConnection} may be interacted with in tests.
+ *
+ * \@experimental
  */
 export var XHRConnection = (function () {
     /**
@@ -167,7 +168,7 @@ function XHRConnection_tsickle_Closure_declarations() {
     /** @type {?} */
     XHRConnection.prototype.request;
     /**
-     * Response {@link EventEmitter} which emits a single {@link Response} value on load event of
+     * Response {\@link EventEmitter} which emits a single {\@link Response} value on load event of
      * `XMLHttpRequest`.
      * @type {?}
      */
@@ -176,14 +177,15 @@ function XHRConnection_tsickle_Closure_declarations() {
     XHRConnection.prototype.readyState;
 }
 /**
- *  `XSRFConfiguration` sets up Cross Site Request Forgery (XSRF) protection for the application
-  * using a cookie. See {@link https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)}
-  * for more information on XSRF.
-  * *
-  * Applications can configure custom cookie and header names by binding an instance of this class
-  * with different `cookieName` and `headerName` values. See the main HTTP documentation for more
-  * details.
-  * *
+ * `XSRFConfiguration` sets up Cross Site Request Forgery (XSRF) protection for the application
+ * using a cookie. See https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)
+ * for more information on XSRF.
+ *
+ * Applications can configure custom cookie and header names by binding an instance of this class
+ * with different `cookieName` and `headerName` values. See the main HTTP documentation for more
+ * details.
+ *
+ * \@experimental
  */
 export var CookieXSRFStrategy = (function () {
     /**
@@ -215,28 +217,30 @@ function CookieXSRFStrategy_tsickle_Closure_declarations() {
     CookieXSRFStrategy.prototype._headerName;
 }
 /**
- *  Creates {@link XHRConnection} instances.
-  * *
-  * This class would typically not be used by end users, but could be
-  * overridden if a different backend implementation should be used,
-  * such as in a node backend.
-  * *
-  * ### Example
-  * *
-  * ```
-  * import {Http, MyNodeBackend, HTTP_PROVIDERS, BaseRequestOptions} from '@angular/http';
-  * viewProviders: [
-  * HTTP_PROVIDERS,
-  * {provide: Http, useFactory: (backend, options) => {
-  * return new Http(backend, options);
-  * }, deps: [MyNodeBackend, BaseRequestOptions]}]
-  * })
-  * class MyComponent {
-  * constructor(http:Http) {
-  * http.request('people.json').subscribe(res => this.people = res.json());
-  * }
-  * }
-  * ```
+ * Creates {\@link XHRConnection} instances.
+ *
+ * This class would typically not be used by end users, but could be
+ * overridden if a different backend implementation should be used,
+ * such as in a node backend.
+ *
+ * ### Example
+ *
+ * ```
+ * import {Http, MyNodeBackend, HTTP_PROVIDERS, BaseRequestOptions} from '\@angular/http';
+ * \@Component({
+ *   viewProviders: [
+ *     HTTP_PROVIDERS,
+ *     {provide: Http, useFactory: (backend, options) => {
+ *       return new Http(backend, options);
+ *     }, deps: [MyNodeBackend, BaseRequestOptions]}]
+ * })
+ * class MyComponent {
+ *   constructor(http:Http) {
+ *     http.request('people.json').subscribe(res => this.people = res.json());
+ *   }
+ * }
+ * ```
+ * \@experimental
  */
 export var XHRBackend = (function () {
     /**

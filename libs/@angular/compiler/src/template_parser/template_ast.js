@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /**
- *  A segment of text within the template.
+ * A segment of text within the template.
  */
 export var TextAst = (function () {
     /**
@@ -36,7 +36,7 @@ function TextAst_tsickle_Closure_declarations() {
     TextAst.prototype.sourceSpan;
 }
 /**
- *  A bound expression within the text of a template.
+ * A bound expression within the text of a template.
  */
 export var BoundTextAst = (function () {
     /**
@@ -68,7 +68,7 @@ function BoundTextAst_tsickle_Closure_declarations() {
     BoundTextAst.prototype.sourceSpan;
 }
 /**
- *  A plain attribute on an element.
+ * A plain attribute on an element.
  */
 export var AttrAst = (function () {
     /**
@@ -98,8 +98,8 @@ function AttrAst_tsickle_Closure_declarations() {
     AttrAst.prototype.sourceSpan;
 }
 /**
- *  A binding for an element property (e.g. `[property]="expression"`) or an animation trigger (e.g.
-  * `[@trigger]="stateExp"`)
+ * A binding for an element property (e.g. `[property]="expression"`) or an animation trigger (e.g.
+ * `[\@trigger]="stateExp"`)
  */
 export var BoundElementPropertyAst = (function () {
     /**
@@ -155,8 +155,8 @@ function BoundElementPropertyAst_tsickle_Closure_declarations() {
     BoundElementPropertyAst.prototype.sourceSpan;
 }
 /**
- *  A binding for an element event (e.g. `(event)="handler()"`) or an animation trigger event (e.g.
-  * `(@trigger.phase)="callback($event)"`).
+ * A binding for an element event (e.g. `(event)="handler()"`) or an animation trigger event (e.g.
+ * `(\@trigger.phase)="callback($event)"`).
  */
 export var BoundEventAst = (function () {
     /**
@@ -229,7 +229,7 @@ function BoundEventAst_tsickle_Closure_declarations() {
     BoundEventAst.prototype.sourceSpan;
 }
 /**
- *  A reference declaration on an element (e.g. `let someName="expression"`).
+ * A reference declaration on an element (e.g. `let someName="expression"`).
  */
 export var ReferenceAst = (function () {
     /**
@@ -261,7 +261,7 @@ function ReferenceAst_tsickle_Closure_declarations() {
     ReferenceAst.prototype.sourceSpan;
 }
 /**
- *  A variable declaration on a <template> (e.g. `var-someName="someLocalName"`).
+ * A variable declaration on a <template> (e.g. `var-someName="someLocalName"`).
  */
 export var VariableAst = (function () {
     /**
@@ -293,7 +293,7 @@ function VariableAst_tsickle_Closure_declarations() {
     VariableAst.prototype.sourceSpan;
 }
 /**
- *  An element declaration in a template.
+ * An element declaration in a template.
  */
 export var ElementAst = (function () {
     /**
@@ -361,7 +361,7 @@ function ElementAst_tsickle_Closure_declarations() {
     ElementAst.prototype.endSourceSpan;
 }
 /**
- *  A `<template>` element included in an Angular template.
+ * A `<template>` element included in an Angular template.
  */
 export var EmbeddedTemplateAst = (function () {
     /**
@@ -421,7 +421,7 @@ function EmbeddedTemplateAst_tsickle_Closure_declarations() {
     EmbeddedTemplateAst.prototype.sourceSpan;
 }
 /**
- *  A directive property with a bound value (e.g. `*ngIf="condition").
+ * A directive property with a bound value (e.g. `*ngIf="condition").
  */
 export var BoundDirectivePropertyAst = (function () {
     /**
@@ -457,7 +457,7 @@ function BoundDirectivePropertyAst_tsickle_Closure_declarations() {
     BoundDirectivePropertyAst.prototype.sourceSpan;
 }
 /**
- *  A directive declared on an element.
+ * A directive declared on an element.
  */
 export var DirectiveAst = (function () {
     /**
@@ -497,7 +497,7 @@ function DirectiveAst_tsickle_Closure_declarations() {
     DirectiveAst.prototype.sourceSpan;
 }
 /**
- *  A provider declared on an element
+ * A provider declared on an element
  */
 export var ProviderAst = (function () {
     /**
@@ -557,7 +557,7 @@ ProviderAstType[ProviderAstType.Component] = "Component";
 ProviderAstType[ProviderAstType.Directive] = "Directive";
 ProviderAstType[ProviderAstType.Builtin] = "Builtin";
 /**
- *  Position where content is to be projected (instance of `<ng-content>` in a template).
+ * Position where content is to be projected (instance of `<ng-content>` in a template).
  */
 export var NgContentAst = (function () {
     /**
@@ -600,7 +600,7 @@ PropertyBindingType[PropertyBindingType.Class] = "Class";
 PropertyBindingType[PropertyBindingType.Style] = "Style";
 PropertyBindingType[PropertyBindingType.Animation] = "Animation";
 /**
- *  Visit every node in a list of {@link TemplateAst}s with the given {@link TemplateAstVisitor}.
+ * Visit every node in a list of {\@link TemplateAst}s with the given {\@link TemplateAstVisitor}.
  * @param {?} visitor
  * @param {?} asts
  * @param {?=} context

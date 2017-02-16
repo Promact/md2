@@ -12,7 +12,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 import { ParseError } from '../parse_util';
 /**
- *  An i18n error.
+ * An i18n error.
  */
 export var I18nError = (function (_super) {
     __extends(I18nError, _super);

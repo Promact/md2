@@ -50,11 +50,12 @@ export var /** @type {?} */ ANALYZE_FOR_ENTRY_COMPONENTS = new OpaqueToken('Anal
  */
 export var /** @type {?} */ Attribute = makeParamDecorator('Attribute', [['attributeName', undefined]]);
 /**
- *  Base class for query metadata.
-  * *
-  * See {@link ContentChildren}, {@link ContentChild}, {@link ViewChildren}, {@link ViewChild} for
-  * more information.
-  * *
+ * Base class for query metadata.
+ *
+ * See {\@link ContentChildren}, {\@link ContentChild}, {\@link ViewChildren}, {\@link ViewChild} for
+ * more information.
+ *
+ * \@stable
  * @abstract
  */
 export var Query = (function () {
@@ -77,30 +78,7 @@ export var /** @type {?} */ ContentChildren = (makePropDecorator('ContentChildre
     }
 ], Query));
 /**
- * @whatItDoes Configures a content query.
- *
- * @howToUse
- *
- * {@example core/di/ts/contentChild/content_child_howto.ts region='HowTo'}
- *
- * @description
- *
- * You can use ContentChild to get the first element or the directive matching the selector from the
- * content DOM. If the content DOM changes, and a new child matches the selector,
- * the property will be updated.
- *
- * Content queries are set before the `ngAfterContentInit` callback is called.
- *
- * **Metadata Properties**:
- *
- * * **selector** - the directive type or the name used for querying.
- * * **read** - read a different token from the queried element.
- *
- * Let's look at an example:
- *
- * {@example core/di/ts/contentChild/content_child_example.ts region='Component'}
- *
- * **npm package**: `@angular/core`
+ * ContentChild decorator and metadata.
  *
  * @stable
  * @Annotation
@@ -114,30 +92,7 @@ export var /** @type {?} */ ContentChild = makePropDecorator('ContentChild', [
     }
 ], Query);
 /**
- * @whatItDoes Configures a view query.
- *
- * @howToUse
- *
- * {@example core/di/ts/viewChildren/view_children_howto.ts region='HowTo'}
- *
- * @description
- *
- * You can use ViewChildren to get the {@link QueryList} of elements or directives from the
- * view DOM. Any time a child element is added, removed, or moved, the query list will be updated,
- * and the changes observable of the query list will emit a new value.
- *
- * View queries are set before the `ngAfterViewInit` callback is called.
- *
- * **Metadata Properties**:
- *
- * * **selector** - the directive type or the name used for querying.
- * * **read** - read a different token from the queried elements.
- *
- * Let's look at an example:
- *
- * {@example core/di/ts/viewChildren/view_children_example.ts region='Component'}
- *
- * **npm package**: `@angular/core`
+ * ViewChildren decorator and metadata.
  *
  * @stable
  * @Annotation

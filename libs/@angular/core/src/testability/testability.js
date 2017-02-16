@@ -9,9 +9,10 @@ import { Injectable } from '../di';
 import { scheduleMicroTask } from '../facade/lang';
 import { NgZone } from '../zone/ng_zone';
 /**
- *  The Testability service provides testing hooks that can be accessed from
-  * the browser and by services such as Protractor. Each bootstrapped Angular
-  * application on the page will have an instance of Testability.
+ * The Testability service provides testing hooks that can be accessed from
+ * the browser and by services such as Protractor. Each bootstrapped Angular
+ * application on the page will have an instance of Testability.
+ * \@experimental
  */
 export var Testability = (function () {
     /**
@@ -35,6 +36,7 @@ export var Testability = (function () {
         this._watchAngularEvents();
     }
     /**
+     * \@internal
      * @return {?}
      */
     Testability.prototype._watchAngularEvents = function () {
@@ -83,6 +85,7 @@ export var Testability = (function () {
         return this._isZoneStable && this._pendingCount == 0 && !this._ngZone.hasPendingMacrotasks;
     };
     /**
+     * \@internal
      * @return {?}
      */
     Testability.prototype._runCallbacksIfReady = function () {
@@ -151,24 +154,35 @@ function Testability_tsickle_Closure_declarations() {
      * @type {?}
      */
     Testability.ctorParameters;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     Testability.prototype._pendingCount;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     Testability.prototype._isZoneStable;
     /**
      * Whether any work was done since the last 'whenStable' callback. This is
      * useful to detect if this could have potentially destabilized another
      * component while it is stabilizing.
+     * \@internal
      * @type {?}
      */
     Testability.prototype._didWork;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     Testability.prototype._callbacks;
     /** @type {?} */
     Testability.prototype._ngZone;
 }
 /**
- *  A global registry of {@link Testability} instances for specific elements.
+ * A global registry of {\@link Testability} instances for specific elements.
+ * \@experimental
  */
 export var TestabilityRegistry = (function () {
     function TestabilityRegistry() {
@@ -221,7 +235,10 @@ function TestabilityRegistry_tsickle_Closure_declarations() {
      * @type {?}
      */
     TestabilityRegistry.ctorParameters;
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     TestabilityRegistry.prototype._applications;
 }
 var _NoopGetTestability = (function () {
@@ -244,7 +261,8 @@ var _NoopGetTestability = (function () {
     return _NoopGetTestability;
 }());
 /**
- *  Set the {@link GetTestability} implementation used by the Angular testing framework.
+ * Set the {\@link GetTestability} implementation used by the Angular testing framework.
+ * \@experimental
  * @param {?} getter
  * @return {?}
  */

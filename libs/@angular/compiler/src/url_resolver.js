@@ -5,10 +5,20 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { Inject, Injectable, PACKAGE_ROOT_URL } from '@angular/core';
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+import { Inject, PACKAGE_ROOT_URL } from '@angular/core';
 import { isBlank, isPresent } from './facade/lang';
+import { CompilerInjectable } from './injectable';
 /**
- *  Create a {@link UrlResolver} with no package prefix.
+ * Create a {\@link UrlResolver} with no package prefix.
  * @return {?}
  */
 export function createUrlResolverWithoutPackagePrefix() {
@@ -28,19 +38,20 @@ export var /** @type {?} */ DEFAULT_PACKAGE_URL_PROVIDER = {
     useValue: '/'
 };
 /**
- *  Used by the {@link Compiler} when resolving HTML and CSS template URLs.
-  * *
-  * This class can be overridden by the application developer to create custom behavior.
-  * *
-  * See {@link Compiler}
-  * *
-  * ## Example
-  * *
-  * {@example compiler/ts/url_resolver/url_resolver.ts region='url_resolver'}
-  * *
-  * ensure that the entire template comes from a trusted source.
-  * Attacker-controlled data introduced by a template could expose your
-  * application to XSS risks. For more detail, see the [Security Guide](http://g.co/ng/security).
+ * Used by the {\@link Compiler} when resolving HTML and CSS template URLs.
+ *
+ * This class can be overridden by the application developer to create custom behavior.
+ *
+ * See {\@link Compiler}
+ *
+ * ## Example
+ *
+ * {\@example compiler/ts/url_resolver/url_resolver.ts region='url_resolver'}
+ *
+ * \@security When compiling templates at runtime, you must
+ * ensure that the entire template comes from a trusted source.
+ * Attacker-controlled data introduced by a template could expose your
+ * application to XSS risks. For more detail, see the [Security Guide](http://g.co/ng/security).
  */
 export var UrlResolver = (function () {
     /**
@@ -51,12 +62,12 @@ export var UrlResolver = (function () {
         this._packagePrefix = _packagePrefix;
     }
     /**
-     *  Resolves the `url` given the `baseUrl`:
-      * - when the `url` is null, the `baseUrl` is returned,
-      * - if `url` is relative ('path/to/here', './path/to/here'), the resolved url is a combination of
-      * `baseUrl` and `url`,
-      * - if `url` is absolute (it has a scheme: 'http://', 'https://' or start with '/'), the `url` is
-      * returned as is (ignoring the `baseUrl`)
+     * Resolves the `url` given the `baseUrl`:
+     * - when the `url` is null, the `baseUrl` is returned,
+     * - if `url` is relative ('path/to/here', './path/to/here'), the resolved url is a combination of
+     * `baseUrl` and `url`,
+     * - if `url` is absolute (it has a scheme: 'http://', 'https://' or start with '/'), the `url` is
+     * returned as is (ignoring the `baseUrl`)
      * @param {?} baseUrl
      * @param {?} url
      * @return {?}
@@ -77,18 +88,17 @@ export var UrlResolver = (function () {
         }
         return resolvedUrl;
     };
-    UrlResolver.decorators = [
-        { type: Injectable },
-    ];
     /** @nocollapse */
     UrlResolver.ctorParameters = function () { return [
         { type: undefined, decorators: [{ type: Inject, args: [PACKAGE_ROOT_URL,] },] },
     ]; };
+    UrlResolver = __decorate([
+        CompilerInjectable(), 
+        __metadata('design:paramtypes', [String])
+    ], UrlResolver);
     return UrlResolver;
 }());
 function UrlResolver_tsickle_Closure_declarations() {
-    /** @type {?} */
-    UrlResolver.decorators;
     /**
      * @nocollapse
      * @type {?}
@@ -98,7 +108,7 @@ function UrlResolver_tsickle_Closure_declarations() {
     UrlResolver.prototype._packagePrefix;
 }
 /**
- *  Extract the scheme of a URL.
+ * Extract the scheme of a URL.
  * @param {?} url
  * @return {?}
  */
@@ -107,18 +117,18 @@ export function getUrlScheme(url) {
     return (match && match[_ComponentIndex.Scheme]) || '';
 }
 /**
- *  Builds a URI string from already-encoded parts.
-  * *
-  * No encoding is performed.  Any component may be omitted as either null or
-  * undefined.
-  * *
+ * Builds a URI string from already-encoded parts.
+ *
+ * No encoding is performed.  Any component may be omitted as either null or
+ * undefined.
+ *
  * @param {?=} opt_scheme The scheme such as 'http'.
- * @param {?=} opt_userInfo The user name before the '@'.
+ * @param {?=} opt_userInfo The user name before the '\@'.
  * @param {?=} opt_domain The domain such as 'www.google.com', already
-  * URI-encoded.
+ *     URI-encoded.
  * @param {?=} opt_port The port number.
  * @param {?=} opt_path The path, already URI-encoded.  If it is not
-  * empty, it must begin with a slash.
+ *     empty, it must begin with a slash.
  * @param {?=} opt_queryData The URI-encoded query data.
  * @param {?=} opt_fragment The URI-encoded fragment identifier.
  * @return {?} The fully combined URI.
@@ -244,27 +254,27 @@ _ComponentIndex[_ComponentIndex.Path] = "Path";
 _ComponentIndex[_ComponentIndex.QueryData] = "QueryData";
 _ComponentIndex[_ComponentIndex.Fragment] = "Fragment";
 /**
- *  Splits a URI into its component parts.
-  * *
-  * Each component can be accessed via the component indices; for example:
-  * <pre>
-  * goog.uri.utils.split(someStr)[goog.uri.utils.CompontentIndex.QUERY_DATA];
-  * </pre>
-  * *
+ * Splits a URI into its component parts.
+ *
+ * Each component can be accessed via the component indices; for example:
+ * <pre>
+ * goog.uri.utils.split(someStr)[goog.uri.utils.CompontentIndex.QUERY_DATA];
+ * </pre>
+ *
  * @param {?} uri The URI string to examine.
  * @return {?} Each component still URI-encoded.
-  * Each component that is present will contain the encoded value, whereas
-  * components that are not present will be undefined or empty, depending
-  * on the browser's regular expression implementation.  Never null, since
-  * arbitrary strings may still look like path names.
+ *     Each component that is present will contain the encoded value, whereas
+ *     components that are not present will be undefined or empty, depending
+ *     on the browser's regular expression implementation.  Never null, since
+ *     arbitrary strings may still look like path names.
  */
 function _split(uri) {
     return uri.match(_splitRe);
 }
 /**
- *  Removes dot segments in given path component, as described in
-  * RFC 3986, section 5.2.4.
-  * *
+ * Removes dot segments in given path component, as described in
+ * RFC 3986, section 5.2.4.
+ *
  * @param {?} path A non-empty path component.
  * @return {?} Path component with removed dot segments.
  */
@@ -304,8 +314,8 @@ function _removeDotSegments(path) {
     return leadingSlash + out.join('/') + trailingSlash;
 }
 /**
- *  Takes an array of the parts from split and canonicalizes the path part
-  * and then joins all the parts.
+ * Takes an array of the parts from split and canonicalizes the path part
+ * and then joins all the parts.
  * @param {?} parts
  * @return {?}
  */
@@ -316,7 +326,7 @@ function _joinAndCanonicalizePath(parts) {
     return _buildFromEncodedParts(parts[_ComponentIndex.Scheme], parts[_ComponentIndex.UserInfo], parts[_ComponentIndex.Domain], parts[_ComponentIndex.Port], path, parts[_ComponentIndex.QueryData], parts[_ComponentIndex.Fragment]);
 }
 /**
- *  Resolves a URL.
+ * Resolves a URL.
  * @param {?} base The URL acting as the base URL.
  * @param {?} url
  * @return {?}

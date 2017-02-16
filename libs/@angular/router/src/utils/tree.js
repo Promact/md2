@@ -1,9 +1,9 @@
 /**
- * @license undefined
-  * Copyright Google Inc. All Rights Reserved.
-  * *
-  * Use of this source code is governed by an MIT-style license that can be
-  * found in the LICENSE file at https://angular.io/license
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
  */
 export var Tree = (function () {
     /**
@@ -21,6 +21,7 @@ export var Tree = (function () {
         configurable: true
     });
     /**
+     * \@internal
      * @param {?} t
      * @return {?}
      */
@@ -29,6 +30,7 @@ export var Tree = (function () {
         return p.length > 1 ? p[p.length - 2] : null;
     };
     /**
+     * \@internal
      * @param {?} t
      * @return {?}
      */
@@ -37,6 +39,7 @@ export var Tree = (function () {
         return n ? n.children.map(function (t) { return t.value; }) : [];
     };
     /**
+     * \@internal
      * @param {?} t
      * @return {?}
      */
@@ -45,6 +48,7 @@ export var Tree = (function () {
         return n && n.children.length > 0 ? n.children[0].value : null;
     };
     /**
+     * \@internal
      * @param {?} t
      * @return {?}
      */
@@ -56,6 +60,7 @@ export var Tree = (function () {
         return c.filter(function (cc) { return cc !== t; });
     };
     /**
+     * \@internal
      * @param {?} t
      * @return {?}
      */
@@ -63,7 +68,10 @@ export var Tree = (function () {
     return Tree;
 }());
 function Tree_tsickle_Closure_declarations() {
-    /** @type {?} */
+    /**
+     * \@internal
+     * @type {?}
+     */
     Tree.prototype._root;
 }
 /**

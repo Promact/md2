@@ -15,11 +15,12 @@ var AsyncSubject_1 = require('../AsyncSubject');
  */
 var BoundCallbackObservable = (function (_super) {
     __extends(BoundCallbackObservable, _super);
-    function BoundCallbackObservable(callbackFunc, selector, args, scheduler) {
+    function BoundCallbackObservable(callbackFunc, selector, args, context, scheduler) {
         _super.call(this);
         this.callbackFunc = callbackFunc;
         this.selector = selector;
         this.args = args;
+        this.context = context;
         this.scheduler = scheduler;
     }
     /* tslint:enable:max-line-length */
@@ -33,10 +34,18 @@ var BoundCallbackObservable = (function (_super) {
      * `bindCallback` is not an operator because its input and output are not
      * Observables. The input is a function `func` with some parameters, but the
      * last parameter must be a callback function that `func` calls when it is
-     * done. The output of `bindCallback` is a function that takes the same
+     * done.
+     *
+     * The output of `bindCallback` is a function that takes the same
      * parameters as `func`, except the last one (the callback). When the output
      * function is called with arguments, it will return an Observable where the
      * results will be delivered to.
+     *
+     * If `func` depends on some context (`this` property), that context will be set
+     * to the same context that returned function has at call time. In particular, if `func`
+     * is usually called as method of some object, in order to preserve proper behaviour,
+     * it is recommended to set context of output function to that object as well,
+     * provided `func` is not already bound.
      *
      * @example <caption>Convert jQuery's getJSON to an Observable API</caption>
      * // Suppose we have jQuery.getJSON('/my/url', callback)
@@ -44,12 +53,17 @@ var BoundCallbackObservable = (function (_super) {
      * var result = getJSONAsObservable('/my/url');
      * result.subscribe(x => console.log(x), e => console.error(e));
      *
+     * @example <caption>Use bindCallback on object method</caption>
+     * const boundMethod = Rx.Observable.bindCallback(someObject.methodWithCallback);
+     * boundMethod.call(someObject) // make sure methodWithCallback has access to someObject
+     * .subscribe(subscriber);
+     *
      * @see {@link bindNodeCallback}
      * @see {@link from}
      * @see {@link fromPromise}
      *
      * @param {function} func Function with a callback as the last parameter.
-     * @param {function} selector A function which takes the arguments from the
+     * @param {function} [selector] A function which takes the arguments from the
      * callback and maps those a value to emit on the output Observable.
      * @param {Scheduler} [scheduler] The scheduler on which to schedule the
      * callbacks.
@@ -66,7 +80,7 @@ var BoundCallbackObservable = (function (_super) {
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
             }
-            return new BoundCallbackObservable(func, selector, args, scheduler);
+            return new BoundCallbackObservable(func, selector, args, this, scheduler);
         };
     };
     BoundCallbackObservable.prototype._subscribe = function (subscriber) {
@@ -101,7 +115,7 @@ var BoundCallbackObservable = (function (_super) {
                 };
                 // use named function instance to avoid closure.
                 handler.source = this;
-                var result = tryCatch_1.tryCatch(callbackFunc).apply(this, args.concat(handler));
+                var result = tryCatch_1.tryCatch(callbackFunc).apply(this.context, args.concat(handler));
                 if (result === errorObject_1.errorObject) {
                     subject.error(errorObject_1.errorObject.e);
                 }
@@ -109,12 +123,12 @@ var BoundCallbackObservable = (function (_super) {
             return subject.subscribe(subscriber);
         }
         else {
-            return scheduler.schedule(BoundCallbackObservable.dispatch, 0, { source: this, subscriber: subscriber });
+            return scheduler.schedule(BoundCallbackObservable.dispatch, 0, { source: this, subscriber: subscriber, context: this.context });
         }
     };
     BoundCallbackObservable.dispatch = function (state) {
         var self = this;
-        var source = state.source, subscriber = state.subscriber;
+        var source = state.source, subscriber = state.subscriber, context = state.context;
         var callbackFunc = source.callbackFunc, args = source.args, scheduler = source.scheduler;
         var subject = source.subject;
         if (!subject) {
@@ -142,7 +156,7 @@ var BoundCallbackObservable = (function (_super) {
             };
             // use named function to pass values in without closure
             handler.source = source;
-            var result = tryCatch_1.tryCatch(callbackFunc).apply(this, args.concat(handler));
+            var result = tryCatch_1.tryCatch(callbackFunc).apply(context, args.concat(handler));
             if (result === errorObject_1.errorObject) {
                 subject.error(errorObject_1.errorObject.e);
             }

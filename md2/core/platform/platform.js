@@ -44,5 +44,4 @@ export var Platform = (function () {
     ], Platform);
     return Platform;
 }());
-
 //# sourceMappingURL=platform.js.map

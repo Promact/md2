@@ -7,21 +7,22 @@
  */
 import { OpaqueToken } from '@angular/core';
 /**
- *  `LocationStrategy` is responsible for representing and reading route state
-  * from the browser's URL. Angular provides two strategies:
-  * {@link HashLocationStrategy} and {@link PathLocationStrategy}.
-  * *
-  * This is used under the hood of the {@link Location} service.
-  * *
-  * Applications should use the {@link Router} or {@link Location} services to
-  * interact with application route state.
-  * *
-  * For instance, {@link HashLocationStrategy} produces URLs like
-  * `http://example.com#/foo`, and {@link PathLocationStrategy} produces
-  * `http://example.com/foo` as an equivalent URL.
-  * *
-  * See these two classes for more.
-  * *
+ * `LocationStrategy` is responsible for representing and reading route state
+ * from the browser's URL. Angular provides two strategies:
+ * {\@link HashLocationStrategy} and {\@link PathLocationStrategy}.
+ *
+ * This is used under the hood of the {\@link Location} service.
+ *
+ * Applications should use the {\@link Router} or {\@link Location} services to
+ * interact with application route state.
+ *
+ * For instance, {\@link HashLocationStrategy} produces URLs like
+ * `http://example.com#/foo`, and {\@link PathLocationStrategy} produces
+ * `http://example.com/foo` as an equivalent URL.
+ *
+ * See these two classes for more.
+ *
+ * \@stable
  * @abstract
  */
 export var LocationStrategy = (function () {

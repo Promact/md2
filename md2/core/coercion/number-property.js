@@ -6,5 +6,4 @@ export function coerceNumberProperty(value, fallbackValue) {
     // '123hello' to be a valid number. Therefore we also check if Number(value) is NaN.
     return isNaN(parseFloat(value)) || isNaN(Number(value)) ? fallbackValue : Number(value);
 }
-
 //# sourceMappingURL=number-property.js.map

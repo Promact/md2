@@ -151,5 +151,4 @@ export var BasePortalHost = (function () {
     };
     return BasePortalHost;
 }());
-
 //# sourceMappingURL=portal.js.map

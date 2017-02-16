@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { ChangeDetectorRef, Pipe, WrappedValue } from '@angular/core';
-import { isPromise } from '../private_import_core';
+import { isObservable, isPromise } from '../private_import_core';
 import { InvalidPipeArgumentError } from './invalid_pipe_argument_error';
 var ObservableStrategy = (function () {
     function ObservableStrategy() {
@@ -57,24 +57,29 @@ var PromiseStrategy = (function () {
 var /** @type {?} */ _promiseStrategy = new PromiseStrategy();
 var /** @type {?} */ _observableStrategy = new ObservableStrategy();
 /**
- *  The `async` pipe subscribes to an `Observable` or `Promise` and returns the latest value it has
-  * emitted. When a new value is emitted, the `async` pipe marks the component to be checked for
-  * changes. When the component gets destroyed, the `async` pipe unsubscribes automatically to avoid
-  * potential memory leaks.
-  * *
-  * *
-  * ## Examples
-  * *
-  * This example binds a `Promise` to the view. Clicking the `Resolve` button resolves the
-  * promise.
-  * *
-  * {@example common/pipes/ts/async_pipe.ts region='AsyncPipePromise'}
-  * *
-  * It's also possible to use `async` with Observables. The example below binds the `time` Observable
-  * to the view. The Observable continuously updates the view with the current time.
-  * *
-  * {@example common/pipes/ts/async_pipe.ts region='AsyncPipeObservable'}
-  * *
+ * \@ngModule CommonModule
+ * \@whatItDoes Unwraps a value from an asynchronous primitive.
+ * \@howToUse `observable_or_promise_expression | async`
+ * \@description
+ * The `async` pipe subscribes to an `Observable` or `Promise` and returns the latest value it has
+ * emitted. When a new value is emitted, the `async` pipe marks the component to be checked for
+ * changes. When the component gets destroyed, the `async` pipe unsubscribes automatically to avoid
+ * potential memory leaks.
+ *
+ *
+ * ## Examples
+ *
+ * This example binds a `Promise` to the view. Clicking the `Resolve` button resolves the
+ * promise.
+ *
+ * {\@example common/pipes/ts/async_pipe.ts region='AsyncPipePromise'}
+ *
+ * It's also possible to use `async` with Observables. The example below binds the `time` Observable
+ * to the view. The Observable continuously updates the view with the current time.
+ *
+ * {\@example common/pipes/ts/async_pipe.ts region='AsyncPipeObservable'}
+ *
+ * \@stable
  */
 export var AsyncPipe = (function () {
     /**
@@ -136,7 +141,7 @@ export var AsyncPipe = (function () {
         if (isPromise(obj)) {
             return _promiseStrategy;
         }
-        if (((obj)).subscribe) {
+        if (isObservable(obj)) {
             return _observableStrategy;
         }
         throw new InvalidPipeArgumentError(AsyncPipe, obj);

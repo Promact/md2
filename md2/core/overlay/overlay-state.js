@@ -13,5 +13,4 @@ export var OverlayState = (function () {
     }
     return OverlayState;
 }());
-
 //# sourceMappingURL=overlay-state.js.map

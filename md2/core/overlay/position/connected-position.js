@@ -61,5 +61,4 @@ export var ConnectedOverlayPositionChange = (function () {
     ], ConnectedOverlayPositionChange);
     return ConnectedOverlayPositionChange;
 }());
-
 //# sourceMappingURL=connected-position.js.map

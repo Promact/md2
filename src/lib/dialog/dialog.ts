@@ -70,28 +70,26 @@ export class Md2Dialog implements OnDestroy {
 
   ngOnDestroy() { this.destroyPanel(); }
 
-  /** Show the dialog */
-  show(): void {
-    this.open();
-  }
-
   /** Open the dialog */
-  open(): void {
-    if (!this._panelOpen) {
-      this._createOverlay();
-      this._overlayRef.attach(this._portal);
-      this._subscribeToBackdrop();
-      this._panelOpen = true;
+  open(): Promise<Md2Dialog> {
+    if (this._panelOpen) {
+      return Promise.resolve<Md2Dialog>(this);
     }
+    this._createOverlay();
+    this._overlayRef.attach(this._portal);
+    this._subscribeToBackdrop();
+    this._panelOpen = true;
+    return Promise.resolve<Md2Dialog>(this);
   }
 
   /** Close the dialog */
-  close(result: any = true, cancel: boolean = false): void {
+  close(): Promise<Md2Dialog> {
     this._panelOpen = false;
     if (this._overlayRef) {
       this._overlayRef.detach();
       this._backdropSubscription.unsubscribe();
     }
+    return Promise.resolve<Md2Dialog>(this);
   }
 
   /** Removes the panel from the DOM. */

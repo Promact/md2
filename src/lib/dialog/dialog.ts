@@ -50,6 +50,7 @@ export class Md2DialogFooter { }
   },
   animations: [zoomInContent],
   encapsulation: ViewEncapsulation.None,
+  exportAs: 'md2Dialog'
 })
 export class Md2Dialog implements OnDestroy {
 
@@ -61,17 +62,13 @@ export class Md2Dialog implements OnDestroy {
 
   @Output() onOpen: EventEmitter<Md2Dialog> = new EventEmitter<Md2Dialog>();
   @Output() onClose: EventEmitter<any> = new EventEmitter<any>();
-  @Output() onCancel: EventEmitter<any> = new EventEmitter<any>();
 
   /** The portal to send the dialog content through */
   @ViewChild(Md2DialogPortal) _portal: Md2DialogPortal;
 
   @Input('title') dialogTitle: string;
 
-
-  ngOnDestroy(): any {
-    return this.close();
-  }
+  ngOnDestroy() { this.destroyPanel(); }
 
   /** Show the dialog */
   show(): void {
@@ -95,17 +92,7 @@ export class Md2Dialog implements OnDestroy {
       this._overlayRef.detach();
       this._backdropSubscription.unsubscribe();
     }
-
-    //if (!this._overlayRef) {
-    //  return;
-    //}
-    //this._panelOpen = false;
-    //this._overlayRef.detach();
-    //this._overlayRef.dispose();
-    //this._overlayRef = null;
-    //if (cancel) {
-    //  this.onCancel.emit(result);
-    //}
+    this.destroyPanel();
   }
 
   /** Removes the panel from the DOM. */

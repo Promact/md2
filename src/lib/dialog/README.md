@@ -21,7 +21,6 @@ Dialog allow the user to display content in popup.
 | --- | --- | --- |
 | `onOpen` | `Event` | Fired when open the dialog |
 | `onClose` | `Event` | Fired when close the dialog |
-| `onCancel` | `Event` | Fired when cancel the dialog |
 
 ### Examples
 A dialog would have the following markup.

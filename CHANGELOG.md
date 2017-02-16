@@ -1,4 +1,41 @@
-<a name="0.0.13-1"></a>
+<a name="0.0.13-2"></a>
+## [0.0.13-2](https://github.com/Promact/md2/compare/0.0.13-1...v0.0.13-2) (2017-02-16)
+
+### Breaking changes
+
+* The `<md2-multiselect>` component is deprecated in favor of `<md2-select multiple>`. This component allows for multiple select options same as `ms2-multiselect` component does.
+* The use of Module `forRoot` has been deprecated and will be removed in the next release. Instead, just simply import MaterialModule directly:
+
+```ts
+@NgModule({
+imports: [
+...
+MaterialModule,
+...
+]
+...
+});
+```
+
+
+### Bug Fixes
+
+* fixed datepicker positioning issues and make it in dialog
+* fix(datepicker) ie issue #43, panel open inside view port #58
+* fix(datepicker) formatting issue #69
+* fix(datepicker) time format NAN issue #78
+* fix(tabs) invalid active tab index
+* 
+
+
+### Features
+* chore(tooltip) added scrolling and fixed performance issues
+* chore(dialog) update animations
+* chore(dialog) update performance and implementations
+* update performance of all components
+  
+
+  <a name="0.0.13-1"></a>
 ## [0.0.13-1](https://github.com/Promact/md2/compare/0.0.13...v0.0.13-1) (2017-01-17)
 
 ### Breaking changes

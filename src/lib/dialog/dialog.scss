@@ -137,10 +137,6 @@ md2-dialog-footer {
 
 .cdk-overlay-backdrop.cdk-overlay-backdrop-showing {
   opacity: 0.48;
-
-  & ~ .cdk-overlay-backdrop.cdk-overlay-backdrop-showing {
-    opacity: 0;
-  }
 }
 
 .cdk-overlay-dark-backdrop {

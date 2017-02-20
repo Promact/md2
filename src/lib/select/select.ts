@@ -263,8 +263,12 @@ export class Md2Select implements AfterContentInit, ControlValueAccessor, OnDest
 
   ngOnDestroy() {
     this._dropSubscriptions();
-    this._changeSubscription.unsubscribe();
-    this._tabSubscription.unsubscribe();
+    if (this._changeSubscription) {
+      this._changeSubscription.unsubscribe();
+    }
+    if (this._tabSubscription) {
+      this._tabSubscription.unsubscribe();
+    }
   }
 
   /** Toggles the overlay panel open or closed. */

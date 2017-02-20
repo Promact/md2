@@ -1,12 +1,12 @@
-import { OnInit, EventEmitter, ModuleWithProviders, ElementRef } from '@angular/core';
-import { ControlValueAccessor } from '@angular/forms';
+import { EventEmitter, ElementRef, ModuleWithProviders, OnDestroy, Renderer, QueryList, ViewContainerRef } from '@angular/core';
+import { ControlValueAccessor, NgControl } from '@angular/forms';
+import { Overlay, Portal } from '../core';
 import { ColorpickerService } from './calculateColor';
-export declare const MD2_COLORPICKER_CONTROL_VALUE_ACCESSOR: any;
 export declare class TextDirective {
     newValue: EventEmitter<any>;
     text: any;
     rg: number;
-    changeInput(value: string): void;
+    changeInput(event: any): void;
 }
 export declare class ColorpickerSliderDirective {
     private _element;
@@ -48,11 +48,22 @@ export declare class ColorpickerSliderDirective {
     getY(event: any): number;
     _getNativeElement(): HTMLElement;
 }
-export declare class Md2Colorpicker implements OnInit, ControlValueAccessor {
+/**
+ * Change event object emitted by Md2Colorpicker.
+ */
+export declare class Md2ColorChange {
+    source: Md2Colorpicker;
+    color: string;
+    constructor(source: Md2Colorpicker, color: string);
+}
+export declare class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
+    private _element;
+    private overlay;
+    private _viewContainerRef;
+    private _renderer;
     private service;
+    _control: NgControl;
     _innerValue: string;
-    private _onTouchedCallback;
-    private _onChangeCallback;
     private _created;
     private _defalutColor;
     _isColorpickerVisible: boolean;
@@ -67,26 +78,62 @@ export declare class Md2Colorpicker implements OnInit, ControlValueAccessor {
     alphaColor: string;
     hexText: string;
     format: number;
+    private _overlayRef;
+    private _backdropSubscription;
+    private _positionSubscription;
+    /** Whether or not the overlay panel is open. */
+    private _panelOpen;
+    private _color;
+    /** Whether filling out the select is required in the form.  */
+    private _required;
+    /** Whether the select is disabled.  */
+    private _disabled;
+    /** The placeholder displayed in the trigger of the select. */
+    private _placeholder;
+    private fontColor;
+    _onChange: (value: any) => void;
+    _onTouched: () => void;
+    color: string;
+    /** Placeholder to be shown if no value has been selected. */
+    placeholder: string;
+    required: boolean;
+    /** Whether the component is disabled. */
+    disabled: any;
     cFormat: string;
     colorpickerChange: EventEmitter<string>;
-    change: EventEmitter<string>;
+    /** Event emitted when the selected date has been changed by the user. */
+    change: EventEmitter<Md2ColorChange>;
     tabindex: number;
-    disabled: boolean;
     id: string;
     /**
     * set accessor including call the onchange callback
     */
     value: any;
-    constructor(service: ColorpickerService);
-    ngOnInit(): void;
+    /** Event emitted when the select has been opened. */
+    onOpen: EventEmitter<void>;
+    /** Event emitted when the select has been closed. */
+    onClose: EventEmitter<void>;
+    templatePortals: QueryList<Portal<any>>;
+    templatePortal: Portal<any>;
+    constructor(_element: ElementRef, overlay: Overlay, _viewContainerRef: ViewContainerRef, _renderer: Renderer, service: ColorpickerService, _control: NgControl);
+    ngOnDestroy(): void;
+    /** Whether or not the overlay panel is open. */
+    readonly panelOpen: boolean;
+    /** Toggles the overlay panel open or closed. */
+    toggle(): void;
+    /** Opens the overlay panel. */
+    open(): void;
+    /** Closes the overlay panel and focuses the host element. */
+    close(): void;
+    /** Removes the panel from the DOM. */
+    destroyPanel(): void;
+    _handleKeydown(event: KeyboardEvent): void;
+    _onFocus(): void;
+    _onBlur(): void;
     /**
-    * Show Colorpicker dialog
-    */
-    _showColorpicker(): void;
-    /**
-    * input event listner
-    * @param event
-    */
+      * input event listner
+      * @param event
+      */
     changeInput(event: any): void;
     /**
     * set saturation,lightness,hue,alpha,RGB value
@@ -127,34 +174,35 @@ export declare class Md2Colorpicker implements OnInit, ControlValueAccessor {
         pointX: number;
         pointY: number;
     }): void;
-    /**
-    * change color
-    * @param value
-    */
-    colorChanged(value: string): void;
-    /**
-    * set color
-    * @param value
-    */
-    setColorFromString(value: string): void;
-    formatPolicy(): number;
-    /**
-     * update color
-     */
-    update(): void;
-    isDescendant(parent: any, child: any): boolean;
     clickOk(): void;
     /**
     * deselect recent color and close popup
     */
     cancelColor(): void;
+    isValidColor(str: string): boolean;
     /**
-    * close color picker
-    */
-    closeColorpicker(): void;
+       * set color
+       * @param value
+       */
+    setColorFromString(value: string): void;
+    formatPolicy(value: number): number;
+    /**
+     * update color
+     */
+    update(): void;
+    isDescendant(parent: any, child: any): boolean;
+    /** Emits an event when the user selects a color. */
+    _emitChangeEvent(): void;
     writeValue(value: any): void;
-    registerOnChange(fn: any): void;
-    registerOnTouched(fn: any): void;
+    registerOnChange(fn: (value: any) => void): void;
+    registerOnTouched(fn: () => {}): void;
+    private _subscribeToBackdrop();
+    /**
+     *  This method creates the overlay from the provided panel's template and saves its
+     *  OverlayRef so that it can be attached to the DOM when open is called.
+     */
+    private _createOverlay();
+    private _cleanUpSubscriptions();
 }
 export declare class Hsva {
     h: number;
@@ -191,7 +239,7 @@ export declare class SliderDimension {
     a: number;
     constructor(h: number, s: number, v: number, a: number);
 }
-export declare const MD2_COLORPICKER_DIRECTIVES: (typeof Md2Colorpicker | typeof TextDirective | typeof ColorpickerSliderDirective)[];
+export declare const MD2_COLORPICKER_DIRECTIVES: (typeof TextDirective | typeof ColorpickerSliderDirective | typeof Md2Colorpicker)[];
 export declare class Md2ColorpickerModule {
     static forRoot(): ModuleWithProviders;
 }

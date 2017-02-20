@@ -1,5 +1,5 @@
 <template md2DialogPortal>
-  <div class="md2-dialog-panel" [@zoomInContent]="'in'" (@zoomInContent.done)="_onPanelDone()">
+  <div class="md2-dialog-panel" [@state]="_visibility" (@state.done)="_onPanelDone()">
     <div class="md2-dialog-content">
       <div class="md2-dialog-header">
         <button type="button" class="close" aria-label="Close" (click)="close()">&times;</button>

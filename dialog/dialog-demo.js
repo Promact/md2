@@ -14,19 +14,19 @@ var DialogDemo = (function () {
         this.dialogHeader = 'Lorum Ipsum';
     }
     DialogDemo.prototype.launchDialog = function (dialog) {
-        dialog.show();
+        dialog.open();
     };
-    DialogDemo.prototype.show = function (dialog) {
-        dialog.show();
+    DialogDemo.prototype.open = function (dialog) {
+        dialog.open();
     };
     DialogDemo.prototype.close = function (dialog) {
         dialog.close();
     };
-    DialogDemo.prototype.showAlert = function (event) { };
-    DialogDemo.prototype.showConfirm = function (event) { };
-    DialogDemo.prototype.showPrompt = function (event) { };
-    DialogDemo.prototype.showAdvanced = function (event) { };
-    DialogDemo.prototype.showTabDialog = function (event) { };
+    DialogDemo.prototype.openAlert = function (event) { };
+    DialogDemo.prototype.openConfirm = function (event) { };
+    DialogDemo.prototype.openPrompt = function (event) { };
+    DialogDemo.prototype.openAdvanced = function (event) { };
+    DialogDemo.prototype.openTabDialog = function (event) { };
     DialogDemo = __decorate([
         core_1.Component({
             moduleId: module.id,

@@ -1,6 +1,7 @@
 import { EventEmitter, OnDestroy, ViewContainerRef, TemplateRef, ModuleWithProviders } from '@angular/core';
 import { Overlay, TemplatePortalDirective } from '../core/core';
 import 'rxjs/add/operator/first';
+export declare type DialogVisibility = 'initial' | 'visible' | 'hidden';
 export declare class Md2DialogPortal extends TemplatePortalDirective {
     constructor(templateRef: TemplateRef<any>, viewContainerRef: ViewContainerRef);
 }
@@ -13,6 +14,8 @@ export declare class Md2Dialog implements OnDestroy {
     private _panelOpen;
     private _overlayRef;
     private _backdropSubscription;
+    /** Property watched by the animation framework to show or hide the dialog */
+    _visibility: DialogVisibility;
     constructor(_overlay: Overlay);
     onOpen: EventEmitter<Md2Dialog>;
     onClose: EventEmitter<any>;

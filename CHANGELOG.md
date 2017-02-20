@@ -1,3 +1,15 @@
+<a name="0.0.15"></a>
+## [0.0.15](https://github.com/Promact/md2/compare/0.0.13-1...v0.0.15) (2017-02-20)
+
+
+### Bug Fixes
+
+* fix(colorpicker) added popup for open colorpicker,validate color
+* chore(dialog) update animations
+* fix(colorpicker) changes
+
+
+
 <a name="0.0.14"></a>
 ## [0.0.14](https://github.com/Promact/md2/compare/0.0.13-1...v0.0.14) (2017-02-16)
 

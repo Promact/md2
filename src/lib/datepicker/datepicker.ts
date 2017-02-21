@@ -23,6 +23,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { Md2DateUtil } from './dateUtil';
 import { DateLocale } from './date-locale';
+import { Md2Clock } from './clock';
 import {
   coerceBooleanProperty,
   ENTER,
@@ -1142,7 +1143,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
 
 }
 
-export const MD2_DATEPICKER_DIRECTIVES = [Md2Datepicker];
+export const MD2_DATEPICKER_DIRECTIVES = [Md2Datepicker, Md2Clock];
 
 @NgModule({
   imports: [CommonModule, OverlayModule, PortalModule],

@@ -64,7 +64,6 @@ export const MD2_CHIPS_CONTROL_VALUE_ACCESSOR: any = {
 
 export class Md2Chips implements ControlValueAccessor, AfterContentInit {
   @Input() tabindex: number = 0;
-  @Input() addOnBlur: boolean = true;
   @Input() addOnComma: boolean = true;
   @Input() addOnEnter: boolean = true;
   @Input() addOnPaste: boolean = true;
@@ -201,7 +200,7 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
         if (this.addOnComma) {
           this.addNewChip(this.inputValue);
           event.preventDefault();
-        }
+            } 
         break;
       // space
       case KeyCodes.SPACE:
@@ -225,7 +224,8 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
     this._resetSelected();
   }
   inputBlurred(event: Event): void {
-    this.inputFocused = false;
+      this.inputFocused = false;      
+      this.addNewChip(this.inputValue);
   }
 
   inputFocus(event: Event): void {

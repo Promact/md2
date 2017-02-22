@@ -531,8 +531,10 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   private _scrollToSelectedYear() {
     setTimeout(() => {
       let yearContainer = this.allCalendars.nativeElement;
-      let selectedYear = this.calendarList.toArray().find((year) => year.nativeElement.innerText == this._viewDay.year);
-      yearContainer.scrollTop = (selectedYear.nativeElement.offsetTop + 20) - yearContainer.clientHeight / 2;
+      let selectedYear = this.calendarList.toArray()
+          .find((year) => year.nativeElement.innerText == this._viewDay.year);
+      yearContainer.scrollTop =
+          (selectedYear.nativeElement.offsetTop + 20) - yearContainer.clientHeight / 2;
     }, 0);
   }
 

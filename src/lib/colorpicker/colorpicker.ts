@@ -199,6 +199,7 @@ export class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
     alphaColor: string;
     hexText: string;
     format: number;
+    backColor: boolean = true;
 
     private _overlayRef: OverlayRef;
     private _backdropSubscription: Subscription;
@@ -218,6 +219,7 @@ export class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
     /** The placeholder displayed in the trigger of the select. */
     private _placeholder: string = 'daa';
     private fontColor: string;
+    private backAreaColor: string;
 
     _onChange = (value: any) => { };
     _onTouched = () => { };
@@ -302,7 +304,8 @@ export class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
             this.hsva = hsva;
         } else {
             this.hsva = this.service.stringToHsva(this._defalutColor);
-        }        
+        }
+
         this.sliderDim = new SliderDimension(245, 250, 130, 245);
         this.slider = new SliderPosition(0, 0, 0, 0);
         if (this.cFormat === 'rgb') {
@@ -450,6 +453,7 @@ export class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
     setColorFromString(value: string) {
         if (!this.isValidColor(value)) {
             value = '#000000';
+            this.backColor = false;
         }
         let hsva = this.service.stringToHsva(value);
         if (hsva !== null) {
@@ -480,12 +484,19 @@ export class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
         this.hslaText = new Hsla(Math.round((hsla.h) * 360), Math.round(hsla.s * 100),
             Math.round(hsla.l * 100), Math.round(hsla.a * 100) / 100);
         this.rgbaText = new Rgba(rgba.r, rgba.g, rgba.b, Math.round(rgba.a * 100) / 100);
-        this.hexText = this.service.hexText(rgba);
+        if (this.backColor) {
+            this.hexText = this.service.hexText(rgba);
+        }
+        this.backColor = true;
         let colorCode = Math.round((this.rgbaText.r * 299 + this.rgbaText.g * 587 +
             this.rgbaText.b * 114) / 1000);
         if (colorCode >= 128 || this.hsva.a < 0.35) {
             this.fontColor = 'black';
-        } else { this.fontColor = 'white'; }
+            this.backAreaColor = 'rgba(0,0,0,.4)';
+        } else {
+            this.fontColor = 'white';
+            this.backAreaColor = 'rgba(255,255,255,.4)';
+        }
 
         if (this.format === 0 && this.hsva.a < 1) {
             this.format++;

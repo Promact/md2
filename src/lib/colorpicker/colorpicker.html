@@ -29,9 +29,9 @@
                             <input [text] (newValue)="setColorFromString($event)" [style.color]="fontColor" [value]="hexText" />
                         </div>
                         <div [style.color]="fontColor">
-                            <div class="type-policy" [class.active]="format==0" (click)="formatPolicy(0)">HEX</div>
-                            <div class="type-policy" [class.active]="format==1" (click)="formatPolicy(1)">RGBA</div>
-                            <div class="type-policy" [class.active]="format==2" (click)="formatPolicy(2)">HSLA</div>
+                            <div class="type-policy" [style.background]="backAreaColor" [class.active]="format==0" (click)="formatPolicy(0)">HEX</div>
+                            <div class="type-policy" [style.background]="backAreaColor" [class.active]="format==1" (click)="formatPolicy(1)">RGBA</div>
+                            <div class="type-policy" [style.background]="backAreaColor" [class.active]="format==2" (click)="formatPolicy(2)">HSLA</div>
                         </div>
                     </div>
                     <div class="input-color-content">

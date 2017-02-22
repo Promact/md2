@@ -200,7 +200,7 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
         if (this.addOnComma) {
           this.addNewChip(this.inputValue);
           event.preventDefault();
-            } 
+        }
         break;
       // space
       case KeyCodes.SPACE:
@@ -224,7 +224,7 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
     this._resetSelected();
   }
   inputBlurred(event: Event): void {
-      this.inputFocused = false;      
+      this.inputFocused = false;     
       this.addNewChip(this.inputValue);
   }
 

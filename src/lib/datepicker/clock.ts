@@ -47,6 +47,8 @@ export class Md2Clock {
   }
 
   @Output() timeChange: EventEmitter<string> = new EventEmitter<string>();
+  @Output() onHourChange: EventEmitter<number> = new EventEmitter<number>();
+  @Output() onMinuteChange: EventEmitter<number> = new EventEmitter<number>();
 
   @Input()
   get time() { return this._time; }
@@ -67,7 +69,7 @@ export class Md2Clock {
   get hand(): any {
     let deg = 0;
     let radius = CLOCK_OUTER_RADIUS;
-    if (!this._view) {
+    if (this._view) {
       let inner = this._hour > 0 && this._hour < 13;
       radius = inner ? CLOCK_INNER_RADIUS : CLOCK_OUTER_RADIUS;
       deg = Math.round(this._hour * (360 / (CLOCK_HOURS / 2)));
@@ -100,6 +102,11 @@ export class Md2Clock {
     document.removeEventListener('touchmove', this.mouseMoveListener);
     document.removeEventListener('mouseup', this.mouseUpListener);
     document.removeEventListener('touchend', this.mouseUpListener);
+    if (this._view) {
+      this.onHourChange.emit(this._hour);
+    } else {
+      this.onMinuteChange.emit(this._minute);
+    }
   }
 
   _handleKeydown(event: KeyboardEvent) { }

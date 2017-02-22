@@ -103,7 +103,7 @@ md2-datepicker {
     transform: translate3d(0, 6px, 0) scale(0.75);
   }
 
-  md2-datepicker:focus & {
+  md2-datepicker:focus &, md2-datepicker.md2-datepicker-opened & {
     color: $primary;
     transform: translate3d(0, 6px, 0) scale(0.75);
   }

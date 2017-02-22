@@ -89,6 +89,7 @@ let nextId = 0;
     'role': 'datepicker',
     '[id]': 'id',
     '[class.md2-datepicker-disabled]': 'disabled',
+    '[class.md2-datepicker-opened]': 'panelOpen',
     '[attr.tabindex]': 'disabled ? -1 : tabindex',
     '[attr.aria-label]': 'placeholder',
     '[attr.aria-required]': 'required.toString()',

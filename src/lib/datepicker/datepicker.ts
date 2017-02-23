@@ -165,6 +165,19 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
     }
   }
 
+  get time() { return this.date.getHours() + ':' + this.date.getMinutes(); }
+  set time(value: string) {
+    if (this._clockView === 'hour') {
+      this.date.setHours(parseInt(value.split(':')[0]));
+    } else {
+      this.date.setMinutes(parseInt(value.split(':')[1]));
+    }
+    let date = this.displayDate;
+    this.displayDate = new Date(date.getFullYear(), date.getMonth(),
+      date.getDate(), this.date.getHours(), this.date.getMinutes());
+
+  }
+
   @Input()
   get selected() { return this._selected; }
   set selected(value: Date) { this._selected = value; }
@@ -639,6 +652,21 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   _isAfterMonth() {
     return !this._max ? true :
       this._max && this._dateUtil.getMonthDistance(this.displayDate, this._max) > 0;
+  }
+
+  _onTimeChange(event: string) {
+    if (this.time !== event) { this.time = event; }
+  }
+
+  _onHourChange(event: number) {
+    this._clockView = 'minute';
+  }
+
+  _onMinuteChange(event: number) {
+    this.date = this.displayDate;
+    this._emitChangeEvent();
+    this._onBlur();
+    this.close();
   }
 
   /**

@@ -10,8 +10,8 @@ $md2-datepicker-calendar-height: 300px !default;
 
 md2-datepicker {
   position: relative;
-  display: block;
-  max-width: 200px;
+  display: inline-block;
+  min-width: 175px;
   outline: none;
   backface-visibility: hidden;
 
@@ -103,7 +103,7 @@ md2-datepicker {
     transform: translate3d(0, 6px, 0) scale(0.75);
   }
 
-  md2-datepicker:focus & {
+  md2-datepicker:focus &, md2-datepicker.md2-datepicker-opened & {
     color: $primary;
     transform: translate3d(0, 6px, 0) scale(0.75);
   }

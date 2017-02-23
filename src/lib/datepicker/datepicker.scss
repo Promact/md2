@@ -8,6 +8,10 @@ $md2-datepicker-arrow-margin: 4px !default;
 $md2-datepicker-date-cell-size: 40px !default;
 $md2-datepicker-calendar-height: 300px !default;
 
+$md2-clock-size: 240px !default;
+$md2-clock-tick-size: 34px !default;
+$md2-clock-hand-size: 99px !default;
+
 md2-datepicker {
   position: relative;
   display: inline-block;
@@ -354,24 +358,61 @@ md2-datepicker.md2-datepicker-disabled:focus {
   }
 }
 
-.md2-datepicker-clock {
+md2-clock {
   position: absolute;
   top: 0;
   left: 100%;
   display: block;
-  width: 240px;
-  height: 240px;
+  width: $md2-clock-size;
+  height: $md2-clock-size;
   margin: 30px;
   font-size: 14px;
   font-weight: 400;
   text-align: center;
   background-color: darken(white, 12);
   border-radius: 50%;
+  overflow: hidden;
   transition: 300ms;
 
   &.active {
     left: 0;
   }
+}
+
+.md2-clock-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 6px;
+  width: 6px;
+  margin: -3px;
+  border-radius: 50%;
+  background-color: $primary;
+}
+
+.md2-clock-hand {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 1px;
+  height: $md2-clock-hand-size;
+  margin: 0 auto;
+  background-color: $primary;
+  transform-origin: bottom;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: $primary;
+  }
+  /*transition: all 100ms;*/
 }
 
 .md2-clock-hours,
@@ -400,44 +441,20 @@ md2-datepicker.md2-datepicker-disabled:focus {
 .md2-clock-hour,
 .md2-clock-minute {
   position: absolute;
-  width: 34px;
-  height: 34px;
-  line-height: 34px;
+  width: $md2-clock-tick-size;
+  height: $md2-clock-tick-size;
+  line-height: $md2-clock-tick-size;
   text-align: center;
   border-radius: 50%;
   cursor: pointer;
 
   &:hover {
+    background: darken(white, 2);
+  }
+
+  &.active {
     background: lighten($primary, 25);
   }
-}
-
-.md2-clock-hand {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-
-  line {
-    stroke: $primary;
-    stroke-width: 1;
-    stroke-linecap: round;
-  }
-}
-
-.md2-clock-bg {
-  fill: lighten($primary, 25);
-}
-
-.md2-clock-fg {
-  stroke: none;
-  fill: $primary;
-}
-
-.md2-clock-center {
-  stroke: none;
-  fill: $primary;
 }
 
 .md2-datepicker-actions {

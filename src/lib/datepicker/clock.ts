@@ -18,12 +18,12 @@ export const CLOCK_TICK_RADIUS = 17;
   moduleId: module.id,
   selector: 'md2-clock',
   templateUrl: 'clock.html',
-  styleUrls: ['clock.css'],
+  styleUrls: ['datepicker.css'],
   host: {
     'role': 'clock',
     '(mousedown)': '_handleMousedown($event)',
   },
-  //encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None
 })
 export class Md2Clock {
 
@@ -62,7 +62,7 @@ export class Md2Clock {
 
   @Input()
   set view(value: string) {
-    if (value === 'minutes') { this._view = false; }
+    if (value === 'minute') { this._view = false; }
     else { this._view = true; }
   }
 

@@ -95,11 +95,11 @@
         </div>
       </div>
       <md2-clock [class.active]="!_isCalendarVisible"
-                 [view]="_clockView"></md2-clock>
-      <!--[time]=""
-                 (timeChange)=""
-                 (onHourChange)=""
-                 (onMinuteChange)-->
+                 [time]="time"
+                 [view]="_clockView"
+                 (timeChange)="_onTimeChange($event)"
+                 (onHourChange)="_onHourChange($event)"
+                 (onMinuteChange)="_onMinuteChange($event)"></md2-clock>
       <div class="md2-datepicker-actions">
         <div class="md2-button" (click)="close()">Cancel</div>
         <div class="md2-button" (click)="_onClickOk()">Ok</div>

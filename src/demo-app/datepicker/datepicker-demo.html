@@ -5,13 +5,11 @@
   <div>
     <md2-datepicker type="date"
                     placeholder="Date"
-                    format="DD/MM/YYYY"
                     (change)="handleChange($event)">
     </md2-datepicker>
     <md2-datepicker [(ngModel)]="date"
                     type="date"
                     placeholder="Date"
-                    format="DD/MM/YYYY"
                     required
                     (change)="handleChange($event)">
     </md2-datepicker>
@@ -20,9 +18,8 @@
   <div>
     <md2-datepicker [(ngModel)]="date"
                     type="date"
-                    [disabled]="disabled"
+                    [disabled]="true"
                     placeholder="Date"
-                    format="DD/MM/YYYY"
                     (change)="handleChange($event)">
     </md2-datepicker>
   </div>
@@ -33,7 +30,6 @@
                     [min]="minDate"
                     [max]="maxDate"
                     placeholder="Date Time"
-                    format="DD/MM/YYYY"
                     (change)="handleChange($event)">
     </md2-datepicker>
   </div>
@@ -42,7 +38,6 @@
     <md2-datepicker [(ngModel)]="time"
                     type="time"
                     placeholder="Time"
-                    format="HH:mm"
                     (change)="handleChange($event)">
     </md2-datepicker>
   </div>
@@ -51,7 +46,6 @@
     <md2-datepicker [(ngModel)]="datetime"
                     type="datetime"
                     placeholder="Date Time"
-                    format="DD/MM/YYYY HH:mm"
                     (change)="handleChange($event)">
     </md2-datepicker>
   </div>

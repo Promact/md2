@@ -106,9 +106,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   private _panelOpen = false;
 
   private _openOnFocus: boolean = false;
-  private _format: string = this.type === 'date' ?
-    'DD/MM/YYYY' : this.type === 'time' ? 'HH:mm' : this.type === 'datetime' ?
-      'DD/MM/YYYY HH:mm' : 'DD/MM/YYYY';
+  private _format: string;
   private _required: boolean = false;
   private _disabled: boolean = false;
   private _isInitialized: boolean = false;
@@ -224,10 +222,14 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   set selected(value: Date) { this._selected = value; }
 
   @Input()
-  get format(): string { return this._format; }
-  set format(value) {
+  get format() {
+    return this._format || (this.type === 'date' ?
+      'dd/MM/y' : this.type === 'time' ? 'HH:mm' : this.type === 'datetime' ?
+        'dd/MM/y HH:mm' : 'dd/MM/y');
+  }
+  set format(value: string) {
     if (this._format !== value) {
-      this._format = value || this._format;
+      this._format = value;
       if (this._viewValue && this._value) {
         this._viewValue = this._formatDate(this._value);
       }
@@ -479,7 +481,6 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
       this._onTouched();
     }
   }
-
 
   /**
    * Display Years
@@ -763,40 +764,20 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
    */
   private _formatDate(date: Date): string {
     return this.format
-      .replace('YYYY', date.getFullYear() + '')
-      .replace('MM', this._prependZero((date.getMonth() + 1) + ''))
-      .replace('DD', this._prependZero(date.getDate() + ''))
-      .replace('HH', this._prependZero(date.getHours() + ''))
-      .replace('mm', this._prependZero(date.getMinutes() + ''))
-      .replace('ss', this._prependZero(date.getSeconds() + ''));
-  }
-
-  /**
-   * Prepend Zero
-   * @param value String value
-   * @return string with prepend Zero
-   */
-  private _prependZero(value: string): string {
-    return parseInt(value) < 10 ? '0' + value : value;
-  }
-
-  /**
-   * Get Offset
-   * @param element HtmlElement
-   * @return top, left offset from page
-   */
-  private _offset(element: any) {
-    let top = 0, left = 0;
-    do {
-      top += element.offsetTop || 0;
-      left += element.offsetLeft || 0;
-      element = element.offsetParent;
-    } while (element);
-
-    return {
-      top: top,
-      left: left
-    };
+      .replace('yy', ('00' + date.getFullYear()).slice(-2))
+      .replace('y', '' + date.getFullYear())
+      .replace('MMMM', this._locale.months[date.getMonth()].full)
+      .replace('MMM', this._locale.months[date.getMonth()].short)
+      .replace('MM', ('0' + (date.getMonth() + 1)).slice(-2))
+      .replace('M', '' + (date.getMonth() + 1))
+      .replace('dd', ('0' + date.getDate()).slice(-2))
+      .replace('d', '' + date.getDate())
+      .replace('HH', ('0' + date.getHours()).slice(-2))
+      .replace('H', '' + date.getHours())
+      .replace('mm', ('0' + date.getMinutes()).slice(-2))
+      .replace('m', '' + date.getMinutes())
+      .replace('ss', ('0' + date.getSeconds()).slice(-2))
+      .replace('s', '' + date.getSeconds());
   }
 
   /** Emits an event when the user selects a date. */

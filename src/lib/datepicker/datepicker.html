@@ -32,16 +32,16 @@
               [class.active]="_isCalendarVisible && !_isYearsVisible"
               [class.hidden]="type==='time'"
               (click)="_showCalendar()">
-          {{ date | date: 'EE, MMM d' }}
+          {{ date | date: 'EE, MMM dd' }}
         </span>
         <span class="md2-datepicker-header-time"
               [class.active]="!_isCalendarVisible"
               [class.hidden]="type==='date'">
           <span class="md2-datepicker-header-hour"
-                [class.active]="_isHoursVisible"
-                (click)="_toggleHours('hour')">{{ date | date: 'h' }}</span>:<span class="md2-datepicker-header-minute"
-                                                                                   [class.active]="!_isHoursVisible"
-                                                                                   (click)="_toggleHours('minute')">{{ date | date: 'm' }}</span>
+                [class.active]="_clockView === 'hour'"
+                (click)="_toggleHours('hour')">{{ date.getHours() }}</span>:<span class="md2-datepicker-header-minute"
+                                                                                   [class.active]="_clockView === 'minute'"
+                                                                                   (click)="_toggleHours('minute')">{{ date.getMinutes() }}</span>
         </span>
       </div>
     </div>
@@ -80,8 +80,8 @@
                 <td *ngFor="let d of w">
                   <div class="md2-calendar-day"
                        [class.today]="d.today"
-                       [class.focus]="_dateUtil.isSameDay(date, d.date)"
-                       [class.selected]="_dateUtil.isSameDay(selected, d.date)"
+                       [class.focus]="_locale.isSameDay(date, d.date)"
+                       [class.selected]="_locale.isSameDay(selected, d.date)"
                        [class.disabled]="d.disabled"
                        [class.prev-month]="d.calMonth===_prevMonth"
                        [class.curr-month]="d.calMonth===_currMonth"

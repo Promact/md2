@@ -10,7 +10,6 @@ export * from './data-table/index';
 export * from './datepicker/index';
 export * from './dialog/index';
 export * from './menu/index';
-export * from './multiselect/index';
 export * from './select/index';
 export * from './tabs/index';
 export * from './tags/index';

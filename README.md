@@ -51,7 +51,6 @@ export class AppModule { }
 - [md2-datepicker](https://github.com/Promact/md2/tree/master/src/lib/datepicker)
 - [md2-dialog](https://github.com/Promact/md2/tree/master/src/lib/dialog)
 - [md2-menu](https://github.com/Promact/md2/tree/master/src/lib/menu)
-- [md2-multiselect](https://github.com/Promact/md2/tree/master/src/lib/multiselect)
 - [md2-select](https://github.com/Promact/md2/tree/master/src/lib/select)
 - [md2-tabs](https://github.com/Promact/md2/tree/master/src/lib/tabs)
 - [md2-tags](https://github.com/Promact/md2/tree/master/src/lib/tags)

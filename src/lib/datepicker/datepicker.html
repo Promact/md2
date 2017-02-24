@@ -32,7 +32,7 @@
               [class.active]="_isCalendarVisible && !_isYearsVisible"
               [class.hidden]="type==='time'"
               (click)="_showCalendar()">
-          {{ date | date: 'EE, MMM dd' }}
+          {{ date | date: 'EEE, MMM dd' }}
         </span>
         <span class="md2-datepicker-header-time"
               [class.active]="!_isCalendarVisible"

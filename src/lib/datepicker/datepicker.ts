@@ -21,7 +21,6 @@ import {
   NgControl
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Md2DateUtil } from './dateUtil';
 import { DateLocale } from './date-locale';
 import { Md2Clock } from './clock';
 import {
@@ -151,8 +150,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   @Output() change: EventEmitter<Md2DateChange> = new EventEmitter<Md2DateChange>();
 
   constructor(private _element: ElementRef, private overlay: Overlay, private _renderer: Renderer,
-    private _dateUtil: Md2DateUtil, private _locale: DateLocale,
-    @Self() @Optional() public _control: NgControl) {
+    private _locale: DateLocale, @Self() @Optional() public _control: NgControl) {
     if (this._control) {
       this._control.valueAccessor = this;
     }
@@ -180,11 +178,14 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   set value(value: Date) {
     this._value = this.coerceDateProperty(value);
     if (value && value !== this._value) {
-      if (this._dateUtil.isValidDate(value)) {
+      if (this._locale.isValidDate(value)) {
         this._value = value;
       } else {
         if (this.type === 'time') {
-          this._value = new Date('1-1-1 ' + value);
+          let t = value + '';
+          this._value = new Date();
+          this._value.setHours(parseInt(t.substring(0, 2)));
+          this._value.setMinutes(parseInt(t.substring(3, 5)));
         } else {
           this._value = new Date(value);
         }
@@ -196,7 +197,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
 
   get date() { return this._date || this.today; }
   set date(value: Date) {
-    if (value && this._dateUtil.isValidDate(value)) {
+    if (value && this._locale.isValidDate(value)) {
       if (this._min && this._min > value) {
         value = this._min;
       }
@@ -209,6 +210,8 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
 
   get time() { return this.date.getHours() + ':' + this.date.getMinutes(); }
   set time(value: string) {
+    //this.date = new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate(),
+    //  parseInt(value.split(':')[0]), parseInt(value.split(':')[1]));
     if (this._clockView === 'hour') {
       this.date.setHours(parseInt(value.split(':')[0]));
     } else {
@@ -240,14 +243,14 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   set disabled(value) { this._disabled = coerceBooleanProperty(value); }
 
   @Input() set min(value: Date) {
-    if (value && this._dateUtil.isValidDate(value)) {
+    if (value && this._locale.isValidDate(value)) {
       this._min = new Date(value);
       this._min.setHours(0, 0, 0, 0);
       this.getYears();
     } else { this._min = null; }
   }
   @Input() set max(value: Date) {
-    if (value && this._dateUtil.isValidDate(value)) {
+    if (value && this._locale.isValidDate(value)) {
       this._max = new Date(value);
       this._max.setHours(0, 0, 0, 0);
       this.getYears();
@@ -280,7 +283,10 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
     this._overlayRef.attach(this.templatePortals.first);
     this._subscribeToBackdrop();
     this._panelOpen = true;
-    this._showDatepicker();
+    this.selected = this.value || new Date(1, 0, 1);
+    this.date = this.value || this.today;
+    this.generateCalendar();
+    this._element.nativeElement.focus();
   }
 
   /** Closes the overlay panel and focuses the host element. */
@@ -367,13 +373,13 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
 
           case DOWN_ARROW:
             if (this.date.getFullYear() < (this.today.getFullYear() + 100)) {
-              this.date = this._dateUtil.incrementYears(date, 1);
+              this.date = this._locale.incrementYears(date, 1);
               this._scrollToSelectedYear();
             }
             break;
           case UP_ARROW:
             if (this.date.getFullYear() > 1900) {
-              this.date = this._dateUtil.incrementYears(date, -1);
+              this.date = this._locale.incrementYears(date, -1);
               this._scrollToSelectedYear();
             }
             break;
@@ -385,42 +391,42 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
           case SPACE: this.setDate(this.date); break;
 
           case RIGHT_ARROW:
-            this.date = this._dateUtil.incrementDays(date, 1);
+            this.date = this._locale.incrementDays(date, 1);
             break;
           case LEFT_ARROW:
-            this.date = this._dateUtil.incrementDays(date, -1);
+            this.date = this._locale.incrementDays(date, -1);
             break;
 
           case PAGE_DOWN:
             if (event.shiftKey) {
-              this.date = this._dateUtil.incrementYears(date, 1);
+              this.date = this._locale.incrementYears(date, 1);
             } else {
-              this.date = this._dateUtil.incrementMonths(date, 1);
+              this.date = this._locale.incrementMonths(date, 1);
             }
             break;
           case PAGE_UP:
             if (event.shiftKey) {
-              this.date = this._dateUtil.incrementYears(date, -1);
+              this.date = this._locale.incrementYears(date, -1);
             } else {
-              this.date = this._dateUtil.incrementMonths(date, -1);
+              this.date = this._locale.incrementMonths(date, -1);
             }
             break;
 
           case DOWN_ARROW:
-            this.date = this._dateUtil.incrementDays(date, 7);
+            this.date = this._locale.incrementDays(date, 7);
             break;
           case UP_ARROW:
-            this.date = this._dateUtil.incrementDays(date, -7);
+            this.date = this._locale.incrementDays(date, -7);
             break;
 
           case HOME:
-            this.date = this._dateUtil.getFirstDateOfMonth(date);
+            this.date = this._locale.getFirstDateOfMonth(date);
             break;
           case END:
-            this.date = this._dateUtil.getLastDateOfMonth(date);
+            this.date = this._locale.getLastDateOfMonth(date);
             break;
         }
-        if (!this._dateUtil.isSameMonthAndYear(date, this.date)) {
+        if (!this._locale.isSameMonthAndYear(date, this.date)) {
           this.generateCalendar();
         }
       } else if (this._clockView === 'hour') {
@@ -429,10 +435,10 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
           case SPACE: this.setHour(this.date.getHours()); break;
 
           case UP_ARROW:
-            this.date = this._dateUtil.incrementHours(date, 1);
+            this.date = this._locale.incrementHours(date, 1);
             break;
           case DOWN_ARROW:
-            this.date = this._dateUtil.incrementHours(date, -1);
+            this.date = this._locale.incrementHours(date, -1);
             break;
         }
       } else {
@@ -443,10 +449,10 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
             break;
 
           case UP_ARROW:
-            this.date = this._dateUtil.incrementMinutes(date, 1);
+            this.date = this._locale.incrementMinutes(date, 1);
             break;
           case DOWN_ARROW:
-            this.date = this._dateUtil.incrementMinutes(date, -1);
+            this.date = this._locale.incrementMinutes(date, -1);
             break;
         }
       }
@@ -495,8 +501,8 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
 
   private _scrollToSelectedYear() {
     setTimeout(() => {
-      let yearContainer = this._element.nativeElement.querySelector('.md2-calendar-years'),
-        selectedYear = this._element.nativeElement.querySelector('.md2-calendar-year.selected');
+      let yearContainer: any = document.querySelector('.md2-calendar-years'),
+        selectedYear: any = document.querySelector('.md2-calendar-year.selected');
       yearContainer.scrollTop = (selectedYear.offsetTop + 20) - yearContainer.clientHeight / 2;
     }, 0);
   }
@@ -510,17 +516,6 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
       this.date.getHours(), this.date.getMinutes());
     this.generateCalendar();
     this._isYearsVisible = false;
-  }
-
-  /**
-   * Display Datepicker
-   */
-  _showDatepicker() {
-    if (this.disabled) { return; }
-    this.selected = this.value || new Date(1, 0, 1);
-    //this.displayDate = this.value || this.today;
-    this.generateCalendar();
-    this._element.nativeElement.focus();
   }
 
   /**
@@ -603,7 +598,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
    * @param noOfMonths increment number of months
    */
   _updateMonth(noOfMonths: number) {
-    this.date = this._dateUtil.incrementMonths(this.date, noOfMonths);
+    this.date = this._locale.incrementMonths(this.date, noOfMonths);
     this.generateCalendar();
   }
 
@@ -613,7 +608,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
    */
   _isBeforeMonth() {
     return !this._min ? true :
-      this._min && this._dateUtil.getMonthDistance(this.date, this._min) < 0;
+      this._min && this._locale.getMonthDistance(this.date, this._min) < 0;
   }
 
   /**
@@ -622,7 +617,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
    */
   _isAfterMonth() {
     return !this._max ? true :
-      this._max && this._dateUtil.getMonthDistance(this.date, this._max) > 0;
+      this._max && this._locale.getMonthDistance(this.date, this._max) > 0;
   }
 
   _onTimeChange(event: string) {
@@ -674,10 +669,10 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
 
     this._dates.length = 0;
 
-    let firstDayOfMonth = this._dateUtil.getFirstDateOfMonth(this.date);
-    let numberOfDaysInMonth = this._dateUtil.getNumberOfDaysInMonth(this.date);
-    let numberOfDaysInPrevMonth = this._dateUtil.getNumberOfDaysInMonth(
-      this._dateUtil.incrementMonths(this.date, -1));
+    let firstDayOfMonth = this._locale.getFirstDateOfMonth(this.date);
+    let numberOfDaysInMonth = this._locale.getNumberOfDaysInMonth(this.date);
+    let numberOfDaysInPrevMonth = this._locale.getNumberOfDaysInMonth(
+      this._locale.incrementMonths(this.date, -1));
 
     let dayNbr = 1;
     let calMonth = this._prevMonth;
@@ -692,7 +687,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
             date: date,
             dateObj: iDate,
             calMonth: calMonth,
-            today: this._dateUtil.isSameDay(this.today, date),
+            today: this._locale.isSameDay(this.today, date),
             disabled: this._isDisabledDate(date)
           });
         }
@@ -706,7 +701,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
             date: date,
             dateObj: iDate,
             calMonth: calMonth,
-            today: this._dateUtil.isSameDay(this.today, date),
+            today: this._locale.isSameDay(this.today, date),
             disabled: this._isDisabledDate(date)
           });
           dayNbr++;
@@ -727,7 +722,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
             date: date,
             dateObj: iDate,
             calMonth: calMonth,
-            today: this._dateUtil.isSameDay(this.today, date),
+            today: this._locale.isSameDay(this.today, date),
             disabled: this._isDisabledDate(date)
           });
           dayNbr++;
@@ -812,23 +807,6 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
 
   writeValue(value: any): void {
     this.value = value;
-    //if (value && value !== this._value) {
-    //  if (this._dateUtil.isValidDate(value)) {
-    //    this._value = value;
-    //  } else {
-    //    if (this.type === 'time') {
-    //      this._value = new Date();
-    //      this._value.setHours(value.substring(0, 2));
-    //      this._value.setMinutes(value.substring(3, 5));
-    //    } else {
-    //      this._value = new Date(value);
-    //    }
-    //  }
-    //  this._viewValue = this._formatDate(this._value);
-    //} else {
-    //  this._value = null;
-    //  this._viewValue = null;
-    //}
   }
 
   registerOnChange(fn: (value: any) => void): void { this._onChange = fn; }
@@ -873,7 +851,7 @@ export const MD2_DATEPICKER_DIRECTIVES = [Md2Datepicker, Md2Clock];
   imports: [CommonModule, OverlayModule, PortalModule],
   exports: MD2_DATEPICKER_DIRECTIVES,
   declarations: MD2_DATEPICKER_DIRECTIVES,
-  providers: [Md2DateUtil, DateLocale]
+  providers: [DateLocale]
 })
 export class Md2DatepickerModule {
   static forRoot(): ModuleWithProviders {

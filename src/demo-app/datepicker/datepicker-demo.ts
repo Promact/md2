@@ -6,7 +6,6 @@ import { Component } from '@angular/core';
   templateUrl: 'datepicker-demo.html',
 })
 export class DatepickerDemo {
-  disabled: boolean = true;
   date: Date = new Date(2016, 9, 15);
   time: Date = new Date(1, 1, 1, 12, 10);
   datetime: Date = new Date(2016, 9, 15, 12, 10);

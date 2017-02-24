@@ -30,3 +30,14 @@ A datepicker would have the following markup.
 ```html
 <md2-datepicker [(ngModel)]="date"></md2-datepicker>
 ```
+
+### Format
+
+| COMPONENT | SYMBOL | NARROW | SHORT FORM | LONG FORM        | NUMERIC | 2-DIGIT |
+| --------- | ------ | ------ | ---------- | ---------------- | ------- | ------- |
+| year      | `y`    | -      | -          | -                | y(2017) | yy(17)  |
+| month     | `M`    | -      | MMM (Feb)  | MMMM (February)  | M(2)    | MM(02)  |
+| day       | `d`    | -      | -          | -                | d(3)    | dd(03)  |
+| hour      | `H`    | -      | -          | -                | H(13)   | HH(13)  |
+| minute    | `m`    | -      | -          | -                | m(5)    | mm(05)  |
+| second    | `s`    | -      | -          | -                | s(5)    | ss(05)  |

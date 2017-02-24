@@ -39,8 +39,9 @@ export class Md2Clock {
 
   @Input()
   set view(value: string) {
-    if (value === 'years') { this._view = false; }
-    else { this._view = true; }
+    if (value === 'years') {
+      this._view = false;
+    } else { this._view = true; }
   }
 
   /** Emits an event when the user selects a time. */

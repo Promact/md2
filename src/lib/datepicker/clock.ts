@@ -42,8 +42,8 @@ export class Md2Clock {
 
   constructor(private _element: ElementRef) {
     this.renderClock();
-    this.mouseMoveListener = (event: any) => { this._handleMousemove(event) };
-    this.mouseUpListener = (event: any) => { this._handleMouseup(event) };
+    this.mouseMoveListener = (event: any) => { this._handleMousemove(event); };
+    this.mouseUpListener = (event: any) => { this._handleMouseup(event); };
   }
 
   @Output() timeChange: EventEmitter<string> = new EventEmitter<string>();
@@ -62,8 +62,9 @@ export class Md2Clock {
 
   @Input()
   set view(value: string) {
-    if (value === 'minute') { this._view = false; }
-    else { this._view = true; }
+    if (value === 'minute') {
+      this._view = false;
+    } else { this._view = true; }
   }
 
   get hand(): any {
@@ -160,7 +161,6 @@ export class Md2Clock {
     let unit = Math.PI / (this._view ? 6 : 30);
     let z = Math.sqrt(x * x + y * y);
     let inner = this._view && z < (CLOCK_OUTER_RADIUS + CLOCK_INNER_RADIUS) / 2;
-    let radius = inner ? CLOCK_INNER_RADIUS : CLOCK_OUTER_RADIUS;
     let value = 0;
 
     if (radian < 0) { radian = Math.PI * 2 + radian; }

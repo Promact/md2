@@ -22,13 +22,13 @@ Menu is a list of options that displays when triggered.
 A menu would have the following markup.
 ```html
 <div md2-menu>
-  <button button="primary" md2-menu-trigger>Right Menu <span class="caret"></span></button>
+  <button md2-menu-trigger>Right Menu <span class="caret"></span></button>
   <div md2-menu-content x-position="before">
     <a md2-menu-item>Badman</a>
     <a md2-menu-item>Sadman</a>
     <a md2-menu-item>Lieman</a>
     <div md2-menu-item>
-      <button button="primary" md2-menu-trigger>2nd Level Menu <span class="caret"></span></button>
+      <button md2-menu-trigger>2nd Level Menu <span class="caret"></span></button>
       <div md2-menu-content>
         <a md2-menu-item>Badman</a>
         <a md2-menu-item>Sadman</a>

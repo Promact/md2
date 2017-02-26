@@ -71,6 +71,8 @@ export interface IWeek {
 
 let nextId = 0;
 
+export type Type = 'date' | 'time' | 'datetime';
+
 @Component({
   moduleId: module.id,
   selector: 'md2-datepicker',
@@ -107,6 +109,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   private _panelOpen = false;
 
   private _openOnFocus: boolean = false;
+  private _type: Type = 'date';
   private _format: string;
   private _required: boolean = false;
   private _disabled: boolean = false;
@@ -166,7 +169,6 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
 
   ngOnDestroy() { this.destroyPanel(); }
 
-  @Input() type: 'date' | 'time' | 'datetime' = 'date';
   @Input() name: string = '';
   @Input() id: string = 'md2-datepicker-' + (++nextId);
   @Input() placeholder: string;
@@ -216,6 +218,13 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
     } else {
       this.date.setMinutes(parseInt(value.split(':')[1]));
     }
+  }
+
+  @Input()
+  get type() { return this._type; }
+  set type(value: Type) {
+    this._type = value || 'date';
+    this._viewValue = this._formatDate(this._value);
   }
 
   @Input()

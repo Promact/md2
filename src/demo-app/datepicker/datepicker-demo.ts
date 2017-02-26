@@ -4,15 +4,28 @@ import { Component } from '@angular/core';
   moduleId: module.id,
   selector: 'datepicker-demo',
   templateUrl: 'datepicker-demo.html',
+  styles: [` .type { width: 150px; padding: 16px 0; } `]
 })
 export class DatepickerDemo {
-  disabled: boolean = true;
-  date: Date = new Date(2016, 9, 15);
-  time: Date = new Date(1, 1, 1, 12, 10);
-  datetime: Date = new Date(2016, 9, 15, 12, 10);
-  minDate: Date = new Date(2016, 7, 15);
-  maxDate: Date = new Date(2016, 12, 15);
-  handleChange(value: any) {
-    console.log('Changed data: ', value);
+  isRequired = false;
+  isDisabled = false;
+  type: string = 'date';
+  types: Array<any> = [
+    { text: 'Date', value: 'date' },
+    { text: 'Time', value: 'time' },
+    { text: 'Date Time', value: 'datetime' }];
+
+  date: Date = null;
+  minDate: Date = null;
+  maxDate: Date = null;
+
+  setDate() {
+    this.date = new Date();
+  }
+  setDateRange() {
+    this.minDate = new Date();
+    this.minDate.setMonth(this.minDate.getMonth() - 3);
+    this.maxDate = new Date();
+    this.maxDate.setMonth(this.maxDate.getMonth() + 3);
   }
 }

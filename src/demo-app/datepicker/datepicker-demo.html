@@ -3,58 +3,27 @@
   <hr />
   <h4>Date Picker</h4>
   <div>
-    <md2-datepicker type="date"
-                    placeholder="Date"
-                    format="DD/MM/YYYY"
-                    (change)="handleChange($event)">
-    </md2-datepicker>
-  </div>
-  <div>
-    <md2-datepicker [(ngModel)]="date"
-                    type="date"
-                    placeholder="Date"
-                    format="DD/MM/YYYY"
-                    required
-                    (change)="handleChange($event)">
-    </md2-datepicker>
-  </div>
-  <h4>Disabled</h4>
-  <div>
-    <md2-datepicker [(ngModel)]="date"
-                    type="date"
-                    [disabled]="disabled"
-                    placeholder="Date"
-                    format="DD/MM/YYYY"
-                    (change)="handleChange($event)">
-    </md2-datepicker>
-  </div>
-  <h4>Min/Max Date</h4>
-  <div>
-    <md2-datepicker [(ngModel)]="date"
-                    type="date"
+    <md2-datepicker placeholder="Select Color"
+                    [(ngModel)]="date"
+                    [required]="isRequired"
+                    [disabled]="isDisabled"
+                    [type]="type"
                     [min]="minDate"
                     [max]="maxDate"
-                    placeholder="Date Time"
-                    format="DD/MM/YYYY"
-                    (change)="handleChange($event)">
-    </md2-datepicker>
-  </div>
-  <h4>Time Picker</h4>
-  <div>
-    <md2-datepicker [(ngModel)]="time"
-                    type="time"
-                    placeholder="Time"
-                    format="HH:mm"
-                    (change)="handleChange($event)">
-    </md2-datepicker>
-  </div>
-  <h4>Date Time Picker</h4>
-  <div>
-    <md2-datepicker [(ngModel)]="datetime"
-                    type="datetime"
-                    placeholder="Date Time"
-                    format="DD/MM/YYYY HH:mm"
-                    (change)="handleChange($event)">
-    </md2-datepicker>
+                    #dateControl="ngModel"></md2-datepicker>
+    <p> Value: {{ date }} </p>
+    <p> Touched: {{ dateControl.touched }} </p>
+    <p> Dirty: {{ dateControl.dirty }} </p>
+    <p> Status: {{ dateControl.control?.status }} </p>
+    <div class="type">
+      <md2-select [(ngModel)]="type" placeholder="Select Picker Type">
+        <md2-option *ngFor="let t of types" [value]="t.value">{{ t.text }}</md2-option>
+      </md2-select>
+    </div>
+    <button type="button" button="primary" (click)="setDate()">SET VALUE</button>
+    <button type="button" button="primary" (click)="setDateRange()">SET RANGE</button>
+    <button type="button" button="primary" (click)="isRequired=!isRequired">TOGGLE REQUIRED</button>
+    <button type="button" button="primary" (click)="isDisabled=!isDisabled">TOGGLE DISABLED</button>
+    <button type="button" button="primary" (click)="dateControl.reset()">RESET</button>
   </div>
 </div>

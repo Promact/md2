@@ -284,13 +284,16 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     this.selected = this.value || new Date(1, 0, 1);
     this.date = this.value || this.today;
     this.generateCalendar();
-    this._element.nativeElement.focus();
   }
 
   /** Closes the overlay panel and focuses the host element. */
   close(): void {
     setTimeout(() => {
       this._panelOpen = false;
+      if (this._openOnFocus) {
+        this._openOnFocus = false;
+        setTimeout(() => { this._openOnFocus = true; }, 100);
+      }
       //if (!this._date) {
       //  this._placeholderState = '';
       //}

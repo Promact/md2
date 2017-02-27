@@ -28,7 +28,7 @@ A chips would have the following markup.
                   [minChips]="2"
                   [maxChips]="5"
                   (change)="selected($event)"
-                  [placeholder]="Add"
+                  placeholder="Add"
                   [allowedPattern]="onlyTextPattern"
                   [isAutoComplete]="true"
                   [autocompleteDataList]="itemList"

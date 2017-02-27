@@ -1,4 +1,4 @@
-<div class="md2-chips-container" [class.md2-chip-disabled]="readonly">
+<div class="md2-chips-container" [class.md2-chip-disabled]="readonly" [class.md2-chip-remove]="!isRemovable">   
   <span *ngFor="let chip of chipItemList; let i = index" class="md2-chip" [class.active]="selectedChip === i">
     <span *ngIf="isObject">{{chip.text}}</span>
     <span *ngIf="!isObject">{{chip}}</span>

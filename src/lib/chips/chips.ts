@@ -80,8 +80,9 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
   @Input() maxChips: number = 10000;
   @Input() id: string = 'md2-chips-' + (++nextId);
   @Input('autocomplete-item-text') autocompleteItemText: string = 'text';
+  @Input('autocomplete-item-value') autocompleteItemValue: string = 'value';
   @Input('item-text') textKey: string = 'text';
-  @Input('item-value') valueKey: string = null;
+  @Input('item-value') valueKey: string = 'value';
 
   @Output() change: EventEmitter<any> = new EventEmitter<any>();
   @ViewChild('chipInputForm') chipInputForm: NgForm;
@@ -138,7 +139,7 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
 
   changeAutocomplete(value: any) {
     if (value) {
-      let objText = value[this.autocompleteItemText];
+      let objText = value.value;
       this.addNewChip(objText);
       this.item = null;
     }
@@ -274,7 +275,7 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
     if (chipString) {
       let isExist: any;
       if (this.isObject) {
-        isExist = this.chipItemList.filter((chip) => chip.text === chipString);
+        isExist = this.chipItemList.filter((chip) => chip.text === chipString.text);
         return isExist.length ? false : true;
       } else if (this.chipItemList.indexOf(chipString) === -1) {
         return this.allowedPattern.test(chipString);
@@ -292,7 +293,8 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
         if (this.chipItemList.length < this.maxChips) {
           if (this.isObject && this.chipItemList.length > 0) {
             let a: any = {};
-            a[this.textKey] = chips;
+            a[this.textKey] = chips[this.autocompleteItemText];
+            a[this.valueKey] = chips[this.autocompleteItemValue];
             this.chipItemList.push(new Chip(a, this.textKey, this.valueKey));
           } else {
             this.chipItemList.push(chips);
@@ -347,11 +349,12 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
   private updateValue() {
     this._value = new Array<any>();
     for (let i = 0; i < this.chipItemList.length; i++) {
-      if (this.isObject) {
-        this._value.push(this.chipItemList[i].value);
-      } else {
+      //if (this.isObject) {
+      //  this._value.push(this.chipItemList[i].value);
+      //} else {
+      //  this._value.push(this.chipItemList[i]);
+      //}
         this._value.push(this.chipItemList[i]);
-      }
     }
     this.onChangeCallback(this._value);
     this.change.emit(this._value);

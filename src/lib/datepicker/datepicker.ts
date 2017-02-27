@@ -202,13 +202,13 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
 
   get time() { return this.date.getHours() + ':' + this.date.getMinutes(); }
   set time(value: string) {
-    //this.date = new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate(),
-    //  parseInt(value.split(':')[0]), parseInt(value.split(':')[1]));
-    if (this._clockView === 'hour') {
-      this.date.setHours(parseInt(value.split(':')[0]));
-    } else {
-      this.date.setMinutes(parseInt(value.split(':')[1]));
-    }
+    this.date = new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate(),
+      parseInt(value.split(':')[0]), parseInt(value.split(':')[1]));
+    //if (this._clockView === 'hour') {
+    //  this.date.setHours(parseInt(value.split(':')[0]));
+    //} else {
+    //  this.date.setMinutes(parseInt(value.split(':')[1]));
+    //}
   }
 
   @Input()
@@ -340,6 +340,7 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
 
   private coerceDateProperty(value: any, fallbackValue = new Date()): Date {
     let timestamp = Date.parse(value);
+    fallbackValue = null;
     return isNaN(timestamp) ? fallbackValue : new Date(timestamp);
   }
 

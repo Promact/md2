@@ -10,7 +10,7 @@ export class SelectDemo {
   isDisabled = false;
   isDisabledMultiple = false;
   item: any = null;
-  itemMultiple: Array<string> = [];
+  itemMultiple: any = null;
 
   items: Array<any> =
   [

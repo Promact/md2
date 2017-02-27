@@ -125,6 +125,7 @@ export class Md2DataTable implements DoCheck {
     }
     if (this.isDataChanged) {
       this.fillData();
+      this.diff.diff(this.md2Data);
       this.isDataChanged = false;
     }
   }
@@ -192,14 +193,14 @@ export class Md2DataTable implements DoCheck {
   private fillData() {
     let offset = (this.activePage - 1) * this.rowsPerPage;
     let data = this.md2Data;
+    let sortInt = this.sortOrder === 'desc' ? -1 : 1;
     if (this.sortBy) {
       data = data.sort((a: any, b: any) => {
         let x = this.caseInsensitiveIteratee(a);
         let y = this.caseInsensitiveIteratee(b);
-        return (x > y) ? 1 : (y > x) ? -1 : 0;
+        return ((x > y) ? 1 : (y > x) ? -1 : 0) * sortInt;
       });
     }
-    if (this.sortOrder === 'desc') { data.reverse(); }
     this.data = data.slice(offset, offset + this.rowsPerPage);
   }
 

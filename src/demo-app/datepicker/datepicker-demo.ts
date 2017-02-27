@@ -9,6 +9,8 @@ import { Component } from '@angular/core';
 export class DatepickerDemo {
   isRequired = false;
   isDisabled = false;
+  isOpenOnFocus = false;
+  isOpen = false;
   type: string = 'date';
   types: Array<any> = [
     { text: 'Date', value: 'date' },
@@ -19,13 +21,22 @@ export class DatepickerDemo {
   minDate: Date = null;
   maxDate: Date = null;
 
+  openDatepicker() {
+    this.isOpen = true;
+    setTimeout(() => {
+      this.isOpen = false;
+    }, 1000);
+  }
+
   setDate() {
     this.date = new Date();
   }
+
   setDateRange() {
     this.minDate = new Date();
     this.minDate.setMonth(this.minDate.getMonth() - 3);
     this.maxDate = new Date();
     this.maxDate.setMonth(this.maxDate.getMonth() + 3);
   }
+
 }

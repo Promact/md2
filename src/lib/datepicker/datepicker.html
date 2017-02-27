@@ -48,9 +48,10 @@
     </div>
     <div class="md2-datepicker-content">
       <div class="md2-datepicker-calendar" [class.active]="_isCalendarVisible">
-        <div class="md2-calendar-years" [class.active]="_isYearsVisible">
+        <div class="md2-calendar-years" #allCalendars [class.active]="_isYearsVisible">
           <div class="md2-calendar-years-content">
             <div *ngFor="let y of _years"
+                 #calendarList
                  class="md2-calendar-year"
                  [class.selected]="y === _viewDay.year"
                  (click)="_setYear(y)">{{y}}</div>

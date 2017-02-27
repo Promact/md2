@@ -10,6 +10,7 @@ import {
   EventEmitter,
   Renderer,
   Self,
+  ViewChild,
   ViewChildren,
   QueryList,
   ViewEncapsulation,
@@ -121,6 +122,9 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   _panelDoneAnimating: boolean = false;
 
   @ViewChildren(TemplatePortalDirective) templatePortals: QueryList<Portal<any>>;
+
+  @ViewChild('allCalendars') allCalendars: ElementRef;
+  @ViewChildren('calendarList') calendarList: QueryList<ElementRef>;
 
   /** Event emitted when the select has been opened. */
   @Output() onOpen: EventEmitter<void> = new EventEmitter<void>();
@@ -527,9 +531,11 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
 
   private _scrollToSelectedYear() {
     setTimeout(() => {
-      let yearContainer = this._element.nativeElement.querySelector('.md2-calendar-years'),
-        selectedYear = this._element.nativeElement.querySelector('.md2-calendar-year.selected');
-      yearContainer.scrollTop = (selectedYear.offsetTop + 20) - yearContainer.clientHeight / 2;
+      let yearContainer = this.allCalendars.nativeElement;
+      let selectedYear = this.calendarList.toArray()
+          .find((year) => year.nativeElement.innerText == this._viewDay.year);
+      yearContainer.scrollTop =
+          (selectedYear.nativeElement.offsetTop + 20) - yearContainer.clientHeight / 2;
     }, 0);
   }
 

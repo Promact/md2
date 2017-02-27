@@ -114,7 +114,6 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
   private _disabled: boolean = false;
 
   private today: Date = new Date();
-  _viewValue: string = '';
 
   private _min: Date = null;
   private _max: Date = null;
@@ -184,7 +183,6 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
           this._value = new Date(value);
         }
       }
-      this._viewValue = this._formatDate(this._value);
     }
     this.date = this._value;
   }
@@ -217,7 +215,6 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
   get type() { return this._type; }
   set type(value: Type) {
     this._type = value || 'date';
-    this._viewValue = this._formatDate(this._value);
   }
 
   @Input()
@@ -231,12 +228,7 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
         'dd/MM/y HH:mm' : 'dd/MM/y');
   }
   set format(value: string) {
-    if (this._format !== value) {
-      this._format = value;
-      if (this._viewValue && this._value) {
-        this._viewValue = this._formatDate(this._value);
-      }
-    }
+    if (this._format !== value) { this._format = value; }
   }
 
   @Input()
@@ -759,29 +751,6 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     this._emitChangeEvent();
     this._onBlur();
     this.close();
-  }
-
-  /**
-   * format date
-   * @param date Date Object
-   * @return string with formatted date
-   */
-  private _formatDate(date: Date): string {
-    return this.format
-      .replace('yy', ('00' + date.getFullYear()).slice(-2))
-      .replace('y', '' + date.getFullYear())
-      .replace('MMMM', this._locale.months[date.getMonth()].full)
-      .replace('MMM', this._locale.months[date.getMonth()].short)
-      .replace('MM', ('0' + (date.getMonth() + 1)).slice(-2))
-      .replace('M', '' + (date.getMonth() + 1))
-      .replace('dd', ('0' + date.getDate()).slice(-2))
-      .replace('d', '' + date.getDate())
-      .replace('HH', ('0' + date.getHours()).slice(-2))
-      .replace('H', '' + date.getHours())
-      .replace('mm', ('0' + date.getMinutes()).slice(-2))
-      .replace('m', '' + date.getMinutes())
-      .replace('ss', ('0' + date.getSeconds()).slice(-2))
-      .replace('s', '' + date.getSeconds());
   }
 
   /** Emits an event when the user selects a date. */

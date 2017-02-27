@@ -1,5 +1,4 @@
 import {
-  AfterContentInit,
   Component,
   ElementRef,
   HostListener,
@@ -97,7 +96,7 @@ export type Type = 'date' | 'time' | 'datetime';
   ],
   encapsulation: ViewEncapsulation.None
 })
-export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueAccessor {
+export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
 
   private _overlayRef: OverlayRef;
   private _backdropSubscription: Subscription;
@@ -113,7 +112,6 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   private _format: string;
   private _required: boolean = false;
   private _disabled: boolean = false;
-  private _isInitialized: boolean = false;
 
   private today: Date = new Date();
   _viewValue: string = '';
@@ -160,11 +158,6 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
     this._weekDays = _locale.days;
 
     this.getYears();
-  }
-
-  ngAfterContentInit() {
-    this._isInitialized = true;
-    this._isCalendarVisible = this.type !== 'time' ? true : false;
   }
 
   ngOnDestroy() { this.destroyPanel(); }
@@ -291,6 +284,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   /** Opens the overlay panel. */
   open(): void {
     if (this.disabled) { return; }
+    this._isCalendarVisible = this.type !== 'time' ? true : false;
     this._createOverlay();
     this._overlayRef.attach(this.templatePortals.first);
     this._subscribeToBackdrop();

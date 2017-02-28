@@ -11,11 +11,9 @@
     </svg>
   </div>
   <div class="md2-datepicker-input">
-    <span class="md2-datepicker-placeholder" [class.has-value]="value"> {{ placeholder }} </span>
-    <span class="md2-datepicker-input-text">{{ value | date:format }}</span>
-    <svg width="24" height="24" viewBox="0 0 24 24">
-      <path d="M7 10l5 5 5-5z" />
-    </svg>
+    <span class="md2-datepicker-placeholder" [class.md2-floating-placeholder]="value">{{ placeholder }}</span>
+    <span class="md2-datepicker-value">{{ value | date:format }}</span>
+    <span class="md2-datepicker-arrow"></span>
   </div>
 </div>
 <template portal>
@@ -40,8 +38,8 @@
           <span class="md2-datepicker-header-hour"
                 [class.active]="_clockView === 'hour'"
                 (click)="_toggleHours('hour')">{{ date.getHours() }}</span>:<span class="md2-datepicker-header-minute"
-                                                                                   [class.active]="_clockView === 'minute'"
-                                                                                   (click)="_toggleHours('minute')">{{ date.getMinutes() }}</span>
+                                                                                  [class.active]="_clockView === 'minute'"
+                                                                                  (click)="_toggleHours('minute')">{{ date.getMinutes() }}</span>
         </span>
       </div>
     </div>

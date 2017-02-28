@@ -2,7 +2,7 @@ $primary: #106cc8 !default;
 $warn: #f44336 !default;
 
 $md2-datepicker-trigger-height: 30px !default;
-$md2-datepicker-trigger-min-width: 112px !default;
+$md2-datepicker-trigger-min-width: 168px !default;
 $md2-datepicker-arrow-size: 5px !default;
 $md2-datepicker-arrow-margin: 4px !default;
 $md2-datepicker-date-cell-size: 40px !default;
@@ -42,87 +42,113 @@ md2-datepicker {
   vertical-align: middle;
   fill: currentColor;
   color: rgba(black, 0.54);
+
+  .md2-datepicker-disabled & {
+    color: rgba(black, 0.38);
+  }
 }
 
 .md2-datepicker-input {
-  position: relative;
-  display: block;
-  min-width: 150px;
-  height: 30px;
-  padding: 2px 26px 1px 2px;
-  margin: 0;
-  line-height: 26px;
-  color: rgba(black, 0.87);
-  vertical-align: middle;
-  box-sizing: border-box;
+  color: rgba(black, 0.38);
   border-bottom: 1px solid rgba(black, 0.12);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: $md2-datepicker-trigger-height;
+  min-width: $md2-datepicker-trigger-min-width;
+  line-height: 22px;
+  position: relative;
+  box-sizing: border-box;
 
-  svg {
-    position: absolute;
-    right: 0;
-    top: 2px;
-    fill: currentColor;
-    color: rgba(black, 0.54);
+  [aria-disabled='true'] & {
+    background-image: linear-gradient(to right, rgba(black, 0.26) 0, rgba(black, 0.26) 33%, transparent 0);
+    background-size: 4px 1px;
+    background-repeat: repeat-x;
+    border-color: transparent;
+    background-position: 0 bottom;
+    cursor: default;
+    user-select: none;
+  }
+
+  md2-datepicker:focus:not(.md2-datepicker-disabled) & {
+    color: $primary;
+    border-color: $primary;
   }
 
   md2-datepicker.ng-invalid.ng-touched:not(.md2-datepicker-disabled) & {
     color: $warn;
-    border-bottom: 1px solid $warn;
-  }
-
-  .md2-datepicker-disabled & {
-    color: rgba(black, 0.38);
-    border-color: transparent;
-    background-image: linear-gradient(to right, rgba(black, 0.38) 0%, rgba(black, 0.38) 33%, transparent 0%);
-    background-position: bottom -1px left 0;
-    background-size: 4px 1px;
-    background-repeat: repeat-x;
+    border-color: $warn;
   }
 }
 
 .md2-datepicker-placeholder {
   position: absolute;
-  right: 26px;
+  right: 18px;
   bottom: 100%;
   left: 0;
-  color: rgba(black, 0.38);
-  max-width: 100%;
-  padding-left: 3px;
-  padding-right: 0;
-  line-height: 1.4;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  pointer-events: none;
-  z-index: 1;
+  padding: 0 2px;
   transform: translate3d(0, 26px, 0) scale(1);
-  transition: transform 400ms cubic-bezier(0.25, 0.8, 0.25, 1);
   transform-origin: left top;
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  transition: all 150ms cubic-bezier(.25, .8, .25, 1);
+
+  &.md2-floating-placeholder {
+    left: -2px;
+    text-align: left;
+    transform: translate3d(0, 6px, 0) scale(.75);
+  }
+
+  [dir='rtl'] & {
+    right: 0;
+    left: 18px;
+    transform-origin: right top;
+
+    &.md2-floating-placeholder {
+      right: -2px;
+      text-align: right;
+    }
+  }
 
   [aria-required=true] &::after {
     content: '*';
   }
-
-  &.has-value {
-    transform: translate3d(0, 6px, 0) scale(0.75);
-  }
-
-  md2-datepicker:focus &, md2-datepicker.md2-datepicker-opened & {
-    color: $primary;
-    transform: translate3d(0, 6px, 0) scale(0.75);
-  }
 }
 
-md2-datepicker.md2-datepicker-disabled:focus {
-  .md2-datepicker-placeholder {
+.md2-datepicker-value {
+  position: relative;
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  color: rgba(black, 0.87);
+
+  .md2-datepicker-disabled & {
     color: rgba(black, 0.38);
   }
+
+  [dir='rtl'] & {
+    left: auto;
+    right: 0;
+  }
 }
 
-.md2-datepicker-input-text {
-  display: block;
-  font-size: 15px;
-  line-height: 26px;
+.md2-datepicker-arrow {
+  width: 0;
+  height: 0;
+  border-left: $md2-datepicker-arrow-size solid transparent;
+  border-right: $md2-datepicker-arrow-size solid transparent;
+  border-top: $md2-datepicker-arrow-size solid;
+  margin: 0 $md2-datepicker-arrow-margin;
+  color: rgba(black, 0.38);
+
+  md2-datepicker:focus:not(.md2-datepicker-disabled) & {
+    color: $primary;
+  }
+
+  md2-datepicker.ng-invalid.ng-touched:not(.md2-datepicker-disabled) & {
+    color: $warn;
+  }
 }
 
 .md2-datepicker-panel {

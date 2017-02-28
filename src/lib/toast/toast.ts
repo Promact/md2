@@ -1,6 +1,7 @@
 import {
   Component,
   Injectable,
+  ViewContainerRef,
   NgModule,
   ModuleWithProviders,
   ViewEncapsulation,
@@ -22,6 +23,7 @@ export class Toast {
 
 export class Md2ToastConfig {
   duration: number = 3000;
+  viewContainerRef?: ViewContainerRef = null;
 }
 
 @Injectable()
@@ -46,57 +48,66 @@ export class Md2Toast {
    * @param toastObj string or object with message and other properties of toast
    */
   show(message: string, duration?: number) {
+    if (!message || !message.trim()) { return; }
+
+    if (duration) { this._config.duration = duration; }
+
     let toast: Toast;
     toast = new Toast(message);
-    if (duration) { this._config.duration = duration; }
 
     if (toast) {
       if (!this._toastInstance) {
-        let strategy = this._overlay.position().global().top('0').right('0');
-        let config = new OverlayState();
-        config.positionStrategy = strategy;
-
-        this._overlayRef = this._overlay.create(config);
-        let portal = new ComponentPortal(Md2ToastComponent);
-        this._toastInstance = this._overlayRef.attach(portal).instance;
-
-        this.setupToast(toast);
-
-      } else {
-        this.setupToast(toast);
+        this._createToast();
       }
+
+      this._setToastMessage(toast);
     }
   }
 
-  /**
-   * toast timeout
-   * @param toastId
-   */
-  startTimeout(toastId: number) {
-    setTimeout(() => {
-      this.clear(toastId);
-    }, this._config.duration);
+  /** Create the toast to display */
+  private _createToast(): void {
+    this._createOverlay();
+    let portal = new ComponentPortal(Md2ToastComponent, this._config.viewContainerRef);
+    this._toastInstance = this._overlayRef.attach(portal).instance;
   }
 
-  /**
-   * setup toast
-   * @param toast
-   */
-  setupToast(toast: Toast) {
+  /** Create the overlay config and position strategy */
+  private _createOverlay(): void {
+    if (!this._overlayRef) {
+      let config = new OverlayState();
+      config.positionStrategy = this._overlay.position()
+        .global()
+        .top('0').right('0');
+
+      this._overlayRef = this._overlay.create(config);
+    }
+  }
+
+  /** Disposes the current toast and the overlay it is attached to */
+  private _disposeToast(): void {
+    this._overlayRef.dispose();
+    this._overlayRef = null;
+    this._toastInstance = null;
+  }
+
+  /** Updates the toast message and repositions the overlay according to the new message length */
+  private _setToastMessage(toast: Toast) {
     toast.id = ++this.index;
-    this._toastInstance.add(toast);
-    this.startTimeout(toast.id);
+    this._toastInstance.addToast(toast);
+    setTimeout(() => {
+      this.clearToast(toast.id);
+    }, this._config.duration);
   }
 
   /**
    * clear specific toast
    * @param toastId
    */
-  clear(toastId: number) {
+  private clearToast(toastId: number) {
     if (this._toastInstance) {
-      this._toastInstance.remove(toastId);
+      this._toastInstance.removeToast(toastId);
       setTimeout(() => {
-        if (!this._toastInstance.hasToast()) { this.dispose(); }
+        if (!this._toastInstance.hasToast()) { this._disposeToast(); }
       }, 250);
 
     }
@@ -105,23 +116,14 @@ export class Md2Toast {
   /**
    * clear all toasts
    */
-  clearAll() {
+  clearAllToasts() {
     if (this._toastInstance) {
-      this._toastInstance.removeAll();
+      this._toastInstance.removeAllToasts();
       setTimeout(() => {
-        if (!this._toastInstance.hasToast()) { this.dispose(); }
+        if (!this._toastInstance.hasToast()) { this._disposeToast(); }
       }, 250);
 
     }
-  }
-
-  /**
-   * dispose all toasts
-   */
-  dispose() {
-    this._overlayRef.dispose();
-    this._overlayRef = null;
-    this._toastInstance = null;
   }
 
 }
@@ -140,7 +142,7 @@ export class Md2ToastComponent {
    * add toast
    * @param toast toast object with all parameters
    */
-  add(toast: Toast) {
+  addToast(toast: Toast) {
     setTimeout(() => {
       toast.isVisible = true;
     }, 1);
@@ -157,7 +159,7 @@ export class Md2ToastComponent {
    * remove toast
    * @param toastId number of toast id
    */
-  remove(toastId: number) {
+  removeToast(toastId: number) {
     this.toasts.forEach((t: any) => { if (t.id === toastId) { t.isVisible = false; } });
     setTimeout(() => {
       this.toasts = this.toasts.filter((toast) => { return toast.id !== toastId; });
@@ -168,7 +170,7 @@ export class Md2ToastComponent {
    * remove all toasts
    * @param toastId number of toast id
    */
-  removeAll() {
+  removeAllToasts() {
     this.toasts.forEach((t: any) => { t.isVisible = false; });
     setTimeout(() => {
       this.toasts = [];

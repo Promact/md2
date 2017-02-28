@@ -106,6 +106,7 @@ export var Md2DataTable = (function () {
         }
         if (this.isDataChanged) {
             this.fillData();
+            this.diff.diff(this.md2Data);
             this.isDataChanged = false;
         }
     };
@@ -168,15 +169,13 @@ export var Md2DataTable = (function () {
         var _this = this;
         var offset = (this.activePage - 1) * this.rowsPerPage;
         var data = this.md2Data;
+        var sortInt = this.sortOrder === 'desc' ? -1 : 1;
         if (this.sortBy) {
             data = data.sort(function (a, b) {
                 var x = _this.caseInsensitiveIteratee(a);
                 var y = _this.caseInsensitiveIteratee(b);
-                return (x > y) ? 1 : (y > x) ? -1 : 0;
+                return ((x > y) ? 1 : (y > x) ? -1 : 0) * sortInt;
             });
-        }
-        if (this.sortOrder === 'desc') {
-            data.reverse();
         }
         this.data = data.slice(offset, offset + this.rowsPerPage);
     };

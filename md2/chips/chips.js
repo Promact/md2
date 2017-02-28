@@ -35,7 +35,6 @@ export var Md2Chips = (function () {
     function Md2Chips(elementRef) {
         this.elementRef = elementRef;
         this.tabindex = 0;
-        this.addOnBlur = true;
         this.addOnComma = true;
         this.addOnEnter = true;
         this.addOnPaste = true;
@@ -50,8 +49,9 @@ export var Md2Chips = (function () {
         this.maxChips = 10000;
         this.id = 'md2-chips-' + (++nextId);
         this.autocompleteItemText = 'text';
+        this.autocompleteItemValue = 'value';
         this.textKey = 'text';
-        this.valueKey = null;
+        this.valueKey = 'value';
         this.change = new EventEmitter();
         this.onTouchedCallback = noop;
         this.onChangeCallback = noop;
@@ -108,7 +108,7 @@ export var Md2Chips = (function () {
     });
     Md2Chips.prototype.changeAutocomplete = function (value) {
         if (value) {
-            var objText = value[this.autocompleteItemText];
+            var objText = value.value;
             this.addNewChip(objText);
             this.item = null;
         }
@@ -193,6 +193,7 @@ export var Md2Chips = (function () {
     };
     Md2Chips.prototype.inputBlurred = function (event) {
         this.inputFocused = false;
+        this.addNewChip(this.inputValue);
     };
     Md2Chips.prototype.inputFocus = function (event) {
         if (this.readonly) {
@@ -241,7 +242,7 @@ export var Md2Chips = (function () {
         if (chipString) {
             var isExist = void 0;
             if (this.isObject) {
-                isExist = this.chipItemList.filter(function (chip) { return chip.text === chipString; });
+                isExist = this.chipItemList.filter(function (chip) { return chip.text === chipString.text; });
                 return isExist.length ? false : true;
             }
             else if (this.chipItemList.indexOf(chipString) === -1) {
@@ -260,7 +261,8 @@ export var Md2Chips = (function () {
                 if (this.chipItemList.length < this.maxChips) {
                     if (this.isObject && this.chipItemList.length > 0) {
                         var a = {};
-                        a[this.textKey] = chips;
+                        a[this.textKey] = chips[this.autocompleteItemText];
+                        a[this.valueKey] = chips[this.autocompleteItemValue];
                         this.chipItemList.push(new Chip(a, this.textKey, this.valueKey));
                     }
                     else {
@@ -315,12 +317,12 @@ export var Md2Chips = (function () {
     Md2Chips.prototype.updateValue = function () {
         this._value = new Array();
         for (var i = 0; i < this.chipItemList.length; i++) {
-            if (this.isObject) {
-                this._value.push(this.chipItemList[i].value);
-            }
-            else {
-                this._value.push(this.chipItemList[i]);
-            }
+            //if (this.isObject) {
+            //  this._value.push(this.chipItemList[i].value);
+            //} else {
+            //  this._value.push(this.chipItemList[i]);
+            //}
+            this._value.push(this.chipItemList[i]);
         }
         this.onChangeCallback(this._value);
         this.change.emit(this._value);
@@ -349,10 +351,6 @@ export var Md2Chips = (function () {
         Input(), 
         __metadata('design:type', Number)
     ], Md2Chips.prototype, "tabindex", void 0);
-    __decorate([
-        Input(), 
-        __metadata('design:type', Boolean)
-    ], Md2Chips.prototype, "addOnBlur", void 0);
     __decorate([
         Input(), 
         __metadata('design:type', Boolean)
@@ -418,6 +416,10 @@ export var Md2Chips = (function () {
         __metadata('design:type', String)
     ], Md2Chips.prototype, "autocompleteItemText", void 0);
     __decorate([
+        Input('autocomplete-item-value'), 
+        __metadata('design:type', String)
+    ], Md2Chips.prototype, "autocompleteItemValue", void 0);
+    __decorate([
         Input('item-text'), 
         __metadata('design:type', String)
     ], Md2Chips.prototype, "textKey", void 0);
@@ -446,8 +448,8 @@ export var Md2Chips = (function () {
     Md2Chips = __decorate([
         Component({
             selector: 'md2-chips',
-            template: "<div class=\"md2-chips-container\" [class.md2-chip-disabled]=\"readonly\"> <span *ngFor=\"let chip of chipItemList; let i = index\" class=\"md2-chip\" [class.active]=\"selectedChip === i\"> <span *ngIf=\"isObject\">{{chip.text}}</span> <span *ngIf=\"!isObject\">{{chip}}</span> <span [innerHTML]=\"templateHtmlString\"></span> <svg (click)=\"removeSelectedChip(i)\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *ngIf=\"isRemovable\"> <path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\" /> </svg> </span> <ng-content select=\".md2-template\"></ng-content> <form #chipInputForm=\"ngForm\" class=\"chip-input-form\" *ngIf=\"!readonly\"> <input *ngIf=\"!isAutoComplete\" class=\"chip-input\" type=\"text\" [(ngModel)]=\"inputValue\" name=\"chipInput\" [placeholder]=\"placeholder\" (paste)=\"inputPaste($event)\" (keydown)=\"inputChanged($event)\" (blur)=\"inputBlurred($event)\" (focus)=\"inputFocus()\" /> <div *ngIf=\"isAutoComplete\"> <md2-autocomplete [items]=\"autocompleteDataList\" [item-text]=\"autocompleteItemText\" [(ngModel)]=\"item\" name=\"autocomplete\" (textChange)=\"valueupdate($event)\" (change)=\"changeAutocomplete($event)\" [placeholder]=\"placeholder\" (keydown)=\"inputChanged($event)\"> </md2-autocomplete> </div> </form> </div> <div class=\"chip-error\" *ngIf=\"this.chipItemList.length<this.minChips\">Minimum {{minChips}} chip required.</div> <div class=\"chip-error\" *ngIf=\"this.chipItemList.length>=this.maxChips\">You are able to add Maximum {{maxChips}} chip.</div> ",
-            styles: [".template-content { display: inline; } md2-chips { outline: none; } md2-chips .md2-chips-container { display: block; box-shadow: 0 1px #ccc; padding: 5px 0; margin-bottom: 10px; min-height: 50px; box-sizing: border-box; clear: both; } md2-chips .md2-chips-container::after { clear: both; content: ''; display: table; } md2-chips.chip-input-focus .md2-chips-container { box-shadow: 0 2px #0d8bff; } md2-chips .md2-chip-disabled { cursor: default; } md2-chips md2-autocomplete { margin: 0; } md2-chips .md2-autocomplete-wrap { border-bottom: 0 !important; } .md2-chip { font-size: 14px; position: relative; cursor: default; border-radius: 16px; display: block; height: 32px; line-height: 32px; margin: 8px 8px 0 0; padding: 0 28px 0 12px; float: left; box-sizing: border-box; max-width: 100%; background: #e0e0e0; color: #424242; white-space: nowrap; overflow: hidden; -ms-text-overflow: ellipsis; text-overflow: ellipsis; } .md2-chip.active { color: white; background: #0d8bff; } .md2-chip.active svg { color: rgba(255, 255, 255, 0.87); } .md2-chip svg { position: absolute; top: 4px; right: 4px; cursor: pointer; display: inline-block; overflow: hidden; fill: currentColor; color: rgba(0, 0, 0, 0.54); } .md2-template { display: none; } .chip-input-disabled { pointer-events: none; cursor: default; } .chip-input-form { display: inline-block; height: 32px; margin: 8px 8px 0 0; } .chip-remove { cursor: pointer; display: inline-block; padding: 0 3px; color: #616161; font-size: 30px; vertical-align: top; line-height: 21px; font-family: serif; } .chip-input { display: inline-block; width: auto; border: 0; outline: none; height: 32px; line-height: 32px; font-size: 16px; } .chip-error { font-size: 13px; color: #fd0f0f; } .md2-chips-container .chip-input-form .md2-autocomplete-wrap { border-bottom: 0; } .md2-chips-container .md2-autocomplete-wrap.is-focused .md2-autocomplete-placeholder { display: none; } .md2-chips-container .md2-autocomplete-wrap .md2-autocomplete-placeholder.has-value { display: none; } .md2-chips-container .md2-autocomplete-wrap svg { display: none; } .md2-chips-container .md2-autocomplete-wrap .md2-autocomplete-input { height: 32px; font-size: 16px; } /*# sourceMappingURL=chips.css.map */ "],
+            template: "<div class=\"md2-chips-container\" [class.md2-chip-disabled]=\"readonly\" [class.md2-chip-remove]=\"!isRemovable\">    <span *ngFor=\"let chip of chipItemList; let i = index\" class=\"md2-chip\" [class.active]=\"selectedChip === i\"> <span *ngIf=\"isObject\">{{chip.text}}</span> <span *ngIf=\"!isObject\">{{chip}}</span> <span [innerHTML]=\"templateHtmlString\"></span> <svg (click)=\"removeSelectedChip(i)\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *ngIf=\"isRemovable\"> <path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\" /> </svg> </span> <ng-content select=\".md2-template\"></ng-content> <form #chipInputForm=\"ngForm\" class=\"chip-input-form\" *ngIf=\"!readonly\"> <input *ngIf=\"!isAutoComplete\" class=\"chip-input\" type=\"text\" [(ngModel)]=\"inputValue\" name=\"chipInput\" [placeholder]=\"placeholder\" (paste)=\"inputPaste($event)\" (keydown)=\"inputChanged($event)\" (blur)=\"inputBlurred($event)\" (focus)=\"inputFocus()\" /> <div *ngIf=\"isAutoComplete\"> <md2-autocomplete [items]=\"autocompleteDataList\" [item-text]=\"autocompleteItemText\" [(ngModel)]=\"item\" name=\"autocomplete\" (textChange)=\"valueupdate($event)\" (change)=\"changeAutocomplete($event)\" [placeholder]=\"placeholder\" (keydown)=\"inputChanged($event)\"> </md2-autocomplete> </div> </form> </div> <div class=\"chip-error\" *ngIf=\"this.chipItemList.length<this.minChips\">Minimum {{minChips}} chip required.</div> <div class=\"chip-error\" *ngIf=\"this.chipItemList.length>=this.maxChips\">You are able to add Maximum {{maxChips}} chip.</div> ",
+            styles: [".template-content { display: inline; } md2-chips { outline: none; } md2-chips .md2-chips-container { display: block; box-shadow: 0 1px #ccc; padding: 5px 0; margin-bottom: 10px; min-height: 50px; box-sizing: border-box; clear: both; } md2-chips .md2-chips-container::after { clear: both; content: ''; display: table; } md2-chips.chip-input-focus .md2-chips-container { box-shadow: 0 2px #0d8bff; } md2-chips .md2-chip-disabled { cursor: default; } md2-chips md2-autocomplete { margin: 0; } md2-chips .md2-autocomplete-wrap { border-bottom: 0 !important; } .md2-chip-remove .md2-chip { padding: 0 12px; } .md2-chip { font-size: 14px; position: relative; cursor: default; border-radius: 16px; display: block; height: 32px; line-height: 32px; margin: 8px 8px 0 0; padding: 0 28px 0 12px; float: left; box-sizing: border-box; max-width: 100%; background: #e0e0e0; color: #424242; white-space: nowrap; overflow: hidden; -ms-text-overflow: ellipsis; text-overflow: ellipsis; } .md2-chip.active { color: white; background: #0d8bff; } .md2-chip.active svg { color: rgba(255, 255, 255, 0.87); } .md2-chip svg { position: absolute; top: 4px; right: 4px; cursor: pointer; display: inline-block; overflow: hidden; fill: currentColor; color: rgba(0, 0, 0, 0.54); } .md2-template { display: none; } .chip-input-disabled { pointer-events: none; cursor: default; } .chip-input-form { display: inline-block; height: 32px; margin: 8px 8px 0 0; } .chip-remove { cursor: pointer; display: inline-block; padding: 0 3px; color: #616161; font-size: 30px; vertical-align: top; line-height: 21px; font-family: serif; } .chip-input { display: inline-block; width: auto; border: 0; outline: none; height: 32px; line-height: 32px; font-size: 16px; } .chip-error { font-size: 13px; color: #fd0f0f; } .md2-chips-container .chip-input-form .md2-autocomplete-wrap { border-bottom: 0; } .md2-chips-container .md2-autocomplete-wrap.is-focused .md2-autocomplete-placeholder { display: none; } .md2-chips-container .md2-autocomplete-wrap .md2-autocomplete-placeholder.has-value { display: none; } .md2-chips-container .md2-autocomplete-wrap svg { display: none; } .md2-chips-container .md2-autocomplete-wrap .md2-autocomplete-input { height: 32px; font-size: 16px; } /*# sourceMappingURL=chips.css.map */ "],
             providers: [MD2_CHIPS_CONTROL_VALUE_ACCESSOR],
             host: {
                 'role': 'chips',

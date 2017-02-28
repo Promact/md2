@@ -1,4 +1,4 @@
-import { ModuleWithProviders } from '@angular/core';
+import { ViewContainerRef, ModuleWithProviders } from '@angular/core';
 import { Overlay, OverlayRef } from '../core';
 export declare class Toast {
     message: string;
@@ -8,6 +8,7 @@ export declare class Toast {
 }
 export declare class Md2ToastConfig {
     duration: number;
+    viewContainerRef?: ViewContainerRef;
 }
 export declare class Md2Toast {
     private _overlay;
@@ -26,29 +27,23 @@ export declare class Md2Toast {
      * @param toastObj string or object with message and other properties of toast
      */
     show(message: string, duration?: number): void;
-    /**
-     * toast timeout
-     * @param toastId
-     */
-    startTimeout(toastId: number): void;
-    /**
-     * setup toast
-     * @param toast
-     */
-    setupToast(toast: Toast): void;
+    /** Create the toast to display */
+    private _createToast();
+    /** Create the overlay config and position strategy */
+    private _createOverlay();
+    /** Disposes the current toast and the overlay it is attached to */
+    private _disposeToast();
+    /** Updates the toast message and repositions the overlay according to the new message length */
+    private _setToastMessage(toast);
     /**
      * clear specific toast
      * @param toastId
      */
-    clear(toastId: number): void;
+    private clearToast(toastId);
     /**
      * clear all toasts
      */
-    clearAll(): void;
-    /**
-     * dispose all toasts
-     */
-    dispose(): void;
+    clearAllToasts(): void;
 }
 export declare class Md2ToastComponent {
     toasts: Toast[];
@@ -57,17 +52,17 @@ export declare class Md2ToastComponent {
      * add toast
      * @param toast toast object with all parameters
      */
-    add(toast: Toast): void;
+    addToast(toast: Toast): void;
     /**
      * remove toast
      * @param toastId number of toast id
      */
-    remove(toastId: number): void;
+    removeToast(toastId: number): void;
     /**
      * remove all toasts
      * @param toastId number of toast id
      */
-    removeAll(): void;
+    removeAllToasts(): void;
     /**
      * check has any toast
      * @return boolean

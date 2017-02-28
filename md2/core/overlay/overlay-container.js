@@ -15,6 +15,23 @@ import { Injectable, Optional, SkipSelf } from '@angular/core';
 export var OverlayContainer = (function () {
     function OverlayContainer() {
     }
+    Object.defineProperty(OverlayContainer.prototype, "themeClass", {
+        /**
+         * Base theme to be applied to all overlay-based components.
+         */
+        get: function () { return this._themeClass; },
+        set: function (value) {
+            if (this._containerElement) {
+                this._containerElement.classList.remove(this._themeClass);
+                if (value) {
+                    this._containerElement.classList.add(value);
+                }
+            }
+            this._themeClass = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
     /**
      * This method returns the overlay container element.  It will lazily
      * create the element the first time  it is called to facilitate using
@@ -34,6 +51,9 @@ export var OverlayContainer = (function () {
     OverlayContainer.prototype._createContainer = function () {
         var container = document.createElement('div');
         container.classList.add('cdk-overlay-container');
+        if (this._themeClass) {
+            container.classList.add(this._themeClass);
+        }
         document.body.appendChild(container);
         this._containerElement = container;
     };

@@ -11,21 +11,41 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var DatepickerDemo = (function () {
     function DatepickerDemo() {
-        this.disabled = true;
-        this.date = new Date(2016, 9, 15);
-        this.time = new Date(1, 1, 1, 12, 10);
-        this.datetime = new Date(2016, 9, 15, 12, 10);
-        this.minDate = new Date(2016, 7, 15);
-        this.maxDate = new Date(2016, 12, 15);
+        this.isRequired = false;
+        this.isDisabled = false;
+        this.isOpenOnFocus = false;
+        this.isOpen = false;
+        this.type = 'date';
+        this.types = [
+            { text: 'Date', value: 'date' },
+            { text: 'Time', value: 'time' },
+            { text: 'Date Time', value: 'datetime' }];
+        this.date = null;
+        this.minDate = null;
+        this.maxDate = null;
     }
-    DatepickerDemo.prototype.handleChange = function (value) {
-        console.log('Changed data: ', value);
+    DatepickerDemo.prototype.openDatepicker = function () {
+        var _this = this;
+        this.isOpen = true;
+        setTimeout(function () {
+            _this.isOpen = false;
+        }, 1000);
+    };
+    DatepickerDemo.prototype.setDate = function () {
+        this.date = new Date();
+    };
+    DatepickerDemo.prototype.setDateRange = function () {
+        this.minDate = new Date();
+        this.minDate.setMonth(this.minDate.getMonth() - 3);
+        this.maxDate = new Date();
+        this.maxDate.setMonth(this.maxDate.getMonth() + 3);
     };
     DatepickerDemo = __decorate([
         core_1.Component({
             moduleId: module.id,
             selector: 'datepicker-demo',
             templateUrl: 'datepicker-demo.html',
+            styles: [" .type { width: 150px; padding: 16px 0; } "]
         }), 
         __metadata('design:paramtypes', [])
     ], DatepickerDemo);

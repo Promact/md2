@@ -19,6 +19,7 @@ export var Toast = (function () {
 export var Md2ToastConfig = (function () {
     function Md2ToastConfig() {
         this.duration = 3000;
+        this.viewContainerRef = null;
     }
     return Md2ToastConfig;
 }());
@@ -40,56 +41,63 @@ export var Md2Toast = (function () {
      * @param toastObj string or object with message and other properties of toast
      */
     Md2Toast.prototype.show = function (message, duration) {
-        var toast;
-        toast = new Toast(message);
+        if (!message || !message.trim()) {
+            return;
+        }
         if (duration) {
             this._config.duration = duration;
         }
+        var toast;
+        toast = new Toast(message);
         if (toast) {
             if (!this._toastInstance) {
-                var strategy = this._overlay.position().global().top('0').right('0');
-                var config = new OverlayState();
-                config.positionStrategy = strategy;
-                this._overlayRef = this._overlay.create(config);
-                var portal = new ComponentPortal(Md2ToastComponent);
-                this._toastInstance = this._overlayRef.attach(portal).instance;
-                this.setupToast(toast);
+                this._createToast();
             }
-            else {
-                this.setupToast(toast);
-            }
+            this._setToastMessage(toast);
         }
     };
-    /**
-     * toast timeout
-     * @param toastId
-     */
-    Md2Toast.prototype.startTimeout = function (toastId) {
-        var _this = this;
-        setTimeout(function () {
-            _this.clear(toastId);
-        }, this._config.duration);
+    /** Create the toast to display */
+    Md2Toast.prototype._createToast = function () {
+        this._createOverlay();
+        var portal = new ComponentPortal(Md2ToastComponent, this._config.viewContainerRef);
+        this._toastInstance = this._overlayRef.attach(portal).instance;
     };
-    /**
-     * setup toast
-     * @param toast
-     */
-    Md2Toast.prototype.setupToast = function (toast) {
+    /** Create the overlay config and position strategy */
+    Md2Toast.prototype._createOverlay = function () {
+        if (!this._overlayRef) {
+            var config = new OverlayState();
+            config.positionStrategy = this._overlay.position()
+                .global()
+                .top('0').right('0');
+            this._overlayRef = this._overlay.create(config);
+        }
+    };
+    /** Disposes the current toast and the overlay it is attached to */
+    Md2Toast.prototype._disposeToast = function () {
+        this._overlayRef.dispose();
+        this._overlayRef = null;
+        this._toastInstance = null;
+    };
+    /** Updates the toast message and repositions the overlay according to the new message length */
+    Md2Toast.prototype._setToastMessage = function (toast) {
+        var _this = this;
         toast.id = ++this.index;
-        this._toastInstance.add(toast);
-        this.startTimeout(toast.id);
+        this._toastInstance.addToast(toast);
+        setTimeout(function () {
+            _this.clearToast(toast.id);
+        }, this._config.duration);
     };
     /**
      * clear specific toast
      * @param toastId
      */
-    Md2Toast.prototype.clear = function (toastId) {
+    Md2Toast.prototype.clearToast = function (toastId) {
         var _this = this;
         if (this._toastInstance) {
-            this._toastInstance.remove(toastId);
+            this._toastInstance.removeToast(toastId);
             setTimeout(function () {
                 if (!_this._toastInstance.hasToast()) {
-                    _this.dispose();
+                    _this._disposeToast();
                 }
             }, 250);
         }
@@ -97,24 +105,16 @@ export var Md2Toast = (function () {
     /**
      * clear all toasts
      */
-    Md2Toast.prototype.clearAll = function () {
+    Md2Toast.prototype.clearAllToasts = function () {
         var _this = this;
         if (this._toastInstance) {
-            this._toastInstance.removeAll();
+            this._toastInstance.removeAllToasts();
             setTimeout(function () {
                 if (!_this._toastInstance.hasToast()) {
-                    _this.dispose();
+                    _this._disposeToast();
                 }
             }, 250);
         }
-    };
-    /**
-     * dispose all toasts
-     */
-    Md2Toast.prototype.dispose = function () {
-        this._overlayRef.dispose();
-        this._overlayRef = null;
-        this._toastInstance = null;
     };
     Md2Toast = __decorate([
         Injectable(), 
@@ -131,7 +131,7 @@ export var Md2ToastComponent = (function () {
      * add toast
      * @param toast toast object with all parameters
      */
-    Md2ToastComponent.prototype.add = function (toast) {
+    Md2ToastComponent.prototype.addToast = function (toast) {
         var _this = this;
         setTimeout(function () {
             toast.isVisible = true;
@@ -148,7 +148,7 @@ export var Md2ToastComponent = (function () {
      * remove toast
      * @param toastId number of toast id
      */
-    Md2ToastComponent.prototype.remove = function (toastId) {
+    Md2ToastComponent.prototype.removeToast = function (toastId) {
         var _this = this;
         this.toasts.forEach(function (t) { if (t.id === toastId) {
             t.isVisible = false;
@@ -161,7 +161,7 @@ export var Md2ToastComponent = (function () {
      * remove all toasts
      * @param toastId number of toast id
      */
-    Md2ToastComponent.prototype.removeAll = function () {
+    Md2ToastComponent.prototype.removeAllToasts = function () {
         var _this = this;
         this.toasts.forEach(function (t) { t.isVisible = false; });
         setTimeout(function () {

@@ -78,6 +78,7 @@ export declare class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
     alphaColor: string;
     hexText: string;
     format: number;
+    backColor: boolean;
     private _overlayRef;
     private _backdropSubscription;
     private _positionSubscription;
@@ -91,6 +92,7 @@ export declare class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
     /** The placeholder displayed in the trigger of the select. */
     private _placeholder;
     private fontColor;
+    private backAreaColor;
     _onChange: (value: any) => void;
     _onTouched: () => void;
     color: string;

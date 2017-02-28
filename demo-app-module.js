@@ -25,7 +25,6 @@ var data_table_demo_1 = require('./data-table/data-table-demo');
 var datepicker_demo_1 = require('./datepicker/datepicker-demo');
 var dialog_demo_1 = require('./dialog/dialog-demo');
 var menu_demo_1 = require('./menu/menu-demo');
-var multiselect_demo_1 = require('./multiselect/multiselect-demo');
 var select_demo_1 = require('./select/select-demo');
 var tabs_demo_1 = require('./tabs/tabs-demo');
 var tags_demo_1 = require('./tags/tags-demo');
@@ -61,7 +60,6 @@ var DemoAppModule = (function () {
                 datepicker_demo_1.DatepickerDemo,
                 dialog_demo_1.DialogDemo,
                 menu_demo_1.MenuDemo,
-                multiselect_demo_1.MultiselectDemo,
                 select_demo_1.SelectDemo,
                 tabs_demo_1.TabsDemo,
                 tags_demo_1.TagsDemo,

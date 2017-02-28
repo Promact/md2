@@ -9,7 +9,6 @@ export declare const MD2_CHIPS_CONTROL_VALUE_ACCESSOR: any;
 export declare class Md2Chips implements ControlValueAccessor, AfterContentInit {
     private elementRef;
     tabindex: number;
-    addOnBlur: boolean;
     addOnComma: boolean;
     addOnEnter: boolean;
     addOnPaste: boolean;
@@ -26,6 +25,7 @@ export declare class Md2Chips implements ControlValueAccessor, AfterContentInit 
     maxChips: number;
     id: string;
     autocompleteItemText: string;
+    autocompleteItemValue: string;
     textKey: string;
     valueKey: string;
     change: EventEmitter<any>;

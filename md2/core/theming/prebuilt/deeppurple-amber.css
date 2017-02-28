@@ -3,6 +3,7 @@
  * to Microsoft browsers. Chrome can be included by checking for the `html[hc]`
  * attribute, however Chrome handles high contrast differently.
  */
+/* Theme for the ripple elements.*/
 /** The mixins below are shared between md-menu and md-select */
 /**
  * This mixin adds the correct panel transform styles based
@@ -102,7 +103,6 @@
   position: absolute;
   border-radius: 50%;
   pointer-events: none;
-  background-color: rgba(0, 0, 0, 0.1);
   transition: opacity, transform 0ms cubic-bezier(0, 0, 0.2, 1);
   transform: scale(0); }
 
@@ -116,13 +116,15 @@
   padding: 0 16px;
   font-size: 16px;
   font-family: Roboto, "Helvetica Neue", sans-serif;
-  text-align: start;
+  text-align: left;
   text-decoration: none;
   position: relative;
   cursor: pointer;
   outline: none; }
   .mat-option[disabled] {
     cursor: default; }
+  [dir='rtl'] .mat-option {
+    text-align: right; }
   .mat-option .mat-icon {
     margin-right: 16px; }
     [dir='rtl'] .mat-option .mat-icon {
@@ -196,6 +198,9 @@
 .cdk-overlay-transparent-backdrop {
   background: none; }
 
+.mat-ripple-element {
+  background-color: rgba(0, 0, 0, 0.1); }
+
 .mat-option:hover:not(.mat-option-disabled), .mat-option:focus:not(.mat-option-disabled) {
   background: rgba(0, 0, 0, 0.04); }
 
@@ -210,8 +215,10 @@
 .mat-option.mat-option-disabled {
   color: rgba(0, 0, 0, 0.38); }
 
-.mat-pseudo-checkbox::after {
-  color: #fafafa; }
+.mat-pseudo-checkbox {
+  color: rgba(0, 0, 0, 0.54); }
+  .mat-pseudo-checkbox::after {
+    color: #fafafa; }
 
 .mat-pseudo-checkbox-checked, .mat-pseudo-checkbox-indeterminate {
   border: none; }

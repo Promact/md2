@@ -11,11 +11,9 @@
     </svg>
   </div>
   <div class="md2-datepicker-input">
-    <span class="md2-datepicker-placeholder" [class.has-value]="date"> {{ placeholder }} </span>
-    <span class="md2-datepicker-input-text">{{_viewValue}}</span>
-    <svg width="24" height="24" viewBox="0 0 24 24">
-      <path d="M7 10l5 5 5-5z" />
-    </svg>
+    <span class="md2-datepicker-placeholder" [class.md2-floating-placeholder]="value">{{ placeholder }}</span>
+    <span class="md2-datepicker-value">{{ value | date:format }}</span>
+    <span class="md2-datepicker-arrow"></span>
   </div>
 </div>
 <template portal>
@@ -26,23 +24,22 @@
       <div class="md2-datepicker-header-year"
            [class.active]="_isYearsVisible"
            [class.hidden]="type==='time'"
-           (click)="_showYear()">{{_viewDay.year}}</div>
+           (click)="_showYear()">{{ date | date: 'y' }}</div>
       <div class="md2-datepicker-header-date-time">
         <span class="md2-datepicker-header-date"
               [class.active]="_isCalendarVisible && !_isYearsVisible"
               [class.hidden]="type==='time'"
               (click)="_showCalendar()">
-          {{_viewDay.day.substr(0, 3)}},
-          {{_viewDay.month.substr(0, 3)}}&nbsp;{{_viewDay.date}}
+          {{ date | date: 'EEE, MMM dd' }}
         </span>
         <span class="md2-datepicker-header-time"
               [class.active]="!_isCalendarVisible"
               [class.hidden]="type==='date'">
           <span class="md2-datepicker-header-hour"
-                [class.active]="_isHoursVisible"
-                (click)="_toggleHours(true)">{{_viewDay.hour}}</span>:<span class="md2-datepicker-header-minute"
-                                                                            [class.active]="!_isHoursVisible"
-                                                                            (click)="_toggleHours(false)">{{_viewDay.minute}}</span>
+                [class.active]="_clockView === 'hour'"
+                (click)="_toggleHours('hour')">{{ date.getHours() }}</span>:<span class="md2-datepicker-header-minute"
+                                                                                  [class.active]="_clockView === 'minute'"
+                                                                                  (click)="_toggleHours('minute')">{{ date.getMinutes() }}</span>
         </span>
       </div>
     </div>
@@ -52,7 +49,7 @@
           <div class="md2-calendar-years-content">
             <div *ngFor="let y of _years"
                  class="md2-calendar-year"
-                 [class.selected]="y === _viewDay.year"
+                 [class.selected]="y === date.getFullYear()"
                  (click)="_setYear(y)">{{y}}</div>
           </div>
         </div>
@@ -65,7 +62,7 @@
                 <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
               </svg>
             </div>
-            <div class="md2-calendar-month-year">{{_viewDay.month}} {{_viewDay.year}}</div>
+            <div class="md2-calendar-month-year">{{ date | date: 'MMMM y' }}</div>
             <div class="md2-button"
                  [class.disabled]="!_isAfterMonth()"
                  (click)="_isAfterMonth() && _updateMonth(1)">
@@ -81,8 +78,8 @@
                 <td *ngFor="let d of w">
                   <div class="md2-calendar-day"
                        [class.today]="d.today"
-                       [class.focus]="_dateUtil.isSameDay(displayDate, d.date)"
-                       [class.selected]="_dateUtil.isSameDay(selected, d.date)"
+                       [class.focus]="_locale.isSameDay(date, d.date)"
+                       [class.selected]="_locale.isSameDay(selected, d.date)"
                        [class.disabled]="d.disabled"
                        [class.prev-month]="d.calMonth===_prevMonth"
                        [class.curr-month]="d.calMonth===_currMonth"
@@ -94,33 +91,12 @@
           </table>
         </div>
       </div>
-      <div class="md2-datepicker-clock" [class.active]="!_isCalendarVisible">
-        <!-- (mousedown)="_handleMousedown($event)"-->
-        <div class="md2-clock-hand">
-          <svg class="md2-clock-svg" width="240" height="240">
-            <g transform="translate(120,120)">
-              <line x1="0" y1="0" [attr.x2]="_clock.hand.x" [attr.y2]="_clock.hand.y"></line>
-              <circle class="md2-clock-bg" r="17" [attr.cx]="_clock.hand.x" [attr.cy]="_clock.hand.y"></circle>
-              <circle class="md2-clock-fg" r="3.5" [attr.cx]="_clock.hand.x" [attr.cy]="_clock.hand.y"></circle>
-              <circle class="md2-clock-center" cx="0" cy="0" r="2"></circle>
-            </g>
-          </svg>
-        </div>
-        <div class="md2-clock-hours" [class.active]="_isHoursVisible">
-          <div *ngFor="let h of _hours"
-               class="md2-clock-hour"
-               [style.top.px]="h.top"
-               [style.left.px]="h.left"
-               (click)="_onClickHour($event,h.hour)">{{h.hour}}</div>
-        </div>
-        <div class="md2-clock-minutes" [class.active]="!_isHoursVisible">
-          <div *ngFor="let m of _minutes"
-               class="md2-clock-minute"
-               [style.top.px]="m.top"
-               [style.left.px]="m.left"
-               (click)="_onClickMinute($event,m.minute)">{{m.minute}}</div>
-        </div>
-      </div>
+      <md2-clock [class.active]="!_isCalendarVisible"
+                 [time]="time"
+                 [view]="_clockView"
+                 (timeChange)="_onTimeChange($event)"
+                 (onHourChange)="_onHourChange($event)"
+                 (onMinuteChange)="_onMinuteChange($event)"></md2-clock>
       <div class="md2-datepicker-actions">
         <div class="md2-button" (click)="close()">Cancel</div>
         <div class="md2-button" (click)="_onClickOk()">Ok</div>

@@ -42,7 +42,6 @@ var DemoApp = (function () {
             { name: 'Datepicker', route: 'datepicker' },
             { name: 'Dialog', route: 'dialog' },
             { name: 'Menu', route: 'menu' },
-            { name: 'Multiselect', route: 'multiselect' },
             { name: 'Select', route: 'select' },
             { name: 'Tabs', route: 'tabs' },
             { name: 'Tags', route: 'tags' },

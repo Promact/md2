@@ -11,6 +11,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var AutocompleteDemo = (function () {
     function AutocompleteDemo() {
+        this.isRequired = false;
+        this.isDisabled = false;
+        this.item = null;
         this.items = [
             { name: 'Vadodara', value: '1' },
             { name: 'Rajkot', value: '2' },
@@ -20,9 +23,6 @@ var AutocompleteDemo = (function () {
             { name: 'Goa', value: '6' }
         ];
     }
-    AutocompleteDemo.prototype.handleChange = function (value) {
-        console.log('Changed data: ', value);
-    };
     AutocompleteDemo = __decorate([
         core_1.Component({
             moduleId: module.id,

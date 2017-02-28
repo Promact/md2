@@ -33,7 +33,7 @@ export var MdRipple = (function () {
             this._rippleRenderer.setTriggerElement(this.trigger);
         }
         this._rippleRenderer.rippleDisabled = this.disabled;
-        this._updateRippleConfig();
+        this._rippleRenderer.rippleConfig = this.rippleConfig;
     };
     MdRipple.prototype.ngOnDestroy = function () {
         // Set the trigger element to null to cleanup all listeners.
@@ -41,17 +41,22 @@ export var MdRipple = (function () {
     };
     /** Launches a manual ripple at the specified position. */
     MdRipple.prototype.launch = function (pageX, pageY, config) {
+        if (config === void 0) { config = this.rippleConfig; }
         this._rippleRenderer.fadeInRipple(pageX, pageY, config);
     };
-    /** Updates the ripple configuration with the input values. */
-    MdRipple.prototype._updateRippleConfig = function () {
-        this._rippleRenderer.rippleConfig = {
-            centered: this.centered,
-            speedFactor: this.speedFactor,
-            radius: this.radius,
-            color: this.color
-        };
-    };
+    Object.defineProperty(MdRipple.prototype, "rippleConfig", {
+        /** Ripple configuration from the directive's input values. */
+        get: function () {
+            return {
+                centered: this.centered,
+                speedFactor: this.speedFactor,
+                radius: this.radius,
+                color: this.color
+            };
+        },
+        enumerable: true,
+        configurable: true
+    });
     __decorate([
         Input('mdRippleTrigger'), 
         __metadata('design:type', Object)
@@ -83,6 +88,7 @@ export var MdRipple = (function () {
     MdRipple = __decorate([
         Directive({
             selector: '[md-ripple], [mat-ripple]',
+            exportAs: 'mdRipple',
             host: {
                 '[class.mat-ripple]': 'true',
                 '[class.mat-ripple-unbounded]': 'unbounded'

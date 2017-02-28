@@ -11,26 +11,22 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var SelectDemo = (function () {
     function SelectDemo() {
-        var _this = this;
+        this.isRequired = false;
+        this.isDisabled = false;
+        this.isDisabledMultiple = false;
+        this.item = null;
+        this.itemMultiple = null;
         this.items = [
-            { name: 'Vadodara', value: '1', disabled: false },
-            { name: 'Rajkot', value: '2', disabled: false },
-            { name: 'Delhi', value: '3', disabled: false },
-            { name: 'Chennai', value: '4', disabled: true },
-            { name: 'Mumbai', value: '5', disabled: false },
-            { name: 'Goa', value: '6', disabled: true }
+            { name: 'Vadodara', value: '1' },
+            { name: 'Rajkot', value: '2' },
+            { name: 'Delhi', value: '3' },
+            { name: 'Chennai', value: '4' },
+            { name: 'Mumbai', value: '5' },
+            { name: 'Goa', value: '6' }
         ];
-        this.multiItem = ['1', '3'];
-        this.item = '3';
-        setTimeout(function () {
-            _this.items.push({ name: 'Manjalpur', value: '7', disabled: false });
-            _this.items.push({ name: 'Sitabag', value: '8', disabled: false });
-            _this.items.push({ name: 'Vasna', value: '9', disabled: false });
-            _this.items.push({ name: 'Gorva', value: '10', disabled: false });
-        }, 3000);
     }
-    SelectDemo.prototype.handleChange = function (value) {
-        console.log('Changed data: ', value);
+    SelectDemo.prototype.setValue = function () {
+        this.itemMultiple = ['2'];
     };
     SelectDemo = __decorate([
         core_1.Component({

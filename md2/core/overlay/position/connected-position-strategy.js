@@ -110,8 +110,9 @@ export var ConnectedPositionStrategy = (function () {
         var originRect = this._origin.getBoundingClientRect();
         var overlayRect = this._pane.getBoundingClientRect();
         var viewportRect = this._viewportRuler.getViewportRect();
-        var originPoint = this._getOriginConnectionPoint(originRect, this._lastConnectedPosition);
-        var overlayPoint = this._getOverlayPoint(originPoint, overlayRect, viewportRect, this._lastConnectedPosition);
+        var lastPosition = this._lastConnectedPosition || this._preferredPositions[0];
+        var originPoint = this._getOriginConnectionPoint(originRect, lastPosition);
+        var overlayPoint = this._getOverlayPoint(originPoint, overlayRect, viewportRect, lastPosition);
         this._setElementPosition(this._pane, overlayPoint);
     };
     /**

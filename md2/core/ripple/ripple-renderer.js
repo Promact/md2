@@ -1,7 +1,7 @@
-/** Fade-in speed in pixels per second. Can be modified with the speedFactor option. */
-export var RIPPLE_SPEED_PX_PER_SECOND = 170;
-/** Fade-out speed for the ripples in milliseconds. This can't be modified by the speedFactor. */
-export var RIPPLE_FADE_OUT_DURATION = 600;
+/** Fade-in duration for the ripples. Can be modified with the speedFactor option. */
+export var RIPPLE_FADE_IN_DURATION = 450;
+/** Fade-out duration for the ripples in milliseconds. This can't be modified by the speedFactor. */
+export var RIPPLE_FADE_OUT_DURATION = 400;
 /**
  * Returns the distance from the point (x, y) to the furthest corner of a rectangle.
  */
@@ -56,7 +56,7 @@ export var RippleRenderer = (function () {
             pageY -= scrollPosition.top;
         }
         var radius = config.radius || distanceToFurthestCorner(pageX, pageY, containerRect);
-        var duration = 1 / (config.speedFactor || 1) * (radius / RIPPLE_SPEED_PX_PER_SECOND);
+        var duration = RIPPLE_FADE_IN_DURATION * (1 / (config.speedFactor || 1));
         var offsetX = pageX - containerRect.left;
         var offsetY = pageY - containerRect.top;
         var ripple = document.createElement('div');
@@ -67,7 +67,7 @@ export var RippleRenderer = (function () {
         ripple.style.width = radius * 2 + "px";
         // If the color is not set, the default CSS color will be used.
         ripple.style.backgroundColor = config.color;
-        ripple.style.transitionDuration = duration + "s";
+        ripple.style.transitionDuration = duration + "ms";
         this._containerElement.appendChild(ripple);
         // By default the browser does not recalculate the styles of dynamically created
         // ripple elements. This is critical because then the `scale` would not animate properly.
@@ -77,7 +77,7 @@ export var RippleRenderer = (function () {
         // if the mouse is released.
         this.runTimeoutOutsideZone(function () {
             _this._isMousedown ? _this._activeRipples.push(ripple) : _this.fadeOutRipple(ripple);
-        }, duration * 1000);
+        }, duration);
     };
     /** Fades out a ripple element. */
     RippleRenderer.prototype.fadeOutRipple = function (ripple) {
@@ -97,17 +97,18 @@ export var RippleRenderer = (function () {
         }
         if (element) {
             // If the element is not null, register all event listeners on the trigger element.
-            this._triggerEvents.forEach(function (fn, type) { return element.addEventListener(type, fn); });
+            this._ngZone.runOutsideAngular(function () {
+                _this._triggerEvents.forEach(function (fn, type) { return element.addEventListener(type, fn); });
+            });
         }
         this._triggerElement = element;
     };
     /** Listener being called on mousedown event. */
     RippleRenderer.prototype.onMousedown = function (event) {
-        if (this.rippleDisabled) {
-            return;
+        if (!this.rippleDisabled) {
+            this._isMousedown = true;
+            this.fadeInRipple(event.pageX, event.pageY, this.rippleConfig);
         }
-        this._isMousedown = true;
-        this.fadeInRipple(event.pageX, event.pageY, this.rippleConfig);
     };
     /** Listener being called on mouseup event. */
     RippleRenderer.prototype.onMouseup = function () {

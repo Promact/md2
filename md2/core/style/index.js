@@ -8,16 +8,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import { NgModule } from '@angular/core';
-import { CdkFocusClasses, FOCUS_ORIGIN_MONITOR_PROVIDER } from './focus-classes';
-export * from './focus-classes';
+import { CdkMonitorFocus, FOCUS_ORIGIN_MONITOR_PROVIDER } from './focus-origin-monitor';
+export * from './focus-origin-monitor';
 export * from './apply-transform';
 export var StyleModule = (function () {
     function StyleModule() {
     }
     StyleModule = __decorate([
         NgModule({
-            declarations: [CdkFocusClasses],
-            exports: [CdkFocusClasses],
+            declarations: [CdkMonitorFocus],
+            exports: [CdkMonitorFocus],
             providers: [FOCUS_ORIGIN_MONITOR_PROVIDER],
         }), 
         __metadata('design:paramtypes', [])

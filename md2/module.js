@@ -18,7 +18,6 @@ import { Md2DataTableModule } from './data-table/index';
 import { Md2DatepickerModule } from './datepicker/index';
 import { Md2DialogModule } from './dialog/index';
 import { Md2MenuModule } from './menu/index';
-import { Md2MultiselectModule } from './multiselect/index';
 import { Md2SelectModule } from './select/index';
 import { Md2TabsModule } from './tabs/index';
 import { Md2TagsModule } from './tags/index';
@@ -35,7 +34,6 @@ var MD2_MODULES = [
     Md2DatepickerModule,
     Md2DialogModule,
     Md2MenuModule,
-    Md2MultiselectModule,
     MdRippleModule,
     Md2SelectModule,
     Md2TabsModule,
@@ -66,7 +64,6 @@ export var Md2RootModule = (function () {
                 Md2DatepickerModule.forRoot(),
                 Md2DialogModule.forRoot(),
                 Md2MenuModule.forRoot(),
-                Md2MultiselectModule.forRoot(),
                 MdRippleModule.forRoot(),
                 Md2SelectModule.forRoot(),
                 Md2TabsModule.forRoot(),

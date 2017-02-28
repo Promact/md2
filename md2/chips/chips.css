@@ -24,6 +24,9 @@ md2-chips {
   md2-chips .md2-autocomplete-wrap {
     border-bottom: 0 !important; }
 
+.md2-chip-remove .md2-chip {
+  padding: 0 12px; }
+
 .md2-chip {
   font-size: 14px;
   position: relative;

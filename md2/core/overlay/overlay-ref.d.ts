@@ -54,5 +54,5 @@ export declare class OverlayRef implements PortalHost {
     /** Attaches a backdrop for this overlay. */
     private _attachBackdrop();
     /** Detaches the backdrop (if any) associated with the overlay. */
-    private _detachBackdrop();
+    detachBackdrop(): void;
 }

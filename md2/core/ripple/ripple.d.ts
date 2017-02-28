@@ -39,9 +39,14 @@ export declare class MdRipple implements OnChanges, OnDestroy {
     ngOnChanges(changes: SimpleChanges): void;
     ngOnDestroy(): void;
     /** Launches a manual ripple at the specified position. */
-    launch(pageX: number, pageY: number, config?: RippleConfig): void;
-    /** Updates the ripple configuration with the input values. */
-    private _updateRippleConfig();
+    launch(pageX: number, pageY: number, config?: {
+        color?: string;
+        centered?: boolean;
+        radius?: number;
+        speedFactor?: number;
+    }): void;
+    /** Ripple configuration from the directive's input values. */
+    readonly rippleConfig: RippleConfig;
 }
 export declare class MdRippleModule {
     /** @deprecated */

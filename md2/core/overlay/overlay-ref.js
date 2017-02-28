@@ -43,7 +43,7 @@ export var OverlayRef = (function () {
      * @returns Resolves when the overlay has been detached.
      */
     OverlayRef.prototype.detach = function () {
-        this._detachBackdrop();
+        this.detachBackdrop();
         // When the overlay is detached, the pane element should disable pointer events.
         // This is necessary because otherwise the pane element will cover the page and disable
         // pointer events therefore. Depends on the position strategy and the applied pane boundaries.
@@ -57,7 +57,7 @@ export var OverlayRef = (function () {
         if (this._state.positionStrategy) {
             this._state.positionStrategy.dispose();
         }
-        this._detachBackdrop();
+        this.detachBackdrop();
         this._portalHost.dispose();
     };
     /**
@@ -127,7 +127,7 @@ export var OverlayRef = (function () {
         });
     };
     /** Detaches the backdrop (if any) associated with the overlay. */
-    OverlayRef.prototype._detachBackdrop = function () {
+    OverlayRef.prototype.detachBackdrop = function () {
         var _this = this;
         var backdropToDetach = this._backdropElement;
         if (backdropToDetach) {

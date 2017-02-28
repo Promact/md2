@@ -1,5 +1,33 @@
+<a name="0.0.16"></a>
+## [0.0.16](https://github.com/Promact/md2/compare/0.0.15...v0.0.16) (2017-02-28)
+
+
+### Breaking changes
+
+* The `<md2-multiselect>` depricated component is removed in favor of `<md2-select multiple>`.
+
+
+### Bug Fixes
+
+* demo changes ([d5b6a10](https://github.com/Promact/md2/commit/d5b6a10))
+* demo changes ([ee0d106](https://github.com/Promact/md2/commit/ee0d106))
+* lint ([0a0152b](https://github.com/Promact/md2/commit/0a0152b))
+* lint ([f6d480e](https://github.com/Promact/md2/commit/f6d480e))
+* Fix (Chips) set function for adding new chip on input blur
+* Fix (Color picker) set default color for invalid color
+* Fix(chips) data binding issue of autocomplete in chips
+* fix(datepicker) type change update popup issue
+* fixed issues and update performance of all modules
+* fix(toast) update performance and fixed issue of view-container-ref
+
+
+### Features
+
+* chore(tooltip) added support for html bindings
+
+
 <a name="0.0.15"></a>
-## [0.0.15](https://github.com/Promact/md2/compare/0.0.13-1...v0.0.15) (2017-02-20)
+## [0.0.15](https://github.com/Promact/md2/compare/0.0.14...v0.0.15) (2017-02-20)
 
 
 ### Bug Fixes
@@ -11,7 +39,7 @@
 
 
 <a name="0.0.14"></a>
-## [0.0.14](https://github.com/Promact/md2/compare/0.0.13-1...v0.0.14) (2017-02-16)
+## [0.0.14](https://github.com/Promact/md2/compare/0.0.13-2...v0.0.14) (2017-02-16)
 
 
 ### Breaking changes

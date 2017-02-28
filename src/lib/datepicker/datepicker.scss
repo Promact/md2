@@ -92,12 +92,12 @@ md2-datepicker {
   white-space: nowrap;
   overflow-x: hidden;
   text-overflow: ellipsis;
-  transition: all 150ms cubic-bezier(.25, .8, .25, 1);
+  transition: all 150ms cubic-bezier(0.25, 0.8, 0.25, 1);
 
   &.md2-floating-placeholder {
     left: -2px;
     text-align: left;
-    transform: translate3d(0, 6px, 0) scale(.75);
+    transform: translate3d(0, 6px, 0) scale(0.75);
   }
 
   [dir='rtl'] & {

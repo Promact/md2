@@ -204,11 +204,11 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
   set time(value: string) {
     this.date = new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate(),
       parseInt(value.split(':')[0]), parseInt(value.split(':')[1]));
-    //if (this._clockView === 'hour') {
+    // if (this._clockView === 'hour') {
     //  this.date.setHours(parseInt(value.split(':')[0]));
-    //} else {
+    // } else {
     //  this.date.setMinutes(parseInt(value.split(':')[1]));
-    //}
+    // }
   }
 
   @Input()
@@ -294,9 +294,9 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
         this._openOnFocus = false;
         setTimeout(() => { this._openOnFocus = true; }, 100);
       }
-      //if (!this._date) {
+      // if (!this._date) {
       //  this._placeholderState = '';
-      //}
+      // }
       if (this._overlayRef) {
         this._overlayRef.detach();
         this._backdropSubscription.unsubscribe();

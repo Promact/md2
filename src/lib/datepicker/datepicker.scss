@@ -118,10 +118,14 @@ md2-datepicker {
 
 .md2-datepicker-value {
   position: relative;
+  width: 100%;
   white-space: nowrap;
   overflow-x: hidden;
   text-overflow: ellipsis;
   color: rgba(black, 0.87);
+  border: 0;
+  outline: none;
+  background: transparent;
 
   .md2-datepicker-disabled & {
     color: rgba(black, 0.38);

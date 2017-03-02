@@ -300,13 +300,17 @@ md2-datepicker {
   }
 }
 
-.md2-calendar-month-header {
+.md2-calendar-header {
   display: flex;
   justify-content: space-between;
   font-size: 14px;
   font-weight: 700;
   text-align: center;
   line-height: 48px;
+
+  .md2-calendar-month-year-header {
+    width: 100%;
+  }
 
   .md2-button {
     display: inline-block;
@@ -322,10 +326,6 @@ md2-datepicker {
     svg {
       vertical-align: top;
     }
-  }
-
-  .md2-calendar-month-year-header {
-    width: 100%;
   }
 }
 

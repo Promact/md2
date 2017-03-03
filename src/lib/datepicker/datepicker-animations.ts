@@ -24,15 +24,15 @@ export const fadeInContent: AnimationEntryMetadata = trigger('fadeInContent', [
 export const slideCalendar: AnimationEntryMetadata = trigger('slideCalendar', [
   transition('* => left', [
     animate(180, keyframes([
-      style({ transform: 'translateX(105%)', offset: 0.5 }),
-      style({ transform: 'translateX(-130%)', offset: 0.51 }),
+      style({ transform: 'translateX(100%)', offset: 0.5 }),
+      style({ transform: 'translateX(-100%)', offset: 0.51 }),
       style({ transform: 'translateX(0)', offset: 1 })
     ]))
   ]),
   transition('* => right', [
     animate(180, keyframes([
-      style({ transform: 'translateX(-105%)', offset: 0.5 }),
-      style({ transform: 'translateX(130%)', offset: 0.51 }),
+      style({ transform: 'translateX(-100%)', offset: 0.5 }),
+      style({ transform: 'translateX(100%)', offset: 0.51 }),
       style({ transform: 'translateX(0)', offset: 1 })
     ]))
   ])

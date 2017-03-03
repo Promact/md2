@@ -810,7 +810,7 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
 
   private calendarState(direction: string): void {
     this._calendarState = direction;
-    setTimeout(() => this._calendarState = 'reset', 185);
+    setTimeout(() => this._calendarState = '', 180);
   }
 
 }

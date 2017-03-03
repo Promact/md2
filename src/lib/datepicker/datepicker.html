@@ -62,7 +62,7 @@
                 <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
               </svg>
             </div>
-            <div class="md2-calendar-month-year">{{ date | date: 'MMMM y' }}</div>
+            <div class="md2-calendar-month-year" [@slideCalendar]="_calendarState">{{ date | date: 'MMMM y' }}</div>
             <div class="md2-button"
                  [class.disabled]="!_isAfterMonth()"
                  (click)="_isAfterMonth() && _updateMonth(1)">

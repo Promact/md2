@@ -32,11 +32,26 @@ export class DateLocale {
     { full: 'Saturday', short: 'Sat', xshort: 'S' },
   ];
 
+  getDays() {
+    return this.days.slice(this.firstDayOfWeek, this.days.length)
+      .concat(this.days.slice(0, this.firstDayOfWeek));
+  }
+
   getDateLabel(d: number) { return `${d}`; }
 
   getMonthLabel(m: number, y: number) { return `${this.months[m].short.toUpperCase()} ${y}`; }
 
   getYearLabel(y: number) { return `${y}`; }
+
+  /**
+   * Gets the first day of the month for the given date's month.
+   * @param {Date} date
+   * @returns {Date}
+   */
+  getFirstDateOfWeek(date: Date) {
+    let day: number = date.getDate() - ((7 + date.getDay() - this.firstDayOfWeek) % 7);
+    return new Date(date.getFullYear(), date.getMonth(), day, date.getHours(), date.getMinutes());
+  }
 
   /**
    * Gets the first day of the month for the given date's month.

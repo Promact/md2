@@ -52,22 +52,6 @@ export class Md2DateChange {
   constructor(public source: Md2Datepicker, public value: Date) { }
 }
 
-export interface IDate {
-  year: number;
-  month: number;
-  day: number;
-  hour: number;
-  minute: number;
-}
-
-export interface IWeek {
-  dateObj: IDate;
-  date: Date;
-  calMonth: number;
-  today: boolean;
-  disabled: boolean;
-}
-
 let nextId = 0;
 
 export type Type = 'date' | 'time' | 'datetime';
@@ -156,7 +140,7 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
       this._control.valueAccessor = this;
     }
 
-    this._weekDays = _locale.days;
+    this._weekDays = this._locale.getDays();
 
     this.getYears();
   }
@@ -571,8 +555,7 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     if (date.calMonth === this._prevMonth) {
       this._updateMonth(-1);
     } else if (date.calMonth === this._currMonth) {
-      this.setDate(new Date(date.dateObj.year, date.dateObj.month,
-        date.dateObj.day, this.date.getHours(), this.date.getMinutes()));
+      this.setDate(date.date);
     } else if (date.calMonth === this._nextMonth) {
       this._updateMonth(1);
     }
@@ -678,66 +661,101 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     this._dates.length = 0;
 
     let firstDayOfMonth = this._locale.getFirstDateOfMonth(this.date);
-    let numberOfDaysInMonth = this._locale.getNumberOfDaysInMonth(this.date);
-    let numberOfDaysInPrevMonth = this._locale.getNumberOfDaysInMonth(
-      this._locale.incrementMonths(this.date, -1));
+    //let numberOfDaysInMonth = this._locale.getNumberOfDaysInMonth(this.date);
+    //let numberOfDaysInPrevMonth = this._locale.getNumberOfDaysInMonth(
+    //  this._locale.incrementMonths(this.date, -1));
 
-    let dayNbr = 1;
+    //let dayNbr = 1;
+    //let calMonth = this._prevMonth;
+    //for (let i = 1; i < 7; i++) {
+    //  let week: IWeek[] = [];
+    //  if (i === 1) {
+    //    let prevMonth = numberOfDaysInPrevMonth - firstDayOfMonth.getDay() + 1;
+    //    for (let j = prevMonth; j <= numberOfDaysInPrevMonth; j++) {
+    //      let iDate: IDate = { year: year, month: month - 1, day: j, hour: 0, minute: 0 };
+    //      let date: Date = new Date(year, month - 1, j);
+    //      week.push({
+    //        date: date,
+    //        dateObj: iDate,
+    //        calMonth: calMonth,
+    //        today: this._locale.isSameDay(this.today, date),
+    //        disabled: this._isDisabledDate(date)
+    //      });
+    //    }
+
+    //    calMonth = this._currMonth;
+    //    let daysLeft = 7 - week.length;
+    //    for (let j = 0; j < daysLeft; j++) {
+    //      let iDate: IDate = { year: year, month: month, day: dayNbr, hour: 0, minute: 0 };
+    //      let date: Date = new Date(year, month, dayNbr);
+    //      week.push({
+    //        date: date,
+    //        dateObj: iDate,
+    //        calMonth: calMonth,
+    //        today: this._locale.isSameDay(this.today, date),
+    //        disabled: this._isDisabledDate(date)
+    //      });
+    //      dayNbr++;
+    //    }
+    //  } else {
+    //    for (let j = 1; j < 8; j++) {
+    //      if (dayNbr > numberOfDaysInMonth) {
+    //        dayNbr = 1;
+    //        calMonth = this._nextMonth;
+    //      }
+    //      let iDate: IDate = {
+    //        year: year,
+    //        month: calMonth === this._currMonth ? month : month + 1,
+    //        day: dayNbr, hour: 0, minute: 0
+    //      };
+    //      let date: Date = new Date(year, iDate.month, dayNbr);
+    //      week.push({
+    //        date: date,
+    //        dateObj: iDate,
+    //        calMonth: calMonth,
+    //        today: this._locale.isSameDay(this.today, date),
+    //        disabled: this._isDisabledDate(date)
+    //      });
+    //      dayNbr++;
+    //    }
+    //  }
+    //  this._dates.push(week);
+    //}
+
+    //============================================
+
+    //date = this.weekStartDate(new Date(year, month, 1));
+
+
+    //let startDate = new Date(this.date.getTime());
+    //while (startDate.getDay() !== this._locale.firstDayOfWeek) {
+    //  startDate.setDate(startDate.getDate() - 1);
+    //}
+    //let date = startDate;
     let calMonth = this._prevMonth;
-    for (let i = 1; i < 7; i++) {
-      let week: IWeek[] = [];
-      if (i === 1) {
-        let prevMonth = numberOfDaysInPrevMonth - firstDayOfMonth.getDay() + 1;
-        for (let j = prevMonth; j <= numberOfDaysInPrevMonth; j++) {
-          let iDate: IDate = { year: year, month: month - 1, day: j, hour: 0, minute: 0 };
-          let date: Date = new Date(year, month - 1, j);
-          week.push({
-            date: date,
-            dateObj: iDate,
-            calMonth: calMonth,
-            today: this._locale.isSameDay(this.today, date),
-            disabled: this._isDisabledDate(date)
-          });
-        }
-
-        calMonth = this._currMonth;
-        let daysLeft = 7 - week.length;
-        for (let j = 0; j < daysLeft; j++) {
-          let iDate: IDate = { year: year, month: month, day: dayNbr, hour: 0, minute: 0 };
-          let date: Date = new Date(year, month, dayNbr);
-          week.push({
-            date: date,
-            dateObj: iDate,
-            calMonth: calMonth,
-            today: this._locale.isSameDay(this.today, date),
-            disabled: this._isDisabledDate(date)
-          });
-          dayNbr++;
-        }
-      } else {
-        for (let j = 1; j < 8; j++) {
-          if (dayNbr > numberOfDaysInMonth) {
-            dayNbr = 1;
+    let date = this._locale.getFirstDateOfWeek(firstDayOfMonth);
+    do {
+      let week: Array<any> = [];
+      for (let i = 0; i < 7; i++) {
+        if (date.getDate() === 1) {
+          if (calMonth === this._prevMonth) {
+            calMonth = this._currMonth;
+          } else {
             calMonth = this._nextMonth;
           }
-          let iDate: IDate = {
-            year: year,
-            month: calMonth === this._currMonth ? month : month + 1,
-            day: dayNbr, hour: 0, minute: 0
-          };
-          let date: Date = new Date(year, iDate.month, dayNbr);
-          week.push({
-            date: date,
-            dateObj: iDate,
-            calMonth: calMonth,
-            today: this._locale.isSameDay(this.today, date),
-            disabled: this._isDisabledDate(date)
-          });
-          dayNbr++;
         }
+        week.push({
+          date: date,
+          index: date.getDate(),
+          calMonth: calMonth,
+          today: this._locale.isSameDay(this.today, date),
+          disabled: this._isDisabledDate(date)
+        });
+        date = new Date(date.getTime());
+        date.setDate(date.getDate() + 1);
       }
       this._dates.push(week);
-    }
+    } while ((date.getMonth() <= month) && (date.getFullYear() === year));
   }
 
   /**

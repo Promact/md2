@@ -639,10 +639,10 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
    */
   private _isDisabledDate(date: Date): boolean {
     for (let d of this.enableDates) {
-      return !this._locale.isSameDay(date, d);
+      if (this._locale.isSameDay(date, d)) { return false; }
     }
     for (let d of this.disableDates) {
-      return this._locale.isSameDay(date, d);
+      if (this._locale.isSameDay(date, d)) { return true; }
     }
     // for (let d of this.disableWeekDays) {
 

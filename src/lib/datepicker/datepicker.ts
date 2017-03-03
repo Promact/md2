@@ -655,83 +655,10 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
    * Generate Month Calendar
    */
   private generateCalendar(): void {
+    this._dates.length = 0;
     let year = this.date.getFullYear();
     let month = this.date.getMonth();
-
-    this._dates.length = 0;
-
     let firstDayOfMonth = this._locale.getFirstDateOfMonth(this.date);
-    //let numberOfDaysInMonth = this._locale.getNumberOfDaysInMonth(this.date);
-    //let numberOfDaysInPrevMonth = this._locale.getNumberOfDaysInMonth(
-    //  this._locale.incrementMonths(this.date, -1));
-
-    //let dayNbr = 1;
-    //let calMonth = this._prevMonth;
-    //for (let i = 1; i < 7; i++) {
-    //  let week: IWeek[] = [];
-    //  if (i === 1) {
-    //    let prevMonth = numberOfDaysInPrevMonth - firstDayOfMonth.getDay() + 1;
-    //    for (let j = prevMonth; j <= numberOfDaysInPrevMonth; j++) {
-    //      let iDate: IDate = { year: year, month: month - 1, day: j, hour: 0, minute: 0 };
-    //      let date: Date = new Date(year, month - 1, j);
-    //      week.push({
-    //        date: date,
-    //        dateObj: iDate,
-    //        calMonth: calMonth,
-    //        today: this._locale.isSameDay(this.today, date),
-    //        disabled: this._isDisabledDate(date)
-    //      });
-    //    }
-
-    //    calMonth = this._currMonth;
-    //    let daysLeft = 7 - week.length;
-    //    for (let j = 0; j < daysLeft; j++) {
-    //      let iDate: IDate = { year: year, month: month, day: dayNbr, hour: 0, minute: 0 };
-    //      let date: Date = new Date(year, month, dayNbr);
-    //      week.push({
-    //        date: date,
-    //        dateObj: iDate,
-    //        calMonth: calMonth,
-    //        today: this._locale.isSameDay(this.today, date),
-    //        disabled: this._isDisabledDate(date)
-    //      });
-    //      dayNbr++;
-    //    }
-    //  } else {
-    //    for (let j = 1; j < 8; j++) {
-    //      if (dayNbr > numberOfDaysInMonth) {
-    //        dayNbr = 1;
-    //        calMonth = this._nextMonth;
-    //      }
-    //      let iDate: IDate = {
-    //        year: year,
-    //        month: calMonth === this._currMonth ? month : month + 1,
-    //        day: dayNbr, hour: 0, minute: 0
-    //      };
-    //      let date: Date = new Date(year, iDate.month, dayNbr);
-    //      week.push({
-    //        date: date,
-    //        dateObj: iDate,
-    //        calMonth: calMonth,
-    //        today: this._locale.isSameDay(this.today, date),
-    //        disabled: this._isDisabledDate(date)
-    //      });
-    //      dayNbr++;
-    //    }
-    //  }
-    //  this._dates.push(week);
-    //}
-
-    //============================================
-
-    //date = this.weekStartDate(new Date(year, month, 1));
-
-
-    //let startDate = new Date(this.date.getTime());
-    //while (startDate.getDay() !== this._locale.firstDayOfWeek) {
-    //  startDate.setDate(startDate.getDate() - 1);
-    //}
-    //let date = startDate;
     let calMonth = this._prevMonth;
     let date = this._locale.getFirstDateOfWeek(firstDayOfMonth);
     do {

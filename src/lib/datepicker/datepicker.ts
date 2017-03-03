@@ -151,6 +151,9 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
   @Input() id: string = 'md2-datepicker-' + (++nextId);
   @Input() placeholder: string;
   @Input() tabindex: number = 0;
+  @Input() enableDates: Array<Date> = [];
+  @Input() disableDates: Array<Date> = [];
+  @Input() disableWeekDays: Array<number> = [];
 
   @Input()
   get value() { return this._value; }
@@ -225,14 +228,17 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
   get disabled(): boolean { return this._disabled; }
   set disabled(value) { this._disabled = coerceBooleanProperty(value); }
 
-  @Input() set min(value: Date) {
+  @Input()
+  set min(value: Date) {
     if (value && this._locale.isValidDate(value)) {
       this._min = new Date(value);
       this._min.setHours(0, 0, 0, 0);
       this.getYears();
     } else { this._min = null; }
   }
-  @Input() set max(value: Date) {
+
+  @Input()
+  set max(value: Date) {
     if (value && this._locale.isValidDate(value)) {
       this._max = new Date(value);
       this._max.setHours(0, 0, 0, 0);
@@ -632,23 +638,22 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
    * @return boolean
    */
   private _isDisabledDate(date: Date): boolean {
-    if (this._min && this._max) {
-      return (this._min > date) || (this._max < date);
-    } else if (this._min) {
-      return (this._min > date);
-    } else if (this._max) {
-      return (this._max < date);
-    } else {
-      return false;
+    for (let d of this.enableDates) {
+      return !this._locale.isSameDay(date, d);
     }
+    for (let d of this.disableDates) {
+      return this._locale.isSameDay(date, d);
+    }
+    // for (let d of this.disableWeekDays) {
 
-    // if (this.disableWeekends) {
-    //   let dayNbr = this.getDayNumber(date);
-    //   if (dayNbr === 0 || dayNbr === 6) {
-    //     return true;
-    //   }
     // }
-    // return false;
+    //    if (disableWeekends) {
+    //    let dayNbr = this.getDayNumber(date);
+    //    if (dayNbr === 0 || dayNbr === 6) {
+    //      return true;
+    //    }
+
+    return !this._locale.isDateWithinRange(date, this._min, this._max);
   }
 
   /**

@@ -44,7 +44,7 @@ import {
   TemplatePortalDirective,
   PortalModule
 } from '../core';
-import { fadeInContent } from './datepicker-animations';
+import { fadeInContent, slideCalendar } from './datepicker-animations';
 import { Subscription } from 'rxjs/Subscription';
 
 /** Change event object emitted by Md2Select. */
@@ -92,7 +92,8 @@ export type Type = 'date' | 'time' | 'datetime';
     '(blur)': '_onBlur()'
   },
   animations: [
-    fadeInContent
+    fadeInContent,
+    slideCalendar
   ],
   encapsulation: ViewEncapsulation.None
 })
@@ -124,6 +125,7 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
   _isYearsVisible: boolean;
   _isCalendarVisible: boolean;
   _clockView: string = 'hour';
+  _calendarState: string;
 
   _weekDays: Array<any>;
 
@@ -601,6 +603,11 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
   _updateMonth(noOfMonths: number) {
     this.date = this._locale.incrementMonths(this.date, noOfMonths);
     this.generateCalendar();
+    if (noOfMonths > 0) {
+      this.calendarState('right');
+    } else {
+      this.calendarState('left');
+    }
   }
 
   /**
@@ -799,6 +806,11 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     if (this._backdropSubscription) {
       this._backdropSubscription.unsubscribe();
     }
+  }
+
+  private calendarState(direction: string): void {
+    this._calendarState = direction;
+    setTimeout(() => this._calendarState = 'reset', 185);
   }
 
 }

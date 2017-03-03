@@ -73,7 +73,7 @@
           </div>
           <table class="md2-calendar-dates">
             <thead><tr><th *ngFor="let day of _weekDays">{{day.xshort}}</th></tr></thead>
-            <tbody>
+            <tbody [@slideCalendar]="_calendarState">
               <tr *ngFor="let w of _dates">
                 <td *ngFor="let d of w">
                   <div class="md2-calendar-day"

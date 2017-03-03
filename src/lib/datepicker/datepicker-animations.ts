@@ -1,6 +1,7 @@
 import {
   animate,
   AnimationEntryMetadata,
+  keyframes,
   state,
   style,
   transition,
@@ -17,5 +18,22 @@ export const fadeInContent: AnimationEntryMetadata = trigger('fadeInContent', [
   transition('void => showing', [
     style({ opacity: 0 }),
     animate(`150ms 100ms cubic-bezier(0.55, 0, 0.55, 0.2)`)
+  ])
+]);
+
+export const slideCalendar: AnimationEntryMetadata = trigger('slideCalendar', [
+  transition('* => left', [
+    animate(180, keyframes([
+      style({ transform: 'translateX(105%)', offset: 0.5 }),
+      style({ transform: 'translateX(-130%)', offset: 0.51 }),
+      style({ transform: 'translateX(0)', offset: 1 })
+    ]))
+  ]),
+  transition('* => right', [
+    animate(180, keyframes([
+      style({ transform: 'translateX(-105%)', offset: 0.5 }),
+      style({ transform: 'translateX(130%)', offset: 0.51 }),
+      style({ transform: 'translateX(0)', offset: 1 })
+    ]))
   ])
 ]);

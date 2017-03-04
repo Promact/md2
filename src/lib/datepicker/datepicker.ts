@@ -644,9 +644,9 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     for (let d of this.disableDates) {
       if (this._locale.isSameDay(date, d)) { return true; }
     }
-    // for (let d of this.disableWeekDays) {
-
-    // }
+    for (let d of this.disableWeekDays) {
+      if (date.getDay() === d) { return true; }
+    }
     //    if (disableWeekends) {
     //    let dayNbr = this.getDayNumber(date);
     //    if (dayNbr === 0 || dayNbr === 6) {

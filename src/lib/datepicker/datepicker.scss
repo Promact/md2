@@ -158,6 +158,7 @@ md2-datepicker {
 .md2-datepicker-panel {
   width: 300px;
   border-radius: 3px;
+  color: rgba(black, 0.87);
   background-color: white;
   overflow: hidden;
   box-shadow: 0 11px 15px -7px rgba(black, 0.2), 0 24px 38px 3px rgba(black, 0.14), 0 9px 46px 8px rgba(black, 0.12);
@@ -377,7 +378,7 @@ md2-datepicker {
 
   &.disabled,
   &.disabled:hover {
-    color: rgba(black, 0.45);
+    color: rgba(black, 0.43);
     background: transparent;
     pointer-events: none;
   }

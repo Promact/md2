@@ -6,7 +6,7 @@ $md2-datepicker-trigger-min-width: 168px !default;
 $md2-datepicker-arrow-size: 5px !default;
 $md2-datepicker-arrow-margin: 4px !default;
 $md2-datepicker-date-cell-size: 40px !default;
-$md2-datepicker-calendar-height: 300px !default;
+$md2-datepicker-calendar-height: 280px !default;
 
 $md2-clock-size: 240px !default;
 $md2-clock-tick-size: 34px !default;
@@ -339,9 +339,9 @@ md2-datepicker {
 
   th {
     width: 35px;
-    height: 20px;
+    height: 16px;
     font-weight: 500;
-    line-height: 15px;
+    line-height: 10px;
     opacity: 0.5;
   }
 

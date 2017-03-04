@@ -18,6 +18,9 @@ Datepicker allow the user to select date and time.
 | `tabindex` | `number` | The tabIndex of the datepicker. |
 | `openOnFocus` | `boolean` | Opend Calendar Whether or not the datepicker is openOnFocus. |
 | `isOpen` | `number` | Opend Calendar Whether or not the datepicker is isOpen. |
+| `enableDates` | `Array<Date>` | Enable dates. |
+| `disableDates` | `Array<Date>` | Disable Dates. |
+| `disableWeekDays` | `Array<number>` | Disable Week Days. |
 
 ### Events
 

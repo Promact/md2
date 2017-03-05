@@ -42,7 +42,9 @@ import {
   OverlayModule,
   Portal,
   TemplatePortalDirective,
-  PortalModule
+  PortalModule,
+  HorizontalConnectionPos,
+  VerticalConnectionPos,
 } from '../core';
 import { fadeInContent, slideCalendar } from './datepicker-animations';
 import { Subscription } from 'rxjs/Subscription';
@@ -55,6 +57,11 @@ export class Md2DateChange {
 let nextId = 0;
 
 export type Type = 'date' | 'time' | 'datetime';
+export type Mode = 'inline' | 'popup';
+export type PanelPositionX = 'before' | 'after';
+export type PanelPositionY = 'above' | 'below';
+
+
 
 @Component({
   moduleId: module.id,
@@ -94,6 +101,7 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
 
   private _openOnFocus: boolean = false;
   private _type: Type = 'date';
+  private _mode: Mode = 'inline';
   private _format: string;
   private _required: boolean = false;
   private _disabled: boolean = false;
@@ -155,6 +163,12 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
   @Input() disableDates: Array<Date> = [];
   @Input() disableWeekDays: Array<number> = [];
 
+  /** Position of the menu in the X axis. */
+  positionX: PanelPositionX = 'after';
+
+  /** Position of the menu in the Y axis. */
+  positionY: PanelPositionY = 'below';
+
   @Input()
   get value() { return this._value; }
   set value(value: Date) {
@@ -204,6 +218,13 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
   get type() { return this._type; }
   set type(value: Type) {
     this._type = value || 'date';
+  }
+
+  @Input()
+  get mode() { return this._mode; }
+  set mode(value: Mode) {
+    this._mode = value || 'inline';
+    if (this.panelOpen) { this.close(); }
   }
 
   @Input()
@@ -741,13 +762,41 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
   private _createOverlay(): void {
     if (!this._overlayRef) {
       let config = new OverlayState();
-      config.positionStrategy = this.overlay.position()
-        .global()
-        .centerHorizontally()
-        .centerVertically();
-      config.hasBackdrop = true;
-      config.backdropClass = 'cdk-overlay-dark-backdrop';
+      if (this.mode === 'inline') {
+        const [posX, fallbackX]: HorizontalConnectionPos[] =
+          this.positionX === 'before' ? ['end', 'start'] : ['start', 'end'];
 
+        const [overlayY, fallbackOverlayY]: VerticalConnectionPos[] =
+          this.positionY === 'above' ? ['bottom', 'top'] : ['top', 'bottom'];
+
+        let originY = overlayY;
+        let fallbackOriginY = fallbackOverlayY;
+
+        //if (!this.menu.overlapTrigger) {
+        //  originY = overlayY === 'top' ? 'bottom' : 'top';
+        //  fallbackOriginY = fallbackOverlayY === 'top' ? 'bottom' : 'top';
+        //}
+        config.positionStrategy = this.overlay.position().connectedTo(this._element,
+          { originX: posX, originY: originY }, { overlayX: posX, overlayY: overlayY })
+          .withFallbackPosition(
+          { originX: fallbackX, originY: originY },
+          { overlayX: fallbackX, overlayY: overlayY })
+          .withFallbackPosition(
+          { originX: posX, originY: fallbackOriginY },
+          { overlayX: posX, overlayY: fallbackOverlayY })
+          .withFallbackPosition(
+          { originX: fallbackX, originY: fallbackOriginY },
+          { overlayX: fallbackX, overlayY: fallbackOverlayY });
+        config.hasBackdrop = true;
+        config.backdropClass = 'cdk-overlay-transparent-backdrop';
+      } else {
+        config.positionStrategy = this.overlay.position()
+          .global()
+          .centerHorizontally()
+          .centerVertically();
+        config.hasBackdrop = true;
+        config.backdropClass = 'cdk-overlay-dark-backdrop';
+      }
       this._overlayRef = this.overlay.create(config);
     }
   }

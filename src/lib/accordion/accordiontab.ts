@@ -54,7 +54,8 @@ export class Md2AccordionHeader { }
     '[class.md2-accordion-tab-active]': 'active',
     '[class.md2-accordion-tab-disabled]': 'disabled'
   },
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  exportAs: 'md2AccordionTab'
 })
 export class Md2AccordionTab {
 

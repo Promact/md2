@@ -13,7 +13,8 @@ import { coerceBooleanProperty } from '../core/core';
   selector: 'md2-accordion',
   template: `<ng-content></ng-content>`,
   styleUrls: ['accordion.css'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  exportAs: 'md2Accordion'
 })
 export class Md2Accordion {
 

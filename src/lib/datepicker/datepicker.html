@@ -105,6 +105,7 @@
                  (onHourChange)="_onHourChange($event)"
                  (onMinuteChange)="_onMinuteChange($event)"></md2-clock>
       <div class="md2-datepicker-actions">
+        <div class="md2-button" (click)="_onClickClear()" *ngIf="!required">Clear</div>
         <div class="md2-button" (click)="close()">Cancel</div>
         <div class="md2-button" (click)="_onClickOk()">Ok</div>
       </div>

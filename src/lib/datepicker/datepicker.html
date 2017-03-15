@@ -12,7 +12,7 @@
   </div>
   <div class="md2-datepicker-input">
     <span class="md2-datepicker-placeholder" [class.md2-floating-placeholder]="value">{{ placeholder }}</span>
-    <span class="md2-datepicker-value">{{ value | date:format }}</span>
+    <input #inputView class="md2-datepicker-value" value="{{ value | date:format }}" [required]="required" [disabled]="disabled" tabindex="-1" />
     <span class="md2-datepicker-arrow"></span>
   </div>
 </div>

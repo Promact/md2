@@ -123,6 +123,25 @@ md2-datepicker {
   text-overflow: ellipsis;
   color: rgba(black, 0.87);
 
+  display: block;
+  font-size: 15px;
+  line-height: 26px;
+
+  cursor: pointer;
+  border: none;
+  font-family: "Helvetica","Arial",sans-serif;
+  margin: 0;
+  padding: 4px 0;
+  width: 100%;
+  background: transparent;
+  text-align: left;
+  box-shadow: none;
+
+  &:focus {
+    outline: none;
+    outline-offset: 2px;
+  }
+
   .md2-datepicker-disabled & {
     color: rgba(black, 0.38);
   }

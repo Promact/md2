@@ -21,6 +21,9 @@ export class DatepickerDemo {
   minDate: Date = null;
   maxDate: Date = null;
 
+  formDate: Date = null;
+  formRequired: boolean = false;
+
   openDatepicker() {
     this.isOpen = true;
     setTimeout(() => {
@@ -37,6 +40,10 @@ export class DatepickerDemo {
     this.minDate.setMonth(this.minDate.getMonth() - 3);
     this.maxDate = new Date();
     this.maxDate.setMonth(this.maxDate.getMonth() + 3);
+  }
+
+  onSubmit() {
+    alert('Form submitted!');
   }
 
 }

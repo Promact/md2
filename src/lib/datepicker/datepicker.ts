@@ -9,11 +9,13 @@ import {
   EventEmitter,
   Renderer,
   Self,
+  ViewChild,
   ViewChildren,
   QueryList,
   ViewEncapsulation,
   NgModule,
-  ModuleWithProviders
+  ModuleWithProviders,
+  AfterViewInit
 } from '@angular/core';
 import {
   ControlValueAccessor,
@@ -96,8 +98,7 @@ export type Type = 'date' | 'time' | 'datetime';
   ],
   encapsulation: ViewEncapsulation.None
 })
-export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
-
+export class Md2Datepicker implements AfterViewInit, OnDestroy, ControlValueAccessor {
   private _overlayRef: OverlayRef;
   private _backdropSubscription: Subscription;
 
@@ -137,6 +138,7 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
   _onChange = (value: any) => { };
   _onTouched = () => { };
 
+  @ViewChild('inputView') _inputView: ElementRef;
   @ViewChildren(TemplatePortalDirective) templatePortals: QueryList<Portal<any>>;
 
   /** Event emitted when the select has been opened. */
@@ -157,6 +159,11 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     this._weekDays = _locale.days;
 
     this.getYears();
+  }
+
+  ngAfterViewInit(): void {
+    this._renderer.listen(this._inputView.nativeElement, 'keypress',
+        (event: any) => event.preventDefault());
   }
 
   ngOnDestroy() { this.destroyPanel(); }

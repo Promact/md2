@@ -30,4 +30,21 @@
     <button type="button" button="primary" (click)="openDatepicker()">OPEN DATEPICKER</button>
     <button type="button" button="primary" (click)="dateControl.reset()">RESET</button>
   </div>
+  <h4>Form Submit</h4>
+  <div>
+    <form (ngSubmit)="onSubmit()">
+      <md2-datepicker [(ngModel)]="formDate"
+                      name="currentDate"
+                      type="date"
+                      placeholder="Date"
+                      format="dd/MM/yyyy"
+                      [required]="formRequired">
+      </md2-datepicker>
+      <p>
+        <label><input type="checkbox" [(ngModel)]="formRequired" name="formRequired"/>Required</label>
+      </p>
+      <button type="button" button="primary" (click)="formDate = null">Clear Value</button>
+      <button button="primary" >Submit Form</button>
+    </form>
+  </div>
 </div>

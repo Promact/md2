@@ -12,7 +12,7 @@
   </div>
   <div class="md2-datepicker-input">
     <span class="md2-datepicker-placeholder" [class.md2-floating-placeholder]="value">{{ placeholder }}</span>
-    <input class="md2-datepicker-value" type="text" [value]="value | date:format" />
+    <span class="md2-datepicker-value">{{ value | date:format }}</span>
     <span *ngIf="!value || required || disabled" class="md2-datepicker-arrow"></span>
     <span *ngIf="value && !required && !disabled"
           class="md2-datepicker-clear" (click)="_clearValue($event)">

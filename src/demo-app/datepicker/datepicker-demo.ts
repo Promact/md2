@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   moduleId: module.id,
   selector: 'datepicker-demo',
   templateUrl: 'datepicker-demo.html',
-  styles: [` .type { width: 150px; padding: 16px 0; } `]
+  styles: [` .inline-control { display: inline-block; width: 150px; margin-right: 16px; padding: 16px 0; } `]
 })
 export class DatepickerDemo {
   isRequired = false;
@@ -17,6 +17,17 @@ export class DatepickerDemo {
     { text: 'Date', value: 'date' },
     { text: 'Time', value: 'time' },
     { text: 'Date Time', value: 'datetime' }];
+
+  mode: string = 'auto';
+  modes: Array<any> = [
+    { text: 'Auto', value: 'auto' },
+    { text: 'Portrait', value: 'portrait' },
+    { text: 'Landscape', value: 'landscape' }];
+
+  container: string = 'inline';
+  containers: Array<any> = [
+    { text: 'Inline', value: 'inline' },
+    { text: 'Dialog', value: 'dialog' }];
 
   date: Date = null;
   minDate: Date = null;

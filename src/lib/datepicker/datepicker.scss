@@ -183,10 +183,6 @@ md2-datepicker {
   background: $primary;
   box-sizing: border-box;
 
-  .hidden {
-    display: none;
-  }
-
   [mode='landscape'] & {
     width: 150px;
     min-width: 150px;

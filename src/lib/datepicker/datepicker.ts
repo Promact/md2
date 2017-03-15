@@ -798,7 +798,6 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
           .centerHorizontally()
           .centerVertically();
         config.hasBackdrop = true;
-        config.backdropClass = 'cdk-overlay-dark-backdrop';
       }
       this._overlayRef = this.overlay.create(config);
     }

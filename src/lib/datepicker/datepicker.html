@@ -23,19 +23,19 @@
        [attr.container]="container" [attr.mode]="mode">
     <div class="md2-datepicker-header">
       <div class="md2-datepicker-header-year"
+           *ngIf="type!=='time'"
            [class.active]="_isYearsVisible"
-           [class.hidden]="type==='time'"
            (click)="_showYear()">{{ date | date: 'y' }}</div>
       <div class="md2-datepicker-header-date-time">
         <span class="md2-datepicker-header-date"
+              *ngIf="type!=='time'"
               [class.active]="_isCalendarVisible && !_isYearsVisible"
-              [class.hidden]="type==='time'"
               (click)="_showCalendar()">
           {{ date | date: 'EEE, MMM dd' }}
         </span>
         <span class="md2-datepicker-header-time"
-              [class.active]="!_isCalendarVisible"
-              [class.hidden]="type==='date'">
+              *ngIf="type!=='date'"
+              [class.active]="!_isCalendarVisible">
           <span class="md2-datepicker-header-hour"
                 [class.active]="_clockView === 'hour'"
                 (click)="_toggleHours('hour')">{{ date.getHours() }}</span>:<span class="md2-datepicker-header-minute"

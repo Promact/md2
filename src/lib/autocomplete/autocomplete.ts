@@ -69,7 +69,8 @@ export class Md2AutocompleteChange {
     '[attr.aria-disabled]': 'disabled.toString()',
     '[class.md2-autocomplete-disabled]': 'disabled',
   },
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  exportAs: 'md2Autocomplete'
 })
 
 export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {

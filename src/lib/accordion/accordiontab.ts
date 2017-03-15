@@ -1,8 +1,13 @@
 import {
+  animate,
   Component,
   Directive,
   Input,
-  ViewEncapsulation
+  state,
+  style,
+  transition,
+  trigger,
+  ViewEncapsulation,
 } from '@angular/core';
 import { Md2Accordion } from './accordionpanel';
 import { coerceBooleanProperty } from '../core';
@@ -19,17 +24,38 @@ export class Md2AccordionHeader { }
       <ng-content select="md2-accordion-header"></ng-content>
       <span class="md2-accordion-header-icon"></span>
     </div>
-    <div class="md2-accordion-tab-content">
-      <ng-content></ng-content>
+    <div class="md2-accordion-tab-body" [@slide]="slide">
+      <div class="md2-accordion-tab-content">
+        <ng-content></ng-content>
+      </div>
     </div>
   `,
   styleUrls: ['accordion.css'],
+  animations: [
+    trigger('slide', [
+      state('up', style({ height: 0 })),
+      state('down', style({ height: '*' })),
+      transition('down => up', [
+        style({ height: '*' }),
+        animate(300, style({
+          height: 0
+        }))
+      ]),
+      transition('up => down', [
+        style({ height: 0 }),
+        animate(300, style({
+          height: '*'
+        }))
+      ])
+    ])
+  ],
   host: {
     'role': 'accordion-tab',
     '[class.md2-accordion-tab-active]': 'active',
     '[class.md2-accordion-tab-disabled]': 'disabled'
   },
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  exportAs: 'md2AccordionTab'
 })
 export class Md2AccordionTab {
 
@@ -49,6 +75,10 @@ export class Md2AccordionTab {
     }
   }
 
+  get slide(): string {
+    return this.active ? 'down' : 'up';
+  }
+
   @Input()
   get disabled(): boolean { return this._disabled; }
   set disabled(value) { this._disabled = coerceBooleanProperty(value); }
@@ -63,10 +93,7 @@ export class Md2AccordionTab {
    * @return if it is disabled
    */
   _handleClick(event: Event) {
-    if (this.disabled) {
-      event.preventDefault();
-      return;
-    }
+    if (this.disabled) { return; }
 
     let index = this.findTabIndex();
 

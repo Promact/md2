@@ -1,6 +1,8 @@
 import {
   Directive,
+  EventEmitter,
   Input,
+  Output,
   NgModule,
   ModuleWithProviders
 } from '@angular/core';
@@ -9,22 +11,26 @@ import { CommonModule } from '@angular/common';
 @Directive({
   selector: '[collapse]',
   host: {
-    '[class.in]': '_isExpanded',
+    'role': 'collapse',
+    '[class.in]': '_collapse',
     '[class.collapse]': 'true',
-    '[class.collapsing]': '_isCollapsing',
-    '[attr.aria-expanded]': '_isExpanded',
-    '[attr.aria-hidden]': '!_isExpanded',
-  }
+    '[class.collapsing]': '_collapsing',
+    '[attr.aria-expanded]': '_collapse',
+    '[attr.aria-hidden]': '!_collapse'
+  },
+  exportAs: 'md2Collapse'
 })
-
 export class Md2Collapse {
-  _isExpanded: boolean = true;
-  _isCollapsing: boolean = false;
+  _collapse: boolean = true;
+  _collapsing: boolean = false;
+
+  @Output() collapsed: EventEmitter<void> = new EventEmitter<void>();
+  @Output() expanded: EventEmitter<void> = new EventEmitter<void>();
 
   @Input()
-  get collapse(): boolean { return this._isExpanded; }
+  get collapse(): boolean { return this._collapse; }
   set collapse(value: boolean) {
-    this._isExpanded = value;
+    this._collapse = value;
     this.toggle();
   }
 
@@ -32,33 +38,36 @@ export class Md2Collapse {
    * toggle collapse
    */
   toggle() {
-    if (this._isExpanded) { this.hide(); } else { this.show(); }
+    if (this._collapse) { this.hide(); } else { this.show(); }
+  }
+
+  /**
+  * show collapse
+  */
+  show() {
+    this._collapsing = true;
+    this._collapse = true;
+    setTimeout(() => {
+      this._collapsing = false;
+    }, 4);
+    this.expanded.emit();
   }
 
   /**
    * hide collapse
    */
   hide() {
-    this._isCollapsing = true;
-    this._isExpanded = false;
+    this._collapsing = true;
+    this._collapse = false;
     setTimeout(() => {
-      this._isCollapsing = false;
+      this._collapsing = false;
     }, 4);
+    this.collapsed.emit();
   }
 
-  /**
-   * show collapse
-   */
-  show() {
-    this._isCollapsing = true;
-    this._isExpanded = true;
-    setTimeout(() => {
-      this._isCollapsing = false;
-    }, 4);
-  }
 }
 
-export const MD2_COLLAPSE_DIRECTIVES: any[] = [Md2Collapse];
+export const MD2_COLLAPSE_DIRECTIVES = [Md2Collapse];
 
 @NgModule({
   imports: [CommonModule],

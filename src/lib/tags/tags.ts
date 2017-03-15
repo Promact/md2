@@ -67,7 +67,8 @@ export const MD2_TAGS_CONTROL_VALUE_ACCESSOR: any = {
     '[attr.aria-disabled]': 'disabled'
   },
   providers: [MD2_TAGS_CONTROL_VALUE_ACCESSOR],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  exportAs: 'md2Tags'
 })
 
 export class Md2Tags implements AfterContentInit, ControlValueAccessor {

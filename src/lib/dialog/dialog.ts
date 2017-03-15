@@ -146,7 +146,6 @@ export class Md2Dialog implements OnDestroy {
         .centerHorizontally()
         .centerVertically();
       config.hasBackdrop = true;
-      config.backdropClass = 'cdk-overlay-dark-backdrop';
 
       this._overlayRef = this._overlay.create(config);
     }

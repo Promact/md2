@@ -27,7 +27,7 @@ md2-datepicker {
 
 .md2-datepicker-trigger {
   display: block;
-  padding: 18px 0 18px 32px;
+  padding: 18px 0 4px 32px;
   white-space: nowrap;
   cursor: pointer;
 }
@@ -156,7 +156,7 @@ md2-datepicker {
 }
 
 .md2-datepicker-panel {
-  width: 300px;
+  width: 276px;
   border-radius: 3px;
   color: rgba(black, 0.87);
   background-color: white;
@@ -171,7 +171,7 @@ md2-datepicker {
 
   &[mode='landscape'] {
     display: flex;
-    width: 450px;
+    width: 426px;
   }
 }
 
@@ -353,7 +353,7 @@ md2-datepicker {
 }
 
 .md2-calendar-dates {
-  margin: 0 auto;
+  margin: 0 8px;
 
   th {
     width: 35px;
@@ -532,7 +532,7 @@ md2-clock {
 @media (min-width: 480px) {
   .md2-datepicker-panel[mode='auto'] {
     display: flex;
-    width: 450px;
+    width: 426px;
   }
 
   [mode='auto'] {

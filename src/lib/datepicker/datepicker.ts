@@ -76,7 +76,8 @@ export type PanelPositionY = 'above' | 'below';
     '[attr.aria-invalid]': '_control?.invalid || "false"',
     '(keydown)': '_handleKeydown($event)',
     '(focus)': '_onFocus()',
-    '(blur)': '_onBlur()'
+    '(blur)': '_onBlur()',
+    '(window:resize)': '_handleWindowResize($event)'
   },
   animations: [
     fadeInContent,
@@ -163,6 +164,8 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
 
   /** Position of the menu in the Y axis. */
   positionY: PanelPositionY = 'below';
+
+  overlapTrigger: boolean = true;
 
   @Input()
   get value() { return this._value; }
@@ -346,6 +349,12 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
 
   _onFadeInDone(): void {
     this._panelDoneAnimating = this.panelOpen;
+  }
+
+  _handleWindowResize(event: Event) {
+    if (this.container === 'inline') {
+      this.close();
+    }
   }
 
   private _focusPanel(): void {
@@ -671,12 +680,6 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     for (let d of this.disableWeekDays) {
       if (date.getDay() === d) { return true; }
     }
-    //    if (disableWeekends) {
-    //    let dayNbr = this.getDayNumber(date);
-    //    if (dayNbr === 0 || dayNbr === 6) {
-    //      return true;
-    //    }
-
     return !this._locale.isDateWithinRange(date, this._min, this._max);
   }
 
@@ -775,12 +778,13 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
         let originY = overlayY;
         let fallbackOriginY = fallbackOverlayY;
 
-        //if (!this.menu.overlapTrigger) {
-        //  originY = overlayY === 'top' ? 'bottom' : 'top';
-        //  fallbackOriginY = fallbackOverlayY === 'top' ? 'bottom' : 'top';
-        //}
+        if (!this.overlapTrigger) {
+          originY = overlayY === 'top' ? 'bottom' : 'top';
+          fallbackOriginY = fallbackOverlayY === 'top' ? 'bottom' : 'top';
+        }
         config.positionStrategy = this.overlay.position().connectedTo(this._element,
-          { originX: posX, originY: originY }, { overlayX: posX, overlayY: overlayY })
+          { originX: posX, originY: originY },
+          { overlayX: posX, overlayY: overlayY })
           .withFallbackPosition(
           { originX: fallbackX, originY: originY },
           { overlayX: fallbackX, overlayY: overlayY })

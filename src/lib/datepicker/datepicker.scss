@@ -58,6 +58,7 @@ md2-datepicker {
   min-width: $md2-datepicker-trigger-min-width;
   line-height: 22px;
   position: relative;
+  padding-right: 20px;
   box-sizing: border-box;
 
   [aria-disabled='true'] & {
@@ -138,6 +139,8 @@ md2-datepicker {
 }
 
 .md2-datepicker-arrow {
+  position: absolute;
+  right: 0;
   width: 0;
   height: 0;
   border-left: $md2-datepicker-arrow-size solid transparent;
@@ -152,6 +155,17 @@ md2-datepicker {
 
   md2-datepicker.ng-invalid.ng-touched:not(.md2-datepicker-disabled) & {
     color: $warn;
+  }
+}
+
+.md2-datepicker-clear {
+  position: absolute;
+  right: 0;
+  height: 20px;
+  color: rgba(black, 0.54);
+
+  svg {
+    fill: currentColor;
   }
 }
 

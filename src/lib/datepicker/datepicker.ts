@@ -54,14 +54,11 @@ export class Md2DateChange {
   constructor(public source: Md2Datepicker, public value: Date) { }
 }
 
-let nextId = 0;
-
 export type Type = 'date' | 'time' | 'datetime';
-export type Mode = 'inline' | 'popup';
+export type Mode = 'auto' | 'portrait' | 'landscape';
+export type Container = 'inline' | 'dialog';
 export type PanelPositionX = 'before' | 'after';
 export type PanelPositionY = 'above' | 'below';
-
-
 
 @Component({
   moduleId: module.id,
@@ -70,7 +67,6 @@ export type PanelPositionY = 'above' | 'below';
   styleUrls: ['datepicker.css'],
   host: {
     'role': 'datepicker',
-    '[id]': 'id',
     '[class.md2-datepicker-disabled]': 'disabled',
     '[class.md2-datepicker-opened]': 'panelOpen',
     '[attr.tabindex]': 'disabled ? -1 : tabindex',
@@ -101,7 +97,8 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
 
   private _openOnFocus: boolean = false;
   private _type: Type = 'date';
-  private _mode: Mode = 'inline';
+  private _mode: Mode = 'auto';
+  private _container: Container = 'inline';
   private _format: string;
   private _required: boolean = false;
   private _disabled: boolean = false;
@@ -155,8 +152,6 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
 
   ngOnDestroy() { this.destroyPanel(); }
 
-  @Input() name: string = '';
-  @Input() id: string = 'md2-datepicker-' + (++nextId);
   @Input() placeholder: string;
   @Input() tabindex: number = 0;
   @Input() enableDates: Array<Date> = [];
@@ -223,8 +218,16 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
   @Input()
   get mode() { return this._mode; }
   set mode(value: Mode) {
-    this._mode = value || 'inline';
-    if (this.panelOpen) { this.close(); }
+    this._mode = value || 'auto';
+  }
+
+  @Input()
+  get container() { return this._container; }
+  set container(value: Container) {
+    if (this._container !== value) {
+      this._container = value || 'inline';
+      this.destroyPanel();
+    }
   }
 
   @Input()
@@ -762,7 +765,7 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
   private _createOverlay(): void {
     if (!this._overlayRef) {
       let config = new OverlayState();
-      if (this.mode === 'inline') {
+      if (this.container === 'inline') {
         const [posX, fallbackX]: HorizontalConnectionPos[] =
           this.positionX === 'before' ? ['end', 'start'] : ['start', 'end'];
 

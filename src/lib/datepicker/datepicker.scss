@@ -161,9 +161,18 @@ md2-datepicker {
   color: rgba(black, 0.87);
   background-color: white;
   overflow: hidden;
-  box-shadow: 0 11px 15px -7px rgba(black, 0.2), 0 24px 38px 3px rgba(black, 0.14), 0 9px 46px 8px rgba(black, 0.12);
+  box-shadow: 0 5px 5px -3px rgba(black, 0.2), 0 8px 10px 1px rgba(black, 0.14), 0 3px 14px 2px rgba(black, 0.12);
   outline: none;
   user-select: none;
+
+  &[container='dialog'] {
+    box-shadow: 0 11px 15px -7px rgba(black, 0.2), 0 24px 38px 3px rgba(black, 0.14), 0 9px 46px 8px rgba(black, 0.12);
+  }
+
+  &[mode='landscape'] {
+    display: flex;
+    width: 450px;
+  }
 }
 
 .md2-datepicker-header {
@@ -176,6 +185,14 @@ md2-datepicker {
 
   .hidden {
     display: none;
+  }
+
+  [mode='landscape'] & {
+    width: 150px;
+    min-width: 150px;
+    padding-right: 15px;
+    white-space: normal;
+    word-wrap: break-word;
   }
 }
 
@@ -224,6 +241,11 @@ md2-datepicker {
         pointer-events: none;
       }
     }
+  }
+
+  [mode='landscape'] & {
+    display: block;
+    padding-left: 0;
   }
 }
 
@@ -443,7 +465,6 @@ md2-clock {
     border-radius: 50%;
     background-color: $primary;
   }
-  /*transition: all 100ms;*/
 }
 
 .md2-clock-hours,
@@ -513,25 +534,24 @@ md2-clock {
 }
 
 @media (min-width: 480px) {
-  .md2-datepicker-panel {
+  .md2-datepicker-panel[mode='auto'] {
     display: flex;
     width: 450px;
   }
 
-  .md2-datepicker-header {
-    width: 150px;
-    min-width: 150px;
-    padding-right: 15px;
-    white-space: normal;
-    word-wrap: break-word;
-  }
+  [mode='auto'] {
+    .md2-datepicker-header {
+      width: 150px;
+      min-width: 150px;
+      padding-right: 15px;
+      white-space: normal;
+      word-wrap: break-word;
+    }
 
-  .md2-datepicker-header-time {
-    display: block;
-    padding-left: 0;
-  }
-
-  .md2-datepicker-content {
+    .md2-datepicker-header-time {
+      display: block;
+      padding-left: 0;
+    }
   }
 }
 

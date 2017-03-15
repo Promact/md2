@@ -19,7 +19,8 @@
 <template portal>
   <div class="md2-datepicker-panel" [@fadeInContent]="'showing'" (@fadeInContent.done)="_onPanelDone()"
        (keydown)="_handleKeydown($event)" [style.transformOrigin]="_transformOrigin"
-       [class.md2-datepicker-panel-done-animating]="_panelDoneAnimating" tabindex="0">
+       [class.md2-datepicker-panel-done-animating]="_panelDoneAnimating" tabindex="0"
+       [attr.container]="container" [attr.mode]="mode">
     <div class="md2-datepicker-header">
       <div class="md2-datepicker-header-year"
            [class.active]="_isYearsVisible"

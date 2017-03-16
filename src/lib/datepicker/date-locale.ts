@@ -37,9 +37,13 @@ export class DateLocale {
       .concat(this.days.slice(0, this.firstDayOfWeek));
   }
 
-  getDateLabel(d: number) { return `${d}`; }
+  getDayLabel(d: number) { return `${d}`; }
 
-  getMonthLabel(m: number, y: number) { return `${this.months[m].short.toUpperCase()} ${y}`; }
+  getDateLabel(d: Date) {
+    return `${this.days[d.getDay()].short}, ${this.months[d.getMonth()].short} ${d.getDate()}`;
+  }
+
+  getMonthLabel(m: number, y: number) { return `${this.months[m].full} ${y}`; }
 
   getYearLabel(y: number) { return `${y}`; }
 

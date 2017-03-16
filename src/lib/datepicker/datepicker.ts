@@ -154,6 +154,8 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
   ngOnDestroy() { this.destroyPanel(); }
 
   @Input() placeholder: string;
+  @Input() okLabel: string = 'Ok';
+  @Input() cancelLabel: string = 'Cancel';
   @Input() tabindex: number = 0;
   @Input() enableDates: Array<Date> = [];
   @Input() disableDates: Array<Date> = [];
@@ -272,6 +274,14 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
 
   get panelOpen(): boolean {
     return this._panelOpen;
+  }
+
+  get getDateLabel(): string {
+    return this._locale.getDateLabel(this.date);
+  }
+
+  get getMonthLabel(): string {
+    return this._locale.getMonthLabel(this.date.getMonth(), this.date.getFullYear());
   }
 
   toggle(): void {

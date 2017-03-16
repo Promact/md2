@@ -33,12 +33,13 @@ summary {
   line-height: 26px;
   border: 0;
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-}
+  background: transparent;
 
-.md2-input:focus {
-  margin-bottom: 7px;
-  border-bottom: 2px solid $primary;
-  outline: none;
+  &:focus {
+    margin-bottom: 7px;
+    border-bottom: 2px solid $primary;
+    outline: none;
+  }
 }
 
 a {
@@ -281,17 +282,19 @@ html, body {
 .main {
   position: relative;
   margin-left: 280px;
-  padding: 0 30px 130px;
+  padding: 60px 30px 130px;
   min-height: 100%;
   box-sizing: border-box;
 
   .toolbar {
-    position: relative;
-    margin: 0 -30px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
     padding: 0 30px;
     color: $white;
     background: rgba($primary, 0.9);
-    box-shadow: 0 0 8px rgba($black, 0.3);
+    box-shadow: 0 1px 8px rgba($black, 0.3);
 
     .sidenav-toggle {
       position: relative;
@@ -410,7 +413,6 @@ html, body {
       position: fixed;
       top: 0;
       width: 100%;
-      margin: 0 -15px;
       padding: 0 15px;
       z-index: 111;
       box-sizing: border-box;

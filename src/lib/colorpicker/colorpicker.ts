@@ -175,8 +175,10 @@ export class Md2ColorChange {
     host: {
         'role': 'colorpicker',
         '[id]': 'id',
-        '[tabindex]': 'disabled ? -1 : tabindex',
+        '[class.color-focus]': 'inputFocused || !disabled',
         '[class.md2-colorpicker-disabled]': 'disabled',
+        '[attr.aria-label]': 'placeholder',
+        '[attr.aria-required]': 'required.toString()',
     },
     encapsulation: ViewEncapsulation.None
 })
@@ -215,11 +217,14 @@ export class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
 
     /** Whether the select is disabled.  */
     private _disabled: boolean = false;
+    isInputFocus: boolean = false;
 
     /** The placeholder displayed in the trigger of the select. */
-    private _placeholder: string = 'daa';
+    private _placeholder: string = 'Color';
     private fontColor: string;
     private backAreaColor: string;
+
+    private isInputValidColor: boolean = false;
 
     _onChange = (value: any) => { };
     _onTouched = () => { };
@@ -243,7 +248,6 @@ export class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
     set disabled(value: any) {
         this._disabled = coerceBooleanProperty(value);
     }
-
     @Input('format') cFormat: string = 'hex';
     @Output('colorpickerChange') colorpickerChange = new EventEmitter<string>();
     /** Event emitted when the selected date has been changed by the user. */
@@ -265,6 +269,14 @@ export class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
             }
             this._innerValue = v;
         }
+    }
+
+    get setGradient() {
+        return {
+            'background-image': 'linear-gradient(to right, transparent, transparent),' +
+            'linear-gradient(to left, ' + this.hexText + ', rgba(255, 255, 255, 0))'
+        };
+
     }
 
     /** Event emitted when the select has been opened. */
@@ -299,8 +311,9 @@ export class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
 
     /** Opens the overlay panel. */
     open(): void {
-        let hsva = this.service.stringToHsva(this.color);
-        if (hsva !== null) {
+        let hsva = this.service.stringToHsva(this.color + '');
+        this.isInputFocus = true;
+        if (hsva) {
             this.hsva = hsva;
         } else {
             this.hsva = this.service.stringToHsva(this._defalutColor);
@@ -336,6 +349,7 @@ export class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
     /** Closes the overlay panel and focuses the host element. */
     close(): void {
         this._panelOpen = false;
+        this.isInputFocus = false;
         if (this._overlayRef) {
             this._overlayRef.detach();
             this._backdropSubscription.unsubscribe();
@@ -359,6 +373,7 @@ export class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
     }
 
     _onFocus() {
+
     }
 
     _onBlur() {
@@ -429,7 +444,9 @@ export class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
     }
     clickOk() {
         this._isColorpickerVisible = false;
+        this.isInputValidColor = false;
         this.color = this._innerValue;
+
         if (this._innerValue != this._initialColor) {
             this._emitChangeEvent();
         }
@@ -508,6 +525,12 @@ export class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
         this._innerValue = this.outputColor;
     }
 
+    clearColor(event: Event) {
+        event.stopPropagation();
+        this.color = '';
+        this._emitChangeEvent();
+    }
+
     isDescendant(parent: any, child: any) {
         var node = child.parentNode;
         while (node !== null) {
@@ -519,6 +542,18 @@ export class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
         return false;
     }
 
+    checkInputVal(event: Event): void {
+        this.hsva = this.service.stringToHsva(this.color + '');
+        this.isInputFocus = false;
+        if (this.hsva) {
+            if (this._innerValue !== this.color) {
+                this._emitChangeEvent();
+            }
+            this.isInputValidColor = false;
+        } else {
+            this.isInputValidColor = true;
+        }
+    }
 
     /** Emits an event when the user selects a color. */
     _emitChangeEvent(): void {
@@ -594,13 +629,14 @@ export const MD2_COLORPICKER_DIRECTIVES = [
 @NgModule({
     declarations: MD2_COLORPICKER_DIRECTIVES,
     imports: [CommonModule, FormsModule, OverlayModule, PortalModule],
-    exports: MD2_COLORPICKER_DIRECTIVES
+    exports: MD2_COLORPICKER_DIRECTIVES,
+    providers: [ColorpickerService]
 })
 export class Md2ColorpickerModule {
     static forRoot(): ModuleWithProviders {
         return {
             ngModule: Md2ColorpickerModule,
-            providers: [ColorpickerService]
+            providers: []
         };
     }
 }

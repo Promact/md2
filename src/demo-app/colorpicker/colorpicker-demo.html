@@ -1,14 +1,18 @@
 <div class="demo-colorpicker">
     <h1>Colorpicker Demo</h1>
     <hr />
-    <h4>Color Picker</h4>  
+    <h4>Color Picker</h4>
     <div>
-        <md2-colorpicker [(ngModel)]="_color" (change)="handleChange($event)">
-        </md2-colorpicker> 
+        <md2-colorpicker [(ngModel)]="_color" (change)="handleChange($event)" [required]="isRequired"
+                         [disabled]="isDisabled" #colorpickerControl="ngModel">
+        </md2-colorpicker>
     </div>
-    <h4>Disabled</h4>
-    <div>
-        <md2-colorpicker [(ngModel)]="_color2" (change)="handleChange($event)" [disabled]="true">
-        </md2-colorpicker> 
-    </div>
+    <p> Value: {{ _color }} </p>
+    <p> Touched: {{ colorpickerControl.touched }} </p>
+    <p> Dirty: {{ colorpickerControl.dirty }} </p>
+    <p> Status: {{ colorpickerControl.control?.status }} </p>
+    <button type="button" button="primary" (click)="_color='#234321'">SET VALUE</button>
+    <button type="button" button="primary" (click)="isRequired=!isRequired">TOGGLE REQUIRED</button>
+    <button type="button" button="primary" (click)="isDisabled=!isDisabled">TOGGLE DISABLED</button>
+    <button type="button" button="primary" (click)="colorpickerControl.reset()">RESET</button>
 </div>

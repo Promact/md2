@@ -518,6 +518,7 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
   _clearValue(event: Event) {
     event.stopPropagation();
     this.value = null;
+    this._emitChangeEvent();
   }
 
   /**

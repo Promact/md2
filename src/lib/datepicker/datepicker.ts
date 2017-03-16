@@ -168,23 +168,40 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
   overlapTrigger: boolean = true;
 
   @Input()
+  get type() { return this._type; }
+  set type(value: Type) {
+    this._type = value || 'date';
+  }
+
+  @Input()
+  get format() {
+    return this._format || (this.type === 'date' ?
+      'dd/MM/y' : this.type === 'time' ? 'HH:mm' : this.type === 'datetime' ?
+        'dd/MM/y HH:mm' : 'dd/MM/y');
+  }
+  set format(value: string) {
+    if (this._format !== value) { this._format = value; }
+  }
+
+  @Input()
+  get mode() { return this._mode; }
+  set mode(value: Mode) {
+    this._mode = value || 'auto';
+  }
+
+  @Input()
+  get container() { return this._container; }
+  set container(value: Container) {
+    if (this._container !== value) {
+      this._container = value || 'inline';
+      this.destroyPanel();
+    }
+  }
+
+  @Input()
   get value() { return this._value; }
   set value(value: Date) {
     this._value = this.coerceDateProperty(value);
-    if (value && value !== this._value) {
-      if (this._locale.isValidDate(value)) {
-        this._value = value;
-      } else {
-        if (this.type === 'time') {
-          let t = value + '';
-          this._value = new Date();
-          this._value.setHours(parseInt(t.substring(0, 2)));
-          this._value.setMinutes(parseInt(t.substring(3, 5)));
-        } else {
-          this._value = new Date(value);
-        }
-      }
-    }
     this.date = this._value;
   }
 
@@ -213,39 +230,8 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
   }
 
   @Input()
-  get type() { return this._type; }
-  set type(value: Type) {
-    this._type = value || 'date';
-  }
-
-  @Input()
-  get mode() { return this._mode; }
-  set mode(value: Mode) {
-    this._mode = value || 'auto';
-  }
-
-  @Input()
-  get container() { return this._container; }
-  set container(value: Container) {
-    if (this._container !== value) {
-      this._container = value || 'inline';
-      this.destroyPanel();
-    }
-  }
-
-  @Input()
   get selected() { return this._selected; }
   set selected(value: Date) { this._selected = value; }
-
-  @Input()
-  get format() {
-    return this._format || (this.type === 'date' ?
-      'dd/MM/y' : this.type === 'time' ? 'HH:mm' : this.type === 'datetime' ?
-        'dd/MM/y HH:mm' : 'dd/MM/y');
-  }
-  set format(value: string) {
-    if (this._format !== value) { this._format = value; }
-  }
 
   @Input()
   get required(): boolean { return this._required; }
@@ -366,10 +352,22 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     this._renderer.invokeElementMethod(this._element.nativeElement, 'focus');
   }
 
-  private coerceDateProperty(value: any, fallbackValue = new Date()): Date {
-    let timestamp = Date.parse(value);
-    fallbackValue = null;
-    return isNaN(timestamp) ? fallbackValue : new Date(timestamp);
+  private coerceDateProperty(value: any): Date {
+    let v: Date = null;
+    if (this._locale.isValidDate(value)) {
+      v = value;
+    } else {
+      if (value && this.type === 'time') {
+        let t = value + '';
+        v = new Date();
+        v.setHours(parseInt(t.substring(0, 2)));
+        v.setMinutes(parseInt(t.substring(3, 5)));
+      } else {
+        let timestamp = Date.parse(value);
+        v = isNaN(timestamp) ? null : new Date(timestamp);
+      }
+    }
+    return v;
   }
 
   @HostListener('click', ['$event'])

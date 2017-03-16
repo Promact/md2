@@ -12,6 +12,8 @@ Datepicker allow the user to select date and time.
 | `min` | `date` | The min date of Datepicker. |
 | `max` | `date` | The max date of Datepicker. |
 | `placeholder` | `string` | Datepicker placeholder label |
+| `okLabel` | `string` | Datepicker Ok label |
+| `cancelLabel` | `string` | Datepicker Cancel label |
 | `format` | `string` | The date format of datepicker |
 | `tabindex` | `number` | The tabIndex of the datepicker. |
 | `openOnFocus` | `boolean` | Opend Calendar Whether or not the datepicker is openOnFocus. |

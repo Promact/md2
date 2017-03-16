@@ -1,22 +1,29 @@
 import {
-  NgModule,
-  ModuleWithProviders,
   Directive,
   ElementRef,
   Input,
+  Inject,
   NgZone,
   OnChanges,
   SimpleChanges,
   OnDestroy,
+  OpaqueToken,
+  Optional,
 } from '@angular/core';
 import {RippleConfig, RippleRenderer} from './ripple-renderer';
-import {CompatibilityModule} from '../compatibility/compatibility';
-import {ViewportRuler, VIEWPORT_RULER_PROVIDER} from '../overlay/position/viewport-ruler';
-import {SCROLL_DISPATCHER_PROVIDER} from '../overlay/scroll/scroll-dispatcher';
+import {ViewportRuler} from '../overlay/position/viewport-ruler';
+import {RippleRef} from './ripple-ref';
 
+/** OpaqueToken that can be used to specify the global ripple options. */
+export const MD_RIPPLE_GLOBAL_OPTIONS = new OpaqueToken('md-ripple-global-options');
+
+export type RippleGlobalOptions = {
+  disabled?: boolean;
+  baseSpeedFactor?: number;
+};
 
 @Directive({
-  selector: '[md-ripple], [mat-ripple]',
+  selector: '[md-ripple], [mat-ripple], [mdRipple], [matRipple]',
   exportAs: 'mdRipple',
   host: {
     '[class.mat-ripple]': 'true',
@@ -68,8 +75,18 @@ export class MdRipple implements OnChanges, OnDestroy {
   /** Renderer for the ripple DOM manipulations. */
   private _rippleRenderer: RippleRenderer;
 
-  constructor(elementRef: ElementRef, ngZone: NgZone, ruler: ViewportRuler) {
+  /** Options that are set globally for all ripples. */
+  private _globalOptions: RippleGlobalOptions;
+
+  constructor(
+    elementRef: ElementRef,
+    ngZone: NgZone,
+    ruler: ViewportRuler,
+    // Type needs to be `any` because of https://github.com/angular/angular/issues/12631
+    @Optional() @Inject(MD_RIPPLE_GLOBAL_OPTIONS) globalOptions: any
+  ) {
     this._rippleRenderer = new RippleRenderer(elementRef, ngZone, ruler);
+    this._globalOptions = globalOptions ? globalOptions : {};
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -77,7 +94,7 @@ export class MdRipple implements OnChanges, OnDestroy {
       this._rippleRenderer.setTriggerElement(this.trigger);
     }
 
-    this._rippleRenderer.rippleDisabled = this.disabled;
+    this._rippleRenderer.rippleDisabled = this._globalOptions.disabled || this.disabled;
     this._rippleRenderer.rippleConfig = this.rippleConfig;
   }
 
@@ -87,35 +104,22 @@ export class MdRipple implements OnChanges, OnDestroy {
   }
 
   /** Launches a manual ripple at the specified position. */
-  launch(pageX: number, pageY: number, config = this.rippleConfig) {
-    this._rippleRenderer.fadeInRipple(pageX, pageY, config);
+  launch(pageX: number, pageY: number, config = this.rippleConfig): RippleRef {
+    return this._rippleRenderer.fadeInRipple(pageX, pageY, config);
+  }
+
+  /** Fades out all currently showing ripple elements. */
+  fadeOutAll() {
+    this._rippleRenderer.fadeOutAll();
   }
 
   /** Ripple configuration from the directive's input values. */
   get rippleConfig(): RippleConfig {
     return {
       centered: this.centered,
-      speedFactor: this.speedFactor,
+      speedFactor: this.speedFactor * (this._globalOptions.baseSpeedFactor || 1),
       radius: this.radius,
       color: this.color
-    };
-  }
-
-}
-
-
-@NgModule({
-  imports: [CompatibilityModule],
-  exports: [MdRipple, CompatibilityModule],
-  declarations: [MdRipple],
-  providers: [VIEWPORT_RULER_PROVIDER, SCROLL_DISPATCHER_PROVIDER],
-})
-export class MdRippleModule {
-  /** @deprecated */
-  static forRoot(): ModuleWithProviders {
-    return {
-      ngModule: MdRippleModule,
-      providers: []
     };
   }
 }

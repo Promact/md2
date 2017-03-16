@@ -15,6 +15,7 @@ import {
   NgZone,
   Optional,
   OnDestroy,
+  Renderer,
   OnInit,
   ViewEncapsulation,
   ChangeDetectorRef
@@ -28,11 +29,13 @@ import {
   OverlayConnectionPosition,
   OriginConnectionPosition,
   CompatibilityModule,
+  PlatformModule,
 } from '../core';
 import { Md2TooltipInvalidPositionError } from './tooltip-errors';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { Dir } from '../core/rtl/dir';
+import { Platform } from '../core/platform/index';
 import 'rxjs/add/operator/first';
 import { ScrollDispatcher } from '../core/overlay/scroll/scroll-dispatcher';
 import { Subscription } from 'rxjs/Subscription';
@@ -56,8 +59,6 @@ export const SCROLL_THROTTLE_MS = 20;
   host: {
     '(longpress)': 'show()',
     '(touchend)': 'hide(' + TOUCHEND_HIDE_DELAY + ')',
-    '(mouseenter)': 'show()',
-    '(mouseleave)': 'hide()',
   },
   exportAs: 'md2Tooltip',
 })
@@ -101,16 +102,26 @@ export class Md2Tooltip implements OnInit, OnDestroy {
   }
 
   constructor(private _overlay: Overlay,
-    private _scrollDispatcher: ScrollDispatcher,
     private _elementRef: ElementRef,
+    private _scrollDispatcher: ScrollDispatcher,
     private _viewContainerRef: ViewContainerRef,
     private _ngZone: NgZone,
-    @Optional() private _dir: Dir) { }
+    private _renderer: Renderer,
+    private _platform: Platform,
+    @Optional() private _dir: Dir) {
+
+    // The mouse events shouldn't be bound on iOS devices, because
+    // they can prevent the first tap from firing it's click event.
+    if (!_platform.IOS) {
+      _renderer.listen(_elementRef.nativeElement, 'mouseenter', () => this.show());
+      _renderer.listen(_elementRef.nativeElement, 'mouseleave', () => this.hide());
+    }
+  }
 
   ngOnInit() {
     // When a scroll on the page occurs, update the position in case this tooltip needs
     // to be repositioned.
-    this.scrollSubscription = this._scrollDispatcher.scrolled(SCROLL_THROTTLE_MS).subscribe(() => {
+    this.scrollSubscription = this._scrollDispatcher.scrolled(SCROLL_THROTTLE_MS, () => {
       if (this._overlayRef) {
         this._overlayRef.updatePosition();
       }
@@ -125,7 +136,9 @@ export class Md2Tooltip implements OnInit, OnDestroy {
       this._disposeTooltip();
     }
 
-    this.scrollSubscription.unsubscribe();
+    if (this.scrollSubscription) {
+      this.scrollSubscription.unsubscribe();
+    }
   }
 
   /** Shows the tooltip after the delay in ms, defaults to tooltip-delay-show or 0ms if no input */
@@ -409,7 +422,7 @@ export class Md2TooltipComponent {
 
 
 @NgModule({
-  imports: [OverlayModule, CompatibilityModule],
+  imports: [OverlayModule, CompatibilityModule, PlatformModule],
   exports: [Md2Tooltip, Md2TooltipComponent, CompatibilityModule],
   declarations: [Md2Tooltip, Md2TooltipComponent],
   entryComponents: [Md2TooltipComponent],

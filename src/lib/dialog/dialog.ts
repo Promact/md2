@@ -25,10 +25,17 @@ import {
   OverlayModule,
   TemplatePortalDirective
 } from '../core/core';
+import { extendObject } from '../core/util/object-extend';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/first';
 
 export type DialogVisibility = 'initial' | 'visible' | 'hidden';
+export type DialogRole = 'dialog' | 'alertdialog';
+
+export class Md2DialogConfig {
+  role?: DialogRole = 'dialog';
+  disableClose?: boolean = false;
+}
 
 @Directive({ selector: '[md2DialogPortal]' })
 export class Md2DialogPortal extends TemplatePortalDirective {
@@ -37,11 +44,24 @@ export class Md2DialogPortal extends TemplatePortalDirective {
   }
 }
 
+/**
+ * Title of a dialog element. Stays fixed to the top of the dialog when scrolling.
+ */
 @Directive({ selector: 'md2-dialog-title' })
 export class Md2DialogTitle { }
 
-@Directive({ selector: 'md2-dialog-footer' })
-export class Md2DialogFooter { }
+/**
+ * Scrollable content container of a dialog.
+ */
+@Directive({ selector: 'md2-dialog-content' })
+export class Md2DialogContent { }
+
+/**
+ * Container for the bottom action buttons in a dialog.
+ * Stays fixed to the bottom when scrolling.
+ */
+@Directive({ selector: 'md2-dialog-footer, md2-dialog-actions' })
+export class Md2DialogActions { }
 
 @Component({
   moduleId: module.id,
@@ -50,6 +70,7 @@ export class Md2DialogFooter { }
   styleUrls: ['dialog.css'],
   host: {
     'tabindex': '0',
+    '[attr.role]': 'config?.role',
     '(body:keydown.esc)': '_handleEscKeydown($event)'
   },
   animations: [
@@ -70,6 +91,7 @@ export class Md2Dialog implements OnDestroy {
   private _panelOpen = false;
   private _overlayRef: OverlayRef = null;
   private _backdropSubscription: Subscription;
+  config: Md2DialogConfig;
 
   /** Property watched by the animation framework to show or hide the dialog */
   _visibility: DialogVisibility = 'initial';
@@ -87,7 +109,8 @@ export class Md2Dialog implements OnDestroy {
   ngOnDestroy() { this.destroyPanel(); }
 
   /** Open the dialog */
-  open(): Promise<Md2Dialog> {
+  open(config?: Md2DialogConfig): Promise<Md2Dialog> {
+    this.config = _applyConfigDefaults(config);
     if (this._panelOpen) {
       return Promise.resolve<Md2Dialog>(this);
     }
@@ -105,7 +128,9 @@ export class Md2Dialog implements OnDestroy {
     this._panelOpen = false;
     if (this._overlayRef) {
       this._overlayRef.detach();
-      this._backdropSubscription.unsubscribe();
+      if (this._backdropSubscription) {
+        this._backdropSubscription.unsubscribe();
+      }
     }
     return Promise.resolve<Md2Dialog>(this);
   }
@@ -129,13 +154,15 @@ export class Md2Dialog implements OnDestroy {
   }
 
   _handleEscKeydown(event: KeyboardEvent) {
-    this.close();
+    if (this._panelOpen && !this.config.disableClose) {
+      this.close();
+    }
   }
 
   private _subscribeToBackdrop(): void {
-    this._backdropSubscription = this._overlayRef.backdropClick().subscribe(() => {
-      this.close();
-    });
+    if (!this.config.disableClose) {
+      this._backdropSubscription = this._overlayRef.backdropClick().first().subscribe(() => this.close());
+    }
   }
 
   private _createOverlay(): void {
@@ -159,10 +186,20 @@ export class Md2Dialog implements OnDestroy {
 
 }
 
+/**
+ * Applies default options to the dialog config.
+ * @param dialogConfig Config to be modified.
+ * @returns The new configuration object.
+ */
+function _applyConfigDefaults(dialogConfig: Md2DialogConfig): Md2DialogConfig {
+  return extendObject(new Md2DialogConfig(), dialogConfig);
+}
+
 export const MD2_DIALOG_DIRECTIVES: any[] = [
   Md2Dialog,
   Md2DialogTitle,
-  Md2DialogFooter,
+  Md2DialogContent,
+  Md2DialogActions,
   Md2DialogPortal
 ];
 

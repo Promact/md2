@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Md2Dialog } from 'md2';
 
 @Component({
   moduleId: module.id,
@@ -8,21 +9,11 @@ import { Component } from '@angular/core';
 export class DialogDemo {
   dialogHeader: string = 'Lorum Ipsum';
 
-  launchDialog(dialog: any) {
-    dialog.open();
-  }
-
-  open(dialog: any) {
+  open(dialog: Md2Dialog) {
     dialog.open();
   }
 
   close(dialog: any) {
     dialog.close();
   }
-
-  openAlert(event: Event) { }
-  openConfirm(event: Event) { }
-  openPrompt(event: Event) { }
-  openAdvanced(event: Event) { }
-  openTabDialog(event: Event) { }
 }

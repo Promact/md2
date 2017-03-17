@@ -7,8 +7,8 @@
     </div>
     <div class="content">
       <button button="primary" (click)="open(alert)">Alert Dialog</button>
-      <button button="primary" (click)="confirm.open()">Confirm Dialog</button>
-      <button button="primary" (click)="custom.open()">Custom Dialog</button>
+      <button button="primary" (click)="open(confirm)">Confirm Dialog</button>
+      <button button="primary" (click)="open(custom)">Custom Dialog</button>
     </div>
   </div>
   <md2-dialog #alert>
@@ -53,7 +53,7 @@
     </md2-dialog-footer>
   </md2-dialog>
   <md2-dialog #custom [title]="dialogHeader">
-    <button button="primary" flex="auto" (click)="custom1.open()">Custom Dialog</button>
+    <button button="primary" flex="auto" (click)="open(custom1)">Custom Dialog</button>
     <input type="text" class="md2-input" [(ngModel)]="dialogHeader" />
     <p>
       The mango is a juicy stone fruit belonging to the genus Mangifera, consisting of numerous
@@ -75,5 +75,9 @@
       Bangladesh. In several cultures, its fruit and leaves are ritually used as floral
       decorations at weddings, public celebrations, and religious ceremonies.
     </p>
+    <md2-dialog-footer>
+      <button button="primary" (click)="close(custom)">Ok</button>
+      <button button (click)="close(custom)">Cancel</button>
+    </md2-dialog-footer>
   </md2-dialog>
 </div>

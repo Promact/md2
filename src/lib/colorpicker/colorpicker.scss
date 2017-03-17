@@ -70,7 +70,11 @@ $warn: #f44336 !default;
   color: $primary;
   border-color: $primary;
 }
-
+.inline-control {
+    width: 150px;
+    margin-right: 16px;
+    padding: 16px 0;
+}
 .md2-colorpicker-placeholder {
   position: absolute;
   right: 18px;

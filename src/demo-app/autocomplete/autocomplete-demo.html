@@ -5,8 +5,9 @@
     <div class="header">
       <h3 class="title">Basic Autocomplete</h3>
     </div>
-    <div class="content">
-      <md2-autocomplete [items]="items"
+    <form class="content">
+      <md2-autocomplete name="city"
+                        [items]="items"
                         item-text="name"
                         item-value="value"
                         placeholder="Select City"
@@ -22,6 +23,6 @@
       <button type="button" button="primary" (click)="isRequired=!isRequired">TOGGLE REQUIRED</button>
       <button type="button" button="primary" (click)="isDisabled=!isDisabled">TOGGLE DISABLED</button>
       <button type="button" button="primary" (click)="autocompleteControl.reset()">RESET</button>
-    </div>
+    </form>
   </div>
 </div>

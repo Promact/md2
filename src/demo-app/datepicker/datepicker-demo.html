@@ -5,8 +5,9 @@
     <div class="header">
       <h3 class="title">Basic Date Picker</h3>
     </div>
-    <div class="content">
-      <md2-datepicker placeholder="Select Date"
+    <form class="content">
+      <md2-datepicker name="birthdate"
+                      placeholder="Select Date"
                       [(ngModel)]="date"
                       [required]="isRequired"
                       [disabled]="isDisabled"
@@ -27,17 +28,17 @@
       <p> Status: {{ dateControl.control?.status }} </p>
       <div>
         <div class="inline-control">
-          <md2-select [(ngModel)]="type" placeholder="Picker Type">
+          <md2-select name="type" [(ngModel)]="type" placeholder="Picker Type">
             <md2-option *ngFor="let t of types" [value]="t.value">{{ t.text }}</md2-option>
           </md2-select>
         </div>
         <div class="inline-control">
-          <md2-select [(ngModel)]="mode" placeholder="Picker Mode">
+          <md2-select name="mode" [(ngModel)]="mode" placeholder="Picker Mode">
             <md2-option *ngFor="let m of modes" [value]="m.value">{{ m.text }}</md2-option>
           </md2-select>
         </div>
         <div class="inline-control">
-          <md2-select [(ngModel)]="container" placeholder="Picker Container">
+          <md2-select name="container" [(ngModel)]="container" placeholder="Picker Container">
             <md2-option *ngFor="let c of containers" [value]="c.value">{{ c.text }}</md2-option>
           </md2-select>
         </div>
@@ -51,6 +52,6 @@
         <button type="button" button="primary" (click)="openDatepicker()">OPEN DATEPICKER</button>
         <button type="button" button="primary" (click)="dateControl.reset()">RESET</button>
       </div>
-    </div>
+    </form>
   </div>
 </div>

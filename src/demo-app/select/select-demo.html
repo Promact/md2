@@ -5,8 +5,9 @@
     <div class="header">
       <h3 class="title">Basic Select</h3>
     </div>
-    <div class="content">
-      <md2-select placeholder="Select City"
+    <form class="content">
+      <md2-select name="city"
+                  placeholder="Select City"
                   [(ngModel)]="item"
                   [required]="isRequired"
                   [disabled]="isDisabled"
@@ -21,14 +22,15 @@
       <button type="button" button="primary" (click)="isRequired=!isRequired">TOGGLE REQUIRED</button>
       <button type="button" button="primary" (click)="isDisabled=!isDisabled">TOGGLE DISABLED</button>
       <button type="button" button="primary" (click)="selectControl.reset()">RESET</button>
-    </div>
+    </form>
   </div>
   <div class="card">
     <div class="header">
       <h3 class="title">Multiple Select</h3>
     </div>
-    <div class="content">
-      <md2-select placeholder="Select City"
+    <form class="content">
+      <md2-select name="city"
+                  placeholder="Select City"
                   [(ngModel)]="itemMultiple"
                   [multiple]="true"
                   [disabled]="isDisabledMultiple"
@@ -42,6 +44,6 @@
       <button type="button" button="primary" (click)="setValue()">SET VALUE</button>
       <button type="button" button="primary" (click)="isDisabledMultiple=!isDisabledMultiple">TOGGLE DISABLED</button>
       <button type="button" button="primary" (click)="selectMultipleControl.reset()">RESET</button>
-    </div>
+    </form>
   </div>
 </div>

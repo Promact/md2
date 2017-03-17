@@ -5,8 +5,9 @@
     <div class="header">
       <h3 class="title">Basic Tags</h3>
     </div>
-    <div class="content">
-      <md2-tags placeholder="Add new Tag"
+    <form class="content">
+      <md2-tags name="tag"
+                placeholder="Add new Tag"
                 [(ngModel)]="tag"
                 [md2-tags]="tags"
                 md2-tag-text="name"
@@ -20,6 +21,6 @@
       <!--<button type="button" button="primary" (click)="isRequired=!isRequired">TOGGLE REQUIRED</button>-->
       <button type="button" button="primary" (click)="isDisabled=!isDisabled">TOGGLE DISABLED</button>
       <button type="button" button="primary" (click)="tagsControl.reset()">RESET</button>
-    </div>
+    </form>
   </div>
 </div>

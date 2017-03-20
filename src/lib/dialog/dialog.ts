@@ -3,6 +3,8 @@ import {
   Output,
   Input,
   EventEmitter,
+  Optional,
+  SkipSelf,
   ViewChild,
   ViewEncapsulation,
   OnDestroy,
@@ -19,6 +21,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
+  ESCAPE,
   Overlay,
   OverlayState,
   OverlayRef,
@@ -71,7 +74,6 @@ export class Md2DialogActions { }
   host: {
     'tabindex': '0',
     '[attr.role]': 'config?.role',
-    '(body:keydown.esc)': '_handleEscKeydown($event)'
   },
   animations: [
     trigger('state', [
@@ -88,6 +90,8 @@ export class Md2DialogActions { }
 })
 export class Md2Dialog implements OnDestroy {
 
+  private _openDialogsAtThisLevel: Array<any> = [];
+  private _boundKeydown = this._handleKeydown.bind(this);
   private _panelOpen = false;
   private _overlayRef: OverlayRef = null;
   private _backdropSubscription: Subscription;
@@ -96,7 +100,8 @@ export class Md2Dialog implements OnDestroy {
   /** Property watched by the animation framework to show or hide the dialog */
   _visibility: DialogVisibility = 'initial';
 
-  constructor(private _overlay: Overlay) { }
+  constructor(private _overlay: Overlay,
+    @Optional() @SkipSelf() private _parentDialog: Md2Dialog) { }
 
   @Output() onOpen: EventEmitter<Md2Dialog> = new EventEmitter<Md2Dialog>();
   @Output() onClose: EventEmitter<any> = new EventEmitter<any>();
@@ -108,6 +113,10 @@ export class Md2Dialog implements OnDestroy {
 
   ngOnDestroy() { this.destroyPanel(); }
 
+  get _openDialogs(): Array<any> {
+    return this._parentDialog ? this._parentDialog._openDialogs : this._openDialogsAtThisLevel;
+  }
+
   /** Open the dialog */
   open(config?: Md2DialogConfig): Promise<Md2Dialog> {
     this.config = _applyConfigDefaults(config);
@@ -117,6 +126,12 @@ export class Md2Dialog implements OnDestroy {
     this._createOverlay();
     this._overlayRef.attach(this._portal);
     this._subscribeToBackdrop();
+
+    if (!this._openDialogs.length && !this._parentDialog) {
+      document.addEventListener('keydown', this._boundKeydown);
+    }
+
+    this._openDialogs.push(this);
     this._panelOpen = true;
     this._visibility = 'visible';
     return Promise.resolve<Md2Dialog>(this);
@@ -130,6 +145,17 @@ export class Md2Dialog implements OnDestroy {
       this._overlayRef.detach();
       if (this._backdropSubscription) {
         this._backdropSubscription.unsubscribe();
+      }
+    }
+
+    let index = this._openDialogs.indexOf(this);
+
+    if (index > -1) {
+      this._openDialogs.splice(index, 1);
+
+      // no open dialogs are left, call next on afterAllClosed Subject
+      if (!this._openDialogs.length) {
+        document.removeEventListener('keydown', this._boundKeydown);
       }
     }
     return Promise.resolve<Md2Dialog>(this);
@@ -153,9 +179,12 @@ export class Md2Dialog implements OnDestroy {
     }
   }
 
-  _handleEscKeydown(event: KeyboardEvent) {
-    if (this._panelOpen && !this.config.disableClose) {
-      this.close();
+  _handleKeydown(event: KeyboardEvent) {
+    let topDialog = this._openDialogs[this._openDialogs.length - 1];
+
+    if (event.keyCode === ESCAPE && topDialog &&
+      !topDialog.config.disableClose) {
+      topDialog.close();
     }
   }
 

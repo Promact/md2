@@ -4,7 +4,14 @@ import { Component } from '@angular/core';
   moduleId: module.id,
   selector: 'datepicker-demo',
   templateUrl: 'datepicker-demo.html',
-  styles: [` .inline-control { display: inline-block; width: 150px; margin-right: 16px; padding: 16px 0; } `]
+  styles: [`
+    .inline-control {
+      display: inline-block;
+      width: 150px;
+      margin-right: 16px;
+      padding: 16px 0;
+    }
+  `]
 })
 export class DatepickerDemo {
   isRequired = false;

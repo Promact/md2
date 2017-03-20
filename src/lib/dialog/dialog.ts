@@ -190,7 +190,8 @@ export class Md2Dialog implements OnDestroy {
 
   private _subscribeToBackdrop(): void {
     if (!this.config.disableClose) {
-      this._backdropSubscription = this._overlayRef.backdropClick().first().subscribe(() => this.close());
+      this._backdropSubscription = this._overlayRef.backdropClick().first().subscribe(() =>
+        this.close());
     }
   }
 

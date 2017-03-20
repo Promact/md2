@@ -48,3 +48,21 @@ A datepicker would have the following markup.
 | hour      | `H`    | -      | -          | -                | H(13)   | HH(13)  |
 | minute    | `m`    | -      | -          | -                | m(5)    | mm(05)  |
 | second    | `s`    | -      | -          | -                | s(5)    | ss(05)  |
+
+
+### Keyboard Navigation
+
+Focus can be moved with the following keys:
+
+| Key | Description |
+| --- | --- |
+| LEFT_ARROW | a day backward |
+| RIGHT_ARROW | a day forward |
+| UP_ARROW | a week backward |
+| DOWN_ARROW | a week forward |
+| HOME | focus first day of the month |
+| END | focus last day of the month |
+| PAGE_UP | a month backward |
+| PAGE_DOWN | a month forward |
+| SHIFT + PAGE_UP | a year backward |
+| SHIFT + PAGE_DOWN | a year forward |

@@ -9,15 +9,20 @@
       <p class="text-center">
         <button type="button"
                 button="primary"
-                tooltip="to see a tooltip"
+                [tooltip]="tooltip"
                 [tooltip-position]="position"
                 [tooltip-delay]="delay * 1000">
           Mouse over here
         </button>
       </p>
       <p>
+        <strong>Tooltip Message</strong><br />
+        <input type="text" name="message" class="md2-input" [(ngModel)]="tooltip" />
+        <br />
+      </p>
+      <p>
         <strong>Tooltip Delay</strong><br />
-        Seconds: <input type="number" name="delay" class="md2-input" [(ngModel)]="delay" />
+        <input type="number" name="delay" class="md2-input" [(ngModel)]="delay" /> Second(s)
         <br />
       </p>
       <p>

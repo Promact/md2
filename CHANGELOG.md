@@ -1,3 +1,26 @@
+<a name="0.0.17"></a>
+## [0.0.17](https://github.com/Promact/md2/compare/0.0.16...v0.0.17) (2017-03-20)
+
+
+### Bug Fixes
+
+* fix datepicker issues #56, #117, #122
+* fix colorpicker issues
+* update Accordion Animations
+* fix(collapse) update performance and added events
+* fix (chips) placeholder issue
+* fix(datepicker) update overlay issue
+* fix(tooltip) alignment and wrap text issue #126
+* fix(dialog) update escape key to close dialog issue
+
+
+### Features
+* chore(datepicker) added mode and container
+* chore(datepicker) added feature to user can able to clear the selected date value
+* chore(color picker) integrate colorpicker container configure
+* chore(dialog) initialized dialog configurations
+
+
 <a name="0.0.16"></a>
 ## [0.0.16](https://github.com/Promact/md2/compare/0.0.15...v0.0.16) (2017-02-28)
 

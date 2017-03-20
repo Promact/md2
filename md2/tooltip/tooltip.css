@@ -8,7 +8,8 @@ md2-tooltip {
   font-size: 10px;
   margin: 14px;
   max-width: 250px;
-  background: rgba(97, 97, 97, 0.9); }
+  background: rgba(97, 97, 97, 0.9);
+  word-wrap: break-word; }
 
 .cdk-overlay-container, .cdk-global-overlay-wrapper {
   pointer-events: none;

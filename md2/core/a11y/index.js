@@ -8,7 +8,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import { NgModule } from '@angular/core';
-import { FocusTrap } from './focus-trap';
+import { FocusTrapDirective, FocusTrapDeprecatedDirective, FocusTrapFactory } from './focus-trap';
 import { LIVE_ANNOUNCER_PROVIDER } from './live-announcer';
 import { InteractivityChecker } from './interactivity-checker';
 import { CommonModule } from '@angular/common';
@@ -26,9 +26,9 @@ export var A11yModule = (function () {
     A11yModule = __decorate([
         NgModule({
             imports: [CommonModule, PlatformModule],
-            declarations: [FocusTrap],
-            exports: [FocusTrap],
-            providers: [InteractivityChecker, LIVE_ANNOUNCER_PROVIDER]
+            declarations: [FocusTrapDirective, FocusTrapDeprecatedDirective],
+            exports: [FocusTrapDirective, FocusTrapDeprecatedDirective],
+            providers: [InteractivityChecker, FocusTrapFactory, LIVE_ANNOUNCER_PROVIDER]
         }), 
         __metadata('design:paramtypes', [])
     ], A11yModule);

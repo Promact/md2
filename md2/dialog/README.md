@@ -9,11 +9,10 @@ Dialog allow the user to display content in popup.
 | `title` | `string` | Title of Dialog |
 
 ### Methods
-
-| Name | Description |
-| --- | --- |
-| `open()`/`show()` | Open a Dialog. |
-| `close()` | Close a Dialog. |
+| Name | Argument Type | Description |
+| --- | --- | --- |
+| `open(config?)` | `Md2DialogConfig` | Open a Dialog, config is optional. |
+| `close()` | - | Close a Dialog. |
 
 ### Events
 
@@ -21,6 +20,26 @@ Dialog allow the user to display content in popup.
 | --- | --- | --- |
 | `onOpen` | `Event` | Fired when open the dialog |
 | `onClose` | `Event` | Fired when close the dialog |
+
+## Directives
+
+| Name | Description |
+| --- | --- |
+| `<md2-dialog-title>` | Title of Dialog. |
+| `<md2-dialog-content>` | Content of Dialog. |
+| `<md2-dialog-content>` | Content of Dialog. |
+| `<md2-dialog-footer> or <md2-dialog-actions>` | Footer of Dialog. |
+
+
+### `Md2DialogConfig`
+
+Configuration for opening a modal dialog with the Md2Dialog service.
+
+| Name | Description |
+| --- | --- |
+| `role` | The ARIA role of the dialog element. |
+| `disableClose` | Whether the user can use escape or clicking outside to close a modal. |
+
 
 ### Examples
 A dialog would have the following markup.

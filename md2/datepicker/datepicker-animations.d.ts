@@ -5,3 +5,4 @@ import { AnimationEntryMetadata } from '@angular/core';
  * panel has transformed in.
  */
 export declare const fadeInContent: AnimationEntryMetadata;
+export declare const slideCalendar: AnimationEntryMetadata;

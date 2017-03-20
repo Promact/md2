@@ -13,28 +13,35 @@
   <div class="md2-datepicker-input">
     <span class="md2-datepicker-placeholder" [class.md2-floating-placeholder]="value">{{ placeholder }}</span>
     <span class="md2-datepicker-value">{{ value | date:format }}</span>
-    <span class="md2-datepicker-arrow"></span>
+    <span *ngIf="!value || required || disabled" class="md2-datepicker-arrow"></span>
+    <span *ngIf="value && !required && !disabled"
+          class="md2-datepicker-clear" (click)="_clearValue($event)">
+      <svg viewBox="0 0 24 24" width="20" height="20">
+        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+      </svg>
+    </span>
   </div>
 </div>
 <template portal>
   <div class="md2-datepicker-panel" [@fadeInContent]="'showing'" (@fadeInContent.done)="_onPanelDone()"
        (keydown)="_handleKeydown($event)" [style.transformOrigin]="_transformOrigin"
-       [class.md2-datepicker-panel-done-animating]="_panelDoneAnimating" tabindex="0">
+       [class.md2-datepicker-panel-done-animating]="_panelDoneAnimating" tabindex="0"
+       [attr.container]="container" [attr.mode]="mode">
     <div class="md2-datepicker-header">
       <div class="md2-datepicker-header-year"
+           *ngIf="type!=='time'"
            [class.active]="_isYearsVisible"
-           [class.hidden]="type==='time'"
            (click)="_showYear()">{{ date | date: 'y' }}</div>
       <div class="md2-datepicker-header-date-time">
         <span class="md2-datepicker-header-date"
+              *ngIf="type!=='time'"
               [class.active]="_isCalendarVisible && !_isYearsVisible"
-              [class.hidden]="type==='time'"
               (click)="_showCalendar()">
-          {{ date | date: 'EEE, MMM dd' }}
+          {{ getDateLabel }}
         </span>
         <span class="md2-datepicker-header-time"
-              [class.active]="!_isCalendarVisible"
-              [class.hidden]="type==='date'">
+              *ngIf="type!=='date'"
+              [class.active]="!_isCalendarVisible">
           <span class="md2-datepicker-header-hour"
                 [class.active]="_clockView === 'hour'"
                 (click)="_toggleHours('hour')">{{ date.getHours() }}</span>:<span class="md2-datepicker-header-minute"
@@ -54,7 +61,7 @@
           </div>
         </div>
         <div class="md2-calendar-month" [class.active]="!_isYearsVisible">
-          <div class="md2-calendar-month-header">
+          <div class="md2-calendar-header">
             <div class="md2-button"
                  [class.disabled]="!_isBeforeMonth()"
                  (click)="_isBeforeMonth() && _updateMonth(-1)">
@@ -62,7 +69,7 @@
                 <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
               </svg>
             </div>
-            <div class="md2-calendar-month-year">{{ date | date: 'MMMM y' }}</div>
+            <div class="md2-calendar-month-year" [@slideCalendar]="_calendarState">{{ getMonthLabel }}</div>
             <div class="md2-button"
                  [class.disabled]="!_isAfterMonth()"
                  (click)="_isAfterMonth() && _updateMonth(1)">
@@ -73,7 +80,7 @@
           </div>
           <table class="md2-calendar-dates">
             <thead><tr><th *ngFor="let day of _weekDays">{{day.xshort}}</th></tr></thead>
-            <tbody>
+            <tbody [@slideCalendar]="_calendarState">
               <tr *ngFor="let w of _dates">
                 <td *ngFor="let d of w">
                   <div class="md2-calendar-day"
@@ -84,7 +91,7 @@
                        [class.prev-month]="d.calMonth===_prevMonth"
                        [class.curr-month]="d.calMonth===_currMonth"
                        [class.next-month]="d.calMonth===_nextMonth"
-                       (click)="_onClickDate($event,d)">{{d.dateObj.day}}</div>
+                       (click)="_onClickDate($event,d)">{{d.index}}</div>
                 </td>
               </tr>
             </tbody>
@@ -98,8 +105,8 @@
                  (onHourChange)="_onHourChange($event)"
                  (onMinuteChange)="_onMinuteChange($event)"></md2-clock>
       <div class="md2-datepicker-actions">
-        <div class="md2-button" (click)="close()">Cancel</div>
-        <div class="md2-button" (click)="_onClickOk()">Ok</div>
+        <div class="md2-button" (click)="close()">{{ cancelLabel }}</div>
+        <div class="md2-button" (click)="_onClickOk()">{{ okLabel }}</div>
       </div>
     </div>
   </div>

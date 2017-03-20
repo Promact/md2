@@ -475,7 +475,8 @@ export var Md2Tags = (function () {
                 '[attr.aria-disabled]': 'disabled'
             },
             providers: [MD2_TAGS_CONTROL_VALUE_ACCESSOR],
-            encapsulation: ViewEncapsulation.None
+            encapsulation: ViewEncapsulation.None,
+            exportAs: 'md2Tags'
         }), 
         __metadata('design:paramtypes', [ElementRef])
     ], Md2Tags);

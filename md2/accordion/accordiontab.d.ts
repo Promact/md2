@@ -7,6 +7,7 @@ export declare class Md2AccordionTab {
     private _active;
     header: string;
     active: boolean;
+    readonly slide: string;
     disabled: boolean;
     constructor(_accordion: Md2Accordion);
     /**

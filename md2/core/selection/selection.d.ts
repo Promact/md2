@@ -5,6 +5,7 @@ import { Subject } from 'rxjs/Subject';
  */
 export declare class SelectionModel<T> {
     private _isMulti;
+    private _emitChanges;
     /** Currently-selected values. */
     private _selection;
     /** Keeps track of the deselected options that haven't been emitted by the change event. */
@@ -17,7 +18,7 @@ export declare class SelectionModel<T> {
     readonly selected: T[];
     /** Event emitted when the value has changed. */
     onChange: Subject<SelectionChange<T>>;
-    constructor(_isMulti?: boolean, initiallySelectedValues?: T[]);
+    constructor(_isMulti?: boolean, initiallySelectedValues?: T[], _emitChanges?: boolean);
     /**
      * Selects a value or an array of values.
      */
@@ -27,6 +28,10 @@ export declare class SelectionModel<T> {
      */
     deselect(value: T): void;
     /**
+     * Toggles a value between selected and deselected.
+     */
+    toggle(value: T): void;
+    /**
      * Clears all of the selected values.
      */
     clear(): void;
@@ -35,9 +40,17 @@ export declare class SelectionModel<T> {
      */
     isSelected(value: T): boolean;
     /**
-     * Determines whether the model has a value.
+     * Determines whether the model does not have a value.
      */
     isEmpty(): boolean;
+    /**
+     * Determines whether the model has a value.
+     */
+    hasValue(): boolean;
+    /**
+     * Sorts the selected values based on a predicate function.
+     */
+    sort(predicate?: (a: T, b: T) => number): void;
     /** Emits a change event and clears the records of selected and deselected values. */
     private _emitChangeEvent();
     /** Selects a value. */

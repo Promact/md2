@@ -1,40 +1,49 @@
 <div class="demo-select">
-  <h1>Select Demo</h1>
+  <h1>Select</h1>
   <hr />
-  <h4>Basic Select</h4>
-  <div>
-    <md2-select placeholder="Select City"
-                [(ngModel)]="item"
-                [required]="isRequired"
-                [disabled]="isDisabled"
-                #selectControl="ngModel">
-      <md2-option *ngFor="let i of items" [value]="i.value">{{i.name}}</md2-option>
-    </md2-select>
-    <p> Value: {{ item }} </p>
-    <p> Touched: {{ selectControl.touched }} </p>
-    <p> Dirty: {{ selectControl.dirty }} </p>
-    <p> Status: {{ selectControl.control?.status }} </p>
-    <button type="button" button="primary" (click)="item='2'">SET VALUE</button>
-    <button type="button" button="primary" (click)="isRequired=!isRequired">TOGGLE REQUIRED</button>
-    <button type="button" button="primary" (click)="isDisabled=!isDisabled">TOGGLE DISABLED</button>
-    <button type="button" button="primary" (click)="selectControl.reset()">RESET</button>
+  <div class="card">
+    <div class="header">
+      <h3 class="title">Basic Select</h3>
+    </div>
+    <form class="content">
+      <md2-select name="city"
+                  placeholder="Select City"
+                  [(ngModel)]="item"
+                  [required]="isRequired"
+                  [disabled]="isDisabled"
+                  #selectControl="ngModel">
+        <md2-option *ngFor="let i of items" [value]="i.value">{{i.name}}</md2-option>
+      </md2-select>
+      <p> Value: {{ item }} </p>
+      <p> Touched: {{ selectControl.touched }} </p>
+      <p> Dirty: {{ selectControl.dirty }} </p>
+      <p> Status: {{ selectControl.control?.status }} </p>
+      <button type="button" button="primary" (click)="item='2'">SET VALUE</button>
+      <button type="button" button="primary" (click)="isRequired=!isRequired">TOGGLE REQUIRED</button>
+      <button type="button" button="primary" (click)="isDisabled=!isDisabled">TOGGLE DISABLED</button>
+      <button type="button" button="primary" (click)="selectControl.reset()">RESET</button>
+    </form>
   </div>
-  <hr />
-  <h4>Select Multiple</h4>
-  <div>
-    <md2-select placeholder="Select City"
-                [(ngModel)]="itemMultiple"
-                [multiple]="true"
-                [disabled]="isDisabledMultiple"
-                #selectMultipleControl="ngModel">
-      <md2-option *ngFor="let i of items" [value]="i.value">{{i.name}}</md2-option>
-    </md2-select>
-    <p> Value: {{ itemMultiple }} </p>
-    <p> Touched: {{ selectMultipleControl.touched }} </p>
-    <p> Dirty: {{ selectMultipleControl.dirty }} </p>
-    <p> Status: {{ selectMultipleControl.control?.status }} </p>
-    <button type="button" button="primary" (click)="setValue()">SET VALUE</button>
-    <button type="button" button="primary" (click)="isDisabledMultiple=!isDisabledMultiple">TOGGLE DISABLED</button>
-    <button type="button" button="primary" (click)="selectMultipleControl.reset()">RESET</button>
+  <div class="card">
+    <div class="header">
+      <h3 class="title">Multiple Select</h3>
+    </div>
+    <form class="content">
+      <md2-select name="city"
+                  placeholder="Select City"
+                  [(ngModel)]="itemMultiple"
+                  [multiple]="true"
+                  [disabled]="isDisabledMultiple"
+                  #selectMultipleControl="ngModel">
+        <md2-option *ngFor="let i of items" [value]="i.value">{{i.name}}</md2-option>
+      </md2-select>
+      <p> Value: {{ itemMultiple }} </p>
+      <p> Touched: {{ selectMultipleControl.touched }} </p>
+      <p> Dirty: {{ selectMultipleControl.dirty }} </p>
+      <p> Status: {{ selectMultipleControl.control?.status }} </p>
+      <button type="button" button="primary" (click)="setValue()">SET VALUE</button>
+      <button type="button" button="primary" (click)="isDisabledMultiple=!isDisabledMultiple">TOGGLE DISABLED</button>
+      <button type="button" button="primary" (click)="selectMultipleControl.reset()">RESET</button>
+    </form>
   </div>
 </div>

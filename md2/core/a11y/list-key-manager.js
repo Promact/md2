@@ -7,6 +7,7 @@ import { Subject } from 'rxjs/Subject';
 export var ListKeyManager = (function () {
     function ListKeyManager(_items) {
         this._items = _items;
+        this._activeItemIndex = null;
         this._tabOut = new Subject();
         this._wrap = false;
     }

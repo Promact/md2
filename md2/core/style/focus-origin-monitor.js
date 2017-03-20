@@ -68,12 +68,13 @@ export var FocusOriginMonitor = (function () {
      * @param element The element to stop monitoring.
      */
     FocusOriginMonitor.prototype.unmonitor = function (element) {
-        if (!this._elementInfo.has(element)) {
-            return;
+        var elementInfo = this._elementInfo.get(element);
+        if (elementInfo) {
+            elementInfo.unlisten();
+            elementInfo.subject.complete();
+            this._setClasses(element, null);
+            this._elementInfo.delete(element);
         }
-        this._elementInfo.get(element).unlisten();
-        this._setClasses(element, null);
-        this._elementInfo.delete(element);
     };
     /**
      * Focuses the element via the specified focus origin.

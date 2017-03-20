@@ -1,6 +1,6 @@
 import { ElementRef, EventEmitter, ModuleWithProviders, Renderer } from '@angular/core';
-/** Event object emitted by MdOption when selected. */
-export declare class MdOptionSelectEvent {
+/** Event object emitted by MdOption when selected or deselected. */
+export declare class MdOptionSelectionChange {
     source: MdOption;
     isUserInput: boolean;
     constructor(source: MdOption, isUserInput?: boolean);
@@ -11,22 +11,25 @@ export declare class MdOptionSelectEvent {
 export declare class MdOption {
     private _element;
     private _renderer;
+    _isCompatibilityMode: boolean;
     private _selected;
     private _active;
     /** Whether the option is disabled.  */
     private _disabled;
     private _id;
+    /** Whether the wrapping component is in multiple selection mode. */
+    multiple: boolean;
     /** The unique ID of the option. */
     readonly id: string;
+    /** Whether or not the option is currently selected. */
+    readonly selected: boolean;
     /** The form value of the option. */
     value: any;
     /** Whether the option is disabled. */
     disabled: any;
-    /** Event emitted when the option is selected. */
-    onSelect: EventEmitter<MdOptionSelectEvent>;
-    constructor(_element: ElementRef, _renderer: Renderer);
-    /** Whether or not the option is currently selected. */
-    readonly selected: boolean;
+    /** Event emitted when the option is selected or deselected. */
+    onSelectionChange: EventEmitter<MdOptionSelectionChange>;
+    constructor(_element: ElementRef, _renderer: Renderer, _isCompatibilityMode: boolean);
     /**
      * Whether or not the option is currently active and ready to be selected.
      * An active option displays styles as if it is focused, but the
@@ -66,7 +69,10 @@ export declare class MdOption {
     _selectViaInteraction(): void;
     /** Returns the correct tabindex for the option depending on disabled state. */
     _getTabIndex(): string;
+    /** Fetches the host DOM element. */
     _getHostElement(): HTMLElement;
+    /** Emits the selection change event. */
+    private _emitSelectionChangeEvent(isUserInput?);
 }
 export declare class MdOptionModule {
     static forRoot(): ModuleWithProviders;

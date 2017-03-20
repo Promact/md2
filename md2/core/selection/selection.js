@@ -4,10 +4,12 @@ import { Subject } from 'rxjs/Subject';
  * @docs-private
  */
 export var SelectionModel = (function () {
-    function SelectionModel(_isMulti, initiallySelectedValues) {
+    function SelectionModel(_isMulti, initiallySelectedValues, _emitChanges) {
         var _this = this;
         if (_isMulti === void 0) { _isMulti = false; }
+        if (_emitChanges === void 0) { _emitChanges = true; }
         this._isMulti = _isMulti;
+        this._emitChanges = _emitChanges;
         /** Currently-selected values. */
         this._selection = new Set();
         /** Keeps track of the deselected options that haven't been emitted by the change event. */
@@ -15,7 +17,7 @@ export var SelectionModel = (function () {
         /** Keeps track of the selected option that haven't been emitted by the change event. */
         this._selectedToEmit = [];
         /** Event emitted when the value has changed. */
-        this.onChange = new Subject();
+        this.onChange = this._emitChanges ? new Subject() : null;
         if (initiallySelectedValues) {
             if (_isMulti) {
                 initiallySelectedValues.forEach(function (value) { return _this._markSelected(value); });
@@ -53,6 +55,12 @@ export var SelectionModel = (function () {
         this._emitChangeEvent();
     };
     /**
+     * Toggles a value between selected and deselected.
+     */
+    SelectionModel.prototype.toggle = function (value) {
+        this.isSelected(value) ? this.deselect(value) : this.select(value);
+    };
+    /**
      * Clears all of the selected values.
      */
     SelectionModel.prototype.clear = function () {
@@ -66,10 +74,24 @@ export var SelectionModel = (function () {
         return this._selection.has(value);
     };
     /**
-     * Determines whether the model has a value.
+     * Determines whether the model does not have a value.
      */
     SelectionModel.prototype.isEmpty = function () {
         return this._selection.size === 0;
+    };
+    /**
+     * Determines whether the model has a value.
+     */
+    SelectionModel.prototype.hasValue = function () {
+        return !this.isEmpty();
+    };
+    /**
+     * Sorts the selected values based on a predicate function.
+     */
+    SelectionModel.prototype.sort = function (predicate) {
+        if (this._isMulti && this.selected) {
+            this._selected.sort(predicate);
+        }
     };
     /** Emits a change event and clears the records of selected and deselected values. */
     SelectionModel.prototype._emitChangeEvent = function () {
@@ -78,8 +100,8 @@ export var SelectionModel = (function () {
             this.onChange.next(eventData);
             this._deselectedToEmit = [];
             this._selectedToEmit = [];
-            this._selected = null;
         }
+        this._selected = null;
     };
     /** Selects a value. */
     SelectionModel.prototype._markSelected = function (value) {
@@ -88,14 +110,18 @@ export var SelectionModel = (function () {
                 this._unmarkAll();
             }
             this._selection.add(value);
-            this._selectedToEmit.push(value);
+            if (this._emitChanges) {
+                this._selectedToEmit.push(value);
+            }
         }
     };
     /** Deselects a value. */
     SelectionModel.prototype._unmarkSelected = function (value) {
         if (this.isSelected(value)) {
             this._selection.delete(value);
-            this._deselectedToEmit.push(value);
+            if (this._emitChanges) {
+                this._deselectedToEmit.push(value);
+            }
         }
     };
     /** Clears out the selected values. */

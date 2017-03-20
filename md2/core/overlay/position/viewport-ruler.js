@@ -19,7 +19,7 @@ export var ViewportRuler = (function () {
         // Initially cache the document rectangle.
         this._cacheViewportGeometry();
         // Subscribe to scroll and resize events and update the document rectangle on changes.
-        scrollDispatcher.scrolled().subscribe(function () { return _this._cacheViewportGeometry(); });
+        scrollDispatcher.scrolled(null, function () { return _this._cacheViewportGeometry(); });
     }
     /** Gets a ClientRect for the viewport's bounds. */
     ViewportRuler.prototype.getViewportRect = function (documentRect) {

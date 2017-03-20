@@ -9,8 +9,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 import { NgModule } from '@angular/core';
 import { Platform } from './platform';
-export * from './platform';
-export * from './features';
 export var PlatformModule = (function () {
     function PlatformModule() {
     }
@@ -29,4 +27,6 @@ export var PlatformModule = (function () {
     ], PlatformModule);
     return PlatformModule;
 }());
+export * from './platform';
+export * from './features';
 //# sourceMappingURL=index.js.map

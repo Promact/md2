@@ -1,6 +1,6 @@
 .md2-colorpicker-wrapper {
   width: 270px;
-  height: 345px;
+  height: 355px;
   border-radius: 2px;
   background-color: #fff;
   z-index: 10;
@@ -18,7 +18,7 @@
 .md2-colorpicker-disabled {
   pointer-events: none;
   cursor: default; }
-  .md2-colorpicker-disabled .color-picker-selector .color-text {
+  .md2-colorpicker-disabled .color-picker-selector .md2-colorpicker-value {
     color: rgba(0, 0, 0, 0.38);
     border-color: transparent;
     background-image: linear-gradient(to right, rgba(0, 0, 0, 0.38) 0%, rgba(0, 0, 0, 0.38) 33%, transparent 0%);
@@ -26,11 +26,74 @@
     background-size: 4px 1px;
     background-repeat: repeat-x; }
 
+.md2-colorpicker-input {
+  color: rgba(0, 0, 0, 0.38);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 30px;
+  min-width: 180px;
+  line-height: 22px;
+  position: relative;
+  box-sizing: border-box; }
+  [aria-disabled='true'] .md2-colorpicker-input {
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.26) 0, rgba(0, 0, 0, 0.26) 33%, transparent 0);
+    background-size: 4px 1px;
+    background-repeat: repeat-x;
+    border-color: transparent;
+    background-position: 0 bottom;
+    cursor: default;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none; }
+  md2-colorpicker:focus:not(.md2-colorpicker-disabled) .md2-colorpicker-input {
+    color: #106cc8;
+    border-color: #106cc8; }
+  md2-colorpicker.ng-invalid.ng-touched:not(.md2-colorpicker-disabled) .md2-colorpicker-input {
+    color: #f44336;
+    border-color: #f44336; }
+
+.input-focused {
+  color: #106cc8;
+  border-color: #106cc8; }
+
+.inline-control {
+  width: 150px;
+  margin-right: 16px;
+  padding: 16px 0; }
+
+.md2-colorpicker-placeholder {
+  position: absolute;
+  right: 18px;
+  bottom: 100%;
+  left: 0;
+  padding: 0 2px;
+  transform: translate3d(0, 26px, 0) scale(1);
+  transform-origin: left top;
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  transition: all 150ms cubic-bezier(0.25, 0.8, 0.25, 1); }
+  .md2-colorpicker-placeholder.md2-floating-placeholder {
+    left: -2px;
+    text-align: left;
+    transform: translate3d(0, 6px, 0) scale(0.75); }
+  [aria-required=true] .md2-colorpicker-placeholder::after {
+    content: '*'; }
+
+.color-error .md2-colorpicker-input {
+  color: #f44336;
+  border-color: #f44336; }
+
+.color-error .color-fill {
+  background-color: transparent !important; }
+
 .color-picker-selector {
   display: block;
   padding: 18px 0 18px 32px;
-  white-space: nowrap;
-  cursor: pointer; }
+  white-space: nowrap; }
   .color-picker-selector .color-div {
     content: '';
     width: 24px;
@@ -45,7 +108,7 @@
     left: 0;
     border: 2px solid #fafafa;
     display: block;
-    fill: currentColor;
+    fill: #5a5a5a;
     cursor: pointer;
     border-radius: 50%;
     vertical-align: middle;
@@ -53,24 +116,26 @@
     .color-picker-selector .color-div .color-fill {
       width: 100%;
       height: 100%; }
-  .color-picker-selector .color-text {
-    cursor: pointer;
+  .color-picker-selector .md2-colorpicker-value {
+    font-size: 15px;
+    background: transparent;
+    border: 0;
+    outline: none;
     position: relative;
     display: block;
-    min-width: 150px;
+    min-width: 160px;
     height: 30px;
-    padding: 2px 26px 1px 2px;
+    padding: 2px 2px 1px;
     margin: 0;
     line-height: 26px;
     color: rgba(0, 0, 0, 0.87);
     vertical-align: middle;
-    box-sizing: border-box;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.12); }
+    box-sizing: border-box; }
 
 md2-colorpicker {
   position: relative;
   display: block;
-  max-width: 175px;
+  max-width: 215px;
   outline: none;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden; }
@@ -91,7 +156,9 @@ md2-colorpicker {
     cursor: default;
     position: relative; }
   .md2-color-picker input {
-    font-size: 15px; }
+    font-size: 16px;
+    height: 50px;
+    outline: none; }
   .md2-color-picker div.cursor-sv {
     cursor: default;
     position: relative;
@@ -136,12 +203,52 @@ md2-colorpicker {
     border: 1px solid #efefef;
     width: 100%;
     height: 30px;
-    background-image: linear-gradient(to left, transparent, transparent), linear-gradient(to right, #fff, rgba(255, 255, 255, 0)); }
+    background-color: #fff;
+    background-size: 8px 8px;
+    background-position: 0 0,4px 4px;
+    position: relative;
+    /*background-image: linear-gradient(to left, transparent, transparent), linear-gradient(to right, #fff, rgba(255, 255, 255, 0));*/
+    background-image: linear-gradient(45deg, #dddddd 25%, transparent 0px, transparent 75%, #dddddd 0px, #dddddd), linear-gradient(45deg, #dddddd 25%, transparent 0px, transparent 75%, #dddddd 0px, #dddddd);
+    background-image: -webkit-linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd), -webkit-linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd); }
+    .md2-color-picker .alpha .alpha-main {
+      position: absolute;
+      height: 100%;
+      opacity: 1;
+      background-image: linear-gradient(to left, transparent, transparent), linear-gradient(to right, #fff, rgba(255, 255, 255, 0));
+      width: 100%; }
   .md2-color-picker .selected-color {
     width: 100%;
-    height: 65px;
-    padding-top: 10px;
-    position: relative; }
+    height: 75px;
+    background-color: #fff;
+    background-size: 8px 8px;
+    background-position: 0 0,4px 4px;
+    position: relative;
+    background-image: linear-gradient(45deg, #dddddd 25%, transparent 0px, transparent 75%, #dddddd 0px, #dddddd), linear-gradient(45deg, #dddddd 25%, transparent 0px, transparent 75%, #dddddd 0px, #dddddd);
+    background-image: -webkit-linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd), -webkit-linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd); }
+    .md2-color-picker .selected-color .selected-color-bg {
+      position: absolute;
+      height: 100%;
+      opacity: 1;
+      width: 100%; }
+    .md2-color-picker .selected-color .color-bar {
+      position: absolute;
+      width: 100%;
+      bottom: 0; }
+    .md2-color-picker .selected-color .color-input {
+      position: relative; }
+
+.color-clear {
+  color: rgba(0, 0, 0, 0.4);
+  cursor: pointer; }
+  .color-clear svg {
+    fill: #686868; }
+
+.clearfix:before, .clearfix:after {
+  content: " ";
+  display: table; }
+
+.clearfix:after {
+  clear: both; }
 
 .hex-text {
   width: 100%; }
@@ -150,9 +257,7 @@ md2-colorpicker {
     border: 0;
     padding: 4px;
     text-align: center;
-    background: transparent;
-    outline: none;
-    font-size: 15px; }
+    background: transparent; }
   .hex-text div {
     text-align: center;
     float: left;
@@ -207,18 +312,17 @@ md2-colorpicker {
   clear: left; }
 
 .type-policy {
-  width: 33.3%;
+  width: 33.333333%;
   text-align: center;
   font-size: 14px;
   display: inline-block;
   float: left;
-  padding: 2px;
-  margin-top: 6px;
+  padding: 3px;
   cursor: pointer;
   background: rgba(255, 255, 255, 0.4); }
 
 .type-policy.active {
-  background: rgba(153, 153, 153, 0.2) !important; }
+  background: rgba(153, 153, 153, 0.35) !important; }
 
 .cdk-overlay-container, .cdk-global-overlay-wrapper {
   pointer-events: none;

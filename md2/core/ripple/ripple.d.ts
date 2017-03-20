@@ -1,6 +1,13 @@
-import { ModuleWithProviders, ElementRef, NgZone, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
+import { ElementRef, NgZone, OnChanges, SimpleChanges, OnDestroy, OpaqueToken } from '@angular/core';
 import { RippleConfig } from './ripple-renderer';
 import { ViewportRuler } from '../overlay/position/viewport-ruler';
+import { RippleRef } from './ripple-ref';
+/** OpaqueToken that can be used to specify the global ripple options. */
+export declare const MD_RIPPLE_GLOBAL_OPTIONS: OpaqueToken;
+export declare type RippleGlobalOptions = {
+    disabled?: boolean;
+    baseSpeedFactor?: number;
+};
 export declare class MdRipple implements OnChanges, OnDestroy {
     /**
      * The element that triggers the ripple when click events are received. Defaults to the
@@ -35,20 +42,15 @@ export declare class MdRipple implements OnChanges, OnDestroy {
     unbounded: boolean;
     /** Renderer for the ripple DOM manipulations. */
     private _rippleRenderer;
-    constructor(elementRef: ElementRef, ngZone: NgZone, ruler: ViewportRuler);
+    /** Options that are set globally for all ripples. */
+    private _globalOptions;
+    constructor(elementRef: ElementRef, ngZone: NgZone, ruler: ViewportRuler, globalOptions: any);
     ngOnChanges(changes: SimpleChanges): void;
     ngOnDestroy(): void;
     /** Launches a manual ripple at the specified position. */
-    launch(pageX: number, pageY: number, config?: {
-        color?: string;
-        centered?: boolean;
-        radius?: number;
-        speedFactor?: number;
-    }): void;
+    launch(pageX: number, pageY: number, config?: RippleConfig): RippleRef;
+    /** Fades out all currently showing ripple elements. */
+    fadeOutAll(): void;
     /** Ripple configuration from the directive's input values. */
     readonly rippleConfig: RippleConfig;
-}
-export declare class MdRippleModule {
-    /** @deprecated */
-    static forRoot(): ModuleWithProviders;
 }

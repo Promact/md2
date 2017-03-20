@@ -1,15 +1,8 @@
+import { RippleRef, RippleState } from './ripple-ref';
 /** Fade-in duration for the ripples. Can be modified with the speedFactor option. */
 export var RIPPLE_FADE_IN_DURATION = 450;
 /** Fade-out duration for the ripples in milliseconds. This can't be modified by the speedFactor. */
 export var RIPPLE_FADE_OUT_DURATION = 400;
-/**
- * Returns the distance from the point (x, y) to the furthest corner of a rectangle.
- */
-var distanceToFurthestCorner = function (x, y, rect) {
-    var distX = Math.max(Math.abs(x - rect.left), Math.abs(x - rect.right));
-    var distY = Math.max(Math.abs(y - rect.top), Math.abs(y - rect.bottom));
-    return Math.sqrt(distX * distX + distY * distY);
-};
 /**
  * Helper service that performs DOM manipulations. Not intended to be used outside this module.
  * The constructor takes a reference to the ripple directive's host element and a map of DOM
@@ -23,10 +16,10 @@ export var RippleRenderer = (function () {
         this._ruler = _ruler;
         /** Whether the mouse is currently down or not. */
         this._isMousedown = false;
-        /** Currently active ripples that will be closed on mouseup. */
-        this._activeRipples = [];
         /** Events to be registered on the trigger element. */
         this._triggerEvents = new Map();
+        /** Set of currently active ripple references. */
+        this._activeRipples = new Set();
         /** Ripple config for all ripples created by events. */
         this.rippleConfig = {};
         /** Whether mouse ripples should be created or not. */
@@ -71,22 +64,42 @@ export var RippleRenderer = (function () {
         this._containerElement.appendChild(ripple);
         // By default the browser does not recalculate the styles of dynamically created
         // ripple elements. This is critical because then the `scale` would not animate properly.
-        this._enforceStyleRecalculation(ripple);
+        enforceStyleRecalculation(ripple);
         ripple.style.transform = 'scale(1)';
-        // Wait for the ripple to be faded in. Once it's faded in, the ripple can be hidden immediately
-        // if the mouse is released.
+        // Exposed reference to the ripple that will be returned.
+        var rippleRef = new RippleRef(this, ripple, config);
+        rippleRef.state = RippleState.FADING_IN;
+        // Add the ripple reference to the list of all active ripples.
+        this._activeRipples.add(rippleRef);
+        // Wait for the ripple element to be completely faded in.
+        // Once it's faded in, the ripple can be hidden immediately if the mouse is released.
         this.runTimeoutOutsideZone(function () {
-            _this._isMousedown ? _this._activeRipples.push(ripple) : _this.fadeOutRipple(ripple);
+            rippleRef.state = RippleState.VISIBLE;
+            if (!config.persistent && !_this._isMousedown) {
+                rippleRef.fadeOut();
+            }
         }, duration);
+        return rippleRef;
     };
-    /** Fades out a ripple element. */
-    RippleRenderer.prototype.fadeOutRipple = function (ripple) {
-        ripple.style.transitionDuration = RIPPLE_FADE_OUT_DURATION + "ms";
-        ripple.style.opacity = '0';
+    /** Fades out a ripple reference. */
+    RippleRenderer.prototype.fadeOutRipple = function (rippleRef) {
+        // For ripples that are not active anymore, don't re-un the fade-out animation.
+        if (!this._activeRipples.delete(rippleRef)) {
+            return;
+        }
+        var rippleEl = rippleRef.element;
+        rippleEl.style.transitionDuration = RIPPLE_FADE_OUT_DURATION + "ms";
+        rippleEl.style.opacity = '0';
+        rippleRef.state = RippleState.FADING_OUT;
         // Once the ripple faded out, the ripple can be safely removed from the DOM.
         this.runTimeoutOutsideZone(function () {
-            ripple.parentNode.removeChild(ripple);
+            rippleRef.state = RippleState.HIDDEN;
+            rippleEl.parentNode.removeChild(rippleEl);
         }, RIPPLE_FADE_OUT_DURATION);
+    };
+    /** Fades out all currently active ripples. */
+    RippleRenderer.prototype.fadeOutAll = function () {
+        this._activeRipples.forEach(function (ripple) { return ripple.fadeOut(); });
     };
     /** Sets the trigger element and registers the mouse events. */
     RippleRenderer.prototype.setTriggerElement = function (element) {
@@ -112,10 +125,13 @@ export var RippleRenderer = (function () {
     };
     /** Listener being called on mouseup event. */
     RippleRenderer.prototype.onMouseup = function () {
-        var _this = this;
         this._isMousedown = false;
-        this._activeRipples.forEach(function (ripple) { return _this.fadeOutRipple(ripple); });
-        this._activeRipples = [];
+        // Fade-out all ripples that are completely visible and not persistent.
+        this._activeRipples.forEach(function (ripple) {
+            if (!ripple.config.persistent && ripple.state === RippleState.VISIBLE) {
+                ripple.fadeOut();
+            }
+        });
     };
     /** Listener being called on mouseleave event. */
     RippleRenderer.prototype.onMouseLeave = function () {
@@ -128,14 +144,22 @@ export var RippleRenderer = (function () {
         if (delay === void 0) { delay = 0; }
         this._ngZone.runOutsideAngular(function () { return setTimeout(fn, delay); });
     };
-    /** Enforces a style recalculation of a DOM element by computing its styles. */
-    // TODO(devversion): Move into global utility function.
-    RippleRenderer.prototype._enforceStyleRecalculation = function (element) {
-        // Enforce a style recalculation by calling `getComputedStyle` and accessing any property.
-        // Calling `getPropertyValue` is important to let optimizers know that this is not a noop.
-        // See: https://gist.github.com/paulirish/5d52fb081b3570c81e3a
-        window.getComputedStyle(element).getPropertyValue('opacity');
-    };
     return RippleRenderer;
 }());
+/** Enforces a style recalculation of a DOM element by computing its styles. */
+// TODO(devversion): Move into global utility function.
+function enforceStyleRecalculation(element) {
+    // Enforce a style recalculation by calling `getComputedStyle` and accessing any property.
+    // Calling `getPropertyValue` is important to let optimizers know that this is not a noop.
+    // See: https://gist.github.com/paulirish/5d52fb081b3570c81e3a
+    window.getComputedStyle(element).getPropertyValue('opacity');
+}
+/**
+ * Returns the distance from the point (x, y) to the furthest corner of a rectangle.
+ */
+function distanceToFurthestCorner(x, y, rect) {
+    var distX = Math.max(Math.abs(x - rect.left), Math.abs(x - rect.right));
+    var distY = Math.max(Math.abs(y - rect.top), Math.abs(y - rect.bottom));
+    return Math.sqrt(distX * distX + distY * distY);
+}
 //# sourceMappingURL=ripple-renderer.js.map

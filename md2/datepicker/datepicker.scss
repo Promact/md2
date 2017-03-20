@@ -6,7 +6,7 @@ $md2-datepicker-trigger-min-width: 168px !default;
 $md2-datepicker-arrow-size: 5px !default;
 $md2-datepicker-arrow-margin: 4px !default;
 $md2-datepicker-date-cell-size: 40px !default;
-$md2-datepicker-calendar-height: 300px !default;
+$md2-datepicker-calendar-height: 280px !default;
 
 $md2-clock-size: 240px !default;
 $md2-clock-tick-size: 34px !default;
@@ -27,7 +27,7 @@ md2-datepicker {
 
 .md2-datepicker-trigger {
   display: block;
-  padding: 18px 0 18px 32px;
+  padding: 18px 0 4px 32px;
   white-space: nowrap;
   cursor: pointer;
 }
@@ -58,6 +58,7 @@ md2-datepicker {
   min-width: $md2-datepicker-trigger-min-width;
   line-height: 22px;
   position: relative;
+  padding-right: 20px;
   box-sizing: border-box;
 
   [aria-disabled='true'] & {
@@ -118,10 +119,14 @@ md2-datepicker {
 
 .md2-datepicker-value {
   position: relative;
+  width: 100%;
   white-space: nowrap;
   overflow-x: hidden;
   text-overflow: ellipsis;
   color: rgba(black, 0.87);
+  border: 0;
+  outline: none;
+  background: transparent;
 
   .md2-datepicker-disabled & {
     color: rgba(black, 0.38);
@@ -134,6 +139,8 @@ md2-datepicker {
 }
 
 .md2-datepicker-arrow {
+  position: absolute;
+  right: 0;
   width: 0;
   height: 0;
   border-left: $md2-datepicker-arrow-size solid transparent;
@@ -151,14 +158,35 @@ md2-datepicker {
   }
 }
 
+.md2-datepicker-clear {
+  position: absolute;
+  right: 0;
+  height: 20px;
+  color: rgba(black, 0.54);
+
+  svg {
+    fill: currentColor;
+  }
+}
+
 .md2-datepicker-panel {
-  width: 300px;
+  width: 276px;
   border-radius: 3px;
+  color: rgba(black, 0.87);
   background-color: white;
   overflow: hidden;
-  box-shadow: 0 11px 15px -7px rgba(black, 0.2), 0 24px 38px 3px rgba(black, 0.14), 0 9px 46px 8px rgba(black, 0.12);
+  box-shadow: 0 5px 5px -3px rgba(black, 0.2), 0 8px 10px 1px rgba(black, 0.14), 0 3px 14px 2px rgba(black, 0.12);
   outline: none;
   user-select: none;
+
+  &[container='dialog'] {
+    box-shadow: 0 11px 15px -7px rgba(black, 0.2), 0 24px 38px 3px rgba(black, 0.14), 0 9px 46px 8px rgba(black, 0.12);
+  }
+
+  &[mode='landscape'] {
+    display: flex;
+    width: 426px;
+  }
 }
 
 .md2-datepicker-header {
@@ -169,8 +197,12 @@ md2-datepicker {
   background: $primary;
   box-sizing: border-box;
 
-  .hidden {
-    display: none;
+  [mode='landscape'] & {
+    width: 150px;
+    min-width: 150px;
+    padding-right: 15px;
+    white-space: normal;
+    word-wrap: break-word;
   }
 }
 
@@ -219,6 +251,11 @@ md2-datepicker {
         pointer-events: none;
       }
     }
+  }
+
+  [mode='landscape'] & {
+    display: block;
+    padding-left: 0;
   }
 }
 
@@ -300,13 +337,17 @@ md2-datepicker {
   }
 }
 
-.md2-calendar-month-header {
+.md2-calendar-header {
   display: flex;
   justify-content: space-between;
   font-size: 14px;
   font-weight: 700;
   text-align: center;
   line-height: 48px;
+
+  .md2-calendar-month-year-header {
+    width: 100%;
+  }
 
   .md2-button {
     display: inline-block;
@@ -323,20 +364,16 @@ md2-datepicker {
       vertical-align: top;
     }
   }
-
-  .md2-calendar-month-year-header {
-    width: 100%;
-  }
 }
 
 .md2-calendar-dates {
-  margin: 0 auto;
+  margin: 0 8px;
 
   th {
     width: 35px;
-    height: 20px;
+    height: 16px;
     font-weight: 500;
-    line-height: 15px;
+    line-height: 10px;
     opacity: 0.5;
   }
 
@@ -373,7 +410,7 @@ md2-datepicker {
 
   &.disabled,
   &.disabled:hover {
-    color: rgba(black, 0.45);
+    color: rgba(black, 0.43);
     background: transparent;
     pointer-events: none;
   }
@@ -438,7 +475,6 @@ md2-clock {
     border-radius: 50%;
     background-color: $primary;
   }
-  /*transition: all 100ms;*/
 }
 
 .md2-clock-hours,
@@ -508,25 +544,24 @@ md2-clock {
 }
 
 @media (min-width: 480px) {
-  .md2-datepicker-panel {
+  .md2-datepicker-panel[mode='auto'] {
     display: flex;
-    width: 450px;
+    width: 426px;
   }
 
-  .md2-datepicker-header {
-    width: 150px;
-    min-width: 150px;
-    padding-right: 15px;
-    white-space: normal;
-    word-wrap: break-word;
-  }
+  [mode='auto'] {
+    .md2-datepicker-header {
+      width: 150px;
+      min-width: 150px;
+      padding-right: 15px;
+      white-space: normal;
+      word-wrap: break-word;
+    }
 
-  .md2-datepicker-header-time {
-    display: block;
-    padding-left: 0;
-  }
-
-  .md2-datepicker-content {
+    .md2-datepicker-header-time {
+      display: block;
+      padding-left: 0;
+    }
   }
 }
 

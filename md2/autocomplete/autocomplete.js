@@ -409,7 +409,8 @@ export var Md2Autocomplete = (function () {
                 '[attr.aria-disabled]': 'disabled.toString()',
                 '[class.md2-autocomplete-disabled]': 'disabled',
             },
-            encapsulation: ViewEncapsulation.None
+            encapsulation: ViewEncapsulation.None,
+            exportAs: 'md2Autocomplete'
         }), 
         __metadata('design:paramtypes', [ElementRef])
     ], Md2Autocomplete);

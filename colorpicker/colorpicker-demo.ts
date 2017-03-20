@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   moduleId: module.id,
@@ -6,9 +6,11 @@ import {Component} from '@angular/core';
   templateUrl: 'colorpicker-demo.html'
 })
 export class ColorpickerDemo {
-  private _color: string = '#123456';
-  private _color2: string = '#654321';
-  handleChange(value: any) {
-    console.log('Changed color: ', value);
-  }
+  _color: string = null;
+  isRequired = false;
+  isDisabled = false;
+  container: string = 'inline';
+  containers: Array<any> = [
+    { text: 'Inline', value: 'inline' },
+    { text: 'Dialog', value: 'dialog' }];
 }

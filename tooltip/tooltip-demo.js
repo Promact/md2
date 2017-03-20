@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var TooltipDemo = (function () {
     function TooltipDemo() {
+        this.tooltip = 'Tooltip!';
         this.position = 'below';
         this.delay = 0;
     }

@@ -9,7 +9,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 import { NgModule } from '@angular/core';
 import { MdPseudoCheckbox } from './pseudo-checkbox/pseudo-checkbox';
-export * from './pseudo-checkbox/pseudo-checkbox';
 export var MdSelectionModule = (function () {
     function MdSelectionModule() {
     }
@@ -22,4 +21,5 @@ export var MdSelectionModule = (function () {
     ], MdSelectionModule);
     return MdSelectionModule;
 }());
+export * from './pseudo-checkbox/pseudo-checkbox';
 //# sourceMappingURL=index.js.map

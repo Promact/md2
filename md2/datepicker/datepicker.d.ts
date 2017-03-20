@@ -9,21 +9,11 @@ export declare class Md2DateChange {
     value: Date;
     constructor(source: Md2Datepicker, value: Date);
 }
-export interface IDate {
-    year: number;
-    month: number;
-    day: number;
-    hour: number;
-    minute: number;
-}
-export interface IWeek {
-    dateObj: IDate;
-    date: Date;
-    calMonth: number;
-    today: boolean;
-    disabled: boolean;
-}
 export declare type Type = 'date' | 'time' | 'datetime';
+export declare type Mode = 'auto' | 'portrait' | 'landscape';
+export declare type Container = 'inline' | 'dialog';
+export declare type PanelPositionX = 'before' | 'after';
+export declare type PanelPositionY = 'above' | 'below';
 export declare class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     private _element;
     private overlay;
@@ -38,6 +28,8 @@ export declare class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     private _panelOpen;
     private _openOnFocus;
     private _type;
+    private _mode;
+    private _container;
     private _format;
     private _required;
     private _disabled;
@@ -49,6 +41,7 @@ export declare class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     _isYearsVisible: boolean;
     _isCalendarVisible: boolean;
     _clockView: string;
+    _calendarState: string;
     _weekDays: Array<any>;
     _prevMonth: number;
     _currMonth: number;
@@ -66,16 +59,26 @@ export declare class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     change: EventEmitter<Md2DateChange>;
     constructor(_element: ElementRef, overlay: Overlay, _renderer: Renderer, _locale: DateLocale, _control: NgControl);
     ngOnDestroy(): void;
-    name: string;
-    id: string;
     placeholder: string;
+    okLabel: string;
+    cancelLabel: string;
     tabindex: number;
+    enableDates: Array<Date>;
+    disableDates: Array<Date>;
+    disableWeekDays: Array<number>;
+    /** Position of the menu in the X axis. */
+    positionX: PanelPositionX;
+    /** Position of the menu in the Y axis. */
+    positionY: PanelPositionY;
+    overlapTrigger: boolean;
+    type: Type;
+    format: string;
+    mode: Mode;
+    container: Container;
     value: Date;
     date: Date;
     time: string;
-    type: Type;
     selected: Date;
-    format: string;
     required: boolean;
     disabled: boolean;
     min: Date;
@@ -83,6 +86,8 @@ export declare class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     openOnFocus: boolean;
     isOpen: boolean;
     readonly panelOpen: boolean;
+    readonly getDateLabel: string;
+    readonly getMonthLabel: string;
     toggle(): void;
     /** Opens the overlay panel. */
     open(): void;
@@ -92,13 +97,15 @@ export declare class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     destroyPanel(): void;
     _onPanelDone(): void;
     _onFadeInDone(): void;
+    _handleWindowResize(event: Event): void;
     private _focusPanel();
     private _focusHost();
-    private coerceDateProperty(value, fallbackValue?);
+    private coerceDateProperty(value);
     _handleClick(event: MouseEvent): void;
     _handleKeydown(event: KeyboardEvent): void;
     _onFocus(): void;
     _onBlur(): void;
+    _clearValue(event: Event): void;
     /**
      * Display Years
      */
@@ -183,6 +190,7 @@ export declare class Md2Datepicker implements OnDestroy, ControlValueAccessor {
      */
     private _createOverlay();
     private _cleanUpSubscriptions();
+    private calendarState(direction);
 }
 export declare const MD2_DATEPICKER_DIRECTIVES: (typeof Md2Clock | typeof Md2Datepicker)[];
 export declare class Md2DatepickerModule {

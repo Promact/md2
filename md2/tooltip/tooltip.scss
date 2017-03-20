@@ -17,6 +17,7 @@ md2-tooltip {
   margin: $md2-tooltip-margin;
   max-width: $md2-tooltip-max-width;
   background: rgba(97, 97, 97, 0.9);
+  word-wrap: break-word;
 }
 
 .cdk-overlay-container, .cdk-global-overlay-wrapper {

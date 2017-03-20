@@ -41,7 +41,8 @@ var DataTableDemo = (function () {
         core_1.Component({
             moduleId: module.id,
             selector: 'data-table-demo',
-            templateUrl: 'data-table-demo.html'
+            templateUrl: 'data-table-demo.html',
+            styleUrls: ['data-table-demo.css']
         }), 
         __metadata('design:paramtypes', [http_1.Http])
     ], DataTableDemo);

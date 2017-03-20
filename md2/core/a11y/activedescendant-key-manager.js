@@ -15,13 +15,16 @@ export var ActiveDescendantKeyManager = (function (_super) {
      * styles from the previously active item.
      */
     ActiveDescendantKeyManager.prototype.setActiveItem = function (index) {
-        if (this.activeItem) {
-            this.activeItem.setInactiveStyles();
-        }
-        _super.prototype.setActiveItem.call(this, index);
-        if (this.activeItem) {
-            this.activeItem.setActiveStyles();
-        }
+        var _this = this;
+        Promise.resolve().then(function () {
+            if (_this.activeItem) {
+                _this.activeItem.setInactiveStyles();
+            }
+            _super.prototype.setActiveItem.call(_this, index);
+            if (_this.activeItem) {
+                _this.activeItem.setActiveStyles();
+            }
+        });
     };
     return ActiveDescendantKeyManager;
 }(ListKeyManager));

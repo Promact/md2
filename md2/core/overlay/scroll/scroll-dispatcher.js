@@ -11,6 +11,7 @@ import { Injectable, Optional, SkipSelf } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromEvent';
+import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/auditTime';
 /** Time in ms to throttle the scrolling events by default. */
 export var DEFAULT_SCROLL_TIME = 20;
@@ -20,17 +21,17 @@ export var DEFAULT_SCROLL_TIME = 20;
  */
 export var ScrollDispatcher = (function () {
     function ScrollDispatcher() {
-        var _this = this;
         /** Subject for notifying that a registered scrollable reference element has been scrolled. */
         this._scrolled = new Subject();
+        /** Keeps track of the global `scroll` and `resize` subscriptions. */
+        this._globalSubscription = null;
+        /** Keeps track of the amount of subscriptions to `scrolled`. Used for cleaning up afterwards. */
+        this._scrolledCount = 0;
         /**
          * Map of all the scrollable references that are registered with the service and their
          * scroll event subscriptions.
          */
         this.scrollableReferences = new Map();
-        // By default, notify a scroll event when the document is scrolled or the window is resized.
-        Observable.fromEvent(window.document, 'scroll').subscribe(function () { return _this._notify(); });
-        Observable.fromEvent(window, 'resize').subscribe(function () { return _this._notify(); });
     }
     /**
      * Registers a Scrollable with the service and listens for its scrolled events. When the
@@ -53,18 +54,31 @@ export var ScrollDispatcher = (function () {
         }
     };
     /**
-     * Returns an observable that emits an event whenever any of the registered Scrollable
+     * Subscribes to an observable that emits an event whenever any of the registered Scrollable
      * references (or window, document, or body) fire a scrolled event. Can provide a time in ms
      * to override the default "throttle" time.
      */
-    ScrollDispatcher.prototype.scrolled = function (auditTimeInMs) {
+    ScrollDispatcher.prototype.scrolled = function (auditTimeInMs, callback) {
+        var _this = this;
         if (auditTimeInMs === void 0) { auditTimeInMs = DEFAULT_SCROLL_TIME; }
-        // In the case of a 0ms delay, return the observable without auditTime since it does add
-        // a perceptible delay in processing overhead.
-        if (auditTimeInMs == 0) {
-            return this._scrolled.asObservable();
+        // In the case of a 0ms delay, use an observable without auditTime
+        // since it does add a perceptible delay in processing overhead.
+        var observable = auditTimeInMs > 0 ?
+            this._scrolled.asObservable().auditTime(auditTimeInMs) :
+            this._scrolled.asObservable();
+        this._scrolledCount++;
+        if (!this._globalSubscription) {
+            this._globalSubscription = Observable.merge(Observable.fromEvent(window.document, 'scroll'), Observable.fromEvent(window, 'resize')).subscribe(function () { return _this._notify(); });
         }
-        return this._scrolled.asObservable().auditTime(auditTimeInMs);
+        // Note that we need to do the subscribing from here, in order to be able to remove
+        // the global event listeners once there are no more subscriptions.
+        return observable.subscribe(callback).add(function () {
+            _this._scrolledCount--;
+            if (_this._globalSubscription && !_this.scrollableReferences.size && !_this._scrolledCount) {
+                _this._globalSubscription.unsubscribe();
+                _this._globalSubscription = null;
+            }
+        });
     };
     /** Returns all registered Scrollables that contain the provided element. */
     ScrollDispatcher.prototype.getScrollContainers = function (elementRef) {

@@ -2,6 +2,7 @@ import { EventEmitter, ElementRef, ModuleWithProviders, OnDestroy, Renderer, Que
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { Overlay, Portal } from '../core';
 import { ColorpickerService } from './calculateColor';
+import { Container, PanelPositionX, PanelPositionY } from '../datepicker/datepicker';
 export declare class TextDirective {
     newValue: EventEmitter<any>;
     text: any;
@@ -89,10 +90,13 @@ export declare class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
     private _required;
     /** Whether the select is disabled.  */
     private _disabled;
+    isInputFocus: boolean;
     /** The placeholder displayed in the trigger of the select. */
     private _placeholder;
     private fontColor;
     private backAreaColor;
+    private _container;
+    private isInputValidColor;
     _onChange: (value: any) => void;
     _onTouched: () => void;
     color: string;
@@ -107,10 +111,19 @@ export declare class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
     change: EventEmitter<Md2ColorChange>;
     tabindex: number;
     id: string;
+    /** Position of the colorpicker in the X axis. */
+    positionX: PanelPositionX;
+    /** Position of the colorpicker in the Y axis. */
+    positionY: PanelPositionY;
+    overlapTrigger: boolean;
     /**
     * set accessor including call the onchange callback
     */
     value: any;
+    container: Container;
+    readonly setGradient: {
+        'background-image': string;
+    };
     /** Event emitted when the select has been opened. */
     onOpen: EventEmitter<void>;
     /** Event emitted when the select has been closed. */
@@ -192,7 +205,9 @@ export declare class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
      * update color
      */
     update(): void;
+    clearColor(event: Event): void;
     isDescendant(parent: any, child: any): boolean;
+    checkInputVal(event: Event): void;
     /** Emits an event when the user selects a color. */
     _emitChangeEvent(): void;
     writeValue(value: any): void;

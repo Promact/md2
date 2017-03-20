@@ -193,8 +193,9 @@ export var Md2Colorpicker = (function () {
         this._required = false;
         /** Whether the select is disabled.  */
         this._disabled = false;
-        /** The placeholder displayed in the trigger of the select. */
-        this._placeholder = 'daa';
+        this.isInputFocus = false;
+        this._container = 'inline';
+        this.isInputValidColor = false;
         this._onChange = function (value) { };
         this._onTouched = function () { };
         this.cFormat = 'hex';
@@ -203,6 +204,11 @@ export var Md2Colorpicker = (function () {
         this.change = new EventEmitter();
         this.tabindex = 0;
         this.id = 'md2-colorpicker-' + (++nextId);
+        /** Position of the colorpicker in the X axis. */
+        this.positionX = 'after';
+        /** Position of the colorpicker in the Y axis. */
+        this.positionY = 'below';
+        this.overlapTrigger = true;
         /** Event emitted when the select has been opened. */
         this.onOpen = new EventEmitter();
         /** Event emitted when the select has been closed. */
@@ -259,6 +265,27 @@ export var Md2Colorpicker = (function () {
         configurable: true
     });
     ;
+    Object.defineProperty(Md2Colorpicker.prototype, "container", {
+        get: function () { return this._container; },
+        set: function (value) {
+            if (this._container !== value) {
+                this._container = value || 'inline';
+                this.destroyPanel();
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Md2Colorpicker.prototype, "setGradient", {
+        get: function () {
+            return {
+                'background-image': 'linear-gradient(to right, transparent, transparent),' +
+                    'linear-gradient(to left, ' + this.hexText + ', rgba(255, 255, 255, 0))'
+            };
+        },
+        enumerable: true,
+        configurable: true
+    });
     Md2Colorpicker.prototype.ngOnDestroy = function () { this.destroyPanel(); };
     Object.defineProperty(Md2Colorpicker.prototype, "panelOpen", {
         /** Whether or not the overlay panel is open. */
@@ -274,8 +301,9 @@ export var Md2Colorpicker = (function () {
     };
     /** Opens the overlay panel. */
     Md2Colorpicker.prototype.open = function () {
-        var hsva = this.service.stringToHsva(this.color);
-        if (hsva !== null) {
+        var hsva = this.service.stringToHsva(this.color + '');
+        this.isInputFocus = true;
+        if (hsva) {
             this.hsva = hsva;
         }
         else {
@@ -313,12 +341,15 @@ export var Md2Colorpicker = (function () {
     /** Closes the overlay panel and focuses the host element. */
     Md2Colorpicker.prototype.close = function () {
         this._panelOpen = false;
+        this.isInputFocus = false;
         if (this._overlayRef) {
             this._overlayRef.detach();
             this._backdropSubscription.unsubscribe();
         }
         this._isColorpickerVisible = false;
-        this.setColorFromString(this._innerValue);
+        if (this._innerValue) {
+            this.setColorFromString(this._innerValue);
+        }
     };
     /** Removes the panel from the DOM. */
     Md2Colorpicker.prototype.destroyPanel = function () {
@@ -398,6 +429,7 @@ export var Md2Colorpicker = (function () {
     };
     Md2Colorpicker.prototype.clickOk = function () {
         this._isColorpickerVisible = false;
+        this.isInputValidColor = false;
         this.color = this._innerValue;
         if (this._innerValue != this._initialColor) {
             this._emitChangeEvent();
@@ -468,6 +500,11 @@ export var Md2Colorpicker = (function () {
         this.slider = new SliderPosition((this.hsva.h) * this.sliderDim.h, this.hsva.s * this.sliderDim.s - 7, (1 - this.hsva.v) * this.sliderDim.v - 7, this.hsva.a * this.sliderDim.a);
         this._innerValue = this.outputColor;
     };
+    Md2Colorpicker.prototype.clearColor = function (event) {
+        event.stopPropagation();
+        this.color = '';
+        this._emitChangeEvent();
+    };
     Md2Colorpicker.prototype.isDescendant = function (parent, child) {
         var node = child.parentNode;
         while (node !== null) {
@@ -477,6 +514,19 @@ export var Md2Colorpicker = (function () {
             node = node.parentNode;
         }
         return false;
+    };
+    Md2Colorpicker.prototype.checkInputVal = function (event) {
+        this.hsva = this.service.stringToHsva(this.color + '');
+        this.isInputFocus = false;
+        if (this.hsva) {
+            if (this._innerValue !== this.color) {
+                this._emitChangeEvent();
+            }
+            this.isInputValidColor = false;
+        }
+        else {
+            this.isInputValidColor = true;
+        }
     };
     /** Emits an event when the user selects a color. */
     Md2Colorpicker.prototype._emitChangeEvent = function () {
@@ -504,12 +554,29 @@ export var Md2Colorpicker = (function () {
     Md2Colorpicker.prototype._createOverlay = function () {
         if (!this._overlayRef) {
             var config = new OverlayState();
-            config.positionStrategy = this.overlay.position()
-                .global()
-                .centerHorizontally()
-                .centerVertically();
-            config.hasBackdrop = true;
-            config.backdropClass = 'cdk-overlay-dark-backdrop';
+            if (this.container === 'inline') {
+                var _a = this.positionX === 'before' ? ['end', 'start'] : ['start', 'end'], posX = _a[0], fallbackX = _a[1];
+                var _b = this.positionY === 'above' ? ['bottom', 'top'] : ['top', 'bottom'], overlayY = _b[0], fallbackOverlayY = _b[1];
+                var originY = overlayY;
+                var fallbackOriginY = fallbackOverlayY;
+                if (!this.overlapTrigger) {
+                    originY = overlayY === 'top' ? 'bottom' : 'top';
+                    fallbackOriginY = fallbackOverlayY === 'top' ? 'bottom' : 'top';
+                }
+                config.positionStrategy = this.overlay.position().connectedTo(this._element, { originX: posX, originY: originY }, { overlayX: posX, overlayY: overlayY })
+                    .withFallbackPosition({ originX: fallbackX, originY: originY }, { overlayX: fallbackX, overlayY: overlayY })
+                    .withFallbackPosition({ originX: posX, originY: fallbackOriginY }, { overlayX: posX, overlayY: fallbackOverlayY })
+                    .withFallbackPosition({ originX: fallbackX, originY: fallbackOriginY }, { overlayX: fallbackX, overlayY: fallbackOverlayY });
+                config.hasBackdrop = true;
+                config.backdropClass = 'cdk-overlay-transparent-backdrop';
+            }
+            else {
+                config.positionStrategy = this.overlay.position()
+                    .global()
+                    .centerHorizontally()
+                    .centerVertically();
+                config.hasBackdrop = true;
+            }
             this._overlayRef = this.overlay.create(config);
         }
     };
@@ -558,6 +625,10 @@ export var Md2Colorpicker = (function () {
         __metadata('design:type', String)
     ], Md2Colorpicker.prototype, "id", void 0);
     __decorate([
+        Input(), 
+        __metadata('design:type', Object)
+    ], Md2Colorpicker.prototype, "container", null);
+    __decorate([
         Output(), 
         __metadata('design:type', EventEmitter)
     ], Md2Colorpicker.prototype, "onOpen", void 0);
@@ -575,13 +646,15 @@ export var Md2Colorpicker = (function () {
     ], Md2Colorpicker.prototype, "templatePortal", void 0);
     Md2Colorpicker = __decorate([
         Component({selector: 'md2-colorpicker',
-            template: " <div class=\"md2-colorpicker-trigger\" (click)=\"toggle()\"> <div class=\"color-picker-selector\"> <div class=\"color-div\"> <div class=\"color-fill\" [style.background-color]=\"color\"> </div> </div> <label class=\"color-text\">{{color}}</label> </div> </div> <template portal> <div class=\"md2-colorpicker-panel\"> <div class=\"md2-colorpicker-content\"> <div class=\"md2-colorpicker-wrapper\" [class.active]=\"_isColorpickerVisible\"> <div class=\"md2-color-picker\"> <div [style.background-color]=\"outputColor\" class=\"selected-color\"> <div [hidden]=\"format!=2\" class=\"hsla-text\"> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]*\" min=\"0\" max=\"360\" [rg]=\"360\" (newValue)=\"setHue($event)\" [value]=\"hslaText.h\" /> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]*\" min=\"0\" max=\"100\" [rg]=\"100\" (newValue)=\"setSaturation($event)\" [value]=\"hslaText.s\" /> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]*\" min=\"0\" max=\"100\" [rg]=\"100\" (newValue)=\"setLightness($event)\" [value]=\"hslaText.l\" /> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]+([\.,][0-9]{1,2})?\" min=\"0\" max=\"1\" step=\"0.1\" [rg]=\"1\" (newValue)=\"setAlpha($event)\" [value]=\"hslaText.a\" /> </div> <div [hidden]=\"format!=1\" class=\"rgba-text\"> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]*\" min=\"0\" max=\"255\" [rg]=\"255\" (newValue)=\"setR($event)\" [value]=\"rgbaText.r\" /> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]*\" min=\"0\" max=\"255\" [rg]=\"255\" (newValue)=\"setG($event)\" [value]=\"rgbaText.g\" /> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]*\" min=\"0\" max=\"255\" [rg]=\"255\" (newValue)=\"setB($event)\" [value]=\"rgbaText.b\" /> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]+([\.,][0-9]{1,2})?\" min=\"0\" max=\"1\" step=\"0.1\" [rg]=\"1\" (newValue)=\"setAlpha($event)\" [value]=\"rgbaText.a\" /> </div> <div [hidden]=\"format!=0\" class=\"hex-text\"> <input [text] (newValue)=\"setColorFromString($event)\" [style.color]=\"fontColor\" [value]=\"hexText\" /> </div> <div [style.color]=\"fontColor\"> <div class=\"type-policy\" [style.background]=\"backAreaColor\" [class.active]=\"format==0\" (click)=\"formatPolicy(0)\">HEX</div> <div class=\"type-policy\" [style.background]=\"backAreaColor\" [class.active]=\"format==1\" (click)=\"formatPolicy(1)\">RGBA</div> <div class=\"type-policy\" [style.background]=\"backAreaColor\" [class.active]=\"format==2\" (click)=\"formatPolicy(2)\">HSLA</div> </div> </div> <div class=\"input-color-content\"> <div [colorpicker-slider] [style.background-color]=\"_hueSliderColor\" [point-x]=\"1\" [point-y]=\"1\" (change)=\"setSaturationAndBrightness($event)\" class=\"saturation-lightness\"> <div [style.left.px]=\"slider.s\" [style.top.px]=\"slider.v\" class=\"cursor\"></div> </div> <div [colorpicker-slider] [point-x]=\"1\" (change)=\"setHue($event)\" class=\"hue\"> <div [style.left.px]=\"slider.h\" class=\"color-picker-marker\"></div> </div> <div [colorpicker-slider] [style.background-color]=\"alphaColor\" [point-x]=\"1\" (change)=\"setAlpha($event)\" class=\"alpha\"> <div [style.left.px]=\"slider.a\" class=\"color-picker-marker\"></div> </div> </div> <div class=\"md2-color-picker-actions\"> <div class=\"md2-button\" (click)=\"cancelColor()\">Cancel</div> <div class=\"md2-button\" (click)=\"clickOk()\">Ok</div> </div> </div> </div> </div> </div> </template>",
-            styles: [".md2-colorpicker-wrapper { width: 270px; height: 345px; border-radius: 2px; background-color: #fff; z-index: 10; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); transform: scale(0); transform-origin: left top; transition: 150ms; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } .md2-colorpicker-wrapper.active { transform: scale(1); } .md2-colorpicker-disabled { pointer-events: none; cursor: default; } .md2-colorpicker-disabled .color-picker-selector .color-text { color: rgba(0, 0, 0, 0.38); border-color: transparent; background-image: linear-gradient(to right, rgba(0, 0, 0, 0.38) 0%, rgba(0, 0, 0, 0.38) 33%, transparent 0%); background-position: bottom -1px left 0; background-size: 4px 1px; background-repeat: repeat-x; } .color-picker-selector { display: block; padding: 18px 0 18px 32px; white-space: nowrap; cursor: pointer; } .color-picker-selector .color-div { content: ''; width: 24px; height: 24px; overflow: hidden; background-color: #fff; background-image: linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd), linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd); background-size: 8px 8px; background-position: 0 0, 4px 4px; position: absolute; top: 21px; left: 0; border: 2px solid #fafafa; display: block; fill: currentColor; cursor: pointer; border-radius: 50%; vertical-align: middle; box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 1px rgba(0, 0, 0, 0.14), 0 1px 1px 1px rgba(0, 0, 0, 0.12); } .color-picker-selector .color-div .color-fill { width: 100%; height: 100%; } .color-picker-selector .color-text { cursor: pointer; position: relative; display: block; min-width: 150px; height: 30px; padding: 2px 26px 1px 2px; margin: 0; line-height: 26px; color: rgba(0, 0, 0, 0.87); vertical-align: middle; box-sizing: border-box; border-bottom: 1px solid rgba(0, 0, 0, 0.12); } md2-colorpicker { position: relative; display: block; max-width: 175px; outline: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } .md2-color-picker { position: relative; display: block; outline: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } .md2-color-picker * { box-sizing: border-box; } .md2-color-picker .input-color-content { width: 250px; position: relative; margin: 10px auto; } .md2-color-picker i { cursor: default; position: relative; } .md2-color-picker input { font-size: 15px; } .md2-color-picker div.cursor-sv { cursor: default; position: relative; border-radius: 50%; width: 15px; height: 15px; border: #ddd solid 1px; } .md2-color-picker div.cursor { cursor: crosshair; position: relative; border-radius: 50%; width: 13px; height: 13px; box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5), inset 0 0 2px 0 rgba(0, 0, 0, 0.5); border: 2px solid #fff; } .md2-color-picker div.color-picker-marker { cursor: crosshair; position: relative; border: 2px solid #fff; box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5); height: 100%; width: 5px; border-bottom: 0; border-top: 0; } .md2-color-picker .saturation-lightness { width: 100%; height: 130px; border: none; overflow: hidden; background-image: linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, rgba(255, 255, 255, 0)); -ms-filter: 'progid:DXImageTransform.Microsoft.gradient(startColorstr=#00CC9A81, endColorstr=#FF000000)'; filter: progid:dximagetransform.microsoft.gradient(startColorstr='#00CC9A81', endColorstr='#FF000000'); } .md2-color-picker .saturation-lightness:hover { cursor: crosshair; } .md2-color-picker .hue { width: 100%; height: 30px; border: none; margin: 10px 0; background: -webkit-linear-gradient(left, #f00 0%, #ff0 16.66%, #0f0 33.33%, #0ff 50%, #00f 66.66%, #f0f 83.33%, #f00 100%); } .md2-color-picker .alpha { border: 1px solid #efefef; width: 100%; height: 30px; background-image: linear-gradient(to left, transparent, transparent), linear-gradient(to right, #fff, rgba(255, 255, 255, 0)); } .md2-color-picker .selected-color { width: 100%; height: 65px; padding-top: 10px; position: relative; } .hex-text { width: 100%; } .hex-text input { width: 100%; border: 0; padding: 4px; text-align: center; background: transparent; outline: none; font-size: 15px; } .hex-text div { text-align: center; float: left; clear: left; width: 160px; margin-top: 4px; } .hsla-text, .rgba-text { text-align: center; } .hsla-text input, .rgba-text input { width: 50px; border: 0; padding: 4px 0; background: transparent; text-align: center; } .hsla-text div, .rgba-text div { text-align: center; display: block; } .hsla-text label, .rgba-text label { text-align: center; display: inline-block; font-size: 15px; } .md2-color-picker-actions { text-align: right; } .md2-color-picker-actions .md2-button { display: inline-block; min-width: 64px; margin: 4px 8px 8px 0; padding: 0 12px; font-size: 14px; color: #106cc8; line-height: 36px; text-align: center; text-transform: uppercase; border-radius: 2px; cursor: pointer; box-sizing: border-box; transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1); } .md2-color-picker-actions .md2-button:hover { background: #ebebeb; } .hsla-text div:nth-child(5), .rgba-text div:nth-child(5) { clear: left; } .type-policy { width: 33.3%; text-align: center; font-size: 14px; display: inline-block; float: left; padding: 2px; margin-top: 6px; cursor: pointer; background: rgba(255, 255, 255, 0.4); } .type-policy.active { background: rgba(153, 153, 153, 0.2) !important; } .cdk-overlay-container, .cdk-global-overlay-wrapper { pointer-events: none; top: 0; left: 0; height: 100%; width: 100%; } .cdk-overlay-container { position: fixed; z-index: 1000; } .cdk-global-overlay-wrapper { display: flex; position: absolute; z-index: 1000; } .cdk-overlay-pane { position: absolute; pointer-events: auto; box-sizing: border-box; z-index: 1000; } .cdk-overlay-backdrop { position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1000; pointer-events: auto; transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1); opacity: 0; } .cdk-overlay-backdrop.cdk-overlay-backdrop-showing { opacity: 0.48; } .cdk-overlay-dark-backdrop { background: rgba(0, 0, 0, 0.6); } /*# sourceMappingURL=colorpicker.css.map */ "],
+            template: " <div class=\"md2-colorpicker-trigger\"> <div class=\"color-picker-selector\" [class.color-error]=\"isInputValidColor\"> <div class=\"color-div\" (click)=\"toggle()\"> <div class=\"color-fill\" [style.background-color]=\"color\"> </div> </div> <div class=\"md2-colorpicker-input\" [class.input-focused]=\"isInputFocus\"> <span class=\"md2-colorpicker-placeholder\" [class.md2-floating-placeholder]=\"color\">{{ placeholder }}</span> <input class=\"md2-colorpicker-value\" value=\"color\" [tabindex]=\"tabindex\" [disabled]=\"disabled\" [(ngModel)]=\"color\" (focus)=\"isInputFocus=true\" (blur)=\"checkInputVal($event)\" /> <span *ngIf=\"color && !required && !disabled\" class=\"color-clear\" (click)=\"clearColor($event)\"> <svg viewBox=\"0 0 20 20\" width=\"20\" height=\"20\"> <path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\" /> </svg> </span> </div> </div> </div> <template portal> <div class=\"md2-colorpicker-panel\"> <div class=\"md2-colorpicker-content\"> <div class=\"md2-colorpicker-wrapper\" [class.active]=\"_isColorpickerVisible\"> <div class=\"md2-color-picker\"> <div class=\"selected-color\"> <div class=\"selected-color-bg\" [style.background]=\"outputColor\"> <div class=\"color-input\"> <div [hidden]=\"format!=2\" class=\"hsla-text\"> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]*\" min=\"0\" max=\"360\" [rg]=\"360\" (newValue)=\"setHue($event)\" [value]=\"hslaText.h\" /> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]*\" min=\"0\" max=\"100\" [rg]=\"100\" (newValue)=\"setSaturation($event)\" [value]=\"hslaText.s\" /> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]*\" min=\"0\" max=\"100\" [rg]=\"100\" (newValue)=\"setLightness($event)\" [value]=\"hslaText.l\" /> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]+([\.,][0-9]{1,2})?\" min=\"0\" max=\"1\" step=\"0.1\" [rg]=\"1\" (newValue)=\"setAlpha($event)\" [value]=\"hslaText.a\" /> </div> <div [hidden]=\"format!=1\" class=\"rgba-text\"> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]*\" min=\"0\" max=\"255\" [rg]=\"255\" (newValue)=\"setR($event)\" [value]=\"rgbaText.r\" /> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]*\" min=\"0\" max=\"255\" [rg]=\"255\" (newValue)=\"setG($event)\" [value]=\"rgbaText.g\" /> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]*\" min=\"0\" max=\"255\" [rg]=\"255\" (newValue)=\"setB($event)\" [value]=\"rgbaText.b\" /> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]+([\.,][0-9]{1,2})?\" min=\"0\" max=\"1\" step=\"0.1\" [rg]=\"1\" (newValue)=\"setAlpha($event)\" [value]=\"rgbaText.a\" /> </div> <div [hidden]=\"format!=0\" class=\"hex-text\"> <input [text] (newValue)=\"setColorFromString($event)\" [style.color]=\"fontColor\" [value]=\"hexText\" /> </div> </div> <div class=\"color-bar \"> <div [style.color]=\"fontColor\" class=\"clearfix\"> <div class=\"type-policy\" [style.background]=\"backAreaColor\" [class.active]=\"format==0\" (click)=\"formatPolicy(0)\">HEX</div> <div class=\"type-policy\" [style.background]=\"backAreaColor\" [class.active]=\"format==1\" (click)=\"formatPolicy(1)\">RGBA</div> <div class=\"type-policy\" [style.background]=\"backAreaColor\" [class.active]=\"format==2\" (click)=\"formatPolicy(2)\">HSLA</div> </div> </div> </div> </div> <div class=\"input-color-content\"> <div [colorpicker-slider] [style.background-color]=\"_hueSliderColor\" [point-x]=\"1\" [point-y]=\"1\" (change)=\"setSaturationAndBrightness($event)\" class=\"saturation-lightness\"> <div [style.left.px]=\"slider.s\" [style.top.px]=\"slider.v\" class=\"cursor\"></div> </div> <div [colorpicker-slider] [point-x]=\"1\" (change)=\"setHue($event)\" class=\"hue\"> <div [style.left.px]=\"slider.h\" class=\"color-picker-marker\"></div> </div> <div [colorpicker-slider] [point-x]=\"1\" (change)=\"setAlpha($event)\" class=\"alpha\"> <div class=\"alpha-main\" [ngStyle]=\"setGradient\"> <div [style.left.px]=\"slider.a\" class=\"color-picker-marker\"></div> </div> </div> </div> <div class=\"md2-color-picker-actions\"> <div class=\"md2-button\" (click)=\"cancelColor()\">Cancel</div> <div class=\"md2-button\" (click)=\"clickOk()\">Ok</div> </div> </div> </div> </div> </div> </template>",
+            styles: [".md2-colorpicker-wrapper { width: 270px; height: 355px; border-radius: 2px; background-color: #fff; z-index: 10; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); transform: scale(0); transform-origin: left top; transition: 150ms; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } .md2-colorpicker-wrapper.active { transform: scale(1); } .md2-colorpicker-disabled { pointer-events: none; cursor: default; } .md2-colorpicker-disabled .color-picker-selector .md2-colorpicker-value { color: rgba(0, 0, 0, 0.38); border-color: transparent; background-image: linear-gradient(to right, rgba(0, 0, 0, 0.38) 0%, rgba(0, 0, 0, 0.38) 33%, transparent 0%); background-position: bottom -1px left 0; background-size: 4px 1px; background-repeat: repeat-x; } .md2-colorpicker-input { color: rgba(0, 0, 0, 0.38); border-bottom: 1px solid rgba(0, 0, 0, 0.12); display: flex; justify-content: space-between; align-items: center; height: 30px; min-width: 180px; line-height: 22px; position: relative; box-sizing: border-box; } [aria-disabled='true'] .md2-colorpicker-input { background-image: linear-gradient(to right, rgba(0, 0, 0, 0.26) 0, rgba(0, 0, 0, 0.26) 33%, transparent 0); background-size: 4px 1px; background-repeat: repeat-x; border-color: transparent; background-position: 0 bottom; cursor: default; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } md2-colorpicker:focus:not(.md2-colorpicker-disabled) .md2-colorpicker-input { color: #106cc8; border-color: #106cc8; } md2-colorpicker.ng-invalid.ng-touched:not(.md2-colorpicker-disabled) .md2-colorpicker-input { color: #f44336; border-color: #f44336; } .input-focused { color: #106cc8; border-color: #106cc8; } .inline-control { width: 150px; margin-right: 16px; padding: 16px 0; } .md2-colorpicker-placeholder { position: absolute; right: 18px; bottom: 100%; left: 0; padding: 0 2px; transform: translate3d(0, 26px, 0) scale(1); transform-origin: left top; white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; transition: all 150ms cubic-bezier(0.25, 0.8, 0.25, 1); } .md2-colorpicker-placeholder.md2-floating-placeholder { left: -2px; text-align: left; transform: translate3d(0, 6px, 0) scale(0.75); } [aria-required=true] .md2-colorpicker-placeholder::after { content: '*'; } .color-error .md2-colorpicker-input { color: #f44336; border-color: #f44336; } .color-error .color-fill { background-color: transparent !important; } .color-picker-selector { display: block; padding: 18px 0 18px 32px; white-space: nowrap; } .color-picker-selector .color-div { content: ''; width: 24px; height: 24px; overflow: hidden; background-color: #fff; background-image: linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd), linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd); background-size: 8px 8px; background-position: 0 0, 4px 4px; position: absolute; top: 21px; left: 0; border: 2px solid #fafafa; display: block; fill: #5a5a5a; cursor: pointer; border-radius: 50%; vertical-align: middle; box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 1px rgba(0, 0, 0, 0.14), 0 1px 1px 1px rgba(0, 0, 0, 0.12); } .color-picker-selector .color-div .color-fill { width: 100%; height: 100%; } .color-picker-selector .md2-colorpicker-value { font-size: 15px; background: transparent; border: 0; outline: none; position: relative; display: block; min-width: 160px; height: 30px; padding: 2px 2px 1px; margin: 0; line-height: 26px; color: rgba(0, 0, 0, 0.87); vertical-align: middle; box-sizing: border-box; } md2-colorpicker { position: relative; display: block; max-width: 215px; outline: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } .md2-color-picker { position: relative; display: block; outline: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } .md2-color-picker * { box-sizing: border-box; } .md2-color-picker .input-color-content { width: 250px; position: relative; margin: 10px auto; } .md2-color-picker i { cursor: default; position: relative; } .md2-color-picker input { font-size: 16px; height: 50px; outline: none; } .md2-color-picker div.cursor-sv { cursor: default; position: relative; border-radius: 50%; width: 15px; height: 15px; border: #ddd solid 1px; } .md2-color-picker div.cursor { cursor: crosshair; position: relative; border-radius: 50%; width: 13px; height: 13px; box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5), inset 0 0 2px 0 rgba(0, 0, 0, 0.5); border: 2px solid #fff; } .md2-color-picker div.color-picker-marker { cursor: crosshair; position: relative; border: 2px solid #fff; box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5); height: 100%; width: 5px; border-bottom: 0; border-top: 0; } .md2-color-picker .saturation-lightness { width: 100%; height: 130px; border: none; overflow: hidden; background-image: linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, rgba(255, 255, 255, 0)); -ms-filter: 'progid:DXImageTransform.Microsoft.gradient(startColorstr=#00CC9A81, endColorstr=#FF000000)'; filter: progid:dximagetransform.microsoft.gradient(startColorstr='#00CC9A81', endColorstr='#FF000000'); } .md2-color-picker .saturation-lightness:hover { cursor: crosshair; } .md2-color-picker .hue { width: 100%; height: 30px; border: none; margin: 10px 0; background: -webkit-linear-gradient(left, #f00 0%, #ff0 16.66%, #0f0 33.33%, #0ff 50%, #00f 66.66%, #f0f 83.33%, #f00 100%); } .md2-color-picker .alpha { border: 1px solid #efefef; width: 100%; height: 30px; background-color: #fff; background-size: 8px 8px; background-position: 0 0,4px 4px; position: relative; /*background-image: linear-gradient(to left, transparent, transparent), linear-gradient(to right, #fff, rgba(255, 255, 255, 0));*/ background-image: linear-gradient(45deg, #dddddd 25%, transparent 0px, transparent 75%, #dddddd 0px, #dddddd), linear-gradient(45deg, #dddddd 25%, transparent 0px, transparent 75%, #dddddd 0px, #dddddd); background-image: -webkit-linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd), -webkit-linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd); } .md2-color-picker .alpha .alpha-main { position: absolute; height: 100%; opacity: 1; background-image: linear-gradient(to left, transparent, transparent), linear-gradient(to right, #fff, rgba(255, 255, 255, 0)); width: 100%; } .md2-color-picker .selected-color { width: 100%; height: 75px; background-color: #fff; background-size: 8px 8px; background-position: 0 0,4px 4px; position: relative; background-image: linear-gradient(45deg, #dddddd 25%, transparent 0px, transparent 75%, #dddddd 0px, #dddddd), linear-gradient(45deg, #dddddd 25%, transparent 0px, transparent 75%, #dddddd 0px, #dddddd); background-image: -webkit-linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd), -webkit-linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd); } .md2-color-picker .selected-color .selected-color-bg { position: absolute; height: 100%; opacity: 1; width: 100%; } .md2-color-picker .selected-color .color-bar { position: absolute; width: 100%; bottom: 0; } .md2-color-picker .selected-color .color-input { position: relative; } .color-clear { color: rgba(0, 0, 0, 0.4); cursor: pointer; } .color-clear svg { fill: #686868; } .clearfix:before, .clearfix:after { content: \" \"; display: table; } .clearfix:after { clear: both; } .hex-text { width: 100%; } .hex-text input { width: 100%; border: 0; padding: 4px; text-align: center; background: transparent; } .hex-text div { text-align: center; float: left; clear: left; width: 160px; margin-top: 4px; } .hsla-text, .rgba-text { text-align: center; } .hsla-text input, .rgba-text input { width: 50px; border: 0; padding: 4px 0; background: transparent; text-align: center; } .hsla-text div, .rgba-text div { text-align: center; display: block; } .hsla-text label, .rgba-text label { text-align: center; display: inline-block; font-size: 15px; } .md2-color-picker-actions { text-align: right; } .md2-color-picker-actions .md2-button { display: inline-block; min-width: 64px; margin: 4px 8px 8px 0; padding: 0 12px; font-size: 14px; color: #106cc8; line-height: 36px; text-align: center; text-transform: uppercase; border-radius: 2px; cursor: pointer; box-sizing: border-box; transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1); } .md2-color-picker-actions .md2-button:hover { background: #ebebeb; } .hsla-text div:nth-child(5), .rgba-text div:nth-child(5) { clear: left; } .type-policy { width: 33.333333%; text-align: center; font-size: 14px; display: inline-block; float: left; padding: 3px; cursor: pointer; background: rgba(255, 255, 255, 0.4); } .type-policy.active { background: rgba(153, 153, 153, 0.35) !important; } .cdk-overlay-container, .cdk-global-overlay-wrapper { pointer-events: none; top: 0; left: 0; height: 100%; width: 100%; } .cdk-overlay-container { position: fixed; z-index: 1000; } .cdk-global-overlay-wrapper { display: flex; position: absolute; z-index: 1000; } .cdk-overlay-pane { position: absolute; pointer-events: auto; box-sizing: border-box; z-index: 1000; } .cdk-overlay-backdrop { position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1000; pointer-events: auto; transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1); opacity: 0; } .cdk-overlay-backdrop.cdk-overlay-backdrop-showing { opacity: 0.48; } .cdk-overlay-dark-backdrop { background: rgba(0, 0, 0, 0.6); } /*# sourceMappingURL=colorpicker.css.map */ "],
             host: {
                 'role': 'colorpicker',
                 '[id]': 'id',
-                '[tabindex]': 'disabled ? -1 : tabindex',
+                '[class.color-focus]': 'inputFocused || !disabled',
                 '[class.md2-colorpicker-disabled]': 'disabled',
+                '[attr.aria-label]': 'placeholder',
+                '[attr.aria-required]': 'required.toString()',
             },
             encapsulation: ViewEncapsulation.None
         }),
@@ -645,14 +718,15 @@ export var Md2ColorpickerModule = (function () {
     Md2ColorpickerModule.forRoot = function () {
         return {
             ngModule: Md2ColorpickerModule,
-            providers: [ColorpickerService]
+            providers: []
         };
     };
     Md2ColorpickerModule = __decorate([
         NgModule({
             declarations: MD2_COLORPICKER_DIRECTIVES,
             imports: [CommonModule, FormsModule, OverlayModule, PortalModule],
-            exports: MD2_COLORPICKER_DIRECTIVES
+            exports: MD2_COLORPICKER_DIRECTIVES,
+            providers: [ColorpickerService]
         }), 
         __metadata('design:paramtypes', [])
     ], Md2ColorpickerModule);

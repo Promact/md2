@@ -3,7 +3,7 @@ import { animate, state, style, transition, trigger } from '@angular/core';
  * The following are all the animations for the md2-select component, with each
  * const containing the metadata for one animation.
  *
- * The values below match the implementation of the Material 1 md2-select animation.
+ * The values below match the implementation of the AngularJS Material md2-select animation.
  */
 /**
  * This animation shrinks the placeholder text to 75% of its normal size and translates
@@ -36,13 +36,13 @@ export var transformPanel = trigger('transformPanel', [
     state('showing', style({
         opacity: 1,
         minWidth: 'calc(100% + 32px)',
-        transform: "translate3d(0,0,0) scaleY(1)"
+        transform: "scaleY(1)"
     })),
     transition('void => *', [
         style({
             opacity: 0,
             minWidth: '100%',
-            transform: "translate3d(0, 0, 0) scaleY(0)"
+            transform: "scaleY(0)"
         }),
         animate("150ms cubic-bezier(0.25, 0.8, 0.25, 1)")
     ]),

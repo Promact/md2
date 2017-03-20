@@ -1,7 +1,8 @@
-import { ModuleWithProviders, ElementRef, ViewContainerRef, AnimationTransitionEvent, NgZone, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
+import { ModuleWithProviders, ElementRef, ViewContainerRef, AnimationTransitionEvent, NgZone, OnDestroy, Renderer, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Overlay, OverlayRef, OverlayConnectionPosition, OriginConnectionPosition } from '../core';
 import { Observable } from 'rxjs/Observable';
 import { Dir } from '../core/rtl/dir';
+import { Platform } from '../core/platform/index';
 import 'rxjs/add/operator/first';
 import { ScrollDispatcher } from '../core/overlay/scroll/scroll-dispatcher';
 import { Subscription } from 'rxjs/Subscription';
@@ -18,10 +19,12 @@ export declare const SCROLL_THROTTLE_MS: number;
  */
 export declare class Md2Tooltip implements OnInit, OnDestroy {
     private _overlay;
-    private _scrollDispatcher;
     private _elementRef;
+    private _scrollDispatcher;
     private _viewContainerRef;
     private _ngZone;
+    private _renderer;
+    private _platform;
     private _dir;
     _overlayRef: OverlayRef;
     _tooltipInstance: Md2TooltipComponent;
@@ -36,7 +39,7 @@ export declare class Md2Tooltip implements OnInit, OnDestroy {
     private _message;
     /** The message to be displayed in the tooltip */
     message: string;
-    constructor(_overlay: Overlay, _scrollDispatcher: ScrollDispatcher, _elementRef: ElementRef, _viewContainerRef: ViewContainerRef, _ngZone: NgZone, _dir: Dir);
+    constructor(_overlay: Overlay, _elementRef: ElementRef, _scrollDispatcher: ScrollDispatcher, _viewContainerRef: ViewContainerRef, _ngZone: NgZone, _renderer: Renderer, _platform: Platform, _dir: Dir);
     ngOnInit(): void;
     /**
      * Dispose the tooltip when destroyed.

@@ -20,12 +20,12 @@ export * from './overlay/position/connected-position';
 export { ScrollDispatcher } from './overlay/scroll/scroll-dispatcher';
 export { GestureConfig } from './gestures/gesture-config';
 export { HammerInput, HammerManager } from './gestures/gesture-annotations';
-export { MdRipple, MdRippleModule } from './ripple/ripple';
+export * from './ripple/index';
 export { AriaLivePoliteness, LiveAnnouncer, LIVE_ANNOUNCER_ELEMENT_TOKEN, LIVE_ANNOUNCER_PROVIDER } from './a11y/live-announcer';
 export * from './selection/selection';
 /** @deprecated */
 export { LiveAnnouncer as MdLiveAnnouncer } from './a11y/live-announcer';
-export { FocusTrap } from './a11y/focus-trap';
+export * from './a11y/focus-trap';
 export { InteractivityChecker } from './a11y/interactivity-checker';
 export { isFakeMousedownFromScreenReader } from './a11y/fake-mousedown';
 export { A11yModule } from './a11y/index';

@@ -9,8 +9,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 import { NgModule } from '@angular/core';
 import { CdkMonitorFocus, FOCUS_ORIGIN_MONITOR_PROVIDER } from './focus-origin-monitor';
-export * from './focus-origin-monitor';
-export * from './apply-transform';
 export var StyleModule = (function () {
     function StyleModule() {
     }
@@ -24,4 +22,6 @@ export var StyleModule = (function () {
     ], StyleModule);
     return StyleModule;
 }());
+export * from './focus-origin-monitor';
+export * from './apply-transform';
 //# sourceMappingURL=index.js.map

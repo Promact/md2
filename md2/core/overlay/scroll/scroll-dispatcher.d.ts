@@ -1,9 +1,9 @@
 import { ElementRef, Optional } from '@angular/core';
 import { Scrollable } from './scrollable';
 import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/observable/fromEvent';
+import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/auditTime';
 /** Time in ms to throttle the scrolling events by default. */
 export declare const DEFAULT_SCROLL_TIME: number;
@@ -14,12 +14,15 @@ export declare const DEFAULT_SCROLL_TIME: number;
 export declare class ScrollDispatcher {
     /** Subject for notifying that a registered scrollable reference element has been scrolled. */
     _scrolled: Subject<void>;
+    /** Keeps track of the global `scroll` and `resize` subscriptions. */
+    _globalSubscription: Subscription;
+    /** Keeps track of the amount of subscriptions to `scrolled`. Used for cleaning up afterwards. */
+    private _scrolledCount;
     /**
      * Map of all the scrollable references that are registered with the service and their
      * scroll event subscriptions.
      */
     scrollableReferences: Map<Scrollable, Subscription>;
-    constructor();
     /**
      * Registers a Scrollable with the service and listens for its scrolled events. When the
      * scrollable is scrolled, the service emits the event in its scrolled observable.
@@ -32,11 +35,11 @@ export declare class ScrollDispatcher {
      */
     deregister(scrollable: Scrollable): void;
     /**
-     * Returns an observable that emits an event whenever any of the registered Scrollable
+     * Subscribes to an observable that emits an event whenever any of the registered Scrollable
      * references (or window, document, or body) fire a scrolled event. Can provide a time in ms
      * to override the default "throttle" time.
      */
-    scrolled(auditTimeInMs?: number): Observable<void>;
+    scrolled(auditTimeInMs: number, callback: () => any): Subscription;
     /** Returns all registered Scrollables that contain the provided element. */
     getScrollContainers(elementRef: ElementRef): Scrollable[];
     /** Returns true if the element is contained within the provided Scrollable. */

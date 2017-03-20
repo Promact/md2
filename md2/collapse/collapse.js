@@ -7,17 +7,19 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Directive, Input, NgModule } from '@angular/core';
+import { Directive, EventEmitter, Input, Output, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 export var Md2Collapse = (function () {
     function Md2Collapse() {
-        this._isExpanded = true;
-        this._isCollapsing = false;
+        this._collapse = true;
+        this._collapsing = false;
+        this.collapsed = new EventEmitter();
+        this.expanded = new EventEmitter();
     }
     Object.defineProperty(Md2Collapse.prototype, "collapse", {
-        get: function () { return this._isExpanded; },
+        get: function () { return this._collapse; },
         set: function (value) {
-            this._isExpanded = value;
+            this._collapse = value;
             this.toggle();
         },
         enumerable: true,
@@ -27,7 +29,7 @@ export var Md2Collapse = (function () {
      * toggle collapse
      */
     Md2Collapse.prototype.toggle = function () {
-        if (this._isExpanded) {
+        if (this._collapse) {
             this.hide();
         }
         else {
@@ -35,27 +37,37 @@ export var Md2Collapse = (function () {
         }
     };
     /**
+    * show collapse
+    */
+    Md2Collapse.prototype.show = function () {
+        var _this = this;
+        this._collapsing = true;
+        this._collapse = true;
+        setTimeout(function () {
+            _this._collapsing = false;
+        }, 4);
+        this.expanded.emit();
+    };
+    /**
      * hide collapse
      */
     Md2Collapse.prototype.hide = function () {
         var _this = this;
-        this._isCollapsing = true;
-        this._isExpanded = false;
+        this._collapsing = true;
+        this._collapse = false;
         setTimeout(function () {
-            _this._isCollapsing = false;
+            _this._collapsing = false;
         }, 4);
+        this.collapsed.emit();
     };
-    /**
-     * show collapse
-     */
-    Md2Collapse.prototype.show = function () {
-        var _this = this;
-        this._isCollapsing = true;
-        this._isExpanded = true;
-        setTimeout(function () {
-            _this._isCollapsing = false;
-        }, 4);
-    };
+    __decorate([
+        Output(), 
+        __metadata('design:type', EventEmitter)
+    ], Md2Collapse.prototype, "collapsed", void 0);
+    __decorate([
+        Output(), 
+        __metadata('design:type', EventEmitter)
+    ], Md2Collapse.prototype, "expanded", void 0);
     __decorate([
         Input(), 
         __metadata('design:type', Boolean)
@@ -64,12 +76,14 @@ export var Md2Collapse = (function () {
         Directive({
             selector: '[collapse]',
             host: {
-                '[class.in]': '_isExpanded',
+                'role': 'collapse',
+                '[class.in]': '_collapse',
                 '[class.collapse]': 'true',
-                '[class.collapsing]': '_isCollapsing',
-                '[attr.aria-expanded]': '_isExpanded',
-                '[attr.aria-hidden]': '!_isExpanded',
-            }
+                '[class.collapsing]': '_collapsing',
+                '[attr.aria-expanded]': '_collapse',
+                '[attr.aria-hidden]': '!_collapse'
+            },
+            exportAs: 'md2Collapse'
         }), 
         __metadata('design:paramtypes', [])
     ], Md2Collapse);

@@ -11,7 +11,6 @@ import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angu
 import { coerceBooleanProperty } from '../core/core';
 export var Md2Accordion = (function () {
     function Md2Accordion() {
-        this.class = '';
         this.close = new EventEmitter();
         this.open = new EventEmitter();
         this.tabs = [];
@@ -34,10 +33,6 @@ export var Md2Accordion = (function () {
         __metadata('design:type', Boolean)
     ], Md2Accordion.prototype, "multiple", null);
     __decorate([
-        Input(), 
-        __metadata('design:type', String)
-    ], Md2Accordion.prototype, "class", void 0);
-    __decorate([
         Output(), 
         __metadata('design:type', EventEmitter)
     ], Md2Accordion.prototype, "close", void 0);
@@ -48,12 +43,9 @@ export var Md2Accordion = (function () {
     Md2Accordion = __decorate([
         Component({selector: 'md2-accordion',
             template: "<ng-content></ng-content>",
-            styles: [".md2-accordion { display: block; } md2-accordion-tab { position: relative; display: block; outline: 0; border: 0; border-width: 0 0 1px; border-style: solid; border-color: rgba(0, 0, 0, 0.12); box-sizing: border-box; } md2-accordion-tab[hidden] { display: none; } md2-accordion-tab.md2-accordion-tab-active { border-color: rgba(0, 0, 0, 0.12); } md2-accordion-tab .md2-accordion-header { position: relative; border-radius: 0; color: rgba(0, 0, 0, 0.85); font-weight: 500; cursor: pointer; display: block; align-items: inherit; line-height: 40px; margin: 0; max-height: 40px; overflow: hidden; padding: 0 35px 0 16px; text-align: left; text-decoration: none; white-space: nowrap; width: 100%; box-sizing: border-box; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-user-drag: none; } md2-accordion-tab.md2-accordion-tab-active .md2-accordion-header { color: #106cc8; } md2-accordion-tab.md2-accordion-tab-disabled .md2-accordion-header { pointer-events: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-user-drag: none; opacity: 0.5; cursor: default; } md2-accordion-tab .md2-accordion-header-icon { position: absolute; top: 12px; right: 17px; width: 8px; height: 8px; overflow: hidden; display: inline-block; border-width: 0 2px 2px 0; border-style: solid; border-color: rgba(0, 0, 0, 0.54); transform: rotate(45deg); transition: 300ms ease-in-out; } md2-accordion-tab.md2-accordion-tab-active .md2-accordion-header-icon { transform: rotate(225deg); top: 16px; } md2-accordion-tab .md2-accordion-tab-content { position: relative; display: none; padding: 16px; } md2-accordion-tab.md2-accordion-tab-active .md2-accordion-tab-content { display: block; } /*# sourceMappingURL=accordion.css.map */ "],
-            host: {
-                '[class]': 'class',
-                '[class.md2-accordion]': 'true'
-            },
-            encapsulation: ViewEncapsulation.None
+            styles: ["md2-accordion { display: block; } md2-accordion-tab { position: relative; display: block; outline: 0; box-sizing: border-box; } md2-accordion-tab[hidden] { display: none; } .md2-accordion-header { position: relative; display: block; padding-right: 30px; font-weight: 500; line-height: 40px; text-align: left; color: rgba(0, 0, 0, 0.87); cursor: pointer; white-space: nowrap; border-bottom: 1px solid rgba(0, 0, 0, 0.12); border-radius: 0; box-sizing: border-box; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } md2-accordion-tab.md2-accordion-tab-active > .md2-accordion-header { border-color: #106cc8; box-shadow: 0 1px 0 #106cc8; } md2-accordion-tab.md2-accordion-tab-disabled > .md2-accordion-header { pointer-events: none; color: rgba(0, 0, 0, 0.26); background-image: linear-gradient(to right, rgba(0, 0, 0, 0.26) 0, rgba(0, 0, 0, 0.26) 33%, transparent 0); background-size: 4px 1px; background-repeat: repeat-x; background-position: 0 bottom; border-color: transparent; box-shadow: none; cursor: default; } .md2-accordion-header-icon { position: absolute; top: 12px; right: 8px; width: 8px; height: 8px; overflow: hidden; display: inline-block; border-width: 0 2px 2px 0; border-style: solid; border-color: currentColor; opacity: 0.64; transform: rotate(45deg); transition: 300ms ease-in-out; } md2-accordion-tab.md2-accordion-tab-active > .md2-accordion-header > .md2-accordion-header-icon { transform: rotate(225deg); top: 16px; } .md2-accordion-tab-body { position: relative; overflow: hidden; } .md2-accordion-tab-content { position: relative; padding: 20px 0; border-bottom: 1px solid rgba(0, 0, 0, 0.12); } /*# sourceMappingURL=accordion.css.map */ "],
+            encapsulation: ViewEncapsulation.None,
+            exportAs: 'md2Accordion'
         }), 
         __metadata('design:paramtypes', [])
     ], Md2Accordion);

@@ -10,11 +10,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { NgModule, Component, Directive, Input, ElementRef, ViewContainerRef, style, trigger, state, transition, animate, NgZone, Optional, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
-import { Overlay, OverlayState, OverlayModule, ComponentPortal, CompatibilityModule } from '../core';
+import { NgModule, Component, Directive, Input, ElementRef, ViewContainerRef, style, trigger, state, transition, animate, NgZone, Optional, Renderer, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
+import { Overlay, OverlayState, OverlayModule, ComponentPortal, CompatibilityModule, PlatformModule } from '../core';
 import { Md2TooltipInvalidPositionError } from './tooltip-errors';
 import { Subject } from 'rxjs/Subject';
 import { Dir } from '../core/rtl/dir';
+import { Platform } from '../core/platform/index';
 import 'rxjs/add/operator/first';
 import { ScrollDispatcher } from '../core/overlay/scroll/scroll-dispatcher';
 /** Time in ms to delay before changing the tooltip visibility to hidden */
@@ -28,18 +29,27 @@ export var SCROLL_THROTTLE_MS = 20;
  * https://material.google.com/components/tooltips.html
  */
 export var Md2Tooltip = (function () {
-    function Md2Tooltip(_overlay, _scrollDispatcher, _elementRef, _viewContainerRef, _ngZone, _dir) {
+    function Md2Tooltip(_overlay, _elementRef, _scrollDispatcher, _viewContainerRef, _ngZone, _renderer, _platform, _dir) {
+        var _this = this;
         this._overlay = _overlay;
-        this._scrollDispatcher = _scrollDispatcher;
         this._elementRef = _elementRef;
+        this._scrollDispatcher = _scrollDispatcher;
         this._viewContainerRef = _viewContainerRef;
         this._ngZone = _ngZone;
+        this._renderer = _renderer;
+        this._platform = _platform;
         this._dir = _dir;
         this._position = 'below';
         /** The default delay in ms before showing the tooltip after show is called */
         this.showDelay = 0;
         /** The default delay in ms before hiding the tooltip after hide is called */
         this.hideDelay = 0;
+        // The mouse events shouldn't be bound on iOS devices, because
+        // they can prevent the first tap from firing it's click event.
+        if (!_platform.IOS) {
+            _renderer.listen(_elementRef.nativeElement, 'mouseenter', function () { return _this.show(); });
+            _renderer.listen(_elementRef.nativeElement, 'mouseleave', function () { return _this.hide(); });
+        }
     }
     Object.defineProperty(Md2Tooltip.prototype, "position", {
         /** Allows the user to define the position of the tooltip relative to the parent element */
@@ -73,7 +83,7 @@ export var Md2Tooltip = (function () {
         var _this = this;
         // When a scroll on the page occurs, update the position in case this tooltip needs
         // to be repositioned.
-        this.scrollSubscription = this._scrollDispatcher.scrolled(SCROLL_THROTTLE_MS).subscribe(function () {
+        this.scrollSubscription = this._scrollDispatcher.scrolled(SCROLL_THROTTLE_MS, function () {
             if (_this._overlayRef) {
                 _this._overlayRef.updatePosition();
             }
@@ -86,7 +96,9 @@ export var Md2Tooltip = (function () {
         if (this._tooltipInstance) {
             this._disposeTooltip();
         }
-        this.scrollSubscription.unsubscribe();
+        if (this.scrollSubscription) {
+            this.scrollSubscription.unsubscribe();
+        }
     };
     /** Shows the tooltip after the delay in ms, defaults to tooltip-delay-show or 0ms if no input */
     Md2Tooltip.prototype.show = function (delay) {
@@ -228,13 +240,11 @@ export var Md2Tooltip = (function () {
             host: {
                 '(longpress)': 'show()',
                 '(touchend)': 'hide(' + TOUCHEND_HIDE_DELAY + ')',
-                '(mouseenter)': 'show()',
-                '(mouseleave)': 'hide()',
             },
             exportAs: 'md2Tooltip',
         }),
-        __param(5, Optional()), 
-        __metadata('design:paramtypes', [Overlay, ScrollDispatcher, ElementRef, ViewContainerRef, NgZone, Dir])
+        __param(7, Optional()), 
+        __metadata('design:paramtypes', [Overlay, ElementRef, ScrollDispatcher, ViewContainerRef, NgZone, Renderer, Platform, Dir])
     ], Md2Tooltip);
     return Md2Tooltip;
 }());
@@ -353,7 +363,7 @@ export var Md2TooltipComponent = (function () {
     Md2TooltipComponent = __decorate([
         Component({selector: 'md2-tooltip',
             template: "<div class=\"md2-tooltip\" [style.transform-origin]=\"_transformOrigin\" [@state]=\"_visibility\" (@state.done)=\"_afterVisibilityAnimation($event)\" [innerHTML]=\"message\"> </div>",
-            styles: ["md2-tooltip { pointer-events: none; } .md2-tooltip { color: white; padding: 6px 8px; border-radius: 2px; font-size: 10px; margin: 14px; max-width: 250px; background: rgba(97, 97, 97, 0.9); } .cdk-overlay-container, .cdk-global-overlay-wrapper { pointer-events: none; top: 0; left: 0; height: 100%; width: 100%; } .cdk-overlay-container { position: fixed; z-index: 1000; } .cdk-global-overlay-wrapper { display: flex; position: absolute; z-index: 1000; } .cdk-overlay-pane { position: absolute; pointer-events: auto; box-sizing: border-box; z-index: 1000; } /*# sourceMappingURL=tooltip.css.map */ "],
+            styles: ["md2-tooltip { pointer-events: none; } .md2-tooltip { color: white; padding: 6px 8px; border-radius: 2px; font-size: 10px; margin: 14px; max-width: 250px; background: rgba(97, 97, 97, 0.9); word-wrap: break-word; } .cdk-overlay-container, .cdk-global-overlay-wrapper { pointer-events: none; top: 0; left: 0; height: 100%; width: 100%; } .cdk-overlay-container { position: fixed; z-index: 1000; } .cdk-global-overlay-wrapper { display: flex; position: absolute; z-index: 1000; } .cdk-overlay-pane { position: absolute; pointer-events: auto; box-sizing: border-box; z-index: 1000; } /*# sourceMappingURL=tooltip.css.map */ "],
             animations: [
                 trigger('state', [
                     state('void', style({ transform: 'scale(0)' })),
@@ -386,7 +396,7 @@ export var Md2TooltipModule = (function () {
     };
     Md2TooltipModule = __decorate([
         NgModule({
-            imports: [OverlayModule, CompatibilityModule],
+            imports: [OverlayModule, CompatibilityModule, PlatformModule],
             exports: [Md2Tooltip, Md2TooltipComponent, CompatibilityModule],
             declarations: [Md2Tooltip, Md2TooltipComponent],
             entryComponents: [Md2TooltipComponent],

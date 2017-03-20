@@ -3,7 +3,6 @@ import { Md2AccordionTab } from './accordiontab';
 export declare class Md2Accordion {
     private _multiple;
     multiple: boolean;
-    class: string;
     close: EventEmitter<any>;
     open: EventEmitter<any>;
     tabs: Md2AccordionTab[];

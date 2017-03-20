@@ -13,20 +13,12 @@ var DialogDemo = (function () {
     function DialogDemo() {
         this.dialogHeader = 'Lorum Ipsum';
     }
-    DialogDemo.prototype.launchDialog = function (dialog) {
-        dialog.open();
-    };
     DialogDemo.prototype.open = function (dialog) {
         dialog.open();
     };
     DialogDemo.prototype.close = function (dialog) {
         dialog.close();
     };
-    DialogDemo.prototype.openAlert = function (event) { };
-    DialogDemo.prototype.openConfirm = function (event) { };
-    DialogDemo.prototype.openPrompt = function (event) { };
-    DialogDemo.prototype.openAdvanced = function (event) { };
-    DialogDemo.prototype.openTabDialog = function (event) { };
     DialogDemo = __decorate([
         core_1.Component({
             moduleId: module.id,

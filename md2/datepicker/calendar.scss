@@ -1,0 +1,77 @@
+$primary: #106cc8 !default;
+$md2-datepicker-cell-size: 40px !default;
+
+md2-calendar {
+}
+
+.md2-calendar-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 48px;
+
+  .md2-calendar-month-year {
+    width: 100%;
+  }
+
+  button {
+    display: inline-block;
+    width: 48px;
+    height: 48px;
+    padding: 12px;
+    outline: none;
+    border: 0;
+    cursor: pointer;
+    background: transparent;
+  }
+}
+
+.md2-datepicker-week-days {
+}
+
+.md2-calendar-week-day {
+  display: inline-block;
+  width: $md2-datepicker-cell-size;
+  line-height: $md2-datepicker-cell-size;
+  margin: 1px;
+  color: rgba(black, 0.38);
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.md2-calendar-dates {
+}
+
+.md2-calendar-date {
+  display: inline-block;
+  width: $md2-datepicker-cell-size;
+  line-height: $md2-datepicker-cell-size;
+  margin: 1px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 50%;
+  border: 1px solid transparent;
+
+  &.md2-calendar-date-today {
+    border-color: $primary;
+  }
+
+  &.md2-calendar-date-focused,
+  &:hover {
+    background: rgb(224, 224, 224);
+  }
+
+  &.md2-calendar-date-selected:not(.md2-calendar-date-disabled) {
+    background: $primary;
+    color: white;
+    border-color: transparent;
+  }
+
+  &.md2-calendar-date-disabled {
+    cursor: default;
+    pointer-events: none;
+    opacity: 0.5;
+  }
+}

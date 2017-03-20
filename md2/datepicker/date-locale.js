@@ -36,9 +36,25 @@ export var DateLocale = (function () {
             { full: 'Saturday', short: 'Sat', xshort: 'S' },
         ];
     }
-    DateLocale.prototype.getDateLabel = function (d) { return "" + d; };
-    DateLocale.prototype.getMonthLabel = function (m, y) { return this.months[m].short.toUpperCase() + " " + y; };
+    DateLocale.prototype.getDays = function () {
+        return this.days.slice(this.firstDayOfWeek, this.days.length)
+            .concat(this.days.slice(0, this.firstDayOfWeek));
+    };
+    DateLocale.prototype.getDayLabel = function (d) { return "" + d; };
+    DateLocale.prototype.getDateLabel = function (d) {
+        return this.days[d.getDay()].short + ", " + this.months[d.getMonth()].short + " " + d.getDate();
+    };
+    DateLocale.prototype.getMonthLabel = function (m, y) { return this.months[m].full + " " + y; };
     DateLocale.prototype.getYearLabel = function (y) { return "" + y; };
+    /**
+     * Gets the first day of the month for the given date's month.
+     * @param {Date} date
+     * @returns {Date}
+     */
+    DateLocale.prototype.getFirstDateOfWeek = function (date) {
+        var day = date.getDate() - ((7 + date.getDay() - this.firstDayOfWeek) % 7);
+        return new Date(date.getFullYear(), date.getMonth(), day, date.getHours(), date.getMinutes());
+    };
     /**
      * Gets the first day of the month for the given date's month.
      * @param {Date} date

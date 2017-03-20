@@ -1,13 +1,13 @@
 /**
-  * @license Md2 v0.0.16
+  * @license Md2 v0.0.17
   * Copyright (c) 2017 Promact, Inc. http://code.promactinfo.com/md2/
   * License: MIT
   */
 (function (global, factory) {
-   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/common'), require('rxjs/Subject'), require('rxjs/Observable'), require('rxjs/add/observable/fromEvent'), require('rxjs/add/operator/auditTime'), require('@angular/platform-browser'), require('@angular/forms'), require('rxjs/add/operator/first')) :
-   typeof define === 'function' && define.amd ? define(['exports', '@angular/core', '@angular/common', 'rxjs/Subject', 'rxjs/Observable', 'rxjs/add/observable/fromEvent', 'rxjs/add/operator/auditTime', '@angular/platform-browser', '@angular/forms', 'rxjs/add/operator/first'], factory) :
-   (factory((global.ng = global.ng || {}, global.ng.md2 = global.ng.md2 || {}),global.ng.core,global.ng.common,global.Rx,global.Rx,global.Rx.Observable,global.Rx.Observable.prototype,global.ng.platformBrowser,global.ng.forms,global.Rx.Observable.prototype));
-}(this, (function (exports,_angular_core,_angular_common,rxjs_Subject,rxjs_Observable,rxjs_add_observable_fromEvent,rxjs_add_operator_auditTime,_angular_platformBrowser,_angular_forms,rxjs_add_operator_first) { 'use strict';
+   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/common'), require('rxjs/Subject'), require('rxjs/Observable'), require('rxjs/add/observable/fromEvent'), require('rxjs/add/observable/merge'), require('rxjs/add/operator/auditTime'), require('@angular/platform-browser'), require('@angular/forms'), require('rxjs/add/operator/first')) :
+   typeof define === 'function' && define.amd ? define(['exports', '@angular/core', '@angular/common', 'rxjs/Subject', 'rxjs/Observable', 'rxjs/add/observable/fromEvent', 'rxjs/add/observable/merge', 'rxjs/add/operator/auditTime', '@angular/platform-browser', '@angular/forms', 'rxjs/add/operator/first'], factory) :
+   (factory((global.ng = global.ng || {}, global.ng.md2 = global.ng.md2 || {}),global.ng.core,global.ng.common,global.Rx,global.Rx,global.Rx.Observable,global.Rx.Observable,global.Rx.Observable.prototype,global.ng.platformBrowser,global.ng.forms,global.Rx.Observable.prototype));
+}(this, (function (exports,_angular_core,_angular_common,rxjs_Subject,rxjs_Observable,rxjs_add_observable_fromEvent,rxjs_add_observable_merge,rxjs_add_operator_auditTime,_angular_platformBrowser,_angular_forms,rxjs_add_operator_first) { 'use strict';
 
 var __decorate$2 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -324,7 +324,7 @@ var ObserveContentModule = (function () {
     return ObserveContentModule;
 }());
 
-// Due to a bug in the ChromeDriver, Angular 2 keyboard events are not triggered by `sendKeys`
+// Due to a bug in the ChromeDriver, Angular keyboard events are not triggered by `sendKeys`
 // during E2E tests when using dot notation such as `(keydown.rightArrow)`. To get around this,
 // we are temporarily using a single (keydown) handler.
 // See: https://github.com/angular/angular/issues/9419
@@ -362,18 +362,36 @@ function coerceBooleanProperty(value) {
     return value != null && "" + value !== 'false';
 }
 
+/** Possible states for a ripple element. */
+
+(function (RippleState) {
+    RippleState[RippleState["FADING_IN"] = 0] = "FADING_IN";
+    RippleState[RippleState["VISIBLE"] = 1] = "VISIBLE";
+    RippleState[RippleState["FADING_OUT"] = 2] = "FADING_OUT";
+    RippleState[RippleState["HIDDEN"] = 3] = "HIDDEN";
+})(exports.RippleState || (exports.RippleState = {}));
+/**
+ * Reference to a previously launched ripple element.
+ */
+var RippleRef = (function () {
+    function RippleRef(_renderer, element, config) {
+        this._renderer = _renderer;
+        this.element = element;
+        this.config = config;
+        /** Current state of the ripple reference. */
+        this.state = exports.RippleState.HIDDEN;
+    }
+    /** Fades out the ripple element. */
+    RippleRef.prototype.fadeOut = function () {
+        this._renderer.fadeOutRipple(this);
+    };
+    return RippleRef;
+}());
+
 /** Fade-in duration for the ripples. Can be modified with the speedFactor option. */
 var RIPPLE_FADE_IN_DURATION = 450;
 /** Fade-out duration for the ripples in milliseconds. This can't be modified by the speedFactor. */
 var RIPPLE_FADE_OUT_DURATION = 400;
-/**
- * Returns the distance from the point (x, y) to the furthest corner of a rectangle.
- */
-var distanceToFurthestCorner = function (x, y, rect) {
-    var distX = Math.max(Math.abs(x - rect.left), Math.abs(x - rect.right));
-    var distY = Math.max(Math.abs(y - rect.top), Math.abs(y - rect.bottom));
-    return Math.sqrt(distX * distX + distY * distY);
-};
 /**
  * Helper service that performs DOM manipulations. Not intended to be used outside this module.
  * The constructor takes a reference to the ripple directive's host element and a map of DOM
@@ -387,10 +405,10 @@ var RippleRenderer = (function () {
         this._ruler = _ruler;
         /** Whether the mouse is currently down or not. */
         this._isMousedown = false;
-        /** Currently active ripples that will be closed on mouseup. */
-        this._activeRipples = [];
         /** Events to be registered on the trigger element. */
         this._triggerEvents = new Map();
+        /** Set of currently active ripple references. */
+        this._activeRipples = new Set();
         /** Ripple config for all ripples created by events. */
         this.rippleConfig = {};
         /** Whether mouse ripples should be created or not. */
@@ -435,22 +453,42 @@ var RippleRenderer = (function () {
         this._containerElement.appendChild(ripple);
         // By default the browser does not recalculate the styles of dynamically created
         // ripple elements. This is critical because then the `scale` would not animate properly.
-        this._enforceStyleRecalculation(ripple);
+        enforceStyleRecalculation(ripple);
         ripple.style.transform = 'scale(1)';
-        // Wait for the ripple to be faded in. Once it's faded in, the ripple can be hidden immediately
-        // if the mouse is released.
+        // Exposed reference to the ripple that will be returned.
+        var rippleRef = new RippleRef(this, ripple, config);
+        rippleRef.state = exports.RippleState.FADING_IN;
+        // Add the ripple reference to the list of all active ripples.
+        this._activeRipples.add(rippleRef);
+        // Wait for the ripple element to be completely faded in.
+        // Once it's faded in, the ripple can be hidden immediately if the mouse is released.
         this.runTimeoutOutsideZone(function () {
-            _this._isMousedown ? _this._activeRipples.push(ripple) : _this.fadeOutRipple(ripple);
+            rippleRef.state = exports.RippleState.VISIBLE;
+            if (!config.persistent && !_this._isMousedown) {
+                rippleRef.fadeOut();
+            }
         }, duration);
+        return rippleRef;
     };
-    /** Fades out a ripple element. */
-    RippleRenderer.prototype.fadeOutRipple = function (ripple) {
-        ripple.style.transitionDuration = RIPPLE_FADE_OUT_DURATION + "ms";
-        ripple.style.opacity = '0';
+    /** Fades out a ripple reference. */
+    RippleRenderer.prototype.fadeOutRipple = function (rippleRef) {
+        // For ripples that are not active anymore, don't re-un the fade-out animation.
+        if (!this._activeRipples.delete(rippleRef)) {
+            return;
+        }
+        var rippleEl = rippleRef.element;
+        rippleEl.style.transitionDuration = RIPPLE_FADE_OUT_DURATION + "ms";
+        rippleEl.style.opacity = '0';
+        rippleRef.state = exports.RippleState.FADING_OUT;
         // Once the ripple faded out, the ripple can be safely removed from the DOM.
         this.runTimeoutOutsideZone(function () {
-            ripple.parentNode.removeChild(ripple);
+            rippleRef.state = exports.RippleState.HIDDEN;
+            rippleEl.parentNode.removeChild(rippleEl);
         }, RIPPLE_FADE_OUT_DURATION);
+    };
+    /** Fades out all currently active ripples. */
+    RippleRenderer.prototype.fadeOutAll = function () {
+        this._activeRipples.forEach(function (ripple) { return ripple.fadeOut(); });
     };
     /** Sets the trigger element and registers the mouse events. */
     RippleRenderer.prototype.setTriggerElement = function (element) {
@@ -476,10 +514,13 @@ var RippleRenderer = (function () {
     };
     /** Listener being called on mouseup event. */
     RippleRenderer.prototype.onMouseup = function () {
-        var _this = this;
         this._isMousedown = false;
-        this._activeRipples.forEach(function (ripple) { return _this.fadeOutRipple(ripple); });
-        this._activeRipples = [];
+        // Fade-out all ripples that are completely visible and not persistent.
+        this._activeRipples.forEach(function (ripple) {
+            if (!ripple.config.persistent && ripple.state === exports.RippleState.VISIBLE) {
+                ripple.fadeOut();
+            }
+        });
     };
     /** Listener being called on mouseleave event. */
     RippleRenderer.prototype.onMouseLeave = function () {
@@ -492,24 +533,32 @@ var RippleRenderer = (function () {
         if (delay === void 0) { delay = 0; }
         this._ngZone.runOutsideAngular(function () { return setTimeout(fn, delay); });
     };
-    /** Enforces a style recalculation of a DOM element by computing its styles. */
-    // TODO(devversion): Move into global utility function.
-    RippleRenderer.prototype._enforceStyleRecalculation = function (element) {
-        // Enforce a style recalculation by calling `getComputedStyle` and accessing any property.
-        // Calling `getPropertyValue` is important to let optimizers know that this is not a noop.
-        // See: https://gist.github.com/paulirish/5d52fb081b3570c81e3a
-        window.getComputedStyle(element).getPropertyValue('opacity');
-    };
     return RippleRenderer;
 }());
+/** Enforces a style recalculation of a DOM element by computing its styles. */
+// TODO(devversion): Move into global utility function.
+function enforceStyleRecalculation(element) {
+    // Enforce a style recalculation by calling `getComputedStyle` and accessing any property.
+    // Calling `getPropertyValue` is important to let optimizers know that this is not a noop.
+    // See: https://gist.github.com/paulirish/5d52fb081b3570c81e3a
+    window.getComputedStyle(element).getPropertyValue('opacity');
+}
+/**
+ * Returns the distance from the point (x, y) to the furthest corner of a rectangle.
+ */
+function distanceToFurthestCorner(x, y, rect) {
+    var distX = Math.max(Math.abs(x - rect.left), Math.abs(x - rect.right));
+    var distY = Math.max(Math.abs(y - rect.top), Math.abs(y - rect.bottom));
+    return Math.sqrt(distX * distX + distY * distY);
+}
 
-var __decorate$8 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$9 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$8 = (this && this.__metadata) || function (k, v) {
+var __metadata$9 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 /** Time in ms to throttle the scrolling events by default. */
@@ -520,17 +569,17 @@ var DEFAULT_SCROLL_TIME = 20;
  */
 var ScrollDispatcher = (function () {
     function ScrollDispatcher() {
-        var _this = this;
         /** Subject for notifying that a registered scrollable reference element has been scrolled. */
         this._scrolled = new rxjs_Subject.Subject();
+        /** Keeps track of the global `scroll` and `resize` subscriptions. */
+        this._globalSubscription = null;
+        /** Keeps track of the amount of subscriptions to `scrolled`. Used for cleaning up afterwards. */
+        this._scrolledCount = 0;
         /**
          * Map of all the scrollable references that are registered with the service and their
          * scroll event subscriptions.
          */
         this.scrollableReferences = new Map();
-        // By default, notify a scroll event when the document is scrolled or the window is resized.
-        rxjs_Observable.Observable.fromEvent(window.document, 'scroll').subscribe(function () { return _this._notify(); });
-        rxjs_Observable.Observable.fromEvent(window, 'resize').subscribe(function () { return _this._notify(); });
     }
     /**
      * Registers a Scrollable with the service and listens for its scrolled events. When the
@@ -553,18 +602,31 @@ var ScrollDispatcher = (function () {
         }
     };
     /**
-     * Returns an observable that emits an event whenever any of the registered Scrollable
+     * Subscribes to an observable that emits an event whenever any of the registered Scrollable
      * references (or window, document, or body) fire a scrolled event. Can provide a time in ms
      * to override the default "throttle" time.
      */
-    ScrollDispatcher.prototype.scrolled = function (auditTimeInMs) {
+    ScrollDispatcher.prototype.scrolled = function (auditTimeInMs, callback) {
+        var _this = this;
         if (auditTimeInMs === void 0) { auditTimeInMs = DEFAULT_SCROLL_TIME; }
-        // In the case of a 0ms delay, return the observable without auditTime since it does add
-        // a perceptible delay in processing overhead.
-        if (auditTimeInMs == 0) {
-            return this._scrolled.asObservable();
+        // In the case of a 0ms delay, use an observable without auditTime
+        // since it does add a perceptible delay in processing overhead.
+        var observable = auditTimeInMs > 0 ?
+            this._scrolled.asObservable().auditTime(auditTimeInMs) :
+            this._scrolled.asObservable();
+        this._scrolledCount++;
+        if (!this._globalSubscription) {
+            this._globalSubscription = rxjs_Observable.Observable.merge(rxjs_Observable.Observable.fromEvent(window.document, 'scroll'), rxjs_Observable.Observable.fromEvent(window, 'resize')).subscribe(function () { return _this._notify(); });
         }
-        return this._scrolled.asObservable().auditTime(auditTimeInMs);
+        // Note that we need to do the subscribing from here, in order to be able to remove
+        // the global event listeners once there are no more subscriptions.
+        return observable.subscribe(callback).add(function () {
+            _this._scrolledCount--;
+            if (_this._globalSubscription && !_this.scrollableReferences.size && !_this._scrolledCount) {
+                _this._globalSubscription.unsubscribe();
+                _this._globalSubscription = null;
+            }
+        });
     };
     /** Returns all registered Scrollables that contain the provided element. */
     ScrollDispatcher.prototype.getScrollContainers = function (elementRef) {
@@ -593,9 +655,9 @@ var ScrollDispatcher = (function () {
     ScrollDispatcher.prototype._notify = function () {
         this._scrolled.next();
     };
-    ScrollDispatcher = __decorate$8([
+    ScrollDispatcher = __decorate$9([
         _angular_core.Injectable(), 
-        __metadata$8('design:paramtypes', [])
+        __metadata$9('design:paramtypes', [])
     ], ScrollDispatcher);
     return ScrollDispatcher;
 }());
@@ -609,13 +671,13 @@ var SCROLL_DISPATCHER_PROVIDER = {
     useFactory: SCROLL_DISPATCHER_PROVIDER_FACTORY
 };
 
-var __decorate$7 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$8 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$7 = (this && this.__metadata) || function (k, v) {
+var __metadata$8 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 /**
@@ -628,7 +690,7 @@ var ViewportRuler = (function () {
         // Initially cache the document rectangle.
         this._cacheViewportGeometry();
         // Subscribe to scroll and resize events and update the document rectangle on changes.
-        scrollDispatcher.scrolled().subscribe(function () { return _this._cacheViewportGeometry(); });
+        scrollDispatcher.scrolled(null, function () { return _this._cacheViewportGeometry(); });
     }
     /** Gets a ClientRect for the viewport's bounds. */
     ViewportRuler.prototype.getViewportRect = function (documentRect) {
@@ -674,9 +736,9 @@ var ViewportRuler = (function () {
     ViewportRuler.prototype._cacheViewportGeometry = function () {
         this._documentRect = document.documentElement.getBoundingClientRect();
     };
-    ViewportRuler = __decorate$7([
+    ViewportRuler = __decorate$8([
         _angular_core.Injectable(), 
-        __metadata$7('design:paramtypes', [ScrollDispatcher])
+        __metadata$8('design:paramtypes', [ScrollDispatcher])
     ], ViewportRuler);
     return ViewportRuler;
 }());
@@ -690,17 +752,24 @@ var VIEWPORT_RULER_PROVIDER = {
     useFactory: VIEWPORT_RULER_PROVIDER_FACTORY
 };
 
-var __decorate$6 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$7 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$6 = (this && this.__metadata) || function (k, v) {
+var __metadata$7 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param$2 = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+/** OpaqueToken that can be used to specify the global ripple options. */
+var MD_RIPPLE_GLOBAL_OPTIONS = new _angular_core.OpaqueToken('md-ripple-global-options');
 var MdRipple = (function () {
-    function MdRipple(elementRef, ngZone, ruler) {
+    function MdRipple(elementRef, ngZone, ruler, 
+        // Type needs to be `any` because of https://github.com/angular/angular/issues/12631
+        globalOptions) {
         /**
          * If set, the radius in pixels of foreground ripples when fully expanded. If unset, the radius
          * will be the distance from the center of the ripple to the furthest corner of the host element's
@@ -714,12 +783,13 @@ var MdRipple = (function () {
          */
         this.speedFactor = 1;
         this._rippleRenderer = new RippleRenderer(elementRef, ngZone, ruler);
+        this._globalOptions = globalOptions ? globalOptions : {};
     }
     MdRipple.prototype.ngOnChanges = function (changes) {
         if (changes['trigger'] && this.trigger) {
             this._rippleRenderer.setTriggerElement(this.trigger);
         }
-        this._rippleRenderer.rippleDisabled = this.disabled;
+        this._rippleRenderer.rippleDisabled = this._globalOptions.disabled || this.disabled;
         this._rippleRenderer.rippleConfig = this.rippleConfig;
     };
     MdRipple.prototype.ngOnDestroy = function () {
@@ -729,14 +799,18 @@ var MdRipple = (function () {
     /** Launches a manual ripple at the specified position. */
     MdRipple.prototype.launch = function (pageX, pageY, config) {
         if (config === void 0) { config = this.rippleConfig; }
-        this._rippleRenderer.fadeInRipple(pageX, pageY, config);
+        return this._rippleRenderer.fadeInRipple(pageX, pageY, config);
+    };
+    /** Fades out all currently showing ripple elements. */
+    MdRipple.prototype.fadeOutAll = function () {
+        this._rippleRenderer.fadeOutAll();
     };
     Object.defineProperty(MdRipple.prototype, "rippleConfig", {
         /** Ripple configuration from the directive's input values. */
         get: function () {
             return {
                 centered: this.centered,
-                speedFactor: this.speedFactor,
+                speedFactor: this.speedFactor * (this._globalOptions.baseSpeedFactor || 1),
                 radius: this.radius,
                 color: this.color
             };
@@ -744,47 +818,59 @@ var MdRipple = (function () {
         enumerable: true,
         configurable: true
     });
-    __decorate$6([
+    __decorate$7([
         _angular_core.Input('mdRippleTrigger'), 
-        __metadata$6('design:type', Object)
+        __metadata$7('design:type', Object)
     ], MdRipple.prototype, "trigger", void 0);
-    __decorate$6([
+    __decorate$7([
         _angular_core.Input('mdRippleCentered'), 
-        __metadata$6('design:type', Boolean)
+        __metadata$7('design:type', Boolean)
     ], MdRipple.prototype, "centered", void 0);
-    __decorate$6([
+    __decorate$7([
         _angular_core.Input('mdRippleDisabled'), 
-        __metadata$6('design:type', Boolean)
+        __metadata$7('design:type', Boolean)
     ], MdRipple.prototype, "disabled", void 0);
-    __decorate$6([
+    __decorate$7([
         _angular_core.Input('mdRippleRadius'), 
-        __metadata$6('design:type', Number)
+        __metadata$7('design:type', Number)
     ], MdRipple.prototype, "radius", void 0);
-    __decorate$6([
+    __decorate$7([
         _angular_core.Input('mdRippleSpeedFactor'), 
-        __metadata$6('design:type', Number)
+        __metadata$7('design:type', Number)
     ], MdRipple.prototype, "speedFactor", void 0);
-    __decorate$6([
+    __decorate$7([
         _angular_core.Input('mdRippleColor'), 
-        __metadata$6('design:type', String)
+        __metadata$7('design:type', String)
     ], MdRipple.prototype, "color", void 0);
-    __decorate$6([
+    __decorate$7([
         _angular_core.Input('mdRippleUnbounded'), 
-        __metadata$6('design:type', Boolean)
+        __metadata$7('design:type', Boolean)
     ], MdRipple.prototype, "unbounded", void 0);
-    MdRipple = __decorate$6([
+    MdRipple = __decorate$7([
         _angular_core.Directive({
-            selector: '[md-ripple], [mat-ripple]',
+            selector: '[md-ripple], [mat-ripple], [mdRipple], [matRipple]',
             exportAs: 'mdRipple',
             host: {
                 '[class.mat-ripple]': 'true',
                 '[class.mat-ripple-unbounded]': 'unbounded'
             }
-        }), 
-        __metadata$6('design:paramtypes', [_angular_core.ElementRef, _angular_core.NgZone, ViewportRuler])
+        }),
+        __param$2(3, _angular_core.Optional()),
+        __param$2(3, _angular_core.Inject(MD_RIPPLE_GLOBAL_OPTIONS)), 
+        __metadata$7('design:paramtypes', [_angular_core.ElementRef, _angular_core.NgZone, ViewportRuler, Object])
     ], MdRipple);
     return MdRipple;
 }());
+
+var __decorate$6 = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata$6 = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 var MdRippleModule = (function () {
     function MdRippleModule() {
     }
@@ -807,6 +893,102 @@ var MdRippleModule = (function () {
     return MdRippleModule;
 }());
 
+var __decorate$11 = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata$11 = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+/**
+ * Component that shows a simplified checkbox without including any kind of "real" checkbox.
+ * Meant to be used when the checkbox is purely decorative and a large number of them will be
+ * included, such as for the options in a multi-select. Uses no SVGs or complex animations.
+ *
+ * Note that this component will be completely invisible to screen-reader users. This is *not*
+ * interchangeable with <md-checkbox> and should *not* be used if the user would directly interact
+ * with the checkbox. The pseudo-checkbox should only be used as an implementation detail of
+ * more complex components that appropriately handle selected / checked state.
+ * @docs-private
+ */
+var MdPseudoCheckbox = (function () {
+    function MdPseudoCheckbox(_elementRef, _renderer) {
+        this._elementRef = _elementRef;
+        this._renderer = _renderer;
+        /** Display state of the checkbox. */
+        this.state = 'unchecked';
+        /** Whether the checkbox is disabled. */
+        this.disabled = false;
+        this.color = 'accent';
+    }
+    Object.defineProperty(MdPseudoCheckbox.prototype, "color", {
+        /** Color of the checkbox. */
+        get: function () { return this._color; },
+        set: function (value) {
+            if (value) {
+                var nativeElement = this._elementRef.nativeElement;
+                this._renderer.setElementClass(nativeElement, "mat-" + this.color, false);
+                this._renderer.setElementClass(nativeElement, "mat-" + value, true);
+                this._color = value;
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    
+    __decorate$11([
+        _angular_core.Input(), 
+        __metadata$11('design:type', String)
+    ], MdPseudoCheckbox.prototype, "state", void 0);
+    __decorate$11([
+        _angular_core.Input(), 
+        __metadata$11('design:type', Boolean)
+    ], MdPseudoCheckbox.prototype, "disabled", void 0);
+    __decorate$11([
+        _angular_core.Input(), 
+        __metadata$11('design:type', String)
+    ], MdPseudoCheckbox.prototype, "color", null);
+    MdPseudoCheckbox = __decorate$11([
+        _angular_core.Component({encapsulation: _angular_core.ViewEncapsulation.None,
+            selector: 'md-pseudo-checkbox, mat-pseudo-checkbox',
+            styles: [".mat-pseudo-checkbox { width: 20px; height: 20px; border: 2px solid; border-radius: 2px; cursor: pointer; display: inline-block; vertical-align: middle; box-sizing: border-box; position: relative; transition: border-color 90ms cubic-bezier(0, 0, 0.2, 0.1), background-color 90ms cubic-bezier(0, 0, 0.2, 0.1); } .mat-pseudo-checkbox::after { position: absolute; opacity: 0; content: ''; border-bottom: 2px solid currentColor; transition: opacity 90ms cubic-bezier(0, 0, 0.2, 0.1); } .mat-pseudo-checkbox.mat-pseudo-checkbox-checked, .mat-pseudo-checkbox.mat-pseudo-checkbox-indeterminate { border: none; } .mat-pseudo-checkbox-disabled { cursor: default; } .mat-pseudo-checkbox-indeterminate::after { top: 9px; left: 2px; width: 16px; opacity: 1; } .mat-pseudo-checkbox-checked::after { top: 5px; left: 3px; width: 12px; height: 5px; border-left: 2px solid currentColor; transform: rotate(-45deg); opacity: 1; } /*# sourceMappingURL=pseudo-checkbox.css.map */ "],
+            template: '',
+            host: {
+                '[class.mat-pseudo-checkbox]': 'true',
+                '[class.mat-pseudo-checkbox-indeterminate]': 'state === "indeterminate"',
+                '[class.mat-pseudo-checkbox-checked]': 'state === "checked"',
+                '[class.mat-pseudo-checkbox-disabled]': 'disabled',
+            },
+        }), 
+        __metadata$11('design:paramtypes', [_angular_core.ElementRef, _angular_core.Renderer])
+    ], MdPseudoCheckbox);
+    return MdPseudoCheckbox;
+}());
+
+var __decorate$10 = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata$10 = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var MdSelectionModule = (function () {
+    function MdSelectionModule() {
+    }
+    MdSelectionModule = __decorate$10([
+        _angular_core.NgModule({
+            exports: [MdPseudoCheckbox],
+            declarations: [MdPseudoCheckbox]
+        }), 
+        __metadata$10('design:paramtypes', [])
+    ], MdSelectionModule);
+    return MdSelectionModule;
+}());
+
 var __decorate$5 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -816,34 +998,40 @@ var __decorate$5 = (this && this.__decorate) || function (decorators, target, ke
 var __metadata$5 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param$1 = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 /**
  * Option IDs need to be unique across components, so this counter exists outside of
  * the component definition.
  */
 var _uniqueIdCounter = 0;
-/** Event object emitted by MdOption when selected. */
-var MdOptionSelectEvent = (function () {
-    function MdOptionSelectEvent(source, isUserInput) {
+/** Event object emitted by MdOption when selected or deselected. */
+var MdOptionSelectionChange = (function () {
+    function MdOptionSelectionChange(source, isUserInput) {
         if (isUserInput === void 0) { isUserInput = false; }
         this.source = source;
         this.isUserInput = isUserInput;
     }
-    return MdOptionSelectEvent;
+    return MdOptionSelectionChange;
 }());
 /**
  * Single option inside of a `<md-select>` element.
  */
 var MdOption = (function () {
-    function MdOption(_element, _renderer) {
+    function MdOption(_element, _renderer, _isCompatibilityMode) {
         this._element = _element;
         this._renderer = _renderer;
+        this._isCompatibilityMode = _isCompatibilityMode;
         this._selected = false;
         this._active = false;
         /** Whether the option is disabled.  */
         this._disabled = false;
         this._id = "md-option-" + _uniqueIdCounter++;
-        /** Event emitted when the option is selected. */
-        this.onSelect = new _angular_core.EventEmitter();
+        /** Whether the wrapping component is in multiple selection mode. */
+        this.multiple = false;
+        /** Event emitted when the option is selected or deselected. */
+        this.onSelectionChange = new _angular_core.EventEmitter();
     }
     Object.defineProperty(MdOption.prototype, "id", {
         /** The unique ID of the option. */
@@ -851,18 +1039,16 @@ var MdOption = (function () {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(MdOption.prototype, "selected", {
+        /** Whether or not the option is currently selected. */
+        get: function () { return this._selected; },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(MdOption.prototype, "disabled", {
         /** Whether the option is disabled. */
         get: function () { return this._disabled; },
         set: function (value) { this._disabled = coerceBooleanProperty(value); },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(MdOption.prototype, "selected", {
-        /** Whether or not the option is currently selected. */
-        get: function () {
-            return this._selected;
-        },
         enumerable: true,
         configurable: true
     });
@@ -894,11 +1080,12 @@ var MdOption = (function () {
     /** Selects the option. */
     MdOption.prototype.select = function () {
         this._selected = true;
-        this.onSelect.emit(new MdOptionSelectEvent(this, false));
+        this._emitSelectionChangeEvent();
     };
     /** Deselects the option. */
     MdOption.prototype.deselect = function () {
         this._selected = false;
+        this._emitSelectionChangeEvent();
     };
     /** Sets focus onto this option. */
     MdOption.prototype.focus = function () {
@@ -910,8 +1097,7 @@ var MdOption = (function () {
      * events will display the proper options as active on arrow key events.
      */
     MdOption.prototype.setActiveStyles = function () {
-        var _this = this;
-        Promise.resolve(null).then(function () { return _this._active = true; });
+        this._active = true;
     };
     /**
      * This method removes display styles on the option that made it appear
@@ -919,8 +1105,7 @@ var MdOption = (function () {
      * events will display the proper options as active on arrow key events.
      */
     MdOption.prototype.setInactiveStyles = function () {
-        var _this = this;
-        Promise.resolve(null).then(function () { return _this._active = false; });
+        this._active = false;
     };
     /** Ensures the option is selected when activated from the keyboard. */
     MdOption.prototype._handleKeydown = function (event) {
@@ -934,17 +1119,24 @@ var MdOption = (function () {
      */
     MdOption.prototype._selectViaInteraction = function () {
         if (!this.disabled) {
-            this._selected = true;
-            this.onSelect.emit(new MdOptionSelectEvent(this, true));
+            this._selected = this.multiple ? !this._selected : true;
+            this._emitSelectionChangeEvent(true);
         }
     };
     /** Returns the correct tabindex for the option depending on disabled state. */
     MdOption.prototype._getTabIndex = function () {
         return this.disabled ? '-1' : '0';
     };
+    /** Fetches the host DOM element. */
     MdOption.prototype._getHostElement = function () {
         return this._element.nativeElement;
     };
+    /** Emits the selection change event. */
+    MdOption.prototype._emitSelectionChangeEvent = function (isUserInput) {
+        if (isUserInput === void 0) { isUserInput = false; }
+        this.onSelectionChange.emit(new MdOptionSelectionChange(this, isUserInput));
+    };
+    
     __decorate$5([
         _angular_core.Input(), 
         __metadata$5('design:type', Object)
@@ -956,13 +1148,14 @@ var MdOption = (function () {
     __decorate$5([
         _angular_core.Output(), 
         __metadata$5('design:type', Object)
-    ], MdOption.prototype, "onSelect", void 0);
+    ], MdOption.prototype, "onSelectionChange", void 0);
     MdOption = __decorate$5([
         _angular_core.Component({selector: 'md-option, mat-option',
             host: {
                 'role': 'option',
                 '[attr.tabindex]': '_getTabIndex()',
                 '[class.mat-selected]': 'selected',
+                '[class.mat-option-multiple]': 'multiple',
                 '[class.mat-active]': 'active',
                 '[id]': 'id',
                 '[attr.aria-selected]': 'selected.toString()',
@@ -972,10 +1165,12 @@ var MdOption = (function () {
                 '(keydown)': '_handleKeydown($event)',
                 '[class.mat-option]': 'true',
             },
-            template: "<ng-content></ng-content> <div class=\"mat-option-ripple\" *ngIf=\"!disabled\" md-ripple [mdRippleTrigger]=\"_getHostElement()\"> </div> ",
+            template: "<span [ngSwitch]=\"_isCompatibilityMode\" *ngIf=\"multiple\"> <mat-pseudo-checkbox class=\"mat-option-pseudo-checkbox\" *ngSwitchCase=\"true\" [state]=\"selected ? 'checked' : ''\" color=\"primary\"></mat-pseudo-checkbox> <md-pseudo-checkbox class=\"mat-option-pseudo-checkbox\" *ngSwitchDefault [state]=\"selected ? 'checked' : ''\" color=\"primary\"></md-pseudo-checkbox> </span> <ng-content></ng-content> <div class=\"mat-option-ripple\" *ngIf=\"!disabled\" md-ripple [mdRippleTrigger]=\"_getHostElement()\"> </div> ",
             encapsulation: _angular_core.ViewEncapsulation.None
-        }), 
-        __metadata$5('design:paramtypes', [_angular_core.ElementRef, _angular_core.Renderer])
+        }),
+        __param$1(2, _angular_core.Optional()),
+        __param$1(2, _angular_core.Inject(MATERIAL_COMPATIBILITY_MODE)), 
+        __metadata$5('design:paramtypes', [_angular_core.ElementRef, _angular_core.Renderer, Boolean])
     ], MdOption);
     return MdOption;
 }());
@@ -990,7 +1185,7 @@ var MdOptionModule = (function () {
     };
     MdOptionModule = __decorate$5([
         _angular_core.NgModule({
-            imports: [MdRippleModule, _angular_common.CommonModule],
+            imports: [MdRippleModule, _angular_common.CommonModule, MdSelectionModule],
             exports: [MdOption],
             declarations: [MdOption]
         }), 
@@ -1249,13 +1444,13 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var __decorate$9 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$12 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$9 = (this && this.__metadata) || function (k, v) {
+var __metadata$12 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 /**
@@ -1272,12 +1467,12 @@ var TemplatePortalDirective = (function (_super) {
     function TemplatePortalDirective(templateRef, viewContainerRef) {
         _super.call(this, templateRef, viewContainerRef);
     }
-    TemplatePortalDirective = __decorate$9([
+    TemplatePortalDirective = __decorate$12([
         _angular_core.Directive({
             selector: '[cdk-portal], [portal]',
             exportAs: 'cdkPortal',
         }), 
-        __metadata$9('design:paramtypes', [_angular_core.TemplateRef, _angular_core.ViewContainerRef])
+        __metadata$12('design:paramtypes', [_angular_core.TemplateRef, _angular_core.ViewContainerRef])
     ], TemplatePortalDirective);
     return TemplatePortalDirective;
 }(TemplatePortal));
@@ -1357,16 +1552,16 @@ var PortalHostDirective = (function (_super) {
             this._portal = p;
         }
     };
-    __decorate$9([
+    __decorate$12([
         _angular_core.Input('portalHost'), 
-        __metadata$9('design:type', Object)
+        __metadata$12('design:type', Object)
     ], PortalHostDirective.prototype, "_deprecatedPortal", null);
-    PortalHostDirective = __decorate$9([
+    PortalHostDirective = __decorate$12([
         _angular_core.Directive({
             selector: '[cdkPortalHost], [portalHost]',
             inputs: ['portal: cdkPortalHost']
         }), 
-        __metadata$9('design:paramtypes', [_angular_core.ComponentFactoryResolver, _angular_core.ViewContainerRef])
+        __metadata$12('design:paramtypes', [_angular_core.ComponentFactoryResolver, _angular_core.ViewContainerRef])
     ], PortalHostDirective);
     return PortalHostDirective;
 }(BasePortalHost));
@@ -1380,12 +1575,12 @@ var PortalModule = (function () {
             providers: []
         };
     };
-    PortalModule = __decorate$9([
+    PortalModule = __decorate$12([
         _angular_core.NgModule({
             exports: [TemplatePortalDirective, PortalHostDirective],
             declarations: [TemplatePortalDirective, PortalHostDirective],
         }), 
-        __metadata$9('design:paramtypes', [])
+        __metadata$12('design:paramtypes', [])
     ], PortalModule);
     return PortalModule;
 }());
@@ -1656,16 +1851,16 @@ function formatCssUnit(value) {
     return typeof value === 'string' ? value : value + "px";
 }
 
-var __decorate$13 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$16 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$13 = (this && this.__metadata) || function (k, v) {
+var __metadata$16 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __param$2 = (this && this.__param) || function (paramIndex, decorator) {
+var __param$4 = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 /** The points of the origin element and the overlay element to connect. */
@@ -1712,9 +1907,9 @@ var ConnectedOverlayPositionChange = (function () {
         this.connectionPair = connectionPair;
         this.scrollableViewProperties = scrollableViewProperties;
     }
-    ConnectedOverlayPositionChange = __decorate$13([
-        __param$2(1, _angular_core.Optional()), 
-        __metadata$13('design:paramtypes', [ConnectionPositionPair, ScrollableViewProperties])
+    ConnectedOverlayPositionChange = __decorate$16([
+        __param$4(1, _angular_core.Optional()), 
+        __metadata$16('design:paramtypes', [ConnectionPositionPair, ScrollableViewProperties])
     ], ConnectedOverlayPositionChange);
     return ConnectedOverlayPositionChange;
 }());
@@ -2173,13 +2368,13 @@ var GlobalPositionStrategy = (function () {
     return GlobalPositionStrategy;
 }());
 
-var __decorate$12 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$15 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$12 = (this && this.__metadata) || function (k, v) {
+var __metadata$15 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 /** Builder for overlay position strategy. */
@@ -2202,20 +2397,20 @@ var OverlayPositionBuilder = (function () {
     OverlayPositionBuilder.prototype.connectedTo = function (elementRef, originPos, overlayPos) {
         return new ConnectedPositionStrategy(elementRef, originPos, overlayPos, this._viewportRuler);
     };
-    OverlayPositionBuilder = __decorate$12([
+    OverlayPositionBuilder = __decorate$15([
         _angular_core.Injectable(), 
-        __metadata$12('design:paramtypes', [ViewportRuler])
+        __metadata$15('design:paramtypes', [ViewportRuler])
     ], OverlayPositionBuilder);
     return OverlayPositionBuilder;
 }());
 
-var __decorate$14 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$17 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$14 = (this && this.__metadata) || function (k, v) {
+var __metadata$17 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 /**
@@ -2267,9 +2462,9 @@ var OverlayContainer = (function () {
         document.body.appendChild(container);
         this._containerElement = container;
     };
-    OverlayContainer = __decorate$14([
+    OverlayContainer = __decorate$17([
         _angular_core.Injectable(), 
-        __metadata$14('design:paramtypes', [])
+        __metadata$17('design:paramtypes', [])
     ], OverlayContainer);
     return OverlayContainer;
 }());
@@ -2284,13 +2479,13 @@ var OVERLAY_CONTAINER_PROVIDER = {
     useFactory: OVERLAY_CONTAINER_PROVIDER_FACTORY
 };
 
-var __decorate$11 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$14 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$11 = (this && this.__metadata) || function (k, v) {
+var __metadata$14 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 /** Next overlay unique ID. */
@@ -2357,9 +2552,9 @@ var Overlay = (function () {
     Overlay.prototype._createOverlayRef = function (pane, state$$1) {
         return new OverlayRef(this._createPortalHost(pane), pane, state$$1, this._ngZone);
     };
-    Overlay = __decorate$11([
+    Overlay = __decorate$14([
         _angular_core.Injectable(), 
-        __metadata$11('design:paramtypes', [OverlayContainer, _angular_core.ComponentFactoryResolver, OverlayPositionBuilder, _angular_core.ApplicationRef, _angular_core.Injector, _angular_core.NgZone])
+        __metadata$14('design:paramtypes', [OverlayContainer, _angular_core.ComponentFactoryResolver, OverlayPositionBuilder, _angular_core.ApplicationRef, _angular_core.Injector, _angular_core.NgZone])
     ], Overlay);
     return Overlay;
 }());
@@ -2372,13 +2567,13 @@ var OVERLAY_PROVIDERS = [
     OVERLAY_CONTAINER_PROVIDER,
 ];
 
-var __decorate$15 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$18 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$15 = (this && this.__metadata) || function (k, v) {
+var __metadata$18 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 /**
@@ -2406,25 +2601,25 @@ var Scrollable = (function () {
     Scrollable.prototype.getElementRef = function () {
         return this._elementRef;
     };
-    Scrollable = __decorate$15([
+    Scrollable = __decorate$18([
         _angular_core.Directive({
             selector: '[cdk-scrollable]'
         }), 
-        __metadata$15('design:paramtypes', [_angular_core.ElementRef, ScrollDispatcher])
+        __metadata$18('design:paramtypes', [_angular_core.ElementRef, ScrollDispatcher])
     ], Scrollable);
     return Scrollable;
 }());
 
-var __decorate$10 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$13 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$10 = (this && this.__metadata) || function (k, v) {
+var __metadata$13 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __param$1 = (this && this.__param) || function (paramIndex, decorator) {
+var __param$3 = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 /** Default set of positions for the overlay. Follows the behavior of a dropdown. */
@@ -2440,12 +2635,12 @@ var OverlayOrigin = (function () {
     function OverlayOrigin(elementRef) {
         this.elementRef = elementRef;
     }
-    OverlayOrigin = __decorate$10([
+    OverlayOrigin = __decorate$13([
         _angular_core.Directive({
             selector: '[cdk-overlay-origin], [overlay-origin]',
             exportAs: 'cdkOverlayOrigin',
         }), 
-        __metadata$10('design:paramtypes', [_angular_core.ElementRef])
+        __metadata$13('design:paramtypes', [_angular_core.ElementRef])
     ], OverlayOrigin);
     return OverlayOrigin;
 }());
@@ -2631,73 +2826,73 @@ var ConnectedOverlayDirective = (function () {
             this._positionSubscription.unsubscribe();
         }
     };
-    __decorate$10([
+    __decorate$13([
         _angular_core.Input(), 
-        __metadata$10('design:type', OverlayOrigin)
+        __metadata$13('design:type', OverlayOrigin)
     ], ConnectedOverlayDirective.prototype, "origin", void 0);
-    __decorate$10([
+    __decorate$13([
         _angular_core.Input(), 
-        __metadata$10('design:type', Array)
+        __metadata$13('design:type', Array)
     ], ConnectedOverlayDirective.prototype, "positions", void 0);
-    __decorate$10([
+    __decorate$13([
         _angular_core.Input(), 
-        __metadata$10('design:type', Number)
+        __metadata$13('design:type', Number)
     ], ConnectedOverlayDirective.prototype, "offsetX", null);
-    __decorate$10([
+    __decorate$13([
         _angular_core.Input(), 
-        __metadata$10('design:type', Object)
+        __metadata$13('design:type', Object)
     ], ConnectedOverlayDirective.prototype, "offsetY", null);
-    __decorate$10([
+    __decorate$13([
         _angular_core.Input(), 
-        __metadata$10('design:type', Object)
+        __metadata$13('design:type', Object)
     ], ConnectedOverlayDirective.prototype, "width", void 0);
-    __decorate$10([
+    __decorate$13([
         _angular_core.Input(), 
-        __metadata$10('design:type', Object)
+        __metadata$13('design:type', Object)
     ], ConnectedOverlayDirective.prototype, "height", void 0);
-    __decorate$10([
+    __decorate$13([
         _angular_core.Input(), 
-        __metadata$10('design:type', Object)
+        __metadata$13('design:type', Object)
     ], ConnectedOverlayDirective.prototype, "minWidth", void 0);
-    __decorate$10([
+    __decorate$13([
         _angular_core.Input(), 
-        __metadata$10('design:type', Object)
+        __metadata$13('design:type', Object)
     ], ConnectedOverlayDirective.prototype, "minHeight", void 0);
-    __decorate$10([
+    __decorate$13([
         _angular_core.Input(), 
-        __metadata$10('design:type', String)
+        __metadata$13('design:type', String)
     ], ConnectedOverlayDirective.prototype, "backdropClass", void 0);
-    __decorate$10([
+    __decorate$13([
         _angular_core.Input(), 
-        __metadata$10('design:type', Object)
+        __metadata$13('design:type', Object)
     ], ConnectedOverlayDirective.prototype, "hasBackdrop", null);
-    __decorate$10([
+    __decorate$13([
         _angular_core.Input(), 
-        __metadata$10('design:type', Object)
+        __metadata$13('design:type', Object)
     ], ConnectedOverlayDirective.prototype, "open", null);
-    __decorate$10([
+    __decorate$13([
         _angular_core.Output(), 
-        __metadata$10('design:type', Object)
+        __metadata$13('design:type', Object)
     ], ConnectedOverlayDirective.prototype, "backdropClick", void 0);
-    __decorate$10([
+    __decorate$13([
         _angular_core.Output(), 
-        __metadata$10('design:type', Object)
+        __metadata$13('design:type', Object)
     ], ConnectedOverlayDirective.prototype, "positionChange", void 0);
-    __decorate$10([
+    __decorate$13([
         _angular_core.Output(), 
-        __metadata$10('design:type', Object)
+        __metadata$13('design:type', Object)
     ], ConnectedOverlayDirective.prototype, "attach", void 0);
-    __decorate$10([
+    __decorate$13([
         _angular_core.Output(), 
-        __metadata$10('design:type', Object)
+        __metadata$13('design:type', Object)
     ], ConnectedOverlayDirective.prototype, "detach", void 0);
-    ConnectedOverlayDirective = __decorate$10([
+    ConnectedOverlayDirective = __decorate$13([
         _angular_core.Directive({
             selector: '[cdk-connected-overlay], [connected-overlay]',
             exportAs: 'cdkConnectedOverlay'
         }),
-        __param$1(3, _angular_core.Optional()), 
-        __metadata$10('design:paramtypes', [Overlay, _angular_core.TemplateRef, _angular_core.ViewContainerRef, Dir])
+        __param$3(3, _angular_core.Optional()), 
+        __metadata$13('design:paramtypes', [Overlay, _angular_core.TemplateRef, _angular_core.ViewContainerRef, Dir])
     ], ConnectedOverlayDirective);
     return ConnectedOverlayDirective;
 }());
@@ -2711,25 +2906,25 @@ var OverlayModule = (function () {
             providers: [],
         };
     };
-    OverlayModule = __decorate$10([
+    OverlayModule = __decorate$13([
         _angular_core.NgModule({
             imports: [PortalModule],
             exports: [ConnectedOverlayDirective, OverlayOrigin, Scrollable],
             declarations: [ConnectedOverlayDirective, OverlayOrigin, Scrollable],
             providers: [OVERLAY_PROVIDERS],
         }), 
-        __metadata$10('design:paramtypes', [])
+        __metadata$13('design:paramtypes', [])
     ], OverlayModule);
     return OverlayModule;
 }());
 
-var __decorate$19 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$22 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$19 = (this && this.__metadata) || function (k, v) {
+var __metadata$22 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 // Whether the current platform supports the V8 Break Iterator. The V8 check
@@ -2762,20 +2957,20 @@ var Platform = (function () {
         // Trident on mobile adds the android platform to the userAgent to trick detections.
         this.ANDROID = /android/i.test(navigator.userAgent) && !this.TRIDENT;
     }
-    Platform = __decorate$19([
+    Platform = __decorate$22([
         _angular_core.Injectable(), 
-        __metadata$19('design:paramtypes', [])
+        __metadata$22('design:paramtypes', [])
     ], Platform);
     return Platform;
 }());
 
-var __decorate$18 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$21 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$18 = (this && this.__metadata) || function (k, v) {
+var __metadata$21 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 /**
@@ -2888,9 +3083,9 @@ var InteractivityChecker = (function () {
         // Again, naive approach that does not capture many edge cases and browser quirks.
         return isPotentiallyFocusable(element) && !this.isDisabled(element) && this.isVisible(element);
     };
-    InteractivityChecker = __decorate$18([
+    InteractivityChecker = __decorate$21([
         _angular_core.Injectable(), 
-        __metadata$18('design:paramtypes', [Platform])
+        __metadata$21('design:paramtypes', [Platform])
     ], InteractivityChecker);
     return InteractivityChecker;
 }());
@@ -2976,79 +3171,108 @@ function getWindow(node) {
     return node.ownerDocument.defaultView || window;
 }
 
-var __decorate$17 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$20 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$17 = (this && this.__metadata) || function (k, v) {
+var __metadata$20 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 /**
- * Directive for trapping focus within a region.
+ * Class that allows for trapping focus within a DOM element.
  *
- * NOTE: This directive currently uses a very simple (naive) approach to focus trapping.
+ * NOTE: This class currently uses a very simple (naive) approach to focus trapping.
  * It assumes that the tab order is the same as DOM order, which is not necessarily true.
  * Things like tabIndex > 0, flex `order`, and shadow roots can cause to two to misalign.
  * This will be replaced with a more intelligent solution before the library is considered stable.
  */
 var FocusTrap = (function () {
-    function FocusTrap(_checker, _ngZone) {
+    function FocusTrap(_element, _checker, _ngZone, deferAnchors) {
+        if (deferAnchors === void 0) { deferAnchors = false; }
+        this._element = _element;
         this._checker = _checker;
         this._ngZone = _ngZone;
-        this._disabled = false;
+        this._enabled = true;
+        if (!deferAnchors) {
+            this.attachAnchors();
+        }
     }
-    Object.defineProperty(FocusTrap.prototype, "disabled", {
+    Object.defineProperty(FocusTrap.prototype, "enabled", {
         /** Whether the focus trap is active. */
-        get: function () { return this._disabled; },
-        set: function (val) { this._disabled = coerceBooleanProperty(val); },
+        get: function () { return this._enabled; },
+        set: function (val) {
+            this._enabled = val;
+            if (this._startAnchor && this._endAnchor) {
+                this._startAnchor.tabIndex = this._endAnchor.tabIndex = this._enabled ? 0 : -1;
+            }
+        },
         enumerable: true,
         configurable: true
     });
+    /** Destroys the focus trap by cleaning up the anchors. */
+    FocusTrap.prototype.destroy = function () {
+        if (this._startAnchor && this._startAnchor.parentNode) {
+            this._startAnchor.parentNode.removeChild(this._startAnchor);
+        }
+        if (this._endAnchor && this._endAnchor.parentNode) {
+            this._endAnchor.parentNode.removeChild(this._endAnchor);
+        }
+        this._startAnchor = this._endAnchor = null;
+    };
     /**
-     * Waits for microtask queue to empty, then focuses the first tabbable element within the focus
-     * trap region.
+     * Inserts the anchors into the DOM. This is usually done automatically
+     * in the constructor, but can be deferred for cases like directives with `*ngIf`.
+     */
+    FocusTrap.prototype.attachAnchors = function () {
+        var _this = this;
+        if (!this._startAnchor) {
+            this._startAnchor = this._createAnchor();
+        }
+        if (!this._endAnchor) {
+            this._endAnchor = this._createAnchor();
+        }
+        this._ngZone.runOutsideAngular(function () {
+            _this._startAnchor.addEventListener('focus', function () { return _this.focusLastTabbableElement(); });
+            _this._endAnchor.addEventListener('focus', function () { return _this.focusFirstTabbableElement(); });
+            _this._element.parentNode.insertBefore(_this._startAnchor, _this._element);
+            _this._element.parentNode.insertBefore(_this._endAnchor, _this._element.nextSibling);
+        });
+    };
+    /**
+     * Waits for microtask queue to empty, then focuses
+     * the first tabbable element within the focus trap region.
      */
     FocusTrap.prototype.focusFirstTabbableElementWhenReady = function () {
         var _this = this;
-        this._ngZone.onMicrotaskEmpty.first().subscribe(function () {
-            _this.focusFirstTabbableElement();
-        });
+        this._ngZone.onMicrotaskEmpty.first().subscribe(function () { return _this.focusFirstTabbableElement(); });
     };
     /**
-     * Waits for microtask queue to empty, then focuses the last tabbable element within the focus
-     * trap region.
+     * Waits for microtask queue to empty, then focuses
+     * the last tabbable element within the focus trap region.
      */
     FocusTrap.prototype.focusLastTabbableElementWhenReady = function () {
         var _this = this;
-        this._ngZone.onMicrotaskEmpty.first().subscribe(function () {
-            _this.focusLastTabbableElement();
-        });
+        this._ngZone.onMicrotaskEmpty.first().subscribe(function () { return _this.focusLastTabbableElement(); });
     };
-    /**
-     * Focuses the first tabbable element within the focus trap region.
-     */
+    /** Focuses the first tabbable element within the focus trap region. */
     FocusTrap.prototype.focusFirstTabbableElement = function () {
-        var rootElement = this.trappedContent.nativeElement;
-        var redirectToElement = rootElement.querySelector('[cdk-focus-start]') ||
-            this._getFirstTabbableElement(rootElement);
+        var redirectToElement = this._element.querySelector('[cdk-focus-start]') ||
+            this._getFirstTabbableElement(this._element);
         if (redirectToElement) {
             redirectToElement.focus();
         }
     };
-    /**
-     * Focuses the last tabbable element within the focus trap region.
-     */
+    /** Focuses the last tabbable element within the focus trap region. */
     FocusTrap.prototype.focusLastTabbableElement = function () {
-        var rootElement = this.trappedContent.nativeElement;
-        var focusTargets = rootElement.querySelectorAll('[cdk-focus-end]');
+        var focusTargets = this._element.querySelectorAll('[cdk-focus-end]');
         var redirectToElement = null;
         if (focusTargets.length) {
             redirectToElement = focusTargets[focusTargets.length - 1];
         }
         else {
-            redirectToElement = this._getLastTabbableElement(rootElement);
+            redirectToElement = this._getLastTabbableElement(this._element);
         }
         if (redirectToElement) {
             redirectToElement.focus();
@@ -3059,10 +3283,13 @@ var FocusTrap = (function () {
         if (this._checker.isFocusable(root) && this._checker.isTabbable(root)) {
             return root;
         }
-        // Iterate in DOM order.
-        var childCount = root.children.length;
-        for (var i = 0; i < childCount; i++) {
-            var tabbableChild = this._getFirstTabbableElement(root.children[i]);
+        // Iterate in DOM order. Note that IE doesn't have `children` for SVG so we fall
+        // back to `childNodes` which includes text nodes, comments etc.
+        var children = root.children || root.childNodes;
+        for (var i = 0; i < children.length; i++) {
+            var tabbableChild = children[i].nodeType === Node.ELEMENT_NODE ?
+                this._getFirstTabbableElement(children[i]) :
+                null;
             if (tabbableChild) {
                 return tabbableChild;
             }
@@ -3075,42 +3302,123 @@ var FocusTrap = (function () {
             return root;
         }
         // Iterate in reverse DOM order.
-        for (var i = root.children.length - 1; i >= 0; i--) {
-            var tabbableChild = this._getLastTabbableElement(root.children[i]);
+        var children = root.children || root.childNodes;
+        for (var i = children.length - 1; i >= 0; i--) {
+            var tabbableChild = children[i].nodeType === Node.ELEMENT_NODE ?
+                this._getLastTabbableElement(children[i]) :
+                null;
             if (tabbableChild) {
                 return tabbableChild;
             }
         }
         return null;
     };
-    __decorate$17([
-        _angular_core.ViewChild('trappedContent'), 
-        __metadata$17('design:type', _angular_core.ElementRef)
-    ], FocusTrap.prototype, "trappedContent", void 0);
-    __decorate$17([
-        _angular_core.Input(), 
-        __metadata$17('design:type', Boolean)
-    ], FocusTrap.prototype, "disabled", null);
-    FocusTrap = __decorate$17([
-        _angular_core.Component({selector: 'cdk-focus-trap, focus-trap',
-            template: "<div *ngIf=\"!disabled\" tabindex=\"0\" (focus)=\"focusLastTabbableElement()\"></div> <div #trappedContent class=\"cdk-focus-trap-content\"><ng-content></ng-content></div> <div *ngIf=\"!disabled\" tabindex=\"0\" (focus)=\"focusFirstTabbableElement()\"></div> ",
-            encapsulation: _angular_core.ViewEncapsulation.None,
-        }), 
-        __metadata$17('design:paramtypes', [InteractivityChecker, _angular_core.NgZone])
-    ], FocusTrap);
+    /** Creates an anchor element. */
+    FocusTrap.prototype._createAnchor = function () {
+        var anchor = document.createElement('div');
+        anchor.tabIndex = this._enabled ? 0 : -1;
+        anchor.classList.add('cdk-visually-hidden');
+        anchor.classList.add('cdk-focus-trap-anchor');
+        return anchor;
+    };
     return FocusTrap;
 }());
+/** Factory that allows easy instantiation of focus traps. */
+var FocusTrapFactory = (function () {
+    function FocusTrapFactory(_checker, _ngZone) {
+        this._checker = _checker;
+        this._ngZone = _ngZone;
+    }
+    FocusTrapFactory.prototype.create = function (element, deferAnchors) {
+        if (deferAnchors === void 0) { deferAnchors = false; }
+        return new FocusTrap(element, this._checker, this._ngZone, deferAnchors);
+    };
+    FocusTrapFactory = __decorate$20([
+        _angular_core.Injectable(), 
+        __metadata$20('design:paramtypes', [InteractivityChecker, _angular_core.NgZone])
+    ], FocusTrapFactory);
+    return FocusTrapFactory;
+}());
+/**
+ * Directive for trapping focus within a region.
+ * @deprecated
+ */
+var FocusTrapDeprecatedDirective = (function () {
+    function FocusTrapDeprecatedDirective(_elementRef, _focusTrapFactory) {
+        this._elementRef = _elementRef;
+        this._focusTrapFactory = _focusTrapFactory;
+        this.focusTrap = this._focusTrapFactory.create(this._elementRef.nativeElement, true);
+    }
+    Object.defineProperty(FocusTrapDeprecatedDirective.prototype, "disabled", {
+        /** Whether the focus trap is active. */
+        get: function () { return !this.focusTrap.enabled; },
+        set: function (val) {
+            this.focusTrap.enabled = !coerceBooleanProperty(val);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    FocusTrapDeprecatedDirective.prototype.ngOnDestroy = function () {
+        this.focusTrap.destroy();
+    };
+    FocusTrapDeprecatedDirective.prototype.ngAfterContentInit = function () {
+        this.focusTrap.attachAnchors();
+    };
+    __decorate$20([
+        _angular_core.Input(), 
+        __metadata$20('design:type', Boolean)
+    ], FocusTrapDeprecatedDirective.prototype, "disabled", null);
+    FocusTrapDeprecatedDirective = __decorate$20([
+        _angular_core.Directive({
+            selector: 'cdk-focus-trap',
+        }), 
+        __metadata$20('design:paramtypes', [_angular_core.ElementRef, FocusTrapFactory])
+    ], FocusTrapDeprecatedDirective);
+    return FocusTrapDeprecatedDirective;
+}());
+/** Directive for trapping focus within a region. */
+var FocusTrapDirective = (function () {
+    function FocusTrapDirective(_elementRef, _focusTrapFactory) {
+        this._elementRef = _elementRef;
+        this._focusTrapFactory = _focusTrapFactory;
+        this.focusTrap = this._focusTrapFactory.create(this._elementRef.nativeElement, true);
+    }
+    Object.defineProperty(FocusTrapDirective.prototype, "enabled", {
+        /** Whether the focus trap is active. */
+        get: function () { return this.focusTrap.enabled; },
+        set: function (value) { this.focusTrap.enabled = coerceBooleanProperty(value); },
+        enumerable: true,
+        configurable: true
+    });
+    FocusTrapDirective.prototype.ngOnDestroy = function () {
+        this.focusTrap.destroy();
+    };
+    FocusTrapDirective.prototype.ngAfterContentInit = function () {
+        this.focusTrap.attachAnchors();
+    };
+    __decorate$20([
+        _angular_core.Input('cdkTrapFocus'), 
+        __metadata$20('design:type', Boolean)
+    ], FocusTrapDirective.prototype, "enabled", null);
+    FocusTrapDirective = __decorate$20([
+        _angular_core.Directive({
+            selector: '[cdkTrapFocus]'
+        }), 
+        __metadata$20('design:paramtypes', [_angular_core.ElementRef, FocusTrapFactory])
+    ], FocusTrapDirective);
+    return FocusTrapDirective;
+}());
 
-var __decorate$20 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$23 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$20 = (this && this.__metadata) || function (k, v) {
+var __metadata$23 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __param$3 = (this && this.__param) || function (paramIndex, decorator) {
+var __param$5 = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 var LIVE_ANNOUNCER_ELEMENT_TOKEN = new _angular_core.OpaqueToken('liveAnnouncerElement');
@@ -3153,11 +3461,11 @@ var LiveAnnouncer = (function () {
         document.body.appendChild(liveEl);
         return liveEl;
     };
-    LiveAnnouncer = __decorate$20([
+    LiveAnnouncer = __decorate$23([
         _angular_core.Injectable(),
-        __param$3(0, _angular_core.Optional()),
-        __param$3(0, _angular_core.Inject(LIVE_ANNOUNCER_ELEMENT_TOKEN)), 
-        __metadata$20('design:paramtypes', [Object])
+        __param$5(0, _angular_core.Optional()),
+        __param$5(0, _angular_core.Inject(LIVE_ANNOUNCER_ELEMENT_TOKEN)), 
+        __metadata$23('design:paramtypes', [Object])
     ], LiveAnnouncer);
     return LiveAnnouncer;
 }());
@@ -3215,13 +3523,13 @@ function getSupportedInputTypes() {
     return supportedInputTypes;
 }
 
-var __decorate$21 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$24 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$21 = (this && this.__metadata) || function (k, v) {
+var __metadata$24 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var PlatformModule = (function () {
@@ -3234,22 +3542,22 @@ var PlatformModule = (function () {
             providers: [],
         };
     };
-    PlatformModule = __decorate$21([
+    PlatformModule = __decorate$24([
         _angular_core.NgModule({
             providers: [Platform]
         }), 
-        __metadata$21('design:paramtypes', [])
+        __metadata$24('design:paramtypes', [])
     ], PlatformModule);
     return PlatformModule;
 }());
 
-var __decorate$16 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$19 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$16 = (this && this.__metadata) || function (k, v) {
+var __metadata$19 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var A11yModule = (function () {
@@ -3262,121 +3570,25 @@ var A11yModule = (function () {
             providers: [],
         };
     };
-    A11yModule = __decorate$16([
+    A11yModule = __decorate$19([
         _angular_core.NgModule({
             imports: [_angular_common.CommonModule, PlatformModule],
-            declarations: [FocusTrap],
-            exports: [FocusTrap],
-            providers: [InteractivityChecker, LIVE_ANNOUNCER_PROVIDER]
+            declarations: [FocusTrapDirective, FocusTrapDeprecatedDirective],
+            exports: [FocusTrapDirective, FocusTrapDeprecatedDirective],
+            providers: [InteractivityChecker, FocusTrapFactory, LIVE_ANNOUNCER_PROVIDER]
         }), 
-        __metadata$16('design:paramtypes', [])
+        __metadata$19('design:paramtypes', [])
     ], A11yModule);
     return A11yModule;
 }());
 
-var __decorate$23 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$25 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$23 = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-/**
- * Component that shows a simplified checkbox without including any kind of "real" checkbox.
- * Meant to be used when the checkbox is purely decorative and a large number of them will be
- * included, such as for the options in a multi-select. Uses no SVGs or complex animations.
- *
- * Note that this component will be completely invisible to screen-reader users. This is *not*
- * interchangeable with <md-checkbox> and should *not* be used if the user would directly interact
- * with the checkbox. The pseudo-checkbox should only be used as an implementation detail of
- * more complex components that appropriately handle selected / checked state.
- * @docs-private
- */
-var MdPseudoCheckbox = (function () {
-    function MdPseudoCheckbox(_elementRef, _renderer) {
-        this._elementRef = _elementRef;
-        this._renderer = _renderer;
-        /** Display state of the checkbox. */
-        this.state = 'unchecked';
-        /** Whether the checkbox is disabled. */
-        this.disabled = false;
-        this.color = 'accent';
-    }
-    Object.defineProperty(MdPseudoCheckbox.prototype, "color", {
-        /** Color of the checkbox. */
-        get: function () { return this._color; },
-        set: function (value) {
-            if (value) {
-                var nativeElement = this._elementRef.nativeElement;
-                this._renderer.setElementClass(nativeElement, "mat-" + this.color, false);
-                this._renderer.setElementClass(nativeElement, "mat-" + value, true);
-                this._color = value;
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    
-    __decorate$23([
-        _angular_core.Input(), 
-        __metadata$23('design:type', String)
-    ], MdPseudoCheckbox.prototype, "state", void 0);
-    __decorate$23([
-        _angular_core.Input(), 
-        __metadata$23('design:type', Boolean)
-    ], MdPseudoCheckbox.prototype, "disabled", void 0);
-    __decorate$23([
-        _angular_core.Input(), 
-        __metadata$23('design:type', String)
-    ], MdPseudoCheckbox.prototype, "color", null);
-    MdPseudoCheckbox = __decorate$23([
-        _angular_core.Component({encapsulation: _angular_core.ViewEncapsulation.None,
-            selector: 'md-pseudo-checkbox, mat-pseudo-checkbox',
-            styles: [".mat-pseudo-checkbox { width: 20px; height: 20px; border: 2px solid; border-radius: 2px; cursor: pointer; display: inline-block; vertical-align: middle; box-sizing: border-box; position: relative; transition: border-color 90ms cubic-bezier(0, 0, 0.2, 0.1), background-color 90ms cubic-bezier(0, 0, 0.2, 0.1); } .mat-pseudo-checkbox::after { position: absolute; opacity: 0; content: ''; border-bottom: 2px solid currentColor; transition: opacity 90ms cubic-bezier(0, 0, 0.2, 0.1); } .mat-pseudo-checkbox.mat-pseudo-checkbox-checked, .mat-pseudo-checkbox.mat-pseudo-checkbox-indeterminate { border: none; } .mat-pseudo-checkbox-disabled { cursor: default; } .mat-pseudo-checkbox-indeterminate::after { top: 9px; left: 2px; width: 16px; opacity: 1; } .mat-pseudo-checkbox-checked::after { top: 5px; left: 3px; width: 12px; height: 5px; border-left: 2px solid currentColor; transform: rotate(-45deg); opacity: 1; } /*# sourceMappingURL=pseudo-checkbox.css.map */ "],
-            template: '',
-            host: {
-                '[class.mat-pseudo-checkbox]': 'true',
-                '[class.mat-pseudo-checkbox-indeterminate]': 'state === "indeterminate"',
-                '[class.mat-pseudo-checkbox-checked]': 'state === "checked"',
-                '[class.mat-pseudo-checkbox-disabled]': 'disabled',
-            },
-        }), 
-        __metadata$23('design:paramtypes', [_angular_core.ElementRef, _angular_core.Renderer])
-    ], MdPseudoCheckbox);
-    return MdPseudoCheckbox;
-}());
-
-var __decorate$22 = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata$22 = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var MdSelectionModule = (function () {
-    function MdSelectionModule() {
-    }
-    MdSelectionModule = __decorate$22([
-        _angular_core.NgModule({
-            exports: [MdPseudoCheckbox],
-            declarations: [MdPseudoCheckbox]
-        }), 
-        __metadata$22('design:paramtypes', [])
-    ], MdSelectionModule);
-    return MdSelectionModule;
-}());
-
-var __decorate$24 = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata$24 = (this && this.__metadata) || function (k, v) {
+var __metadata$25 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 // "Polyfill" for `Node.replaceWith()`.
@@ -3389,11 +3601,11 @@ var DomProjectionHost = (function () {
     function DomProjectionHost(ref) {
         this.ref = ref;
     }
-    DomProjectionHost = __decorate$24([
+    DomProjectionHost = __decorate$25([
         _angular_core.Directive({
             selector: 'cdk-dom-projection-host'
         }), 
-        __metadata$24('design:paramtypes', [_angular_core.ElementRef])
+        __metadata$25('design:paramtypes', [_angular_core.ElementRef])
     ], DomProjectionHost);
     return DomProjectionHost;
 }());
@@ -3453,9 +3665,9 @@ var DomProjection = (function () {
         _replaceWith(hostEl, projectedEl);
         // At this point the host is replaced by the component. Nothing else to be done.
     };
-    DomProjection = __decorate$24([
+    DomProjection = __decorate$25([
         _angular_core.Injectable(), 
-        __metadata$24('design:paramtypes', [])
+        __metadata$25('design:paramtypes', [])
     ], DomProjection);
     return DomProjection;
 }());
@@ -3469,13 +3681,13 @@ var ProjectionModule = (function () {
             ngModule: ProjectionModule,
         };
     };
-    ProjectionModule = __decorate$24([
+    ProjectionModule = __decorate$25([
         _angular_core.NgModule({
             exports: [DomProjectionHost],
             declarations: [DomProjectionHost],
             providers: [DomProjection],
         }), 
-        __metadata$24('design:paramtypes', [])
+        __metadata$25('design:paramtypes', [])
     ], ProjectionModule);
     return ProjectionModule;
 }());
@@ -3485,13 +3697,13 @@ var __extends$5 = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var __decorate$25 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$26 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$25 = (this && this.__metadata) || function (k, v) {
+var __metadata$26 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 /**
@@ -3547,9 +3759,9 @@ var FullscreenOverlayContainer = (function (_super) {
             document.msFullscreenElement ||
             null;
     };
-    FullscreenOverlayContainer = __decorate$25([
+    FullscreenOverlayContainer = __decorate$26([
         _angular_core.Injectable(), 
-        __metadata$25('design:paramtypes', [])
+        __metadata$26('design:paramtypes', [])
     ], FullscreenOverlayContainer);
     return FullscreenOverlayContainer;
 }(OverlayContainer));
@@ -3559,13 +3771,13 @@ var __extends$6 = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var __decorate$26 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$27 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$26 = (this && this.__metadata) || function (k, v) {
+var __metadata$27 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 /* Adjusts configuration of our gesture library, Hammer. */
@@ -3629,9 +3841,9 @@ var GestureConfig = (function (_super) {
         inheritances.forEach(function (item) { return recognizer.recognizeWith(item); });
         return recognizer;
     };
-    GestureConfig = __decorate$26([
+    GestureConfig = __decorate$27([
         _angular_core.Injectable(), 
-        __metadata$26('design:paramtypes', [])
+        __metadata$27('design:paramtypes', [])
     ], GestureConfig);
     return GestureConfig;
 }(_angular_platformBrowser.HammerGestureConfig));
@@ -3641,10 +3853,12 @@ var GestureConfig = (function (_super) {
  * @docs-private
  */
 var SelectionModel = (function () {
-    function SelectionModel(_isMulti, initiallySelectedValues) {
+    function SelectionModel(_isMulti, initiallySelectedValues, _emitChanges) {
         var _this = this;
         if (_isMulti === void 0) { _isMulti = false; }
+        if (_emitChanges === void 0) { _emitChanges = true; }
         this._isMulti = _isMulti;
+        this._emitChanges = _emitChanges;
         /** Currently-selected values. */
         this._selection = new Set();
         /** Keeps track of the deselected options that haven't been emitted by the change event. */
@@ -3652,7 +3866,7 @@ var SelectionModel = (function () {
         /** Keeps track of the selected option that haven't been emitted by the change event. */
         this._selectedToEmit = [];
         /** Event emitted when the value has changed. */
-        this.onChange = new rxjs_Subject.Subject();
+        this.onChange = this._emitChanges ? new rxjs_Subject.Subject() : null;
         if (initiallySelectedValues) {
             if (_isMulti) {
                 initiallySelectedValues.forEach(function (value) { return _this._markSelected(value); });
@@ -3690,6 +3904,12 @@ var SelectionModel = (function () {
         this._emitChangeEvent();
     };
     /**
+     * Toggles a value between selected and deselected.
+     */
+    SelectionModel.prototype.toggle = function (value) {
+        this.isSelected(value) ? this.deselect(value) : this.select(value);
+    };
+    /**
      * Clears all of the selected values.
      */
     SelectionModel.prototype.clear = function () {
@@ -3703,10 +3923,24 @@ var SelectionModel = (function () {
         return this._selection.has(value);
     };
     /**
-     * Determines whether the model has a value.
+     * Determines whether the model does not have a value.
      */
     SelectionModel.prototype.isEmpty = function () {
         return this._selection.size === 0;
+    };
+    /**
+     * Determines whether the model has a value.
+     */
+    SelectionModel.prototype.hasValue = function () {
+        return !this.isEmpty();
+    };
+    /**
+     * Sorts the selected values based on a predicate function.
+     */
+    SelectionModel.prototype.sort = function (predicate) {
+        if (this._isMulti && this.selected) {
+            this._selected.sort(predicate);
+        }
     };
     /** Emits a change event and clears the records of selected and deselected values. */
     SelectionModel.prototype._emitChangeEvent = function () {
@@ -3715,8 +3949,8 @@ var SelectionModel = (function () {
             this.onChange.next(eventData);
             this._deselectedToEmit = [];
             this._selectedToEmit = [];
-            this._selected = null;
         }
+        this._selected = null;
     };
     /** Selects a value. */
     SelectionModel.prototype._markSelected = function (value) {
@@ -3725,14 +3959,18 @@ var SelectionModel = (function () {
                 this._unmarkAll();
             }
             this._selection.add(value);
-            this._selectedToEmit.push(value);
+            if (this._emitChanges) {
+                this._selectedToEmit.push(value);
+            }
         }
     };
     /** Deselects a value. */
     SelectionModel.prototype._unmarkSelected = function (value) {
         if (this.isSelected(value)) {
             this._selection.delete(value);
-            this._deselectedToEmit.push(value);
+            if (this._emitChanges) {
+                this._deselectedToEmit.push(value);
+            }
         }
     };
     /** Clears out the selected values. */
@@ -3767,13 +4005,13 @@ function isFakeMousedownFromScreenReader(event) {
     return event.buttons === 0;
 }
 
-var __decorate$27 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$28 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$27 = (this && this.__metadata) || function (k, v) {
+var __metadata$28 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 /**
@@ -3804,9 +4042,9 @@ var UniqueSelectionDispatcher = (function () {
     UniqueSelectionDispatcher.prototype.listen = function (listener) {
         this._listeners.push(listener);
     };
-    UniqueSelectionDispatcher = __decorate$27([
+    UniqueSelectionDispatcher = __decorate$28([
         _angular_core.Injectable(), 
-        __metadata$27('design:paramtypes', [])
+        __metadata$28('design:paramtypes', [])
     ], UniqueSelectionDispatcher);
     return UniqueSelectionDispatcher;
 }());
@@ -3820,13 +4058,13 @@ var UNIQUE_SELECTION_DISPATCHER_PROVIDER = {
     useFactory: UNIQUE_SELECTION_DISPATCHER_PROVIDER_FACTORY
 };
 
-var __decorate$29 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$30 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$29 = (this && this.__metadata) || function (k, v) {
+var __metadata$30 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 // This is the value used by AngularJS Material. Through trial and error (on iPhone 6S) they found
@@ -3888,12 +4126,13 @@ var FocusOriginMonitor = (function () {
      * @param element The element to stop monitoring.
      */
     FocusOriginMonitor.prototype.unmonitor = function (element) {
-        if (!this._elementInfo.has(element)) {
-            return;
+        var elementInfo = this._elementInfo.get(element);
+        if (elementInfo) {
+            elementInfo.unlisten();
+            elementInfo.subject.complete();
+            this._setClasses(element, null);
+            this._elementInfo.delete(element);
         }
-        this._elementInfo.get(element).unlisten();
-        this._setClasses(element, null);
-        this._elementInfo.delete(element);
     };
     /**
      * Focuses the element via the specified focus origin.
@@ -4040,9 +4279,9 @@ var FocusOriginMonitor = (function () {
         this._setClasses(element, null);
         this._elementInfo.get(element).subject.next(null);
     };
-    FocusOriginMonitor = __decorate$29([
+    FocusOriginMonitor = __decorate$30([
         _angular_core.Injectable(), 
-        __metadata$29('design:paramtypes', [_angular_core.NgZone])
+        __metadata$30('design:paramtypes', [_angular_core.NgZone])
     ], FocusOriginMonitor);
     return FocusOriginMonitor;
 }());
@@ -4067,15 +4306,15 @@ var CdkMonitorFocus = (function () {
     CdkMonitorFocus.prototype.ngOnDestroy = function () {
         this._focusOriginMonitor.unmonitor(this._elementRef.nativeElement);
     };
-    __decorate$29([
+    __decorate$30([
         _angular_core.Output(), 
-        __metadata$29('design:type', Object)
+        __metadata$30('design:type', Object)
     ], CdkMonitorFocus.prototype, "cdkFocusChange", void 0);
-    CdkMonitorFocus = __decorate$29([
+    CdkMonitorFocus = __decorate$30([
         _angular_core.Directive({
             selector: '[cdkMonitorElementFocus], [cdkMonitorSubtreeFocus]',
         }), 
-        __metadata$29('design:paramtypes', [_angular_core.ElementRef, FocusOriginMonitor, _angular_core.Renderer])
+        __metadata$30('design:paramtypes', [_angular_core.ElementRef, FocusOriginMonitor, _angular_core.Renderer])
     ], CdkMonitorFocus);
     return CdkMonitorFocus;
 }());
@@ -4102,25 +4341,25 @@ function applyCssTransform(element, transformValue) {
     element.style.webkitTransform = value;
 }
 
-var __decorate$28 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$29 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$28 = (this && this.__metadata) || function (k, v) {
+var __metadata$29 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var StyleModule = (function () {
     function StyleModule() {
     }
-    StyleModule = __decorate$28([
+    StyleModule = __decorate$29([
         _angular_core.NgModule({
             declarations: [CdkMonitorFocus],
             exports: [CdkMonitorFocus],
             providers: [FOCUS_ORIGIN_MONITOR_PROVIDER],
         }), 
-        __metadata$28('design:paramtypes', [])
+        __metadata$29('design:paramtypes', [])
     ], StyleModule);
     return StyleModule;
 }());
@@ -4203,18 +4442,17 @@ var MdCoreModule = (function () {
     return MdCoreModule;
 }());
 
-var __decorate$32 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$33 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$32 = (this && this.__metadata) || function (k, v) {
+var __metadata$33 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var Md2Accordion = (function () {
     function Md2Accordion() {
-        this.class = '';
         this.close = new _angular_core.EventEmitter();
         this.open = new _angular_core.EventEmitter();
         this.tabs = [];
@@ -4232,52 +4470,45 @@ var Md2Accordion = (function () {
     Md2Accordion.prototype.addTab = function (tab) {
         this.tabs.push(tab);
     };
-    __decorate$32([
+    __decorate$33([
         _angular_core.Input(), 
-        __metadata$32('design:type', Boolean)
+        __metadata$33('design:type', Boolean)
     ], Md2Accordion.prototype, "multiple", null);
-    __decorate$32([
-        _angular_core.Input(), 
-        __metadata$32('design:type', String)
-    ], Md2Accordion.prototype, "class", void 0);
-    __decorate$32([
+    __decorate$33([
         _angular_core.Output(), 
-        __metadata$32('design:type', _angular_core.EventEmitter)
+        __metadata$33('design:type', _angular_core.EventEmitter)
     ], Md2Accordion.prototype, "close", void 0);
-    __decorate$32([
+    __decorate$33([
         _angular_core.Output(), 
-        __metadata$32('design:type', _angular_core.EventEmitter)
+        __metadata$33('design:type', _angular_core.EventEmitter)
     ], Md2Accordion.prototype, "open", void 0);
-    Md2Accordion = __decorate$32([
+    Md2Accordion = __decorate$33([
         _angular_core.Component({selector: 'md2-accordion',
             template: "<ng-content></ng-content>",
-            styles: [".md2-accordion { display: block; } md2-accordion-tab { position: relative; display: block; outline: 0; border: 0; border-width: 0 0 1px; border-style: solid; border-color: rgba(0, 0, 0, 0.12); box-sizing: border-box; } md2-accordion-tab[hidden] { display: none; } md2-accordion-tab.md2-accordion-tab-active { border-color: rgba(0, 0, 0, 0.12); } md2-accordion-tab .md2-accordion-header { position: relative; border-radius: 0; color: rgba(0, 0, 0, 0.85); font-weight: 500; cursor: pointer; display: block; align-items: inherit; line-height: 40px; margin: 0; max-height: 40px; overflow: hidden; padding: 0 35px 0 16px; text-align: left; text-decoration: none; white-space: nowrap; width: 100%; box-sizing: border-box; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-user-drag: none; } md2-accordion-tab.md2-accordion-tab-active .md2-accordion-header { color: #106cc8; } md2-accordion-tab.md2-accordion-tab-disabled .md2-accordion-header { pointer-events: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-user-drag: none; opacity: 0.5; cursor: default; } md2-accordion-tab .md2-accordion-header-icon { position: absolute; top: 12px; right: 17px; width: 8px; height: 8px; overflow: hidden; display: inline-block; border-width: 0 2px 2px 0; border-style: solid; border-color: rgba(0, 0, 0, 0.54); transform: rotate(45deg); transition: 300ms ease-in-out; } md2-accordion-tab.md2-accordion-tab-active .md2-accordion-header-icon { transform: rotate(225deg); top: 16px; } md2-accordion-tab .md2-accordion-tab-content { position: relative; display: none; padding: 16px; } md2-accordion-tab.md2-accordion-tab-active .md2-accordion-tab-content { display: block; } /*# sourceMappingURL=accordion.css.map */ "],
-            host: {
-                '[class]': 'class',
-                '[class.md2-accordion]': 'true'
-            },
-            encapsulation: _angular_core.ViewEncapsulation.None
+            styles: ["md2-accordion { display: block; } md2-accordion-tab { position: relative; display: block; outline: 0; box-sizing: border-box; } md2-accordion-tab[hidden] { display: none; } .md2-accordion-header { position: relative; display: block; padding-right: 30px; font-weight: 500; line-height: 40px; text-align: left; color: rgba(0, 0, 0, 0.87); cursor: pointer; white-space: nowrap; border-bottom: 1px solid rgba(0, 0, 0, 0.12); border-radius: 0; box-sizing: border-box; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } md2-accordion-tab.md2-accordion-tab-active > .md2-accordion-header { border-color: #106cc8; box-shadow: 0 1px 0 #106cc8; } md2-accordion-tab.md2-accordion-tab-disabled > .md2-accordion-header { pointer-events: none; color: rgba(0, 0, 0, 0.26); background-image: linear-gradient(to right, rgba(0, 0, 0, 0.26) 0, rgba(0, 0, 0, 0.26) 33%, transparent 0); background-size: 4px 1px; background-repeat: repeat-x; background-position: 0 bottom; border-color: transparent; box-shadow: none; cursor: default; } .md2-accordion-header-icon { position: absolute; top: 12px; right: 8px; width: 8px; height: 8px; overflow: hidden; display: inline-block; border-width: 0 2px 2px 0; border-style: solid; border-color: currentColor; opacity: 0.64; transform: rotate(45deg); transition: 300ms ease-in-out; } md2-accordion-tab.md2-accordion-tab-active > .md2-accordion-header > .md2-accordion-header-icon { transform: rotate(225deg); top: 16px; } .md2-accordion-tab-body { position: relative; overflow: hidden; } .md2-accordion-tab-content { position: relative; padding: 20px 0; border-bottom: 1px solid rgba(0, 0, 0, 0.12); } /*# sourceMappingURL=accordion.css.map */ "],
+            encapsulation: _angular_core.ViewEncapsulation.None,
+            exportAs: 'md2Accordion'
         }), 
-        __metadata$32('design:paramtypes', [])
+        __metadata$33('design:paramtypes', [])
     ], Md2Accordion);
     return Md2Accordion;
 }());
 
-var __decorate$33 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$34 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$33 = (this && this.__metadata) || function (k, v) {
+var __metadata$34 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var Md2AccordionHeader = (function () {
     function Md2AccordionHeader() {
     }
-    Md2AccordionHeader = __decorate$33([
+    Md2AccordionHeader = __decorate$34([
         _angular_core.Directive({ selector: 'md2-accordion-header' }), 
-        __metadata$33('design:paramtypes', [])
+        __metadata$34('design:paramtypes', [])
     ], Md2AccordionHeader);
     return Md2AccordionHeader;
 }());
@@ -4303,6 +4534,13 @@ var Md2AccordionTab = (function () {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(Md2AccordionTab.prototype, "slide", {
+        get: function () {
+            return this.active ? 'down' : 'up';
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(Md2AccordionTab.prototype, "disabled", {
         get: function () { return this._disabled; },
         set: function (value) { this._disabled = coerceBooleanProperty(value); },
@@ -4316,7 +4554,6 @@ var Md2AccordionTab = (function () {
      */
     Md2AccordionTab.prototype._handleClick = function (event) {
         if (this.disabled) {
-            event.preventDefault();
             return;
         }
         var index = this.findTabIndex();
@@ -4351,41 +4588,60 @@ var Md2AccordionTab = (function () {
         }
         return index;
     };
-    __decorate$33([
+    __decorate$34([
         _angular_core.Input(), 
-        __metadata$33('design:type', String)
+        __metadata$34('design:type', String)
     ], Md2AccordionTab.prototype, "header", void 0);
-    __decorate$33([
+    __decorate$34([
         _angular_core.Input(), 
-        __metadata$33('design:type', Boolean)
+        __metadata$34('design:type', Boolean)
     ], Md2AccordionTab.prototype, "active", null);
-    __decorate$33([
+    __decorate$34([
         _angular_core.Input(), 
-        __metadata$33('design:type', Boolean)
+        __metadata$34('design:type', Boolean)
     ], Md2AccordionTab.prototype, "disabled", null);
-    Md2AccordionTab = __decorate$33([
+    Md2AccordionTab = __decorate$34([
         _angular_core.Component({selector: 'md2-accordion-tab',
-            template: "\n    <div class=\"md2-accordion-header\" (click)=\"_handleClick($event)\">\n      <span>{{header}}</span>\n      <ng-content select=\"md2-accordion-header\"></ng-content>\n      <span class=\"md2-accordion-header-icon\"></span>\n    </div>\n    <div class=\"md2-accordion-tab-content\">\n      <ng-content></ng-content>\n    </div>\n  ",
-            styles: [".md2-accordion { display: block; } md2-accordion-tab { position: relative; display: block; outline: 0; border: 0; border-width: 0 0 1px; border-style: solid; border-color: rgba(0, 0, 0, 0.12); box-sizing: border-box; } md2-accordion-tab[hidden] { display: none; } md2-accordion-tab.md2-accordion-tab-active { border-color: rgba(0, 0, 0, 0.12); } md2-accordion-tab .md2-accordion-header { position: relative; border-radius: 0; color: rgba(0, 0, 0, 0.85); font-weight: 500; cursor: pointer; display: block; align-items: inherit; line-height: 40px; margin: 0; max-height: 40px; overflow: hidden; padding: 0 35px 0 16px; text-align: left; text-decoration: none; white-space: nowrap; width: 100%; box-sizing: border-box; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-user-drag: none; } md2-accordion-tab.md2-accordion-tab-active .md2-accordion-header { color: #106cc8; } md2-accordion-tab.md2-accordion-tab-disabled .md2-accordion-header { pointer-events: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-user-drag: none; opacity: 0.5; cursor: default; } md2-accordion-tab .md2-accordion-header-icon { position: absolute; top: 12px; right: 17px; width: 8px; height: 8px; overflow: hidden; display: inline-block; border-width: 0 2px 2px 0; border-style: solid; border-color: rgba(0, 0, 0, 0.54); transform: rotate(45deg); transition: 300ms ease-in-out; } md2-accordion-tab.md2-accordion-tab-active .md2-accordion-header-icon { transform: rotate(225deg); top: 16px; } md2-accordion-tab .md2-accordion-tab-content { position: relative; display: none; padding: 16px; } md2-accordion-tab.md2-accordion-tab-active .md2-accordion-tab-content { display: block; } /*# sourceMappingURL=accordion.css.map */ "],
+            template: "\n    <div class=\"md2-accordion-header\" (click)=\"_handleClick($event)\">\n      <span>{{header}}</span>\n      <ng-content select=\"md2-accordion-header\"></ng-content>\n      <span class=\"md2-accordion-header-icon\"></span>\n    </div>\n    <div class=\"md2-accordion-tab-body\" [@slide]=\"slide\">\n      <div class=\"md2-accordion-tab-content\">\n        <ng-content></ng-content>\n      </div>\n    </div>\n  ",
+            styles: ["md2-accordion { display: block; } md2-accordion-tab { position: relative; display: block; outline: 0; box-sizing: border-box; } md2-accordion-tab[hidden] { display: none; } .md2-accordion-header { position: relative; display: block; padding-right: 30px; font-weight: 500; line-height: 40px; text-align: left; color: rgba(0, 0, 0, 0.87); cursor: pointer; white-space: nowrap; border-bottom: 1px solid rgba(0, 0, 0, 0.12); border-radius: 0; box-sizing: border-box; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } md2-accordion-tab.md2-accordion-tab-active > .md2-accordion-header { border-color: #106cc8; box-shadow: 0 1px 0 #106cc8; } md2-accordion-tab.md2-accordion-tab-disabled > .md2-accordion-header { pointer-events: none; color: rgba(0, 0, 0, 0.26); background-image: linear-gradient(to right, rgba(0, 0, 0, 0.26) 0, rgba(0, 0, 0, 0.26) 33%, transparent 0); background-size: 4px 1px; background-repeat: repeat-x; background-position: 0 bottom; border-color: transparent; box-shadow: none; cursor: default; } .md2-accordion-header-icon { position: absolute; top: 12px; right: 8px; width: 8px; height: 8px; overflow: hidden; display: inline-block; border-width: 0 2px 2px 0; border-style: solid; border-color: currentColor; opacity: 0.64; transform: rotate(45deg); transition: 300ms ease-in-out; } md2-accordion-tab.md2-accordion-tab-active > .md2-accordion-header > .md2-accordion-header-icon { transform: rotate(225deg); top: 16px; } .md2-accordion-tab-body { position: relative; overflow: hidden; } .md2-accordion-tab-content { position: relative; padding: 20px 0; border-bottom: 1px solid rgba(0, 0, 0, 0.12); } /*# sourceMappingURL=accordion.css.map */ "],
+            animations: [
+                _angular_core.trigger('slide', [
+                    _angular_core.state('up', _angular_core.style({ height: 0 })),
+                    _angular_core.state('down', _angular_core.style({ height: '*' })),
+                    _angular_core.transition('down => up', [
+                        _angular_core.style({ height: '*' }),
+                        _angular_core.animate(300, _angular_core.style({
+                            height: 0
+                        }))
+                    ]),
+                    _angular_core.transition('up => down', [
+                        _angular_core.style({ height: 0 }),
+                        _angular_core.animate(300, _angular_core.style({
+                            height: '*'
+                        }))
+                    ])
+                ])
+            ],
             host: {
                 'role': 'accordion-tab',
                 '[class.md2-accordion-tab-active]': 'active',
                 '[class.md2-accordion-tab-disabled]': 'disabled'
             },
-            encapsulation: _angular_core.ViewEncapsulation.None
+            encapsulation: _angular_core.ViewEncapsulation.None,
+            exportAs: 'md2AccordionTab'
         }), 
-        __metadata$33('design:paramtypes', [Md2Accordion])
+        __metadata$34('design:paramtypes', [Md2Accordion])
     ], Md2AccordionTab);
     return Md2AccordionTab;
 }());
 
-var __decorate$31 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$32 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$31 = (this && this.__metadata) || function (k, v) {
+var __metadata$32 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var MD2_ACCORDION_DIRECTIVES = [Md2Accordion, Md2AccordionTab, Md2AccordionHeader];
@@ -4398,24 +4654,24 @@ var Md2AccordionModule = (function () {
             providers: []
         };
     };
-    Md2AccordionModule = __decorate$31([
+    Md2AccordionModule = __decorate$32([
         _angular_core.NgModule({
             imports: [_angular_common.CommonModule],
             exports: MD2_ACCORDION_DIRECTIVES,
             declarations: MD2_ACCORDION_DIRECTIVES,
         }), 
-        __metadata$31('design:paramtypes', [])
+        __metadata$32('design:paramtypes', [])
     ], Md2AccordionModule);
     return Md2AccordionModule;
 }());
 
-var __decorate$35 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$36 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$35 = (this && this.__metadata) || function (k, v) {
+var __metadata$36 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var HighlightPipe = (function () {
@@ -4441,20 +4697,20 @@ var HighlightPipe = (function () {
     HighlightPipe.prototype._escapeRegexp = function (queryToEscape) {
         return queryToEscape.replace(/([.?*+^$[\]\\(){}|-])/g, '\\$1');
     };
-    HighlightPipe = __decorate$35([
+    HighlightPipe = __decorate$36([
         _angular_core.Pipe({ name: 'highlight' }), 
-        __metadata$35('design:paramtypes', [])
+        __metadata$36('design:paramtypes', [])
     ], HighlightPipe);
     return HighlightPipe;
 }());
 
-var __decorate$34 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$35 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$34 = (this && this.__metadata) || function (k, v) {
+var __metadata$35 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var Item = (function () {
@@ -4788,60 +5044,60 @@ var Md2Autocomplete = (function () {
     };
     Md2Autocomplete.prototype.registerOnChange = function (fn) { this._onChange = fn; };
     Md2Autocomplete.prototype.registerOnTouched = function (fn) { this._onTouched = fn; };
-    __decorate$34([
+    __decorate$35([
         _angular_core.Output(), 
-        __metadata$34('design:type', _angular_core.EventEmitter)
+        __metadata$35('design:type', _angular_core.EventEmitter)
     ], Md2Autocomplete.prototype, "change", void 0);
-    __decorate$34([
+    __decorate$35([
         _angular_core.Output(), 
-        __metadata$34('design:type', Object)
+        __metadata$35('design:type', Object)
     ], Md2Autocomplete.prototype, "textChange", void 0);
-    __decorate$34([
+    __decorate$35([
         _angular_core.Input(), 
-        __metadata$34('design:type', String)
+        __metadata$35('design:type', String)
     ], Md2Autocomplete.prototype, "id", void 0);
-    __decorate$34([
+    __decorate$35([
         _angular_core.Input(), 
-        __metadata$34('design:type', Number)
+        __metadata$35('design:type', Number)
     ], Md2Autocomplete.prototype, "tabindex", void 0);
-    __decorate$34([
+    __decorate$35([
         _angular_core.Input(), 
-        __metadata$34('design:type', String)
+        __metadata$35('design:type', String)
     ], Md2Autocomplete.prototype, "placeholder", void 0);
-    __decorate$34([
+    __decorate$35([
         _angular_core.Input('item-text'), 
-        __metadata$34('design:type', String)
+        __metadata$35('design:type', String)
     ], Md2Autocomplete.prototype, "textKey", void 0);
-    __decorate$34([
+    __decorate$35([
         _angular_core.Input('item-value'), 
-        __metadata$34('design:type', String)
+        __metadata$35('design:type', String)
     ], Md2Autocomplete.prototype, "valueKey", void 0);
-    __decorate$34([
+    __decorate$35([
         _angular_core.Input('min-length'), 
-        __metadata$34('design:type', Number)
+        __metadata$35('design:type', Number)
     ], Md2Autocomplete.prototype, "minLength", void 0);
-    __decorate$34([
+    __decorate$35([
         _angular_core.Input(), 
-        __metadata$34('design:type', Boolean)
+        __metadata$35('design:type', Boolean)
     ], Md2Autocomplete.prototype, "readonly", null);
-    __decorate$34([
+    __decorate$35([
         _angular_core.Input(), 
-        __metadata$34('design:type', Boolean)
+        __metadata$35('design:type', Boolean)
     ], Md2Autocomplete.prototype, "required", null);
-    __decorate$34([
+    __decorate$35([
         _angular_core.Input(), 
-        __metadata$34('design:type', Boolean)
+        __metadata$35('design:type', Boolean)
     ], Md2Autocomplete.prototype, "disabled", null);
-    __decorate$34([
+    __decorate$35([
         _angular_core.Input(), 
-        __metadata$34('design:type', Array), 
-        __metadata$34('design:paramtypes', [Array])
+        __metadata$35('design:type', Array), 
+        __metadata$35('design:paramtypes', [Array])
     ], Md2Autocomplete.prototype, "items", null);
-    __decorate$34([
+    __decorate$35([
         _angular_core.Input(), 
-        __metadata$34('design:type', Object)
+        __metadata$35('design:type', Object)
     ], Md2Autocomplete.prototype, "value", null);
-    Md2Autocomplete = __decorate$34([
+    Md2Autocomplete = __decorate$35([
         _angular_core.Component({selector: 'md2-autocomplete',
             template: "<div class=\"md2-autocomplete-trigger\" [class.is-focused]=\"_inputFocused || isMenuVisible\"> <input [(ngModel)]=\"_inputValue\" type=\"text\" tabs=\"false\" autocomplete=\"off\" [readonly]=\"readonly\" [tabindex]=\"disabled ? -1 : tabindex\" [disabled]=\"disabled\" class=\"md2-autocomplete-input\" (focus)=\"_handleFocus()\" (blur)=\"_handleBlur()\" (keydown)=\"_handleKeydown($event)\" (change)=\"$event.stopPropagation()\" /> <span class=\"md2-autocomplete-placeholder\" [class.has-value]=\"_inputValue\"> {{ placeholder }} </span> <svg *ngIf=\"_inputValue && !required && !disabled\" (click)=\"_onClear()\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\" /> </svg> </div> <ul *ngIf=\"isMenuVisible\" class=\"md2-autocomplete-menu\" (mouseenter)=\"_handleMouseEnter()\" (mouseleave)=\"_handleMouseLeave()\"> <li class=\"md2-option\" *ngFor=\"let l of _list; let i = index;\" [class.focus]=\"_focusedOption === i\" (click)=\"_selectOption($event, i)\"> <div class=\"md2-text\" [innerHtml]=\"l.text | highlight:_inputValue\"></div> </li> </ul> ",
             styles: ["md2-autocomplete { position: relative; display: block; margin: 18px 0; outline: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } md2-autocomplete.md2-autocomplete-disabled { pointer-events: none; cursor: default; } .md2-autocomplete-trigger { position: relative; display: block; width: 100%; padding: 2px 2px 1px; border-bottom: 1px solid rgba(0, 0, 0, 0.12); box-sizing: border-box; min-width: 64px; min-height: 26px; cursor: pointer; } .md2-autocomplete-trigger.is-focused { padding-bottom: 0; border-bottom: 2px solid #106cc8; } md2-autocomplete.ng-invalid.ng-touched:not(.md2-autocomplete-disabled) .md2-autocomplete-trigger { color: #f44336; border-bottom-color: #f44336; } md2-autocomplete.md2-autocomplete-disabled .md2-autocomplete-trigger { color: rgba(0, 0, 0, 0.38); border-color: transparent; background-image: linear-gradient(to right, rgba(0, 0, 0, 0.38) 0%, rgba(0, 0, 0, 0.38) 33%, transparent 0%); background-position: bottom -1px left 0; background-size: 4px 1px; background-repeat: repeat-x; cursor: default; } md2-autocomplete.md2-autocomplete-disabled .md2-autocomplete-trigger.is-focused { padding-bottom: 1px; border-bottom: 1px solid transparent; } .md2-autocomplete-input { width: 100%; height: 26px; font-size: 15px; outline: none; background: transparent; border: 0; box-sizing: border-box; } md2-autocomplete.md2-autocomplete-disabled .md2-autocomplete-input { color: rgba(0, 0, 0, 0.38); } .md2-autocomplete-placeholder { position: absolute; right: 26px; bottom: 100%; left: 0; max-width: 100%; padding-left: 3px; padding-right: 0; line-height: 1.4; color: rgba(0, 0, 0, 0.38); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; z-index: 1; transform: translate3d(0, 26px, 0) scale(1); transition: transform 400ms cubic-bezier(0.25, 0.8, 0.25, 1); transform-origin: left top; } [aria-required=true] .md2-autocomplete-placeholder::after { content: '*'; } .md2-autocomplete-trigger.is-focused .md2-autocomplete-placeholder { color: #106cc8; } .md2-autocomplete-trigger.is-focused .md2-autocomplete-placeholder, md2-autocomplete .md2-autocomplete-placeholder.has-value { transform: translate3d(0, 6px, 0) scale(0.75); } .md2-autocomplete-trigger svg { position: absolute; right: 0; top: 0; display: block; height: 100%; background: white; fill: currentColor; color: rgba(0, 0, 0, 0.54); } .md2-autocomplete-menu { position: absolute; left: 0; top: 100%; display: block; z-index: 10; width: 100%; margin: 0; padding: 8px 0; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12); max-height: 256px; min-height: 48px; overflow-y: auto; background: white; } .md2-autocomplete-menu .md2-option { position: relative; display: block; color: #212121; cursor: pointer; width: auto; padding: 0 16px; height: 48px; line-height: 48px; transition: background 150ms linear; } .md2-autocomplete-menu .md2-option:hover, .md2-autocomplete-menu .md2-option.focus { background: #ededed; } .md2-autocomplete-menu .md2-option .md2-text { width: auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 16px; } .md2-autocomplete-menu .highlight { color: #737373; } /*# sourceMappingURL=autocomplete.css.map */ "],
@@ -4854,9 +5110,10 @@ var Md2Autocomplete = (function () {
                 '[attr.aria-disabled]': 'disabled.toString()',
                 '[class.md2-autocomplete-disabled]': 'disabled',
             },
-            encapsulation: _angular_core.ViewEncapsulation.None
+            encapsulation: _angular_core.ViewEncapsulation.None,
+            exportAs: 'md2Autocomplete'
         }), 
-        __metadata$34('design:paramtypes', [_angular_core.ElementRef])
+        __metadata$35('design:paramtypes', [_angular_core.ElementRef])
     ], Md2Autocomplete);
     return Md2Autocomplete;
 }());
@@ -4870,24 +5127,24 @@ var Md2AutocompleteModule = (function () {
             providers: []
         };
     };
-    Md2AutocompleteModule = __decorate$34([
+    Md2AutocompleteModule = __decorate$35([
         _angular_core.NgModule({
             imports: [_angular_common.CommonModule, _angular_forms.FormsModule],
             exports: MD2_AUTOCOMPLETE_DIRECTIVES,
             declarations: MD2_AUTOCOMPLETE_DIRECTIVES,
         }), 
-        __metadata$34('design:paramtypes', [])
+        __metadata$35('design:paramtypes', [])
     ], Md2AutocompleteModule);
     return Md2AutocompleteModule;
 }());
 
-var __decorate$36 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$37 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$36 = (this && this.__metadata) || function (k, v) {
+var __metadata$37 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var noop = function () { };
@@ -5225,109 +5482,109 @@ var Md2Chips = (function () {
     };
     Md2Chips.prototype.registerOnChange = function (fn) { this.onChangeCallback = fn; };
     Md2Chips.prototype.registerOnTouched = function (fn) { this.onTouchedCallback = fn; };
-    __decorate$36([
+    __decorate$37([
         _angular_core.Input(), 
-        __metadata$36('design:type', Number)
+        __metadata$37('design:type', Number)
     ], Md2Chips.prototype, "tabindex", void 0);
-    __decorate$36([
+    __decorate$37([
         _angular_core.Input(), 
-        __metadata$36('design:type', Boolean)
+        __metadata$37('design:type', Boolean)
     ], Md2Chips.prototype, "addOnComma", void 0);
-    __decorate$36([
+    __decorate$37([
         _angular_core.Input(), 
-        __metadata$36('design:type', Boolean)
+        __metadata$37('design:type', Boolean)
     ], Md2Chips.prototype, "addOnEnter", void 0);
-    __decorate$36([
+    __decorate$37([
         _angular_core.Input(), 
-        __metadata$36('design:type', Boolean)
+        __metadata$37('design:type', Boolean)
     ], Md2Chips.prototype, "addOnPaste", void 0);
-    __decorate$36([
+    __decorate$37([
         _angular_core.Input(), 
-        __metadata$36('design:type', Boolean)
+        __metadata$37('design:type', Boolean)
     ], Md2Chips.prototype, "addOnSpace", void 0);
-    __decorate$36([
+    __decorate$37([
         _angular_core.Input(), 
-        __metadata$36('design:type', RegExp)
+        __metadata$37('design:type', RegExp)
     ], Md2Chips.prototype, "allowedPattern", void 0);
-    __decorate$36([
+    __decorate$37([
         _angular_core.Input(), 
-        __metadata$36('design:type', Array)
+        __metadata$37('design:type', Array)
     ], Md2Chips.prototype, "ngModel", void 0);
-    __decorate$36([
+    __decorate$37([
         _angular_core.Input(), 
-        __metadata$36('design:type', String)
+        __metadata$37('design:type', String)
     ], Md2Chips.prototype, "pasteSplitPattern", void 0);
-    __decorate$36([
+    __decorate$37([
         _angular_core.Input(), 
-        __metadata$36('design:type', String)
+        __metadata$37('design:type', String)
     ], Md2Chips.prototype, "placeholder", void 0);
-    __decorate$36([
+    __decorate$37([
         _angular_core.Input(), 
-        __metadata$36('design:type', Array)
+        __metadata$37('design:type', Array)
     ], Md2Chips.prototype, "autocompleteDataList", void 0);
-    __decorate$36([
+    __decorate$37([
         _angular_core.Input(), 
-        __metadata$36('design:type', Boolean)
+        __metadata$37('design:type', Boolean)
     ], Md2Chips.prototype, "isAutoComplete", void 0);
-    __decorate$36([
+    __decorate$37([
         _angular_core.Input(), 
-        __metadata$36('design:type', Boolean)
+        __metadata$37('design:type', Boolean)
     ], Md2Chips.prototype, "isRemovable", void 0);
-    __decorate$36([
+    __decorate$37([
         _angular_core.Input(), 
-        __metadata$36('design:type', Boolean)
+        __metadata$37('design:type', Boolean)
     ], Md2Chips.prototype, "readonly", void 0);
-    __decorate$36([
+    __decorate$37([
         _angular_core.Input(), 
-        __metadata$36('design:type', Number)
+        __metadata$37('design:type', Number)
     ], Md2Chips.prototype, "minChips", void 0);
-    __decorate$36([
+    __decorate$37([
         _angular_core.Input(), 
-        __metadata$36('design:type', Number)
+        __metadata$37('design:type', Number)
     ], Md2Chips.prototype, "maxChips", void 0);
-    __decorate$36([
+    __decorate$37([
         _angular_core.Input(), 
-        __metadata$36('design:type', String)
+        __metadata$37('design:type', String)
     ], Md2Chips.prototype, "id", void 0);
-    __decorate$36([
+    __decorate$37([
         _angular_core.Input('autocomplete-item-text'), 
-        __metadata$36('design:type', String)
+        __metadata$37('design:type', String)
     ], Md2Chips.prototype, "autocompleteItemText", void 0);
-    __decorate$36([
+    __decorate$37([
         _angular_core.Input('autocomplete-item-value'), 
-        __metadata$36('design:type', String)
+        __metadata$37('design:type', String)
     ], Md2Chips.prototype, "autocompleteItemValue", void 0);
-    __decorate$36([
+    __decorate$37([
         _angular_core.Input('item-text'), 
-        __metadata$36('design:type', String)
+        __metadata$37('design:type', String)
     ], Md2Chips.prototype, "textKey", void 0);
-    __decorate$36([
+    __decorate$37([
         _angular_core.Input('item-value'), 
-        __metadata$36('design:type', String)
+        __metadata$37('design:type', String)
     ], Md2Chips.prototype, "valueKey", void 0);
-    __decorate$36([
+    __decorate$37([
         _angular_core.Output(), 
-        __metadata$36('design:type', _angular_core.EventEmitter)
+        __metadata$37('design:type', _angular_core.EventEmitter)
     ], Md2Chips.prototype, "change", void 0);
-    __decorate$36([
+    __decorate$37([
         _angular_core.ViewChild('chipInputForm'), 
-        __metadata$36('design:type', _angular_forms.NgForm)
+        __metadata$37('design:type', _angular_forms.NgForm)
     ], Md2Chips.prototype, "chipInputForm", void 0);
-    __decorate$36([
+    __decorate$37([
         _angular_core.Input(), 
-        __metadata$36('design:type', Object)
+        __metadata$37('design:type', Object)
     ], Md2Chips.prototype, "value", null);
-    __decorate$36([
+    __decorate$37([
         _angular_core.HostListener('focus'), 
-        __metadata$36('design:type', Function), 
-        __metadata$36('design:paramtypes', []), 
-        __metadata$36('design:returntype', void 0)
+        __metadata$37('design:type', Function), 
+        __metadata$37('design:paramtypes', []), 
+        __metadata$37('design:returntype', void 0)
     ], Md2Chips.prototype, "_handleFocus", null);
-    Md2Chips = __decorate$36([
+    Md2Chips = __decorate$37([
         _angular_core.Component({
             selector: 'md2-chips',
             template: "<div class=\"md2-chips-container\" [class.md2-chip-disabled]=\"readonly\" [class.md2-chip-remove]=\"!isRemovable\">    <span *ngFor=\"let chip of chipItemList; let i = index\" class=\"md2-chip\" [class.active]=\"selectedChip === i\"> <span *ngIf=\"isObject\">{{chip.text}}</span> <span *ngIf=\"!isObject\">{{chip}}</span> <span [innerHTML]=\"templateHtmlString\"></span> <svg (click)=\"removeSelectedChip(i)\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *ngIf=\"isRemovable\"> <path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\" /> </svg> </span> <ng-content select=\".md2-template\"></ng-content> <form #chipInputForm=\"ngForm\" class=\"chip-input-form\" *ngIf=\"!readonly\"> <input *ngIf=\"!isAutoComplete\" class=\"chip-input\" type=\"text\" [(ngModel)]=\"inputValue\" name=\"chipInput\" [placeholder]=\"placeholder\" (paste)=\"inputPaste($event)\" (keydown)=\"inputChanged($event)\" (blur)=\"inputBlurred($event)\" (focus)=\"inputFocus()\" /> <div *ngIf=\"isAutoComplete\"> <md2-autocomplete [items]=\"autocompleteDataList\" [item-text]=\"autocompleteItemText\" [(ngModel)]=\"item\" name=\"autocomplete\" (textChange)=\"valueupdate($event)\" (change)=\"changeAutocomplete($event)\" [placeholder]=\"placeholder\" (keydown)=\"inputChanged($event)\"> </md2-autocomplete> </div> </form> </div> <div class=\"chip-error\" *ngIf=\"this.chipItemList.length<this.minChips\">Minimum {{minChips}} chip required.</div> <div class=\"chip-error\" *ngIf=\"this.chipItemList.length>=this.maxChips\">You are able to add Maximum {{maxChips}} chip.</div> ",
-            styles: [".template-content { display: inline; } md2-chips { outline: none; } md2-chips .md2-chips-container { display: block; box-shadow: 0 1px #ccc; padding: 5px 0; margin-bottom: 10px; min-height: 50px; box-sizing: border-box; clear: both; } md2-chips .md2-chips-container::after { clear: both; content: ''; display: table; } md2-chips.chip-input-focus .md2-chips-container { box-shadow: 0 2px #0d8bff; } md2-chips .md2-chip-disabled { cursor: default; } md2-chips md2-autocomplete { margin: 0; } md2-chips .md2-autocomplete-wrap { border-bottom: 0 !important; } .md2-chip-remove .md2-chip { padding: 0 12px; } .md2-chip { font-size: 14px; position: relative; cursor: default; border-radius: 16px; display: block; height: 32px; line-height: 32px; margin: 8px 8px 0 0; padding: 0 28px 0 12px; float: left; box-sizing: border-box; max-width: 100%; background: #e0e0e0; color: #424242; white-space: nowrap; overflow: hidden; -ms-text-overflow: ellipsis; text-overflow: ellipsis; } .md2-chip.active { color: white; background: #0d8bff; } .md2-chip.active svg { color: rgba(255, 255, 255, 0.87); } .md2-chip svg { position: absolute; top: 4px; right: 4px; cursor: pointer; display: inline-block; overflow: hidden; fill: currentColor; color: rgba(0, 0, 0, 0.54); } .md2-template { display: none; } .chip-input-disabled { pointer-events: none; cursor: default; } .chip-input-form { display: inline-block; height: 32px; margin: 8px 8px 0 0; } .chip-remove { cursor: pointer; display: inline-block; padding: 0 3px; color: #616161; font-size: 30px; vertical-align: top; line-height: 21px; font-family: serif; } .chip-input { display: inline-block; width: auto; border: 0; outline: none; height: 32px; line-height: 32px; font-size: 16px; } .chip-error { font-size: 13px; color: #fd0f0f; } .md2-chips-container .chip-input-form .md2-autocomplete-wrap { border-bottom: 0; } .md2-chips-container .md2-autocomplete-wrap.is-focused .md2-autocomplete-placeholder { display: none; } .md2-chips-container .md2-autocomplete-wrap .md2-autocomplete-placeholder.has-value { display: none; } .md2-chips-container .md2-autocomplete-wrap svg { display: none; } .md2-chips-container .md2-autocomplete-wrap .md2-autocomplete-input { height: 32px; font-size: 16px; } /*# sourceMappingURL=chips.css.map */ "],
+            styles: [".template-content { display: inline; } md2-chips { outline: none; } md2-chips .md2-chips-container { display: block; box-shadow: 0 1px #ccc; padding: 5px 0; margin-bottom: 10px; min-height: 50px; box-sizing: border-box; clear: both; } md2-chips .md2-chips-container::after { clear: both; content: ''; display: table; } md2-chips.chip-input-focus .md2-chips-container { box-shadow: 0 2px #0d8bff; } md2-chips .md2-chip-disabled { cursor: default; } md2-chips md2-autocomplete { margin: 0; } md2-chips .md2-autocomplete-wrap { border-bottom: 0 !important; } .md2-chip-remove .md2-chip { padding: 0 12px; } .md2-chip { font-size: 14px; position: relative; cursor: default; border-radius: 16px; display: block; height: 32px; line-height: 32px; margin: 8px 8px 0 0; padding: 0 28px 0 12px; float: left; box-sizing: border-box; max-width: 100%; background: #e0e0e0; color: #424242; white-space: nowrap; overflow: hidden; -ms-text-overflow: ellipsis; text-overflow: ellipsis; } .md2-chip.active { color: white; background: #0d8bff; } .md2-chip.active svg { color: rgba(255, 255, 255, 0.87); } .md2-chip svg { position: absolute; top: 4px; right: 4px; cursor: pointer; display: inline-block; overflow: hidden; fill: currentColor; color: rgba(0, 0, 0, 0.54); } .md2-template { display: none; } .chip-input-disabled { pointer-events: none; cursor: default; } .chip-input-form { display: inline-block; height: 32px; margin: 8px 8px 0 0; } .chip-remove { cursor: pointer; display: inline-block; padding: 0 3px; color: #616161; font-size: 30px; vertical-align: top; line-height: 21px; font-family: serif; } .chip-input { display: inline-block; width: auto; border: 0; outline: none; height: 32px; line-height: 32px; font-size: 16px; background: transparent; } .chip-error { font-size: 13px; color: #fd0f0f; } .md2-chips-container .chip-input-form .md2-autocomplete-wrap { border-bottom: 0; } .md2-chips-container .md2-autocomplete-wrap.is-focused .md2-autocomplete-placeholder { display: none; } .md2-chips-container .md2-autocomplete-wrap .md2-autocomplete-placeholder.has-value { display: none; } .md2-chips-container .md2-autocomplete-wrap svg { display: none; } .md2-chips-container .md2-autocomplete-wrap .md2-autocomplete-input { height: 32px; font-size: 16px; } /*# sourceMappingURL=chips.css.map */ "],
             providers: [MD2_CHIPS_CONTROL_VALUE_ACCESSOR],
             host: {
                 'role': 'chips',
@@ -5337,7 +5594,7 @@ var Md2Chips = (function () {
             },
             encapsulation: _angular_core.ViewEncapsulation.None
         }), 
-        __metadata$36('design:paramtypes', [_angular_core.ElementRef])
+        __metadata$37('design:paramtypes', [_angular_core.ElementRef])
     ], Md2Chips);
     return Md2Chips;
 }());
@@ -5351,35 +5608,37 @@ var Md2ChipsModule = (function () {
             providers: []
         };
     };
-    Md2ChipsModule = __decorate$36([
+    Md2ChipsModule = __decorate$37([
         _angular_core.NgModule({
             imports: [_angular_common.CommonModule, _angular_forms.FormsModule, Md2AutocompleteModule],
             declarations: MD2_CHIPS_DIRECTIVES,
             exports: MD2_CHIPS_DIRECTIVES
         }), 
-        __metadata$36('design:paramtypes', [])
+        __metadata$37('design:paramtypes', [])
     ], Md2ChipsModule);
     return Md2ChipsModule;
 }());
 
-var __decorate$37 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$38 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$37 = (this && this.__metadata) || function (k, v) {
+var __metadata$38 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var Md2Collapse = (function () {
     function Md2Collapse() {
-        this._isExpanded = true;
-        this._isCollapsing = false;
+        this._collapse = true;
+        this._collapsing = false;
+        this.collapsed = new _angular_core.EventEmitter();
+        this.expanded = new _angular_core.EventEmitter();
     }
     Object.defineProperty(Md2Collapse.prototype, "collapse", {
-        get: function () { return this._isExpanded; },
+        get: function () { return this._collapse; },
         set: function (value) {
-            this._isExpanded = value;
+            this._collapse = value;
             this.toggle();
         },
         enumerable: true,
@@ -5389,7 +5648,7 @@ var Md2Collapse = (function () {
      * toggle collapse
      */
     Md2Collapse.prototype.toggle = function () {
-        if (this._isExpanded) {
+        if (this._collapse) {
             this.hide();
         }
         else {
@@ -5397,43 +5656,55 @@ var Md2Collapse = (function () {
         }
     };
     /**
+    * show collapse
+    */
+    Md2Collapse.prototype.show = function () {
+        var _this = this;
+        this._collapsing = true;
+        this._collapse = true;
+        setTimeout(function () {
+            _this._collapsing = false;
+        }, 4);
+        this.expanded.emit();
+    };
+    /**
      * hide collapse
      */
     Md2Collapse.prototype.hide = function () {
         var _this = this;
-        this._isCollapsing = true;
-        this._isExpanded = false;
+        this._collapsing = true;
+        this._collapse = false;
         setTimeout(function () {
-            _this._isCollapsing = false;
+            _this._collapsing = false;
         }, 4);
+        this.collapsed.emit();
     };
-    /**
-     * show collapse
-     */
-    Md2Collapse.prototype.show = function () {
-        var _this = this;
-        this._isCollapsing = true;
-        this._isExpanded = true;
-        setTimeout(function () {
-            _this._isCollapsing = false;
-        }, 4);
-    };
-    __decorate$37([
+    __decorate$38([
+        _angular_core.Output(), 
+        __metadata$38('design:type', _angular_core.EventEmitter)
+    ], Md2Collapse.prototype, "collapsed", void 0);
+    __decorate$38([
+        _angular_core.Output(), 
+        __metadata$38('design:type', _angular_core.EventEmitter)
+    ], Md2Collapse.prototype, "expanded", void 0);
+    __decorate$38([
         _angular_core.Input(), 
-        __metadata$37('design:type', Boolean)
+        __metadata$38('design:type', Boolean)
     ], Md2Collapse.prototype, "collapse", null);
-    Md2Collapse = __decorate$37([
+    Md2Collapse = __decorate$38([
         _angular_core.Directive({
             selector: '[collapse]',
             host: {
-                '[class.in]': '_isExpanded',
+                'role': 'collapse',
+                '[class.in]': '_collapse',
                 '[class.collapse]': 'true',
-                '[class.collapsing]': '_isCollapsing',
-                '[attr.aria-expanded]': '_isExpanded',
-                '[attr.aria-hidden]': '!_isExpanded',
-            }
+                '[class.collapsing]': '_collapsing',
+                '[attr.aria-expanded]': '_collapse',
+                '[attr.aria-hidden]': '!_collapse'
+            },
+            exportAs: 'md2Collapse'
         }), 
-        __metadata$37('design:paramtypes', [])
+        __metadata$38('design:paramtypes', [])
     ], Md2Collapse);
     return Md2Collapse;
 }());
@@ -5447,24 +5718,24 @@ var Md2CollapseModule = (function () {
             providers: []
         };
     };
-    Md2CollapseModule = __decorate$37([
+    Md2CollapseModule = __decorate$38([
         _angular_core.NgModule({
             imports: [_angular_common.CommonModule],
             exports: MD2_COLLAPSE_DIRECTIVES,
             declarations: MD2_COLLAPSE_DIRECTIVES,
         }), 
-        __metadata$37('design:paramtypes', [])
+        __metadata$38('design:paramtypes', [])
     ], Md2CollapseModule);
     return Md2CollapseModule;
 }());
 
-var __decorate$39 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$40 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$39 = (this && this.__metadata) || function (k, v) {
+var __metadata$40 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var COLOR_RGB = /(rgb)a?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*%?,\s*(\d{1,3})\s*%?(?:,\s*(\d+(?:\.\d+)?)\s*)?\)/;
@@ -5672,23 +5943,23 @@ var ColorpickerService = (function () {
     ColorpickerService.prototype.denormalizeRGBA = function (rgba) {
         return new Rgba(Math.round(rgba.r * 255), Math.round(rgba.g * 255), Math.round(rgba.b * 255), rgba.a);
     };
-    ColorpickerService = __decorate$39([
+    ColorpickerService = __decorate$40([
         _angular_core.Injectable(), 
-        __metadata$39('design:paramtypes', [])
+        __metadata$40('design:paramtypes', [])
     ], ColorpickerService);
     return ColorpickerService;
 }());
 
-var __decorate$38 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$39 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$38 = (this && this.__metadata) || function (k, v) {
+var __metadata$39 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __param$4 = (this && this.__param) || function (paramIndex, decorator) {
+var __param$6 = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 var nextId$2 = 0;
@@ -5710,26 +5981,26 @@ var TextDirective = (function () {
             }
         }
     };
-    __decorate$38([
+    __decorate$39([
         _angular_core.Output('newValue'), 
-        __metadata$38('design:type', Object)
+        __metadata$39('design:type', Object)
     ], TextDirective.prototype, "newValue", void 0);
-    __decorate$38([
+    __decorate$39([
         _angular_core.Input('text'), 
-        __metadata$38('design:type', Object)
+        __metadata$39('design:type', Object)
     ], TextDirective.prototype, "text", void 0);
-    __decorate$38([
+    __decorate$39([
         _angular_core.Input('rg'), 
-        __metadata$38('design:type', Number)
+        __metadata$39('design:type', Number)
     ], TextDirective.prototype, "rg", void 0);
-    TextDirective = __decorate$38([
+    TextDirective = __decorate$39([
         _angular_core.Directive({
             selector: '[text]',
             host: {
                 '(input)': 'changeInput($event)'
             }
         }), 
-        __metadata$38('design:paramtypes', [])
+        __metadata$39('design:paramtypes', [])
     ], TextDirective);
     return TextDirective;
 }());
@@ -5812,23 +6083,23 @@ var ColorpickerSliderDirective = (function () {
     ColorpickerSliderDirective.prototype._getNativeElement = function () {
         return this._element.nativeElement;
     };
-    __decorate$38([
+    __decorate$39([
         _angular_core.Input('colorpicker-slider'), 
-        __metadata$38('design:type', String)
+        __metadata$39('design:type', String)
     ], ColorpickerSliderDirective.prototype, "slider", void 0);
-    __decorate$38([
+    __decorate$39([
         _angular_core.Input('point-x'), 
-        __metadata$38('design:type', Number)
+        __metadata$39('design:type', Number)
     ], ColorpickerSliderDirective.prototype, "pointX", void 0);
-    __decorate$38([
+    __decorate$39([
         _angular_core.Input('point-y'), 
-        __metadata$38('design:type', Number)
+        __metadata$39('design:type', Number)
     ], ColorpickerSliderDirective.prototype, "pointY", void 0);
-    __decorate$38([
+    __decorate$39([
         _angular_core.Output('change'), 
-        __metadata$38('design:type', Object)
+        __metadata$39('design:type', Object)
     ], ColorpickerSliderDirective.prototype, "change", void 0);
-    ColorpickerSliderDirective = __decorate$38([
+    ColorpickerSliderDirective = __decorate$39([
         _angular_core.Directive({
             selector: '[colorpicker-slider]',
             host: {
@@ -5836,7 +6107,7 @@ var ColorpickerSliderDirective = (function () {
                 '(touchstart)': 'start($event)'
             }
         }), 
-        __metadata$38('design:paramtypes', [_angular_core.ElementRef])
+        __metadata$39('design:paramtypes', [_angular_core.ElementRef])
     ], ColorpickerSliderDirective);
     return ColorpickerSliderDirective;
 }());
@@ -5868,8 +6139,9 @@ var Md2Colorpicker = (function () {
         this._required = false;
         /** Whether the select is disabled.  */
         this._disabled = false;
-        /** The placeholder displayed in the trigger of the select. */
-        this._placeholder = 'daa';
+        this.isInputFocus = false;
+        this._container = 'inline';
+        this.isInputValidColor = false;
         this._onChange = function (value) { };
         this._onTouched = function () { };
         this.cFormat = 'hex';
@@ -5878,6 +6150,11 @@ var Md2Colorpicker = (function () {
         this.change = new _angular_core.EventEmitter();
         this.tabindex = 0;
         this.id = 'md2-colorpicker-' + (++nextId$2);
+        /** Position of the colorpicker in the X axis. */
+        this.positionX = 'after';
+        /** Position of the colorpicker in the Y axis. */
+        this.positionY = 'below';
+        this.overlapTrigger = true;
         /** Event emitted when the select has been opened. */
         this.onOpen = new _angular_core.EventEmitter();
         /** Event emitted when the select has been closed. */
@@ -5934,6 +6211,27 @@ var Md2Colorpicker = (function () {
         configurable: true
     });
     
+    Object.defineProperty(Md2Colorpicker.prototype, "container", {
+        get: function () { return this._container; },
+        set: function (value) {
+            if (this._container !== value) {
+                this._container = value || 'inline';
+                this.destroyPanel();
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Md2Colorpicker.prototype, "setGradient", {
+        get: function () {
+            return {
+                'background-image': 'linear-gradient(to right, transparent, transparent),' +
+                    'linear-gradient(to left, ' + this.hexText + ', rgba(255, 255, 255, 0))'
+            };
+        },
+        enumerable: true,
+        configurable: true
+    });
     Md2Colorpicker.prototype.ngOnDestroy = function () { this.destroyPanel(); };
     Object.defineProperty(Md2Colorpicker.prototype, "panelOpen", {
         /** Whether or not the overlay panel is open. */
@@ -5949,8 +6247,9 @@ var Md2Colorpicker = (function () {
     };
     /** Opens the overlay panel. */
     Md2Colorpicker.prototype.open = function () {
-        var hsva = this.service.stringToHsva(this.color);
-        if (hsva !== null) {
+        var hsva = this.service.stringToHsva(this.color + '');
+        this.isInputFocus = true;
+        if (hsva) {
             this.hsva = hsva;
         }
         else {
@@ -5988,12 +6287,15 @@ var Md2Colorpicker = (function () {
     /** Closes the overlay panel and focuses the host element. */
     Md2Colorpicker.prototype.close = function () {
         this._panelOpen = false;
+        this.isInputFocus = false;
         if (this._overlayRef) {
             this._overlayRef.detach();
             this._backdropSubscription.unsubscribe();
         }
         this._isColorpickerVisible = false;
-        this.setColorFromString(this._innerValue);
+        if (this._innerValue) {
+            this.setColorFromString(this._innerValue);
+        }
     };
     /** Removes the panel from the DOM. */
     Md2Colorpicker.prototype.destroyPanel = function () {
@@ -6073,6 +6375,7 @@ var Md2Colorpicker = (function () {
     };
     Md2Colorpicker.prototype.clickOk = function () {
         this._isColorpickerVisible = false;
+        this.isInputValidColor = false;
         this.color = this._innerValue;
         if (this._innerValue != this._initialColor) {
             this._emitChangeEvent();
@@ -6143,6 +6446,11 @@ var Md2Colorpicker = (function () {
         this.slider = new SliderPosition((this.hsva.h) * this.sliderDim.h, this.hsva.s * this.sliderDim.s - 7, (1 - this.hsva.v) * this.sliderDim.v - 7, this.hsva.a * this.sliderDim.a);
         this._innerValue = this.outputColor;
     };
+    Md2Colorpicker.prototype.clearColor = function (event) {
+        event.stopPropagation();
+        this.color = '';
+        this._emitChangeEvent();
+    };
     Md2Colorpicker.prototype.isDescendant = function (parent, child) {
         var node = child.parentNode;
         while (node !== null) {
@@ -6152,6 +6460,19 @@ var Md2Colorpicker = (function () {
             node = node.parentNode;
         }
         return false;
+    };
+    Md2Colorpicker.prototype.checkInputVal = function (event) {
+        this.hsva = this.service.stringToHsva(this.color + '');
+        this.isInputFocus = false;
+        if (this.hsva) {
+            if (this._innerValue !== this.color) {
+                this._emitChangeEvent();
+            }
+            this.isInputValidColor = false;
+        }
+        else {
+            this.isInputValidColor = true;
+        }
     };
     /** Emits an event when the user selects a color. */
     Md2Colorpicker.prototype._emitChangeEvent = function () {
@@ -6179,12 +6500,29 @@ var Md2Colorpicker = (function () {
     Md2Colorpicker.prototype._createOverlay = function () {
         if (!this._overlayRef) {
             var config = new OverlayState();
-            config.positionStrategy = this.overlay.position()
-                .global()
-                .centerHorizontally()
-                .centerVertically();
-            config.hasBackdrop = true;
-            config.backdropClass = 'cdk-overlay-dark-backdrop';
+            if (this.container === 'inline') {
+                var _a = this.positionX === 'before' ? ['end', 'start'] : ['start', 'end'], posX = _a[0], fallbackX = _a[1];
+                var _b = this.positionY === 'above' ? ['bottom', 'top'] : ['top', 'bottom'], overlayY = _b[0], fallbackOverlayY = _b[1];
+                var originY = overlayY;
+                var fallbackOriginY = fallbackOverlayY;
+                if (!this.overlapTrigger) {
+                    originY = overlayY === 'top' ? 'bottom' : 'top';
+                    fallbackOriginY = fallbackOverlayY === 'top' ? 'bottom' : 'top';
+                }
+                config.positionStrategy = this.overlay.position().connectedTo(this._element, { originX: posX, originY: originY }, { overlayX: posX, overlayY: overlayY })
+                    .withFallbackPosition({ originX: fallbackX, originY: originY }, { overlayX: fallbackX, overlayY: overlayY })
+                    .withFallbackPosition({ originX: posX, originY: fallbackOriginY }, { overlayX: posX, overlayY: fallbackOverlayY })
+                    .withFallbackPosition({ originX: fallbackX, originY: fallbackOriginY }, { overlayX: fallbackX, overlayY: fallbackOverlayY });
+                config.hasBackdrop = true;
+                config.backdropClass = 'cdk-overlay-transparent-backdrop';
+            }
+            else {
+                config.positionStrategy = this.overlay.position()
+                    .global()
+                    .centerHorizontally()
+                    .centerVertically();
+                config.hasBackdrop = true;
+            }
             this._overlayRef = this.overlay.create(config);
         }
     };
@@ -6196,73 +6534,79 @@ var Md2Colorpicker = (function () {
             this._positionSubscription.unsubscribe();
         }
     };
-    __decorate$38([
+    __decorate$39([
         _angular_core.Input(), 
-        __metadata$38('design:type', Object)
+        __metadata$39('design:type', Object)
     ], Md2Colorpicker.prototype, "color", null);
-    __decorate$38([
+    __decorate$39([
         _angular_core.Input(), 
-        __metadata$38('design:type', Object)
+        __metadata$39('design:type', Object)
     ], Md2Colorpicker.prototype, "placeholder", null);
-    __decorate$38([
+    __decorate$39([
         _angular_core.Input(), 
-        __metadata$38('design:type', Boolean)
+        __metadata$39('design:type', Boolean)
     ], Md2Colorpicker.prototype, "required", null);
-    __decorate$38([
+    __decorate$39([
         _angular_core.Input(), 
-        __metadata$38('design:type', Object)
+        __metadata$39('design:type', Object)
     ], Md2Colorpicker.prototype, "disabled", null);
-    __decorate$38([
+    __decorate$39([
         _angular_core.Input('format'), 
-        __metadata$38('design:type', String)
+        __metadata$39('design:type', String)
     ], Md2Colorpicker.prototype, "cFormat", void 0);
-    __decorate$38([
+    __decorate$39([
         _angular_core.Output('colorpickerChange'), 
-        __metadata$38('design:type', Object)
+        __metadata$39('design:type', Object)
     ], Md2Colorpicker.prototype, "colorpickerChange", void 0);
-    __decorate$38([
+    __decorate$39([
         _angular_core.Output(), 
-        __metadata$38('design:type', _angular_core.EventEmitter)
+        __metadata$39('design:type', _angular_core.EventEmitter)
     ], Md2Colorpicker.prototype, "change", void 0);
-    __decorate$38([
+    __decorate$39([
         _angular_core.Input(), 
-        __metadata$38('design:type', Number)
+        __metadata$39('design:type', Number)
     ], Md2Colorpicker.prototype, "tabindex", void 0);
-    __decorate$38([
+    __decorate$39([
         _angular_core.Input(), 
-        __metadata$38('design:type', String)
+        __metadata$39('design:type', String)
     ], Md2Colorpicker.prototype, "id", void 0);
-    __decorate$38([
+    __decorate$39([
+        _angular_core.Input(), 
+        __metadata$39('design:type', Object)
+    ], Md2Colorpicker.prototype, "container", null);
+    __decorate$39([
         _angular_core.Output(), 
-        __metadata$38('design:type', _angular_core.EventEmitter)
+        __metadata$39('design:type', _angular_core.EventEmitter)
     ], Md2Colorpicker.prototype, "onOpen", void 0);
-    __decorate$38([
+    __decorate$39([
         _angular_core.Output(), 
-        __metadata$38('design:type', _angular_core.EventEmitter)
+        __metadata$39('design:type', _angular_core.EventEmitter)
     ], Md2Colorpicker.prototype, "onClose", void 0);
-    __decorate$38([
+    __decorate$39([
         _angular_core.ViewChildren(TemplatePortalDirective), 
-        __metadata$38('design:type', _angular_core.QueryList)
+        __metadata$39('design:type', _angular_core.QueryList)
     ], Md2Colorpicker.prototype, "templatePortals", void 0);
-    __decorate$38([
+    __decorate$39([
         _angular_core.ViewChildren(TemplatePortalDirective), 
-        __metadata$38('design:type', Portal)
+        __metadata$39('design:type', Portal)
     ], Md2Colorpicker.prototype, "templatePortal", void 0);
-    Md2Colorpicker = __decorate$38([
+    Md2Colorpicker = __decorate$39([
         _angular_core.Component({selector: 'md2-colorpicker',
-            template: " <div class=\"md2-colorpicker-trigger\" (click)=\"toggle()\"> <div class=\"color-picker-selector\"> <div class=\"color-div\"> <div class=\"color-fill\" [style.background-color]=\"color\"> </div> </div> <label class=\"color-text\">{{color}}</label> </div> </div> <template portal> <div class=\"md2-colorpicker-panel\"> <div class=\"md2-colorpicker-content\"> <div class=\"md2-colorpicker-wrapper\" [class.active]=\"_isColorpickerVisible\"> <div class=\"md2-color-picker\"> <div [style.background-color]=\"outputColor\" class=\"selected-color\"> <div [hidden]=\"format!=2\" class=\"hsla-text\"> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]*\" min=\"0\" max=\"360\" [rg]=\"360\" (newValue)=\"setHue($event)\" [value]=\"hslaText.h\" /> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]*\" min=\"0\" max=\"100\" [rg]=\"100\" (newValue)=\"setSaturation($event)\" [value]=\"hslaText.s\" /> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]*\" min=\"0\" max=\"100\" [rg]=\"100\" (newValue)=\"setLightness($event)\" [value]=\"hslaText.l\" /> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]+([\.,][0-9]{1,2})?\" min=\"0\" max=\"1\" step=\"0.1\" [rg]=\"1\" (newValue)=\"setAlpha($event)\" [value]=\"hslaText.a\" /> </div> <div [hidden]=\"format!=1\" class=\"rgba-text\"> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]*\" min=\"0\" max=\"255\" [rg]=\"255\" (newValue)=\"setR($event)\" [value]=\"rgbaText.r\" /> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]*\" min=\"0\" max=\"255\" [rg]=\"255\" (newValue)=\"setG($event)\" [value]=\"rgbaText.g\" /> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]*\" min=\"0\" max=\"255\" [rg]=\"255\" (newValue)=\"setB($event)\" [value]=\"rgbaText.b\" /> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]+([\.,][0-9]{1,2})?\" min=\"0\" max=\"1\" step=\"0.1\" [rg]=\"1\" (newValue)=\"setAlpha($event)\" [value]=\"rgbaText.a\" /> </div> <div [hidden]=\"format!=0\" class=\"hex-text\"> <input [text] (newValue)=\"setColorFromString($event)\" [style.color]=\"fontColor\" [value]=\"hexText\" /> </div> <div [style.color]=\"fontColor\"> <div class=\"type-policy\" [style.background]=\"backAreaColor\" [class.active]=\"format==0\" (click)=\"formatPolicy(0)\">HEX</div> <div class=\"type-policy\" [style.background]=\"backAreaColor\" [class.active]=\"format==1\" (click)=\"formatPolicy(1)\">RGBA</div> <div class=\"type-policy\" [style.background]=\"backAreaColor\" [class.active]=\"format==2\" (click)=\"formatPolicy(2)\">HSLA</div> </div> </div> <div class=\"input-color-content\"> <div [colorpicker-slider] [style.background-color]=\"_hueSliderColor\" [point-x]=\"1\" [point-y]=\"1\" (change)=\"setSaturationAndBrightness($event)\" class=\"saturation-lightness\"> <div [style.left.px]=\"slider.s\" [style.top.px]=\"slider.v\" class=\"cursor\"></div> </div> <div [colorpicker-slider] [point-x]=\"1\" (change)=\"setHue($event)\" class=\"hue\"> <div [style.left.px]=\"slider.h\" class=\"color-picker-marker\"></div> </div> <div [colorpicker-slider] [style.background-color]=\"alphaColor\" [point-x]=\"1\" (change)=\"setAlpha($event)\" class=\"alpha\"> <div [style.left.px]=\"slider.a\" class=\"color-picker-marker\"></div> </div> </div> <div class=\"md2-color-picker-actions\"> <div class=\"md2-button\" (click)=\"cancelColor()\">Cancel</div> <div class=\"md2-button\" (click)=\"clickOk()\">Ok</div> </div> </div> </div> </div> </div> </template>",
-            styles: [".md2-colorpicker-wrapper { width: 270px; height: 345px; border-radius: 2px; background-color: #fff; z-index: 10; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); transform: scale(0); transform-origin: left top; transition: 150ms; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } .md2-colorpicker-wrapper.active { transform: scale(1); } .md2-colorpicker-disabled { pointer-events: none; cursor: default; } .md2-colorpicker-disabled .color-picker-selector .color-text { color: rgba(0, 0, 0, 0.38); border-color: transparent; background-image: linear-gradient(to right, rgba(0, 0, 0, 0.38) 0%, rgba(0, 0, 0, 0.38) 33%, transparent 0%); background-position: bottom -1px left 0; background-size: 4px 1px; background-repeat: repeat-x; } .color-picker-selector { display: block; padding: 18px 0 18px 32px; white-space: nowrap; cursor: pointer; } .color-picker-selector .color-div { content: ''; width: 24px; height: 24px; overflow: hidden; background-color: #fff; background-image: linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd), linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd); background-size: 8px 8px; background-position: 0 0, 4px 4px; position: absolute; top: 21px; left: 0; border: 2px solid #fafafa; display: block; fill: currentColor; cursor: pointer; border-radius: 50%; vertical-align: middle; box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 1px rgba(0, 0, 0, 0.14), 0 1px 1px 1px rgba(0, 0, 0, 0.12); } .color-picker-selector .color-div .color-fill { width: 100%; height: 100%; } .color-picker-selector .color-text { cursor: pointer; position: relative; display: block; min-width: 150px; height: 30px; padding: 2px 26px 1px 2px; margin: 0; line-height: 26px; color: rgba(0, 0, 0, 0.87); vertical-align: middle; box-sizing: border-box; border-bottom: 1px solid rgba(0, 0, 0, 0.12); } md2-colorpicker { position: relative; display: block; max-width: 175px; outline: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } .md2-color-picker { position: relative; display: block; outline: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } .md2-color-picker * { box-sizing: border-box; } .md2-color-picker .input-color-content { width: 250px; position: relative; margin: 10px auto; } .md2-color-picker i { cursor: default; position: relative; } .md2-color-picker input { font-size: 15px; } .md2-color-picker div.cursor-sv { cursor: default; position: relative; border-radius: 50%; width: 15px; height: 15px; border: #ddd solid 1px; } .md2-color-picker div.cursor { cursor: crosshair; position: relative; border-radius: 50%; width: 13px; height: 13px; box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5), inset 0 0 2px 0 rgba(0, 0, 0, 0.5); border: 2px solid #fff; } .md2-color-picker div.color-picker-marker { cursor: crosshair; position: relative; border: 2px solid #fff; box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5); height: 100%; width: 5px; border-bottom: 0; border-top: 0; } .md2-color-picker .saturation-lightness { width: 100%; height: 130px; border: none; overflow: hidden; background-image: linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, rgba(255, 255, 255, 0)); -ms-filter: 'progid:DXImageTransform.Microsoft.gradient(startColorstr=#00CC9A81, endColorstr=#FF000000)'; filter: progid:dximagetransform.microsoft.gradient(startColorstr='#00CC9A81', endColorstr='#FF000000'); } .md2-color-picker .saturation-lightness:hover { cursor: crosshair; } .md2-color-picker .hue { width: 100%; height: 30px; border: none; margin: 10px 0; background: -webkit-linear-gradient(left, #f00 0%, #ff0 16.66%, #0f0 33.33%, #0ff 50%, #00f 66.66%, #f0f 83.33%, #f00 100%); } .md2-color-picker .alpha { border: 1px solid #efefef; width: 100%; height: 30px; background-image: linear-gradient(to left, transparent, transparent), linear-gradient(to right, #fff, rgba(255, 255, 255, 0)); } .md2-color-picker .selected-color { width: 100%; height: 65px; padding-top: 10px; position: relative; } .hex-text { width: 100%; } .hex-text input { width: 100%; border: 0; padding: 4px; text-align: center; background: transparent; outline: none; font-size: 15px; } .hex-text div { text-align: center; float: left; clear: left; width: 160px; margin-top: 4px; } .hsla-text, .rgba-text { text-align: center; } .hsla-text input, .rgba-text input { width: 50px; border: 0; padding: 4px 0; background: transparent; text-align: center; } .hsla-text div, .rgba-text div { text-align: center; display: block; } .hsla-text label, .rgba-text label { text-align: center; display: inline-block; font-size: 15px; } .md2-color-picker-actions { text-align: right; } .md2-color-picker-actions .md2-button { display: inline-block; min-width: 64px; margin: 4px 8px 8px 0; padding: 0 12px; font-size: 14px; color: #106cc8; line-height: 36px; text-align: center; text-transform: uppercase; border-radius: 2px; cursor: pointer; box-sizing: border-box; transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1); } .md2-color-picker-actions .md2-button:hover { background: #ebebeb; } .hsla-text div:nth-child(5), .rgba-text div:nth-child(5) { clear: left; } .type-policy { width: 33.3%; text-align: center; font-size: 14px; display: inline-block; float: left; padding: 2px; margin-top: 6px; cursor: pointer; background: rgba(255, 255, 255, 0.4); } .type-policy.active { background: rgba(153, 153, 153, 0.2) !important; } .cdk-overlay-container, .cdk-global-overlay-wrapper { pointer-events: none; top: 0; left: 0; height: 100%; width: 100%; } .cdk-overlay-container { position: fixed; z-index: 1000; } .cdk-global-overlay-wrapper { display: flex; position: absolute; z-index: 1000; } .cdk-overlay-pane { position: absolute; pointer-events: auto; box-sizing: border-box; z-index: 1000; } .cdk-overlay-backdrop { position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1000; pointer-events: auto; transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1); opacity: 0; } .cdk-overlay-backdrop.cdk-overlay-backdrop-showing { opacity: 0.48; } .cdk-overlay-dark-backdrop { background: rgba(0, 0, 0, 0.6); } /*# sourceMappingURL=colorpicker.css.map */ "],
+            template: " <div class=\"md2-colorpicker-trigger\"> <div class=\"color-picker-selector\" [class.color-error]=\"isInputValidColor\"> <div class=\"color-div\" (click)=\"toggle()\"> <div class=\"color-fill\" [style.background-color]=\"color\"> </div> </div> <div class=\"md2-colorpicker-input\" [class.input-focused]=\"isInputFocus\"> <span class=\"md2-colorpicker-placeholder\" [class.md2-floating-placeholder]=\"color\">{{ placeholder }}</span> <input class=\"md2-colorpicker-value\" value=\"color\" [tabindex]=\"tabindex\" [disabled]=\"disabled\" [(ngModel)]=\"color\" (focus)=\"isInputFocus=true\" (blur)=\"checkInputVal($event)\" /> <span *ngIf=\"color && !required && !disabled\" class=\"color-clear\" (click)=\"clearColor($event)\"> <svg viewBox=\"0 0 20 20\" width=\"20\" height=\"20\"> <path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\" /> </svg> </span> </div> </div> </div> <template portal> <div class=\"md2-colorpicker-panel\"> <div class=\"md2-colorpicker-content\"> <div class=\"md2-colorpicker-wrapper\" [class.active]=\"_isColorpickerVisible\"> <div class=\"md2-color-picker\"> <div class=\"selected-color\"> <div class=\"selected-color-bg\" [style.background]=\"outputColor\"> <div class=\"color-input\"> <div [hidden]=\"format!=2\" class=\"hsla-text\"> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]*\" min=\"0\" max=\"360\" [rg]=\"360\" (newValue)=\"setHue($event)\" [value]=\"hslaText.h\" /> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]*\" min=\"0\" max=\"100\" [rg]=\"100\" (newValue)=\"setSaturation($event)\" [value]=\"hslaText.s\" /> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]*\" min=\"0\" max=\"100\" [rg]=\"100\" (newValue)=\"setLightness($event)\" [value]=\"hslaText.l\" /> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]+([\.,][0-9]{1,2})?\" min=\"0\" max=\"1\" step=\"0.1\" [rg]=\"1\" (newValue)=\"setAlpha($event)\" [value]=\"hslaText.a\" /> </div> <div [hidden]=\"format!=1\" class=\"rgba-text\"> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]*\" min=\"0\" max=\"255\" [rg]=\"255\" (newValue)=\"setR($event)\" [value]=\"rgbaText.r\" /> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]*\" min=\"0\" max=\"255\" [rg]=\"255\" (newValue)=\"setG($event)\" [value]=\"rgbaText.g\" /> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]*\" min=\"0\" max=\"255\" [rg]=\"255\" (newValue)=\"setB($event)\" [value]=\"rgbaText.b\" /> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]+([\.,][0-9]{1,2})?\" min=\"0\" max=\"1\" step=\"0.1\" [rg]=\"1\" (newValue)=\"setAlpha($event)\" [value]=\"rgbaText.a\" /> </div> <div [hidden]=\"format!=0\" class=\"hex-text\"> <input [text] (newValue)=\"setColorFromString($event)\" [style.color]=\"fontColor\" [value]=\"hexText\" /> </div> </div> <div class=\"color-bar \"> <div [style.color]=\"fontColor\" class=\"clearfix\"> <div class=\"type-policy\" [style.background]=\"backAreaColor\" [class.active]=\"format==0\" (click)=\"formatPolicy(0)\">HEX</div> <div class=\"type-policy\" [style.background]=\"backAreaColor\" [class.active]=\"format==1\" (click)=\"formatPolicy(1)\">RGBA</div> <div class=\"type-policy\" [style.background]=\"backAreaColor\" [class.active]=\"format==2\" (click)=\"formatPolicy(2)\">HSLA</div> </div> </div> </div> </div> <div class=\"input-color-content\"> <div [colorpicker-slider] [style.background-color]=\"_hueSliderColor\" [point-x]=\"1\" [point-y]=\"1\" (change)=\"setSaturationAndBrightness($event)\" class=\"saturation-lightness\"> <div [style.left.px]=\"slider.s\" [style.top.px]=\"slider.v\" class=\"cursor\"></div> </div> <div [colorpicker-slider] [point-x]=\"1\" (change)=\"setHue($event)\" class=\"hue\"> <div [style.left.px]=\"slider.h\" class=\"color-picker-marker\"></div> </div> <div [colorpicker-slider] [point-x]=\"1\" (change)=\"setAlpha($event)\" class=\"alpha\"> <div class=\"alpha-main\" [ngStyle]=\"setGradient\"> <div [style.left.px]=\"slider.a\" class=\"color-picker-marker\"></div> </div> </div> </div> <div class=\"md2-color-picker-actions\"> <div class=\"md2-button\" (click)=\"cancelColor()\">Cancel</div> <div class=\"md2-button\" (click)=\"clickOk()\">Ok</div> </div> </div> </div> </div> </div> </template>",
+            styles: [".md2-colorpicker-wrapper { width: 270px; height: 355px; border-radius: 2px; background-color: #fff; z-index: 10; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); transform: scale(0); transform-origin: left top; transition: 150ms; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } .md2-colorpicker-wrapper.active { transform: scale(1); } .md2-colorpicker-disabled { pointer-events: none; cursor: default; } .md2-colorpicker-disabled .color-picker-selector .md2-colorpicker-value { color: rgba(0, 0, 0, 0.38); border-color: transparent; background-image: linear-gradient(to right, rgba(0, 0, 0, 0.38) 0%, rgba(0, 0, 0, 0.38) 33%, transparent 0%); background-position: bottom -1px left 0; background-size: 4px 1px; background-repeat: repeat-x; } .md2-colorpicker-input { color: rgba(0, 0, 0, 0.38); border-bottom: 1px solid rgba(0, 0, 0, 0.12); display: flex; justify-content: space-between; align-items: center; height: 30px; min-width: 180px; line-height: 22px; position: relative; box-sizing: border-box; } [aria-disabled='true'] .md2-colorpicker-input { background-image: linear-gradient(to right, rgba(0, 0, 0, 0.26) 0, rgba(0, 0, 0, 0.26) 33%, transparent 0); background-size: 4px 1px; background-repeat: repeat-x; border-color: transparent; background-position: 0 bottom; cursor: default; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } md2-colorpicker:focus:not(.md2-colorpicker-disabled) .md2-colorpicker-input { color: #106cc8; border-color: #106cc8; } md2-colorpicker.ng-invalid.ng-touched:not(.md2-colorpicker-disabled) .md2-colorpicker-input { color: #f44336; border-color: #f44336; } .input-focused { color: #106cc8; border-color: #106cc8; } .inline-control { width: 150px; margin-right: 16px; padding: 16px 0; } .md2-colorpicker-placeholder { position: absolute; right: 18px; bottom: 100%; left: 0; padding: 0 2px; transform: translate3d(0, 26px, 0) scale(1); transform-origin: left top; white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; transition: all 150ms cubic-bezier(0.25, 0.8, 0.25, 1); } .md2-colorpicker-placeholder.md2-floating-placeholder { left: -2px; text-align: left; transform: translate3d(0, 6px, 0) scale(0.75); } [aria-required=true] .md2-colorpicker-placeholder::after { content: '*'; } .color-error .md2-colorpicker-input { color: #f44336; border-color: #f44336; } .color-error .color-fill { background-color: transparent !important; } .color-picker-selector { display: block; padding: 18px 0 18px 32px; white-space: nowrap; } .color-picker-selector .color-div { content: ''; width: 24px; height: 24px; overflow: hidden; background-color: #fff; background-image: linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd), linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd); background-size: 8px 8px; background-position: 0 0, 4px 4px; position: absolute; top: 21px; left: 0; border: 2px solid #fafafa; display: block; fill: #5a5a5a; cursor: pointer; border-radius: 50%; vertical-align: middle; box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 1px rgba(0, 0, 0, 0.14), 0 1px 1px 1px rgba(0, 0, 0, 0.12); } .color-picker-selector .color-div .color-fill { width: 100%; height: 100%; } .color-picker-selector .md2-colorpicker-value { font-size: 15px; background: transparent; border: 0; outline: none; position: relative; display: block; min-width: 160px; height: 30px; padding: 2px 2px 1px; margin: 0; line-height: 26px; color: rgba(0, 0, 0, 0.87); vertical-align: middle; box-sizing: border-box; } md2-colorpicker { position: relative; display: block; max-width: 215px; outline: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } .md2-color-picker { position: relative; display: block; outline: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } .md2-color-picker * { box-sizing: border-box; } .md2-color-picker .input-color-content { width: 250px; position: relative; margin: 10px auto; } .md2-color-picker i { cursor: default; position: relative; } .md2-color-picker input { font-size: 16px; height: 50px; outline: none; } .md2-color-picker div.cursor-sv { cursor: default; position: relative; border-radius: 50%; width: 15px; height: 15px; border: #ddd solid 1px; } .md2-color-picker div.cursor { cursor: crosshair; position: relative; border-radius: 50%; width: 13px; height: 13px; box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5), inset 0 0 2px 0 rgba(0, 0, 0, 0.5); border: 2px solid #fff; } .md2-color-picker div.color-picker-marker { cursor: crosshair; position: relative; border: 2px solid #fff; box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5); height: 100%; width: 5px; border-bottom: 0; border-top: 0; } .md2-color-picker .saturation-lightness { width: 100%; height: 130px; border: none; overflow: hidden; background-image: linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, rgba(255, 255, 255, 0)); -ms-filter: 'progid:DXImageTransform.Microsoft.gradient(startColorstr=#00CC9A81, endColorstr=#FF000000)'; filter: progid:dximagetransform.microsoft.gradient(startColorstr='#00CC9A81', endColorstr='#FF000000'); } .md2-color-picker .saturation-lightness:hover { cursor: crosshair; } .md2-color-picker .hue { width: 100%; height: 30px; border: none; margin: 10px 0; background: -webkit-linear-gradient(left, #f00 0%, #ff0 16.66%, #0f0 33.33%, #0ff 50%, #00f 66.66%, #f0f 83.33%, #f00 100%); } .md2-color-picker .alpha { border: 1px solid #efefef; width: 100%; height: 30px; background-color: #fff; background-size: 8px 8px; background-position: 0 0,4px 4px; position: relative; /*background-image: linear-gradient(to left, transparent, transparent), linear-gradient(to right, #fff, rgba(255, 255, 255, 0));*/ background-image: linear-gradient(45deg, #dddddd 25%, transparent 0px, transparent 75%, #dddddd 0px, #dddddd), linear-gradient(45deg, #dddddd 25%, transparent 0px, transparent 75%, #dddddd 0px, #dddddd); background-image: -webkit-linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd), -webkit-linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd); } .md2-color-picker .alpha .alpha-main { position: absolute; height: 100%; opacity: 1; background-image: linear-gradient(to left, transparent, transparent), linear-gradient(to right, #fff, rgba(255, 255, 255, 0)); width: 100%; } .md2-color-picker .selected-color { width: 100%; height: 75px; background-color: #fff; background-size: 8px 8px; background-position: 0 0,4px 4px; position: relative; background-image: linear-gradient(45deg, #dddddd 25%, transparent 0px, transparent 75%, #dddddd 0px, #dddddd), linear-gradient(45deg, #dddddd 25%, transparent 0px, transparent 75%, #dddddd 0px, #dddddd); background-image: -webkit-linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd), -webkit-linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd); } .md2-color-picker .selected-color .selected-color-bg { position: absolute; height: 100%; opacity: 1; width: 100%; } .md2-color-picker .selected-color .color-bar { position: absolute; width: 100%; bottom: 0; } .md2-color-picker .selected-color .color-input { position: relative; } .color-clear { color: rgba(0, 0, 0, 0.4); cursor: pointer; } .color-clear svg { fill: #686868; } .clearfix:before, .clearfix:after { content: \" \"; display: table; } .clearfix:after { clear: both; } .hex-text { width: 100%; } .hex-text input { width: 100%; border: 0; padding: 4px; text-align: center; background: transparent; } .hex-text div { text-align: center; float: left; clear: left; width: 160px; margin-top: 4px; } .hsla-text, .rgba-text { text-align: center; } .hsla-text input, .rgba-text input { width: 50px; border: 0; padding: 4px 0; background: transparent; text-align: center; } .hsla-text div, .rgba-text div { text-align: center; display: block; } .hsla-text label, .rgba-text label { text-align: center; display: inline-block; font-size: 15px; } .md2-color-picker-actions { text-align: right; } .md2-color-picker-actions .md2-button { display: inline-block; min-width: 64px; margin: 4px 8px 8px 0; padding: 0 12px; font-size: 14px; color: #106cc8; line-height: 36px; text-align: center; text-transform: uppercase; border-radius: 2px; cursor: pointer; box-sizing: border-box; transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1); } .md2-color-picker-actions .md2-button:hover { background: #ebebeb; } .hsla-text div:nth-child(5), .rgba-text div:nth-child(5) { clear: left; } .type-policy { width: 33.333333%; text-align: center; font-size: 14px; display: inline-block; float: left; padding: 3px; cursor: pointer; background: rgba(255, 255, 255, 0.4); } .type-policy.active { background: rgba(153, 153, 153, 0.35) !important; } .cdk-overlay-container, .cdk-global-overlay-wrapper { pointer-events: none; top: 0; left: 0; height: 100%; width: 100%; } .cdk-overlay-container { position: fixed; z-index: 1000; } .cdk-global-overlay-wrapper { display: flex; position: absolute; z-index: 1000; } .cdk-overlay-pane { position: absolute; pointer-events: auto; box-sizing: border-box; z-index: 1000; } .cdk-overlay-backdrop { position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1000; pointer-events: auto; transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1); opacity: 0; } .cdk-overlay-backdrop.cdk-overlay-backdrop-showing { opacity: 0.48; } .cdk-overlay-dark-backdrop { background: rgba(0, 0, 0, 0.6); } /*# sourceMappingURL=colorpicker.css.map */ "],
             host: {
                 'role': 'colorpicker',
                 '[id]': 'id',
-                '[tabindex]': 'disabled ? -1 : tabindex',
+                '[class.color-focus]': 'inputFocused || !disabled',
                 '[class.md2-colorpicker-disabled]': 'disabled',
+                '[attr.aria-label]': 'placeholder',
+                '[attr.aria-required]': 'required.toString()',
             },
             encapsulation: _angular_core.ViewEncapsulation.None
         }),
-        __param$4(5, _angular_core.Self()),
-        __param$4(5, _angular_core.Optional()), 
-        __metadata$38('design:paramtypes', [_angular_core.ElementRef, Overlay, _angular_core.ViewContainerRef, _angular_core.Renderer, ColorpickerService, _angular_forms.NgControl])
+        __param$6(5, _angular_core.Self()),
+        __param$6(5, _angular_core.Optional()), 
+        __metadata$39('design:paramtypes', [_angular_core.ElementRef, Overlay, _angular_core.ViewContainerRef, _angular_core.Renderer, ColorpickerService, _angular_forms.NgControl])
     ], Md2Colorpicker);
     return Md2Colorpicker;
 }());
@@ -6320,27 +6664,28 @@ var Md2ColorpickerModule = (function () {
     Md2ColorpickerModule.forRoot = function () {
         return {
             ngModule: Md2ColorpickerModule,
-            providers: [ColorpickerService]
+            providers: []
         };
     };
-    Md2ColorpickerModule = __decorate$38([
+    Md2ColorpickerModule = __decorate$39([
         _angular_core.NgModule({
             declarations: MD2_COLORPICKER_DIRECTIVES,
             imports: [_angular_common.CommonModule, _angular_forms.FormsModule, OverlayModule, PortalModule],
-            exports: MD2_COLORPICKER_DIRECTIVES
+            exports: MD2_COLORPICKER_DIRECTIVES,
+            providers: [ColorpickerService]
         }), 
-        __metadata$38('design:paramtypes', [])
+        __metadata$39('design:paramtypes', [])
     ], Md2ColorpickerModule);
     return Md2ColorpickerModule;
 }());
 
-var __decorate$43 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$44 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$43 = (this && this.__metadata) || function (k, v) {
+var __metadata$44 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 /**
@@ -6439,19 +6784,19 @@ var Md2Option = (function () {
     Md2Option.prototype._getHostElement = function () {
         return this._element.nativeElement;
     };
-    __decorate$43([
+    __decorate$44([
         _angular_core.Input(), 
-        __metadata$43('design:type', Object)
+        __metadata$44('design:type', Object)
     ], Md2Option.prototype, "value", void 0);
-    __decorate$43([
+    __decorate$44([
         _angular_core.Input(), 
-        __metadata$43('design:type', Object)
+        __metadata$44('design:type', Object)
     ], Md2Option.prototype, "disabled", null);
-    __decorate$43([
+    __decorate$44([
         _angular_core.Output(), 
-        __metadata$43('design:type', Object)
+        __metadata$44('design:type', Object)
     ], Md2Option.prototype, "onSelect", void 0);
-    Md2Option = __decorate$43([
+    Md2Option = __decorate$44([
         _angular_core.Component({selector: 'md2-option',
             host: {
                 'role': 'option',
@@ -6468,7 +6813,7 @@ var Md2Option = (function () {
             styles: ["md2-select { display: block; outline: none; } .md2-select-trigger { color: rgba(0, 0, 0, 0.38); border-bottom: 1px solid rgba(0, 0, 0, 0.12); display: flex; justify-content: space-between; align-items: center; height: 30px; min-width: 112px; line-height: 22px; cursor: pointer; position: relative; box-sizing: border-box; } [aria-disabled='true'] .md2-select-trigger { background-image: linear-gradient(to right, rgba(0, 0, 0, 0.26) 0, rgba(0, 0, 0, 0.26) 33%, transparent 0); background-size: 4px 1px; background-repeat: repeat-x; border-color: transparent; background-position: 0 bottom; cursor: default; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } md2-select:focus:not(.md2-select-disabled) .md2-select-trigger { color: #106cc8; border-color: #106cc8; } md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) .md2-select-trigger { color: #f44336; border-color: #f44336; } .md2-select-placeholder { position: absolute; right: 18px; left: 0; padding: 0 2px; transform-origin: left top; white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; } .md2-select-placeholder.md2-floating-placeholder { top: -16px; left: -2px; text-align: left; transform: scale(0.75); } [dir='rtl'] .md2-select-placeholder { transform-origin: right top; } [dir='rtl'] .md2-select-placeholder.md2-floating-placeholder { left: 2px; text-align: right; } [aria-required=true] .md2-select-placeholder::after { content: '*'; } .md2-select-value { position: relative; white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; color: rgba(0, 0, 0, 0.87); } .md2-select-disabled .md2-select-value { color: rgba(0, 0, 0, 0.38); } [dir='rtl'] .md2-select-value { left: auto; right: 0; } .md2-select-value-text:not(:last-child)::after { content: ','; margin-left: -2px; } .md2-select-arrow { width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 5px solid; margin: 0 4px; color: rgba(0, 0, 0, 0.38); } md2-select:focus:not(.md2-select-disabled) .md2-select-arrow { color: #106cc8; } md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) .md2-select-arrow { color: #f44336; } .md2-select-panel { box-shadow: 0 0 3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12); min-width: 112px; max-width: 280px; overflow: auto; -webkit-overflow-scrolling: touch; padding-top: 0; padding-bottom: 0; max-height: 256px; background: white; } md2-option { white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; display: block; flex-direction: row; align-items: center; padding: 13px 16px; font-size: 16px; font-family: Roboto, 'Helvetica Neue', sans-serif; text-align: start; text-decoration: none; position: relative; cursor: pointer; outline: none; box-sizing: padding-box; } md2-option[aria-disabled='true'] { cursor: default; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } md2-option:hover:not(.md2-option-disabled), md2-option:focus:not(.md2-option-disabled) { background: rgba(0, 0, 0, 0.04); } md2-option.md2-selected { color: #106cc8; } md2-option.md2-option-disabled { color: rgba(0, 0, 0, 0.38); } [multiple='true'] md2-option { padding-left: 40px; } [multiple='true'] md2-option::after { content: ''; position: absolute; top: 50%; left: 12px; display: block; width: 16px; height: 16px; margin-top: -8px; border: 2px solid; border-radius: 2px; box-sizing: border-box; transition: 240ms; } [multiple='true'] md2-option.md2-selected::after { transform: rotate(-45deg); height: 8px; border-width: 0 0 2px 2px; } .cdk-overlay-container, .cdk-global-overlay-wrapper { pointer-events: none; top: 0; left: 0; height: 100%; width: 100%; } .cdk-overlay-container { position: fixed; z-index: 1000; } .cdk-overlay-pane { position: absolute; pointer-events: auto; box-sizing: border-box; z-index: 1000; } .cdk-overlay-backdrop { position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1000; pointer-events: auto; transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1); opacity: 0; } .cdk-overlay-transparent-backdrop { background: none; } .cdk-overlay-backdrop.cdk-overlay-backdrop-showing { opacity: 0.48; } /*# sourceMappingURL=select.css.map */ "],
             encapsulation: _angular_core.ViewEncapsulation.None
         }), 
-        __metadata$43('design:paramtypes', [_angular_core.ElementRef, _angular_core.Renderer])
+        __metadata$44('design:paramtypes', [_angular_core.ElementRef, _angular_core.Renderer])
     ], Md2Option);
     return Md2Option;
 }());
@@ -6481,13 +6826,13 @@ var Md2OptionModule = (function () {
             providers: []
         };
     };
-    Md2OptionModule = __decorate$43([
+    Md2OptionModule = __decorate$44([
         _angular_core.NgModule({
             imports: [_angular_common.CommonModule],
             exports: [Md2Option],
             declarations: [Md2Option]
         }), 
-        __metadata$43('design:paramtypes', [])
+        __metadata$44('design:paramtypes', [])
     ], Md2OptionModule);
     return Md2OptionModule;
 }());
@@ -6499,6 +6844,7 @@ var Md2OptionModule = (function () {
 var ListKeyManager = (function () {
     function ListKeyManager(_items) {
         this._items = _items;
+        this._activeItemIndex = null;
         this._tabOut = new rxjs_Subject.Subject();
         this._wrap = false;
     }
@@ -6680,7 +7026,7 @@ var FocusKeyManager = (function (_super) {
  * The following are all the animations for the md2-select component, with each
  * const containing the metadata for one animation.
  *
- * The values below match the implementation of the Material 1 md2-select animation.
+ * The values below match the implementation of the AngularJS Material md2-select animation.
  */
 /**
  * This animation shrinks the placeholder text to 75% of its normal size and translates
@@ -6713,13 +7059,13 @@ var transformPanel = _angular_core.trigger('transformPanel', [
     _angular_core.state('showing', _angular_core.style({
         opacity: 1,
         minWidth: 'calc(100% + 32px)',
-        transform: "translate3d(0,0,0) scaleY(1)"
+        transform: "scaleY(1)"
     })),
     _angular_core.transition('void => *', [
         _angular_core.style({
             opacity: 0,
             minWidth: '100%',
-            transform: "translate3d(0, 0, 0) scaleY(0)"
+            transform: "scaleY(0)"
         }),
         _angular_core.animate("150ms cubic-bezier(0.25, 0.8, 0.25, 1)")
     ]),
@@ -6740,16 +7086,16 @@ var fadeInContent = _angular_core.trigger('fadeInContent', [
     ])
 ]);
 
-var __decorate$42 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$43 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$42 = (this && this.__metadata) || function (k, v) {
+var __metadata$43 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __param$6 = (this && this.__param) || function (paramIndex, decorator) {
+var __param$8 = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 /**
@@ -7383,47 +7729,47 @@ var Md2Select = (function () {
         }
         return false;
     };
-    __decorate$42([
+    __decorate$43([
         _angular_core.ViewChild('trigger'), 
-        __metadata$42('design:type', _angular_core.ElementRef)
+        __metadata$43('design:type', _angular_core.ElementRef)
     ], Md2Select.prototype, "trigger", void 0);
-    __decorate$42([
+    __decorate$43([
         _angular_core.ViewChild(ConnectedOverlayDirective), 
-        __metadata$42('design:type', ConnectedOverlayDirective)
+        __metadata$43('design:type', ConnectedOverlayDirective)
     ], Md2Select.prototype, "overlayDir", void 0);
-    __decorate$42([
+    __decorate$43([
         _angular_core.ContentChildren(Md2Option), 
-        __metadata$42('design:type', _angular_core.QueryList)
+        __metadata$43('design:type', _angular_core.QueryList)
     ], Md2Select.prototype, "options", void 0);
-    __decorate$42([
+    __decorate$43([
         _angular_core.Input(), 
-        __metadata$42('design:type', Object)
+        __metadata$43('design:type', Object)
     ], Md2Select.prototype, "placeholder", null);
-    __decorate$42([
+    __decorate$43([
         _angular_core.Input(), 
-        __metadata$42('design:type', Object)
+        __metadata$43('design:type', Object)
     ], Md2Select.prototype, "disabled", null);
-    __decorate$42([
+    __decorate$43([
         _angular_core.Input(), 
-        __metadata$42('design:type', Object)
+        __metadata$43('design:type', Object)
     ], Md2Select.prototype, "multiple", null);
-    __decorate$42([
+    __decorate$43([
         _angular_core.Input(), 
-        __metadata$42('design:type', Object)
+        __metadata$43('design:type', Object)
     ], Md2Select.prototype, "required", null);
-    __decorate$42([
+    __decorate$43([
         _angular_core.Output(), 
-        __metadata$42('design:type', _angular_core.EventEmitter)
+        __metadata$43('design:type', _angular_core.EventEmitter)
     ], Md2Select.prototype, "onOpen", void 0);
-    __decorate$42([
+    __decorate$43([
         _angular_core.Output(), 
-        __metadata$42('design:type', _angular_core.EventEmitter)
+        __metadata$43('design:type', _angular_core.EventEmitter)
     ], Md2Select.prototype, "onClose", void 0);
-    __decorate$42([
+    __decorate$43([
         _angular_core.Output(), 
-        __metadata$42('design:type', _angular_core.EventEmitter)
+        __metadata$43('design:type', _angular_core.EventEmitter)
     ], Md2Select.prototype, "change", void 0);
-    Md2Select = __decorate$42([
+    Md2Select = __decorate$43([
         _angular_core.Component({selector: 'md2-select',
             template: "<div class=\"md2-select-trigger\" cdk-overlay-origin (click)=\"toggle()\" #origin=\"cdkOverlayOrigin\" #trigger> <span class=\"md2-select-placeholder\" [class.md2-floating-placeholder]=\"selected.length\" [@transformPlaceholder]=\"_placeholderState\" [style.width.px]=\"_selectedValueWidth\">{{ placeholder }}</span> <span class=\"md2-select-value\"> <span class=\"md2-select-value-text\" *ngFor=\"let option of selected\"> {{ option.viewValue }} </span> </span> <span class=\"md2-select-arrow\"></span> </div> <template cdk-connected-overlay [origin]=\"origin\" [open]=\"panelOpen\" hasBackdrop (backdropClick)=\"close()\" backdropClass=\"cdk-overlay-transparent-backdrop\" [positions]=\"_positions\" [minWidth]=\"_triggerWidth\" [offsetY]=\"_offsetY\" [offsetX]=\"_offsetX\" (attach)=\"_setScrollTop()\"> <div class=\"md2-select-panel\" [@transformPanel]=\"'showing'\" (@transformPanel.done)=\"_onPanelDone()\" (keydown)=\"_keyManager.onKeydown($event)\" [style.transformOrigin]=\"_transformOrigin\" [attr.multiple]=\"multiple\" [class.md2-select-panel-done-animating]=\"_panelDoneAnimating\"> <div class=\"md2-select-content\" [@fadeInContent]=\"'showing'\" (@fadeInContent.done)=\"_onFadeInDone()\"> <ng-content></ng-content> </div> </div> </template> ",
             styles: ["md2-select { display: block; outline: none; } .md2-select-trigger { color: rgba(0, 0, 0, 0.38); border-bottom: 1px solid rgba(0, 0, 0, 0.12); display: flex; justify-content: space-between; align-items: center; height: 30px; min-width: 112px; line-height: 22px; cursor: pointer; position: relative; box-sizing: border-box; } [aria-disabled='true'] .md2-select-trigger { background-image: linear-gradient(to right, rgba(0, 0, 0, 0.26) 0, rgba(0, 0, 0, 0.26) 33%, transparent 0); background-size: 4px 1px; background-repeat: repeat-x; border-color: transparent; background-position: 0 bottom; cursor: default; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } md2-select:focus:not(.md2-select-disabled) .md2-select-trigger { color: #106cc8; border-color: #106cc8; } md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) .md2-select-trigger { color: #f44336; border-color: #f44336; } .md2-select-placeholder { position: absolute; right: 18px; left: 0; padding: 0 2px; transform-origin: left top; white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; } .md2-select-placeholder.md2-floating-placeholder { top: -16px; left: -2px; text-align: left; transform: scale(0.75); } [dir='rtl'] .md2-select-placeholder { transform-origin: right top; } [dir='rtl'] .md2-select-placeholder.md2-floating-placeholder { left: 2px; text-align: right; } [aria-required=true] .md2-select-placeholder::after { content: '*'; } .md2-select-value { position: relative; white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; color: rgba(0, 0, 0, 0.87); } .md2-select-disabled .md2-select-value { color: rgba(0, 0, 0, 0.38); } [dir='rtl'] .md2-select-value { left: auto; right: 0; } .md2-select-value-text:not(:last-child)::after { content: ','; margin-left: -2px; } .md2-select-arrow { width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 5px solid; margin: 0 4px; color: rgba(0, 0, 0, 0.38); } md2-select:focus:not(.md2-select-disabled) .md2-select-arrow { color: #106cc8; } md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) .md2-select-arrow { color: #f44336; } .md2-select-panel { box-shadow: 0 0 3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12); min-width: 112px; max-width: 280px; overflow: auto; -webkit-overflow-scrolling: touch; padding-top: 0; padding-bottom: 0; max-height: 256px; background: white; } md2-option { white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; display: block; flex-direction: row; align-items: center; padding: 13px 16px; font-size: 16px; font-family: Roboto, 'Helvetica Neue', sans-serif; text-align: start; text-decoration: none; position: relative; cursor: pointer; outline: none; box-sizing: padding-box; } md2-option[aria-disabled='true'] { cursor: default; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } md2-option:hover:not(.md2-option-disabled), md2-option:focus:not(.md2-option-disabled) { background: rgba(0, 0, 0, 0.04); } md2-option.md2-selected { color: #106cc8; } md2-option.md2-option-disabled { color: rgba(0, 0, 0, 0.38); } [multiple='true'] md2-option { padding-left: 40px; } [multiple='true'] md2-option::after { content: ''; position: absolute; top: 50%; left: 12px; display: block; width: 16px; height: 16px; margin-top: -8px; border: 2px solid; border-radius: 2px; box-sizing: border-box; transition: 240ms; } [multiple='true'] md2-option.md2-selected::after { transform: rotate(-45deg); height: 8px; border-width: 0 0 2px 2px; } .cdk-overlay-container, .cdk-global-overlay-wrapper { pointer-events: none; top: 0; left: 0; height: 100%; width: 100%; } .cdk-overlay-container { position: fixed; z-index: 1000; } .cdk-overlay-pane { position: absolute; pointer-events: auto; box-sizing: border-box; z-index: 1000; } .cdk-overlay-backdrop { position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1000; pointer-events: auto; transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1); opacity: 0; } .cdk-overlay-transparent-backdrop { background: none; } .cdk-overlay-backdrop.cdk-overlay-backdrop-showing { opacity: 0.48; } /*# sourceMappingURL=select.css.map */ "],
@@ -7447,10 +7793,10 @@ var Md2Select = (function () {
             ],
             exportAs: 'md2Select',
         }),
-        __param$6(3, _angular_core.Optional()),
-        __param$6(4, _angular_core.Self()),
-        __param$6(4, _angular_core.Optional()), 
-        __metadata$42('design:paramtypes', [_angular_core.ElementRef, _angular_core.Renderer, ViewportRuler, Dir, _angular_forms.NgControl])
+        __param$8(3, _angular_core.Optional()),
+        __param$8(4, _angular_core.Self()),
+        __param$8(4, _angular_core.Optional()), 
+        __metadata$43('design:paramtypes', [_angular_core.ElementRef, _angular_core.Renderer, ViewportRuler, Dir, _angular_forms.NgControl])
     ], Md2Select);
     return Md2Select;
 }());
@@ -7459,13 +7805,13 @@ function clampValue(min, n, max) {
     return Math.min(Math.max(min, n), max);
 }
 
-var __decorate$41 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$42 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$41 = (this && this.__metadata) || function (k, v) {
+var __metadata$42 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var Md2SelectModule = (function () {
@@ -7478,27 +7824,27 @@ var Md2SelectModule = (function () {
             providers: []
         };
     };
-    Md2SelectModule = __decorate$41([
+    Md2SelectModule = __decorate$42([
         _angular_core.NgModule({
             imports: [_angular_common.CommonModule, OverlayModule, Md2OptionModule, CompatibilityModule],
             exports: [Md2Select, Md2OptionModule, CompatibilityModule],
             declarations: [Md2Select],
         }), 
-        __metadata$41('design:paramtypes', [])
+        __metadata$42('design:paramtypes', [])
     ], Md2SelectModule);
     return Md2SelectModule;
 }());
 
-var __decorate$40 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$41 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$40 = (this && this.__metadata) || function (k, v) {
+var __metadata$41 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __param$5 = (this && this.__param) || function (paramIndex, decorator) {
+var __param$7 = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 var Md2PaginationChange = (function () {
@@ -7681,44 +8027,44 @@ var Md2DataTable = (function () {
         }
         return value;
     };
-    __decorate$40([
+    __decorate$41([
         _angular_core.Input(), 
-        __metadata$40('design:type', Object)
+        __metadata$41('design:type', Object)
     ], Md2DataTable.prototype, "md2Data", null);
-    __decorate$40([
+    __decorate$41([
         _angular_core.Input(), 
-        __metadata$40('design:type', Object)
+        __metadata$41('design:type', Object)
     ], Md2DataTable.prototype, "activePage", null);
-    __decorate$40([
+    __decorate$41([
         _angular_core.Input(), 
-        __metadata$40('design:type', Object)
+        __metadata$41('design:type', Object)
     ], Md2DataTable.prototype, "rowsPerPage", null);
-    __decorate$40([
+    __decorate$41([
         _angular_core.Input(), 
-        __metadata$40('design:type', Object)
+        __metadata$41('design:type', Object)
     ], Md2DataTable.prototype, "sortBy", null);
-    __decorate$40([
+    __decorate$41([
         _angular_core.Input(), 
-        __metadata$40('design:type', Object)
+        __metadata$41('design:type', Object)
     ], Md2DataTable.prototype, "sortOrder", null);
-    __decorate$40([
+    __decorate$41([
         _angular_core.Output(), 
-        __metadata$40('design:type', Object)
+        __metadata$41('design:type', Object)
     ], Md2DataTable.prototype, "activePageChange", void 0);
-    __decorate$40([
+    __decorate$41([
         _angular_core.Output(), 
-        __metadata$40('design:type', Object)
+        __metadata$41('design:type', Object)
     ], Md2DataTable.prototype, "sortByChange", void 0);
-    __decorate$40([
+    __decorate$41([
         _angular_core.Output(), 
-        __metadata$40('design:type', Object)
+        __metadata$41('design:type', Object)
     ], Md2DataTable.prototype, "sortOrderChange", void 0);
-    Md2DataTable = __decorate$40([
+    Md2DataTable = __decorate$41([
         _angular_core.Directive({
             selector: 'table[md2Data]',
             exportAs: 'md2DataTable'
         }), 
-        __metadata$40('design:paramtypes', [_angular_core.IterableDiffers])
+        __metadata$41('design:paramtypes', [_angular_core.IterableDiffers])
     ], Md2DataTable);
     return Md2DataTable;
 }());
@@ -7743,11 +8089,11 @@ var Md2DataTableSortBy = (function () {
             this._md2Table.setSort(this.md2SortBy, 'asc');
         }
     };
-    __decorate$40([
+    __decorate$41([
         _angular_core.Input(), 
-        __metadata$40('design:type', String)
+        __metadata$41('design:type', String)
     ], Md2DataTableSortBy.prototype, "md2SortBy", void 0);
-    Md2DataTableSortBy = __decorate$40([
+    Md2DataTableSortBy = __decorate$41([
         _angular_core.Component({
             selector: '[md2SortBy]',
             template: "<ng-content></ng-content> &nbsp; <svg *ngIf=\"!_isDesc\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\"> <path d=\"M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z\" /> </svg> <svg *ngIf=\"_isDesc\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\"> <path d=\"M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z\" /> </svg> ",
@@ -7758,7 +8104,7 @@ var Md2DataTableSortBy = (function () {
             },
             encapsulation: _angular_core.ViewEncapsulation.None
         }), 
-        __metadata$40('design:paramtypes', [Md2DataTable])
+        __metadata$41('design:paramtypes', [Md2DataTable])
     ], Md2DataTableSortBy);
     return Md2DataTableSortBy;
 }());
@@ -7787,15 +8133,15 @@ var Md2Pagination = (function () {
     Md2Pagination.prototype._setRows = function (event) {
         this.md2Table.setPage(this._activePage, parseInt(event.value));
     };
-    __decorate$40([
+    __decorate$41([
         _angular_core.Input(), 
-        __metadata$40('design:type', Object)
+        __metadata$41('design:type', Object)
     ], Md2Pagination.prototype, "rowsPerPageSet", void 0);
-    __decorate$40([
+    __decorate$41([
         _angular_core.Input(), 
-        __metadata$40('design:type', Md2DataTable)
+        __metadata$41('design:type', Md2DataTable)
     ], Md2Pagination.prototype, "md2Table", void 0);
-    Md2Pagination = __decorate$40([
+    Md2Pagination = __decorate$41([
         _angular_core.Component({
             selector: 'md2-pagination',
             template: "<ul class=\"md2-pagination\" *ngIf=\"_dataLength > _rowsPerPage\"> <li [class.disabled]=\"_activePage <= 1\" (click)=\"_setPage(_activePage - 1)\"> <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z\" /> </svg> </li> <li *ngIf=\"_activePage > 4 && _activePage + 1 > _lastPage\" (click)=\"_setPage(_activePage - 4)\"> {{_activePage-4}} </li> <li *ngIf=\"_activePage > 3 && _activePage + 2 > _lastPage\" (click)=\"_setPage(_activePage - 3)\"> {{_activePage-3}} </li> <li *ngIf=\"_activePage > 2\" (click)=\"_setPage(_activePage - 2)\"> {{_activePage-2}} </li> <li *ngIf=\"_activePage > 1\" (click)=\"_setPage(_activePage - 1)\"> {{_activePage-1}} </li> <li class=\"active\">{{_activePage}}</li> <li *ngIf=\"_activePage + 1 <= _lastPage\" (click)=\"_setPage(_activePage + 1)\"> {{_activePage+1}} </li> <li *ngIf=\"_activePage + 2 <= _lastPage\" (click)=\"_setPage(_activePage + 2)\"> {{_activePage+2}} </li> <li *ngIf=\"_activePage + 3 <= _lastPage && _activePage < 3\" (click)=\"_setPage(_activePage + 3)\"> {{_activePage+3}} </li> <li *ngIf=\"_activePage + 4 <= _lastPage && _activePage < 2\" (click)=\"_setPage(_activePage + 4)\"> {{_activePage+4}} </li> <li [class.disabled]=\"_activePage >= _lastPage\" (click)=\"_setPage(_activePage + 1)\"> <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z\" /> </svg> </li> </ul> <div class=\"md2-rows-select\" *ngIf=\"rowsPerPageSet.length && _dataLength > 0\"> Rows per page: <md2-select [(ngModel)]=\"_rowsPerPage\" (change)=\"_setRows($event)\"> <md2-option *ngFor=\"let row of rowsPerPageSet\" [value]=\"row\">{{row}}</md2-option> </md2-select> </div> ",
@@ -7803,8 +8149,8 @@ var Md2Pagination = (function () {
             exportAs: 'md2Pagination',
             encapsulation: _angular_core.ViewEncapsulation.None
         }),
-        __param$5(0, _angular_core.Optional()), 
-        __metadata$40('design:paramtypes', [Md2DataTable])
+        __param$7(0, _angular_core.Optional()), 
+        __metadata$41('design:paramtypes', [Md2DataTable])
     ], Md2Pagination);
     return Md2Pagination;
 }());
@@ -7821,24 +8167,24 @@ var Md2DataTableModule = (function () {
             ngModule: Md2DataTableModule
         };
     };
-    Md2DataTableModule = __decorate$40([
+    Md2DataTableModule = __decorate$41([
         _angular_core.NgModule({
             imports: [_angular_common.CommonModule, _angular_forms.FormsModule, Md2SelectModule.forRoot()],
             exports: MD2_DATA_TABLE_DIRECTIVES,
             declarations: MD2_DATA_TABLE_DIRECTIVES,
         }), 
-        __metadata$40('design:paramtypes', [])
+        __metadata$41('design:paramtypes', [])
     ], Md2DataTableModule);
     return Md2DataTableModule;
 }());
 
-var __decorate$45 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$46 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$45 = (this && this.__metadata) || function (k, v) {
+var __metadata$46 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 /** Date locale info. TODO(mmalerba): Integrate with i18n solution once we know what we're doing. */
@@ -7869,9 +8215,25 @@ var DateLocale = (function () {
             { full: 'Saturday', short: 'Sat', xshort: 'S' },
         ];
     }
-    DateLocale.prototype.getDateLabel = function (d) { return "" + d; };
-    DateLocale.prototype.getMonthLabel = function (m, y) { return this.months[m].short.toUpperCase() + " " + y; };
+    DateLocale.prototype.getDays = function () {
+        return this.days.slice(this.firstDayOfWeek, this.days.length)
+            .concat(this.days.slice(0, this.firstDayOfWeek));
+    };
+    DateLocale.prototype.getDayLabel = function (d) { return "" + d; };
+    DateLocale.prototype.getDateLabel = function (d) {
+        return this.days[d.getDay()].short + ", " + this.months[d.getMonth()].short + " " + d.getDate();
+    };
+    DateLocale.prototype.getMonthLabel = function (m, y) { return this.months[m].full + " " + y; };
     DateLocale.prototype.getYearLabel = function (y) { return "" + y; };
+    /**
+     * Gets the first day of the month for the given date's month.
+     * @param {Date} date
+     * @returns {Date}
+     */
+    DateLocale.prototype.getFirstDateOfWeek = function (date) {
+        var day = date.getDate() - ((7 + date.getDay() - this.firstDayOfWeek) % 7);
+        return new Date(date.getFullYear(), date.getMonth(), day, date.getHours(), date.getMinutes());
+    };
     /**
      * Gets the first day of the month for the given date's month.
      * @param {Date} date
@@ -8143,20 +8505,20 @@ var DateLocale = (function () {
         return (!minDate || minDate.getFullYear() < year || minDate.getMonth() <= month) &&
             (!maxDate || maxDate.getFullYear() > year || maxDate.getMonth() >= month);
     };
-    DateLocale = __decorate$45([
+    DateLocale = __decorate$46([
         _angular_core.Injectable(), 
-        __metadata$45('design:paramtypes', [])
+        __metadata$46('design:paramtypes', [])
     ], DateLocale);
     return DateLocale;
 }());
 
-var __decorate$46 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$47 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$46 = (this && this.__metadata) || function (k, v) {
+var __metadata$47 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var CLOCK_HOURS = 24;
@@ -8316,38 +8678,38 @@ var Md2Clock = (function () {
         this._time = this._hour + ':' + this._minute;
         this._emitChangeEvent();
     };
-    __decorate$46([
+    __decorate$47([
         _angular_core.Output(), 
-        __metadata$46('design:type', _angular_core.EventEmitter)
+        __metadata$47('design:type', _angular_core.EventEmitter)
     ], Md2Clock.prototype, "timeChange", void 0);
-    __decorate$46([
+    __decorate$47([
         _angular_core.Output(), 
-        __metadata$46('design:type', _angular_core.EventEmitter)
+        __metadata$47('design:type', _angular_core.EventEmitter)
     ], Md2Clock.prototype, "onHourChange", void 0);
-    __decorate$46([
+    __decorate$47([
         _angular_core.Output(), 
-        __metadata$46('design:type', _angular_core.EventEmitter)
+        __metadata$47('design:type', _angular_core.EventEmitter)
     ], Md2Clock.prototype, "onMinuteChange", void 0);
-    __decorate$46([
+    __decorate$47([
         _angular_core.Input(), 
-        __metadata$46('design:type', Object)
+        __metadata$47('design:type', Object)
     ], Md2Clock.prototype, "time", null);
-    __decorate$46([
+    __decorate$47([
         _angular_core.Input(), 
-        __metadata$46('design:type', String), 
-        __metadata$46('design:paramtypes', [String])
+        __metadata$47('design:type', String), 
+        __metadata$47('design:paramtypes', [String])
     ], Md2Clock.prototype, "view", null);
-    Md2Clock = __decorate$46([
+    Md2Clock = __decorate$47([
         _angular_core.Component({selector: 'md2-clock',
             template: "<div class=\"md2-clock-center\"></div> <div class=\"md2-clock-hand\" [ngStyle]=\"hand\"></div> <div class=\"md2-clock-hours\" [class.active]=\"_view\"> <div *ngFor=\"let h of _hours\" class=\"md2-clock-hour\" [class.active]=\"_hour == h.hour\" [style.top.px]=\"h.top\" [style.left.px]=\"h.left\">{{ h.hour }}</div> </div> <div class=\"md2-clock-minutes\" [class.active]=\"!_view\"> <div *ngFor=\"let m of _minutes\" class=\"md2-clock-minute\" [class.active]=\"_minute == m.minute\" [style.top.px]=\"m.top\" [style.left.px]=\"m.left\">{{ m.minute }}</div> </div> ",
-            styles: ["md2-datepicker { position: relative; display: inline-block; min-width: 175px; outline: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } md2-datepicker.md2-datepicker-disabled { pointer-events: none; cursor: default; } .md2-datepicker-trigger { display: block; padding: 18px 0 18px 32px; white-space: nowrap; cursor: pointer; } .md2-datepicker-icon { position: absolute; top: 21px; left: 0; display: block; height: 24px; width: 24px; vertical-align: middle; fill: currentColor; color: rgba(0, 0, 0, 0.54); } .md2-datepicker-disabled .md2-datepicker-icon { color: rgba(0, 0, 0, 0.38); } .md2-datepicker-input { color: rgba(0, 0, 0, 0.38); border-bottom: 1px solid rgba(0, 0, 0, 0.12); display: flex; justify-content: space-between; align-items: center; height: 30px; min-width: 168px; line-height: 22px; position: relative; box-sizing: border-box; } [aria-disabled='true'] .md2-datepicker-input { background-image: linear-gradient(to right, rgba(0, 0, 0, 0.26) 0, rgba(0, 0, 0, 0.26) 33%, transparent 0); background-size: 4px 1px; background-repeat: repeat-x; border-color: transparent; background-position: 0 bottom; cursor: default; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } md2-datepicker:focus:not(.md2-datepicker-disabled) .md2-datepicker-input { color: #106cc8; border-color: #106cc8; } md2-datepicker.ng-invalid.ng-touched:not(.md2-datepicker-disabled) .md2-datepicker-input { color: #f44336; border-color: #f44336; } .md2-datepicker-placeholder { position: absolute; right: 18px; bottom: 100%; left: 0; padding: 0 2px; transform: translate3d(0, 26px, 0) scale(1); transform-origin: left top; white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; transition: all 150ms cubic-bezier(0.25, 0.8, 0.25, 1); } .md2-datepicker-placeholder.md2-floating-placeholder { left: -2px; text-align: left; transform: translate3d(0, 6px, 0) scale(0.75); } [dir='rtl'] .md2-datepicker-placeholder { right: 0; left: 18px; transform-origin: right top; } [dir='rtl'] .md2-datepicker-placeholder.md2-floating-placeholder { right: -2px; text-align: right; } [aria-required=true] .md2-datepicker-placeholder::after { content: '*'; } .md2-datepicker-value { position: relative; white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; color: rgba(0, 0, 0, 0.87); } .md2-datepicker-disabled .md2-datepicker-value { color: rgba(0, 0, 0, 0.38); } [dir='rtl'] .md2-datepicker-value { left: auto; right: 0; } .md2-datepicker-arrow { width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 5px solid; margin: 0 4px; color: rgba(0, 0, 0, 0.38); } md2-datepicker:focus:not(.md2-datepicker-disabled) .md2-datepicker-arrow { color: #106cc8; } md2-datepicker.ng-invalid.ng-touched:not(.md2-datepicker-disabled) .md2-datepicker-arrow { color: #f44336; } .md2-datepicker-panel { width: 300px; border-radius: 3px; background-color: white; overflow: hidden; box-shadow: 0 11px 15px -7px rgba(0, 0, 0, 0.2), 0 24px 38px 3px rgba(0, 0, 0, 0.14), 0 9px 46px 8px rgba(0, 0, 0, 0.12); outline: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } .md2-datepicker-header { padding: 16px; color: white; font-weight: 500; white-space: nowrap; background: #106cc8; box-sizing: border-box; } .md2-datepicker-header .hidden { display: none; } .md2-datepicker-header-year { font-size: 16px; opacity: 0.7; cursor: pointer; } .md2-datepicker-header-year.active { opacity: 1; pointer-events: none; } .md2-datepicker-header-date-time { font-size: 32px; } .md2-datepicker-header-date { opacity: 0.7; cursor: pointer; } .md2-datepicker-header-date.active { opacity: 1; pointer-events: none; } .md2-datepicker-header-time { opacity: 0.7; display: inline-block; padding-left: 8px; cursor: pointer; } .md2-datepicker-header-time.active { opacity: 1; cursor: default; } .md2-datepicker-header-time.active .md2-datepicker-header-hour, .md2-datepicker-header-time.active .md2-datepicker-header-minute { opacity: 0.7; cursor: pointer; } .md2-datepicker-header-time.active .md2-datepicker-header-hour.active, .md2-datepicker-header-time.active .md2-datepicker-header-minute.active { opacity: 1; pointer-events: none; } .md2-datepicker-content { position: relative; width: 100%; padding-top: 300px; overflow: hidden; } .md2-datepicker-calendar { position: absolute; top: 0; right: 100%; display: block; width: 100%; height: 300px; transition: 300ms; } .md2-datepicker-calendar.active { right: 0; } .md2-calendar-years { position: absolute; top: 10px; right: 100%; bottom: 10px; display: block; width: 100%; line-height: 40px; background: white; overflow-x: hidden; overflow-y: auto; transition: 300ms; } .md2-calendar-years.active { right: 0; } .md2-calendar-years .md2-calendar-years-content { display: flex; flex-direction: column; justify-content: center; min-height: 100%; } .md2-calendar-year { position: relative; display: block; margin: 0 auto; padding: 0; font-size: 17px; font-weight: 400; text-align: center; cursor: pointer; } .md2-calendar-year.selected { color: #106cc8; font-size: 26px; font-weight: 500; } .md2-calendar-month { position: absolute; left: 100%; display: block; width: 100%; font-size: 12px; font-weight: 400; text-align: center; transition: 300ms; } .md2-calendar-month.active { left: 0; } .md2-calendar-month-header { display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; text-align: center; line-height: 48px; } .md2-calendar-month-header .md2-button { display: inline-block; width: 48px; height: 48px; padding: 12px; outline: none; border: 0; cursor: pointer; background: transparent; box-sizing: border-box; } .md2-calendar-month-header .md2-button svg { vertical-align: top; } .md2-calendar-month-header .md2-calendar-month-year-header { width: 100%; } .md2-calendar-dates { margin: 0 auto; } .md2-calendar-dates th { width: 35px; height: 20px; font-weight: 500; line-height: 15px; opacity: 0.5; } .md2-calendar-dates td { padding: 0; } .md2-calendar-day { position: relative; display: inline-block; width: 35px; height: 35px; border-radius: 50%; text-align: center; cursor: pointer; line-height: 35px; box-sizing: border-box; } .md2-calendar-day.today { color: #106cc8; } .md2-calendar-day:hover, .md2-calendar-day.focus { background: #e0e0e0; } .md2-calendar-day.selected, .md2-calendar-day.selected:hover { color: white; background: #106cc8; } .md2-calendar-day.disabled, .md2-calendar-day.disabled:hover { color: rgba(0, 0, 0, 0.45); background: transparent; pointer-events: none; } .md2-calendar-day.prev-month, .md2-calendar-day.next-month { visibility: hidden; } md2-clock { position: absolute; top: 0; left: 100%; display: block; width: 240px; height: 240px; margin: 30px; font-size: 14px; font-weight: 400; text-align: center; background-color: #e0e0e0; border-radius: 50%; overflow: hidden; transition: 300ms; } md2-clock.active { left: 0; } .md2-clock-center { position: absolute; top: 50%; left: 50%; height: 6px; width: 6px; margin: -3px; border-radius: 50%; background-color: #106cc8; } .md2-clock-hand { position: absolute; top: 0; right: 0; bottom: 0; left: 0; width: 1px; height: 99px; margin: 0 auto; background-color: #106cc8; transform-origin: bottom; /*transition: all 100ms;*/ } .md2-clock-hand::before { content: ''; position: absolute; top: -4px; left: -4px; width: 8px; height: 8px; border-radius: 50%; background-color: #106cc8; } .md2-clock-hours, .md2-clock-minutes { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; visibility: hidden; transition: 350ms; transform: scale(1.2); } .md2-clock-hours.active, .md2-clock-minutes.active { opacity: 1; visibility: visible; transform: scale(1); } .md2-clock-minutes { transform: scale(0.8); } .md2-clock-hour, .md2-clock-minute { position: absolute; width: 34px; height: 34px; line-height: 34px; text-align: center; border-radius: 50%; cursor: pointer; } .md2-clock-hour:hover, .md2-clock-minute:hover { background: #fafafa; } .md2-clock-hour.active, .md2-clock-minute.active { background: #65acf3; } .md2-datepicker-actions { text-align: right; } .md2-datepicker-actions .md2-button { display: inline-block; min-width: 64px; margin: 4px 8px 8px 0; padding: 0 12px; font-size: 14px; color: #106cc8; line-height: 36px; text-align: center; text-transform: uppercase; border-radius: 2px; cursor: pointer; box-sizing: border-box; transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1); } .md2-datepicker-actions .md2-button:hover { background: #ebebeb; } @media (min-width: 480px) { .md2-datepicker-panel { display: flex; width: 450px; } .md2-datepicker-header { width: 150px; min-width: 150px; padding-right: 15px; white-space: normal; word-wrap: break-word; } .md2-datepicker-header-time { display: block; padding-left: 0; } } .cdk-overlay-container, .cdk-global-overlay-wrapper { pointer-events: none; top: 0; left: 0; height: 100%; width: 100%; } .cdk-overlay-container { position: fixed; z-index: 1000; } .cdk-global-overlay-wrapper { display: flex; position: absolute; z-index: 1000; } .cdk-overlay-pane { position: absolute; pointer-events: auto; box-sizing: border-box; z-index: 1000; } .cdk-overlay-backdrop { position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1000; pointer-events: auto; transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1); opacity: 0; } .cdk-overlay-backdrop.cdk-overlay-backdrop-showing { opacity: 0.48; } .cdk-overlay-dark-backdrop { background: rgba(0, 0, 0, 0.6); } /*# sourceMappingURL=datepicker.css.map */ "],
+            styles: ["md2-datepicker { position: relative; display: inline-block; min-width: 175px; outline: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } md2-datepicker.md2-datepicker-disabled { pointer-events: none; cursor: default; } .md2-datepicker-trigger { display: block; padding: 18px 0 4px 32px; white-space: nowrap; cursor: pointer; } .md2-datepicker-icon { position: absolute; top: 21px; left: 0; display: block; height: 24px; width: 24px; vertical-align: middle; fill: currentColor; color: rgba(0, 0, 0, 0.54); } .md2-datepicker-disabled .md2-datepicker-icon { color: rgba(0, 0, 0, 0.38); } .md2-datepicker-input { color: rgba(0, 0, 0, 0.38); border-bottom: 1px solid rgba(0, 0, 0, 0.12); display: flex; justify-content: space-between; align-items: center; height: 30px; min-width: 168px; line-height: 22px; position: relative; padding-right: 20px; box-sizing: border-box; } [aria-disabled='true'] .md2-datepicker-input { background-image: linear-gradient(to right, rgba(0, 0, 0, 0.26) 0, rgba(0, 0, 0, 0.26) 33%, transparent 0); background-size: 4px 1px; background-repeat: repeat-x; border-color: transparent; background-position: 0 bottom; cursor: default; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } md2-datepicker:focus:not(.md2-datepicker-disabled) .md2-datepicker-input { color: #106cc8; border-color: #106cc8; } md2-datepicker.ng-invalid.ng-touched:not(.md2-datepicker-disabled) .md2-datepicker-input { color: #f44336; border-color: #f44336; } .md2-datepicker-placeholder { position: absolute; right: 18px; bottom: 100%; left: 0; padding: 0 2px; transform: translate3d(0, 26px, 0) scale(1); transform-origin: left top; white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; transition: all 150ms cubic-bezier(0.25, 0.8, 0.25, 1); } .md2-datepicker-placeholder.md2-floating-placeholder { left: -2px; text-align: left; transform: translate3d(0, 6px, 0) scale(0.75); } [dir='rtl'] .md2-datepicker-placeholder { right: 0; left: 18px; transform-origin: right top; } [dir='rtl'] .md2-datepicker-placeholder.md2-floating-placeholder { right: -2px; text-align: right; } [aria-required=true] .md2-datepicker-placeholder::after { content: '*'; } .md2-datepicker-value { position: relative; width: 100%; white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; color: rgba(0, 0, 0, 0.87); border: 0; outline: none; background: transparent; } .md2-datepicker-disabled .md2-datepicker-value { color: rgba(0, 0, 0, 0.38); } [dir='rtl'] .md2-datepicker-value { left: auto; right: 0; } .md2-datepicker-arrow { position: absolute; right: 0; width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 5px solid; margin: 0 4px; color: rgba(0, 0, 0, 0.38); } md2-datepicker:focus:not(.md2-datepicker-disabled) .md2-datepicker-arrow { color: #106cc8; } md2-datepicker.ng-invalid.ng-touched:not(.md2-datepicker-disabled) .md2-datepicker-arrow { color: #f44336; } .md2-datepicker-clear { position: absolute; right: 0; height: 20px; color: rgba(0, 0, 0, 0.54); } .md2-datepicker-clear svg { fill: currentColor; } .md2-datepicker-panel { width: 276px; border-radius: 3px; color: rgba(0, 0, 0, 0.87); background-color: white; overflow: hidden; box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12); outline: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } .md2-datepicker-panel[container='dialog'] { box-shadow: 0 11px 15px -7px rgba(0, 0, 0, 0.2), 0 24px 38px 3px rgba(0, 0, 0, 0.14), 0 9px 46px 8px rgba(0, 0, 0, 0.12); } .md2-datepicker-panel[mode='landscape'] { display: flex; width: 426px; } .md2-datepicker-header { padding: 16px; color: white; font-weight: 500; white-space: nowrap; background: #106cc8; box-sizing: border-box; } [mode='landscape'] .md2-datepicker-header { width: 150px; min-width: 150px; padding-right: 15px; white-space: normal; word-wrap: break-word; } .md2-datepicker-header-year { font-size: 16px; opacity: 0.7; cursor: pointer; } .md2-datepicker-header-year.active { opacity: 1; pointer-events: none; } .md2-datepicker-header-date-time { font-size: 32px; } .md2-datepicker-header-date { opacity: 0.7; cursor: pointer; } .md2-datepicker-header-date.active { opacity: 1; pointer-events: none; } .md2-datepicker-header-time { opacity: 0.7; display: inline-block; padding-left: 8px; cursor: pointer; } .md2-datepicker-header-time.active { opacity: 1; cursor: default; } .md2-datepicker-header-time.active .md2-datepicker-header-hour, .md2-datepicker-header-time.active .md2-datepicker-header-minute { opacity: 0.7; cursor: pointer; } .md2-datepicker-header-time.active .md2-datepicker-header-hour.active, .md2-datepicker-header-time.active .md2-datepicker-header-minute.active { opacity: 1; pointer-events: none; } [mode='landscape'] .md2-datepicker-header-time { display: block; padding-left: 0; } .md2-datepicker-content { position: relative; width: 100%; padding-top: 280px; overflow: hidden; } .md2-datepicker-calendar { position: absolute; top: 0; right: 100%; display: block; width: 100%; height: 280px; transition: 300ms; } .md2-datepicker-calendar.active { right: 0; } .md2-calendar-years { position: absolute; top: 10px; right: 100%; bottom: 10px; display: block; width: 100%; line-height: 40px; background: white; overflow-x: hidden; overflow-y: auto; transition: 300ms; } .md2-calendar-years.active { right: 0; } .md2-calendar-years .md2-calendar-years-content { display: flex; flex-direction: column; justify-content: center; min-height: 100%; } .md2-calendar-year { position: relative; display: block; margin: 0 auto; padding: 0; font-size: 17px; font-weight: 400; text-align: center; cursor: pointer; } .md2-calendar-year.selected { color: #106cc8; font-size: 26px; font-weight: 500; } .md2-calendar-month { position: absolute; left: 100%; display: block; width: 100%; font-size: 12px; font-weight: 400; text-align: center; transition: 300ms; } .md2-calendar-month.active { left: 0; } .md2-calendar-header { display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; text-align: center; line-height: 48px; } .md2-calendar-header .md2-calendar-month-year-header { width: 100%; } .md2-calendar-header .md2-button { display: inline-block; width: 48px; height: 48px; padding: 12px; outline: none; border: 0; cursor: pointer; background: transparent; box-sizing: border-box; } .md2-calendar-header .md2-button svg { vertical-align: top; } .md2-calendar-dates { margin: 0 8px; } .md2-calendar-dates th { width: 35px; height: 16px; font-weight: 500; line-height: 10px; opacity: 0.5; } .md2-calendar-dates td { padding: 0; } .md2-calendar-day { position: relative; display: inline-block; width: 35px; height: 35px; border-radius: 50%; text-align: center; cursor: pointer; line-height: 35px; box-sizing: border-box; } .md2-calendar-day.today { color: #106cc8; } .md2-calendar-day:hover, .md2-calendar-day.focus { background: #e0e0e0; } .md2-calendar-day.selected, .md2-calendar-day.selected:hover { color: white; background: #106cc8; } .md2-calendar-day.disabled, .md2-calendar-day.disabled:hover { color: rgba(0, 0, 0, 0.43); background: transparent; pointer-events: none; } .md2-calendar-day.prev-month, .md2-calendar-day.next-month { visibility: hidden; } md2-clock { position: absolute; top: 0; left: 100%; display: block; width: 240px; height: 240px; margin: 30px; font-size: 14px; font-weight: 400; text-align: center; background-color: #e0e0e0; border-radius: 50%; overflow: hidden; transition: 300ms; } md2-clock.active { left: 0; } .md2-clock-center { position: absolute; top: 50%; left: 50%; height: 6px; width: 6px; margin: -3px; border-radius: 50%; background-color: #106cc8; } .md2-clock-hand { position: absolute; top: 0; right: 0; bottom: 0; left: 0; width: 1px; height: 99px; margin: 0 auto; background-color: #106cc8; transform-origin: bottom; } .md2-clock-hand::before { content: ''; position: absolute; top: -4px; left: -4px; width: 8px; height: 8px; border-radius: 50%; background-color: #106cc8; } .md2-clock-hours, .md2-clock-minutes { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; visibility: hidden; transition: 350ms; transform: scale(1.2); } .md2-clock-hours.active, .md2-clock-minutes.active { opacity: 1; visibility: visible; transform: scale(1); } .md2-clock-minutes { transform: scale(0.8); } .md2-clock-hour, .md2-clock-minute { position: absolute; width: 34px; height: 34px; line-height: 34px; text-align: center; border-radius: 50%; cursor: pointer; } .md2-clock-hour:hover, .md2-clock-minute:hover { background: #fafafa; } .md2-clock-hour.active, .md2-clock-minute.active { background: #65acf3; } .md2-datepicker-actions { text-align: right; } .md2-datepicker-actions .md2-button { display: inline-block; min-width: 64px; margin: 4px 8px 8px 0; padding: 0 12px; font-size: 14px; color: #106cc8; line-height: 36px; text-align: center; text-transform: uppercase; border-radius: 2px; cursor: pointer; box-sizing: border-box; transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1); } .md2-datepicker-actions .md2-button:hover { background: #ebebeb; } @media (min-width: 480px) { .md2-datepicker-panel[mode='auto'] { display: flex; width: 426px; } [mode='auto'] .md2-datepicker-header { width: 150px; min-width: 150px; padding-right: 15px; white-space: normal; word-wrap: break-word; } [mode='auto'] .md2-datepicker-header-time { display: block; padding-left: 0; } } .cdk-overlay-container, .cdk-global-overlay-wrapper { pointer-events: none; top: 0; left: 0; height: 100%; width: 100%; } .cdk-overlay-container { position: fixed; z-index: 1000; } .cdk-global-overlay-wrapper { display: flex; position: absolute; z-index: 1000; } .cdk-overlay-pane { position: absolute; pointer-events: auto; box-sizing: border-box; z-index: 1000; } .cdk-overlay-backdrop { position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1000; pointer-events: auto; transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1); opacity: 0; } .cdk-overlay-backdrop.cdk-overlay-backdrop-showing { opacity: 0.48; } .cdk-overlay-dark-backdrop { background: rgba(0, 0, 0, 0.6); } /*# sourceMappingURL=datepicker.css.map */ "],
             host: {
                 'role': 'clock',
                 '(mousedown)': '_handleMousedown($event)',
             },
             encapsulation: _angular_core.ViewEncapsulation.None
         }), 
-        __metadata$46('design:paramtypes', [_angular_core.ElementRef])
+        __metadata$47('design:paramtypes', [_angular_core.ElementRef])
     ], Md2Clock);
     return Md2Clock;
 }());
@@ -8364,17 +8726,33 @@ var fadeInContent$1 = _angular_core.trigger('fadeInContent', [
         _angular_core.animate("150ms 100ms cubic-bezier(0.55, 0, 0.55, 0.2)")
     ])
 ]);
+var slideCalendar = _angular_core.trigger('slideCalendar', [
+    _angular_core.transition('* => left', [
+        _angular_core.animate(180, _angular_core.keyframes([
+            _angular_core.style({ transform: 'translateX(100%)', offset: 0.5 }),
+            _angular_core.style({ transform: 'translateX(-100%)', offset: 0.51 }),
+            _angular_core.style({ transform: 'translateX(0)', offset: 1 })
+        ]))
+    ]),
+    _angular_core.transition('* => right', [
+        _angular_core.animate(180, _angular_core.keyframes([
+            _angular_core.style({ transform: 'translateX(-100%)', offset: 0.5 }),
+            _angular_core.style({ transform: 'translateX(100%)', offset: 0.51 }),
+            _angular_core.style({ transform: 'translateX(0)', offset: 1 })
+        ]))
+    ])
+]);
 
-var __decorate$44 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$45 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$44 = (this && this.__metadata) || function (k, v) {
+var __metadata$45 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __param$7 = (this && this.__param) || function (paramIndex, decorator) {
+var __param$9 = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 /** Change event object emitted by Md2Select. */
@@ -8385,7 +8763,6 @@ var Md2DateChange = (function () {
     }
     return Md2DateChange;
 }());
-var nextId$3 = 0;
 var Md2Datepicker = (function () {
     function Md2Datepicker(_element, overlay, _renderer, _locale, _control) {
         this._element = _element;
@@ -8399,6 +8776,8 @@ var Md2Datepicker = (function () {
         this._panelOpen = false;
         this._openOnFocus = false;
         this._type = 'date';
+        this._mode = 'auto';
+        this._container = 'inline';
         this._required = false;
         this._disabled = false;
         this.today = new Date();
@@ -8420,36 +8799,69 @@ var Md2Datepicker = (function () {
         this.onClose = new _angular_core.EventEmitter();
         /** Event emitted when the selected date has been changed by the user. */
         this.change = new _angular_core.EventEmitter();
-        this.name = '';
-        this.id = 'md2-datepicker-' + (++nextId$3);
+        this.okLabel = 'Ok';
+        this.cancelLabel = 'Cancel';
         this.tabindex = 0;
+        this.enableDates = [];
+        this.disableDates = [];
+        this.disableWeekDays = [];
+        /** Position of the menu in the X axis. */
+        this.positionX = 'after';
+        /** Position of the menu in the Y axis. */
+        this.positionY = 'below';
+        this.overlapTrigger = true;
         if (this._control) {
             this._control.valueAccessor = this;
         }
-        this._weekDays = _locale.days;
+        this._weekDays = this._locale.getDays();
         this.getYears();
     }
     Md2Datepicker.prototype.ngOnDestroy = function () { this.destroyPanel(); };
+    Object.defineProperty(Md2Datepicker.prototype, "type", {
+        get: function () { return this._type; },
+        set: function (value) {
+            this._type = value || 'date';
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Md2Datepicker.prototype, "format", {
+        get: function () {
+            return this._format || (this.type === 'date' ?
+                'dd/MM/y' : this.type === 'time' ? 'HH:mm' : this.type === 'datetime' ?
+                'dd/MM/y HH:mm' : 'dd/MM/y');
+        },
+        set: function (value) {
+            if (this._format !== value) {
+                this._format = value;
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Md2Datepicker.prototype, "mode", {
+        get: function () { return this._mode; },
+        set: function (value) {
+            this._mode = value || 'auto';
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Md2Datepicker.prototype, "container", {
+        get: function () { return this._container; },
+        set: function (value) {
+            if (this._container !== value) {
+                this._container = value || 'inline';
+                this.destroyPanel();
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(Md2Datepicker.prototype, "value", {
         get: function () { return this._value; },
         set: function (value) {
             this._value = this.coerceDateProperty(value);
-            if (value && value !== this._value) {
-                if (this._locale.isValidDate(value)) {
-                    this._value = value;
-                }
-                else {
-                    if (this.type === 'time') {
-                        var t = value + '';
-                        this._value = new Date();
-                        this._value.setHours(parseInt(t.substring(0, 2)));
-                        this._value.setMinutes(parseInt(t.substring(3, 5)));
-                    }
-                    else {
-                        this._value = new Date(value);
-                    }
-                }
-            }
             this.date = this._value;
         },
         enumerable: true,
@@ -8484,31 +8896,9 @@ var Md2Datepicker = (function () {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(Md2Datepicker.prototype, "type", {
-        get: function () { return this._type; },
-        set: function (value) {
-            this._type = value || 'date';
-        },
-        enumerable: true,
-        configurable: true
-    });
     Object.defineProperty(Md2Datepicker.prototype, "selected", {
         get: function () { return this._selected; },
         set: function (value) { this._selected = value; },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Md2Datepicker.prototype, "format", {
-        get: function () {
-            return this._format || (this.type === 'date' ?
-                'dd/MM/y' : this.type === 'time' ? 'HH:mm' : this.type === 'datetime' ?
-                'dd/MM/y HH:mm' : 'dd/MM/y');
-        },
-        set: function (value) {
-            if (this._format !== value) {
-                this._format = value;
-            }
-        },
         enumerable: true,
         configurable: true
     });
@@ -8574,6 +8964,20 @@ var Md2Datepicker = (function () {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(Md2Datepicker.prototype, "getDateLabel", {
+        get: function () {
+            return this._locale.getDateLabel(this.date);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Md2Datepicker.prototype, "getMonthLabel", {
+        get: function () {
+            return this._locale.getMonthLabel(this.date.getMonth(), this.date.getFullYear());
+        },
+        enumerable: true,
+        configurable: true
+    });
     Md2Datepicker.prototype.toggle = function () {
         this.panelOpen ? this.close() : this.open();
     };
@@ -8633,6 +9037,11 @@ var Md2Datepicker = (function () {
     Md2Datepicker.prototype._onFadeInDone = function () {
         this._panelDoneAnimating = this.panelOpen;
     };
+    Md2Datepicker.prototype._handleWindowResize = function (event) {
+        if (this.container === 'inline') {
+            this.close();
+        }
+    };
     Md2Datepicker.prototype._focusPanel = function () {
         var el = document.querySelectorAll('.md2-datepicker-panel')[0];
         el.focus();
@@ -8640,11 +9049,24 @@ var Md2Datepicker = (function () {
     Md2Datepicker.prototype._focusHost = function () {
         this._renderer.invokeElementMethod(this._element.nativeElement, 'focus');
     };
-    Md2Datepicker.prototype.coerceDateProperty = function (value, fallbackValue) {
-        if (fallbackValue === void 0) { fallbackValue = new Date(); }
-        var timestamp = Date.parse(value);
-        fallbackValue = null;
-        return isNaN(timestamp) ? fallbackValue : new Date(timestamp);
+    Md2Datepicker.prototype.coerceDateProperty = function (value) {
+        var v = null;
+        if (this._locale.isValidDate(value)) {
+            v = value;
+        }
+        else {
+            if (value && this.type === 'time') {
+                var t = value + '';
+                v = new Date();
+                v.setHours(parseInt(t.substring(0, 2)));
+                v.setMinutes(parseInt(t.substring(3, 5)));
+            }
+            else {
+                var timestamp = Date.parse(value);
+                v = isNaN(timestamp) ? null : new Date(timestamp);
+            }
+        }
+        return v;
     };
     Md2Datepicker.prototype._handleClick = function (event) {
         if (this.disabled) {
@@ -8783,6 +9205,11 @@ var Md2Datepicker = (function () {
             this._onTouched();
         }
     };
+    Md2Datepicker.prototype._clearValue = function (event) {
+        event.stopPropagation();
+        this.value = null;
+        this._emitChangeEvent();
+    };
     /**
      * Display Years
      */
@@ -8866,7 +9293,7 @@ var Md2Datepicker = (function () {
             this._updateMonth(-1);
         }
         else if (date.calMonth === this._currMonth) {
-            this.setDate(new Date(date.dateObj.year, date.dateObj.month, date.dateObj.day, this.date.getHours(), this.date.getMinutes()));
+            this.setDate(date.date);
         }
         else if (date.calMonth === this._nextMonth) {
             this._updateMonth(1);
@@ -8897,6 +9324,12 @@ var Md2Datepicker = (function () {
     Md2Datepicker.prototype._updateMonth = function (noOfMonths) {
         this.date = this._locale.incrementMonths(this.date, noOfMonths);
         this.generateCalendar();
+        if (noOfMonths > 0) {
+            this.calendarState('right');
+        }
+        else {
+            this.calendarState('left');
+        }
     };
     /**
      * Check is Before month enabled or not
@@ -8934,92 +9367,59 @@ var Md2Datepicker = (function () {
      * @return boolean
      */
     Md2Datepicker.prototype._isDisabledDate = function (date) {
-        if (this._min && this._max) {
-            return (this._min > date) || (this._max < date);
+        for (var _i = 0, _a = this.enableDates; _i < _a.length; _i++) {
+            var d = _a[_i];
+            if (this._locale.isSameDay(date, d)) {
+                return false;
+            }
         }
-        else if (this._min) {
-            return (this._min > date);
+        for (var _b = 0, _c = this.disableDates; _b < _c.length; _b++) {
+            var d = _c[_b];
+            if (this._locale.isSameDay(date, d)) {
+                return true;
+            }
         }
-        else if (this._max) {
-            return (this._max < date);
+        for (var _d = 0, _e = this.disableWeekDays; _d < _e.length; _d++) {
+            var d = _e[_d];
+            if (date.getDay() === d) {
+                return true;
+            }
         }
-        else {
-            return false;
-        }
-        // if (this.disableWeekends) {
-        //   let dayNbr = this.getDayNumber(date);
-        //   if (dayNbr === 0 || dayNbr === 6) {
-        //     return true;
-        //   }
-        // }
-        // return false;
+        return !this._locale.isDateWithinRange(date, this._min, this._max);
     };
     /**
      * Generate Month Calendar
      */
     Md2Datepicker.prototype.generateCalendar = function () {
+        this._dates.length = 0;
         var year = this.date.getFullYear();
         var month = this.date.getMonth();
-        this._dates.length = 0;
         var firstDayOfMonth = this._locale.getFirstDateOfMonth(this.date);
-        var numberOfDaysInMonth = this._locale.getNumberOfDaysInMonth(this.date);
-        var numberOfDaysInPrevMonth = this._locale.getNumberOfDaysInMonth(this._locale.incrementMonths(this.date, -1));
-        var dayNbr = 1;
         var calMonth = this._prevMonth;
-        for (var i = 1; i < 7; i++) {
+        var date = this._locale.getFirstDateOfWeek(firstDayOfMonth);
+        do {
             var week = [];
-            if (i === 1) {
-                var prevMonth = numberOfDaysInPrevMonth - firstDayOfMonth.getDay() + 1;
-                for (var j = prevMonth; j <= numberOfDaysInPrevMonth; j++) {
-                    var iDate = { year: year, month: month - 1, day: j, hour: 0, minute: 0 };
-                    var date = new Date(year, month - 1, j);
-                    week.push({
-                        date: date,
-                        dateObj: iDate,
-                        calMonth: calMonth,
-                        today: this._locale.isSameDay(this.today, date),
-                        disabled: this._isDisabledDate(date)
-                    });
-                }
-                calMonth = this._currMonth;
-                var daysLeft = 7 - week.length;
-                for (var j = 0; j < daysLeft; j++) {
-                    var iDate = { year: year, month: month, day: dayNbr, hour: 0, minute: 0 };
-                    var date = new Date(year, month, dayNbr);
-                    week.push({
-                        date: date,
-                        dateObj: iDate,
-                        calMonth: calMonth,
-                        today: this._locale.isSameDay(this.today, date),
-                        disabled: this._isDisabledDate(date)
-                    });
-                    dayNbr++;
-                }
-            }
-            else {
-                for (var j = 1; j < 8; j++) {
-                    if (dayNbr > numberOfDaysInMonth) {
-                        dayNbr = 1;
+            for (var i = 0; i < 7; i++) {
+                if (date.getDate() === 1) {
+                    if (calMonth === this._prevMonth) {
+                        calMonth = this._currMonth;
+                    }
+                    else {
                         calMonth = this._nextMonth;
                     }
-                    var iDate = {
-                        year: year,
-                        month: calMonth === this._currMonth ? month : month + 1,
-                        day: dayNbr, hour: 0, minute: 0
-                    };
-                    var date = new Date(year, iDate.month, dayNbr);
-                    week.push({
-                        date: date,
-                        dateObj: iDate,
-                        calMonth: calMonth,
-                        today: this._locale.isSameDay(this.today, date),
-                        disabled: this._isDisabledDate(date)
-                    });
-                    dayNbr++;
                 }
+                week.push({
+                    date: date,
+                    index: date.getDate(),
+                    calMonth: calMonth,
+                    today: this._locale.isSameDay(this.today, date),
+                    disabled: this._isDisabledDate(date)
+                });
+                date = new Date(date.getTime());
+                date.setDate(date.getDate() + 1);
             }
             this._dates.push(week);
-        }
+        } while ((date.getMonth() <= month) && (date.getFullYear() === year));
     };
     /**
      * Set hours
@@ -9064,12 +9464,29 @@ var Md2Datepicker = (function () {
     Md2Datepicker.prototype._createOverlay = function () {
         if (!this._overlayRef) {
             var config = new OverlayState();
-            config.positionStrategy = this.overlay.position()
-                .global()
-                .centerHorizontally()
-                .centerVertically();
-            config.hasBackdrop = true;
-            config.backdropClass = 'cdk-overlay-dark-backdrop';
+            if (this.container === 'inline') {
+                var _a = this.positionX === 'before' ? ['end', 'start'] : ['start', 'end'], posX = _a[0], fallbackX = _a[1];
+                var _b = this.positionY === 'above' ? ['bottom', 'top'] : ['top', 'bottom'], overlayY = _b[0], fallbackOverlayY = _b[1];
+                var originY = overlayY;
+                var fallbackOriginY = fallbackOverlayY;
+                if (!this.overlapTrigger) {
+                    originY = overlayY === 'top' ? 'bottom' : 'top';
+                    fallbackOriginY = fallbackOverlayY === 'top' ? 'bottom' : 'top';
+                }
+                config.positionStrategy = this.overlay.position().connectedTo(this._element, { originX: posX, originY: originY }, { overlayX: posX, overlayY: overlayY })
+                    .withFallbackPosition({ originX: fallbackX, originY: originY }, { overlayX: fallbackX, overlayY: overlayY })
+                    .withFallbackPosition({ originX: posX, originY: fallbackOriginY }, { overlayX: posX, overlayY: fallbackOverlayY })
+                    .withFallbackPosition({ originX: fallbackX, originY: fallbackOriginY }, { overlayX: fallbackX, overlayY: fallbackOverlayY });
+                config.hasBackdrop = true;
+                config.backdropClass = 'cdk-overlay-transparent-backdrop';
+            }
+            else {
+                config.positionStrategy = this.overlay.position()
+                    .global()
+                    .centerHorizontally()
+                    .centerVertically();
+                config.hasBackdrop = true;
+            }
             this._overlayRef = this.overlay.create(config);
         }
     };
@@ -9078,94 +9495,118 @@ var Md2Datepicker = (function () {
             this._backdropSubscription.unsubscribe();
         }
     };
-    __decorate$44([
+    Md2Datepicker.prototype.calendarState = function (direction) {
+        var _this = this;
+        this._calendarState = direction;
+        setTimeout(function () { return _this._calendarState = ''; }, 180);
+    };
+    __decorate$45([
         _angular_core.ViewChildren(TemplatePortalDirective), 
-        __metadata$44('design:type', _angular_core.QueryList)
+        __metadata$45('design:type', _angular_core.QueryList)
     ], Md2Datepicker.prototype, "templatePortals", void 0);
-    __decorate$44([
+    __decorate$45([
         _angular_core.Output(), 
-        __metadata$44('design:type', _angular_core.EventEmitter)
+        __metadata$45('design:type', _angular_core.EventEmitter)
     ], Md2Datepicker.prototype, "onOpen", void 0);
-    __decorate$44([
+    __decorate$45([
         _angular_core.Output(), 
-        __metadata$44('design:type', _angular_core.EventEmitter)
+        __metadata$45('design:type', _angular_core.EventEmitter)
     ], Md2Datepicker.prototype, "onClose", void 0);
-    __decorate$44([
+    __decorate$45([
         _angular_core.Output(), 
-        __metadata$44('design:type', _angular_core.EventEmitter)
+        __metadata$45('design:type', _angular_core.EventEmitter)
     ], Md2Datepicker.prototype, "change", void 0);
-    __decorate$44([
+    __decorate$45([
         _angular_core.Input(), 
-        __metadata$44('design:type', String)
-    ], Md2Datepicker.prototype, "name", void 0);
-    __decorate$44([
-        _angular_core.Input(), 
-        __metadata$44('design:type', String)
-    ], Md2Datepicker.prototype, "id", void 0);
-    __decorate$44([
-        _angular_core.Input(), 
-        __metadata$44('design:type', String)
+        __metadata$45('design:type', String)
     ], Md2Datepicker.prototype, "placeholder", void 0);
-    __decorate$44([
+    __decorate$45([
         _angular_core.Input(), 
-        __metadata$44('design:type', Number)
+        __metadata$45('design:type', String)
+    ], Md2Datepicker.prototype, "okLabel", void 0);
+    __decorate$45([
+        _angular_core.Input(), 
+        __metadata$45('design:type', String)
+    ], Md2Datepicker.prototype, "cancelLabel", void 0);
+    __decorate$45([
+        _angular_core.Input(), 
+        __metadata$45('design:type', Number)
     ], Md2Datepicker.prototype, "tabindex", void 0);
-    __decorate$44([
+    __decorate$45([
         _angular_core.Input(), 
-        __metadata$44('design:type', Object)
-    ], Md2Datepicker.prototype, "value", null);
-    __decorate$44([
+        __metadata$45('design:type', Array)
+    ], Md2Datepicker.prototype, "enableDates", void 0);
+    __decorate$45([
         _angular_core.Input(), 
-        __metadata$44('design:type', Object)
+        __metadata$45('design:type', Array)
+    ], Md2Datepicker.prototype, "disableDates", void 0);
+    __decorate$45([
+        _angular_core.Input(), 
+        __metadata$45('design:type', Array)
+    ], Md2Datepicker.prototype, "disableWeekDays", void 0);
+    __decorate$45([
+        _angular_core.Input(), 
+        __metadata$45('design:type', Object)
     ], Md2Datepicker.prototype, "type", null);
-    __decorate$44([
+    __decorate$45([
         _angular_core.Input(), 
-        __metadata$44('design:type', Object)
-    ], Md2Datepicker.prototype, "selected", null);
-    __decorate$44([
-        _angular_core.Input(), 
-        __metadata$44('design:type', Object)
+        __metadata$45('design:type', Object)
     ], Md2Datepicker.prototype, "format", null);
-    __decorate$44([
+    __decorate$45([
         _angular_core.Input(), 
-        __metadata$44('design:type', Boolean)
+        __metadata$45('design:type', Object)
+    ], Md2Datepicker.prototype, "mode", null);
+    __decorate$45([
+        _angular_core.Input(), 
+        __metadata$45('design:type', Object)
+    ], Md2Datepicker.prototype, "container", null);
+    __decorate$45([
+        _angular_core.Input(), 
+        __metadata$45('design:type', Object)
+    ], Md2Datepicker.prototype, "value", null);
+    __decorate$45([
+        _angular_core.Input(), 
+        __metadata$45('design:type', Object)
+    ], Md2Datepicker.prototype, "selected", null);
+    __decorate$45([
+        _angular_core.Input(), 
+        __metadata$45('design:type', Boolean)
     ], Md2Datepicker.prototype, "required", null);
-    __decorate$44([
+    __decorate$45([
         _angular_core.Input(), 
-        __metadata$44('design:type', Boolean)
+        __metadata$45('design:type', Boolean)
     ], Md2Datepicker.prototype, "disabled", null);
-    __decorate$44([
+    __decorate$45([
         _angular_core.Input(), 
-        __metadata$44('design:type', Date), 
-        __metadata$44('design:paramtypes', [Date])
+        __metadata$45('design:type', Date), 
+        __metadata$45('design:paramtypes', [Date])
     ], Md2Datepicker.prototype, "min", null);
-    __decorate$44([
+    __decorate$45([
         _angular_core.Input(), 
-        __metadata$44('design:type', Date), 
-        __metadata$44('design:paramtypes', [Date])
+        __metadata$45('design:type', Date), 
+        __metadata$45('design:paramtypes', [Date])
     ], Md2Datepicker.prototype, "max", null);
-    __decorate$44([
+    __decorate$45([
         _angular_core.Input(), 
-        __metadata$44('design:type', Boolean)
+        __metadata$45('design:type', Boolean)
     ], Md2Datepicker.prototype, "openOnFocus", null);
-    __decorate$44([
+    __decorate$45([
         _angular_core.Input(), 
-        __metadata$44('design:type', Boolean), 
-        __metadata$44('design:paramtypes', [Boolean])
+        __metadata$45('design:type', Boolean), 
+        __metadata$45('design:paramtypes', [Boolean])
     ], Md2Datepicker.prototype, "isOpen", null);
-    __decorate$44([
+    __decorate$45([
         _angular_core.HostListener('click', ['$event']), 
-        __metadata$44('design:type', Function), 
-        __metadata$44('design:paramtypes', [MouseEvent]), 
-        __metadata$44('design:returntype', void 0)
+        __metadata$45('design:type', Function), 
+        __metadata$45('design:paramtypes', [MouseEvent]), 
+        __metadata$45('design:returntype', void 0)
     ], Md2Datepicker.prototype, "_handleClick", null);
-    Md2Datepicker = __decorate$44([
+    Md2Datepicker = __decorate$45([
         _angular_core.Component({selector: 'md2-datepicker',
-            template: "<div class=\"md2-datepicker-trigger\" (click)=\"toggle()\"> <div class=\"md2-datepicker-icon\"> <svg *ngIf=\"type==='date'\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z\"></path> </svg> <svg *ngIf=\"type==='time'\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z\"></path> </svg> <svg *ngIf=\"type==='datetime'\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M15,13H16.5V15.82L18.94,17.23L18.19,18.53L15,16.69V13M19,8H5V19H9.67C9.24,18.09 9,17.07 9,16A7,7 0 0,1 16,9C17.07,9 18.09,9.24 19,9.67V8M5,21C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H6V1H8V3H16V1H18V3H19A2,2 0 0,1 21,5V11.1C22.24,12.36 23,14.09 23,16A7,7 0 0,1 16,23C14.09,23 12.36,22.24 11.1,21H5M16,11.15A4.85,4.85 0 0,0 11.15,16C11.15,18.68 13.32,20.85 16,20.85A4.85,4.85 0 0,0 20.85,16C20.85,13.32 18.68,11.15 16,11.15Z\"></path> </svg> </div> <div class=\"md2-datepicker-input\"> <span class=\"md2-datepicker-placeholder\" [class.md2-floating-placeholder]=\"value\">{{ placeholder }}</span> <span class=\"md2-datepicker-value\">{{ value | date:format }}</span> <span class=\"md2-datepicker-arrow\"></span> </div> </div> <template portal> <div class=\"md2-datepicker-panel\" [@fadeInContent]=\"'showing'\" (@fadeInContent.done)=\"_onPanelDone()\" (keydown)=\"_handleKeydown($event)\" [style.transformOrigin]=\"_transformOrigin\" [class.md2-datepicker-panel-done-animating]=\"_panelDoneAnimating\" tabindex=\"0\"> <div class=\"md2-datepicker-header\"> <div class=\"md2-datepicker-header-year\" [class.active]=\"_isYearsVisible\" [class.hidden]=\"type==='time'\" (click)=\"_showYear()\">{{ date | date: 'y' }}</div> <div class=\"md2-datepicker-header-date-time\"> <span class=\"md2-datepicker-header-date\" [class.active]=\"_isCalendarVisible && !_isYearsVisible\" [class.hidden]=\"type==='time'\" (click)=\"_showCalendar()\"> {{ date | date: 'EEE, MMM dd' }} </span> <span class=\"md2-datepicker-header-time\" [class.active]=\"!_isCalendarVisible\" [class.hidden]=\"type==='date'\"> <span class=\"md2-datepicker-header-hour\" [class.active]=\"_clockView === 'hour'\" (click)=\"_toggleHours('hour')\">{{ date.getHours() }}</span>:<span class=\"md2-datepicker-header-minute\" [class.active]=\"_clockView === 'minute'\" (click)=\"_toggleHours('minute')\">{{ date.getMinutes() }}</span> </span> </div> </div> <div class=\"md2-datepicker-content\"> <div class=\"md2-datepicker-calendar\" [class.active]=\"_isCalendarVisible\"> <div class=\"md2-calendar-years\" [class.active]=\"_isYearsVisible\"> <div class=\"md2-calendar-years-content\"> <div *ngFor=\"let y of _years\" class=\"md2-calendar-year\" [class.selected]=\"y === date.getFullYear()\" (click)=\"_setYear(y)\">{{y}}</div> </div> </div> <div class=\"md2-calendar-month\" [class.active]=\"!_isYearsVisible\"> <div class=\"md2-calendar-month-header\"> <div class=\"md2-button\" [class.disabled]=\"!_isBeforeMonth()\" (click)=\"_isBeforeMonth() && _updateMonth(-1)\"> <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z\"></path> </svg> </div> <div class=\"md2-calendar-month-year\">{{ date | date: 'MMMM y' }}</div> <div class=\"md2-button\" [class.disabled]=\"!_isAfterMonth()\" (click)=\"_isAfterMonth() && _updateMonth(1)\"> <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z\"></path> </svg> </div> </div> <table class=\"md2-calendar-dates\"> <thead><tr><th *ngFor=\"let day of _weekDays\">{{day.xshort}}</th></tr></thead> <tbody> <tr *ngFor=\"let w of _dates\"> <td *ngFor=\"let d of w\"> <div class=\"md2-calendar-day\" [class.today]=\"d.today\" [class.focus]=\"_locale.isSameDay(date, d.date)\" [class.selected]=\"_locale.isSameDay(selected, d.date)\" [class.disabled]=\"d.disabled\" [class.prev-month]=\"d.calMonth===_prevMonth\" [class.curr-month]=\"d.calMonth===_currMonth\" [class.next-month]=\"d.calMonth===_nextMonth\" (click)=\"_onClickDate($event,d)\">{{d.dateObj.day}}</div> </td> </tr> </tbody> </table> </div> </div> <md2-clock [class.active]=\"!_isCalendarVisible\" [time]=\"time\" [view]=\"_clockView\" (timeChange)=\"_onTimeChange($event)\" (onHourChange)=\"_onHourChange($event)\" (onMinuteChange)=\"_onMinuteChange($event)\"></md2-clock> <div class=\"md2-datepicker-actions\"> <div class=\"md2-button\" (click)=\"close()\">Cancel</div> <div class=\"md2-button\" (click)=\"_onClickOk()\">Ok</div> </div> </div> </div> </template>",
-            styles: ["md2-datepicker { position: relative; display: inline-block; min-width: 175px; outline: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } md2-datepicker.md2-datepicker-disabled { pointer-events: none; cursor: default; } .md2-datepicker-trigger { display: block; padding: 18px 0 18px 32px; white-space: nowrap; cursor: pointer; } .md2-datepicker-icon { position: absolute; top: 21px; left: 0; display: block; height: 24px; width: 24px; vertical-align: middle; fill: currentColor; color: rgba(0, 0, 0, 0.54); } .md2-datepicker-disabled .md2-datepicker-icon { color: rgba(0, 0, 0, 0.38); } .md2-datepicker-input { color: rgba(0, 0, 0, 0.38); border-bottom: 1px solid rgba(0, 0, 0, 0.12); display: flex; justify-content: space-between; align-items: center; height: 30px; min-width: 168px; line-height: 22px; position: relative; box-sizing: border-box; } [aria-disabled='true'] .md2-datepicker-input { background-image: linear-gradient(to right, rgba(0, 0, 0, 0.26) 0, rgba(0, 0, 0, 0.26) 33%, transparent 0); background-size: 4px 1px; background-repeat: repeat-x; border-color: transparent; background-position: 0 bottom; cursor: default; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } md2-datepicker:focus:not(.md2-datepicker-disabled) .md2-datepicker-input { color: #106cc8; border-color: #106cc8; } md2-datepicker.ng-invalid.ng-touched:not(.md2-datepicker-disabled) .md2-datepicker-input { color: #f44336; border-color: #f44336; } .md2-datepicker-placeholder { position: absolute; right: 18px; bottom: 100%; left: 0; padding: 0 2px; transform: translate3d(0, 26px, 0) scale(1); transform-origin: left top; white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; transition: all 150ms cubic-bezier(0.25, 0.8, 0.25, 1); } .md2-datepicker-placeholder.md2-floating-placeholder { left: -2px; text-align: left; transform: translate3d(0, 6px, 0) scale(0.75); } [dir='rtl'] .md2-datepicker-placeholder { right: 0; left: 18px; transform-origin: right top; } [dir='rtl'] .md2-datepicker-placeholder.md2-floating-placeholder { right: -2px; text-align: right; } [aria-required=true] .md2-datepicker-placeholder::after { content: '*'; } .md2-datepicker-value { position: relative; white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; color: rgba(0, 0, 0, 0.87); } .md2-datepicker-disabled .md2-datepicker-value { color: rgba(0, 0, 0, 0.38); } [dir='rtl'] .md2-datepicker-value { left: auto; right: 0; } .md2-datepicker-arrow { width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 5px solid; margin: 0 4px; color: rgba(0, 0, 0, 0.38); } md2-datepicker:focus:not(.md2-datepicker-disabled) .md2-datepicker-arrow { color: #106cc8; } md2-datepicker.ng-invalid.ng-touched:not(.md2-datepicker-disabled) .md2-datepicker-arrow { color: #f44336; } .md2-datepicker-panel { width: 300px; border-radius: 3px; background-color: white; overflow: hidden; box-shadow: 0 11px 15px -7px rgba(0, 0, 0, 0.2), 0 24px 38px 3px rgba(0, 0, 0, 0.14), 0 9px 46px 8px rgba(0, 0, 0, 0.12); outline: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } .md2-datepicker-header { padding: 16px; color: white; font-weight: 500; white-space: nowrap; background: #106cc8; box-sizing: border-box; } .md2-datepicker-header .hidden { display: none; } .md2-datepicker-header-year { font-size: 16px; opacity: 0.7; cursor: pointer; } .md2-datepicker-header-year.active { opacity: 1; pointer-events: none; } .md2-datepicker-header-date-time { font-size: 32px; } .md2-datepicker-header-date { opacity: 0.7; cursor: pointer; } .md2-datepicker-header-date.active { opacity: 1; pointer-events: none; } .md2-datepicker-header-time { opacity: 0.7; display: inline-block; padding-left: 8px; cursor: pointer; } .md2-datepicker-header-time.active { opacity: 1; cursor: default; } .md2-datepicker-header-time.active .md2-datepicker-header-hour, .md2-datepicker-header-time.active .md2-datepicker-header-minute { opacity: 0.7; cursor: pointer; } .md2-datepicker-header-time.active .md2-datepicker-header-hour.active, .md2-datepicker-header-time.active .md2-datepicker-header-minute.active { opacity: 1; pointer-events: none; } .md2-datepicker-content { position: relative; width: 100%; padding-top: 300px; overflow: hidden; } .md2-datepicker-calendar { position: absolute; top: 0; right: 100%; display: block; width: 100%; height: 300px; transition: 300ms; } .md2-datepicker-calendar.active { right: 0; } .md2-calendar-years { position: absolute; top: 10px; right: 100%; bottom: 10px; display: block; width: 100%; line-height: 40px; background: white; overflow-x: hidden; overflow-y: auto; transition: 300ms; } .md2-calendar-years.active { right: 0; } .md2-calendar-years .md2-calendar-years-content { display: flex; flex-direction: column; justify-content: center; min-height: 100%; } .md2-calendar-year { position: relative; display: block; margin: 0 auto; padding: 0; font-size: 17px; font-weight: 400; text-align: center; cursor: pointer; } .md2-calendar-year.selected { color: #106cc8; font-size: 26px; font-weight: 500; } .md2-calendar-month { position: absolute; left: 100%; display: block; width: 100%; font-size: 12px; font-weight: 400; text-align: center; transition: 300ms; } .md2-calendar-month.active { left: 0; } .md2-calendar-month-header { display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; text-align: center; line-height: 48px; } .md2-calendar-month-header .md2-button { display: inline-block; width: 48px; height: 48px; padding: 12px; outline: none; border: 0; cursor: pointer; background: transparent; box-sizing: border-box; } .md2-calendar-month-header .md2-button svg { vertical-align: top; } .md2-calendar-month-header .md2-calendar-month-year-header { width: 100%; } .md2-calendar-dates { margin: 0 auto; } .md2-calendar-dates th { width: 35px; height: 20px; font-weight: 500; line-height: 15px; opacity: 0.5; } .md2-calendar-dates td { padding: 0; } .md2-calendar-day { position: relative; display: inline-block; width: 35px; height: 35px; border-radius: 50%; text-align: center; cursor: pointer; line-height: 35px; box-sizing: border-box; } .md2-calendar-day.today { color: #106cc8; } .md2-calendar-day:hover, .md2-calendar-day.focus { background: #e0e0e0; } .md2-calendar-day.selected, .md2-calendar-day.selected:hover { color: white; background: #106cc8; } .md2-calendar-day.disabled, .md2-calendar-day.disabled:hover { color: rgba(0, 0, 0, 0.45); background: transparent; pointer-events: none; } .md2-calendar-day.prev-month, .md2-calendar-day.next-month { visibility: hidden; } md2-clock { position: absolute; top: 0; left: 100%; display: block; width: 240px; height: 240px; margin: 30px; font-size: 14px; font-weight: 400; text-align: center; background-color: #e0e0e0; border-radius: 50%; overflow: hidden; transition: 300ms; } md2-clock.active { left: 0; } .md2-clock-center { position: absolute; top: 50%; left: 50%; height: 6px; width: 6px; margin: -3px; border-radius: 50%; background-color: #106cc8; } .md2-clock-hand { position: absolute; top: 0; right: 0; bottom: 0; left: 0; width: 1px; height: 99px; margin: 0 auto; background-color: #106cc8; transform-origin: bottom; /*transition: all 100ms;*/ } .md2-clock-hand::before { content: ''; position: absolute; top: -4px; left: -4px; width: 8px; height: 8px; border-radius: 50%; background-color: #106cc8; } .md2-clock-hours, .md2-clock-minutes { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; visibility: hidden; transition: 350ms; transform: scale(1.2); } .md2-clock-hours.active, .md2-clock-minutes.active { opacity: 1; visibility: visible; transform: scale(1); } .md2-clock-minutes { transform: scale(0.8); } .md2-clock-hour, .md2-clock-minute { position: absolute; width: 34px; height: 34px; line-height: 34px; text-align: center; border-radius: 50%; cursor: pointer; } .md2-clock-hour:hover, .md2-clock-minute:hover { background: #fafafa; } .md2-clock-hour.active, .md2-clock-minute.active { background: #65acf3; } .md2-datepicker-actions { text-align: right; } .md2-datepicker-actions .md2-button { display: inline-block; min-width: 64px; margin: 4px 8px 8px 0; padding: 0 12px; font-size: 14px; color: #106cc8; line-height: 36px; text-align: center; text-transform: uppercase; border-radius: 2px; cursor: pointer; box-sizing: border-box; transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1); } .md2-datepicker-actions .md2-button:hover { background: #ebebeb; } @media (min-width: 480px) { .md2-datepicker-panel { display: flex; width: 450px; } .md2-datepicker-header { width: 150px; min-width: 150px; padding-right: 15px; white-space: normal; word-wrap: break-word; } .md2-datepicker-header-time { display: block; padding-left: 0; } } .cdk-overlay-container, .cdk-global-overlay-wrapper { pointer-events: none; top: 0; left: 0; height: 100%; width: 100%; } .cdk-overlay-container { position: fixed; z-index: 1000; } .cdk-global-overlay-wrapper { display: flex; position: absolute; z-index: 1000; } .cdk-overlay-pane { position: absolute; pointer-events: auto; box-sizing: border-box; z-index: 1000; } .cdk-overlay-backdrop { position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1000; pointer-events: auto; transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1); opacity: 0; } .cdk-overlay-backdrop.cdk-overlay-backdrop-showing { opacity: 0.48; } .cdk-overlay-dark-backdrop { background: rgba(0, 0, 0, 0.6); } /*# sourceMappingURL=datepicker.css.map */ "],
+            template: "<div class=\"md2-datepicker-trigger\" (click)=\"toggle()\"> <div class=\"md2-datepicker-icon\"> <svg *ngIf=\"type==='date'\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z\"></path> </svg> <svg *ngIf=\"type==='time'\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z\"></path> </svg> <svg *ngIf=\"type==='datetime'\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M15,13H16.5V15.82L18.94,17.23L18.19,18.53L15,16.69V13M19,8H5V19H9.67C9.24,18.09 9,17.07 9,16A7,7 0 0,1 16,9C17.07,9 18.09,9.24 19,9.67V8M5,21C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H6V1H8V3H16V1H18V3H19A2,2 0 0,1 21,5V11.1C22.24,12.36 23,14.09 23,16A7,7 0 0,1 16,23C14.09,23 12.36,22.24 11.1,21H5M16,11.15A4.85,4.85 0 0,0 11.15,16C11.15,18.68 13.32,20.85 16,20.85A4.85,4.85 0 0,0 20.85,16C20.85,13.32 18.68,11.15 16,11.15Z\"></path> </svg> </div> <div class=\"md2-datepicker-input\"> <span class=\"md2-datepicker-placeholder\" [class.md2-floating-placeholder]=\"value\">{{ placeholder }}</span> <span class=\"md2-datepicker-value\">{{ value | date:format }}</span> <span *ngIf=\"!value || required || disabled\" class=\"md2-datepicker-arrow\"></span> <span *ngIf=\"value && !required && !disabled\" class=\"md2-datepicker-clear\" (click)=\"_clearValue($event)\"> <svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\"> <path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\" /> </svg> </span> </div> </div> <template portal> <div class=\"md2-datepicker-panel\" [@fadeInContent]=\"'showing'\" (@fadeInContent.done)=\"_onPanelDone()\" (keydown)=\"_handleKeydown($event)\" [style.transformOrigin]=\"_transformOrigin\" [class.md2-datepicker-panel-done-animating]=\"_panelDoneAnimating\" tabindex=\"0\" [attr.container]=\"container\" [attr.mode]=\"mode\"> <div class=\"md2-datepicker-header\"> <div class=\"md2-datepicker-header-year\" *ngIf=\"type!=='time'\" [class.active]=\"_isYearsVisible\" (click)=\"_showYear()\">{{ date | date: 'y' }}</div> <div class=\"md2-datepicker-header-date-time\"> <span class=\"md2-datepicker-header-date\" *ngIf=\"type!=='time'\" [class.active]=\"_isCalendarVisible && !_isYearsVisible\" (click)=\"_showCalendar()\"> {{ getDateLabel }} </span> <span class=\"md2-datepicker-header-time\" *ngIf=\"type!=='date'\" [class.active]=\"!_isCalendarVisible\"> <span class=\"md2-datepicker-header-hour\" [class.active]=\"_clockView === 'hour'\" (click)=\"_toggleHours('hour')\">{{ date.getHours() }}</span>:<span class=\"md2-datepicker-header-minute\" [class.active]=\"_clockView === 'minute'\" (click)=\"_toggleHours('minute')\">{{ date.getMinutes() }}</span> </span> </div> </div> <div class=\"md2-datepicker-content\"> <div class=\"md2-datepicker-calendar\" [class.active]=\"_isCalendarVisible\"> <div class=\"md2-calendar-years\" [class.active]=\"_isYearsVisible\"> <div class=\"md2-calendar-years-content\"> <div *ngFor=\"let y of _years\" class=\"md2-calendar-year\" [class.selected]=\"y === date.getFullYear()\" (click)=\"_setYear(y)\">{{y}}</div> </div> </div> <div class=\"md2-calendar-month\" [class.active]=\"!_isYearsVisible\"> <div class=\"md2-calendar-header\"> <div class=\"md2-button\" [class.disabled]=\"!_isBeforeMonth()\" (click)=\"_isBeforeMonth() && _updateMonth(-1)\"> <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z\"></path> </svg> </div> <div class=\"md2-calendar-month-year\" [@slideCalendar]=\"_calendarState\">{{ getMonthLabel }}</div> <div class=\"md2-button\" [class.disabled]=\"!_isAfterMonth()\" (click)=\"_isAfterMonth() && _updateMonth(1)\"> <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z\"></path> </svg> </div> </div> <table class=\"md2-calendar-dates\"> <thead><tr><th *ngFor=\"let day of _weekDays\">{{day.xshort}}</th></tr></thead> <tbody [@slideCalendar]=\"_calendarState\"> <tr *ngFor=\"let w of _dates\"> <td *ngFor=\"let d of w\"> <div class=\"md2-calendar-day\" [class.today]=\"d.today\" [class.focus]=\"_locale.isSameDay(date, d.date)\" [class.selected]=\"_locale.isSameDay(selected, d.date)\" [class.disabled]=\"d.disabled\" [class.prev-month]=\"d.calMonth===_prevMonth\" [class.curr-month]=\"d.calMonth===_currMonth\" [class.next-month]=\"d.calMonth===_nextMonth\" (click)=\"_onClickDate($event,d)\">{{d.index}}</div> </td> </tr> </tbody> </table> </div> </div> <md2-clock [class.active]=\"!_isCalendarVisible\" [time]=\"time\" [view]=\"_clockView\" (timeChange)=\"_onTimeChange($event)\" (onHourChange)=\"_onHourChange($event)\" (onMinuteChange)=\"_onMinuteChange($event)\"></md2-clock> <div class=\"md2-datepicker-actions\"> <div class=\"md2-button\" (click)=\"close()\">{{ cancelLabel }}</div> <div class=\"md2-button\" (click)=\"_onClickOk()\">{{ okLabel }}</div> </div> </div> </div> </template>",
+            styles: ["md2-datepicker { position: relative; display: inline-block; min-width: 175px; outline: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } md2-datepicker.md2-datepicker-disabled { pointer-events: none; cursor: default; } .md2-datepicker-trigger { display: block; padding: 18px 0 4px 32px; white-space: nowrap; cursor: pointer; } .md2-datepicker-icon { position: absolute; top: 21px; left: 0; display: block; height: 24px; width: 24px; vertical-align: middle; fill: currentColor; color: rgba(0, 0, 0, 0.54); } .md2-datepicker-disabled .md2-datepicker-icon { color: rgba(0, 0, 0, 0.38); } .md2-datepicker-input { color: rgba(0, 0, 0, 0.38); border-bottom: 1px solid rgba(0, 0, 0, 0.12); display: flex; justify-content: space-between; align-items: center; height: 30px; min-width: 168px; line-height: 22px; position: relative; padding-right: 20px; box-sizing: border-box; } [aria-disabled='true'] .md2-datepicker-input { background-image: linear-gradient(to right, rgba(0, 0, 0, 0.26) 0, rgba(0, 0, 0, 0.26) 33%, transparent 0); background-size: 4px 1px; background-repeat: repeat-x; border-color: transparent; background-position: 0 bottom; cursor: default; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } md2-datepicker:focus:not(.md2-datepicker-disabled) .md2-datepicker-input { color: #106cc8; border-color: #106cc8; } md2-datepicker.ng-invalid.ng-touched:not(.md2-datepicker-disabled) .md2-datepicker-input { color: #f44336; border-color: #f44336; } .md2-datepicker-placeholder { position: absolute; right: 18px; bottom: 100%; left: 0; padding: 0 2px; transform: translate3d(0, 26px, 0) scale(1); transform-origin: left top; white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; transition: all 150ms cubic-bezier(0.25, 0.8, 0.25, 1); } .md2-datepicker-placeholder.md2-floating-placeholder { left: -2px; text-align: left; transform: translate3d(0, 6px, 0) scale(0.75); } [dir='rtl'] .md2-datepicker-placeholder { right: 0; left: 18px; transform-origin: right top; } [dir='rtl'] .md2-datepicker-placeholder.md2-floating-placeholder { right: -2px; text-align: right; } [aria-required=true] .md2-datepicker-placeholder::after { content: '*'; } .md2-datepicker-value { position: relative; width: 100%; white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; color: rgba(0, 0, 0, 0.87); border: 0; outline: none; background: transparent; } .md2-datepicker-disabled .md2-datepicker-value { color: rgba(0, 0, 0, 0.38); } [dir='rtl'] .md2-datepicker-value { left: auto; right: 0; } .md2-datepicker-arrow { position: absolute; right: 0; width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 5px solid; margin: 0 4px; color: rgba(0, 0, 0, 0.38); } md2-datepicker:focus:not(.md2-datepicker-disabled) .md2-datepicker-arrow { color: #106cc8; } md2-datepicker.ng-invalid.ng-touched:not(.md2-datepicker-disabled) .md2-datepicker-arrow { color: #f44336; } .md2-datepicker-clear { position: absolute; right: 0; height: 20px; color: rgba(0, 0, 0, 0.54); } .md2-datepicker-clear svg { fill: currentColor; } .md2-datepicker-panel { width: 276px; border-radius: 3px; color: rgba(0, 0, 0, 0.87); background-color: white; overflow: hidden; box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12); outline: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } .md2-datepicker-panel[container='dialog'] { box-shadow: 0 11px 15px -7px rgba(0, 0, 0, 0.2), 0 24px 38px 3px rgba(0, 0, 0, 0.14), 0 9px 46px 8px rgba(0, 0, 0, 0.12); } .md2-datepicker-panel[mode='landscape'] { display: flex; width: 426px; } .md2-datepicker-header { padding: 16px; color: white; font-weight: 500; white-space: nowrap; background: #106cc8; box-sizing: border-box; } [mode='landscape'] .md2-datepicker-header { width: 150px; min-width: 150px; padding-right: 15px; white-space: normal; word-wrap: break-word; } .md2-datepicker-header-year { font-size: 16px; opacity: 0.7; cursor: pointer; } .md2-datepicker-header-year.active { opacity: 1; pointer-events: none; } .md2-datepicker-header-date-time { font-size: 32px; } .md2-datepicker-header-date { opacity: 0.7; cursor: pointer; } .md2-datepicker-header-date.active { opacity: 1; pointer-events: none; } .md2-datepicker-header-time { opacity: 0.7; display: inline-block; padding-left: 8px; cursor: pointer; } .md2-datepicker-header-time.active { opacity: 1; cursor: default; } .md2-datepicker-header-time.active .md2-datepicker-header-hour, .md2-datepicker-header-time.active .md2-datepicker-header-minute { opacity: 0.7; cursor: pointer; } .md2-datepicker-header-time.active .md2-datepicker-header-hour.active, .md2-datepicker-header-time.active .md2-datepicker-header-minute.active { opacity: 1; pointer-events: none; } [mode='landscape'] .md2-datepicker-header-time { display: block; padding-left: 0; } .md2-datepicker-content { position: relative; width: 100%; padding-top: 280px; overflow: hidden; } .md2-datepicker-calendar { position: absolute; top: 0; right: 100%; display: block; width: 100%; height: 280px; transition: 300ms; } .md2-datepicker-calendar.active { right: 0; } .md2-calendar-years { position: absolute; top: 10px; right: 100%; bottom: 10px; display: block; width: 100%; line-height: 40px; background: white; overflow-x: hidden; overflow-y: auto; transition: 300ms; } .md2-calendar-years.active { right: 0; } .md2-calendar-years .md2-calendar-years-content { display: flex; flex-direction: column; justify-content: center; min-height: 100%; } .md2-calendar-year { position: relative; display: block; margin: 0 auto; padding: 0; font-size: 17px; font-weight: 400; text-align: center; cursor: pointer; } .md2-calendar-year.selected { color: #106cc8; font-size: 26px; font-weight: 500; } .md2-calendar-month { position: absolute; left: 100%; display: block; width: 100%; font-size: 12px; font-weight: 400; text-align: center; transition: 300ms; } .md2-calendar-month.active { left: 0; } .md2-calendar-header { display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; text-align: center; line-height: 48px; } .md2-calendar-header .md2-calendar-month-year-header { width: 100%; } .md2-calendar-header .md2-button { display: inline-block; width: 48px; height: 48px; padding: 12px; outline: none; border: 0; cursor: pointer; background: transparent; box-sizing: border-box; } .md2-calendar-header .md2-button svg { vertical-align: top; } .md2-calendar-dates { margin: 0 8px; } .md2-calendar-dates th { width: 35px; height: 16px; font-weight: 500; line-height: 10px; opacity: 0.5; } .md2-calendar-dates td { padding: 0; } .md2-calendar-day { position: relative; display: inline-block; width: 35px; height: 35px; border-radius: 50%; text-align: center; cursor: pointer; line-height: 35px; box-sizing: border-box; } .md2-calendar-day.today { color: #106cc8; } .md2-calendar-day:hover, .md2-calendar-day.focus { background: #e0e0e0; } .md2-calendar-day.selected, .md2-calendar-day.selected:hover { color: white; background: #106cc8; } .md2-calendar-day.disabled, .md2-calendar-day.disabled:hover { color: rgba(0, 0, 0, 0.43); background: transparent; pointer-events: none; } .md2-calendar-day.prev-month, .md2-calendar-day.next-month { visibility: hidden; } md2-clock { position: absolute; top: 0; left: 100%; display: block; width: 240px; height: 240px; margin: 30px; font-size: 14px; font-weight: 400; text-align: center; background-color: #e0e0e0; border-radius: 50%; overflow: hidden; transition: 300ms; } md2-clock.active { left: 0; } .md2-clock-center { position: absolute; top: 50%; left: 50%; height: 6px; width: 6px; margin: -3px; border-radius: 50%; background-color: #106cc8; } .md2-clock-hand { position: absolute; top: 0; right: 0; bottom: 0; left: 0; width: 1px; height: 99px; margin: 0 auto; background-color: #106cc8; transform-origin: bottom; } .md2-clock-hand::before { content: ''; position: absolute; top: -4px; left: -4px; width: 8px; height: 8px; border-radius: 50%; background-color: #106cc8; } .md2-clock-hours, .md2-clock-minutes { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; visibility: hidden; transition: 350ms; transform: scale(1.2); } .md2-clock-hours.active, .md2-clock-minutes.active { opacity: 1; visibility: visible; transform: scale(1); } .md2-clock-minutes { transform: scale(0.8); } .md2-clock-hour, .md2-clock-minute { position: absolute; width: 34px; height: 34px; line-height: 34px; text-align: center; border-radius: 50%; cursor: pointer; } .md2-clock-hour:hover, .md2-clock-minute:hover { background: #fafafa; } .md2-clock-hour.active, .md2-clock-minute.active { background: #65acf3; } .md2-datepicker-actions { text-align: right; } .md2-datepicker-actions .md2-button { display: inline-block; min-width: 64px; margin: 4px 8px 8px 0; padding: 0 12px; font-size: 14px; color: #106cc8; line-height: 36px; text-align: center; text-transform: uppercase; border-radius: 2px; cursor: pointer; box-sizing: border-box; transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1); } .md2-datepicker-actions .md2-button:hover { background: #ebebeb; } @media (min-width: 480px) { .md2-datepicker-panel[mode='auto'] { display: flex; width: 426px; } [mode='auto'] .md2-datepicker-header { width: 150px; min-width: 150px; padding-right: 15px; white-space: normal; word-wrap: break-word; } [mode='auto'] .md2-datepicker-header-time { display: block; padding-left: 0; } } .cdk-overlay-container, .cdk-global-overlay-wrapper { pointer-events: none; top: 0; left: 0; height: 100%; width: 100%; } .cdk-overlay-container { position: fixed; z-index: 1000; } .cdk-global-overlay-wrapper { display: flex; position: absolute; z-index: 1000; } .cdk-overlay-pane { position: absolute; pointer-events: auto; box-sizing: border-box; z-index: 1000; } .cdk-overlay-backdrop { position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1000; pointer-events: auto; transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1); opacity: 0; } .cdk-overlay-backdrop.cdk-overlay-backdrop-showing { opacity: 0.48; } .cdk-overlay-dark-backdrop { background: rgba(0, 0, 0, 0.6); } /*# sourceMappingURL=datepicker.css.map */ "],
             host: {
                 'role': 'datepicker',
-                '[id]': 'id',
                 '[class.md2-datepicker-disabled]': 'disabled',
                 '[class.md2-datepicker-opened]': 'panelOpen',
                 '[attr.tabindex]': 'disabled ? -1 : tabindex',
@@ -9175,16 +9616,18 @@ var Md2Datepicker = (function () {
                 '[attr.aria-invalid]': '_control?.invalid || "false"',
                 '(keydown)': '_handleKeydown($event)',
                 '(focus)': '_onFocus()',
-                '(blur)': '_onBlur()'
+                '(blur)': '_onBlur()',
+                '(window:resize)': '_handleWindowResize($event)'
             },
             animations: [
-                fadeInContent$1
+                fadeInContent$1,
+                slideCalendar
             ],
             encapsulation: _angular_core.ViewEncapsulation.None
         }),
-        __param$7(4, _angular_core.Self()),
-        __param$7(4, _angular_core.Optional()), 
-        __metadata$44('design:paramtypes', [_angular_core.ElementRef, Overlay, _angular_core.Renderer, DateLocale, _angular_forms.NgControl])
+        __param$9(4, _angular_core.Self()),
+        __param$9(4, _angular_core.Optional()), 
+        __metadata$45('design:paramtypes', [_angular_core.ElementRef, Overlay, _angular_core.Renderer, DateLocale, _angular_forms.NgControl])
     ], Md2Datepicker);
     return Md2Datepicker;
 }());
@@ -9198,64 +9641,124 @@ var Md2DatepickerModule = (function () {
             providers: []
         };
     };
-    Md2DatepickerModule = __decorate$44([
+    Md2DatepickerModule = __decorate$45([
         _angular_core.NgModule({
             imports: [_angular_common.CommonModule, OverlayModule, PortalModule],
             exports: MD2_DATEPICKER_DIRECTIVES,
             declarations: MD2_DATEPICKER_DIRECTIVES,
             providers: [DateLocale]
         }), 
-        __metadata$44('design:paramtypes', [])
+        __metadata$45('design:paramtypes', [])
     ], Md2DatepickerModule);
     return Md2DatepickerModule;
 }());
+
+/**
+ * Extends an object with the *enumerable* and *own* properties of one or more source objects,
+ * similar to Object.assign.
+ *
+ * @param dest The object which will have properties copied to it.
+ * @param sources The source objects from which properties will be copied.
+ */
+function extendObject(dest) {
+    var sources = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        sources[_i - 1] = arguments[_i];
+    }
+    if (dest == null) {
+        throw TypeError('Cannot convert undefined or null to object');
+    }
+    for (var _a = 0, sources_1 = sources; _a < sources_1.length; _a++) {
+        var source = sources_1[_a];
+        if (source != null) {
+            for (var key in source) {
+                if (source.hasOwnProperty(key)) {
+                    dest[key] = source[key];
+                }
+            }
+        }
+    }
+    return dest;
+}
 
 var __extends$8 = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var __decorate$47 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$48 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$47 = (this && this.__metadata) || function (k, v) {
+var __metadata$48 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param$10 = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var Md2DialogConfig = (function () {
+    function Md2DialogConfig() {
+        this.role = 'dialog';
+        this.disableClose = false;
+    }
+    return Md2DialogConfig;
+}());
 var Md2DialogPortal = (function (_super) {
     __extends$8(Md2DialogPortal, _super);
     function Md2DialogPortal(templateRef, viewContainerRef) {
         _super.call(this, templateRef, viewContainerRef);
     }
-    Md2DialogPortal = __decorate$47([
+    Md2DialogPortal = __decorate$48([
         _angular_core.Directive({ selector: '[md2DialogPortal]' }), 
-        __metadata$47('design:paramtypes', [_angular_core.TemplateRef, _angular_core.ViewContainerRef])
+        __metadata$48('design:paramtypes', [_angular_core.TemplateRef, _angular_core.ViewContainerRef])
     ], Md2DialogPortal);
     return Md2DialogPortal;
 }(TemplatePortalDirective));
+/**
+ * Title of a dialog element. Stays fixed to the top of the dialog when scrolling.
+ */
 var Md2DialogTitle = (function () {
     function Md2DialogTitle() {
     }
-    Md2DialogTitle = __decorate$47([
+    Md2DialogTitle = __decorate$48([
         _angular_core.Directive({ selector: 'md2-dialog-title' }), 
-        __metadata$47('design:paramtypes', [])
+        __metadata$48('design:paramtypes', [])
     ], Md2DialogTitle);
     return Md2DialogTitle;
 }());
-var Md2DialogFooter = (function () {
-    function Md2DialogFooter() {
+/**
+ * Scrollable content container of a dialog.
+ */
+var Md2DialogContent = (function () {
+    function Md2DialogContent() {
     }
-    Md2DialogFooter = __decorate$47([
-        _angular_core.Directive({ selector: 'md2-dialog-footer' }), 
-        __metadata$47('design:paramtypes', [])
-    ], Md2DialogFooter);
-    return Md2DialogFooter;
+    Md2DialogContent = __decorate$48([
+        _angular_core.Directive({ selector: 'md2-dialog-content' }), 
+        __metadata$48('design:paramtypes', [])
+    ], Md2DialogContent);
+    return Md2DialogContent;
+}());
+/**
+ * Container for the bottom action buttons in a dialog.
+ * Stays fixed to the bottom when scrolling.
+ */
+var Md2DialogActions = (function () {
+    function Md2DialogActions() {
+    }
+    Md2DialogActions = __decorate$48([
+        _angular_core.Directive({ selector: 'md2-dialog-footer, md2-dialog-actions' }), 
+        __metadata$48('design:paramtypes', [])
+    ], Md2DialogActions);
+    return Md2DialogActions;
 }());
 var Md2Dialog = (function () {
-    function Md2Dialog(_overlay) {
+    function Md2Dialog(_overlay, _parentDialog) {
         this._overlay = _overlay;
+        this._parentDialog = _parentDialog;
+        this._openDialogsAtThisLevel = [];
+        this._boundKeydown = this._handleKeydown.bind(this);
         this._panelOpen = false;
         this._overlayRef = null;
         /** Property watched by the animation framework to show or hide the dialog */
@@ -9264,14 +9767,26 @@ var Md2Dialog = (function () {
         this.onClose = new _angular_core.EventEmitter();
     }
     Md2Dialog.prototype.ngOnDestroy = function () { this.destroyPanel(); };
+    Object.defineProperty(Md2Dialog.prototype, "_openDialogs", {
+        get: function () {
+            return this._parentDialog ? this._parentDialog._openDialogs : this._openDialogsAtThisLevel;
+        },
+        enumerable: true,
+        configurable: true
+    });
     /** Open the dialog */
-    Md2Dialog.prototype.open = function () {
+    Md2Dialog.prototype.open = function (config) {
+        this.config = _applyConfigDefaults(config);
         if (this._panelOpen) {
             return Promise.resolve(this);
         }
         this._createOverlay();
         this._overlayRef.attach(this._portal);
         this._subscribeToBackdrop();
+        if (!this._openDialogs.length && !this._parentDialog) {
+            document.addEventListener('keydown', this._boundKeydown);
+        }
+        this._openDialogs.push(this);
         this._panelOpen = true;
         this._visibility = 'visible';
         return Promise.resolve(this);
@@ -9282,7 +9797,17 @@ var Md2Dialog = (function () {
         this._panelOpen = false;
         if (this._overlayRef) {
             this._overlayRef.detach();
-            this._backdropSubscription.unsubscribe();
+            if (this._backdropSubscription) {
+                this._backdropSubscription.unsubscribe();
+            }
+        }
+        var index = this._openDialogs.indexOf(this);
+        if (index > -1) {
+            this._openDialogs.splice(index, 1);
+            // no open dialogs are left, call next on afterAllClosed Subject
+            if (!this._openDialogs.length) {
+                document.removeEventListener('keydown', this._boundKeydown);
+            }
         }
         return Promise.resolve(this);
     };
@@ -9302,14 +9827,20 @@ var Md2Dialog = (function () {
             this.onClose.emit();
         }
     };
-    Md2Dialog.prototype._handleEscKeydown = function (event) {
-        this.close();
+    Md2Dialog.prototype._handleKeydown = function (event) {
+        var topDialog = this._openDialogs[this._openDialogs.length - 1];
+        if (event.keyCode === ESCAPE && topDialog &&
+            !topDialog.config.disableClose) {
+            topDialog.close();
+        }
     };
     Md2Dialog.prototype._subscribeToBackdrop = function () {
         var _this = this;
-        this._backdropSubscription = this._overlayRef.backdropClick().subscribe(function () {
-            _this.close();
-        });
+        if (!this.config.disableClose) {
+            this._backdropSubscription = this._overlayRef.backdropClick().first().subscribe(function () {
+                return _this.close();
+            });
+        }
     };
     Md2Dialog.prototype._createOverlay = function () {
         if (!this._overlayRef) {
@@ -9319,7 +9850,6 @@ var Md2Dialog = (function () {
                 .centerHorizontally()
                 .centerVertically();
             config.hasBackdrop = true;
-            config.backdropClass = 'cdk-overlay-dark-backdrop';
             this._overlayRef = this._overlay.create(config);
         }
     };
@@ -9328,29 +9858,29 @@ var Md2Dialog = (function () {
             this._backdropSubscription.unsubscribe();
         }
     };
-    __decorate$47([
+    __decorate$48([
         _angular_core.Output(), 
-        __metadata$47('design:type', _angular_core.EventEmitter)
+        __metadata$48('design:type', _angular_core.EventEmitter)
     ], Md2Dialog.prototype, "onOpen", void 0);
-    __decorate$47([
+    __decorate$48([
         _angular_core.Output(), 
-        __metadata$47('design:type', _angular_core.EventEmitter)
+        __metadata$48('design:type', _angular_core.EventEmitter)
     ], Md2Dialog.prototype, "onClose", void 0);
-    __decorate$47([
+    __decorate$48([
         _angular_core.ViewChild(Md2DialogPortal), 
-        __metadata$47('design:type', Md2DialogPortal)
+        __metadata$48('design:type', Md2DialogPortal)
     ], Md2Dialog.prototype, "_portal", void 0);
-    __decorate$47([
+    __decorate$48([
         _angular_core.Input('title'), 
-        __metadata$47('design:type', String)
+        __metadata$48('design:type', String)
     ], Md2Dialog.prototype, "dialogTitle", void 0);
-    Md2Dialog = __decorate$47([
+    Md2Dialog = __decorate$48([
         _angular_core.Component({selector: 'md2-dialog',
-            template: "<template md2DialogPortal> <div class=\"md2-dialog-panel\" [@state]=\"_visibility\" (@state.done)=\"_onPanelDone()\"> <div class=\"md2-dialog-content\"> <div class=\"md2-dialog-header\"> <button type=\"button\" class=\"close\" aria-label=\"Close\" (click)=\"close()\">&times;</button> <h2 *ngIf=\"dialogTitle\" class=\"md2-dialog-title\" id=\"myDialogLabel\" [innerHtml]=\"dialogTitle\"></h2> <ng-content select=\"md2-dialog-title\"></ng-content> </div> <div class=\"md2-dialog-body\"> <ng-content></ng-content> </div> <ng-content select=\"md2-dialog-footer\"></ng-content> </div> </div> </template>",
+            template: "<template md2DialogPortal> <div class=\"md2-dialog-panel\" [attr.role]=\"dialogConfig?.role\" [@state]=\"_visibility\" (@state.done)=\"_onPanelDone()\"> <div class=\"md2-dialog-content\"> <div class=\"md2-dialog-header\"> <button *ngIf=\"!config.disableClose\" type=\"button\" class=\"close\" aria-label=\"Close\" (click)=\"close()\">&times;</button> <h2 *ngIf=\"dialogTitle\" class=\"md2-dialog-title\" id=\"myDialogLabel\" [innerHtml]=\"dialogTitle\"></h2> <ng-content select=\"md2-dialog-title\"></ng-content> </div> <div class=\"md2-dialog-body\"> <ng-content select=\"md2-dialog-content\"></ng-content> <ng-content></ng-content> </div> <ng-content select=\"md2-dialog-footer\"></ng-content> <ng-content select=\"md2-dialog-actions\"></ng-content> </div> </div> </template>",
             styles: [".md2-dialog-panel { position: relative; max-width: 90vw; width: 600px; border-radius: 3px; background-color: white; overflow: hidden; box-shadow: 0 11px 15px -7px rgba(0, 0, 0, 0.2), 0 24px 38px 3px rgba(0, 0, 0, 0.14), 0 9px 46px 8px rgba(0, 0, 0, 0.12); } .md2-dialog-header { background: #2196f3; color: #fff; font-size: 25px; line-height: 1.1; font-weight: 500; padding: 0 48px 0 16px; border-bottom: 1px solid #e5e5e5; word-wrap: break-word; } .md2-dialog-header .close { position: absolute; top: 21px; right: 16px; display: inline-block; width: 18px; height: 18px; overflow: hidden; -webkit-appearance: none; padding: 0; cursor: pointer; background: 0 0; border: 0; outline: 0; opacity: 0.8; font-size: 0; z-index: 1; min-width: initial; box-shadow: none; margin: 0; } .md2-dialog-header .close::before, .md2-dialog-header .close::after { content: ''; position: absolute; top: 50%; left: 0; width: 100%; height: 2px; margin-top: -1px; background: #ccc; border-radius: 2px; } .md2-dialog-header .close::before { transform: rotate(45deg); } .md2-dialog-header .close::after { transform: rotate(-45deg); } .md2-dialog-header .close:hover { opacity: 1; } .md2-dialog-header md2-dialog-title, .md2-dialog-header .md2-dialog-title { display: block; margin: 0; padding: 16px 0; font-size: 25px; font-weight: 500; } .md2-dialog-header dialog-header { line-height: 33px; } .md2-dialog-body { position: relative; max-height: 65vh; padding: 16px; overflow-y: auto; } .md2-dialog-footer, md2-dialog-footer { display: block; padding: 16px; text-align: right; border-top: 1px solid rgba(0, 0, 0, 0.12); } .cdk-overlay-container, .cdk-global-overlay-wrapper { pointer-events: none; top: 0; left: 0; height: 100%; width: 100%; } .cdk-overlay-container { position: fixed; z-index: 1000; } .cdk-global-overlay-wrapper { display: flex; position: absolute; z-index: 1000; } .cdk-overlay-pane { position: absolute; pointer-events: auto; box-sizing: border-box; z-index: 1000; } .cdk-overlay-backdrop { position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1000; pointer-events: auto; transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1); opacity: 0; } .cdk-overlay-backdrop.cdk-overlay-backdrop-showing { opacity: 0.48; } .cdk-overlay-dark-backdrop { background: rgba(0, 0, 0, 0.6); } /*# sourceMappingURL=dialog.css.map */ "],
             host: {
                 'tabindex': '0',
-                '(body:keydown.esc)': '_handleEscKeydown($event)'
+                '[attr.role]': 'config?.role',
             },
             animations: [
                 _angular_core.trigger('state', [
@@ -9364,15 +9894,26 @@ var Md2Dialog = (function () {
             ],
             encapsulation: _angular_core.ViewEncapsulation.None,
             exportAs: 'md2Dialog'
-        }), 
-        __metadata$47('design:paramtypes', [Overlay])
+        }),
+        __param$10(1, _angular_core.Optional()),
+        __param$10(1, _angular_core.SkipSelf()), 
+        __metadata$48('design:paramtypes', [Overlay, Md2Dialog])
     ], Md2Dialog);
     return Md2Dialog;
 }());
+/**
+ * Applies default options to the dialog config.
+ * @param dialogConfig Config to be modified.
+ * @returns The new configuration object.
+ */
+function _applyConfigDefaults(dialogConfig) {
+    return extendObject(new Md2DialogConfig(), dialogConfig);
+}
 var MD2_DIALOG_DIRECTIVES = [
     Md2Dialog,
     Md2DialogTitle,
-    Md2DialogFooter,
+    Md2DialogContent,
+    Md2DialogActions,
     Md2DialogPortal
 ];
 var Md2DialogModule = (function () {
@@ -9384,39 +9925,15 @@ var Md2DialogModule = (function () {
             providers: []
         };
     };
-    Md2DialogModule = __decorate$47([
+    Md2DialogModule = __decorate$48([
         _angular_core.NgModule({
             imports: [_angular_common.CommonModule, OverlayModule],
             exports: MD2_DIALOG_DIRECTIVES,
             declarations: MD2_DIALOG_DIRECTIVES,
         }), 
-        __metadata$47('design:paramtypes', [])
+        __metadata$48('design:paramtypes', [])
     ], Md2DialogModule);
     return Md2DialogModule;
-}());
-
-var __decorate$49 = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata$49 = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var Md2MenuContent = (function () {
-    function Md2MenuContent() {
-    }
-    Md2MenuContent = __decorate$49([
-        _angular_core.Component({selector: '[md2-menu-content]',
-            host: { 'role': 'menu' },
-            template: '<ng-content></ng-content>',
-            styles: ["[md2-menu] { position: relative; display: inline-block; } [md2-menu-content] { position: absolute; top: 0; left: 0; display: inline-block; background: white; list-style: none; min-width: 112px; max-width: 280px; max-height: calc(100vh + 48px); padding: 8px 0; margin: 0; z-index: 1001; border-radius: 2px; transform: scale(0); transform-origin: left top; transition: all 200ms linear; box-shadow: 0 2px 6px 1px rgba(0, 0, 0, 0.34); } [md2-menu-item] [md2-menu-content] { left: 100%; margin: -8px 0; } [md2-menu-content][x-position='before'] { right: 0; left: auto; transform-origin: right top; } [md2-menu-item] [md2-menu-content][x-position='before'] { right: 100%; } [md2-menu-content][y-position='above'] { top: auto; bottom: 0; transform-origin: left bottom; } [md2-menu-content][y-position='above'][x-position='before'] { transform-origin: right bottom; } .open > [md2-menu-content] { transform: scale(1); } [md2-menu-item] { position: relative; width: 100%; cursor: pointer; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; outline: none; border: none; white-space: nowrap; text-overflow: ellipsis; display: flex; flex-direction: row; align-items: center; height: 36px; padding: 0 16px; font-size: 16px; text-align: start; text-decoration: none; background: transparent; color: rgba(0, 0, 0, 0.87); box-sizing: border-box; } [md2-menu-item][disabled] { color: rgba(0, 0, 0, 0.38); } [md2-menu-item]:hover:not([disabled]), [md2-menu-item]:focus:not([disabled]), [md2-menu-item].open { background: rgba(0, 0, 0, 0.04); text-decoration: none; } [md2-menu-item] > [md2-menu-trigger] { display: block; height: 36px; width: calc(100% + 32px); margin: 0 -16px; padding: 0 16px; font: inherit; color: inherit; text-align: left; background: transparent; outline: none; border: 0; cursor: pointer; box-shadow: none; } .md-overlay-container { position: fixed; pointer-events: none; top: 0; left: 0; height: 100%; width: 100%; z-index: 1000; } .md-overlay-pane { position: absolute; pointer-events: auto; box-sizing: border-box; z-index: 1000; } .md-overlay-backdrop { position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1; pointer-events: auto; transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1); opacity: 0; } .md-overlay-transparent-backdrop { background: none; } .md-overlay-backdrop.md-overlay-backdrop-showing { opacity: 0.48; } /*# sourceMappingURL=menu.css.map */ "],
-            encapsulation: _angular_core.ViewEncapsulation.None,
-        }), 
-        __metadata$49('design:paramtypes', [])
-    ], Md2MenuContent);
-    return Md2MenuContent;
 }());
 
 var __decorate$50 = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -9428,19 +9945,19 @@ var __decorate$50 = (this && this.__decorate) || function (decorators, target, k
 var __metadata$50 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var Md2MenuItem = (function () {
-    function Md2MenuItem() {
+var Md2MenuContent = (function () {
+    function Md2MenuContent() {
     }
-    Md2MenuItem = __decorate$50([
-        _angular_core.Component({selector: '[md2-menu-item]',
-            host: {
-                'role': 'menuitem'
-            },
-            template: '<ng-content></ng-content>'
+    Md2MenuContent = __decorate$50([
+        _angular_core.Component({selector: '[md2-menu-content]',
+            host: { 'role': 'menu' },
+            template: '<ng-content></ng-content>',
+            styles: ["[md2-menu] { position: relative; display: inline-block; } [md2-menu-content] { position: absolute; top: 0; left: 0; display: inline-block; background: white; list-style: none; min-width: 112px; max-width: 280px; max-height: calc(100vh + 48px); padding: 8px 0; margin: 0; z-index: 1001; border-radius: 2px; transform: scale(0); transform-origin: left top; transition: all 200ms linear; box-shadow: 0 2px 6px 1px rgba(0, 0, 0, 0.34); } [md2-menu-item] [md2-menu-content] { left: 100%; margin: -8px 0; } [md2-menu-content][x-position='before'] { right: 0; left: auto; transform-origin: right top; } [md2-menu-item] [md2-menu-content][x-position='before'] { right: 100%; } [md2-menu-content][y-position='above'] { top: auto; bottom: 0; transform-origin: left bottom; } [md2-menu-content][y-position='above'][x-position='before'] { transform-origin: right bottom; } .open > [md2-menu-content] { transform: scale(1); } [md2-menu-item] { position: relative; width: 100%; cursor: pointer; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; outline: none; border: none; white-space: nowrap; text-overflow: ellipsis; display: flex; flex-direction: row; align-items: center; height: 36px; padding: 0 16px; font-size: 16px; text-align: start; text-decoration: none; background: transparent; color: rgba(0, 0, 0, 0.87); box-sizing: border-box; } [md2-menu-item][disabled] { color: rgba(0, 0, 0, 0.38); } [md2-menu-item]:hover:not([disabled]), [md2-menu-item]:focus:not([disabled]), [md2-menu-item].open { background: rgba(0, 0, 0, 0.04); text-decoration: none; } [md2-menu-item] > [md2-menu-trigger] { display: block; height: 36px; width: calc(100% + 32px); margin: 0 -16px; padding: 0 16px; font: inherit; color: inherit; text-align: left; background: transparent; outline: none; border: 0; cursor: pointer; box-shadow: none; } .md-overlay-container { position: fixed; pointer-events: none; top: 0; left: 0; height: 100%; width: 100%; z-index: 1000; } .md-overlay-pane { position: absolute; pointer-events: auto; box-sizing: border-box; z-index: 1000; } .md-overlay-backdrop { position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1; pointer-events: auto; transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1); opacity: 0; } .md-overlay-transparent-backdrop { background: none; } .md-overlay-backdrop.md-overlay-backdrop-showing { opacity: 0.48; } /*# sourceMappingURL=menu.css.map */ "],
+            encapsulation: _angular_core.ViewEncapsulation.None,
         }), 
         __metadata$50('design:paramtypes', [])
-    ], Md2MenuItem);
-    return Md2MenuItem;
+    ], Md2MenuContent);
+    return Md2MenuContent;
 }());
 
 var __decorate$51 = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -9450,6 +9967,30 @@ var __decorate$51 = (this && this.__decorate) || function (decorators, target, k
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var __metadata$51 = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var Md2MenuItem = (function () {
+    function Md2MenuItem() {
+    }
+    Md2MenuItem = __decorate$51([
+        _angular_core.Component({selector: '[md2-menu-item]',
+            host: {
+                'role': 'menuitem'
+            },
+            template: '<ng-content></ng-content>'
+        }), 
+        __metadata$51('design:paramtypes', [])
+    ], Md2MenuItem);
+    return Md2MenuItem;
+}());
+
+var __decorate$52 = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata$52 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var Md2MenuTrigger = (function () {
@@ -9545,7 +10086,7 @@ var Md2MenuTrigger = (function () {
             return false;
         }
     };
-    Md2MenuTrigger = __decorate$51([
+    Md2MenuTrigger = __decorate$52([
         _angular_core.Directive({
             selector: '[md2-menu-trigger]',
             host: {
@@ -9554,30 +10095,30 @@ var Md2MenuTrigger = (function () {
             },
             exportAs: 'md2MenuTrigger'
         }), 
-        __metadata$51('design:paramtypes', [_angular_core.ElementRef, _angular_core.Renderer])
+        __metadata$52('design:paramtypes', [_angular_core.ElementRef, _angular_core.Renderer])
     ], Md2MenuTrigger);
     return Md2MenuTrigger;
 }());
 
-var __decorate$48 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$49 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$48 = (this && this.__metadata) || function (k, v) {
+var __metadata$49 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var Md2Menu = (function () {
     function Md2Menu() {
     }
-    Md2Menu = __decorate$48([
+    Md2Menu = __decorate$49([
         _angular_core.Component({selector: '[md2-menu]',
             template: '<ng-content></ng-content>',
             styles: ["[md2-menu] { position: relative; display: inline-block; } [md2-menu-content] { position: absolute; top: 0; left: 0; display: inline-block; background: white; list-style: none; min-width: 112px; max-width: 280px; max-height: calc(100vh + 48px); padding: 8px 0; margin: 0; z-index: 1001; border-radius: 2px; transform: scale(0); transform-origin: left top; transition: all 200ms linear; box-shadow: 0 2px 6px 1px rgba(0, 0, 0, 0.34); } [md2-menu-item] [md2-menu-content] { left: 100%; margin: -8px 0; } [md2-menu-content][x-position='before'] { right: 0; left: auto; transform-origin: right top; } [md2-menu-item] [md2-menu-content][x-position='before'] { right: 100%; } [md2-menu-content][y-position='above'] { top: auto; bottom: 0; transform-origin: left bottom; } [md2-menu-content][y-position='above'][x-position='before'] { transform-origin: right bottom; } .open > [md2-menu-content] { transform: scale(1); } [md2-menu-item] { position: relative; width: 100%; cursor: pointer; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; outline: none; border: none; white-space: nowrap; text-overflow: ellipsis; display: flex; flex-direction: row; align-items: center; height: 36px; padding: 0 16px; font-size: 16px; text-align: start; text-decoration: none; background: transparent; color: rgba(0, 0, 0, 0.87); box-sizing: border-box; } [md2-menu-item][disabled] { color: rgba(0, 0, 0, 0.38); } [md2-menu-item]:hover:not([disabled]), [md2-menu-item]:focus:not([disabled]), [md2-menu-item].open { background: rgba(0, 0, 0, 0.04); text-decoration: none; } [md2-menu-item] > [md2-menu-trigger] { display: block; height: 36px; width: calc(100% + 32px); margin: 0 -16px; padding: 0 16px; font: inherit; color: inherit; text-align: left; background: transparent; outline: none; border: 0; cursor: pointer; box-shadow: none; } .md-overlay-container { position: fixed; pointer-events: none; top: 0; left: 0; height: 100%; width: 100%; z-index: 1000; } .md-overlay-pane { position: absolute; pointer-events: auto; box-sizing: border-box; z-index: 1000; } .md-overlay-backdrop { position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1; pointer-events: auto; transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1); opacity: 0; } .md-overlay-transparent-backdrop { background: none; } .md-overlay-backdrop.md-overlay-backdrop-showing { opacity: 0.48; } /*# sourceMappingURL=menu.css.map */ "],
             encapsulation: _angular_core.ViewEncapsulation.None,
         }), 
-        __metadata$48('design:paramtypes', [])
+        __metadata$49('design:paramtypes', [])
     ], Md2Menu);
     return Md2Menu;
 }());
@@ -9589,24 +10130,24 @@ var Md2MenuModule = (function () {
             ngModule: Md2MenuModule,
         };
     };
-    Md2MenuModule = __decorate$48([
+    Md2MenuModule = __decorate$49([
         _angular_core.NgModule({
             imports: [_angular_common.CommonModule],
             exports: [Md2Menu, Md2MenuContent, Md2MenuItem, Md2MenuTrigger],
             declarations: [Md2Menu, Md2MenuContent, Md2MenuItem, Md2MenuTrigger],
         }), 
-        __metadata$48('design:paramtypes', [])
+        __metadata$49('design:paramtypes', [])
     ], Md2MenuModule);
     return Md2MenuModule;
 }());
 
-var __decorate$52 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$53 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$52 = (this && this.__metadata) || function (k, v) {
+var __metadata$53 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 /** Change event object that is emitted when the tab has changed. */
@@ -9632,36 +10173,36 @@ var Md2Transclude = (function () {
         enumerable: true,
         configurable: true
     });
-    __decorate$52([
+    __decorate$53([
         _angular_core.Input(), 
-        __metadata$52('design:type', Object)
+        __metadata$53('design:type', Object)
     ], Md2Transclude.prototype, "md2Transclude", null);
-    Md2Transclude = __decorate$52([
+    Md2Transclude = __decorate$53([
         _angular_core.Directive({ selector: '[md2Transclude]' }), 
-        __metadata$52('design:paramtypes', [_angular_core.ViewContainerRef])
+        __metadata$53('design:paramtypes', [_angular_core.ViewContainerRef])
     ], Md2Transclude);
     return Md2Transclude;
 }());
 var Md2Tab = (function () {
     function Md2Tab() {
     }
-    __decorate$52([
+    __decorate$53([
         _angular_core.Input(), 
-        __metadata$52('design:type', String)
+        __metadata$53('design:type', String)
     ], Md2Tab.prototype, "label", void 0);
-    __decorate$52([
+    __decorate$53([
         _angular_core.Input(), 
-        __metadata$52('design:type', Boolean)
+        __metadata$53('design:type', Boolean)
     ], Md2Tab.prototype, "active", void 0);
-    __decorate$52([
+    __decorate$53([
         _angular_core.Input(), 
-        __metadata$52('design:type', Boolean)
+        __metadata$53('design:type', Boolean)
     ], Md2Tab.prototype, "disabled", void 0);
-    __decorate$52([
+    __decorate$53([
         _angular_core.Input(), 
-        __metadata$52('design:type', String)
+        __metadata$53('design:type', String)
     ], Md2Tab.prototype, "class", void 0);
-    Md2Tab = __decorate$52([
+    Md2Tab = __decorate$53([
         _angular_core.Component({selector: 'md2-tab',
             template: "<ng-content></ng-content>",
             host: {
@@ -9669,7 +10210,7 @@ var Md2Tab = (function () {
                 '[class.active]': 'active'
             }
         }), 
-        __metadata$52('design:paramtypes', [])
+        __metadata$53('design:paramtypes', [])
     ], Md2Tab);
     return Md2Tab;
 }());
@@ -9678,9 +10219,9 @@ var Md2TabLabel = (function () {
         this.templateRef = templateRef;
         tab.labelRef = templateRef;
     }
-    Md2TabLabel = __decorate$52([
+    Md2TabLabel = __decorate$53([
         _angular_core.Directive({ selector: '[md2-tab-label]' }), 
-        __metadata$52('design:paramtypes', [_angular_core.TemplateRef, Md2Tab])
+        __metadata$53('design:paramtypes', [_angular_core.TemplateRef, Md2Tab])
     ], Md2TabLabel);
     return Md2TabLabel;
 }());
@@ -9915,27 +10456,27 @@ var Md2Tabs = (function () {
         value = Math.min(totalWidth - elements.canvas.clientWidth, value);
         return value;
     };
-    __decorate$52([
+    __decorate$53([
         _angular_core.ContentChildren(Md2Tab), 
-        __metadata$52('design:type', _angular_core.QueryList)
+        __metadata$53('design:type', _angular_core.QueryList)
     ], Md2Tabs.prototype, "tabs", void 0);
-    __decorate$52([
+    __decorate$53([
         _angular_core.Input(), 
-        __metadata$52('design:type', String)
+        __metadata$53('design:type', String)
     ], Md2Tabs.prototype, "class", void 0);
-    __decorate$52([
+    __decorate$53([
         _angular_core.Input(), 
-        __metadata$52('design:type', Object)
+        __metadata$53('design:type', Object)
     ], Md2Tabs.prototype, "selectedIndex", null);
-    __decorate$52([
+    __decorate$53([
         _angular_core.Output(), 
-        __metadata$52('design:type', _angular_core.EventEmitter)
+        __metadata$53('design:type', _angular_core.EventEmitter)
     ], Md2Tabs.prototype, "change", void 0);
-    __decorate$52([
+    __decorate$53([
         _angular_core.Output(), 
-        __metadata$52('design:type', _angular_core.EventEmitter)
+        __metadata$53('design:type', _angular_core.EventEmitter)
     ], Md2Tabs.prototype, "selectedIndexChange", void 0);
-    Md2Tabs = __decorate$52([
+    Md2Tabs = __decorate$53([
         _angular_core.Component({selector: 'md2-tabs',
             template: "<div class=\"md2-tabs-header-wrapper\"> <div role=\"button\" class=\"md2-prev-button\" [class.disabled]=\"!canPageBack()\" *ngIf=\"_shouldPaginate\" (click)=\"previousPage()\"> <em class=\"prev-icon\">Prev</em> </div> <div role=\"button\" class=\"md2-next-button\" [class.disabled]=\"!canPageForward()\" *ngIf=\"_shouldPaginate\" (click)=\"nextPage()\"> <em class=\"next-icon\">Next</em> </div> <div class=\"md2-tabs-canvas\" [class.md2-paginated]=\"_shouldPaginate\" role=\"tablist\" tabindex=\"0\" (keydown.arrowRight)=\"focusNextTab()\" (keydown.arrowLeft)=\"focusPreviousTab()\" (keydown.enter)=\"selectedIndex = focusIndex\" (mousewheel)=\"scroll($event)\"> <div class=\"md2-tabs-header\" [style.marginLeft]=\"-_offsetLeft + 'px'\"> <div class=\"md2-tab-label\" role=\"tab\" *ngFor=\"let tab of tabs; let i = index\" [class.focus]=\"focusIndex === i\" [class.active]=\"selectedIndex === i\" [class.disabled]=\"tab.disabled\" (click)=\"focusIndex = selectedIndex = i\"> <span [md2Transclude]=\"tab.labelRef\">{{tab.label}}</span> </div> <div class=\"md2-tab-ink-bar\" [style.left]=\"_inkBarLeft\" [style.width]=\"_inkBarWidth\"></div> </div> </div> </div> <div class=\"md2-tabs-body-wrapper\"> <ng-content></ng-content> </div> ",
             styles: ["md2-tabs { position: relative; overflow: hidden; display: block; margin: 0; border: 1px solid #e1e1e1; border-radius: 2px; } .md2-tabs-header-wrapper { position: relative; display: block; height: 48px; background: white; border-width: 0 0 1px; border-style: solid; border-color: rgba(0, 0, 0, 0.12); margin: 0; padding: 0; list-style: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } .md2-tabs-header-wrapper::after { content: ''; display: table; clear: both; } .md2-prev-button, .md2-next-button { position: absolute; top: 0; height: 100%; width: 32px; padding: 8px 0; z-index: 2; cursor: pointer; } .md2-prev-button.disabled, .md2-next-button.disabled { opacity: 0.25; cursor: default; } .md2-prev-button { left: 0; } .md2-next-button { right: 0; } .md2-prev-button .prev-icon, .md2-next-button .next-icon { display: block; width: 12px; height: 12px; font-size: 0; border-width: 0 0 2px 2px; border-style: solid; border-color: #757575; border-radius: 1px; transform: rotate(45deg); margin: 10px; } .md2-next-button .next-icon { border-width: 2px 2px 0 0; } .md2-tabs-canvas { position: relative; height: 100%; overflow: hidden; display: block; outline: none; } .md2-tabs-canvas.md2-paginated { margin: 0 32px; } .md2-tabs-header { position: relative; display: inline-block; height: 100%; white-space: nowrap; transition: 500ms cubic-bezier(0.35, 0, 0.25, 1); } .md2-tab-label { position: relative; height: 100%; color: rgba(0, 0, 0, 0.54); font-size: 14px; text-align: center; line-height: 24px; padding: 12px 24px; transition: background-color 350ms cubic-bezier(0.35, 0, 0.25, 1); cursor: pointer; white-space: nowrap; text-transform: uppercase; display: inline-block; font-weight: 500; box-sizing: border-box; overflow: hidden; -ms-text-overflow: ellipsis; text-overflow: ellipsis; } .md2-tab-label.active { color: #106cc8; } .md2-tabs-canvas:focus .md2-tab-label.focus { background: rgba(0, 0, 0, 0.05); } .md2-tab-label.disabled { color: rgba(0, 0, 0, 0.26); pointer-events: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-user-drag: none; opacity: 0.5; cursor: default; } .md2-tab-ink-bar { position: absolute; bottom: 0; height: 2px; background: #ff5252; transition: 250ms cubic-bezier(0.35, 0, 0.25, 1); } .md2-tabs-body-wrapper { position: relative; min-height: 0; display: block; clear: both; } md2-tab { padding: 16px; display: none; position: relative; } md2-tab.active { display: block; position: relative; } /*# sourceMappingURL=tabs.css.map */ "],
@@ -9945,7 +10486,7 @@ var Md2Tabs = (function () {
             },
             encapsulation: _angular_core.ViewEncapsulation.None
         }), 
-        __metadata$52('design:paramtypes', [_angular_core.ElementRef])
+        __metadata$53('design:paramtypes', [_angular_core.ElementRef])
     ], Md2Tabs);
     return Md2Tabs;
 }());
@@ -9959,28 +10500,28 @@ var Md2TabsModule = (function () {
             providers: []
         };
     };
-    Md2TabsModule = __decorate$52([
+    Md2TabsModule = __decorate$53([
         _angular_core.NgModule({
             imports: [_angular_common.CommonModule],
             exports: MD2_TABS_DIRECTIVES,
             declarations: [Md2Transclude, Md2TabLabel, Md2Tabs, Md2Tab],
         }), 
-        __metadata$52('design:paramtypes', [])
+        __metadata$53('design:paramtypes', [])
     ], Md2TabsModule);
     return Md2TabsModule;
 }());
 
-var __decorate$53 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$54 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$53 = (this && this.__metadata) || function (k, v) {
+var __metadata$54 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var noop$1 = function () { };
-var nextId$4 = 0;
+var nextId$3 = 0;
 var Tag = (function () {
     function Tag(source, textKey, valueKey) {
         if (typeof source === 'string') {
@@ -10015,7 +10556,7 @@ var Md2Tags = (function () {
         this._inputValue = '';
         this._inputFocused = false;
         this.noBlur = true;
-        this.id = 'md2-tags-' + (++nextId$4);
+        this.id = 'md2-tags-' + (++nextId$3);
         this.tabindex = 0;
         this.placeholder = '';
         this.textKey = 'text';
@@ -10380,56 +10921,56 @@ var Md2Tags = (function () {
     };
     Md2Tags.prototype.registerOnChange = function (fn) { this._onChangeCallback = fn; };
     Md2Tags.prototype.registerOnTouched = function (fn) { this._onTouchedCallback = fn; };
-    __decorate$53([
+    __decorate$54([
         _angular_core.Output(), 
-        __metadata$53('design:type', _angular_core.EventEmitter)
+        __metadata$54('design:type', _angular_core.EventEmitter)
     ], Md2Tags.prototype, "change", void 0);
-    __decorate$53([
+    __decorate$54([
         _angular_core.Input(), 
-        __metadata$53('design:type', String)
+        __metadata$54('design:type', String)
     ], Md2Tags.prototype, "id", void 0);
-    __decorate$53([
+    __decorate$54([
         _angular_core.Input(), 
-        __metadata$53('design:type', Number)
+        __metadata$54('design:type', Number)
     ], Md2Tags.prototype, "tabindex", void 0);
-    __decorate$53([
+    __decorate$54([
         _angular_core.Input(), 
-        __metadata$53('design:type', String)
+        __metadata$54('design:type', String)
     ], Md2Tags.prototype, "placeholder", void 0);
-    __decorate$53([
+    __decorate$54([
         _angular_core.Input('md2-tag-text'), 
-        __metadata$53('design:type', String)
+        __metadata$54('design:type', String)
     ], Md2Tags.prototype, "textKey", void 0);
-    __decorate$53([
+    __decorate$54([
         _angular_core.Input('md2-tag-value'), 
-        __metadata$53('design:type', String)
+        __metadata$54('design:type', String)
     ], Md2Tags.prototype, "valueKey", void 0);
-    __decorate$53([
+    __decorate$54([
         _angular_core.Input(), 
-        __metadata$53('design:type', Boolean)
+        __metadata$54('design:type', Boolean)
     ], Md2Tags.prototype, "disabled", null);
-    __decorate$53([
+    __decorate$54([
         _angular_core.Input('md2-tags'), 
-        __metadata$53('design:type', Array), 
-        __metadata$53('design:paramtypes', [Array])
+        __metadata$54('design:type', Array), 
+        __metadata$54('design:paramtypes', [Array])
     ], Md2Tags.prototype, "tags", null);
-    __decorate$53([
+    __decorate$54([
         _angular_core.Input(), 
-        __metadata$53('design:type', Object)
+        __metadata$54('design:type', Object)
     ], Md2Tags.prototype, "value", null);
-    __decorate$53([
+    __decorate$54([
         _angular_core.HostListener('keydown', ['$event']), 
-        __metadata$53('design:type', Function), 
-        __metadata$53('design:paramtypes', [KeyboardEvent]), 
-        __metadata$53('design:returntype', void 0)
+        __metadata$54('design:type', Function), 
+        __metadata$54('design:paramtypes', [KeyboardEvent]), 
+        __metadata$54('design:returntype', void 0)
     ], Md2Tags.prototype, "_handleKeydown", null);
-    __decorate$53([
+    __decorate$54([
         _angular_core.HostListener('focus'), 
-        __metadata$53('design:type', Function), 
-        __metadata$53('design:paramtypes', []), 
-        __metadata$53('design:returntype', void 0)
+        __metadata$54('design:type', Function), 
+        __metadata$54('design:paramtypes', []), 
+        __metadata$54('design:returntype', void 0)
     ], Md2Tags.prototype, "_handleFocus", null);
-    Md2Tags = __decorate$53([
+    Md2Tags = __decorate$54([
         _angular_core.Component({selector: 'md2-tags',
             template: "<div class=\"md2-tags-container\"> <span *ngFor=\"let t of _items; let i = index;\" class=\"md2-tag\" [class.active]=\"_selectedTag === i\" (click)=\"_selectTag(i)\"> <span class=\"md2-tag-text\">{{t.text}}</span> <svg (click)=\"_removeTagAndFocusInput(i)\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\" /> </svg> </span> <span class=\"md2-tag-add\"> <input [(ngModel)]=\"_inputValue\" type=\"text\" tabs=\"false\" autocomplete=\"off\" tabindex=\"-1\" [disabled]=\"disabled\" class=\"md2-tags-input\" [placeholder]=\"placeholder\" (focus)=\"_onInputFocus()\" (blur)=\"_onInputBlur()\" (keydown)=\"_handleInputKeydown($event)\" (change)=\"$event.stopPropagation()\" /> <ul *ngIf=\"isMenuVisible\" class=\"md2-tags-menu\" (mouseenter)=\"_listEnter()\" (mouseleave)=\"_listLeave()\"> <li class=\"md2-option\" *ngFor=\"let l of _list; let i = index;\" [class.focused]=\"_focusedTag === i\" (click)=\"_addTag($event, i)\"> <span class=\"md2-option-text\" [innerHtml]=\"l.text | highlight:_inputValue\"></span> </li> </ul> </span> </div> ",
             styles: ["md2-tags { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } md2-tags:focus { outline: none; } md2-tags .md2-tags-container { position: relative; display: block; max-width: 100%; padding: 2px 3px 8px; border-bottom: 1px solid rgba(0, 0, 0, 0.38); box-sizing: content-box; min-width: 64px; min-height: 26px; cursor: text; } md2-tags .md2-tags-container::before, md2-tags .md2-tags-container::after { display: table; content: ' '; } md2-tags .md2-tags-container::after { clear: both; } md2-tags.focus .md2-tags-container { padding-bottom: 7px; border-bottom: 2px solid #106cc8; } md2-tags.md2-tags-disabled .md2-tags-container { color: rgba(0, 0, 0, 0.38); cursor: default; } md2-tags.md2-tags-disabled.focus .md2-tags-container { padding-bottom: 8px; border-bottom: 1px solid rgba(0, 0, 0, 0.38); } md2-tags .md2-tags-container .md2-tag { position: relative; cursor: default; border-radius: 16px; display: block; height: 32px; line-height: 32px; margin: 8px 8px 0 0; padding: 0 26px 0 12px; float: left; box-sizing: border-box; max-width: 100%; background: #e0e0e0; color: #424242; white-space: nowrap; overflow: hidden; -ms-text-overflow: ellipsis; text-overflow: ellipsis; } md2-tags .md2-tags-container .md2-tag.active { background: #106cc8; color: rgba(255, 255, 255, 0.87); } md2-tags .md2-tags-container .md2-tag svg { position: absolute; top: 4px; right: 2px; cursor: pointer; display: inline-block; overflow: hidden; fill: currentColor; color: rgba(0, 0, 0, 0.54); } md2-tags .md2-tag.active svg { color: rgba(255, 255, 255, 0.87); } md2-tags .md2-tag-add { position: relative; display: inline-block; } md2-tags input { border: 0; outline: 0; margin-top: 8px; height: 32px; line-height: 32px; padding: 0; color: rgba(0, 0, 0, 0.87); background: 0 0; } md2-tags .md2-tags-container .md2-tags-placeholder { color: rgba(0, 0, 0, 0.38); } md2-tags .md2-tags-menu { position: absolute; left: 0; top: 100%; display: block; z-index: 10; flex-direction: column; width: 100%; margin: 6px 0 0; padding: 8px 0; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12); max-height: 256px; min-height: 48px; overflow-y: auto; transform: scale(1); background: #fff; } md2-tags .md2-tags-menu .md2-option { cursor: pointer; position: relative; display: block; color: #212121; align-items: center; width: auto; transition: background 150ms linear; padding: 0 16px; height: 48px; line-height: 48px; } md2-tags .md2-tags-menu .md2-option:hover, md2-tags .md2-tags-menu .md2-option.focused { background: #eeeeee; } md2-tags .md2-tags-menu .md2-option .md2-option-text { width: auto; white-space: nowrap; overflow: hidden; -ms-text-overflow: ellipsis; text-overflow: ellipsis; font-size: 16px; } md2-tags .highlight { color: #757575; } /*# sourceMappingURL=tags.css.map */ "],
@@ -10442,9 +10983,10 @@ var Md2Tags = (function () {
                 '[attr.aria-disabled]': 'disabled'
             },
             providers: [MD2_TAGS_CONTROL_VALUE_ACCESSOR],
-            encapsulation: _angular_core.ViewEncapsulation.None
+            encapsulation: _angular_core.ViewEncapsulation.None,
+            exportAs: 'md2Tags'
         }), 
-        __metadata$53('design:paramtypes', [_angular_core.ElementRef])
+        __metadata$54('design:paramtypes', [_angular_core.ElementRef])
     ], Md2Tags);
     return Md2Tags;
 }());
@@ -10458,24 +11000,24 @@ var Md2TagsModule = (function () {
             providers: []
         };
     };
-    Md2TagsModule = __decorate$53([
+    Md2TagsModule = __decorate$54([
         _angular_core.NgModule({
             imports: [_angular_common.CommonModule, _angular_forms.FormsModule, Md2AutocompleteModule],
             exports: MD2_TAGS_DIRECTIVES,
             declarations: MD2_TAGS_DIRECTIVES,
         }), 
-        __metadata$53('design:paramtypes', [])
+        __metadata$54('design:paramtypes', [])
     ], Md2TagsModule);
     return Md2TagsModule;
 }());
 
-var __decorate$54 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$55 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$54 = (this && this.__metadata) || function (k, v) {
+var __metadata$55 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var Toast = (function () {
@@ -10584,9 +11126,9 @@ var Md2Toast = (function () {
             }, 250);
         }
     };
-    Md2Toast = __decorate$54([
+    Md2Toast = __decorate$55([
         _angular_core.Injectable(), 
-        __metadata$54('design:paramtypes', [Overlay, Md2ToastConfig])
+        __metadata$55('design:paramtypes', [Overlay, Md2ToastConfig])
     ], Md2Toast);
     return Md2Toast;
 }());
@@ -10641,14 +11183,14 @@ var Md2ToastComponent = (function () {
      * @return boolean
      */
     Md2ToastComponent.prototype.hasToast = function () { return this.toasts.length > 0; };
-    Md2ToastComponent = __decorate$54([
+    Md2ToastComponent = __decorate$55([
         _angular_core.Component({
             selector: 'md2-toast',
             template: "<div *ngFor=\"let toast of toasts\" class=\"md2-toast\" [class.in]=\"toast.isVisible\" (click)=\"remove(toast.id)\">{{ toast.message }}</div> ",
             styles: ["md2-toast { display: block; box-sizing: border-box; cursor: default; overflow: hidden; min-width: 304px; max-width: 100%; padding: 8px; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } .md2-toast { position: relative; padding: 14px 24px; margin-bottom: 5px; display: block; margin-top: -53px; opacity: 0; background-color: #323232; color: #fafafa; box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26); border-radius: 2px; font-size: 14px; overflow: hidden; word-wrap: break-word; transition: all 250ms linear; } .md2-toast.in { margin-top: 0; opacity: 1; } .cdk-visually-hidden { border: 0; clip: rect(0 0 0 0); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; text-transform: none; width: 1px; } .cdk-overlay-container, .cdk-global-overlay-wrapper { pointer-events: none; top: 0; left: 0; height: 100%; width: 100%; } .cdk-overlay-container { position: fixed; z-index: 1000; } .cdk-global-overlay-wrapper { display: flex; position: absolute; z-index: 1000; } .cdk-overlay-pane { position: absolute; pointer-events: auto; box-sizing: border-box; z-index: 1000; } /*# sourceMappingURL=toast.css.map */ "],
             encapsulation: _angular_core.ViewEncapsulation.None,
         }), 
-        __metadata$54('design:paramtypes', [])
+        __metadata$55('design:paramtypes', [])
     ], Md2ToastComponent);
     return Md2ToastComponent;
 }());
@@ -10662,7 +11204,7 @@ var Md2ToastModule = (function () {
             providers: []
         };
     };
-    Md2ToastModule = __decorate$54([
+    Md2ToastModule = __decorate$55([
         _angular_core.NgModule({
             imports: [_angular_common.CommonModule],
             exports: MD2_TOAST_DIRECTIVES,
@@ -10670,7 +11212,7 @@ var Md2ToastModule = (function () {
             entryComponents: MD2_TOAST_DIRECTIVES,
             providers: [Md2Toast, Md2ToastConfig, OVERLAY_PROVIDERS]
         }), 
-        __metadata$54('design:paramtypes', [])
+        __metadata$55('design:paramtypes', [])
     ], Md2ToastModule);
     return Md2ToastModule;
 }());
@@ -10692,16 +11234,16 @@ var Md2TooltipInvalidPositionError = (function (_super) {
     return Md2TooltipInvalidPositionError;
 }(MdError));
 
-var __decorate$55 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$56 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$55 = (this && this.__metadata) || function (k, v) {
+var __metadata$56 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __param$8 = (this && this.__param) || function (paramIndex, decorator) {
+var __param$11 = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 /** Time in ms to delay before changing the tooltip visibility to hidden */
@@ -10715,18 +11257,27 @@ var SCROLL_THROTTLE_MS = 20;
  * https://material.google.com/components/tooltips.html
  */
 var Md2Tooltip = (function () {
-    function Md2Tooltip(_overlay, _scrollDispatcher, _elementRef, _viewContainerRef, _ngZone, _dir) {
+    function Md2Tooltip(_overlay, _elementRef, _scrollDispatcher, _viewContainerRef, _ngZone, _renderer, _platform, _dir) {
+        var _this = this;
         this._overlay = _overlay;
-        this._scrollDispatcher = _scrollDispatcher;
         this._elementRef = _elementRef;
+        this._scrollDispatcher = _scrollDispatcher;
         this._viewContainerRef = _viewContainerRef;
         this._ngZone = _ngZone;
+        this._renderer = _renderer;
+        this._platform = _platform;
         this._dir = _dir;
         this._position = 'below';
         /** The default delay in ms before showing the tooltip after show is called */
         this.showDelay = 0;
         /** The default delay in ms before hiding the tooltip after hide is called */
         this.hideDelay = 0;
+        // The mouse events shouldn't be bound on iOS devices, because
+        // they can prevent the first tap from firing it's click event.
+        if (!_platform.IOS) {
+            _renderer.listen(_elementRef.nativeElement, 'mouseenter', function () { return _this.show(); });
+            _renderer.listen(_elementRef.nativeElement, 'mouseleave', function () { return _this.hide(); });
+        }
     }
     Object.defineProperty(Md2Tooltip.prototype, "position", {
         /** Allows the user to define the position of the tooltip relative to the parent element */
@@ -10760,7 +11311,7 @@ var Md2Tooltip = (function () {
         var _this = this;
         // When a scroll on the page occurs, update the position in case this tooltip needs
         // to be repositioned.
-        this.scrollSubscription = this._scrollDispatcher.scrolled(SCROLL_THROTTLE_MS).subscribe(function () {
+        this.scrollSubscription = this._scrollDispatcher.scrolled(SCROLL_THROTTLE_MS, function () {
             if (_this._overlayRef) {
                 _this._overlayRef.updatePosition();
             }
@@ -10773,7 +11324,9 @@ var Md2Tooltip = (function () {
         if (this._tooltipInstance) {
             this._disposeTooltip();
         }
-        this.scrollSubscription.unsubscribe();
+        if (this.scrollSubscription) {
+            this.scrollSubscription.unsubscribe();
+        }
     };
     /** Shows the tooltip after the delay in ms, defaults to tooltip-delay-show or 0ms if no input */
     Md2Tooltip.prototype.show = function (delay) {
@@ -10893,35 +11446,33 @@ var Md2Tooltip = (function () {
             }
         });
     };
-    __decorate$55([
+    __decorate$56([
         _angular_core.Input('tooltip-position'), 
-        __metadata$55('design:type', String)
+        __metadata$56('design:type', String)
     ], Md2Tooltip.prototype, "position", null);
-    __decorate$55([
+    __decorate$56([
         _angular_core.Input('tooltip-delay'), 
-        __metadata$55('design:type', Object)
+        __metadata$56('design:type', Object)
     ], Md2Tooltip.prototype, "showDelay", void 0);
-    __decorate$55([
+    __decorate$56([
         _angular_core.Input('tooltip-hide-delay'), 
-        __metadata$55('design:type', Object)
+        __metadata$56('design:type', Object)
     ], Md2Tooltip.prototype, "hideDelay", void 0);
-    __decorate$55([
+    __decorate$56([
         _angular_core.Input('tooltip'), 
-        __metadata$55('design:type', Object)
+        __metadata$56('design:type', Object)
     ], Md2Tooltip.prototype, "message", null);
-    Md2Tooltip = __decorate$55([
+    Md2Tooltip = __decorate$56([
         _angular_core.Directive({
             selector: '[tooltip]',
             host: {
                 '(longpress)': 'show()',
                 '(touchend)': 'hide(' + TOUCHEND_HIDE_DELAY + ')',
-                '(mouseenter)': 'show()',
-                '(mouseleave)': 'hide()',
             },
             exportAs: 'md2Tooltip',
         }),
-        __param$8(5, _angular_core.Optional()), 
-        __metadata$55('design:paramtypes', [Overlay, ScrollDispatcher, _angular_core.ElementRef, _angular_core.ViewContainerRef, _angular_core.NgZone, Dir])
+        __param$11(7, _angular_core.Optional()), 
+        __metadata$56('design:paramtypes', [Overlay, _angular_core.ElementRef, ScrollDispatcher, _angular_core.ViewContainerRef, _angular_core.NgZone, _angular_core.Renderer, Platform, Dir])
     ], Md2Tooltip);
     return Md2Tooltip;
 }());
@@ -11037,10 +11588,10 @@ var Md2TooltipComponent = (function () {
             this.hide(0);
         }
     };
-    Md2TooltipComponent = __decorate$55([
+    Md2TooltipComponent = __decorate$56([
         _angular_core.Component({selector: 'md2-tooltip',
             template: "<div class=\"md2-tooltip\" [style.transform-origin]=\"_transformOrigin\" [@state]=\"_visibility\" (@state.done)=\"_afterVisibilityAnimation($event)\" [innerHTML]=\"message\"> </div>",
-            styles: ["md2-tooltip { pointer-events: none; } .md2-tooltip { color: white; padding: 6px 8px; border-radius: 2px; font-size: 10px; margin: 14px; max-width: 250px; background: rgba(97, 97, 97, 0.9); } .cdk-overlay-container, .cdk-global-overlay-wrapper { pointer-events: none; top: 0; left: 0; height: 100%; width: 100%; } .cdk-overlay-container { position: fixed; z-index: 1000; } .cdk-global-overlay-wrapper { display: flex; position: absolute; z-index: 1000; } .cdk-overlay-pane { position: absolute; pointer-events: auto; box-sizing: border-box; z-index: 1000; } /*# sourceMappingURL=tooltip.css.map */ "],
+            styles: ["md2-tooltip { pointer-events: none; } .md2-tooltip { color: white; padding: 6px 8px; border-radius: 2px; font-size: 10px; margin: 14px; max-width: 250px; background: rgba(97, 97, 97, 0.9); word-wrap: break-word; } .cdk-overlay-container, .cdk-global-overlay-wrapper { pointer-events: none; top: 0; left: 0; height: 100%; width: 100%; } .cdk-overlay-container { position: fixed; z-index: 1000; } .cdk-global-overlay-wrapper { display: flex; position: absolute; z-index: 1000; } .cdk-overlay-pane { position: absolute; pointer-events: auto; box-sizing: border-box; z-index: 1000; } /*# sourceMappingURL=tooltip.css.map */ "],
             animations: [
                 _angular_core.trigger('state', [
                     _angular_core.state('void', _angular_core.style({ transform: 'scale(0)' })),
@@ -11056,8 +11607,8 @@ var Md2TooltipComponent = (function () {
             },
             encapsulation: _angular_core.ViewEncapsulation.None
         }),
-        __param$8(0, _angular_core.Optional()), 
-        __metadata$55('design:paramtypes', [Dir, _angular_core.ChangeDetectorRef])
+        __param$11(0, _angular_core.Optional()), 
+        __metadata$56('design:paramtypes', [Dir, _angular_core.ChangeDetectorRef])
     ], Md2TooltipComponent);
     return Md2TooltipComponent;
 }());
@@ -11071,25 +11622,25 @@ var Md2TooltipModule = (function () {
             providers: []
         };
     };
-    Md2TooltipModule = __decorate$55([
+    Md2TooltipModule = __decorate$56([
         _angular_core.NgModule({
-            imports: [OverlayModule, CompatibilityModule],
+            imports: [OverlayModule, CompatibilityModule, PlatformModule],
             exports: [Md2Tooltip, Md2TooltipComponent, CompatibilityModule],
             declarations: [Md2Tooltip, Md2TooltipComponent],
             entryComponents: [Md2TooltipComponent],
         }), 
-        __metadata$55('design:paramtypes', [])
+        __metadata$56('design:paramtypes', [])
     ], Md2TooltipModule);
     return Md2TooltipModule;
 }());
 
-var __decorate$30 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$31 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata$30 = (this && this.__metadata) || function (k, v) {
+var __metadata$31 = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var MD2_MODULES = [
@@ -11120,7 +11671,7 @@ var MD2_MODULES = [
 var Md2RootModule = (function () {
     function Md2RootModule() {
     }
-    Md2RootModule = __decorate$30([
+    Md2RootModule = __decorate$31([
         _angular_core.NgModule({
             imports: [
                 Md2AccordionModule.forRoot(),
@@ -11149,7 +11700,7 @@ var Md2RootModule = (function () {
             ],
             exports: MD2_MODULES,
         }), 
-        __metadata$30('design:paramtypes', [])
+        __metadata$31('design:paramtypes', [])
     ], Md2RootModule);
     return Md2RootModule;
 }());
@@ -11160,12 +11711,12 @@ var Md2Module = (function () {
     Md2Module.forRoot = function () {
         return { ngModule: Md2RootModule };
     };
-    Md2Module = __decorate$30([
+    Md2Module = __decorate$31([
         _angular_core.NgModule({
             imports: MD2_MODULES,
             exports: MD2_MODULES,
         }), 
-        __metadata$30('design:paramtypes', [])
+        __metadata$31('design:paramtypes', [])
     ], Md2Module);
     return Md2Module;
 }());
@@ -11197,13 +11748,10 @@ exports.OverlayOrigin = OverlayOrigin;
 exports.OverlayModule = OverlayModule;
 exports.ScrollDispatcher = ScrollDispatcher;
 exports.GestureConfig = GestureConfig;
-exports.MdRipple = MdRipple;
-exports.MdRippleModule = MdRippleModule;
 exports.LiveAnnouncer = LiveAnnouncer;
 exports.LIVE_ANNOUNCER_ELEMENT_TOKEN = LIVE_ANNOUNCER_ELEMENT_TOKEN;
 exports.LIVE_ANNOUNCER_PROVIDER = LIVE_ANNOUNCER_PROVIDER;
 exports.MdLiveAnnouncer = LiveAnnouncer;
-exports.FocusTrap = FocusTrap;
 exports.InteractivityChecker = InteractivityChecker;
 exports.isFakeMousedownFromScreenReader = isFakeMousedownFromScreenReader;
 exports.A11yModule = A11yModule;
@@ -11228,8 +11776,16 @@ exports.ConnectedPositionStrategy = ConnectedPositionStrategy;
 exports.ConnectionPositionPair = ConnectionPositionPair;
 exports.ScrollableViewProperties = ScrollableViewProperties;
 exports.ConnectedOverlayPositionChange = ConnectedOverlayPositionChange;
+exports.MdRippleModule = MdRippleModule;
+exports.MdRipple = MdRipple;
+exports.MD_RIPPLE_GLOBAL_OPTIONS = MD_RIPPLE_GLOBAL_OPTIONS;
+exports.RippleRef = RippleRef;
 exports.SelectionModel = SelectionModel;
 exports.SelectionChange = SelectionChange;
+exports.FocusTrap = FocusTrap;
+exports.FocusTrapFactory = FocusTrapFactory;
+exports.FocusTrapDeprecatedDirective = FocusTrapDeprecatedDirective;
+exports.FocusTrapDirective = FocusTrapDirective;
 exports.StyleModule = StyleModule;
 exports.TOUCH_BUFFER_MS = TOUCH_BUFFER_MS;
 exports.FocusOriginMonitor = FocusOriginMonitor;
@@ -11302,9 +11858,12 @@ exports.Md2DateChange = Md2DateChange;
 exports.Md2Datepicker = Md2Datepicker;
 exports.MD2_DATEPICKER_DIRECTIVES = MD2_DATEPICKER_DIRECTIVES;
 exports.Md2DatepickerModule = Md2DatepickerModule;
+exports.DateLocale = DateLocale;
+exports.Md2DialogConfig = Md2DialogConfig;
 exports.Md2DialogPortal = Md2DialogPortal;
 exports.Md2DialogTitle = Md2DialogTitle;
-exports.Md2DialogFooter = Md2DialogFooter;
+exports.Md2DialogContent = Md2DialogContent;
+exports.Md2DialogActions = Md2DialogActions;
 exports.Md2Dialog = Md2Dialog;
 exports.MD2_DIALOG_DIRECTIVES = MD2_DIALOG_DIRECTIVES;
 exports.Md2DialogModule = Md2DialogModule;

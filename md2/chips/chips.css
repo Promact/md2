@@ -90,7 +90,8 @@ md2-chips {
   outline: none;
   height: 32px;
   line-height: 32px;
-  font-size: 16px; }
+  font-size: 16px;
+  background: transparent; }
 
 .chip-error {
   font-size: 13px;

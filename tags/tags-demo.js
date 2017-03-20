@@ -11,6 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var TagsDemo = (function () {
     function TagsDemo() {
+        this.isRequired = false;
+        this.isDisabled = false;
         this.tags = [
             { name: 'Vadodara', value: '1' },
             { name: 'Rajkot', value: '2' },
@@ -19,14 +21,7 @@ var TagsDemo = (function () {
             { name: 'Mumbai', value: '5' },
             { name: 'Goa', value: '6' }
         ];
-        this.tag = [
-            { name: 'Vadodara', value: '1' },
-            { name: 'Delhi', value: '3' }
-        ];
     }
-    TagsDemo.prototype.handleChange = function (value) {
-        console.log('Changed data: ', value);
-    };
     TagsDemo = __decorate([
         core_1.Component({
             moduleId: module.id,

@@ -10,9 +10,21 @@ export declare class DateLocale {
         short: string;
         xshort: string;
     }[];
-    getDateLabel(d: number): string;
+    getDays(): {
+        full: string;
+        short: string;
+        xshort: string;
+    }[];
+    getDayLabel(d: number): string;
+    getDateLabel(d: Date): string;
     getMonthLabel(m: number, y: number): string;
     getYearLabel(y: number): string;
+    /**
+     * Gets the first day of the month for the given date's month.
+     * @param {Date} date
+     * @returns {Date}
+     */
+    getFirstDateOfWeek(date: Date): Date;
     /**
      * Gets the first day of the month for the given date's month.
      * @param {Date} date

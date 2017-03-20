@@ -11,12 +11,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var ColorpickerDemo = (function () {
     function ColorpickerDemo() {
-        this._color = '#123456';
-        this._color2 = '#654321';
+        this._color = null;
+        this.isRequired = false;
+        this.isDisabled = false;
+        this.container = 'inline';
+        this.containers = [
+            { text: 'Inline', value: 'inline' },
+            { text: 'Dialog', value: 'dialog' }];
     }
-    ColorpickerDemo.prototype.handleChange = function (value) {
-        console.log('Changed color: ', value);
-    };
     ColorpickerDemo = __decorate([
         core_1.Component({
             moduleId: module.id,

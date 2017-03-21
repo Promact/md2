@@ -357,6 +357,10 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
 
   registerOnTouched(fn: () => {}): void { this._onTouched = fn; }
 
+  setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
+  }
+
 }
 
 export const MD2_AUTOCOMPLETE_DIRECTIVES = [Md2Autocomplete, HighlightPipe];

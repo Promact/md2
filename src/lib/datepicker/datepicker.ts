@@ -769,6 +769,10 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
 
   registerOnTouched(fn: () => {}): void { this._onTouched = fn; }
 
+  setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
+  }
+
   private _subscribeToBackdrop(): void {
     this._backdropSubscription = this._overlayRef.backdropClick().subscribe(() => {
       this.close();

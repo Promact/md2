@@ -411,6 +411,11 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
   registerOnChange(fn: any) { this._onChangeCallback = fn; }
 
   registerOnTouched(fn: any) { this._onTouchedCallback = fn; }
+
+  setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
+  }
+
 }
 
 export const MD2_TAGS_DIRECTIVES = [Md2Tags];

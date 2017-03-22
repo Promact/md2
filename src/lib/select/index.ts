@@ -2,13 +2,7 @@ import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Md2Select } from './select';
 import { Md2OptionModule } from './option';
-import {
-  CompatibilityModule,
-  OverlayModule,
-} from '../core';
-export * from './select';
-export * from './option';
-export { fadeInContent, transformPanel, transformPlaceholder } from './select-animations';
+import { CompatibilityModule, OverlayModule } from '../core';
 
 
 @NgModule({
@@ -25,3 +19,8 @@ export class Md2SelectModule {
     };
   }
 }
+
+
+export * from './select';
+export * from './option';
+export { fadeInContent, transformPanel, transformPlaceholder } from './select-animations';

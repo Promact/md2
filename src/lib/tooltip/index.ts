@@ -1,20 +1,20 @@
 import {NgModule, ModuleWithProviders} from '@angular/core';
 import {OverlayModule, CompatibilityModule} from '../core';
 import {PlatformModule} from '../core/platform/index';
-import {MdTooltip, TooltipComponent} from './tooltip';
+import {Md2Tooltip, Md2TooltipComponent} from './tooltip';
 
 
 @NgModule({
   imports: [OverlayModule, CompatibilityModule, PlatformModule],
-  exports: [MdTooltip, TooltipComponent, CompatibilityModule],
-  declarations: [MdTooltip, TooltipComponent],
-  entryComponents: [TooltipComponent],
+  exports: [Md2Tooltip, Md2TooltipComponent, CompatibilityModule],
+  declarations: [Md2Tooltip, Md2TooltipComponent],
+  entryComponents: [Md2TooltipComponent],
 })
-export class MdTooltipModule {
+export class Md2TooltipModule {
   /** @deprecated */
   static forRoot(): ModuleWithProviders {
     return {
-      ngModule: MdTooltipModule,
+      ngModule: Md2TooltipModule,
       providers: []
     };
   }

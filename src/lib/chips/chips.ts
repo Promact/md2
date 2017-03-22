@@ -225,9 +225,12 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
     }
     this._resetSelected();
   }
+
   inputBlurred(event: Event): void {
     this.inputFocused = false;
-    this.addNewChip(this.inputValue);
+    if (this.inputValue)
+      this.addNewChip(this.inputValue);
+    this._onTouched();
   }
 
   inputFocus(event: Event): void {

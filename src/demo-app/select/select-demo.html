@@ -12,7 +12,13 @@
                   [required]="isRequired"
                   [disabled]="isDisabled"
                   #selectControl="ngModel">
-        <md2-option *ngFor="let i of items" [value]="i.value">{{i.name}}</md2-option>
+        <md2-select-header>
+          <input name="search"
+                 type="text"
+                 placeholder="Search for Cities"
+                 [(ngModel)]="search" />
+        </md2-select-header>
+        <md2-option *ngFor="let i of items | dataPipe : search" [value]="i.value">{{i.name}}</md2-option>
       </md2-select>
       <p> Value: {{ item }} </p>
       <p> Touched: {{ selectControl.touched }} </p>

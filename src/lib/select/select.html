@@ -18,6 +18,7 @@
        (keydown)="_keyManager.onKeydown($event)" [style.transformOrigin]="_transformOrigin"
        [class.md2-select-panel-done-animating]="_panelDoneAnimating">
     <div class="md2-select-content" [@fadeInContent]="'showing'" (@fadeInContent.done)="_onFadeInDone()">
+      <ng-content select="md2-select-header"></ng-content>
       <ng-content></ng-content>
     </div>
   </div>

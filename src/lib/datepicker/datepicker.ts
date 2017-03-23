@@ -17,7 +17,8 @@ import {
 } from '@angular/core';
 import {
   ControlValueAccessor,
-  NgControl
+  NgControl,
+  FormsModule
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { DateLocale } from './date-locale';
@@ -69,7 +70,6 @@ export type PanelPositionY = 'above' | 'below';
     'role': 'datepicker',
     '[class.md2-datepicker-disabled]': 'disabled',
     '[class.md2-datepicker-opened]': 'panelOpen',
-    '[attr.tabindex]': 'disabled ? -1 : tabindex',
     '[attr.aria-label]': 'placeholder',
     '[attr.aria-required]': 'required.toString()',
     '[attr.aria-disabled]': 'disabled.toString()',
@@ -125,6 +125,8 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
 
   _transformOrigin: string = 'top';
   _panelDoneAnimating: boolean = false;
+
+  _inputFocused: boolean = false;
 
   _onChange = (value: any) => { };
   _onTouched = () => { };
@@ -515,6 +517,18 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     }
   }
 
+  _handleFocus(event: Event) {
+    this._inputFocused = true;
+  }
+
+  _handleBlur(event: Event) {
+    this._inputFocused = false;
+    if (!this.panelOpen) {
+      this._onTouched();
+    }
+    //if (this._locale.isDateValid(this.date)) { this._emitChangeEvent(); }
+  }
+
   _clearValue(event: Event) {
     event.stopPropagation();
     this.value = null;
@@ -841,7 +855,7 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
 export const MD2_DATEPICKER_DIRECTIVES = [Md2Datepicker, Md2Clock];
 
 @NgModule({
-  imports: [CommonModule, OverlayModule, PortalModule],
+  imports: [CommonModule, FormsModule, OverlayModule, PortalModule],
   exports: MD2_DATEPICKER_DIRECTIVES,
   declarations: MD2_DATEPICKER_DIRECTIVES,
   providers: [DateLocale]

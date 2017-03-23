@@ -16,7 +16,7 @@ script:
 
 before_deploy:
   - gulp clean
-  - gulp :build:components:ngc
+  - gulp :build:components:release
   - gulp :build:release:clean-spec
   - cd dist
   - cd md2

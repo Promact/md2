@@ -574,6 +574,7 @@ export class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
     } else {
       this.isInputValidColor = true;
     }
+    this._onTouched();
   }
 
   /** Emits an event when the user selects a color. */

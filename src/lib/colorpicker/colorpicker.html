@@ -1,14 +1,14 @@
 ﻿
 <div class="md2-colorpicker-trigger">
-  <div class="color-picker-selector" [class.color-error]="isInputValidColor">
+  <div class="color-picker-selector" [class.color-error]="isInputValidColor && required">
     <div class="color-div" (click)="toggle()">
       <div class="color-fill" [style.background-color]="color"> </div>
     </div>
     <div class="md2-colorpicker-input" [class.input-focused]="isInputFocus">
-      <span class="md2-colorpicker-placeholder" [class.md2-floating-placeholder]="color">{{ placeholder }}</span>
+      <span class="md2-colorpicker-placeholder" [class.has-value]="color">{{ placeholder }}</span>
       <input class="md2-colorpicker-value" value="color" [tabindex]="tabindex" [disabled]="disabled" [(ngModel)]="color" (focus)="isInputFocus=true" (blur)="checkInputVal($event)" />
       <span *ngIf="color && !required && !disabled" class="color-clear" (click)="clearColor($event)">
-        <svg viewBox="0 0 20 20" width="20" height="20">
+        <svg viewBox="0 0 24 24" width="20" height="20">
           <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
         </svg>
       </span>
@@ -16,7 +16,7 @@
   </div>
 </div>
 <template portal>
-  <div class="md2-colorpicker-panel">
+  <div class="md2-colorpicker-panel" tabindex="0" [attr.container]="container">
     <div class="md2-colorpicker-content">
       <div class="md2-colorpicker-wrapper" [class.active]="_isColorpickerVisible">
         <div class="md2-color-picker">

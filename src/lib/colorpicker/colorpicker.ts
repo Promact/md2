@@ -178,8 +178,7 @@ export class Md2ColorChange {
   styleUrls: ['colorpicker.css'],
   host: {
     'role': 'colorpicker',
-    '[id]': 'id',
-    '[class.color-focus]': 'inputFocused || !disabled',
+    '[id]': 'id',    
     '[class.md2-colorpicker-disabled]': 'disabled',
     '[attr.aria-label]': 'placeholder',
     '[attr.aria-required]': 'required.toString()',
@@ -188,36 +187,32 @@ export class Md2ColorChange {
 })
 export class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
   _innerValue: string = '';
-
-  private _created: boolean;
-  private _defalutColor: string = '#000000';
   _isColorpickerVisible: boolean;
   _hueSliderColor: string;
-  private _initialColor: string;
-
   slider: SliderPosition;
-  private sliderDim: SliderDimension;
-  private hsva: Hsva;
+  sliderDim: SliderDimension;
+  hsva: Hsva;
   rgbaText: Rgba;
   hslaText: Hsla;
-
   outputColor: string;
   alphaColor: string;
   hexText: string;
   format: number;
   backColor: boolean = true;
 
+  private _created: boolean;
+  private _defalutColor: string = '#000000';  
+  private _initialColor: string;
   private _overlayRef: OverlayRef;
   private _backdropSubscription: Subscription;
   private _positionSubscription: Subscription;
 
   /** Whether or not the overlay panel is open. */
   private _panelOpen = false;
-
   private _color: string = null;
 
   /** Whether filling out the select is required in the form.  */
-  private _required: boolean = false;
+  _required: boolean = false;
 
   /** Whether the select is disabled.  */
   private _disabled: boolean = false;
@@ -225,10 +220,11 @@ export class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
 
   /** The placeholder displayed in the trigger of the select. */
   private _placeholder: string;
-  private fontColor: string;
-  private backAreaColor: string;
   private _container: Container = 'inline';
-  private isInputValidColor: boolean = false;
+
+  fontColor: string;
+  backAreaColor: string;
+  isInputValidColor: boolean = false;
 
   _onChange = (value: any) => { };
   _onTouched = () => { };
@@ -574,6 +570,7 @@ export class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
     } else {
       this.isInputValidColor = true;
     }
+    this._onTouched();
   }
 
   /** Emits an event when the user selects a color. */

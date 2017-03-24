@@ -68,8 +68,6 @@
     // Bans jasmine helper functions that will prevent the CI from properly running tests.
     "ban": [true, ["fit"], ["fdescribe"], ["xit"], ["xdescribe"]],
     // Disallows importing the whole RxJS library. Submodules can be still imported.
-    "import-blacklist": [true, "rxjs"],
-    // Avoids inconsistent linebreak styles in source files. Forces developers to use LF linebreaks.
-    "linebreak-style": [true, "LF"]
+    "import-blacklist": [true, "rxjs"]
   }
 }

@@ -286,7 +286,7 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
   }
 
   private removeAndSelectAdjacentTag(index: number) {
-    var selIndex = this.getAdjacentTagIndex(index);
+    let selIndex = this.getAdjacentTagIndex(index);
     this.removeTag(index);
     this.selectAndFocusTagSafe(selIndex);
   }
@@ -296,7 +296,7 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
   }
 
   private getAdjacentTagIndex(index: number) {
-    var len = this._items.length - 1;
+    let len = this._items.length - 1;
     return (len === 0) ? -1 :
       (index === len) ? index - 1 : index;
   }

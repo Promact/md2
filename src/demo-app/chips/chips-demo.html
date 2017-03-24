@@ -11,7 +11,7 @@
                  placeholder="Add"
                  [maxChips]="8"
                  [isRemovable]="isRemovable"
-                 [readonly]="isDisabled"
+                 [disabled]="isDisabled"
                  [isAutoComplete]="false"
                  (change)="handleChange($event)"
                  #chipsInputControl="ngModel">
@@ -41,7 +41,7 @@
                  placeholder="Add"
                  [maxChips]="8"
                  [isRemovable]="isRemovable"
-                 [readonly]="isDisabled"
+                 [disabled]="isDisabled"
                  [isAutoComplete]="true"
                  [autocompleteDataList]="_itemsData"
                  (change)="handleChange($event)" item-text="name" item-value="id"

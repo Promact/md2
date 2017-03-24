@@ -62,7 +62,7 @@ export class Md2ChipsChange {
   host: {
     'role': 'chips',
     '[id]': 'id',
-    '[tabindex]': 'readonly ? -1 : tabindex',
+    '[tabindex]': 'disabled ? -1 : tabindex',
     '[class.chip-input-focus]': 'inputFocused || selectedChip >= 0',
   },
   encapsulation: ViewEncapsulation.None
@@ -81,7 +81,7 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
   @Input() autocompleteDataList: string[];
   @Input() isAutoComplete: boolean = false;
   @Input() isRemovable: boolean = true;
-  @Input() readonly: boolean = false;
+  @Input() disabled: boolean = false;
   @Input() minChips: number = 0;
   @Input() maxChips: number = 10000;
   @Input() id: string = 'md2-chips-' + (++nextId);
@@ -219,7 +219,7 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
 
   @HostListener('focus')
   _handleFocus() {
-    if (this.readonly) { return; }
+    if (this.disabled) { return; }
     if (!this.isAutoComplete) {
       this.elementRef.nativeElement.querySelector('input.chip-input').focus();
     }
@@ -234,7 +234,7 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
   }
 
   inputFocus(event: Event): void {
-    if (this.readonly) { return; }
+    if (this.disabled) { return; }
     this.inputFocused = true;
   }
 

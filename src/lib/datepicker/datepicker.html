@@ -19,11 +19,11 @@
            class="md2-datepicker-value"
            [tabindex]="tabindex"
            [disabled]="disabled"
-           [(ngModel)]="value"
+           [value]="value | date:format"
            (change)="$event.stopPropagation()"
            (focus)="_handleFocus($event)"
            (blur)="_handleBlur($event)" />
-    <!--<span class="md2-datepicker-value">{{ value | date:format }}</span>-->
+    <!--<span class="md2-datepicker-value">{{ value | date:format }}</span>[(ngModel)]="stringValue"-->
     <span *ngIf="!value || required || disabled" class="md2-datepicker-arrow"></span>
     <span *ngIf="value && !required && !disabled"
           class="md2-datepicker-clear" (click)="_clearValue($event)">
@@ -33,7 +33,7 @@
     </span>
   </div>
 </div>
-<template portal>
+<template #portal>
   <div class="md2-datepicker-panel" [@fadeInContent]="'showing'" (@fadeInContent.done)="_onPanelDone()"
        (keydown)="_handleKeydown($event)" [style.transformOrigin]="_transformOrigin"
        [class.md2-datepicker-panel-done-animating]="_panelDoneAnimating" tabindex="0"
@@ -96,8 +96,8 @@
                 <td *ngFor="let d of w">
                   <div class="md2-calendar-day"
                        [class.today]="d.today"
-                       [class.focus]="_locale.isSameDay(date, d.date)"
-                       [class.selected]="_locale.isSameDay(selected, d.date)"
+                       [class.focus]="_util.isSameDay(date, d.date)"
+                       [class.selected]="_util.isSameDay(selected, d.date)"
                        [class.disabled]="d.disabled"
                        [class.prev-month]="d.calMonth===_prevMonth"
                        [class.curr-month]="d.calMonth===_currMonth"

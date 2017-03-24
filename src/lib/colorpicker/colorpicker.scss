@@ -19,6 +19,14 @@ $warn: #f44336 !default;
   }
 }
 
+.md2-colorpicker-panel {
+  box-shadow: 0 5px 5px -3px rgba(black, 0.2), 0 8px 10px 1px rgba(black, 0.14), 0 3px 14px 2px rgba(black, 0.12);
+
+  &[container='dialog'] {
+    box-shadow: 0 11px 15px -7px rgba(black, 0.2), 0 24px 38px 3px rgba(black, 0.14), 0 9px 46px 8px rgba(black, 0.12);
+  }
+}
+
 .md2-colorpicker-disabled {
   pointer-events: none;
   cursor: default;
@@ -90,21 +98,23 @@ $warn: #f44336 !default;
   text-overflow: ellipsis;
   transition: all 150ms cubic-bezier(0.25, 0.8, 0.25, 1);
 
-  &.md2-floating-placeholder {
-    left: -2px;
-    text-align: left;
-    transform: translate3d(0, 6px, 0) scale(0.75);
-  }
-
-
   [aria-required=true] &::after {
     content: '*';
   }
 }
 
+.md2-colorpicker-input.input-focused .md2-colorpicker-placeholder {
+  color: $primary;
+}
+
+.md2-colorpicker-input.input-focused .md2-colorpicker-placeholder,
+md2-colorpicker .md2-colorpicker-placeholder.has-value {
+  transform: translate3d(0, 6px, 0) scale(0.75);
+}
+
 .color-error {
-  .md2-colorpicker-input {
-    color: $warn;
+  .md2-colorpicker-input, .md2-colorpicker-placeholder {
+    color: $warn !important;
     border-color: $warn;
   }
 

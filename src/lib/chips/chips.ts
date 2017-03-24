@@ -47,6 +47,12 @@ export const MD2_CHIPS_CONTROL_VALUE_ACCESSOR: any = {
   multi: true
 };
 
+/** Change event object emitted by Md2Chips. */
+export class Md2ChipsChange {
+  source: Md2Chips;
+  value: any;
+}
+
 @Component({
   selector: 'md2-chips',
   templateUrl: 'chips.html',
@@ -56,7 +62,7 @@ export const MD2_CHIPS_CONTROL_VALUE_ACCESSOR: any = {
   host: {
     'role': 'chips',
     '[id]': 'id',
-    '[tabindex]': 'readonly ? -1 : tabindex',
+    '[tabindex]': 'disabled ? -1 : tabindex',
     '[class.chip-input-focus]': 'inputFocused || selectedChip >= 0',
   },
   encapsulation: ViewEncapsulation.None
@@ -75,7 +81,7 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
   @Input() autocompleteDataList: string[];
   @Input() isAutoComplete: boolean = false;
   @Input() isRemovable: boolean = true;
-  @Input() readonly: boolean = false;
+  @Input() disabled: boolean = false;
   @Input() minChips: number = 0;
   @Input() maxChips: number = 10000;
   @Input() id: string = 'md2-chips-' + (++nextId);
@@ -87,18 +93,19 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
   @Output() change: EventEmitter<any> = new EventEmitter<any>();
   @ViewChild('chipInputForm') chipInputForm: NgForm;
 
-  private onTouchedCallback: () => void = noop;
-  private onChangeCallback: (_: any) => void = noop;
+  _onChange = (value: any) => { };
+  _onTouched = () => { };
+
   chipItemList: Array<Chip> = [];
-  public inputValue: string = '';
+  inputValue: string = '';  
+  selectedChip: number = -1;
+  inputFocused: boolean = false;
+
   private _value: any = '';
-  public selectedChip: number = -1;
   private splitRegExp: RegExp;
   private templateHtmlString: any;
-  private item: any;
-  inputFocused: boolean = false;
+  private item: any;  
   private isEmptyAutoComplete: boolean = true;
-  private isObject: boolean;
 
   constructor(private elementRef: ElementRef) { }
 
@@ -112,7 +119,6 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
   get value(): any { return this._value; }
   set value(value: any) { this.setValue(value); }
 
-
   /**
    * set value
    * @param value
@@ -122,19 +128,14 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
       this._value = value;
       this.chipItemList = [];
       if (value) {
-        if (value && value.length && typeof value[0] === 'object' && Array.isArray(value)) {
+        if (value && value.length && Array.isArray(value)) {
           for (let i = 0; i < value.length; i++) {
             this.chipItemList.push(new Chip(value[i], this.textKey, this.valueKey));
           }
-          this.isObject = true;
-        } else if (value && value.length && typeof value[0] === 'string' && Array.isArray(value)) {
-          this.chipItemList = value;
-          this.isObject = false;
         }
       }
     }
-    this.onChangeCallback(value);
-    this.change.emit(this.chipItemList);
+    this._emitChangeEvent();
   }
 
   changeAutocomplete(value: any) {
@@ -218,19 +219,23 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
 
   @HostListener('focus')
   _handleFocus() {
-    if (this.readonly) { return; }
+    if (this.disabled) { return; }
     if (!this.isAutoComplete) {
       this.elementRef.nativeElement.querySelector('input.chip-input').focus();
     }
     this._resetSelected();
   }
+
   inputBlurred(event: Event): void {
-      this.inputFocused = false;     
+    this.inputFocused = false;
+    if (this.inputValue)
       this.addNewChip(this.inputValue);
+    this._onTouched();
+    this.addNewChip(this.inputValue);
   }
 
   inputFocus(event: Event): void {
-    if (this.readonly) { return; }
+    if (this.disabled) { return; }
     this.inputFocused = true;
   }
 
@@ -274,10 +279,8 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
   private _isValid(chipString: any): boolean {
     if (chipString) {
       let isExist: any;
-      if (this.isObject) {
-        isExist = this.chipItemList.filter((chip) => chip.text === chipString.text);
-        return isExist.length ? false : true;
-      } else if (this.chipItemList.indexOf(chipString) === -1) {
+      isExist = this.chipItemList.filter((chip) => chip.text === chipString);
+      if (this.chipItemList.indexOf(chipString) === -1 && (isExist.length ? false : true)) {
         return this.allowedPattern.test(chipString);
       }
     }
@@ -291,14 +294,7 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
     if (validInput) {
       if (this.maxChips) {
         if (this.chipItemList.length < this.maxChips) {
-          if (this.isObject && this.chipItemList.length > 0) {
-            let a: any = {};
-            a[this.textKey] = chips[this.autocompleteItemText];
-            a[this.valueKey] = chips[this.autocompleteItemValue];
-            this.chipItemList.push(new Chip(a, this.textKey, this.valueKey));
-          } else {
-            this.chipItemList.push(chips);
-          }
+          this.chipItemList.push(new Chip(chips, this.autocompleteItemText, this.autocompleteItemValue));
         }
       } else {
         this.chipItemList.push(new Chip(chips, this.textKey, this.valueKey));
@@ -347,17 +343,25 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
    * update value
    */
   private updateValue() {
+
     this._value = new Array<any>();
-    for (let i = 0; i < this.chipItemList.length; i++) {
-      //if (this.isObject) {
-      //  this._value.push(this.chipItemList[i].value);
-      //} else {
-      //  this._value.push(this.chipItemList[i]);
-      //}
-        this._value.push(this.chipItemList[i]);
-    }
-    this.onChangeCallback(this._value);
-    this.change.emit(this._value);
+
+    this._value = this.chipItemList.map((chip: any) => {
+      let a: any = {}
+      a[this.textKey] = chip.text;
+      a[this.valueKey] = chip.value;
+      return a;
+    });
+    this._emitChangeEvent();
+  }
+
+  /** Emits an event when the user selects a color. */
+  _emitChangeEvent(): void {
+    let event = new Md2ChipsChange();
+    event.source = this;
+    event.value = this._value;
+    this._onChange(event.value);
+    this.change.emit(event);
   }
 
   writeValue(value: any): void {
@@ -365,20 +369,16 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
       this._value = value;
       this.chipItemList = [];
       if (value) {
-        if (value && value.length && typeof value[0] === 'object' && Array.isArray(value)) {
+        if (value && value.length && Array.isArray(value)) {
           for (let i = 0; i < value.length; i++) {
             this.chipItemList.push(new Chip(value[i], this.textKey, this.valueKey));
           }
-          this.isObject = true;
-        } else if (value && value.length && typeof value[0] === 'string' && Array.isArray(value)) {
-          this.chipItemList = value;
-          this.isObject = false;
         }
       }
     }
   }
-  registerOnChange(fn: any) { this.onChangeCallback = fn; }
-  registerOnTouched(fn: any) { this.onTouchedCallback = fn; }
+  registerOnChange(fn: (value: any) => void): void { this._onChange = fn; }
+  registerOnTouched(fn: () => {}): void { this._onTouched = fn; }
 }
 
 export const MD2_CHIPS_DIRECTIVES: any[] = [Md2Chips];

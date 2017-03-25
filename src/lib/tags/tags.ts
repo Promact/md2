@@ -343,10 +343,10 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
   private selectAndFocusTagSafe = function (index: number) {
     if (!this._items.length) {
       this._selectTag(-1);
-      this.onFocus();
+      this._handleFocus();
       return;
     }
-    if (index === this._items.length) { return this.onFocus(); }
+    if (index === this._items.length) { return this._handleFocus(); }
     index = Math.max(index, 0);
     index = Math.min(index, this._items.length - 1);
     this._selectTag(index);

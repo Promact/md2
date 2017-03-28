@@ -33,7 +33,7 @@
     </span>
   </div>
 </div>
-<template #portal>
+<ng-template #portal>
   <div class="md2-datepicker-panel" [@fadeInContent]="'showing'" (@fadeInContent.done)="_onPanelDone()"
        (keydown)="_handleKeydown($event)" [style.transformOrigin]="_transformOrigin"
        [class.md2-datepicker-panel-done-animating]="_panelDoneAnimating" tabindex="0"
@@ -121,4 +121,4 @@
       </div>
     </div>
   </div>
-</template>
+</ng-template>

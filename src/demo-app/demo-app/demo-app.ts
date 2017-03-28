@@ -20,8 +20,8 @@ export class Home { }
   encapsulation: ViewEncapsulation.None,
 })
 export class DemoApp {
-  private isSidenavOpened: boolean = false;
-  private footerNav: any = { prev: null, next: null };
+  isSidenavOpened: boolean = false;
+  footerNav: any = { prev: null, next: null };
   navItems = [
     { name: 'Accordion', route: 'accordion' },
     { name: 'Autocomplete', route: 'autocomplete' },
@@ -41,7 +41,7 @@ export class DemoApp {
 
   constructor(private location: Location, private _router: Router) {
     _router.events.subscribe((value) => {
-      let current = this.navItems.map((v) => '/' + v.route).indexOf(value.url);
+      let current = this.navItems.map((v) => '/' + v.route).indexOf((value as any).url);
       this.footerNav.prev = this.navItems[current - 1];
       this.footerNav.next = this.navItems[current + 1];
       if (current === 0) { this.footerNav.prev = { name: 'Home', route: '' }; }

@@ -11,7 +11,7 @@
   <span class="md2-select-arrow"></span>
   <span class="md2-select-underline"></span>
 </div>
-<template cdk-connected-overlay [origin]="origin" [open]="panelOpen" hasBackdrop (backdropClick)="close()"
+<ng-template cdk-connected-overlay [origin]="origin" [open]="panelOpen" hasBackdrop (backdropClick)="close()"
           backdropClass="cdk-overlay-transparent-backdrop" [positions]="_positions" [minWidth]="_triggerWidth"
           [offsetY]="_offsetY" [offsetX]="_offsetX" (attach)="_setScrollTop()">
   <div class="md2-select-panel" [@transformPanel]="'showing'" (@transformPanel.done)="_onPanelDone()"
@@ -22,4 +22,4 @@
       <ng-content></ng-content>
     </div>
   </div>
-</template>
+</ng-template>

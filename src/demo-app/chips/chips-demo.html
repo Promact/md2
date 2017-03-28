@@ -7,7 +7,7 @@
     </div>
     <form class="content">
       <md2-chips name="item"
-                 [(ngModel)]="_item"
+                 [(ngModel)]="item"
                  placeholder="Add"
                  [maxChips]="8"
                  [isRemovable]="isRemovable"
@@ -20,7 +20,7 @@
         </div>
       </md2-chips>
 
-      <p> Value: {{_item|json  }} </p>
+      <p> Value: {{item|json  }} </p>
       <p> Touched: {{ chipsInputControl.touched }} </p>
       <p> Dirty: {{ chipsInputControl.dirty }} </p>
       <p> Status: {{ chipsInputControl.control?.status }} </p>
@@ -37,18 +37,18 @@
     </div>
     <form class="content">
       <md2-chips name="item"
-                 [(ngModel)]="_itemsData"
+                 [(ngModel)]="itemsData"
                  placeholder="Add"
                  [maxChips]="8"
                  [isRemovable]="isRemovable"
                  [disabled]="isDisabled"
                  [isAutoComplete]="true"
-                 [autocompleteDataList]="_items"
+                 [autocompleteDataList]="items"
                  (change)="handleChange($event)" item-text="name" item-value="value" autocomplete-item-text="text" autocomplete-item-value="id"
                  #chipsControl="ngModel">
       </md2-chips>
 
-      <p> Value: {{_itemsData|json  }} </p>
+      <p> Value: {{itemsData|json  }} </p>
       <p> Touched: {{ chipsControl.touched }} </p>
       <p> Dirty: {{ chipsControl.dirty }} </p>
       <p> Status: {{ chipsControl.control?.status }} </p>

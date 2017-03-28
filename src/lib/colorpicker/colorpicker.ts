@@ -178,7 +178,7 @@ export class Md2ColorChange {
   styleUrls: ['colorpicker.css'],
   host: {
     'role': 'colorpicker',
-    '[id]': 'id',    
+    '[id]': 'id',
     '[class.md2-colorpicker-disabled]': 'disabled',
     '[attr.aria-label]': 'placeholder',
     '[attr.aria-required]': 'required.toString()',
@@ -201,7 +201,7 @@ export class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
   backColor: boolean = true;
 
   private _created: boolean;
-  private _defalutColor: string = '#000000';  
+  private _defalutColor: string = '#000000';
   private _initialColor: string;
   private _overlayRef: OverlayRef;
   private _backdropSubscription: Subscription;

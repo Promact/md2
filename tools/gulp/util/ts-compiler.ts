@@ -32,7 +32,7 @@ function parseProjectConfig(project: string, options: ts.CompilerOptions) {
 }
 
 /** Formats the TypeScript diagnostics into a error string. */
-export function formatDiagnostics(diagnostics: ts.Diagnostic[], baseDir: string): string {
+export function formatDiagnostics(diagnostics: ts.Diagnostic[], baseDir: string): string[] {
   return diagnostics.map(diagnostic => {
     let res = `• ${chalk.red(`TS${diagnostic.code}`)} - `;
 
@@ -44,14 +44,16 @@ export function formatDiagnostics(diagnostics: ts.Diagnostic[], baseDir: string)
     }
     res += `${ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n')}`;
 
+    console.log(res);
+
     return res;
-  }).join('\n');
+  });
 }
 
 /** Checks and reports diagnostics if present. */
 export function reportDiagnostics(diagnostics: ts.Diagnostic[], baseDir?: string) {
   if (diagnostics && diagnostics.length && diagnostics[0]) {
-    console.error(formatDiagnostics(diagnostics, baseDir));
+    formatDiagnostics(diagnostics, baseDir).forEach(console.log.bind(console));
     throw new Error('TypeScript compilation failed.');
   }
 }

@@ -13,6 +13,7 @@ export class SelectDemo {
   isDisabledMultiple = false;
   item: any = null;
   itemMultiple: any = null;
+  search: string = null;
 
   items: Array<any> =
   [

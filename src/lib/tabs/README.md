@@ -32,7 +32,7 @@ A tabs would have the following markup.
   <md2-tab label="title1">Test content 1</md2-tab>
   <md2-tab label="title2">Test content 2</md2-tab>
   <md2-tab>
-    <template md2-tab-label>title3</template>
+    <ng-template md2-tab-label>title3</ng-template>
     Test content 3
   </md2-tab>
 </md2-tabs>

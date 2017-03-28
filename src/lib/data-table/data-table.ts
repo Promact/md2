@@ -43,7 +43,7 @@ export interface DataEvent {
 })
 export class Md2DataTable implements DoCheck {
 
-  private diff: IterableDiffer;
+  private diff: IterableDiffer<any>;
   private isDataChanged = false;
   private _data: Array<any> = [];
   private _activePage: number = 1;

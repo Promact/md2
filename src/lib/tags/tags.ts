@@ -250,7 +250,7 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
     if (this._selectedTag >= 0) { this.resetselectedTag(); }
     // filter
     setTimeout(() => {
-      this.filterMatches(new RegExp(this._inputValue, 'ig'));
+      this.filterMatches();
     }, 10);
   }
 
@@ -385,10 +385,10 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
    * update suggestion menu with filter
    * @param query
    */
-  private filterMatches(query: RegExp) {
+  private filterMatches() {
     let tempList = this._tags.map((tag: any) => new Tag(tag, this.textKey, this.valueKey));
     this._list = tempList.filter((t: Tag) =>
-      (query.test(t.text) && !this._items.find((i: Tag) => t.text === i.text)));
+      (new RegExp(this._inputValue, 'ig').test(t.text) && !this._items.find((i: Tag) => t.text === i.text)));
     if (this._list.length > 0) {
       this._focusedTag = 0;
     }

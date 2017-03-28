@@ -40,7 +40,7 @@ export class DemoApp {
   ];
 
   constructor(private location: Location, private _router: Router) {
-    _router.events.subscribe((value) => {
+    _router.events.subscribe((value: any) => {
       let current = this.navItems.map((v) => '/' + v.route).indexOf(value.url);
       this.footerNav.prev = this.navItems[current - 1];
       this.footerNav.next = this.navItems[current + 1];

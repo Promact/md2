@@ -10,15 +10,17 @@ import {
   OnDestroy,
   Directive,
   ViewContainerRef,
-  style,
-  trigger,
-  state,
-  transition,
-  animate,
   TemplateRef,
   NgModule,
   ModuleWithProviders
 } from '@angular/core';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger
+} from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import {
   ESCAPE,

@@ -4,12 +4,6 @@ import {
   Input,
   ElementRef,
   ViewContainerRef,
-  style,
-  trigger,
-  state,
-  transition,
-  animate,
-  AnimationTransitionEvent,
   NgZone,
   Optional,
   OnDestroy,
@@ -18,6 +12,14 @@ import {
   ViewEncapsulation,
   ChangeDetectorRef
 } from '@angular/core';
+import {
+  style,
+  trigger,
+  state,
+  transition,
+  animate,
+  AnimationEvent,
+} from '@angular/animations';
 import {
   Overlay,
   OverlayState,
@@ -411,7 +413,7 @@ export class Md2TooltipComponent {
     }
   }
 
-  _afterVisibilityAnimation(e: AnimationTransitionEvent): void {
+  _afterVisibilityAnimation(e: AnimationEvent): void {
     if (e.toState === 'hidden' && !this.isVisible()) {
       this._onHide.next();
     }

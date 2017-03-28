@@ -74,8 +74,8 @@ task(':build:components:rollup:esm', () => {
 /** Builds a UMD bundle (ES5) for all components. */
 task(':build:components:rollup:umd', () => {
   return src(path.join(DIST_COMPONENTS_ROOT, 'index.js'))
-  .pipe(createRollupBundle('umd', 'md2.umd.js'))
-  .pipe(dest(path.join(DIST_COMPONENTS_ROOT, 'bundles')));
+    .pipe(createRollupBundle('umd', 'md2.umd.js'))
+    .pipe(dest(path.join(DIST_COMPONENTS_ROOT, 'bundles')));
 });
 
 
@@ -106,7 +106,10 @@ const ROLLUP_GLOBALS = {
   '@angular/common': 'ng.common',
   '@angular/forms': 'ng.forms',
   '@angular/http': 'ng.http',
+  '@angular/animations': 'ng.animations',
+  '@angular/animations/browser': 'ng.animations.browser',
   '@angular/platform-browser': 'ng.platformBrowser',
+  '@angular/platform-browser/animations': 'ng.platformBrowser.animations',
   '@angular/platform-browser-dynamic': 'ng.platformBrowserDynamic',
 
   // Rxjs dependencies

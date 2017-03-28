@@ -1,14 +1,16 @@
 import {
-  animate,
   Component,
   Directive,
   Input,
+  ViewEncapsulation,
+} from '@angular/core';
+import {
+  animate,
   state,
   style,
   transition,
   trigger,
-  ViewEncapsulation,
-} from '@angular/core';
+} from '@angular/animations';
 import { Md2Accordion } from './accordionpanel';
 import { coerceBooleanProperty } from '../core';
 

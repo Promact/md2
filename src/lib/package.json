@@ -39,8 +39,8 @@
   "homepage": "https://github.com/Promact/md2#readme",
   "author": "Dharmesh Pipariya <pipariyadharmesh@gmail.com>",
   "peerDependencies": {
-    "@angular/core": "^2.3.0",
-    "@angular/common": "^2.3.0",
-    "@angular/http": "^2.3.0"
+    "@angular/core": "^4.0.0",
+    "@angular/common": "^4.0.0",
+    "@angular/http": "^4.0.0"
   }
 }

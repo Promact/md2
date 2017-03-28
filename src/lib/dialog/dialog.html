@@ -1,4 +1,4 @@
-<template md2DialogPortal>
+<ng-template md2DialogPortal>
   <div class="md2-dialog-panel" [attr.role]="dialogConfig?.role"
        [@state]="_visibility" (@state.done)="_onPanelDone()">
     <div class="md2-dialog-content">
@@ -15,4 +15,4 @@
       <ng-content select="md2-dialog-actions"></ng-content>
     </div>
   </div>
-</template>
+</ng-template>

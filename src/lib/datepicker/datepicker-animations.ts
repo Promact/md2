@@ -1,19 +1,19 @@
 import {
   animate,
-  AnimationEntryMetadata,
+  AnimationTriggerMetadata,
   keyframes,
   state,
   style,
   transition,
   trigger,
-} from '@angular/core';
+} from '@angular/animations';
 
 /**
  * This animation fades in the background color and text content of the
  * select's options. It is time delayed to occur 100ms after the overlay
  * panel has transformed in.
  */
-export const fadeInContent: AnimationEntryMetadata = trigger('fadeInContent', [
+export const fadeInContent: AnimationTriggerMetadata = trigger('fadeInContent', [
   state('showing', style({ opacity: 1 })),
   transition('void => showing', [
     style({ opacity: 0 }),
@@ -21,7 +21,7 @@ export const fadeInContent: AnimationEntryMetadata = trigger('fadeInContent', [
   ])
 ]);
 
-export const slideCalendar: AnimationEntryMetadata = trigger('slideCalendar', [
+export const slideCalendar: AnimationTriggerMetadata = trigger('slideCalendar', [
   transition('* => left', [
     animate(180, keyframes([
       style({ transform: 'translateX(100%)', offset: 0.5 }),

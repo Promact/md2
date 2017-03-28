@@ -23,7 +23,6 @@
            (change)="$event.stopPropagation()"
            (focus)="_handleFocus($event)"
            (blur)="_handleBlur($event)" />
-    <!--<span class="md2-datepicker-value">{{ value | date:format }}</span>[(ngModel)]="stringValue"-->
     <span *ngIf="!value || required || disabled" class="md2-datepicker-arrow"></span>
     <span *ngIf="value && !required && !disabled"
           class="md2-datepicker-clear" (click)="_clearValue($event)">
@@ -33,7 +32,7 @@
     </span>
   </div>
 </div>
-<template #portal>
+<ng-template #portal>
   <div class="md2-datepicker-panel" [@fadeInContent]="'showing'" (@fadeInContent.done)="_onPanelDone()"
        (keydown)="_handleKeydown($event)" [style.transformOrigin]="_transformOrigin"
        [class.md2-datepicker-panel-done-animating]="_panelDoneAnimating" tabindex="0"
@@ -121,4 +120,4 @@
       </div>
     </div>
   </div>
-</template>
+</ng-template>

@@ -1,7 +1,8 @@
 import {NgModule, ApplicationRef} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {HttpModule} from '@angular/http';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {DemoApp, Home} from './demo-app/demo-app';
 import {RouterModule} from '@angular/router';
 import {Md2Module} from 'md2';
@@ -24,6 +25,7 @@ import {TooltipDemo} from './tooltip/tooltip-demo';
 @NgModule({
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     FormsModule,
     HttpModule,
     ReactiveFormsModule,

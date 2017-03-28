@@ -17,6 +17,6 @@ import { Component, ViewEncapsulation } from '@angular/core';
   encapsulation: ViewEncapsulation.None
 })
 export class CollapseDemo {
-  isCollapsedContent: boolean = false;
-  isCollapsedImage: boolean = true;
+  _isCollapsedContent: boolean = false;
+  _isCollapsedImage: boolean = true;
 }

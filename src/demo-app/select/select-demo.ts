@@ -10,6 +10,7 @@ import { Component, ViewEncapsulation } from '@angular/core';
 export class SelectDemo {
   isRequired = false;
   isDisabled = false;
+  _search: string = '';
   isDisabledMultiple = false;
   item: any = null;
   itemMultiple: any = null;

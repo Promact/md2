@@ -71,7 +71,7 @@ export const SELECT_PANEL_PADDING_X = 16;
  * the browser adds ~4px, because we're using inline elements.
  * The checkbox width is 20px.
  */
-export const SELECT_MULTIPLE_PANEL_PADDING_X = SELECT_PANEL_PADDING_X * 1.75 + 20;
+export const SELECT_MULTIPLE_PANEL_PADDING_X = SELECT_PANEL_PADDING_X * 1.25 + 20;
 
 /**
  * The panel's padding on the y-axis. This padding indicates there are more

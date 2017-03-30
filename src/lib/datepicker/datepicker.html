@@ -20,9 +20,11 @@
            [tabindex]="tabindex"
            [disabled]="disabled"
            [value]="value | date:format"
+           autocomplete="off"
            (change)="$event.stopPropagation()"
            (focus)="_handleFocus($event)"
-           (blur)="_handleBlur($event)" />
+           (blur)="_handleBlur($event)"
+           (keydown)="_handleKeydown($event)" />
     <span *ngIf="!value || required || disabled" class="md2-datepicker-arrow"></span>
     <span *ngIf="value && !required && !disabled"
           class="md2-datepicker-clear" (click)="_clearValue($event)">

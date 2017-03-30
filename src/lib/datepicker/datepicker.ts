@@ -7,7 +7,6 @@ import {
   Output,
   Optional,
   EventEmitter,
-  Renderer,
   Self,
   TemplateRef,
   ViewChild,
@@ -75,9 +74,6 @@ export type PanelPositionY = 'above' | 'below';
     '[attr.aria-required]': 'required.toString()',
     '[attr.aria-disabled]': 'disabled.toString()',
     '[attr.aria-invalid]': '_control?.invalid || "false"',
-    '(keydown)': '_handleKeydown($event)',
-    '(focus)': '_onFocus()',
-    '(blur)': '_onBlur()',
     '(window:resize)': '_handleWindowResize($event)'
   },
   animations: [
@@ -144,7 +140,7 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
   /** Event emitted when the selected date has been changed by the user. */
   @Output() change: EventEmitter<Md2DateChange> = new EventEmitter<Md2DateChange>();
 
-  constructor(private _element: ElementRef, private overlay: Overlay, private _renderer: Renderer,
+  constructor(private _element: ElementRef, private overlay: Overlay,
     private _viewContainerRef: ViewContainerRef, private _locale: DateLocale,
     private _util: DateUtil, @Self() @Optional() public _control: NgControl) {
     if (this._control) {
@@ -369,7 +365,7 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
   }
 
   private _focusHost(): void {
-    this._renderer.invokeElementMethod(this._element.nativeElement, 'focus');
+    this._element.nativeElement.querySelectorAll('input')[0].focus();
   }
 
   private coerceDateProperty(value: any): Date {
@@ -513,12 +509,6 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     }
   }
 
-  _onFocus() {
-    if (!this.panelOpen && this.openOnFocus) {
-      this.open();
-    }
-  }
-
   _onBlur() {
     if (!this.panelOpen) {
       this._onTouched();
@@ -527,6 +517,9 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
 
   _handleFocus(event: Event) {
     this._inputFocused = true;
+    if (!this.panelOpen && this.openOnFocus) {
+      this.open();
+    }
   }
 
   _handleBlur(event: Event) {
@@ -536,7 +529,7 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     }
     let el: any = event.target;
     let d: any = this._util.parseDate(el.value, this.format);
-    if (this._util.isValidDate(d)) {
+    if (this._util.isValidDate(d) && !this._util.isSameDay(this.value, d)) {
       this.value = d;
       this._emitChangeEvent();
     }
@@ -546,6 +539,7 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     event.stopPropagation();
     this.value = null;
     this._emitChangeEvent();
+    this._focusHost();
   }
 
   /**

@@ -14,9 +14,9 @@ gulp.task('deploy', ['build:devapp'], () => {
     if (err) { return console.log(err); }
     const result = data.replace('<base href="/">', '<base href=".">');
 
-    fs.writeFile('./dist/index.html', result, 'utf8', (err) => {
-      if (err) {
-        return console.log(err);
+    fs.writeFile('./dist/index.html', result, 'utf8', (e) => {
+      if (e) {
+        return console.log(e);
       } else {
         return gulp.src('./dist/**/*')
           .pipe(gulp.dest('./deploy'));
@@ -68,7 +68,7 @@ gulp.task(':release:tag', (cb: any) => {
 // gulp.task('github-release', function (done: any) {
 //  releaser({
 //    type: 'oauth',
-//    token: '0126af95c0e2d9b0a7c78738c4c00a860b04acc8' 
+//    token: '0126af95c0e2d9b0a7c78738c4c00a860b04acc8'
 // change this to your own GitHub token or use an environment variable
 //  }, {
 //      preset: 'angular' // Or to any other commit message convention you use.

@@ -388,7 +388,8 @@ export class Md2Tags implements AfterContentInit, ControlValueAccessor {
   private filterMatches() {
     let tempList = this._tags.map((tag: any) => new Tag(tag, this.textKey, this.valueKey));
     this._list = tempList.filter((t: Tag) =>
-      (new RegExp(this._inputValue, 'ig').test(t.text) && !this._items.find((i: Tag) => t.text === i.text)));
+      (new RegExp(this._inputValue, 'ig').test(t.text) &&
+        !this._items.find((i: Tag) => t.text === i.text)));
     if (this._list.length > 0) {
       this._focusedTag = 0;
     }

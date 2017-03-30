@@ -1,62 +1,25 @@
-
-function val3(v: string) { return v.substr(0, 3); }
-function split(str: string, regexp: any) {
-  // @condblock ie8compatibility
-  let start = 0;
-  let m: any, r: any = [];
-  while (m = regexp.exec(str)) {
-    r.push(str.substring(start, m.index));
-    start = m.index + m[0].length;
-  }
-  r.push(str.substr(start));
-  return r;
-  // @condend ie8compatibility
-
-  // @cond !ie8compatibility return str.split(regexp);
-}
-
-function map(list: any, mapFunc: any, ctx?: any) {
-  let result: any = [];
-  each(list, (item: any, index: number) => {
-    result.push(mapFunc.call(ctx || list, item, index));
-  });
-  return result;
-}
-
-function each(list: any, cb: any, ctx?: any) {
-  if (list) {
-    for (let i = 0; i < list.length; i++) {
-      cb.call(ctx || list, list[i], i);
-    }
-  }
-  return list;
-}
-
-export const MONTH_LONG_NAMES = split('January,February,March,April,May,June,July,August,September,October,November,December', /,/g);
-export const MONTH_SHORT_NAMES = map(MONTH_LONG_NAMES, val3); // ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-export const WEEK_LONG_NAMES = split('Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday', /,/g);
-export const WEEK_SHORT_NAMES = map(WEEK_LONG_NAMES, val3);
-export const MERIDIAN_NAMES = split('am,pm', /,/g);
-export const MERIDIAN_NAMES_FULL = split('am,am,am,am,am,am,am,am,am,am,am,am,pm,pm,pm,pm,pm,pm,pm,pm,pm,pm,pm,pm', /,/g);
-
-export const PARSE_DATE_MAP: any = {
-  'y': 0,      // placeholder -> ctorIndex
-  'Y': [0, -2000],
-  'M': [1, 1], // placeholder -> [ctorIndex, offset|value array]
-  'n': [1, MONTH_SHORT_NAMES],
-  'N': [1, MONTH_LONG_NAMES],
-  'd': 2,
-  'm': 4,
-  'H': 3,
-  'h': 3,
-  'K': [3, 1],
-  'k': [3, 1],
-  's': 5,
-  'S': 6,
-  'a': [3, MERIDIAN_NAMES]
-};
+import { DateLocale } from './date-locale';
 
 export class DateUtil {
+
+  _locale: DateLocale = new DateLocale();
+
+  parseDateMap: any = {
+    'y': 0,      // placeholder -> ctorIndex
+    'Y': [0, -2000],
+    'M': [1, 1], // placeholder -> [ctorIndex, offset|value array]
+    'n': [1, this._locale.shortMonths],
+    'N': [1, this._locale.fullMonths],
+    'd': 2,
+    'm': 4,
+    'H': 3,
+    'h': 3,
+    'K': [3, 1],
+    'k': [3, 1],
+    's': 5,
+    'S': 6,
+    'a': [3, ['am', 'pm']]
+  };
 
   replace(s: string, regexp: any, sub?: string) {
     return (s != null ? '' + s : '').replace(regexp, sub != null ? sub : '');
@@ -167,7 +130,7 @@ export class DateUtil {
       let indexEntry: any = indexMap[i];
       if (this.isList(indexEntry)) { // for a, n or N
         let placeholderChar = indexEntry[0];
-        let mapEntry = PARSE_DATE_MAP[placeholderChar];
+        let mapEntry = this.parseDateMap[placeholderChar];
         let ctorIndex = mapEntry[0];
         let valList = indexEntry[1] || mapEntry[1];
         let listValue = this.find(valList,
@@ -186,7 +149,7 @@ export class DateUtil {
         }
       } else if (indexEntry) { // for numeric values (yHmMs)
         let value = parseFloat(matchVal);
-        let mapEntry = PARSE_DATE_MAP[indexEntry];
+        let mapEntry = this.parseDateMap[indexEntry];
         if (this.isList(mapEntry)) {
           ctorArgs[mapEntry[0]] += value - mapEntry[1];
         } else {

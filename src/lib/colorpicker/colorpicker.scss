@@ -3,23 +3,15 @@ $primary: #106cc8 !default;
 $warn: #f44336 !default;
 
 .md2-colorpicker-wrapper {
-  width: 270px;
-  height: 355px;
-  border-radius: 2px;
+  border-radius: 3px;
   background-color: #fff;
   z-index: 10;
   box-shadow: 0 2px 6px rgba($black, 0.4);
-  transform: scale(0);
-  transform-origin: left top;
-  transition: 150ms;
-  user-select: none;
-
-  &.active {
-    transform: scale(1);
-  }
+  overflow: hidden;
 }
 
 .md2-colorpicker-panel {
+  outline: 0;
   box-shadow: 0 5px 5px -3px rgba(black, 0.2), 0 8px 10px 1px rgba(black, 0.14), 0 3px 14px 2px rgba(black, 0.12);
 
   &[container='dialog'] {
@@ -60,7 +52,6 @@ $warn: #f44336 !default;
     border-color: transparent;
     background-position: 0 bottom;
     cursor: default;
-    user-select: none;
   }
 
   md2-colorpicker:focus:not(.md2-colorpicker-disabled) & {
@@ -125,10 +116,10 @@ md2-colorpicker .md2-colorpicker-placeholder.has-value {
 
 .color-picker-selector {
   display: block;
-  padding: 18px 0 18px 32px;
+  padding: 18px 0 4px 46px;
   white-space: nowrap;
 
-  .color-div {
+  .md2-colorpicker-preview {
     content: '';
     width: 24px;
     height: 24px;
@@ -139,8 +130,8 @@ md2-colorpicker .md2-colorpicker-placeholder.has-value {
     background-size: 8px 8px;
     background-position: 0 0, 4px 4px;
     position: absolute;
-    top: 21px;
-    left: 0;
+    top: 19px;
+    left: 6px;
     border: 2px solid #fafafa;
     display: block;
     fill: #5a5a5a;
@@ -178,24 +169,21 @@ md2-colorpicker {
   display: block;
   max-width: 215px;
   outline: none;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
 }
 
 .md2-color-picker {
   position: relative;
   display: block;
+  width: 266px;
   outline: none;
-  backface-visibility: hidden;
 
   * {
     box-sizing: border-box;
   }
 
   .input-color-content {
-    width: 250px;
     position: relative;
-    margin: 10px auto;
+    padding: 8px;
   }
 
   i {
@@ -242,11 +230,9 @@ md2-colorpicker {
   .saturation-lightness {
     width: 100%;
     height: 130px;
-    border: none;
+    border-radius: 2px;
     overflow: hidden;
     background-image: linear-gradient(to top, #000, rgba(0, 0, 0, 0)), linear-gradient(to right, #fff, rgba(255, 255, 255, 0));
-    -ms-filter: 'progid:DXImageTransform.Microsoft.gradient(startColorstr=#00CC9A81, endColorstr=#FF000000)';
-    filter: progid:dximagetransform.microsoft.gradient(startColorstr='#00CC9A81', endColorstr='#FF000000');
   }
 
   .saturation-lightness:hover {
@@ -254,23 +240,22 @@ md2-colorpicker {
   }
 
   .hue {
+    position: relative;
     width: 100%;
     height: 30px;
-    border: none;
-    margin: 10px 0;
-    background: -webkit-linear-gradient(left, #f00 0%, #ff0 16.66%, #0f0 33.33%, #0ff 50%, #00f 66.66%, #f0f 83.33%, #f00 100%);
+    margin: 8px 0;
+    border-radius: 2px;
+    background: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
   }
 
   .alpha {
-    border: 1px solid rgb(239, 239, 239);
+    position: relative;
     width: 100%;
     height: 30px;
-    background-color: #fff;
-    background-size: 8px 8px;
-    background-position: 0 0,4px 4px;
-    position: relative; /*background-image: linear-gradient(to left, transparent, transparent), linear-gradient(to right, #fff, rgba(255, 255, 255, 0));*/
-    background-image: linear-gradient(45deg, rgb(221, 221, 221) 25%, transparent 0px, transparent 75%, rgb(221, 221, 221) 0px, rgb(221, 221, 221)), linear-gradient(45deg, rgb(221, 221, 221) 25%, transparent 0px, transparent 75%, rgb(221, 221, 221) 0px, rgb(221, 221, 221));
-    background-image: -webkit-linear-gradient(45deg,#ddd 25%,transparent 0,transparent 75%,#ddd 0,#ddd),-webkit-linear-gradient(45deg,#ddd 25%,transparent 0,transparent 75%,#ddd 0,#ddd);
+    border-radius: 2px;
+    background: linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd), linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd);
+    background-size: 8px 8px, 8px 8px;
+    background-position: 0 0, 4px 4px;
 
     .alpha-main {
       position: absolute;
@@ -288,7 +273,7 @@ md2-colorpicker {
     background-size: 8px 8px;
     background-position: 0 0,4px 4px;
     position: relative;
-    background-image: linear-gradient(45deg, #dddddd 25%, transparent 0px, transparent 75%, #dddddd 0px, #dddddd), linear-gradient(45deg, #dddddd 25%, transparent 0px, transparent 75%, #dddddd 0px, #dddddd);
+    background-image: linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd), linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd);
     background-image: -webkit-linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd), -webkit-linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd);
 
     .selected-color-bg {
@@ -315,6 +300,7 @@ md2-colorpicker {
   cursor: pointer;
 
   svg {
+    vertical-align: bottom;
     fill: #686868;
   }
 }
@@ -413,14 +399,25 @@ md2-colorpicker {
   font-size: 14px;
   display: inline-block;
   float: left;
-  padding: 3px;
+  padding: 4px 8px 3px;
+  border-bottom: 2px solid transparent;
   cursor: pointer;
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(white, 0.25);
+
+  .dark & {
+    background: rgba(black, 0.25);
+  }
+
+  &.active {
+    border-color: rgba(white, 0.5);
+    background: transparent;
+
+    .dark & {
+      border-color: rgba(black, 0.5);
+    }
+  }
 }
 
-.type-policy.active {
-  background: rgba(153, 153, 153, 0.35) !important;
-}
 
 .cdk-overlay-container, .cdk-global-overlay-wrapper {
   pointer-events: none;

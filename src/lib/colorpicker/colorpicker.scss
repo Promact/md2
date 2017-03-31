@@ -120,18 +120,17 @@ md2-colorpicker .md2-colorpicker-placeholder.has-value {
   white-space: nowrap;
 
   .md2-colorpicker-preview {
+    position: absolute;
+    top: 19px;
+    left: 6px;
     content: '';
     width: 24px;
     height: 24px;
     overflow: hidden;
     background-color: #fff;
-    background-image: -webkit-linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd), -webkit-linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd);
-    background-image: linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd), linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd);
+    background: linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd), linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd);
     background-size: 8px 8px;
     background-position: 0 0, 4px 4px;
-    position: absolute;
-    top: 19px;
-    left: 6px;
     border: 2px solid #fafafa;
     display: block;
     fill: #5a5a5a;
@@ -254,7 +253,7 @@ md2-colorpicker {
     height: 30px;
     border-radius: 2px;
     background: linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd), linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd);
-    background-size: 8px 8px, 8px 8px;
+    background-size: 8px 8px;
     background-position: 0 0, 4px 4px;
 
     .alpha-main {
@@ -267,14 +266,13 @@ md2-colorpicker {
   }
 
   .selected-color {
+    position: relative;
     width: 100%;
     height: 75px;
     background-color: #fff;
+    background: linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd), linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd);
     background-size: 8px 8px;
-    background-position: 0 0,4px 4px;
-    position: relative;
-    background-image: linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd), linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd);
-    background-image: -webkit-linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd), -webkit-linear-gradient(45deg, #ddd 25%, transparent 0, transparent 75%, #ddd 0, #ddd);
+    background-position: 0 0, 4px 4px;
 
     .selected-color-bg {
       position: absolute;
@@ -306,13 +304,13 @@ md2-colorpicker {
 }
 
 .clearfix {
-  &:before,
-  &:after {
-    content: " ";
+  &::before,
+  &::after {
+    content: ' ';
     display: table;
   }
 
-  &:after {
+  &::after {
     clear: both;
   }
 }

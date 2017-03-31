@@ -1,3 +1,26 @@
+<a name="0.0.18"></a>
+## [0.0.18](https://github.com/Promact/md2/compare/0.0.17...v0.0.18) (2017-03-31)
+
+
+### Bug Fixes
+
+* reactive form disable property issue [#114](https://github.com/Promact/md2/issues/114) ([587db74](https://github.com/Promact/md2/commit/587db74))
+* regex filter issue in autocomplete and tags ([6b6c0d9](https://github.com/Promact/md2/commit/6b6c0d9))
+* fix AOT issues and update performance #137, #143
+* fix menu visiblity issue
+* wrapped text of autocomplete menu option
+* fix(tags) error `this.onFocus is not a function` issue #134
+* fix: reactive form disable property issue #114
+
+
+### Features
+
+* angular 4 compatibility ([83d0639](https://github.com/Promact/md2/commit/83d0639))
+* chore(datepicker) added feature for user can able to input date and update template portal and date util service #38, #106
+* chore(tooltip) integrated disable tooltip feature
+
+
+
 <a name="0.0.17"></a>
 ## [0.0.17](https://github.com/Promact/md2/compare/0.0.16...v0.0.17) (2017-03-20)
 

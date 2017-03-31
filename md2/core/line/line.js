@@ -4,9 +4,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
 import { NgModule, Directive } from '@angular/core';
 import { CompatibilityModule } from '../compatibility/compatibility';
 /**
@@ -14,25 +11,25 @@ import { CompatibilityModule } from '../compatibility/compatibility';
  * Line elements can be extracted with a @ContentChildren(MdLine) query, then
  * counted by checking the query list's length.
  */
-export var MdLine = (function () {
+var MdLine = (function () {
     function MdLine() {
     }
-    MdLine = __decorate([
-        Directive({
-            selector: '[md-line], [mat-line]',
-            host: {
-                '[class.mat-line]': 'true'
-            }
-        }), 
-        __metadata('design:paramtypes', [])
-    ], MdLine);
     return MdLine;
 }());
+MdLine = __decorate([
+    Directive({
+        selector: '[md-line], [mat-line]',
+        host: {
+            '[class.mat-line]': 'true'
+        }
+    })
+], MdLine);
+export { MdLine };
 /**
  * Helper that takes a query list of lines and sets the correct class on the host.
  * @docs-private
  */
-export var MdLineSetter = (function () {
+var MdLineSetter = (function () {
     function MdLineSetter(_lines, _renderer, _element) {
         var _this = this;
         this._lines = _lines;
@@ -62,17 +59,18 @@ export var MdLineSetter = (function () {
     };
     return MdLineSetter;
 }());
-export var MdLineModule = (function () {
+export { MdLineSetter };
+var MdLineModule = (function () {
     function MdLineModule() {
     }
-    MdLineModule = __decorate([
-        NgModule({
-            imports: [CompatibilityModule],
-            exports: [MdLine, CompatibilityModule],
-            declarations: [MdLine],
-        }), 
-        __metadata('design:paramtypes', [])
-    ], MdLineModule);
     return MdLineModule;
 }());
+MdLineModule = __decorate([
+    NgModule({
+        imports: [CompatibilityModule],
+        exports: [MdLine, CompatibilityModule],
+        declarations: [MdLine],
+    })
+], MdLineModule);
+export { MdLineModule };
 //# sourceMappingURL=line.js.map

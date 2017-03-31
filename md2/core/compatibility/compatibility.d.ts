@@ -19,6 +19,7 @@ export declare class MdPrefixRejector {
  */
 export declare class CompatibilityModule {
     static forRoot(): ModuleWithProviders;
+    constructor(document: any);
 }
 /**
  * Module that enforces "no-conflict" compatibility mode settings. When this module is loaded,

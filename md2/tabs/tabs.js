@@ -10,14 +10,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 import { Component, ContentChildren, Directive, ElementRef, EventEmitter, Input, Output, QueryList, TemplateRef, ViewContainerRef, ViewEncapsulation, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 /** Change event object that is emitted when the tab has changed. */
-export var Md2TabChange = (function () {
+var Md2TabChange = (function () {
     function Md2TabChange(tab, index) {
         this.tab = tab;
         this.index = index;
     }
     return Md2TabChange;
 }());
-export var Md2Transclude = (function () {
+export { Md2TabChange };
+var Md2Transclude = (function () {
     function Md2Transclude(viewRef) {
         this.viewRef = viewRef;
     }
@@ -32,59 +33,62 @@ export var Md2Transclude = (function () {
         enumerable: true,
         configurable: true
     });
-    __decorate([
-        Input(), 
-        __metadata('design:type', Object)
-    ], Md2Transclude.prototype, "md2Transclude", null);
-    Md2Transclude = __decorate([
-        Directive({ selector: '[md2Transclude]' }), 
-        __metadata('design:paramtypes', [ViewContainerRef])
-    ], Md2Transclude);
     return Md2Transclude;
 }());
-export var Md2Tab = (function () {
+__decorate([
+    Input(),
+    __metadata("design:type", Object),
+    __metadata("design:paramtypes", [TemplateRef])
+], Md2Transclude.prototype, "md2Transclude", null);
+Md2Transclude = __decorate([
+    Directive({ selector: '[md2Transclude]' }),
+    __metadata("design:paramtypes", [ViewContainerRef])
+], Md2Transclude);
+export { Md2Transclude };
+var Md2Tab = (function () {
     function Md2Tab() {
     }
-    __decorate([
-        Input(), 
-        __metadata('design:type', String)
-    ], Md2Tab.prototype, "label", void 0);
-    __decorate([
-        Input(), 
-        __metadata('design:type', Boolean)
-    ], Md2Tab.prototype, "active", void 0);
-    __decorate([
-        Input(), 
-        __metadata('design:type', Boolean)
-    ], Md2Tab.prototype, "disabled", void 0);
-    __decorate([
-        Input(), 
-        __metadata('design:type', String)
-    ], Md2Tab.prototype, "class", void 0);
-    Md2Tab = __decorate([
-        Component({selector: 'md2-tab',
-            template: "<ng-content></ng-content>",
-            host: {
-                '[class]': 'class',
-                '[class.active]': 'active'
-            }
-        }), 
-        __metadata('design:paramtypes', [])
-    ], Md2Tab);
     return Md2Tab;
 }());
-export var Md2TabLabel = (function () {
+__decorate([
+    Input(),
+    __metadata("design:type", String)
+], Md2Tab.prototype, "label", void 0);
+__decorate([
+    Input(),
+    __metadata("design:type", Boolean)
+], Md2Tab.prototype, "active", void 0);
+__decorate([
+    Input(),
+    __metadata("design:type", Boolean)
+], Md2Tab.prototype, "disabled", void 0);
+__decorate([
+    Input(),
+    __metadata("design:type", String)
+], Md2Tab.prototype, "class", void 0);
+Md2Tab = __decorate([
+    Component({selector: 'md2-tab',
+        template: "<ng-content></ng-content>",
+        host: {
+            '[class]': 'class',
+            '[class.active]': 'active'
+        }
+    })
+], Md2Tab);
+export { Md2Tab };
+var Md2TabLabel = (function () {
     function Md2TabLabel(templateRef, tab) {
         this.templateRef = templateRef;
         tab.labelRef = templateRef;
     }
-    Md2TabLabel = __decorate([
-        Directive({ selector: '[md2-tab-label]' }), 
-        __metadata('design:paramtypes', [TemplateRef, Md2Tab])
-    ], Md2TabLabel);
     return Md2TabLabel;
 }());
-export var Md2Tabs = (function () {
+Md2TabLabel = __decorate([
+    Directive({ selector: '[md2-tab-label]' }),
+    __metadata("design:paramtypes", [TemplateRef, Md2Tab])
+], Md2TabLabel);
+export { Md2TabLabel };
+var Md2Tabs = (function () {
     function Md2Tabs(elementRef) {
         this.elementRef = elementRef;
         this._isInitialized = false;
@@ -315,58 +319,61 @@ export var Md2Tabs = (function () {
         value = Math.min(totalWidth - elements.canvas.clientWidth, value);
         return value;
     };
-    __decorate([
-        ContentChildren(Md2Tab), 
-        __metadata('design:type', QueryList)
-    ], Md2Tabs.prototype, "tabs", void 0);
-    __decorate([
-        Input(), 
-        __metadata('design:type', String)
-    ], Md2Tabs.prototype, "class", void 0);
-    __decorate([
-        Input(), 
-        __metadata('design:type', Object)
-    ], Md2Tabs.prototype, "selectedIndex", null);
-    __decorate([
-        Output(), 
-        __metadata('design:type', EventEmitter)
-    ], Md2Tabs.prototype, "change", void 0);
-    __decorate([
-        Output(), 
-        __metadata('design:type', EventEmitter)
-    ], Md2Tabs.prototype, "selectedIndexChange", void 0);
-    Md2Tabs = __decorate([
-        Component({selector: 'md2-tabs',
-            template: "<div class=\"md2-tabs-header-wrapper\"> <div role=\"button\" class=\"md2-prev-button\" [class.disabled]=\"!canPageBack()\" *ngIf=\"_shouldPaginate\" (click)=\"previousPage()\"> <em class=\"prev-icon\">Prev</em> </div> <div role=\"button\" class=\"md2-next-button\" [class.disabled]=\"!canPageForward()\" *ngIf=\"_shouldPaginate\" (click)=\"nextPage()\"> <em class=\"next-icon\">Next</em> </div> <div class=\"md2-tabs-canvas\" [class.md2-paginated]=\"_shouldPaginate\" role=\"tablist\" tabindex=\"0\" (keydown.arrowRight)=\"focusNextTab()\" (keydown.arrowLeft)=\"focusPreviousTab()\" (keydown.enter)=\"selectedIndex = focusIndex\" (mousewheel)=\"scroll($event)\"> <div class=\"md2-tabs-header\" [style.marginLeft]=\"-_offsetLeft + 'px'\"> <div class=\"md2-tab-label\" role=\"tab\" *ngFor=\"let tab of tabs; let i = index\" [class.focus]=\"focusIndex === i\" [class.active]=\"selectedIndex === i\" [class.disabled]=\"tab.disabled\" (click)=\"focusIndex = selectedIndex = i\"> <span [md2Transclude]=\"tab.labelRef\">{{tab.label}}</span> </div> <div class=\"md2-tab-ink-bar\" [style.left]=\"_inkBarLeft\" [style.width]=\"_inkBarWidth\"></div> </div> </div> </div> <div class=\"md2-tabs-body-wrapper\"> <ng-content></ng-content> </div> ",
-            styles: ["md2-tabs { position: relative; overflow: hidden; display: block; margin: 0; border: 1px solid #e1e1e1; border-radius: 2px; } .md2-tabs-header-wrapper { position: relative; display: block; height: 48px; background: white; border-width: 0 0 1px; border-style: solid; border-color: rgba(0, 0, 0, 0.12); margin: 0; padding: 0; list-style: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } .md2-tabs-header-wrapper::after { content: ''; display: table; clear: both; } .md2-prev-button, .md2-next-button { position: absolute; top: 0; height: 100%; width: 32px; padding: 8px 0; z-index: 2; cursor: pointer; } .md2-prev-button.disabled, .md2-next-button.disabled { opacity: 0.25; cursor: default; } .md2-prev-button { left: 0; } .md2-next-button { right: 0; } .md2-prev-button .prev-icon, .md2-next-button .next-icon { display: block; width: 12px; height: 12px; font-size: 0; border-width: 0 0 2px 2px; border-style: solid; border-color: #757575; border-radius: 1px; transform: rotate(45deg); margin: 10px; } .md2-next-button .next-icon { border-width: 2px 2px 0 0; } .md2-tabs-canvas { position: relative; height: 100%; overflow: hidden; display: block; outline: none; } .md2-tabs-canvas.md2-paginated { margin: 0 32px; } .md2-tabs-header { position: relative; display: inline-block; height: 100%; white-space: nowrap; transition: 500ms cubic-bezier(0.35, 0, 0.25, 1); } .md2-tab-label { position: relative; height: 100%; color: rgba(0, 0, 0, 0.54); font-size: 14px; text-align: center; line-height: 24px; padding: 12px 24px; transition: background-color 350ms cubic-bezier(0.35, 0, 0.25, 1); cursor: pointer; white-space: nowrap; text-transform: uppercase; display: inline-block; font-weight: 500; box-sizing: border-box; overflow: hidden; -ms-text-overflow: ellipsis; text-overflow: ellipsis; } .md2-tab-label.active { color: #106cc8; } .md2-tabs-canvas:focus .md2-tab-label.focus { background: rgba(0, 0, 0, 0.05); } .md2-tab-label.disabled { color: rgba(0, 0, 0, 0.26); pointer-events: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-user-drag: none; opacity: 0.5; cursor: default; } .md2-tab-ink-bar { position: absolute; bottom: 0; height: 2px; background: #ff5252; transition: 250ms cubic-bezier(0.35, 0, 0.25, 1); } .md2-tabs-body-wrapper { position: relative; min-height: 0; display: block; clear: both; } md2-tab { padding: 16px; display: none; position: relative; } md2-tab.active { display: block; position: relative; } /*# sourceMappingURL=tabs.css.map */ "],
-            host: {
-                '[class]': 'class',
-                '(window:resize)': 'onWindowResize($event)'
-            },
-            encapsulation: ViewEncapsulation.None
-        }), 
-        __metadata('design:paramtypes', [ElementRef])
-    ], Md2Tabs);
     return Md2Tabs;
 }());
+__decorate([
+    ContentChildren(Md2Tab),
+    __metadata("design:type", QueryList)
+], Md2Tabs.prototype, "tabs", void 0);
+__decorate([
+    Input(),
+    __metadata("design:type", String)
+], Md2Tabs.prototype, "class", void 0);
+__decorate([
+    Input(),
+    __metadata("design:type", Object),
+    __metadata("design:paramtypes", [Object])
+], Md2Tabs.prototype, "selectedIndex", null);
+__decorate([
+    Output(),
+    __metadata("design:type", EventEmitter)
+], Md2Tabs.prototype, "change", void 0);
+__decorate([
+    Output(),
+    __metadata("design:type", EventEmitter)
+], Md2Tabs.prototype, "selectedIndexChange", void 0);
+Md2Tabs = __decorate([
+    Component({selector: 'md2-tabs',
+        template: "<div class=\"md2-tabs-header-wrapper\"><div role=\"button\" class=\"md2-prev-button\" [class.disabled]=\"!canPageBack()\" *ngIf=\"_shouldPaginate\" (click)=\"previousPage()\"><em class=\"prev-icon\">Prev</em></div><div role=\"button\" class=\"md2-next-button\" [class.disabled]=\"!canPageForward()\" *ngIf=\"_shouldPaginate\" (click)=\"nextPage()\"><em class=\"next-icon\">Next</em></div><div class=\"md2-tabs-canvas\" [class.md2-paginated]=\"_shouldPaginate\" role=\"tablist\" tabindex=\"0\" (keydown.arrowRight)=\"focusNextTab()\" (keydown.arrowLeft)=\"focusPreviousTab()\" (keydown.enter)=\"selectedIndex = focusIndex\" (mousewheel)=\"scroll($event)\"><div class=\"md2-tabs-header\" [style.marginLeft]=\"-_offsetLeft + 'px'\"><div class=\"md2-tab-label\" role=\"tab\" *ngFor=\"let tab of tabs; let i = index\" [class.focus]=\"focusIndex === i\" [class.active]=\"selectedIndex === i\" [class.disabled]=\"tab.disabled\" (click)=\"focusIndex = selectedIndex = i\"><span [md2Transclude]=\"tab.labelRef\">{{tab.label}}</span></div><div class=\"md2-tab-ink-bar\" [style.left]=\"_inkBarLeft\" [style.width]=\"_inkBarWidth\"></div></div></div></div><div class=\"md2-tabs-body-wrapper\"><ng-content></ng-content></div>",
+        styles: ["md2-tabs{position:relative;overflow:hidden;display:block;margin:0;border:1px solid #e1e1e1;border-radius:2px}.md2-tabs-header-wrapper{position:relative;display:block;height:48px;background:#fff;border-width:0 0 1px;border-style:solid;border-color:rgba(0,0,0,.12);margin:0;padding:0;list-style:none;user-select:none}.md2-tabs-header-wrapper::after{content:'';display:table;clear:both}.md2-next-button,.md2-prev-button{position:absolute;top:0;height:100%;width:32px;padding:8px 0;z-index:2;cursor:pointer}.md2-next-button.disabled,.md2-prev-button.disabled{opacity:.25;cursor:default}.md2-prev-button{left:0}.md2-next-button{right:0}.md2-next-button .next-icon,.md2-prev-button .prev-icon{display:block;width:12px;height:12px;font-size:0;border-width:0 0 2px 2px;border-style:solid;border-color:#757575;border-radius:1px;transform:rotate(45deg);margin:10px}.md2-next-button .next-icon{border-width:2px 2px 0 0}.md2-tabs-canvas{position:relative;height:100%;overflow:hidden;display:block;outline:0}.md2-tabs-canvas.md2-paginated{margin:0 32px}.md2-tabs-header{position:relative;display:inline-block;height:100%;white-space:nowrap;transition:.5s cubic-bezier(.35,0,.25,1)}.md2-tab-label{position:relative;height:100%;color:rgba(0,0,0,.54);font-size:14px;text-align:center;line-height:24px;padding:12px 24px;transition:background-color 350ms cubic-bezier(.35,0,.25,1);cursor:pointer;white-space:nowrap;text-transform:uppercase;display:inline-block;font-weight:500;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box;overflow:hidden;-ms-text-overflow:ellipsis;-o-text-overflow:ellipsis;text-overflow:ellipsis}.md2-tab-label.active{color:#106cc8}.md2-tabs-canvas:focus .md2-tab-label.focus{background:rgba(0,0,0,.05)}.md2-tab-label.disabled{color:rgba(0,0,0,.26);pointer-events:none;user-select:none;-webkit-user-drag:none;opacity:.5;cursor:default}.md2-tab-ink-bar{position:absolute;bottom:0;height:2px;background:#ff5252;transition:250ms cubic-bezier(.35,0,.25,1)}.md2-tabs-body-wrapper{position:relative;min-height:0;display:block;clear:both}md2-tab{padding:16px;display:none;position:relative}md2-tab.active{display:block;position:relative} /*# sourceMappingURL=tabs.css.map */ "],
+        host: {
+            '[class]': 'class',
+            '(window:resize)': 'onWindowResize($event)'
+        },
+        encapsulation: ViewEncapsulation.None
+    }),
+    __metadata("design:paramtypes", [ElementRef])
+], Md2Tabs);
+export { Md2Tabs };
 export var MD2_TABS_DIRECTIVES = [Md2TabLabel, Md2Tabs, Md2Tab];
-export var Md2TabsModule = (function () {
+var Md2TabsModule = Md2TabsModule_1 = (function () {
     function Md2TabsModule() {
     }
     Md2TabsModule.forRoot = function () {
         return {
-            ngModule: Md2TabsModule,
+            ngModule: Md2TabsModule_1,
             providers: []
         };
     };
-    Md2TabsModule = __decorate([
-        NgModule({
-            imports: [CommonModule],
-            exports: MD2_TABS_DIRECTIVES,
-            declarations: [Md2Transclude, Md2TabLabel, Md2Tabs, Md2Tab],
-        }), 
-        __metadata('design:paramtypes', [])
-    ], Md2TabsModule);
     return Md2TabsModule;
 }());
+Md2TabsModule = Md2TabsModule_1 = __decorate([
+    NgModule({
+        imports: [CommonModule],
+        exports: MD2_TABS_DIRECTIVES,
+        declarations: [Md2Transclude, Md2TabLabel, Md2Tabs, Md2Tab],
+    })
+], Md2TabsModule);
+export { Md2TabsModule };
+var Md2TabsModule_1;
 //# sourceMappingURL=tabs.js.map

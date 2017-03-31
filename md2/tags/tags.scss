@@ -145,9 +145,8 @@ md2-tags .md2-tags-menu .md2-option {
   align-items: center;
   width: auto;
   transition: background 150ms linear;
-  padding: 0 16px;
-  height: 48px;
-  line-height: 48px;
+  padding: 12px 16px;
+  line-height: 24px;
 }
 
 md2-tags .md2-tags-menu .md2-option:hover, md2-tags .md2-tags-menu .md2-option.focused {
@@ -156,11 +155,6 @@ md2-tags .md2-tags-menu .md2-option:hover, md2-tags .md2-tags-menu .md2-option.f
 
 md2-tags .md2-tags-menu .md2-option .md2-option-text {
   width: auto;
-  white-space: nowrap;
-  overflow: hidden;
-  -ms-text-overflow: ellipsis;
-  -o-text-overflow: ellipsis;
-  text-overflow: ellipsis;
   font-size: 16px;
 }
 

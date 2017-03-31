@@ -4,7 +4,7 @@
  * transforms, in order to avoid issues with subpixel rendering which can cause the
  * element to become blurry.
  */
-export var GlobalPositionStrategy = (function () {
+var GlobalPositionStrategy = (function () {
     function GlobalPositionStrategy() {
         this._cssPosition = 'static';
         this._topOffset = '';
@@ -144,4 +144,5 @@ export var GlobalPositionStrategy = (function () {
     };
     return GlobalPositionStrategy;
 }());
+export { GlobalPositionStrategy };
 //# sourceMappingURL=global-position-strategy.js.map

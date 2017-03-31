@@ -10,9 +10,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { Injectable, OpaqueToken, Optional, Inject, SkipSelf } from '@angular/core';
+import { Injectable, OpaqueToken, Optional, Inject, SkipSelf, } from '@angular/core';
 export var LIVE_ANNOUNCER_ELEMENT_TOKEN = new OpaqueToken('liveAnnouncerElement');
-export var LiveAnnouncer = (function () {
+var LiveAnnouncer = (function () {
     function LiveAnnouncer(elementToken) {
         // We inject the live element as `any` because the constructor signature cannot reference
         // browser globals (HTMLElement) on non-browser environments, since having a class decorator
@@ -51,14 +51,14 @@ export var LiveAnnouncer = (function () {
         document.body.appendChild(liveEl);
         return liveEl;
     };
-    LiveAnnouncer = __decorate([
-        Injectable(),
-        __param(0, Optional()),
-        __param(0, Inject(LIVE_ANNOUNCER_ELEMENT_TOKEN)), 
-        __metadata('design:paramtypes', [Object])
-    ], LiveAnnouncer);
     return LiveAnnouncer;
 }());
+LiveAnnouncer = __decorate([
+    Injectable(),
+    __param(0, Optional()), __param(0, Inject(LIVE_ANNOUNCER_ELEMENT_TOKEN)),
+    __metadata("design:paramtypes", [Object])
+], LiveAnnouncer);
+export { LiveAnnouncer };
 export function LIVE_ANNOUNCER_PROVIDER_FACTORY(parentDispatcher, liveElement) {
     return parentDispatcher || new LiveAnnouncer(liveElement);
 }

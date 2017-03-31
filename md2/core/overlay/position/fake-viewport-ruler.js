@@ -1,5 +1,5 @@
 /** @docs-private */
-export var FakeViewportRuler = (function () {
+var FakeViewportRuler = (function () {
     function FakeViewportRuler() {
     }
     FakeViewportRuler.prototype.getViewportRect = function () {
@@ -12,4 +12,5 @@ export var FakeViewportRuler = (function () {
     };
     return FakeViewportRuler;
 }());
+export { FakeViewportRuler };
 //# sourceMappingURL=fake-viewport-ruler.js.map

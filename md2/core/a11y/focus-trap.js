@@ -7,7 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Directive, ElementRef, Input, NgZone, Injectable } from '@angular/core';
+import { Directive, ElementRef, Input, NgZone, Injectable, } from '@angular/core';
 import { InteractivityChecker } from './interactivity-checker';
 import { coerceBooleanProperty } from '../coercion/boolean-property';
 /**
@@ -18,7 +18,7 @@ import { coerceBooleanProperty } from '../coercion/boolean-property';
  * Things like tabIndex > 0, flex `order`, and shadow roots can cause to two to misalign.
  * This will be replaced with a more intelligent solution before the library is considered stable.
  */
-export var FocusTrap = (function () {
+var FocusTrap = (function () {
     function FocusTrap(_element, _checker, _ngZone, deferAnchors) {
         if (deferAnchors === void 0) { deferAnchors = false; }
         this._element = _element;
@@ -153,8 +153,9 @@ export var FocusTrap = (function () {
     };
     return FocusTrap;
 }());
+export { FocusTrap };
 /** Factory that allows easy instantiation of focus traps. */
-export var FocusTrapFactory = (function () {
+var FocusTrapFactory = (function () {
     function FocusTrapFactory(_checker, _ngZone) {
         this._checker = _checker;
         this._ngZone = _ngZone;
@@ -163,17 +164,18 @@ export var FocusTrapFactory = (function () {
         if (deferAnchors === void 0) { deferAnchors = false; }
         return new FocusTrap(element, this._checker, this._ngZone, deferAnchors);
     };
-    FocusTrapFactory = __decorate([
-        Injectable(), 
-        __metadata('design:paramtypes', [InteractivityChecker, NgZone])
-    ], FocusTrapFactory);
     return FocusTrapFactory;
 }());
+FocusTrapFactory = __decorate([
+    Injectable(),
+    __metadata("design:paramtypes", [InteractivityChecker, NgZone])
+], FocusTrapFactory);
+export { FocusTrapFactory };
 /**
  * Directive for trapping focus within a region.
  * @deprecated
  */
-export var FocusTrapDeprecatedDirective = (function () {
+var FocusTrapDeprecatedDirective = (function () {
     function FocusTrapDeprecatedDirective(_elementRef, _focusTrapFactory) {
         this._elementRef = _elementRef;
         this._focusTrapFactory = _focusTrapFactory;
@@ -194,20 +196,22 @@ export var FocusTrapDeprecatedDirective = (function () {
     FocusTrapDeprecatedDirective.prototype.ngAfterContentInit = function () {
         this.focusTrap.attachAnchors();
     };
-    __decorate([
-        Input(), 
-        __metadata('design:type', Boolean)
-    ], FocusTrapDeprecatedDirective.prototype, "disabled", null);
-    FocusTrapDeprecatedDirective = __decorate([
-        Directive({
-            selector: 'cdk-focus-trap',
-        }), 
-        __metadata('design:paramtypes', [ElementRef, FocusTrapFactory])
-    ], FocusTrapDeprecatedDirective);
     return FocusTrapDeprecatedDirective;
 }());
+__decorate([
+    Input(),
+    __metadata("design:type", Boolean),
+    __metadata("design:paramtypes", [Boolean])
+], FocusTrapDeprecatedDirective.prototype, "disabled", null);
+FocusTrapDeprecatedDirective = __decorate([
+    Directive({
+        selector: 'cdk-focus-trap',
+    }),
+    __metadata("design:paramtypes", [ElementRef, FocusTrapFactory])
+], FocusTrapDeprecatedDirective);
+export { FocusTrapDeprecatedDirective };
 /** Directive for trapping focus within a region. */
-export var FocusTrapDirective = (function () {
+var FocusTrapDirective = (function () {
     function FocusTrapDirective(_elementRef, _focusTrapFactory) {
         this._elementRef = _elementRef;
         this._focusTrapFactory = _focusTrapFactory;
@@ -226,16 +230,19 @@ export var FocusTrapDirective = (function () {
     FocusTrapDirective.prototype.ngAfterContentInit = function () {
         this.focusTrap.attachAnchors();
     };
-    __decorate([
-        Input('cdkTrapFocus'), 
-        __metadata('design:type', Boolean)
-    ], FocusTrapDirective.prototype, "enabled", null);
-    FocusTrapDirective = __decorate([
-        Directive({
-            selector: '[cdkTrapFocus]'
-        }), 
-        __metadata('design:paramtypes', [ElementRef, FocusTrapFactory])
-    ], FocusTrapDirective);
     return FocusTrapDirective;
 }());
+__decorate([
+    Input('cdkTrapFocus'),
+    __metadata("design:type", Boolean),
+    __metadata("design:paramtypes", [Boolean])
+], FocusTrapDirective.prototype, "enabled", null);
+FocusTrapDirective = __decorate([
+    Directive({
+        selector: '[cdkTrapFocus]',
+        exportAs: 'cdkTrapFocus',
+    }),
+    __metadata("design:paramtypes", [ElementRef, FocusTrapFactory])
+], FocusTrapDirective);
+export { FocusTrapDirective };
 //# sourceMappingURL=focus-trap.js.map

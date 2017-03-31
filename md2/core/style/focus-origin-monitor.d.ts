@@ -1,6 +1,6 @@
 import { ElementRef, EventEmitter, NgZone, OnDestroy, Optional, Renderer } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-export declare const TOUCH_BUFFER_MS: number;
+export declare const TOUCH_BUFFER_MS = 650;
 export declare type FocusOrigin = 'touch' | 'mouse' | 'keyboard' | 'program';
 /** Monitors mouse and keyboard events to determine the cause of focus events. */
 export declare class FocusOriginMonitor {

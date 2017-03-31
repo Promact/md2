@@ -10,16 +10,22 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { Component, ContentChildren, ElementRef, EventEmitter, Input, Optional, Output, QueryList, Renderer, Self, ViewEncapsulation, ViewChild } from '@angular/core';
+import { Component, ContentChildren, ElementRef, EventEmitter, Input, Optional, Output, QueryList, Renderer, Self, ViewEncapsulation, ViewChild, ChangeDetectorRef, Attribute, } from '@angular/core';
 import { Md2Option } from './option';
 import { ENTER, SPACE } from '../core/keyboard/keycodes';
 import { FocusKeyManager } from '../core/a11y/focus-key-manager';
 import { Dir } from '../core/rtl/dir';
+import { Observable } from 'rxjs/Observable';
 import { transformPlaceholder, transformPanel, fadeInContent } from './select-animations';
 import { NgControl } from '@angular/forms';
 import { coerceBooleanProperty } from '../core/coercion/boolean-property';
 import { ConnectedOverlayDirective } from '../core/overlay/overlay-directives';
 import { ViewportRuler } from '../core/overlay/position/viewport-ruler';
+import { SelectionModel } from '../core/selection/selection';
+import { MdSelectDynamicMultipleError, MdSelectNonArrayValueError } from './select-errors';
+import 'rxjs/add/operator/filter';
+import 'rxjs/add/observable/merge';
+import 'rxjs/add/operator/startWith';
 /**
  * The following style constants are necessary to save here in order
  * to properly calculate the alignment of the selected option over
@@ -42,6 +48,16 @@ export var SELECT_OPTION_HEIGHT_ADJUSTMENT = 9;
 /** The panel's padding on the x-axis */
 export var SELECT_PANEL_PADDING_X = 16;
 /**
+ * Distance between the panel edge and the option text in
+ * multi-selection mode.
+ *
+ * (SELECT_PADDING * 1.75) + 20 = 48
+ * The padding is multiplied by 1.75 because the checkbox's margin is half the padding, and
+ * the browser adds ~4px, because we're using inline elements.
+ * The checkbox width is 20px.
+ */
+export var SELECT_MULTIPLE_PANEL_PADDING_X = SELECT_PANEL_PADDING_X * 1.25 + 20;
+/**
  * The panel's padding on the y-axis. This padding indicates there are more
  * options available if you scroll.
  */
@@ -52,34 +68,32 @@ export var SELECT_PANEL_PADDING_Y = 16;
  */
 export var SELECT_PANEL_VIEWPORT_PADDING = 8;
 /** Change event object that is emitted when the select value has changed. */
-export var Md2SelectChange = (function () {
+var Md2SelectChange = (function () {
     function Md2SelectChange(source, value) {
         this.source = source;
         this.value = value;
     }
     return Md2SelectChange;
 }());
-export var Md2Select = (function () {
-    function Md2Select(_element, _renderer, _viewportRuler, _dir, _control) {
+export { Md2SelectChange };
+var Md2Select = (function () {
+    function Md2Select(_element, _renderer, _viewportRuler, _changeDetectorRef, _dir, _control, tabIndex) {
         this._element = _element;
         this._renderer = _renderer;
         this._viewportRuler = _viewportRuler;
+        this._changeDetectorRef = _changeDetectorRef;
         this._dir = _dir;
         this._control = _control;
         /** Whether or not the overlay panel is open. */
         this._panelOpen = false;
-        /** The currently selected option. */
-        this._selected = [];
-        /** Subscriptions to option events. */
-        this._subscriptions = [];
         /** Whether filling out the select is required in the form.  */
         this._required = false;
         /** Whether the select is disabled.  */
         this._disabled = false;
-        /** Whether the select is multiple.  */
-        this._multiple = false;
         /** The scroll position of the overlay panel, calculated to center the selected option. */
         this._scrollTop = 0;
+        /** Whether the component is in multiple selection mode. */
+        this._multiple = false;
         /** The animation state of the placeholder. */
         this._placeholderState = '';
         /** View -> model callback called when value changes */
@@ -124,6 +138,11 @@ export var Md2Select = (function () {
                 overlayY: 'bottom',
             },
         ];
+        this._floatPlaceholder = 'auto';
+        /** Aria label of the select. If not specified, the placeholder will be used as label. */
+        this.ariaLabel = '';
+        /** Input that can be used to specify the `aria-labelledby` attribute. */
+        this.ariaLabelledby = '';
         /** Event emitted when the select has been opened. */
         this.onOpen = new EventEmitter();
         /** Event emitted when the select has been closed. */
@@ -133,6 +152,7 @@ export var Md2Select = (function () {
         if (this._control) {
             this._control.valueAccessor = this;
         }
+        this._tabIndex = parseInt(tabIndex) || 0;
     }
     Object.defineProperty(Md2Select.prototype, "placeholder", {
         /** Placeholder to be shown if no value has been selected. */
@@ -155,13 +175,6 @@ export var Md2Select = (function () {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(Md2Select.prototype, "multiple", {
-        /** Whether the component is multiple. */
-        get: function () { return this._multiple; },
-        set: function (value) { this._multiple = coerceBooleanProperty(value); },
-        enumerable: true,
-        configurable: true
-    });
     Object.defineProperty(Md2Select.prototype, "required", {
         /** Whether the component is required. */
         get: function () { return this._required; },
@@ -169,11 +182,51 @@ export var Md2Select = (function () {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(Md2Select.prototype, "multiple", {
+        /** Whether the user should be allowed to select multiple options. */
+        get: function () { return this._multiple; },
+        set: function (value) {
+            if (this._selectionModel) {
+                throw new MdSelectDynamicMultipleError();
+            }
+            this._multiple = coerceBooleanProperty(value);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Md2Select.prototype, "floatPlaceholder", {
+        /** Whether to float the placeholder text. */
+        get: function () { return this._floatPlaceholder; },
+        set: function (value) {
+            this._floatPlaceholder = value || 'auto';
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Md2Select.prototype, "tabIndex", {
+        /** Tab index for the select element. */
+        get: function () { return this._disabled ? -1 : this._tabIndex; },
+        set: function (value) {
+            if (typeof value !== 'undefined') {
+                this._tabIndex = value;
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Md2Select.prototype, "optionSelectionChanges", {
+        /** Combined stream of all of the child options' change events. */
+        get: function () {
+            return Observable.merge.apply(Observable, this.options.map(function (option) { return option.onSelectionChange; }));
+        },
+        enumerable: true,
+        configurable: true
+    });
     Md2Select.prototype.ngAfterContentInit = function () {
         var _this = this;
+        this._selectionModel = new SelectionModel(this.multiple, null, false);
         this._initKeyManager();
-        this._resetOptions();
-        this._changeSubscription = this.options.changes.subscribe(function () {
+        this._changeSubscription = this.options.changes.startWith(null).subscribe(function () {
             _this._resetOptions();
             if (_this._control) {
                 // Defer setting the value in order to avoid the "Expression
@@ -197,21 +250,22 @@ export var Md2Select = (function () {
     };
     /** Opens the overlay panel. */
     Md2Select.prototype.open = function () {
-        if (this.disabled) {
+        if (this.disabled || !this.options.length) {
             return;
         }
-        this._triggerWidth = this._getWidth();
         this._calculateOverlayPosition();
-        this._placeholderState = this._isRtl() ? 'floating-rtl' : 'floating-ltr';
+        this._placeholderState = this._floatPlaceholderState();
         this._panelOpen = true;
     };
     /** Closes the overlay panel and focuses the host element. */
     Md2Select.prototype.close = function () {
-        this._panelOpen = false;
-        if (!this._selected.length) {
-            this._placeholderState = '';
+        if (this._panelOpen) {
+            this._panelOpen = false;
+            if (this._selectionModel.isEmpty()) {
+                this._placeholderState = '';
+            }
+            this._focusHost();
         }
-        this._focusHost();
     };
     /**
      * Sets the select's value. Part of the ControlValueAccessor interface
@@ -220,16 +274,9 @@ export var Md2Select = (function () {
      * @param value New value to be written to the model.
      */
     Md2Select.prototype.writeValue = function (value) {
-        var _this = this;
-        if (!this.options) {
-            // In reactive forms, writeValue() will be called synchronously before
-            // the select's child options have been created. It's necessary to call
-            // writeValue() again after the options have been created to ensure any
-            // initial view value is set.
-            Promise.resolve(null).then(function () { return _this.writeValue(value); });
-            return;
+        if (this.options) {
+            this._setSelectionByValue(value);
         }
-        this._setSelectionByValue(value);
     };
     /**
      * Saves a callback function to be invoked when the select's value
@@ -271,11 +318,22 @@ export var Md2Select = (function () {
     Object.defineProperty(Md2Select.prototype, "selected", {
         /** The currently selected option. */
         get: function () {
-            return this._selected;
+            return this.multiple ? this._selectionModel.selected : this._selectionModel.selected[0];
         },
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(Md2Select.prototype, "triggerValue", {
+        /** The value displayed in the trigger. */
+        get: function () {
+            return this.multiple ?
+                this._selectionModel.selected.map(function (option) { return option.viewValue; }).join(', ') :
+                this._selectionModel.selected[0].viewValue;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    /** Whether the element is in RTL mode. */
     Md2Select.prototype._isRtl = function () {
         return this._dir ? this._dir.value === 'rtl' : false;
     };
@@ -302,6 +360,7 @@ export var Md2Select = (function () {
         }
         else {
             this.onClose.emit();
+            this._panelDoneAnimating = false;
         }
     };
     /**
@@ -320,10 +379,6 @@ export var Md2Select = (function () {
             this._onTouched();
         }
     };
-    /** Returns the correct tabindex for the select depending on disabled state. */
-    Md2Select.prototype._getTabIndex = function () {
-        return this.disabled ? '-1' : '0';
-    };
     /**
      * Sets the scroll position of the scroll container. This must be called after
      * the overlay pane is attached or the scroll container element will not yet be
@@ -339,37 +394,47 @@ export var Md2Select = (function () {
      */
     Md2Select.prototype._setSelectionByValue = function (value) {
         var _this = this;
-        var options = this.options.toArray();
-        if (this.multiple) {
-            this._selected = [];
-            value = Array.isArray(value) ? value : [];
-            var _loop_1 = function(i) {
-                value.find(function (v) {
-                    if (_this._equals(v, options[i].value)) {
-                        options[i].select();
-                    }
-                });
-            };
-            for (var i = 0; i < this.options.length; i++) {
-                _loop_1(i);
-            }
-            this._updateOptions();
+        var isArray = Array.isArray(value);
+        if (this.multiple && value && !isArray) {
+            throw new MdSelectNonArrayValueError();
         }
-        else {
-            for (var i = 0; i < this.options.length; i++) {
-                if (this._equals(options[i].value, value)) {
-                    options[i].select();
-                    return;
-                }
-            }
-            // Clear selection if no item was selected.
+        if (isArray) {
+            this._clearSelection();
+            value.forEach(function (currentValue) { return _this._selectValue(currentValue); });
+            this._sortValues();
+        }
+        else if (!this._selectValue(value)) {
             this._clearSelection();
         }
+        this._setValueWidth();
+        if (this._selectionModel.isEmpty()) {
+            this._placeholderState = '';
+        }
+        this._changeDetectorRef.markForCheck();
     };
-    /** Clears the select trigger and deselects every option in the list. */
-    Md2Select.prototype._clearSelection = function () {
-        this._selected = [];
-        this._updateOptions();
+    /**
+     * Finds and selects and option based on its value.
+     * @returns Option that has the corresponding value.
+     */
+    Md2Select.prototype._selectValue = function (value) {
+        var correspondingOption = this.options.find(function (option) { return option.value === value; });
+        if (correspondingOption) {
+            correspondingOption.select();
+            this._selectionModel.select(correspondingOption);
+        }
+        return correspondingOption;
+    };
+    /**
+     * Clears the select trigger and deselects every option in the list.
+     * @param skip Option that should not be deselected.
+     */
+    Md2Select.prototype._clearSelection = function (skip) {
+        this._selectionModel.clear();
+        this.options.forEach(function (option) {
+            if (option !== skip) {
+                option.deselect();
+            }
+        });
     };
     Md2Select.prototype._getTriggerRect = function () {
         return this.trigger.nativeElement.getBoundingClientRect();
@@ -378,85 +443,90 @@ export var Md2Select = (function () {
     Md2Select.prototype._initKeyManager = function () {
         var _this = this;
         this._keyManager = new FocusKeyManager(this.options);
-        this._tabSubscription = this._keyManager.tabOut.subscribe(function () {
-            _this.close();
-        });
+        this._tabSubscription = this._keyManager.tabOut.subscribe(function () { return _this.close(); });
     };
     /** Drops current option subscriptions and IDs and resets from scratch. */
     Md2Select.prototype._resetOptions = function () {
         this._dropSubscriptions();
         this._listenToOptions();
         this._setOptionIds();
+        this._setOptionMultiple();
     };
-    /** Listens to selection events on each option. */
+    /** Listens to user-generated selection events on each option. */
     Md2Select.prototype._listenToOptions = function () {
         var _this = this;
-        this.options.forEach(function (option) {
-            var sub = option.onSelect.subscribe(function (event) {
-                if (_this.multiple) {
-                    var ind = _this._selected.indexOf(option);
-                    if (ind < 0) {
-                        _this._selected.push(option);
-                        _this._selected = _this._selected.sort(function (a, b) {
-                            return _this.options.toArray().indexOf(a) - _this.options.toArray().indexOf(b);
-                        });
-                    }
-                    else {
-                        _this._selected.splice(ind, 1);
-                    }
-                }
-                else {
-                    _this._selected[0] = option;
-                    if (_this.panelOpen) {
-                        _this.close();
-                    }
-                }
-                if (event.isUserInput) {
-                    _this._emitChangeEvent();
-                }
-                _this._updateOptions();
-                _this._setValueWidth();
-                _this._placeholderState = '';
-            });
-            _this._subscriptions.push(sub);
+        this._optionSubscription = this.optionSelectionChanges
+            .filter(function (event) { return event.isUserInput; })
+            .subscribe(function (event) {
+            _this._onSelect(event.source);
+            _this._setValueWidth();
+            if (!_this.multiple) {
+                _this.close();
+            }
         });
+    };
+    /** Invoked when an option is clicked. */
+    Md2Select.prototype._onSelect = function (option) {
+        var wasSelected = this._selectionModel.isSelected(option);
+        if (this.multiple) {
+            this._selectionModel.toggle(option);
+            wasSelected ? option.deselect() : option.select();
+            this._sortValues();
+        }
+        else {
+            this._clearSelection(option);
+            this._selectionModel.select(option);
+        }
+        if (wasSelected !== this._selectionModel.isSelected(option)) {
+            this._propagateChanges();
+        }
+    };
+    /**
+     * Sorts the model values, ensuring that they keep the same
+     * order that they have in the panel.
+     */
+    Md2Select.prototype._sortValues = function () {
+        var _this = this;
+        if (this._multiple) {
+            this._selectionModel.clear();
+            this.options.forEach(function (option) {
+                if (option.selected) {
+                    _this._selectionModel.select(option);
+                }
+            });
+        }
     };
     /** Unsubscribes from all option subscriptions. */
     Md2Select.prototype._dropSubscriptions = function () {
-        this._subscriptions.forEach(function (sub) { return sub.unsubscribe(); });
-        this._subscriptions = [];
+        if (this._optionSubscription) {
+            this._optionSubscription.unsubscribe();
+            this._optionSubscription = null;
+        }
     };
-    /** Emits an event when the user selects an option. */
-    Md2Select.prototype._emitChangeEvent = function () {
-        var value;
-        if (this.multiple) {
-            value = this._selected.map(function (option) { return option.value; });
-        }
-        else {
-            value = this._selected[0].value;
-        }
-        this._onChange(value);
-        this.change.emit(new Md2SelectChange(this, value));
+    /** Emits change event to set the model value. */
+    Md2Select.prototype._propagateChanges = function () {
+        var valueToEmit = Array.isArray(this.selected) ?
+            this.selected.map(function (option) { return option.value; }) :
+            this.selected.value;
+        this._onChange(valueToEmit);
+        this.change.emit(new Md2SelectChange(this, valueToEmit));
     };
     /** Records option IDs to pass to the aria-owns property. */
     Md2Select.prototype._setOptionIds = function () {
         this._optionIds = this.options.map(function (option) { return option.id; }).join(' ');
     };
-    /** Deselect each option that doesn't match the current selection. */
-    Md2Select.prototype._updateOptions = function () {
+    /**
+     * Sets the `multiple` property on each option. The promise is necessary
+     * in order to avoid Angular errors when modifying the property after init.
+     * TODO: there should be a better way of doing this.
+     */
+    Md2Select.prototype._setOptionMultiple = function () {
         var _this = this;
-        this.options.forEach(function (option) {
-            if (_this.multiple) {
-                if (_this._selected.indexOf(option) < 0) {
-                    option.deselect();
-                }
-            }
-            else {
-                if (option !== _this.selected[0]) {
-                    option.deselect();
-                }
-            }
-        });
+        if (this.multiple) {
+            Promise.resolve(null).then(function () {
+                _this.options.forEach(function (option) { return option.multiple = _this.multiple; });
+            });
+        }
     };
     /**
      * Must set the width of the selected option's value programmatically
@@ -466,15 +536,16 @@ export var Md2Select = (function () {
     Md2Select.prototype._setValueWidth = function () {
         this._selectedValueWidth = this._triggerWidth - 13;
     };
-    /** Focuses the selected item. If no option is selected, it will focus
+    /**
+     * Focuses the selected item. If no option is selected, it will focus
      * the first item instead.
      */
     Md2Select.prototype._focusCorrectOption = function () {
-        if (this.selected.length) {
-            this._keyManager.setActiveItem(this._getOptionIndex(this.selected[0]));
+        if (this._selectionModel.isEmpty()) {
+            this._keyManager.setFirstItemActive();
         }
         else {
-            this._keyManager.setFirstItemActive();
+            this._keyManager.setActiveItem(this._getOptionIndex(this._selectionModel.selected[0]));
         }
     };
     /** Focuses the host element when the panel closes. */
@@ -489,13 +560,16 @@ export var Md2Select = (function () {
     };
     /** Calculates the scroll position and x- and y-offsets of the overlay panel. */
     Md2Select.prototype._calculateOverlayPosition = function () {
-        this._offsetX = this._isRtl() ? SELECT_PANEL_PADDING_X : -SELECT_PANEL_PADDING_X;
+        this._offsetX = this.multiple ? SELECT_MULTIPLE_PANEL_PADDING_X : SELECT_PANEL_PADDING_X;
+        if (!this._isRtl()) {
+            this._offsetX *= -1;
+        }
         var panelHeight = Math.min(this.options.length * SELECT_OPTION_HEIGHT, SELECT_PANEL_MAX_HEIGHT);
         var scrollContainerHeight = this.options.length * SELECT_OPTION_HEIGHT;
         // The farthest the panel can be scrolled before it hits the bottom
         var maxScroll = scrollContainerHeight - panelHeight;
-        if (this.selected) {
-            var selectedIndex = this._getOptionIndex(this.selected[0]);
+        if (this._selectionModel.hasValue()) {
+            var selectedIndex = this._getOptionIndex(this._selectionModel.selected[0]);
             // We must maintain a scroll buffer so the selected option will be scrolled to the
             // center of the overlay panel rather than the top.
             var scrollBuffer = panelHeight / 2;
@@ -528,6 +602,35 @@ export var Md2Select = (function () {
         var optimalScrollPosition = optionOffsetFromScrollTop - scrollBuffer + halfOptionHeight;
         return clampValue(0, optimalScrollPosition, maxScroll);
     };
+    /**
+     * Figures out the appropriate animation state for the placeholder.
+     */
+    Md2Select.prototype._getPlaceholderAnimationState = function () {
+        if (this.floatPlaceholder === 'never') {
+            return '';
+        }
+        if (this.floatPlaceholder === 'always') {
+            return this._floatPlaceholderState();
+        }
+        return this._placeholderState;
+    };
+    /**
+     * Determines the CSS `visibility` of the placeholder element.
+     */
+    Md2Select.prototype._getPlaceholderVisibility = function () {
+        return (this.floatPlaceholder !== 'never' || this._selectionModel.isEmpty()) ?
+            'visible' : 'hidden';
+    };
+    Object.defineProperty(Md2Select.prototype, "_ariaLabel", {
+        /** Returns the aria-label of the select component. */
+        get: function () {
+            // If an ariaLabelledby value has been set, the select should not overwrite the
+            // `aria-labelledby` value by setting the ariaLabel to the placeholder.
+            return this.ariaLabelledby ? null : this.ariaLabel || this.placeholder;
+        },
+        enumerable: true,
+        configurable: true
+    });
     /**
      * Calculates the y-offset of the select's overlay panel in relation to the
      * top start corner of the trigger. It has to be adjusted in order for the
@@ -623,105 +726,107 @@ export var Md2Select = (function () {
         var originY = Math.abs(this._offsetY) - SELECT_OPTION_HEIGHT_ADJUSTMENT + SELECT_OPTION_HEIGHT / 2;
         return "50% " + originY + "px 0px";
     };
-    Md2Select.prototype._equals = function (o1, o2) {
-        if (o1 === o2) {
-            return true;
-        }
-        if (o1 === null || o2 === null) {
-            return false;
-        }
-        if (o1 !== o1 && o2 !== o2) {
-            return true;
-        }
-        var t1 = typeof o1, t2 = typeof o2, key, keySet;
-        if (t1 === t2 && t1 === 'object') {
-            keySet = Object.create(null);
-            for (key in o1) {
-                if (!this._equals(o1[key], o2[key])) {
-                    return false;
-                }
-                keySet[key] = true;
-            }
-            for (key in o2) {
-                if (!(key in keySet) && key.charAt(0) !== '$' && o2[key]) {
-                    return false;
-                }
-            }
-            return true;
-        }
-        return false;
+    /** Figures out the floating placeholder state value. */
+    Md2Select.prototype._floatPlaceholderState = function () {
+        return this._isRtl() ? 'floating-rtl' : 'floating-ltr';
     };
-    __decorate([
-        ViewChild('trigger'), 
-        __metadata('design:type', ElementRef)
-    ], Md2Select.prototype, "trigger", void 0);
-    __decorate([
-        ViewChild(ConnectedOverlayDirective), 
-        __metadata('design:type', ConnectedOverlayDirective)
-    ], Md2Select.prototype, "overlayDir", void 0);
-    __decorate([
-        ContentChildren(Md2Option), 
-        __metadata('design:type', QueryList)
-    ], Md2Select.prototype, "options", void 0);
-    __decorate([
-        Input(), 
-        __metadata('design:type', Object)
-    ], Md2Select.prototype, "placeholder", null);
-    __decorate([
-        Input(), 
-        __metadata('design:type', Object)
-    ], Md2Select.prototype, "disabled", null);
-    __decorate([
-        Input(), 
-        __metadata('design:type', Object)
-    ], Md2Select.prototype, "multiple", null);
-    __decorate([
-        Input(), 
-        __metadata('design:type', Object)
-    ], Md2Select.prototype, "required", null);
-    __decorate([
-        Output(), 
-        __metadata('design:type', EventEmitter)
-    ], Md2Select.prototype, "onOpen", void 0);
-    __decorate([
-        Output(), 
-        __metadata('design:type', EventEmitter)
-    ], Md2Select.prototype, "onClose", void 0);
-    __decorate([
-        Output(), 
-        __metadata('design:type', EventEmitter)
-    ], Md2Select.prototype, "change", void 0);
-    Md2Select = __decorate([
-        Component({selector: 'md2-select',
-            template: "<div class=\"md2-select-trigger\" cdk-overlay-origin (click)=\"toggle()\" #origin=\"cdkOverlayOrigin\" #trigger> <span class=\"md2-select-placeholder\" [class.md2-floating-placeholder]=\"selected.length\" [@transformPlaceholder]=\"_placeholderState\" [style.width.px]=\"_selectedValueWidth\">{{ placeholder }}</span> <span class=\"md2-select-value\"> <span class=\"md2-select-value-text\" *ngFor=\"let option of selected\"> {{ option.viewValue }} </span> </span> <span class=\"md2-select-arrow\"></span> </div> <template cdk-connected-overlay [origin]=\"origin\" [open]=\"panelOpen\" hasBackdrop (backdropClick)=\"close()\" backdropClass=\"cdk-overlay-transparent-backdrop\" [positions]=\"_positions\" [minWidth]=\"_triggerWidth\" [offsetY]=\"_offsetY\" [offsetX]=\"_offsetX\" (attach)=\"_setScrollTop()\"> <div class=\"md2-select-panel\" [@transformPanel]=\"'showing'\" (@transformPanel.done)=\"_onPanelDone()\" (keydown)=\"_keyManager.onKeydown($event)\" [style.transformOrigin]=\"_transformOrigin\" [attr.multiple]=\"multiple\" [class.md2-select-panel-done-animating]=\"_panelDoneAnimating\"> <div class=\"md2-select-content\" [@fadeInContent]=\"'showing'\" (@fadeInContent.done)=\"_onFadeInDone()\"> <ng-content></ng-content> </div> </div> </template> ",
-            styles: ["md2-select { display: block; outline: none; } .md2-select-trigger { color: rgba(0, 0, 0, 0.38); border-bottom: 1px solid rgba(0, 0, 0, 0.12); display: flex; justify-content: space-between; align-items: center; height: 30px; min-width: 112px; line-height: 22px; cursor: pointer; position: relative; box-sizing: border-box; } [aria-disabled='true'] .md2-select-trigger { background-image: linear-gradient(to right, rgba(0, 0, 0, 0.26) 0, rgba(0, 0, 0, 0.26) 33%, transparent 0); background-size: 4px 1px; background-repeat: repeat-x; border-color: transparent; background-position: 0 bottom; cursor: default; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } md2-select:focus:not(.md2-select-disabled) .md2-select-trigger { color: #106cc8; border-color: #106cc8; } md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) .md2-select-trigger { color: #f44336; border-color: #f44336; } .md2-select-placeholder { position: absolute; right: 18px; left: 0; padding: 0 2px; transform-origin: left top; white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; } .md2-select-placeholder.md2-floating-placeholder { top: -16px; left: -2px; text-align: left; transform: scale(0.75); } [dir='rtl'] .md2-select-placeholder { transform-origin: right top; } [dir='rtl'] .md2-select-placeholder.md2-floating-placeholder { left: 2px; text-align: right; } [aria-required=true] .md2-select-placeholder::after { content: '*'; } .md2-select-value { position: relative; white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; color: rgba(0, 0, 0, 0.87); } .md2-select-disabled .md2-select-value { color: rgba(0, 0, 0, 0.38); } [dir='rtl'] .md2-select-value { left: auto; right: 0; } .md2-select-value-text:not(:last-child)::after { content: ','; margin-left: -2px; } .md2-select-arrow { width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 5px solid; margin: 0 4px; color: rgba(0, 0, 0, 0.38); } md2-select:focus:not(.md2-select-disabled) .md2-select-arrow { color: #106cc8; } md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) .md2-select-arrow { color: #f44336; } .md2-select-panel { box-shadow: 0 0 3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12); min-width: 112px; max-width: 280px; overflow: auto; -webkit-overflow-scrolling: touch; padding-top: 0; padding-bottom: 0; max-height: 256px; background: white; } md2-option { white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; display: block; flex-direction: row; align-items: center; padding: 13px 16px; font-size: 16px; font-family: Roboto, 'Helvetica Neue', sans-serif; text-align: start; text-decoration: none; position: relative; cursor: pointer; outline: none; box-sizing: padding-box; } md2-option[aria-disabled='true'] { cursor: default; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } md2-option:hover:not(.md2-option-disabled), md2-option:focus:not(.md2-option-disabled) { background: rgba(0, 0, 0, 0.04); } md2-option.md2-selected { color: #106cc8; } md2-option.md2-option-disabled { color: rgba(0, 0, 0, 0.38); } [multiple='true'] md2-option { padding-left: 40px; } [multiple='true'] md2-option::after { content: ''; position: absolute; top: 50%; left: 12px; display: block; width: 16px; height: 16px; margin-top: -8px; border: 2px solid; border-radius: 2px; box-sizing: border-box; transition: 240ms; } [multiple='true'] md2-option.md2-selected::after { transform: rotate(-45deg); height: 8px; border-width: 0 0 2px 2px; } .cdk-overlay-container, .cdk-global-overlay-wrapper { pointer-events: none; top: 0; left: 0; height: 100%; width: 100%; } .cdk-overlay-container { position: fixed; z-index: 1000; } .cdk-overlay-pane { position: absolute; pointer-events: auto; box-sizing: border-box; z-index: 1000; } .cdk-overlay-backdrop { position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1000; pointer-events: auto; transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1); opacity: 0; } .cdk-overlay-transparent-backdrop { background: none; } .cdk-overlay-backdrop.cdk-overlay-backdrop-showing { opacity: 0.48; } /*# sourceMappingURL=select.css.map */ "],
-            encapsulation: ViewEncapsulation.None,
-            host: {
-                'role': 'listbox',
-                '[attr.tabindex]': '_getTabIndex()',
-                '[attr.aria-label]': 'placeholder',
-                '[attr.aria-required]': 'required.toString()',
-                '[attr.aria-disabled]': 'disabled.toString()',
-                '[attr.aria-invalid]': '_control?.invalid || "false"',
-                '[attr.aria-owns]': '_optionIds',
-                '[class.md2-select-disabled]': 'disabled',
-                '(keydown)': '_handleKeydown($event)',
-                '(blur)': '_onBlur()'
-            },
-            animations: [
-                transformPlaceholder,
-                transformPanel,
-                fadeInContent
-            ],
-            exportAs: 'md2Select',
-        }),
-        __param(3, Optional()),
-        __param(4, Self()),
-        __param(4, Optional()), 
-        __metadata('design:paramtypes', [ElementRef, Renderer, ViewportRuler, Dir, NgControl])
-    ], Md2Select);
     return Md2Select;
 }());
+__decorate([
+    ViewChild('trigger'),
+    __metadata("design:type", ElementRef)
+], Md2Select.prototype, "trigger", void 0);
+__decorate([
+    ViewChild(ConnectedOverlayDirective),
+    __metadata("design:type", ConnectedOverlayDirective)
+], Md2Select.prototype, "overlayDir", void 0);
+__decorate([
+    ContentChildren(Md2Option),
+    __metadata("design:type", QueryList)
+], Md2Select.prototype, "options", void 0);
+__decorate([
+    Input(),
+    __metadata("design:type", Object),
+    __metadata("design:paramtypes", [String])
+], Md2Select.prototype, "placeholder", null);
+__decorate([
+    Input(),
+    __metadata("design:type", Object),
+    __metadata("design:paramtypes", [Object])
+], Md2Select.prototype, "disabled", null);
+__decorate([
+    Input(),
+    __metadata("design:type", Object),
+    __metadata("design:paramtypes", [Object])
+], Md2Select.prototype, "required", null);
+__decorate([
+    Input(),
+    __metadata("design:type", Boolean),
+    __metadata("design:paramtypes", [Boolean])
+], Md2Select.prototype, "multiple", null);
+__decorate([
+    Input(),
+    __metadata("design:type", String),
+    __metadata("design:paramtypes", [String])
+], Md2Select.prototype, "floatPlaceholder", null);
+__decorate([
+    Input(),
+    __metadata("design:type", Number),
+    __metadata("design:paramtypes", [Number])
+], Md2Select.prototype, "tabIndex", null);
+__decorate([
+    Input('aria-label'),
+    __metadata("design:type", String)
+], Md2Select.prototype, "ariaLabel", void 0);
+__decorate([
+    Input('aria-labelledby'),
+    __metadata("design:type", String)
+], Md2Select.prototype, "ariaLabelledby", void 0);
+__decorate([
+    Output(),
+    __metadata("design:type", EventEmitter)
+], Md2Select.prototype, "onOpen", void 0);
+__decorate([
+    Output(),
+    __metadata("design:type", EventEmitter)
+], Md2Select.prototype, "onClose", void 0);
+__decorate([
+    Output(),
+    __metadata("design:type", EventEmitter)
+], Md2Select.prototype, "change", void 0);
+Md2Select = __decorate([
+    Component({selector: 'md2-select',
+        template: "<div class=\"md2-select-trigger\" cdk-overlay-origin (click)=\"toggle()\" #origin=\"cdkOverlayOrigin\" #trigger><span class=\"md2-select-placeholder\" [class.md2-floating-placeholder]=\"_selectionModel.hasValue()\" [@transformPlaceholder]=\"_getPlaceholderAnimationState()\" [style.visibility]=\"_getPlaceholderVisibility()\" [style.width.px]=\"_selectedValueWidth\">{{ placeholder }}</span> <span class=\"md2-select-value\" *ngIf=\"_selectionModel.hasValue()\"><span class=\"md2-select-value-text\">{{ triggerValue }}</span> </span><span class=\"md2-select-arrow\"></span> <span class=\"md2-select-underline\"></span></div><ng-template cdk-connected-overlay [origin]=\"origin\" [open]=\"panelOpen\" hasBackdrop (backdropClick)=\"close()\" backdropClass=\"cdk-overlay-transparent-backdrop\" [positions]=\"_positions\" [minWidth]=\"_triggerWidth\" [offsetY]=\"_offsetY\" [offsetX]=\"_offsetX\" (attach)=\"_setScrollTop()\"><div class=\"md2-select-panel\" [@transformPanel]=\"'showing'\" (@transformPanel.done)=\"_onPanelDone()\" (keydown)=\"_keyManager.onKeydown($event)\" [style.transformOrigin]=\"_transformOrigin\" [class.md2-select-panel-done-animating]=\"_panelDoneAnimating\"><div class=\"md2-select-content\" [@fadeInContent]=\"'showing'\" (@fadeInContent.done)=\"_onFadeInDone()\"><ng-content select=\"md2-select-header\"></ng-content><ng-content></ng-content></div></div></ng-template>",
+        styles: [".md2-select{display:inline-block;outline:0}.md2-select-trigger{color:rgba(0,0,0,.38);display:flex;align-items:center;height:30px;min-width:112px;cursor:pointer;position:relative;box-sizing:border-box;font-size:16px}[aria-disabled=true] .md2-select-trigger{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;cursor:default}.md2-select:focus:not(.md2-select-disabled) .md2-select-trigger{color:#106cc8}.md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) .md2-select-trigger{color:#f44336}.md2-select-underline{position:absolute;bottom:0;left:0;right:0;height:1px;background-color:rgba(0,0,0,.12)}[aria-disabled=true] .md2-select-underline{background-image:linear-gradient(to right,rgba(0,0,0,.26) 0,rgba(0,0,0,.26) 33%,transparent 0);background-size:4px 1px;background-repeat:repeat-x;background-color:transparent;background-position:0 bottom}.md2-select:focus:not(.md2-select-disabled) .md2-select-underline{background-color:#106cc8}.md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) .md2-select-underline{background-color:#f44336}.md2-select-placeholder{position:relative;padding:0 2px;transform-origin:left top;flex-grow:1}.md2-select-placeholder.md2-floating-placeholder{top:-22px;left:-2px;text-align:left;transform:scale(.75)}[dir=rtl] .md2-select-placeholder{transform-origin:right top}[dir=rtl] .md2-select-placeholder.md2-floating-placeholder{left:2px;text-align:right}[aria-required=true] .md2-select-placeholder::after{content:'*'}.md2-select-value{position:absolute;max-width:calc(100% - 18px);flex-grow:1;top:0;left:0;bottom:0;display:flex;align-items:center;color:rgba(0,0,0,.87)}[dir=rtl] .md2-select-value{left:auto;right:0}.md2-select-disabled .md2-select-value{color:rgba(0,0,0,.38)}.md2-select-value-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:30px}.md2-select-arrow{width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid;margin:0 4px}.md2-select-panel{box-shadow:0 5px 5px -3px rgba(0,0,0,.2),0 8px 10px 1px rgba(0,0,0,.14),0 3px 14px 2px rgba(0,0,0,.12);min-width:112px;max-width:280px;overflow:auto;-webkit-overflow-scrolling:touch;padding-top:0;padding-bottom:0;max-height:256px}@media screen and (-ms-high-contrast:active){.md2-select-panel{outline:solid 1px}}.md2-select-content,.md2-select-panel-done-animating{background:#fff}.md2-option{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;line-height:48px;height:48px;padding:0 16px;font-size:16px;font-family:Roboto,\"Helvetica Neue\",sans-serif;text-align:left;text-decoration:none;position:relative;cursor:pointer;outline:0}.md2-option[disabled]{cursor:default}[dir=rtl] .md2-option{text-align:right}.md2-option .mat-icon{margin-right:16px}[dir=rtl] .md2-option .mat-icon{margin-left:16px}.md2-option[aria-disabled=true]{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;cursor:default}.md2-option:focus:not(.md2-option-disabled),.md2-option:hover:not(.md2-option-disabled){background:rgba(0,0,0,.04)}.md2-option.md2-selected{color:#106cc8}.md2-option.md2-selected:not(.md2-option-multiple){background:rgba(0,0,0,.04)}.md2-option.md2-active{background:rgba(0,0,0,.04);color:#106cc8}.md2-option.md2-option-disabled{color:rgba(0,0,0,.38)}.md2-option.md2-option-multiple{padding-left:40px}.md2-option.md2-option-multiple::after{content:'';position:absolute;top:50%;left:12px;display:block;width:16px;height:16px;margin-top:-8px;border:2px solid;border-radius:2px;box-sizing:border-box;transition:240ms}.md2-option.md2-option-multiple.md2-selected::after{transform:rotate(-45deg);height:8px;border-width:0 0 2px 2px}.cdk-global-overlay-wrapper,.cdk-overlay-container{pointer-events:none;top:0;left:0;height:100%;width:100%}.cdk-overlay-container{position:fixed;z-index:1000}.cdk-overlay-pane{position:absolute;pointer-events:auto;box-sizing:border-box;z-index:1000}.cdk-overlay-backdrop{position:absolute;top:0;bottom:0;left:0;right:0;z-index:1000;pointer-events:auto;transition:opacity .4s cubic-bezier(.25,.8,.25,1);opacity:0}.cdk-overlay-transparent-backdrop{background:0 0}.cdk-overlay-backdrop.cdk-overlay-backdrop-showing{opacity:.48} /*# sourceMappingURL=select.css.map */ "],
+        encapsulation: ViewEncapsulation.None,
+        host: {
+            'role': 'listbox',
+            '[attr.tabindex]': 'tabIndex',
+            '[attr.aria-label]': '_ariaLabel',
+            '[attr.aria-labelledby]': 'ariaLabelledby',
+            '[attr.aria-required]': 'required.toString()',
+            '[attr.aria-disabled]': 'disabled.toString()',
+            '[attr.aria-invalid]': '_control?.invalid || "false"',
+            '[attr.aria-owns]': '_optionIds',
+            '[class.md2-select-disabled]': 'disabled',
+            '[class.md2-select]': 'true',
+            '(keydown)': '_handleKeydown($event)',
+            '(blur)': '_onBlur()'
+        },
+        animations: [
+            transformPlaceholder,
+            transformPanel,
+            fadeInContent
+        ],
+        exportAs: 'md2Select',
+    }),
+    __param(4, Optional()), __param(5, Self()), __param(5, Optional()),
+    __param(6, Attribute('tabindex')),
+    __metadata("design:paramtypes", [ElementRef, Renderer,
+        ViewportRuler, ChangeDetectorRef,
+        Dir, NgControl, String])
+], Md2Select);
+export { Md2Select };
 /** Clamps a value n between min and max values. */
 function clampValue(min, n, max) {
     return Math.min(Math.max(min, n), max);

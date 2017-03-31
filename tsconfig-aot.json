@@ -14,8 +14,8 @@
       "../node_modules/@types/!(node)"
     ],
     "paths": {
-      "@angular/material": [
-        "./@angular/material"
+      "md2": [
+        "./md2"
       ]
     }
   },

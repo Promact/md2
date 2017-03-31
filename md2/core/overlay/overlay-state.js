@@ -2,7 +2,7 @@
  * OverlayState is a bag of values for either the initial configuration or current state of an
  * overlay.
  */
-export var OverlayState = (function () {
+var OverlayState = (function () {
     function OverlayState() {
         /** Whether the overlay has a backdrop. */
         this.hasBackdrop = false;
@@ -10,7 +10,12 @@ export var OverlayState = (function () {
         this.backdropClass = 'cdk-overlay-dark-backdrop';
         /** The direction of the text in the overlay panel. */
         this.direction = 'ltr';
+        // TODO(jelbourn): configuration still to add
+        // - focus trap
+        // - disable pointer events
+        // - z-index
     }
     return OverlayState;
 }());
+export { OverlayState };
 //# sourceMappingURL=overlay-state.js.map

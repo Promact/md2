@@ -28,23 +28,24 @@ var defaultPositionList = [
  * Directive applied to an element to make it usable as an origin for an Overlay using a
  * ConnectedPositionStrategy.
  */
-export var OverlayOrigin = (function () {
+var OverlayOrigin = (function () {
     function OverlayOrigin(elementRef) {
         this.elementRef = elementRef;
     }
-    OverlayOrigin = __decorate([
-        Directive({
-            selector: '[cdk-overlay-origin], [overlay-origin]',
-            exportAs: 'cdkOverlayOrigin',
-        }), 
-        __metadata('design:paramtypes', [ElementRef])
-    ], OverlayOrigin);
     return OverlayOrigin;
 }());
+OverlayOrigin = __decorate([
+    Directive({
+        selector: '[cdk-overlay-origin], [overlay-origin]',
+        exportAs: 'cdkOverlayOrigin',
+    }),
+    __metadata("design:paramtypes", [ElementRef])
+], OverlayOrigin);
+export { OverlayOrigin };
 /**
  * Directive to facilitate declarative creation of an Overlay using a ConnectedPositionStrategy.
  */
-export var ConnectedOverlayDirective = (function () {
+var ConnectedOverlayDirective = (function () {
     // TODO(jelbourn): inputs for size, scroll behavior, animation, etc.
     function ConnectedOverlayDirective(_overlay, templateRef, viewContainerRef, _dir) {
         this._overlay = _overlay;
@@ -223,95 +224,104 @@ export var ConnectedOverlayDirective = (function () {
             this._positionSubscription.unsubscribe();
         }
     };
-    __decorate([
-        Input(), 
-        __metadata('design:type', OverlayOrigin)
-    ], ConnectedOverlayDirective.prototype, "origin", void 0);
-    __decorate([
-        Input(), 
-        __metadata('design:type', Array)
-    ], ConnectedOverlayDirective.prototype, "positions", void 0);
-    __decorate([
-        Input(), 
-        __metadata('design:type', Number)
-    ], ConnectedOverlayDirective.prototype, "offsetX", null);
-    __decorate([
-        Input(), 
-        __metadata('design:type', Object)
-    ], ConnectedOverlayDirective.prototype, "offsetY", null);
-    __decorate([
-        Input(), 
-        __metadata('design:type', Object)
-    ], ConnectedOverlayDirective.prototype, "width", void 0);
-    __decorate([
-        Input(), 
-        __metadata('design:type', Object)
-    ], ConnectedOverlayDirective.prototype, "height", void 0);
-    __decorate([
-        Input(), 
-        __metadata('design:type', Object)
-    ], ConnectedOverlayDirective.prototype, "minWidth", void 0);
-    __decorate([
-        Input(), 
-        __metadata('design:type', Object)
-    ], ConnectedOverlayDirective.prototype, "minHeight", void 0);
-    __decorate([
-        Input(), 
-        __metadata('design:type', String)
-    ], ConnectedOverlayDirective.prototype, "backdropClass", void 0);
-    __decorate([
-        Input(), 
-        __metadata('design:type', Object)
-    ], ConnectedOverlayDirective.prototype, "hasBackdrop", null);
-    __decorate([
-        Input(), 
-        __metadata('design:type', Object)
-    ], ConnectedOverlayDirective.prototype, "open", null);
-    __decorate([
-        Output(), 
-        __metadata('design:type', Object)
-    ], ConnectedOverlayDirective.prototype, "backdropClick", void 0);
-    __decorate([
-        Output(), 
-        __metadata('design:type', Object)
-    ], ConnectedOverlayDirective.prototype, "positionChange", void 0);
-    __decorate([
-        Output(), 
-        __metadata('design:type', Object)
-    ], ConnectedOverlayDirective.prototype, "attach", void 0);
-    __decorate([
-        Output(), 
-        __metadata('design:type', Object)
-    ], ConnectedOverlayDirective.prototype, "detach", void 0);
-    ConnectedOverlayDirective = __decorate([
-        Directive({
-            selector: '[cdk-connected-overlay], [connected-overlay]',
-            exportAs: 'cdkConnectedOverlay'
-        }),
-        __param(3, Optional()), 
-        __metadata('design:paramtypes', [Overlay, TemplateRef, ViewContainerRef, Dir])
-    ], ConnectedOverlayDirective);
     return ConnectedOverlayDirective;
 }());
-export var OverlayModule = (function () {
+__decorate([
+    Input(),
+    __metadata("design:type", OverlayOrigin)
+], ConnectedOverlayDirective.prototype, "origin", void 0);
+__decorate([
+    Input(),
+    __metadata("design:type", Array)
+], ConnectedOverlayDirective.prototype, "positions", void 0);
+__decorate([
+    Input(),
+    __metadata("design:type", Number),
+    __metadata("design:paramtypes", [Number])
+], ConnectedOverlayDirective.prototype, "offsetX", null);
+__decorate([
+    Input(),
+    __metadata("design:type", Object),
+    __metadata("design:paramtypes", [Number])
+], ConnectedOverlayDirective.prototype, "offsetY", null);
+__decorate([
+    Input(),
+    __metadata("design:type", Object)
+], ConnectedOverlayDirective.prototype, "width", void 0);
+__decorate([
+    Input(),
+    __metadata("design:type", Object)
+], ConnectedOverlayDirective.prototype, "height", void 0);
+__decorate([
+    Input(),
+    __metadata("design:type", Object)
+], ConnectedOverlayDirective.prototype, "minWidth", void 0);
+__decorate([
+    Input(),
+    __metadata("design:type", Object)
+], ConnectedOverlayDirective.prototype, "minHeight", void 0);
+__decorate([
+    Input(),
+    __metadata("design:type", String)
+], ConnectedOverlayDirective.prototype, "backdropClass", void 0);
+__decorate([
+    Input(),
+    __metadata("design:type", Object),
+    __metadata("design:paramtypes", [Object])
+], ConnectedOverlayDirective.prototype, "hasBackdrop", null);
+__decorate([
+    Input(),
+    __metadata("design:type", Object),
+    __metadata("design:paramtypes", [Boolean])
+], ConnectedOverlayDirective.prototype, "open", null);
+__decorate([
+    Output(),
+    __metadata("design:type", Object)
+], ConnectedOverlayDirective.prototype, "backdropClick", void 0);
+__decorate([
+    Output(),
+    __metadata("design:type", Object)
+], ConnectedOverlayDirective.prototype, "positionChange", void 0);
+__decorate([
+    Output(),
+    __metadata("design:type", Object)
+], ConnectedOverlayDirective.prototype, "attach", void 0);
+__decorate([
+    Output(),
+    __metadata("design:type", Object)
+], ConnectedOverlayDirective.prototype, "detach", void 0);
+ConnectedOverlayDirective = __decorate([
+    Directive({
+        selector: '[cdk-connected-overlay], [connected-overlay]',
+        exportAs: 'cdkConnectedOverlay'
+    }),
+    __param(3, Optional()),
+    __metadata("design:paramtypes", [Overlay,
+        TemplateRef,
+        ViewContainerRef,
+        Dir])
+], ConnectedOverlayDirective);
+export { ConnectedOverlayDirective };
+var OverlayModule = OverlayModule_1 = (function () {
     function OverlayModule() {
     }
     /** @deprecated */
     OverlayModule.forRoot = function () {
         return {
-            ngModule: OverlayModule,
+            ngModule: OverlayModule_1,
             providers: [],
         };
     };
-    OverlayModule = __decorate([
-        NgModule({
-            imports: [PortalModule],
-            exports: [ConnectedOverlayDirective, OverlayOrigin, Scrollable],
-            declarations: [ConnectedOverlayDirective, OverlayOrigin, Scrollable],
-            providers: [OVERLAY_PROVIDERS],
-        }), 
-        __metadata('design:paramtypes', [])
-    ], OverlayModule);
     return OverlayModule;
 }());
+OverlayModule = OverlayModule_1 = __decorate([
+    NgModule({
+        imports: [PortalModule],
+        exports: [ConnectedOverlayDirective, OverlayOrigin, Scrollable],
+        declarations: [ConnectedOverlayDirective, OverlayOrigin, Scrollable],
+        providers: [OVERLAY_PROVIDERS],
+    })
+], OverlayModule);
+export { OverlayModule };
+var OverlayModule_1;
 //# sourceMappingURL=overlay-directives.js.map

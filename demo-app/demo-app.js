@@ -8,22 +8,21 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require('@angular/core');
-var common_1 = require('@angular/common');
-var router_1 = require('@angular/router');
+var core_1 = require("@angular/core");
+var common_1 = require("@angular/common");
+var router_1 = require("@angular/router");
 var Home = (function () {
     function Home() {
     }
-    Home = __decorate([
-        core_1.Component({
-            moduleId: module.id,
-            selector: 'home',
-            templateUrl: 'home.html',
-        }), 
-        __metadata('design:paramtypes', [])
-    ], Home);
     return Home;
 }());
+Home = __decorate([
+    core_1.Component({
+        moduleId: module.id,
+        selector: 'home',
+        templateUrl: 'home.html',
+    })
+], Home);
 exports.Home = Home;
 var DemoApp = (function () {
     function DemoApp(location, _router) {
@@ -77,17 +76,17 @@ var DemoApp = (function () {
         enumerable: true,
         configurable: true
     });
-    DemoApp = __decorate([
-        core_1.Component({
-            moduleId: module.id,
-            selector: 'demo-app',
-            providers: [],
-            templateUrl: 'demo-app.html',
-            encapsulation: core_1.ViewEncapsulation.None,
-        }), 
-        __metadata('design:paramtypes', [common_1.Location, router_1.Router])
-    ], DemoApp);
     return DemoApp;
 }());
+DemoApp = __decorate([
+    core_1.Component({
+        moduleId: module.id,
+        selector: 'demo-app',
+        providers: [],
+        templateUrl: 'demo-app.html',
+        encapsulation: core_1.ViewEncapsulation.None,
+    }),
+    __metadata("design:paramtypes", [common_1.Location, router_1.Router])
+], DemoApp);
 exports.DemoApp = DemoApp;
 //# sourceMappingURL=demo-app.js.map

@@ -1,5 +1,5 @@
 /** Coerces a data-bound value (typically a string) to a number. */
-export function coerceNumberProperty(value, fallbackValue) {
+/** Coerces a data-bound value (typically a string) to a number. */ export function coerceNumberProperty(value, fallbackValue) {
     if (fallbackValue === void 0) { fallbackValue = 0; }
     // parseFloat(value) handles most of the cases we're interested in (it treats null, empty string,
     // and other non-number values as NaN, where Number just uses 0) but it considers the string

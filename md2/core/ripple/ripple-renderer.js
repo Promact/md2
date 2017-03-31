@@ -10,7 +10,7 @@ export var RIPPLE_FADE_OUT_DURATION = 400;
  * This will eventually become a custom renderer once Angular support exists.
  * @docs-private
  */
-export var RippleRenderer = (function () {
+var RippleRenderer = (function () {
     function RippleRenderer(_elementRef, _ngZone, _ruler) {
         this._ngZone = _ngZone;
         this._ruler = _ruler;
@@ -54,8 +54,8 @@ export var RippleRenderer = (function () {
         var offsetY = pageY - containerRect.top;
         var ripple = document.createElement('div');
         ripple.classList.add('mat-ripple-element');
-        ripple.style.left = (offsetX - radius) + "px";
-        ripple.style.top = (offsetY - radius) + "px";
+        ripple.style.left = offsetX - radius + "px";
+        ripple.style.top = offsetY - radius + "px";
         ripple.style.height = radius * 2 + "px";
         ripple.style.width = radius * 2 + "px";
         // If the color is not set, the default CSS color will be used.
@@ -146,6 +146,7 @@ export var RippleRenderer = (function () {
     };
     return RippleRenderer;
 }());
+export { RippleRenderer };
 /** Enforces a style recalculation of a DOM element by computing its styles. */
 // TODO(devversion): Move into global utility function.
 function enforceStyleRecalculation(element) {

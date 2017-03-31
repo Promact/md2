@@ -7,8 +7,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Directive, ElementRef, Renderer } from '@angular/core';
-export var Md2MenuTrigger = (function () {
+import { Directive, ElementRef, Renderer, } from '@angular/core';
+var Md2MenuTrigger = (function () {
     function Md2MenuTrigger(_element, _renderer) {
         this._element = _element;
         this._renderer = _renderer;
@@ -101,17 +101,18 @@ export var Md2MenuTrigger = (function () {
             return false;
         }
     };
-    Md2MenuTrigger = __decorate([
-        Directive({
-            selector: '[md2-menu-trigger]',
-            host: {
-                'aria-haspopup': 'true',
-                '(click)': '_toggleMenu()',
-            },
-            exportAs: 'md2MenuTrigger'
-        }), 
-        __metadata('design:paramtypes', [ElementRef, Renderer])
-    ], Md2MenuTrigger);
     return Md2MenuTrigger;
 }());
+Md2MenuTrigger = __decorate([
+    Directive({
+        selector: '[md2-menu-trigger]',
+        host: {
+            'aria-haspopup': 'true',
+            '(click)': '_toggleMenu()',
+        },
+        exportAs: 'md2MenuTrigger'
+    }),
+    __metadata("design:paramtypes", [ElementRef, Renderer])
+], Md2MenuTrigger);
+export { Md2MenuTrigger };
 //# sourceMappingURL=menu-trigger.js.map

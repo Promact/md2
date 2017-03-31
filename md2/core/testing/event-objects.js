@@ -1,5 +1,5 @@
 /** Creates a browser MouseEvent with the specified options. */
-export function createMouseEvent(type, x, y) {
+/** Creates a browser MouseEvent with the specified options. */ export function createMouseEvent(type, x, y) {
     if (x === void 0) { x = 0; }
     if (y === void 0) { y = 0; }
     var event = document.createEvent('MouseEvent');

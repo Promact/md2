@@ -5,9 +5,9 @@ import { Portal, TemplatePortal, ComponentPortal, BasePortalHost } from './porta
  * the directive instance itself can be attached to a host, enabling declarative use of portals.
  *
  * Usage:
- * <template portal #greeting>
+ * <ng-template portal #greeting>
  *   <p> Hello {{name}} </p>
- * </template>
+ * </ng-template>
  */
 export declare class TemplatePortalDirective extends TemplatePortal {
     constructor(templateRef: TemplateRef<any>, viewContainerRef: ViewContainerRef);
@@ -17,7 +17,7 @@ export declare class TemplatePortalDirective extends TemplatePortal {
  * directly attached to it, enabling declarative use.
  *
  * Usage:
- * <template [cdkPortalHost]="greeting"></template>
+ * <ng-template [cdkPortalHost]="greeting"></ng-template>
  */
 export declare class PortalHostDirective extends BasePortalHost implements OnDestroy {
     private _componentFactoryResolver;
@@ -41,8 +41,6 @@ export declare class PortalHostDirective extends BasePortalHost implements OnDes
      * @param portal Portal to be attached.
      */
     attachTemplatePortal(portal: TemplatePortal): Map<string, any>;
-    /** Detaches the currently attached Portal (if there is one) and attaches the given Portal. */
-    private _replaceAttachedPortal(p);
 }
 export declare class PortalModule {
     /** @deprecated */

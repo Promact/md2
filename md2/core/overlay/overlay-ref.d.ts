@@ -53,6 +53,14 @@ export declare class OverlayRef implements PortalHost {
     private _togglePointerEvents(enablePointer);
     /** Attaches a backdrop for this overlay. */
     private _attachBackdrop();
+    /**
+     * Updates the stacking order of the element, moving it to the top if necessary.
+     * This is required in cases where one overlay was detached, while another one,
+     * that should be behind it, was destroyed. The next time both of them are opened,
+     * the stacking will be wrong, because the detached element's pane will still be
+     * in its original DOM position.
+     */
+    private _updateStackingOrder();
     /** Detaches the backdrop (if any) associated with the overlay. */
     detachBackdrop(): void;
 }

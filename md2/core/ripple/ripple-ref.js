@@ -9,7 +9,7 @@ export var RippleState;
 /**
  * Reference to a previously launched ripple element.
  */
-export var RippleRef = (function () {
+var RippleRef = (function () {
     function RippleRef(_renderer, element, config) {
         this._renderer = _renderer;
         this.element = element;
@@ -23,4 +23,5 @@ export var RippleRef = (function () {
     };
     return RippleRef;
 }());
+export { RippleRef };
 //# sourceMappingURL=ripple-ref.js.map

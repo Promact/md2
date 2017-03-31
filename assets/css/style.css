@@ -295,6 +295,7 @@ html, body {
   .sidenav-backdrop.open {
     display: block; }
   .sidenav {
+    overflow-y: auto;
     transform: translateX(-100%); }
     .sidenav.open {
       transform: translateX(0); }

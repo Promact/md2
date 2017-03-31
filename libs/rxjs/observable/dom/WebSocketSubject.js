@@ -137,6 +137,9 @@ var WebSocketSubject = (function (_super) {
                 new WebSocketCtor(this.url, this.protocol) :
                 new WebSocketCtor(this.url);
             this.socket = socket;
+            if (this.binaryType) {
+                this.socket.binaryType = this.binaryType;
+            }
         }
         catch (e) {
             observer.error(e);

@@ -1,5 +1,5 @@
 /** @docs-private */
-export var RelativePositionStrategy = (function () {
+var RelativePositionStrategy = (function () {
     function RelativePositionStrategy(_relativeTo) {
         this._relativeTo = _relativeTo;
     }
@@ -12,4 +12,5 @@ export var RelativePositionStrategy = (function () {
     };
     return RelativePositionStrategy;
 }());
+export { RelativePositionStrategy };
 //# sourceMappingURL=relative-position-strategy.js.map

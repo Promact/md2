@@ -7,7 +7,7 @@ import { Subject } from 'rxjs/Subject';
  * a basic dropdown is connecting the bottom-left corner of the origin to the top-left corner
  * of the overlay.
  */
-export var ConnectedPositionStrategy = (function () {
+var ConnectedPositionStrategy = (function () {
     function ConnectedPositionStrategy(_connectedTo, _originPos, _overlayPos, _viewportRuler) {
         this._connectedTo = _connectedTo;
         this._originPos = _originPos;
@@ -306,4 +306,5 @@ export var ConnectedPositionStrategy = (function () {
     };
     return ConnectedPositionStrategy;
 }());
+export { ConnectedPositionStrategy };
 //# sourceMappingURL=connected-position-strategy.js.map

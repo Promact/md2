@@ -4,10 +4,10 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 import { ListKeyManager } from './list-key-manager';
-export var ActiveDescendantKeyManager = (function (_super) {
+var ActiveDescendantKeyManager = (function (_super) {
     __extends(ActiveDescendantKeyManager, _super);
     function ActiveDescendantKeyManager(items) {
-        _super.call(this, items);
+        return _super.call(this, items) || this;
     }
     /**
      * This method sets the active item to the item at the specified index.
@@ -28,4 +28,5 @@ export var ActiveDescendantKeyManager = (function (_super) {
     };
     return ActiveDescendantKeyManager;
 }(ListKeyManager));
+export { ActiveDescendantKeyManager };
 //# sourceMappingURL=activedescendant-key-manager.js.map

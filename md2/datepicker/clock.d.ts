@@ -1,10 +1,10 @@
 import { ElementRef, EventEmitter } from '@angular/core';
-export declare const CLOCK_HOURS: number;
-export declare const CLOCK_MINUTES: number;
-export declare const CLOCK_RADIUS: number;
-export declare const CLOCK_INNER_RADIUS: number;
-export declare const CLOCK_OUTER_RADIUS: number;
-export declare const CLOCK_TICK_RADIUS: number;
+export declare const CLOCK_HOURS = 24;
+export declare const CLOCK_MINUTES = 60;
+export declare const CLOCK_RADIUS = 120;
+export declare const CLOCK_INNER_RADIUS = 66;
+export declare const CLOCK_OUTER_RADIUS = 99;
+export declare const CLOCK_TICK_RADIUS = 17;
 export declare class Md2Clock {
     private _element;
     private mouseMoveListener;

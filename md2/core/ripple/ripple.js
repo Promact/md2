@@ -10,12 +10,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { Directive, ElementRef, Input, Inject, NgZone, OpaqueToken, Optional } from '@angular/core';
+import { Directive, ElementRef, Input, Inject, NgZone, OpaqueToken, Optional, } from '@angular/core';
 import { RippleRenderer } from './ripple-renderer';
 import { ViewportRuler } from '../overlay/position/viewport-ruler';
 /** OpaqueToken that can be used to specify the global ripple options. */
 export var MD_RIPPLE_GLOBAL_OPTIONS = new OpaqueToken('md-ripple-global-options');
-export var MdRipple = (function () {
+var MdRipple = (function () {
     function MdRipple(elementRef, ngZone, ruler, 
         // Type needs to be `any` because of https://github.com/angular/angular/issues/12631
         globalOptions) {
@@ -67,47 +67,49 @@ export var MdRipple = (function () {
         enumerable: true,
         configurable: true
     });
-    __decorate([
-        Input('mdRippleTrigger'), 
-        __metadata('design:type', Object)
-    ], MdRipple.prototype, "trigger", void 0);
-    __decorate([
-        Input('mdRippleCentered'), 
-        __metadata('design:type', Boolean)
-    ], MdRipple.prototype, "centered", void 0);
-    __decorate([
-        Input('mdRippleDisabled'), 
-        __metadata('design:type', Boolean)
-    ], MdRipple.prototype, "disabled", void 0);
-    __decorate([
-        Input('mdRippleRadius'), 
-        __metadata('design:type', Number)
-    ], MdRipple.prototype, "radius", void 0);
-    __decorate([
-        Input('mdRippleSpeedFactor'), 
-        __metadata('design:type', Number)
-    ], MdRipple.prototype, "speedFactor", void 0);
-    __decorate([
-        Input('mdRippleColor'), 
-        __metadata('design:type', String)
-    ], MdRipple.prototype, "color", void 0);
-    __decorate([
-        Input('mdRippleUnbounded'), 
-        __metadata('design:type', Boolean)
-    ], MdRipple.prototype, "unbounded", void 0);
-    MdRipple = __decorate([
-        Directive({
-            selector: '[md-ripple], [mat-ripple], [mdRipple], [matRipple]',
-            exportAs: 'mdRipple',
-            host: {
-                '[class.mat-ripple]': 'true',
-                '[class.mat-ripple-unbounded]': 'unbounded'
-            }
-        }),
-        __param(3, Optional()),
-        __param(3, Inject(MD_RIPPLE_GLOBAL_OPTIONS)), 
-        __metadata('design:paramtypes', [ElementRef, NgZone, ViewportRuler, Object])
-    ], MdRipple);
     return MdRipple;
 }());
+__decorate([
+    Input('mdRippleTrigger'),
+    __metadata("design:type", HTMLElement)
+], MdRipple.prototype, "trigger", void 0);
+__decorate([
+    Input('mdRippleCentered'),
+    __metadata("design:type", Boolean)
+], MdRipple.prototype, "centered", void 0);
+__decorate([
+    Input('mdRippleDisabled'),
+    __metadata("design:type", Boolean)
+], MdRipple.prototype, "disabled", void 0);
+__decorate([
+    Input('mdRippleRadius'),
+    __metadata("design:type", Number)
+], MdRipple.prototype, "radius", void 0);
+__decorate([
+    Input('mdRippleSpeedFactor'),
+    __metadata("design:type", Number)
+], MdRipple.prototype, "speedFactor", void 0);
+__decorate([
+    Input('mdRippleColor'),
+    __metadata("design:type", String)
+], MdRipple.prototype, "color", void 0);
+__decorate([
+    Input('mdRippleUnbounded'),
+    __metadata("design:type", Boolean)
+], MdRipple.prototype, "unbounded", void 0);
+MdRipple = __decorate([
+    Directive({
+        selector: '[md-ripple], [mat-ripple], [mdRipple], [matRipple]',
+        exportAs: 'mdRipple',
+        host: {
+            '[class.mat-ripple]': 'true',
+            '[class.mat-ripple-unbounded]': 'unbounded'
+        }
+    }),
+    __param(3, Optional()), __param(3, Inject(MD_RIPPLE_GLOBAL_OPTIONS)),
+    __metadata("design:paramtypes", [ElementRef,
+        NgZone,
+        ViewportRuler, Object])
+], MdRipple);
+export { MdRipple };
 //# sourceMappingURL=ripple.js.map

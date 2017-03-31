@@ -18,7 +18,7 @@ import { Platform } from '../platform/platform';
  * Utility for checking the interactivity of an element, such as whether is is focusable or
  * tabbable.
  */
-export var InteractivityChecker = (function () {
+var InteractivityChecker = (function () {
     function InteractivityChecker(_platform) {
         this._platform = _platform;
     }
@@ -119,12 +119,13 @@ export var InteractivityChecker = (function () {
         // Again, naive approach that does not capture many edge cases and browser quirks.
         return isPotentiallyFocusable(element) && !this.isDisabled(element) && this.isVisible(element);
     };
-    InteractivityChecker = __decorate([
-        Injectable(), 
-        __metadata('design:paramtypes', [Platform])
-    ], InteractivityChecker);
     return InteractivityChecker;
 }());
+InteractivityChecker = __decorate([
+    Injectable(),
+    __metadata("design:paramtypes", [Platform])
+], InteractivityChecker);
+export { InteractivityChecker };
 /** Checks whether the specified element has any geometry / rectangles. */
 function hasGeometry(element) {
     // Use logic from jQuery to check for an invisible element.
@@ -149,7 +150,7 @@ function isAnchorWithHref(element) {
 }
 /** Gets whether an element is an input element. */
 function isInputElement(element) {
-    return element.nodeName == 'input';
+    return element.nodeName.toLowerCase() == 'input';
 }
 /** Gets whether an element is an anchor element. */
 function isAnchorElement(element) {

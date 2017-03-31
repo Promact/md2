@@ -1,5 +1,5 @@
 /** @docs-private */
-export var PromiseCompleter = (function () {
+var PromiseCompleter = (function () {
     function PromiseCompleter() {
         var _this = this;
         this.promise = new Promise(function (res, rej) {
@@ -9,4 +9,5 @@ export var PromiseCompleter = (function () {
     }
     return PromiseCompleter;
 }());
+export { PromiseCompleter };
 //# sourceMappingURL=promise-completer.js.map

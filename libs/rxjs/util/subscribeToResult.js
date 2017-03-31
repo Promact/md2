@@ -1,6 +1,6 @@
 "use strict";
 var root_1 = require('./root');
-var isArray_1 = require('./isArray');
+var isArrayLike_1 = require('./isArrayLike');
 var isPromise_1 = require('./isPromise');
 var isObject_1 = require('./isObject');
 var Observable_1 = require('../Observable');
@@ -22,7 +22,7 @@ function subscribeToResult(outerSubscriber, result, outerValue, outerIndex) {
             return result.subscribe(destination);
         }
     }
-    else if (isArray_1.isArray(result)) {
+    else if (isArrayLike_1.isArrayLike(result)) {
         for (var i = 0, len = result.length; i < len && !destination.closed; i++) {
             destination.next(result[i]);
         }

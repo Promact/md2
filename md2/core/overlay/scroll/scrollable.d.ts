@@ -1,4 +1,4 @@
-import { ElementRef, OnInit, OnDestroy } from '@angular/core';
+import { ElementRef, OnInit, OnDestroy, NgZone, Renderer } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { ScrollDispatcher } from './scroll-dispatcher';
 import 'rxjs/add/observable/fromEvent';
@@ -10,7 +10,11 @@ import 'rxjs/add/observable/fromEvent';
 export declare class Scrollable implements OnInit, OnDestroy {
     private _elementRef;
     private _scroll;
-    constructor(_elementRef: ElementRef, _scroll: ScrollDispatcher);
+    private _ngZone;
+    private _renderer;
+    private _elementScrolled;
+    private _scrollListener;
+    constructor(_elementRef: ElementRef, _scroll: ScrollDispatcher, _ngZone: NgZone, _renderer: Renderer);
     ngOnInit(): void;
     ngOnDestroy(): void;
     /**

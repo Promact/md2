@@ -1,4 +1,4 @@
-import { animate, keyframes, state, style, transition, trigger } from '@angular/core';
+import { animate, keyframes, state, style, transition, trigger, } from '@angular/animations';
 /**
  * This animation fades in the background color and text content of the
  * select's options. It is time delayed to occur 100ms after the overlay

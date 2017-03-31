@@ -1,16 +1,20 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 
 @Component({
   moduleId: module.id,
   selector: 'select-demo',
-  templateUrl: 'select-demo.html'
+  templateUrl: 'select-demo.html',
+  styleUrls: ['select-demo.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class SelectDemo {
   isRequired = false;
   isDisabled = false;
-  isDisabledMultiple = false;
+  _search: string = '';
   item: any = null;
-  itemMultiple: any = null;
+  pokemonRequired = false;
+  pokemonDisabled = false;
+  currentPokemon: string[];
 
   items: Array<any> =
   [
@@ -21,7 +25,18 @@ export class SelectDemo {
     { name: 'Mumbai', value: '5' },
     { name: 'Goa', value: '6' }
   ];
-  setValue() {
-    this.itemMultiple = ['2'];
+
+  pokemon = [
+    { value: 'bulbasaur-0', viewValue: 'Bulbasaur' },
+    { value: 'charizard-1', viewValue: 'Charizard' },
+    { value: 'squirtle-2', viewValue: 'Squirtle' },
+    { value: 'pikachu-3', viewValue: 'Pikachu' },
+    { value: 'eevee-4', viewValue: 'Eevee' },
+    { value: 'ditto-5', viewValue: 'Ditto' },
+    { value: 'psyduck-6', viewValue: 'Psyduck' },
+  ];
+
+  setPokemonValue() {
+    this.currentPokemon = ['eevee-4', 'psyduck-6'];
   }
 }

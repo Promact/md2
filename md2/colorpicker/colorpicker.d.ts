@@ -1,7 +1,7 @@
-import { EventEmitter, ElementRef, ModuleWithProviders, OnDestroy, Renderer, QueryList, ViewContainerRef } from '@angular/core';
+import { EventEmitter, ElementRef, ModuleWithProviders, OnDestroy, Renderer, TemplateRef, ViewContainerRef } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
-import { Overlay, Portal } from '../core';
-import { ColorpickerService } from './calculateColor';
+import { Overlay } from '../core';
+import { ColorUtil } from './color-util';
 import { Container, PanelPositionX, PanelPositionY } from '../datepicker/datepicker';
 export declare class TextDirective {
     newValue: EventEmitter<any>;
@@ -62,17 +62,18 @@ export declare class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
     private overlay;
     private _viewContainerRef;
     private _renderer;
-    private service;
+    private _util;
     _control: NgControl;
+    private _portal;
+    private _overlayRef;
+    private _backdropSubscription;
+    private _positionSubscription;
     _innerValue: string;
-    private _created;
-    private _defalutColor;
     _isColorpickerVisible: boolean;
     _hueSliderColor: string;
-    private _initialColor;
     slider: SliderPosition;
-    private sliderDim;
-    private hsva;
+    sliderDim: SliderDimension;
+    hsva: Hsva;
     rgbaText: Rgba;
     hslaText: Hsla;
     outputColor: string;
@@ -80,23 +81,23 @@ export declare class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
     hexText: string;
     format: number;
     backColor: boolean;
-    private _overlayRef;
-    private _backdropSubscription;
-    private _positionSubscription;
+    private _created;
+    private _defalutColor;
+    private _initialColor;
     /** Whether or not the overlay panel is open. */
     private _panelOpen;
     private _color;
     /** Whether filling out the select is required in the form.  */
-    private _required;
+    _required: boolean;
     /** Whether the select is disabled.  */
     private _disabled;
     isInputFocus: boolean;
     /** The placeholder displayed in the trigger of the select. */
     private _placeholder;
-    private fontColor;
-    private backAreaColor;
     private _container;
-    private isInputValidColor;
+    fontColor: string;
+    _isDark: boolean;
+    isInputValidColor: boolean;
     _onChange: (value: any) => void;
     _onTouched: () => void;
     color: string;
@@ -128,9 +129,8 @@ export declare class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
     onOpen: EventEmitter<void>;
     /** Event emitted when the select has been closed. */
     onClose: EventEmitter<void>;
-    templatePortals: QueryList<Portal<any>>;
-    templatePortal: Portal<any>;
-    constructor(_element: ElementRef, overlay: Overlay, _viewContainerRef: ViewContainerRef, _renderer: Renderer, service: ColorpickerService, _control: NgControl);
+    _templatePortal: TemplateRef<any>;
+    constructor(_element: ElementRef, overlay: Overlay, _viewContainerRef: ViewContainerRef, _renderer: Renderer, _util: ColorUtil, _control: NgControl);
     ngOnDestroy(): void;
     /** Whether or not the overlay panel is open. */
     readonly panelOpen: boolean;
@@ -213,6 +213,7 @@ export declare class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
     writeValue(value: any): void;
     registerOnChange(fn: (value: any) => void): void;
     registerOnTouched(fn: () => {}): void;
+    setDisabledState(isDisabled: boolean): void;
     private _subscribeToBackdrop();
     /**
      *  This method creates the overlay from the provided panel's template and saves its

@@ -6,6 +6,11 @@ export declare class Chip {
     constructor(source: any, textKey: string, valueKey: string);
 }
 export declare const MD2_CHIPS_CONTROL_VALUE_ACCESSOR: any;
+/** Change event object emitted by Md2Chips. */
+export declare class Md2ChipsChange {
+    source: Md2Chips;
+    value: any;
+}
 export declare class Md2Chips implements ControlValueAccessor, AfterContentInit {
     private elementRef;
     tabindex: number;
@@ -20,7 +25,7 @@ export declare class Md2Chips implements ControlValueAccessor, AfterContentInit 
     autocompleteDataList: string[];
     isAutoComplete: boolean;
     isRemovable: boolean;
-    readonly: boolean;
+    disabled: boolean;
     minChips: number;
     maxChips: number;
     id: string;
@@ -30,18 +35,17 @@ export declare class Md2Chips implements ControlValueAccessor, AfterContentInit 
     valueKey: string;
     change: EventEmitter<any>;
     chipInputForm: NgForm;
-    private onTouchedCallback;
-    private onChangeCallback;
+    _onChange: (value: any) => void;
+    _onTouched: () => void;
     chipItemList: Array<Chip>;
     inputValue: string;
-    private _value;
     selectedChip: number;
+    inputFocused: boolean;
+    private _value;
     private splitRegExp;
     private templateHtmlString;
     private item;
-    inputFocused: boolean;
     private isEmptyAutoComplete;
-    private isObject;
     constructor(elementRef: ElementRef);
     readonly element: any;
     value: any;
@@ -83,9 +87,11 @@ export declare class Md2Chips implements ControlValueAccessor, AfterContentInit 
      * update value
      */
     private updateValue();
+    /** Emits an event when the user selects a color. */
+    _emitChangeEvent(): void;
     writeValue(value: any): void;
-    registerOnChange(fn: any): void;
-    registerOnTouched(fn: any): void;
+    registerOnChange(fn: (value: any) => void): void;
+    registerOnTouched(fn: () => {}): void;
 }
 export declare const MD2_CHIPS_DIRECTIVES: any[];
 export declare class Md2ChipsModule {

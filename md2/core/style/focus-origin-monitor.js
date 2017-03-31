@@ -13,7 +13,7 @@ import { Subject } from 'rxjs/Subject';
 // that a value of around 650ms seems appropriate.
 export var TOUCH_BUFFER_MS = 650;
 /** Monitors mouse and keyboard events to determine the cause of focus events. */
-export var FocusOriginMonitor = (function () {
+var FocusOriginMonitor = (function () {
     function FocusOriginMonitor(_ngZone) {
         var _this = this;
         this._ngZone = _ngZone;
@@ -221,12 +221,13 @@ export var FocusOriginMonitor = (function () {
         this._setClasses(element, null);
         this._elementInfo.get(element).subject.next(null);
     };
-    FocusOriginMonitor = __decorate([
-        Injectable(), 
-        __metadata('design:paramtypes', [NgZone])
-    ], FocusOriginMonitor);
     return FocusOriginMonitor;
 }());
+FocusOriginMonitor = __decorate([
+    Injectable(),
+    __metadata("design:paramtypes", [NgZone])
+], FocusOriginMonitor);
+export { FocusOriginMonitor };
 /**
  * Directive that determines how a particular element was focused (via keyboard, mouse, touch, or
  * programmatically) and adds corresponding classes to the element.
@@ -236,7 +237,7 @@ export var FocusOriginMonitor = (function () {
  *    focused.
  * 2) cdkMonitorSubtreeFocus: considers an element focused if it or any of its children are focused.
  */
-export var CdkMonitorFocus = (function () {
+var CdkMonitorFocus = (function () {
     function CdkMonitorFocus(_elementRef, _focusOriginMonitor, renderer) {
         var _this = this;
         this._elementRef = _elementRef;
@@ -248,18 +249,20 @@ export var CdkMonitorFocus = (function () {
     CdkMonitorFocus.prototype.ngOnDestroy = function () {
         this._focusOriginMonitor.unmonitor(this._elementRef.nativeElement);
     };
-    __decorate([
-        Output(), 
-        __metadata('design:type', Object)
-    ], CdkMonitorFocus.prototype, "cdkFocusChange", void 0);
-    CdkMonitorFocus = __decorate([
-        Directive({
-            selector: '[cdkMonitorElementFocus], [cdkMonitorSubtreeFocus]',
-        }), 
-        __metadata('design:paramtypes', [ElementRef, FocusOriginMonitor, Renderer])
-    ], CdkMonitorFocus);
     return CdkMonitorFocus;
 }());
+__decorate([
+    Output(),
+    __metadata("design:type", Object)
+], CdkMonitorFocus.prototype, "cdkFocusChange", void 0);
+CdkMonitorFocus = __decorate([
+    Directive({
+        selector: '[cdkMonitorElementFocus], [cdkMonitorSubtreeFocus]',
+    }),
+    __metadata("design:paramtypes", [ElementRef, FocusOriginMonitor,
+        Renderer])
+], CdkMonitorFocus);
+export { CdkMonitorFocus };
 export function FOCUS_ORIGIN_MONITOR_PROVIDER_FACTORY(parentDispatcher, ngZone) {
     return parentDispatcher || new FocusOriginMonitor(ngZone);
 }

@@ -5,10 +5,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var core_1 = require('@angular/core');
+var core_1 = require("@angular/core");
 var ColorpickerDemo = (function () {
     function ColorpickerDemo() {
         this._color = null;
@@ -17,17 +14,17 @@ var ColorpickerDemo = (function () {
         this.container = 'inline';
         this.containers = [
             { text: 'Inline', value: 'inline' },
-            { text: 'Dialog', value: 'dialog' }];
+            { text: 'Dialog', value: 'dialog' }
+        ];
     }
-    ColorpickerDemo = __decorate([
-        core_1.Component({
-            moduleId: module.id,
-            selector: 'colorpicker-demo',
-            templateUrl: 'colorpicker-demo.html'
-        }), 
-        __metadata('design:paramtypes', [])
-    ], ColorpickerDemo);
     return ColorpickerDemo;
 }());
+ColorpickerDemo = __decorate([
+    core_1.Component({
+        moduleId: module.id,
+        selector: 'colorpicker-demo',
+        templateUrl: 'colorpicker-demo.html'
+    })
+], ColorpickerDemo);
 exports.ColorpickerDemo = ColorpickerDemo;
 //# sourceMappingURL=colorpicker-demo.js.map

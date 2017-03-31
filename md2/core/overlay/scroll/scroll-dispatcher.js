@@ -7,7 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Injectable, Optional, SkipSelf } from '@angular/core';
+import { Injectable, Optional, SkipSelf, NgZone } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromEvent';
@@ -19,8 +19,9 @@ export var DEFAULT_SCROLL_TIME = 20;
  * Service contained all registered Scrollable references and emits an event when any one of the
  * Scrollable references emit a scrolled event.
  */
-export var ScrollDispatcher = (function () {
-    function ScrollDispatcher() {
+var ScrollDispatcher = (function () {
+    function ScrollDispatcher(_ngZone) {
+        this._ngZone = _ngZone;
         /** Subject for notifying that a registered scrollable reference element has been scrolled. */
         this._scrolled = new Subject();
         /** Keeps track of the global `scroll` and `resize` subscriptions. */
@@ -68,7 +69,9 @@ export var ScrollDispatcher = (function () {
             this._scrolled.asObservable();
         this._scrolledCount++;
         if (!this._globalSubscription) {
-            this._globalSubscription = Observable.merge(Observable.fromEvent(window.document, 'scroll'), Observable.fromEvent(window, 'resize')).subscribe(function () { return _this._notify(); });
+            this._globalSubscription = this._ngZone.runOutsideAngular(function () {
+                return Observable.merge(Observable.fromEvent(window.document, 'scroll'), Observable.fromEvent(window, 'resize')).subscribe(function () { return _this._notify(); });
+            });
         }
         // Note that we need to do the subscribing from here, in order to be able to remove
         // the global event listeners once there are no more subscriptions.
@@ -107,19 +110,20 @@ export var ScrollDispatcher = (function () {
     ScrollDispatcher.prototype._notify = function () {
         this._scrolled.next();
     };
-    ScrollDispatcher = __decorate([
-        Injectable(), 
-        __metadata('design:paramtypes', [])
-    ], ScrollDispatcher);
     return ScrollDispatcher;
 }());
-export function SCROLL_DISPATCHER_PROVIDER_FACTORY(parentDispatcher) {
-    return parentDispatcher || new ScrollDispatcher();
+ScrollDispatcher = __decorate([
+    Injectable(),
+    __metadata("design:paramtypes", [NgZone])
+], ScrollDispatcher);
+export { ScrollDispatcher };
+export function SCROLL_DISPATCHER_PROVIDER_FACTORY(parentDispatcher, ngZone) {
+    return parentDispatcher || new ScrollDispatcher(ngZone);
 }
 export var SCROLL_DISPATCHER_PROVIDER = {
     // If there is already a ScrollDispatcher available, use that. Otherwise, provide a new one.
     provide: ScrollDispatcher,
-    deps: [[new Optional(), new SkipSelf(), ScrollDispatcher]],
+    deps: [[new Optional(), new SkipSelf(), ScrollDispatcher], NgZone],
     useFactory: SCROLL_DISPATCHER_PROVIDER_FACTORY
 };
 //# sourceMappingURL=scroll-dispatcher.js.map

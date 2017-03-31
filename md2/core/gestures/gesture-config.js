@@ -15,13 +15,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 import { Injectable, isDevMode } from '@angular/core';
 import { HammerGestureConfig } from '@angular/platform-browser';
 /* Adjusts configuration of our gesture library, Hammer. */
-export var GestureConfig = (function (_super) {
+var GestureConfig = (function (_super) {
     __extends(GestureConfig, _super);
     function GestureConfig() {
-        _super.call(this);
-        this._hammer = typeof window !== 'undefined' ? window.Hammer : null;
+        var _this = _super.call(this) || this;
+        _this._hammer = typeof window !== 'undefined' ? window.Hammer : null;
         /* List of new event names to add to the gesture support list */
-        this.events = this._hammer ? [
+        _this.events = _this._hammer ? [
             'longpress',
             'slide',
             'slidestart',
@@ -29,10 +29,11 @@ export var GestureConfig = (function (_super) {
             'slideright',
             'slideleft'
         ] : [];
-        if (!this._hammer && isDevMode()) {
+        if (!_this._hammer && isDevMode()) {
             console.warn('Could not find HammerJS. Certain Angular Material ' +
                 'components may not work correctly.');
         }
+        return _this;
     }
     /**
      * Builds Hammer instance manually to add custom recognizers that match the Material Design spec.
@@ -75,10 +76,11 @@ export var GestureConfig = (function (_super) {
         inheritances.forEach(function (item) { return recognizer.recognizeWith(item); });
         return recognizer;
     };
-    GestureConfig = __decorate([
-        Injectable(), 
-        __metadata('design:paramtypes', [])
-    ], GestureConfig);
     return GestureConfig;
 }(HammerGestureConfig));
+GestureConfig = __decorate([
+    Injectable(),
+    __metadata("design:paramtypes", [])
+], GestureConfig);
+export { GestureConfig };
 //# sourceMappingURL=gesture-config.js.map

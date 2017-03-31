@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 import { Directive, EventEmitter, Input, Output, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-export var Md2Collapse = (function () {
+var Md2Collapse = (function () {
     function Md2Collapse() {
         this._collapse = true;
         this._collapsing = false;
@@ -60,53 +60,55 @@ export var Md2Collapse = (function () {
         }, 4);
         this.collapsed.emit();
     };
-    __decorate([
-        Output(), 
-        __metadata('design:type', EventEmitter)
-    ], Md2Collapse.prototype, "collapsed", void 0);
-    __decorate([
-        Output(), 
-        __metadata('design:type', EventEmitter)
-    ], Md2Collapse.prototype, "expanded", void 0);
-    __decorate([
-        Input(), 
-        __metadata('design:type', Boolean)
-    ], Md2Collapse.prototype, "collapse", null);
-    Md2Collapse = __decorate([
-        Directive({
-            selector: '[collapse]',
-            host: {
-                'role': 'collapse',
-                '[class.in]': '_collapse',
-                '[class.collapse]': 'true',
-                '[class.collapsing]': '_collapsing',
-                '[attr.aria-expanded]': '_collapse',
-                '[attr.aria-hidden]': '!_collapse'
-            },
-            exportAs: 'md2Collapse'
-        }), 
-        __metadata('design:paramtypes', [])
-    ], Md2Collapse);
     return Md2Collapse;
 }());
+__decorate([
+    Output(),
+    __metadata("design:type", EventEmitter)
+], Md2Collapse.prototype, "collapsed", void 0);
+__decorate([
+    Output(),
+    __metadata("design:type", EventEmitter)
+], Md2Collapse.prototype, "expanded", void 0);
+__decorate([
+    Input(),
+    __metadata("design:type", Boolean),
+    __metadata("design:paramtypes", [Boolean])
+], Md2Collapse.prototype, "collapse", null);
+Md2Collapse = __decorate([
+    Directive({
+        selector: '[collapse]',
+        host: {
+            'role': 'collapse',
+            '[class.in]': '_collapse',
+            '[class.collapse]': 'true',
+            '[class.collapsing]': '_collapsing',
+            '[attr.aria-expanded]': '_collapse',
+            '[attr.aria-hidden]': '!_collapse'
+        },
+        exportAs: 'md2Collapse'
+    })
+], Md2Collapse);
+export { Md2Collapse };
 export var MD2_COLLAPSE_DIRECTIVES = [Md2Collapse];
-export var Md2CollapseModule = (function () {
+var Md2CollapseModule = Md2CollapseModule_1 = (function () {
     function Md2CollapseModule() {
     }
     Md2CollapseModule.forRoot = function () {
         return {
-            ngModule: Md2CollapseModule,
+            ngModule: Md2CollapseModule_1,
             providers: []
         };
     };
-    Md2CollapseModule = __decorate([
-        NgModule({
-            imports: [CommonModule],
-            exports: MD2_COLLAPSE_DIRECTIVES,
-            declarations: MD2_COLLAPSE_DIRECTIVES,
-        }), 
-        __metadata('design:paramtypes', [])
-    ], Md2CollapseModule);
     return Md2CollapseModule;
 }());
+Md2CollapseModule = Md2CollapseModule_1 = __decorate([
+    NgModule({
+        imports: [CommonModule],
+        exports: MD2_COLLAPSE_DIRECTIVES,
+        declarations: MD2_COLLAPSE_DIRECTIVES,
+    })
+], Md2CollapseModule);
+export { Md2CollapseModule };
+var Md2CollapseModule_1;
 //# sourceMappingURL=collapse.js.map

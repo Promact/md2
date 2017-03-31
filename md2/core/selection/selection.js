@@ -3,11 +3,11 @@ import { Subject } from 'rxjs/Subject';
  * Class to be used to power selecting one or more options from a list.
  * @docs-private
  */
-export var SelectionModel = (function () {
+var SelectionModel = (function () {
     function SelectionModel(_isMulti, initiallySelectedValues, _emitChanges) {
-        var _this = this;
         if (_isMulti === void 0) { _isMulti = false; }
         if (_emitChanges === void 0) { _emitChanges = true; }
+        var _this = this;
         this._isMulti = _isMulti;
         this._emitChanges = _emitChanges;
         /** Currently-selected values. */
@@ -133,15 +133,17 @@ export var SelectionModel = (function () {
     };
     return SelectionModel;
 }());
+export { SelectionModel };
 /**
  * Describes an event emitted when the value of a MdSelectionModel has changed.
  * @docs-private
  */
-export var SelectionChange = (function () {
+var SelectionChange = (function () {
     function SelectionChange(added, removed) {
         this.added = added;
         this.removed = removed;
     }
     return SelectionChange;
 }());
+export { SelectionChange };
 //# sourceMappingURL=selection.js.map

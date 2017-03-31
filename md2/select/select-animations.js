@@ -1,4 +1,4 @@
-import { animate, state, style, transition, trigger } from '@angular/core';
+import { animate, state, style, transition, trigger, } from '@angular/animations';
 /**
  * The following are all the animations for the md2-select component, with each
  * const containing the metadata for one animation.
@@ -12,12 +12,12 @@ import { animate, state, style, transition, trigger } from '@angular/core';
  */
 export var transformPlaceholder = trigger('transformPlaceholder', [
     state('floating-ltr', style({
-        top: '-16px',
+        top: '-22px',
         left: '-2px',
         transform: "scale(0.75)"
     })),
     state('floating-rtl', style({
-        top: '-16px',
+        top: '-22px',
         left: '2px',
         transform: "scale(0.75)"
     })),

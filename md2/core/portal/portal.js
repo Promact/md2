@@ -8,7 +8,7 @@ import { NullPortalHostError, PortalAlreadyAttachedError, NoPortalAttachedError,
  * A `Portal` is something that you want to render somewhere else.
  * It can be attach to / detached from a `PortalHost`.
  */
-export var Portal = (function () {
+var Portal = (function () {
     function Portal() {
     }
     /** Attach this portal to a host. */
@@ -48,37 +48,41 @@ export var Portal = (function () {
     };
     return Portal;
 }());
+export { Portal };
 /**
  * A `ComponentPortal` is a portal that instantiates some Component upon attachment.
  */
-export var ComponentPortal = (function (_super) {
+var ComponentPortal = (function (_super) {
     __extends(ComponentPortal, _super);
     function ComponentPortal(component, viewContainerRef, injector) {
         if (viewContainerRef === void 0) { viewContainerRef = null; }
         if (injector === void 0) { injector = null; }
-        _super.call(this);
-        this.component = component;
-        this.viewContainerRef = viewContainerRef;
-        this.injector = injector;
+        var _this = _super.call(this) || this;
+        _this.component = component;
+        _this.viewContainerRef = viewContainerRef;
+        _this.injector = injector;
+        return _this;
     }
     return ComponentPortal;
 }(Portal));
+export { ComponentPortal };
 /**
  * A `TemplatePortal` is a portal that represents some embedded template (TemplateRef).
  */
-export var TemplatePortal = (function (_super) {
+var TemplatePortal = (function (_super) {
     __extends(TemplatePortal, _super);
     function TemplatePortal(template, viewContainerRef) {
-        _super.call(this);
+        var _this = _super.call(this) || this;
         /**
          * Additional locals for the instantiated embedded view.
          * These locals can be seen as "exports" for the template, such as how ngFor has
          * index / event / odd.
          * See https://angular.io/docs/ts/latest/api/core/EmbeddedViewRef-class.html
          */
-        this.locals = new Map();
-        this.templateRef = template;
-        this.viewContainerRef = viewContainerRef;
+        _this.locals = new Map();
+        _this.templateRef = template;
+        _this.viewContainerRef = viewContainerRef;
+        return _this;
     }
     Object.defineProperty(TemplatePortal.prototype, "origin", {
         get: function () {
@@ -97,21 +101,22 @@ export var TemplatePortal = (function (_super) {
     };
     return TemplatePortal;
 }(Portal));
+export { TemplatePortal };
 /**
  * Partial implementation of PortalHost that only deals with attaching either a
  * ComponentPortal or a TemplatePortal.
  */
-export var BasePortalHost = (function () {
+var BasePortalHost = (function () {
     function BasePortalHost() {
         /** Whether this host has already been permanently disposed. */
         this._isDisposed = false;
     }
     /** Whether this host has an attached portal. */
     BasePortalHost.prototype.hasAttached = function () {
-        return this._attachedPortal != null;
+        return !!this._attachedPortal;
     };
     BasePortalHost.prototype.attach = function (portal) {
-        if (portal == null) {
+        if (!portal) {
             throw new NullPortalError();
         }
         if (this.hasAttached()) {
@@ -133,22 +138,27 @@ export var BasePortalHost = (function () {
     BasePortalHost.prototype.detach = function () {
         if (this._attachedPortal) {
             this._attachedPortal.setAttachedHost(null);
+            this._attachedPortal = null;
         }
-        this._attachedPortal = null;
-        if (this._disposeFn != null) {
-            this._disposeFn();
-            this._disposeFn = null;
-        }
+        this._invokeDisposeFn();
     };
     BasePortalHost.prototype.dispose = function () {
         if (this.hasAttached()) {
             this.detach();
         }
+        this._invokeDisposeFn();
         this._isDisposed = true;
     };
     BasePortalHost.prototype.setDisposeFn = function (fn) {
         this._disposeFn = fn;
     };
+    BasePortalHost.prototype._invokeDisposeFn = function () {
+        if (this._disposeFn) {
+            this._disposeFn();
+            this._disposeFn = null;
+        }
+    };
     return BasePortalHost;
 }());
+export { BasePortalHost };
 //# sourceMappingURL=portal.js.map

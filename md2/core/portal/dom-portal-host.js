@@ -10,14 +10,15 @@ import { BasePortalHost } from './portal';
  *
  * This is the only part of the portal core that directly touches the DOM.
  */
-export var DomPortalHost = (function (_super) {
+var DomPortalHost = (function (_super) {
     __extends(DomPortalHost, _super);
     function DomPortalHost(_hostDomElement, _componentFactoryResolver, _appRef, _defaultInjector) {
-        _super.call(this);
-        this._hostDomElement = _hostDomElement;
-        this._componentFactoryResolver = _componentFactoryResolver;
-        this._appRef = _appRef;
-        this._defaultInjector = _defaultInjector;
+        var _this = _super.call(this) || this;
+        _this._hostDomElement = _hostDomElement;
+        _this._componentFactoryResolver = _componentFactoryResolver;
+        _this._appRef = _appRef;
+        _this._defaultInjector = _defaultInjector;
+        return _this;
     }
     /**
      * Attach the given ComponentPortal to DOM element using the ComponentFactoryResolver.
@@ -84,4 +85,5 @@ export var DomPortalHost = (function (_super) {
     };
     return DomPortalHost;
 }(BasePortalHost));
+export { DomPortalHost };
 //# sourceMappingURL=dom-portal-host.js.map

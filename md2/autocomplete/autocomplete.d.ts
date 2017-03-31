@@ -98,11 +98,12 @@ export declare class Md2Autocomplete implements AfterContentInit, ControlValueAc
      * Update suggestion to filter the query
      * @param query
      */
-    private updateItems(query);
+    private updateItems();
     _emitChangeEvent(): void;
     writeValue(value: any): void;
     registerOnChange(fn: (value: any) => void): void;
     registerOnTouched(fn: () => {}): void;
+    setDisabledState(isDisabled: boolean): void;
 }
 export declare const MD2_AUTOCOMPLETE_DIRECTIVES: (typeof HighlightPipe | typeof Md2Autocomplete)[];
 export declare class Md2AutocompleteModule {

@@ -4,9 +4,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
 import { Injectable } from '@angular/core';
 // Whether the current platform supports the V8 Break Iterator. The V8 check
 // is necessary to detect all Blink based browsers.
@@ -18,7 +15,7 @@ var hasV8BreakIterator = typeof (window) !== 'undefined' ?
  * checking browser-specific global properties.
  * @docs-private
  */
-export var Platform = (function () {
+var Platform = (function () {
     function Platform() {
         /** Layout Engines */
         this.EDGE = /(edge)/i.test(navigator.userAgent);
@@ -38,10 +35,10 @@ export var Platform = (function () {
         // Trident on mobile adds the android platform to the userAgent to trick detections.
         this.ANDROID = /android/i.test(navigator.userAgent) && !this.TRIDENT;
     }
-    Platform = __decorate([
-        Injectable(), 
-        __metadata('design:paramtypes', [])
-    ], Platform);
     return Platform;
 }());
+Platform = __decorate([
+    Injectable()
+], Platform);
+export { Platform };
 //# sourceMappingURL=platform.js.map

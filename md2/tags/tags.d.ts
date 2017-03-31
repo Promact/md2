@@ -89,10 +89,11 @@ export declare class Md2Tags implements AfterContentInit, ControlValueAccessor {
      * update suggestion menu with filter
      * @param query
      */
-    private filterMatches(query);
+    private filterMatches();
     writeValue(value: any): void;
     registerOnChange(fn: any): void;
     registerOnTouched(fn: any): void;
+    setDisabledState(isDisabled: boolean): void;
 }
 export declare const MD2_TAGS_DIRECTIVES: typeof Md2Tags[];
 export declare class Md2TagsModule {

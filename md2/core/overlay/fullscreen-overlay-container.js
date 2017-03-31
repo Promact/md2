@@ -9,9 +9,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
 import { Injectable } from '@angular/core';
 import { OverlayContainer } from './overlay-container';
 /**
@@ -23,10 +20,10 @@ import { OverlayContainer } from './overlay-container';
  *   {provide: OverlayContainer, useClass: FullscreenOverlayContainer}
  * ],
  */
-export var FullscreenOverlayContainer = (function (_super) {
+var FullscreenOverlayContainer = (function (_super) {
     __extends(FullscreenOverlayContainer, _super);
     function FullscreenOverlayContainer() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     FullscreenOverlayContainer.prototype._createContainer = function () {
         var _this = this;
@@ -67,10 +64,10 @@ export var FullscreenOverlayContainer = (function (_super) {
             document.msFullscreenElement ||
             null;
     };
-    FullscreenOverlayContainer = __decorate([
-        Injectable(), 
-        __metadata('design:paramtypes', [])
-    ], FullscreenOverlayContainer);
     return FullscreenOverlayContainer;
 }(OverlayContainer));
+FullscreenOverlayContainer = __decorate([
+    Injectable()
+], FullscreenOverlayContainer);
+export { FullscreenOverlayContainer };
 //# sourceMappingURL=fullscreen-overlay-container.js.map

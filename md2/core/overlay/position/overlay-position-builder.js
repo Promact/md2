@@ -12,7 +12,7 @@ import { ConnectedPositionStrategy } from './connected-position-strategy';
 import { Injectable } from '@angular/core';
 import { GlobalPositionStrategy } from './global-position-strategy';
 /** Builder for overlay position strategy. */
-export var OverlayPositionBuilder = (function () {
+var OverlayPositionBuilder = (function () {
     function OverlayPositionBuilder(_viewportRuler) {
         this._viewportRuler = _viewportRuler;
     }
@@ -31,10 +31,11 @@ export var OverlayPositionBuilder = (function () {
     OverlayPositionBuilder.prototype.connectedTo = function (elementRef, originPos, overlayPos) {
         return new ConnectedPositionStrategy(elementRef, originPos, overlayPos, this._viewportRuler);
     };
-    OverlayPositionBuilder = __decorate([
-        Injectable(), 
-        __metadata('design:paramtypes', [ViewportRuler])
-    ], OverlayPositionBuilder);
     return OverlayPositionBuilder;
 }());
+OverlayPositionBuilder = __decorate([
+    Injectable(),
+    __metadata("design:paramtypes", [ViewportRuler])
+], OverlayPositionBuilder);
+export { OverlayPositionBuilder };
 //# sourceMappingURL=overlay-position-builder.js.map

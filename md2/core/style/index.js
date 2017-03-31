@@ -4,24 +4,21 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
 import { NgModule } from '@angular/core';
 import { CdkMonitorFocus, FOCUS_ORIGIN_MONITOR_PROVIDER } from './focus-origin-monitor';
-export var StyleModule = (function () {
+var StyleModule = (function () {
     function StyleModule() {
     }
-    StyleModule = __decorate([
-        NgModule({
-            declarations: [CdkMonitorFocus],
-            exports: [CdkMonitorFocus],
-            providers: [FOCUS_ORIGIN_MONITOR_PROVIDER],
-        }), 
-        __metadata('design:paramtypes', [])
-    ], StyleModule);
     return StyleModule;
 }());
+StyleModule = __decorate([
+    NgModule({
+        declarations: [CdkMonitorFocus],
+        exports: [CdkMonitorFocus],
+        providers: [FOCUS_ORIGIN_MONITOR_PROVIDER],
+    })
+], StyleModule);
+export { StyleModule };
 export * from './focus-origin-monitor';
 export * from './apply-transform';
 //# sourceMappingURL=index.js.map

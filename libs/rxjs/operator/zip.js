@@ -10,7 +10,7 @@ var Subscriber_1 = require('../Subscriber');
 var OuterSubscriber_1 = require('../OuterSubscriber');
 var subscribeToResult_1 = require('../util/subscribeToResult');
 var iterator_1 = require('../symbol/iterator');
-/* tslint:disable:max-line-length */
+/* tslint:enable:max-line-length */
 /**
  * @param observables
  * @return {Observable<R>}
@@ -47,9 +47,9 @@ exports.zipProto = zipProto;
  *     .subscribe(x => console.log(x));
  *
  * // outputs
- * // { age: 7, name: 'Foo', isDev: true }
- * // { age: 5, name: 'Bar', isDev: true }
- * // { age: 9, name: 'Beer', isDev: false }
+ * // { age: 27, name: 'Foo', isDev: true }
+ * // { age: 25, name: 'Bar', isDev: true }
+ * // { age: 29, name: 'Beer', isDev: false }
  *
  * @param observables
  * @return {Observable<R>}

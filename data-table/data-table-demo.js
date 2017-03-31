@@ -8,23 +8,25 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require('@angular/core');
-var http_1 = require('@angular/http');
+var core_1 = require("@angular/core");
+var http_1 = require("@angular/http");
 var DataTablePipe = (function () {
     function DataTablePipe() {
     }
     DataTablePipe.prototype.transform = function (array, query) {
         if (query) {
-            return array.filter(function (value, index, arr) { return value.name.indexOf(query) > -1; });
+            query = query.toLowerCase();
+            return array.filter(function (value, index, arr) {
+                return value.name.toLowerCase().indexOf(query) > -1;
+            });
         }
         return array;
     };
-    DataTablePipe = __decorate([
-        core_1.Pipe({ name: 'dataPipe' }), 
-        __metadata('design:paramtypes', [])
-    ], DataTablePipe);
     return DataTablePipe;
 }());
+DataTablePipe = __decorate([
+    core_1.Pipe({ name: 'dataPipe' })
+], DataTablePipe);
 exports.DataTablePipe = DataTablePipe;
 var DataTableDemo = (function () {
     function DataTableDemo(http) {
@@ -37,16 +39,16 @@ var DataTableDemo = (function () {
             _this.data = data.json();
         });
     }
-    DataTableDemo = __decorate([
-        core_1.Component({
-            moduleId: module.id,
-            selector: 'data-table-demo',
-            templateUrl: 'data-table-demo.html',
-            styleUrls: ['data-table-demo.css']
-        }), 
-        __metadata('design:paramtypes', [http_1.Http])
-    ], DataTableDemo);
     return DataTableDemo;
 }());
+DataTableDemo = __decorate([
+    core_1.Component({
+        moduleId: module.id,
+        selector: 'data-table-demo',
+        templateUrl: 'data-table-demo.html',
+        styleUrls: ['data-table-demo.css']
+    }),
+    __metadata("design:paramtypes", [http_1.Http])
+], DataTableDemo);
 exports.DataTableDemo = DataTableDemo;
 //# sourceMappingURL=data-table-demo.js.map

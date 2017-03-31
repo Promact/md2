@@ -6,8 +6,8 @@
  * found in the LICENSE file at https://angular.io/license
  */
 "use strict";
-var ts = require('typescript');
-var schema_1 = require('./schema');
+var ts = require("typescript");
+var schema_1 = require("./schema");
 // In TypeScript 2.1 the spread element kind was renamed.
 var spreadElementSyntaxKind = ts.SyntaxKind.SpreadElement || ts.SyntaxKind.SpreadElementExpression;
 function isMethodCallOf(callExpression, memberName) {
@@ -199,6 +199,9 @@ var Evaluator = (function () {
             t.nodeMap.set(entry, node);
             return entry;
         }
+        function isFoldableError(value) {
+            return !t.options.verboseInvalidExpression && schema_1.isMetadataError(value);
+        }
         switch (node.kind) {
             case ts.SyntaxKind.ObjectLiteralExpression:
                 var obj_1 = {};
@@ -213,14 +216,14 @@ var Evaluator = (function () {
                                 quoted_1.push(name_2);
                             }
                             var propertyName = _this.nameOf(assignment.name);
-                            if (schema_1.isMetadataError(propertyName)) {
+                            if (isFoldableError(propertyName)) {
                                 error = propertyName;
                                 return true;
                             }
                             var propertyValue = isPropertyAssignment(assignment) ?
                                 _this.evaluateNode(assignment.initializer) :
                                 { __symbolic: 'reference', name: propertyName };
-                            if (schema_1.isMetadataError(propertyValue)) {
+                            if (isFoldableError(propertyValue)) {
                                 error = propertyValue;
                                 return true; // Stop the forEachChild.
                             }
@@ -240,7 +243,7 @@ var Evaluator = (function () {
                 ts.forEachChild(node, function (child) {
                     var value = _this.evaluateNode(child);
                     // Check for error
-                    if (schema_1.isMetadataError(value)) {
+                    if (isFoldableError(value)) {
                         error = value;
                         return true; // Stop the forEachChild.
                     }
@@ -272,13 +275,13 @@ var Evaluator = (function () {
                     }
                 }
                 var args_1 = callExpression.arguments.map(function (arg) { return _this.evaluateNode(arg); });
-                if (args_1.some(schema_1.isMetadataError)) {
+                if (!this.options.verboseInvalidExpression && args_1.some(schema_1.isMetadataError)) {
                     return args_1.find(schema_1.isMetadataError);
                 }
                 if (this.isFoldable(callExpression)) {
                     if (isMethodCallOf(callExpression, 'concat')) {
                         var arrayValue = this.evaluateNode(callExpression.expression.expression);
-                        if (schema_1.isMetadataError(arrayValue))
+                        if (isFoldableError(arrayValue))
                             return arrayValue;
                         return arrayValue.concat(args_1[0]);
                     }
@@ -288,7 +291,7 @@ var Evaluator = (function () {
                     return recordEntry(args_1[0], node);
                 }
                 var expression = this.evaluateNode(callExpression.expression);
-                if (schema_1.isMetadataError(expression)) {
+                if (isFoldableError(expression)) {
                     return recordEntry(expression, node);
                 }
                 var result = { __symbolic: 'call', expression: expression };
@@ -299,7 +302,7 @@ var Evaluator = (function () {
             case ts.SyntaxKind.NewExpression:
                 var newExpression = node;
                 var newArgs = newExpression.arguments.map(function (arg) { return _this.evaluateNode(arg); });
-                if (newArgs.some(schema_1.isMetadataError)) {
+                if (!this.options.verboseInvalidExpression && newArgs.some(schema_1.isMetadataError)) {
                     return recordEntry(newArgs.find(schema_1.isMetadataError), node);
                 }
                 var newTarget = this.evaluateNode(newExpression.expression);
@@ -314,11 +317,11 @@ var Evaluator = (function () {
             case ts.SyntaxKind.PropertyAccessExpression: {
                 var propertyAccessExpression = node;
                 var expression_1 = this.evaluateNode(propertyAccessExpression.expression);
-                if (schema_1.isMetadataError(expression_1)) {
+                if (isFoldableError(expression_1)) {
                     return recordEntry(expression_1, node);
                 }
                 var member = this.nameOf(propertyAccessExpression.name);
-                if (schema_1.isMetadataError(member)) {
+                if (isFoldableError(member)) {
                     return recordEntry(member, node);
                 }
                 if (expression_1 && this.isFoldable(propertyAccessExpression.expression))
@@ -333,11 +336,11 @@ var Evaluator = (function () {
             case ts.SyntaxKind.ElementAccessExpression: {
                 var elementAccessExpression = node;
                 var expression_2 = this.evaluateNode(elementAccessExpression.expression);
-                if (schema_1.isMetadataError(expression_2)) {
+                if (isFoldableError(expression_2)) {
                     return recordEntry(expression_2, node);
                 }
                 var index = this.evaluateNode(elementAccessExpression.argumentExpression);
-                if (schema_1.isMetadataError(expression_2)) {
+                if (isFoldableError(expression_2)) {
                     return recordEntry(expression_2, node);
                 }
                 if (this.isFoldable(elementAccessExpression.expression) &&
@@ -374,14 +377,14 @@ var Evaluator = (function () {
                     else {
                         var identifier_1 = typeNameNode_1;
                         var symbol = _this.symbols.resolve(identifier_1.text);
-                        if (schema_1.isMetadataError(symbol) || schema_1.isMetadataSymbolicReferenceExpression(symbol)) {
+                        if (isFoldableError(symbol) || schema_1.isMetadataSymbolicReferenceExpression(symbol)) {
                             return recordEntry(symbol, node);
                         }
                         return recordEntry(errorSymbol('Could not resolve type', node, { typeName: identifier_1.text }), node);
                     }
                 };
                 var typeReference = getReference(typeNameNode_1);
-                if (schema_1.isMetadataError(typeReference)) {
+                if (isFoldableError(typeReference)) {
                     return recordEntry(typeReference, node);
                 }
                 if (!schema_1.isMetadataModuleReferenceExpression(typeReference) &&

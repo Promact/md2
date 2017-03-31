@@ -1,8 +1,9 @@
-import { ElementRef, OnDestroy, EventEmitter, Renderer, QueryList, ModuleWithProviders } from '@angular/core';
+import { ElementRef, OnDestroy, EventEmitter, TemplateRef, ViewContainerRef, ModuleWithProviders } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { DateLocale } from './date-locale';
+import { DateUtil } from './date-util';
 import { Md2Clock } from './clock';
-import { Overlay, Portal } from '../core';
+import { Overlay } from '../core';
 /** Change event object emitted by Md2Select. */
 export declare class Md2DateChange {
     source: Md2Datepicker;
@@ -17,9 +18,11 @@ export declare type PanelPositionY = 'above' | 'below';
 export declare class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     private _element;
     private overlay;
-    private _renderer;
+    private _viewContainerRef;
     private _locale;
+    private _util;
     _control: NgControl;
+    private _portal;
     private _overlayRef;
     private _backdropSubscription;
     private _value;
@@ -48,16 +51,17 @@ export declare class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     _nextMonth: number;
     _transformOrigin: string;
     _panelDoneAnimating: boolean;
+    _inputFocused: boolean;
     _onChange: (value: any) => void;
     _onTouched: () => void;
-    templatePortals: QueryList<Portal<any>>;
+    _templatePortal: TemplateRef<any>;
     /** Event emitted when the select has been opened. */
     onOpen: EventEmitter<void>;
     /** Event emitted when the select has been closed. */
     onClose: EventEmitter<void>;
     /** Event emitted when the selected date has been changed by the user. */
     change: EventEmitter<Md2DateChange>;
-    constructor(_element: ElementRef, overlay: Overlay, _renderer: Renderer, _locale: DateLocale, _control: NgControl);
+    constructor(_element: ElementRef, overlay: Overlay, _viewContainerRef: ViewContainerRef, _locale: DateLocale, _util: DateUtil, _control: NgControl);
     ngOnDestroy(): void;
     placeholder: string;
     okLabel: string;
@@ -103,8 +107,9 @@ export declare class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     private coerceDateProperty(value);
     _handleClick(event: MouseEvent): void;
     _handleKeydown(event: KeyboardEvent): void;
-    _onFocus(): void;
     _onBlur(): void;
+    _handleFocus(event: Event): void;
+    _handleBlur(event: Event): void;
     _clearValue(event: Event): void;
     /**
      * Display Years
@@ -183,6 +188,7 @@ export declare class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     writeValue(value: any): void;
     registerOnChange(fn: (value: any) => void): void;
     registerOnTouched(fn: () => {}): void;
+    setDisabledState(isDisabled: boolean): void;
     private _subscribeToBackdrop();
     /**
      *  This method creates the overlay from the provided panel's template and saves its

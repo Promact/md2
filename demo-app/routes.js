@@ -1,19 +1,19 @@
 "use strict";
-var demo_app_1 = require('./demo-app');
-var accordion_demo_1 = require('../accordion/accordion-demo');
-var autocomplete_demo_1 = require('../autocomplete/autocomplete-demo');
-var chips_demo_1 = require('../chips/chips-demo');
-var collapse_demo_1 = require('../collapse/collapse-demo');
-var colorpicker_demo_1 = require('../colorpicker/colorpicker-demo');
-var data_table_demo_1 = require('../data-table/data-table-demo');
-var datepicker_demo_1 = require('../datepicker/datepicker-demo');
-var dialog_demo_1 = require('../dialog/dialog-demo');
-var menu_demo_1 = require('../menu/menu-demo');
-var select_demo_1 = require('../select/select-demo');
-var tabs_demo_1 = require('../tabs/tabs-demo');
-var tags_demo_1 = require('../tags/tags-demo');
-var toast_demo_1 = require('../toast/toast-demo');
-var tooltip_demo_1 = require('../tooltip/tooltip-demo');
+var demo_app_1 = require("./demo-app");
+var accordion_demo_1 = require("../accordion/accordion-demo");
+var autocomplete_demo_1 = require("../autocomplete/autocomplete-demo");
+var chips_demo_1 = require("../chips/chips-demo");
+var collapse_demo_1 = require("../collapse/collapse-demo");
+var colorpicker_demo_1 = require("../colorpicker/colorpicker-demo");
+var data_table_demo_1 = require("../data-table/data-table-demo");
+var datepicker_demo_1 = require("../datepicker/datepicker-demo");
+var dialog_demo_1 = require("../dialog/dialog-demo");
+var menu_demo_1 = require("../menu/menu-demo");
+var select_demo_1 = require("../select/select-demo");
+var tabs_demo_1 = require("../tabs/tabs-demo");
+var tags_demo_1 = require("../tags/tags-demo");
+var toast_demo_1 = require("../toast/toast-demo");
+var tooltip_demo_1 = require("../tooltip/tooltip-demo");
 exports.DEMO_APP_ROUTES = [
     { path: '', component: demo_app_1.Home },
     { path: 'accordion', component: accordion_demo_1.AccordionDemo },

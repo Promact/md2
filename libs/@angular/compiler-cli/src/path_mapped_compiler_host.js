@@ -11,9 +11,9 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var path = require('path');
-var ts = require('typescript');
-var compiler_host_1 = require('./compiler_host');
+var path = require("path");
+var ts = require("typescript");
+var compiler_host_1 = require("./compiler_host");
 var EXT = /(\.ts|\.d\.ts|\.js|\.jsx|\.tsx)$/;
 var DTS = /\.d\.ts$/;
 /**
@@ -26,7 +26,7 @@ var DTS = /\.d\.ts$/;
 var PathMappedCompilerHost = (function (_super) {
     __extends(PathMappedCompilerHost, _super);
     function PathMappedCompilerHost(program, options, context) {
-        _super.call(this, program, options, context);
+        return _super.call(this, program, options, context) || this;
     }
     PathMappedCompilerHost.prototype.getCanonicalFileName = function (fileName) {
         if (!fileName)

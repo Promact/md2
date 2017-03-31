@@ -5,6 +5,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var isArray_1 = require('../util/isArray');
+var isArrayLike_1 = require('../util/isArrayLike');
 var isPromise_1 = require('../util/isPromise');
 var PromiseObservable_1 = require('./PromiseObservable');
 var IteratorObservable_1 = require('./IteratorObservable');
@@ -14,7 +15,6 @@ var iterator_1 = require('../symbol/iterator');
 var Observable_1 = require('../Observable');
 var observeOn_1 = require('../operator/observeOn');
 var observable_1 = require('../symbol/observable');
-var isArrayLike = (function (x) { return x && typeof x.length === 'number'; });
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @extends {Ignored}
@@ -100,7 +100,7 @@ var FromObservable = (function (_super) {
             else if (typeof ish[iterator_1.$$iterator] === 'function' || typeof ish === 'string') {
                 return new IteratorObservable_1.IteratorObservable(ish, scheduler);
             }
-            else if (isArrayLike(ish)) {
+            else if (isArrayLike_1.isArrayLike(ish)) {
                 return new ArrayLikeObservable_1.ArrayLikeObservable(ish, scheduler);
             }
         }

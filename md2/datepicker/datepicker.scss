@@ -27,21 +27,35 @@ md2-datepicker {
 
 .md2-datepicker-trigger {
   display: block;
-  padding: 18px 0 4px 32px;
+  padding: 18px 0 4px 46px;
   white-space: nowrap;
-  cursor: pointer;
 }
 
-.md2-datepicker-icon {
+.md2-datepicker-button {
   position: absolute;
-  top: 21px;
+  top: 13px;
   left: 0;
-  display: block;
-  height: 24px;
-  width: 24px;
-  vertical-align: middle;
-  fill: currentColor;
+  display: inline-block;
+  height: 40px;
+  width: 40px;
+  padding: 8px;
+  line-height: 24px;
   color: rgba(black, 0.54);
+  fill: currentColor;
+  border: 0;
+  border-radius: 50%;
+  outline: none;
+  user-select: none;
+  cursor: pointer;
+  box-sizing: border-box;
+  background: none;
+  vertical-align: middle;
+  align-items: center;
+  text-align: center;
+
+  &:focus {
+    background-color: rgba(158, 158, 158, 0.2);
+  }
 
   .md2-datepicker-disabled & {
     color: rgba(black, 0.38);
@@ -71,7 +85,8 @@ md2-datepicker {
     user-select: none;
   }
 
-  md2-datepicker:focus:not(.md2-datepicker-disabled) & {
+
+  &.md2-datepicker-input-focused {
     color: $primary;
     border-color: $primary;
   }
@@ -149,7 +164,7 @@ md2-datepicker {
   margin: 0 $md2-datepicker-arrow-margin;
   color: rgba(black, 0.38);
 
-  md2-datepicker:focus:not(.md2-datepicker-disabled) & {
+  .md2-datepicker-input-focused & {
     color: $primary;
   }
 
@@ -163,6 +178,7 @@ md2-datepicker {
   right: 0;
   height: 20px;
   color: rgba(black, 0.54);
+  cursor: pointer;
 
   svg {
     fill: currentColor;

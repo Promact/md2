@@ -14,7 +14,7 @@ import { NgModule, Directive, HostBinding, Output, Input, EventEmitter } from '@
  * Applications should use this directive instead of the native attribute so that Material
  * components can listen on changes of direction.
  */
-export var Dir = (function () {
+var Dir = (function () {
     function Dir() {
         /** Layout direction of the element. */
         this._dir = 'ltr';
@@ -43,45 +43,47 @@ export var Dir = (function () {
         enumerable: true,
         configurable: true
     });
-    __decorate([
-        Input('dir'), 
-        __metadata('design:type', String)
-    ], Dir.prototype, "_dir", void 0);
-    __decorate([
-        Output(), 
-        __metadata('design:type', Object)
-    ], Dir.prototype, "dirChange", void 0);
-    __decorate([
-        HostBinding('attr.dir'), 
-        __metadata('design:type', String)
-    ], Dir.prototype, "dir", null);
-    Dir = __decorate([
-        Directive({
-            selector: '[dir]',
-            // TODO(hansl): maybe `$implicit` isn't the best option here, but for now that's the best we got.
-            exportAs: '$implicit'
-        }), 
-        __metadata('design:paramtypes', [])
-    ], Dir);
     return Dir;
 }());
-export var RtlModule = (function () {
+__decorate([
+    Input('dir'),
+    __metadata("design:type", String)
+], Dir.prototype, "_dir", void 0);
+__decorate([
+    Output(),
+    __metadata("design:type", Object)
+], Dir.prototype, "dirChange", void 0);
+__decorate([
+    HostBinding('attr.dir'),
+    __metadata("design:type", String),
+    __metadata("design:paramtypes", [String])
+], Dir.prototype, "dir", null);
+Dir = __decorate([
+    Directive({
+        selector: '[dir]',
+        // TODO(hansl): maybe `$implicit` isn't the best option here, but for now that's the best we got.
+        exportAs: '$implicit'
+    })
+], Dir);
+export { Dir };
+var RtlModule = RtlModule_1 = (function () {
     function RtlModule() {
     }
     /** @deprecated */
     RtlModule.forRoot = function () {
         return {
-            ngModule: RtlModule,
+            ngModule: RtlModule_1,
             providers: []
         };
     };
-    RtlModule = __decorate([
-        NgModule({
-            exports: [Dir],
-            declarations: [Dir]
-        }), 
-        __metadata('design:paramtypes', [])
-    ], RtlModule);
     return RtlModule;
 }());
+RtlModule = RtlModule_1 = __decorate([
+    NgModule({
+        exports: [Dir],
+        declarations: [Dir]
+    })
+], RtlModule);
+export { RtlModule };
+var RtlModule_1;
 //# sourceMappingURL=dir.js.map

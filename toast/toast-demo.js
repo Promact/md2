@@ -8,8 +8,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require('@angular/core');
-var md2_1 = require('md2');
+var core_1 = require("@angular/core");
+var md2_1 = require("md2");
 var ToastDemo = (function () {
     function ToastDemo(toast) {
         this.toast = toast;
@@ -17,15 +17,15 @@ var ToastDemo = (function () {
     ToastDemo.prototype.toastMe = function () {
         this.toast.toast('test message...');
     };
-    ToastDemo = __decorate([
-        core_1.Component({
-            moduleId: module.id,
-            selector: 'toast-demo',
-            templateUrl: 'toast-demo.html'
-        }), 
-        __metadata('design:paramtypes', [md2_1.Md2Toast])
-    ], ToastDemo);
     return ToastDemo;
 }());
+ToastDemo = __decorate([
+    core_1.Component({
+        moduleId: module.id,
+        selector: 'toast-demo',
+        templateUrl: 'toast-demo.html'
+    }),
+    __metadata("design:paramtypes", [md2_1.Md2Toast])
+], ToastDemo);
 exports.ToastDemo = ToastDemo;
 //# sourceMappingURL=toast-demo.js.map

@@ -398,6 +398,7 @@ html, body {
   }
 
   .sidenav {
+    overflow-y: auto;
     transform: translateX(-100%);
 
     &.open {

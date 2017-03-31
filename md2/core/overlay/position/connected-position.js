@@ -10,9 +10,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+/** Horizontal dimension of a connection point on the perimeter of the origin or overlay element. */
 import { Optional } from '@angular/core';
 /** The points of the origin element and the overlay element to connect. */
-export var ConnectionPositionPair = (function () {
+var ConnectionPositionPair = (function () {
     function ConnectionPositionPair(origin, overlay) {
         this.originX = origin.originX;
         this.originY = origin.originY;
@@ -21,6 +22,7 @@ export var ConnectionPositionPair = (function () {
     }
     return ConnectionPositionPair;
 }());
+export { ConnectionPositionPair };
 /**
  * Set of properties regarding the position of the origin and overlay relative to the viewport
  * with respect to the containing Scrollable elements.
@@ -44,21 +46,24 @@ export var ConnectionPositionPair = (function () {
  *  |                        |
  *  --------------------------
  */
-export var ScrollableViewProperties = (function () {
+var ScrollableViewProperties = (function () {
     function ScrollableViewProperties() {
     }
     return ScrollableViewProperties;
 }());
+export { ScrollableViewProperties };
 /** The change event emitted by the strategy when a fallback position is used. */
-export var ConnectedOverlayPositionChange = (function () {
+var ConnectedOverlayPositionChange = (function () {
     function ConnectedOverlayPositionChange(connectionPair, scrollableViewProperties) {
         this.connectionPair = connectionPair;
         this.scrollableViewProperties = scrollableViewProperties;
     }
-    ConnectedOverlayPositionChange = __decorate([
-        __param(1, Optional()), 
-        __metadata('design:paramtypes', [ConnectionPositionPair, ScrollableViewProperties])
-    ], ConnectedOverlayPositionChange);
     return ConnectedOverlayPositionChange;
 }());
+ConnectedOverlayPositionChange = __decorate([
+    __param(1, Optional()),
+    __metadata("design:paramtypes", [ConnectionPositionPair,
+        ScrollableViewProperties])
+], ConnectedOverlayPositionChange);
+export { ConnectedOverlayPositionChange };
 //# sourceMappingURL=connected-position.js.map

@@ -8,67 +8,73 @@ import { MdError } from '../errors/error';
  * Exception thrown when attempting to attach a null portal to a host.
  * @docs-private
  */
-export var NullPortalError = (function (_super) {
+var NullPortalError = (function (_super) {
     __extends(NullPortalError, _super);
     function NullPortalError() {
-        _super.call(this, 'Must provide a portal to attach');
+        return _super.call(this, 'Must provide a portal to attach') || this;
     }
     return NullPortalError;
 }(MdError));
+export { NullPortalError };
 /**
  * Exception thrown when attempting to attach a portal to a host that is already attached.
  * @docs-private
  */
-export var PortalAlreadyAttachedError = (function (_super) {
+var PortalAlreadyAttachedError = (function (_super) {
     __extends(PortalAlreadyAttachedError, _super);
     function PortalAlreadyAttachedError() {
-        _super.call(this, 'Host already has a portal attached');
+        return _super.call(this, 'Host already has a portal attached') || this;
     }
     return PortalAlreadyAttachedError;
 }(MdError));
+export { PortalAlreadyAttachedError };
 /**
  * Exception thrown when attempting to attach a portal to an already-disposed host.
  * @docs-private
  */
-export var PortalHostAlreadyDisposedError = (function (_super) {
+var PortalHostAlreadyDisposedError = (function (_super) {
     __extends(PortalHostAlreadyDisposedError, _super);
     function PortalHostAlreadyDisposedError() {
-        _super.call(this, 'This PortalHost has already been disposed');
+        return _super.call(this, 'This PortalHost has already been disposed') || this;
     }
     return PortalHostAlreadyDisposedError;
 }(MdError));
+export { PortalHostAlreadyDisposedError };
 /**
  * Exception thrown when attempting to attach an unknown portal type.
  * @docs-private
  */
-export var UnknownPortalTypeError = (function (_super) {
+var UnknownPortalTypeError = (function (_super) {
     __extends(UnknownPortalTypeError, _super);
     function UnknownPortalTypeError() {
-        _super.call(this, 'Attempting to attach an unknown Portal type. ' +
-            'BasePortalHost accepts either a ComponentPortal or a TemplatePortal.');
+        return _super.call(this, 'Attempting to attach an unknown Portal type. ' +
+            'BasePortalHost accepts either a ComponentPortal or a TemplatePortal.') || this;
     }
     return UnknownPortalTypeError;
 }(MdError));
+export { UnknownPortalTypeError };
 /**
  * Exception thrown when attempting to attach a portal to a null host.
  * @docs-private
  */
-export var NullPortalHostError = (function (_super) {
+var NullPortalHostError = (function (_super) {
     __extends(NullPortalHostError, _super);
     function NullPortalHostError() {
-        _super.call(this, 'Attempting to attach a portal to a null PortalHost');
+        return _super.call(this, 'Attempting to attach a portal to a null PortalHost') || this;
     }
     return NullPortalHostError;
 }(MdError));
+export { NullPortalHostError };
 /**
  * Exception thrown when attempting to detach a portal that is not attached.
  * @docs-private
  */
-export var NoPortalAttachedError = (function (_super) {
+var NoPortalAttachedError = (function (_super) {
     __extends(NoPortalAttachedError, _super);
     function NoPortalAttachedError() {
-        _super.call(this, 'Attempting to detach a portal that is not attached to a host');
+        return _super.call(this, 'Attempting to detach a portal that is not attached to a host') || this;
     }
     return NoPortalAttachedError;
 }(MdError));
+export { NoPortalAttachedError };
 //# sourceMappingURL=portal-errors.js.map

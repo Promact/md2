@@ -4,7 +4,7 @@ import { Subject } from 'rxjs/Subject';
  * This class manages keyboard events for selectable lists. If you pass it a query list
  * of items, it will set the active item correctly when arrow events occur.
  */
-export var ListKeyManager = (function () {
+var ListKeyManager = (function () {
     function ListKeyManager(_items) {
         this._items = _items;
         this._activeItemIndex = null;
@@ -163,4 +163,5 @@ export var ListKeyManager = (function () {
     };
     return ListKeyManager;
 }());
+export { ListKeyManager };
 //# sourceMappingURL=list-key-manager.js.map

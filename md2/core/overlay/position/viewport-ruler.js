@@ -13,7 +13,7 @@ import { ScrollDispatcher } from '../scroll/scroll-dispatcher';
  * Simple utility for getting the bounds of the browser viewport.
  * @docs-private
  */
-export var ViewportRuler = (function () {
+var ViewportRuler = (function () {
     function ViewportRuler(scrollDispatcher) {
         var _this = this;
         // Initially cache the document rectangle.
@@ -65,12 +65,13 @@ export var ViewportRuler = (function () {
     ViewportRuler.prototype._cacheViewportGeometry = function () {
         this._documentRect = document.documentElement.getBoundingClientRect();
     };
-    ViewportRuler = __decorate([
-        Injectable(), 
-        __metadata('design:paramtypes', [ScrollDispatcher])
-    ], ViewportRuler);
     return ViewportRuler;
 }());
+ViewportRuler = __decorate([
+    Injectable(),
+    __metadata("design:paramtypes", [ScrollDispatcher])
+], ViewportRuler);
+export { ViewportRuler };
 export function VIEWPORT_RULER_PROVIDER_FACTORY(parentRuler, scrollDispatcher) {
     return parentRuler || new ViewportRuler(scrollDispatcher);
 }

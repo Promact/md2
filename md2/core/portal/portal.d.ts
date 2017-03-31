@@ -82,4 +82,5 @@ export declare abstract class BasePortalHost implements PortalHost {
     detach(): void;
     dispose(): void;
     setDisposeFn(fn: () => void): void;
+    private _invokeDisposeFn();
 }

@@ -12,7 +12,7 @@ import { Directive, ElementRef, NgModule, Output, EventEmitter } from '@angular/
  * Directive that triggers a callback whenever the content of
  * its associated element has changed.
  */
-export var ObserveContent = (function () {
+var ObserveContent = (function () {
     function ObserveContent(_elementRef) {
         this._elementRef = _elementRef;
         /** Event emitted for each change in the element's content. */
@@ -32,35 +32,37 @@ export var ObserveContent = (function () {
             this._observer.disconnect();
         }
     };
-    __decorate([
-        Output('cdkObserveContent'), 
-        __metadata('design:type', Object)
-    ], ObserveContent.prototype, "event", void 0);
-    ObserveContent = __decorate([
-        Directive({
-            selector: '[cdkObserveContent]'
-        }), 
-        __metadata('design:paramtypes', [ElementRef])
-    ], ObserveContent);
     return ObserveContent;
 }());
-export var ObserveContentModule = (function () {
+__decorate([
+    Output('cdkObserveContent'),
+    __metadata("design:type", Object)
+], ObserveContent.prototype, "event", void 0);
+ObserveContent = __decorate([
+    Directive({
+        selector: '[cdkObserveContent]'
+    }),
+    __metadata("design:paramtypes", [ElementRef])
+], ObserveContent);
+export { ObserveContent };
+var ObserveContentModule = ObserveContentModule_1 = (function () {
     function ObserveContentModule() {
     }
     /** @deprecated */
     ObserveContentModule.forRoot = function () {
         return {
-            ngModule: ObserveContentModule,
+            ngModule: ObserveContentModule_1,
             providers: []
         };
     };
-    ObserveContentModule = __decorate([
-        NgModule({
-            exports: [ObserveContent],
-            declarations: [ObserveContent]
-        }), 
-        __metadata('design:paramtypes', [])
-    ], ObserveContentModule);
     return ObserveContentModule;
 }());
+ObserveContentModule = ObserveContentModule_1 = __decorate([
+    NgModule({
+        exports: [ObserveContent],
+        declarations: [ObserveContent]
+    })
+], ObserveContentModule);
+export { ObserveContentModule };
+var ObserveContentModule_1;
 //# sourceMappingURL=observe-content.js.map

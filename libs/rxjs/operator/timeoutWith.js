@@ -8,7 +8,7 @@ var async_1 = require('../scheduler/async');
 var isDate_1 = require('../util/isDate');
 var OuterSubscriber_1 = require('../OuterSubscriber');
 var subscribeToResult_1 = require('../util/subscribeToResult');
-/* tslint:disable:max-line-length */
+/* tslint:enable:max-line-length */
 /**
  * @param due
  * @param withObservable

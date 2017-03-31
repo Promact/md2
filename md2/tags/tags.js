@@ -8,13 +8,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import { Component, ElementRef, EventEmitter, forwardRef, HostListener, Input, Output, ViewEncapsulation, NgModule } from '@angular/core';
-import { NG_VALUE_ACCESSOR, FormsModule } from '@angular/forms';
+import { NG_VALUE_ACCESSOR, FormsModule, } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { coerceBooleanProperty, LEFT_ARROW, RIGHT_ARROW, BACKSPACE, DELETE, TAB, ESCAPE } from '../core/core';
 import { Md2AutocompleteModule } from '../autocomplete/autocomplete';
 var noop = function () { };
 var nextId = 0;
-export var Tag = (function () {
+var Tag = (function () {
     function Tag(source, textKey, valueKey) {
         if (typeof source === 'string') {
             this.text = this.value = source;
@@ -26,12 +26,13 @@ export var Tag = (function () {
     }
     return Tag;
 }());
+export { Tag };
 export var MD2_TAGS_CONTROL_VALUE_ACCESSOR = {
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(function () { return Md2Tags; }),
     multi: true
 };
-export var Md2Tags = (function () {
+var Md2Tags = (function () {
     function Md2Tags(_element) {
         this._element = _element;
         this.change = new EventEmitter();
@@ -56,11 +57,11 @@ export var Md2Tags = (function () {
         this.selectAndFocusTagSafe = function (index) {
             if (!this._items.length) {
                 this._selectTag(-1);
-                this.onFocus();
+                this._handleFocus();
                 return;
             }
             if (index === this._items.length) {
-                return this.onFocus();
+                return this._handleFocus();
             }
             index = Math.max(index, 0);
             index = Math.min(index, this._items.length - 1);
@@ -95,7 +96,7 @@ export var Md2Tags = (function () {
             this._value = value;
             this._items = [];
             if (value && value.length && typeof value === 'object' && Array.isArray(value)) {
-                var _loop_1 = function(i) {
+                var _loop_1 = function (i) {
                     var selItm = this_1._tags.find(function (t) { return _this.equals(_this.valueKey ?
                         t[_this.valueKey] : t, value[i]); });
                     if (selItm) {
@@ -265,7 +266,7 @@ export var Md2Tags = (function () {
         }
         // filter
         setTimeout(function () {
-            _this.filterMatches(new RegExp(_this._inputValue, 'ig'));
+            _this.filterMatches();
         }, 10);
     };
     Md2Tags.prototype._handleKeydown = function (event) {
@@ -381,11 +382,12 @@ export var Md2Tags = (function () {
      * update suggestion menu with filter
      * @param query
      */
-    Md2Tags.prototype.filterMatches = function (query) {
+    Md2Tags.prototype.filterMatches = function () {
         var _this = this;
         var tempList = this._tags.map(function (tag) { return new Tag(tag, _this.textKey, _this.valueKey); });
         this._list = tempList.filter(function (t) {
-            return (query.test(t.text) && !_this._items.find(function (i) { return t.text === i.text; }));
+            return (new RegExp(_this._inputValue, 'ig').test(t.text) &&
+                !_this._items.find(function (i) { return t.text === i.text; }));
         });
         if (this._list.length > 0) {
             this._focusedTag = 0;
@@ -397,7 +399,7 @@ export var Md2Tags = (function () {
             this._value = value;
             this._items = [];
             if (value && value.length && typeof value === 'object' && Array.isArray(value)) {
-                var _loop_2 = function(i) {
+                var _loop_2 = function (i) {
                     var selItm = this_2._tags.find(function (t) { return _this.equals(_this.valueKey ?
                         t[_this.valueKey] : t, value[i]); });
                     if (selItm) {
@@ -413,93 +415,100 @@ export var Md2Tags = (function () {
     };
     Md2Tags.prototype.registerOnChange = function (fn) { this._onChangeCallback = fn; };
     Md2Tags.prototype.registerOnTouched = function (fn) { this._onTouchedCallback = fn; };
-    __decorate([
-        Output(), 
-        __metadata('design:type', EventEmitter)
-    ], Md2Tags.prototype, "change", void 0);
-    __decorate([
-        Input(), 
-        __metadata('design:type', String)
-    ], Md2Tags.prototype, "id", void 0);
-    __decorate([
-        Input(), 
-        __metadata('design:type', Number)
-    ], Md2Tags.prototype, "tabindex", void 0);
-    __decorate([
-        Input(), 
-        __metadata('design:type', String)
-    ], Md2Tags.prototype, "placeholder", void 0);
-    __decorate([
-        Input('md2-tag-text'), 
-        __metadata('design:type', String)
-    ], Md2Tags.prototype, "textKey", void 0);
-    __decorate([
-        Input('md2-tag-value'), 
-        __metadata('design:type', String)
-    ], Md2Tags.prototype, "valueKey", void 0);
-    __decorate([
-        Input(), 
-        __metadata('design:type', Boolean)
-    ], Md2Tags.prototype, "disabled", null);
-    __decorate([
-        Input('md2-tags'), 
-        __metadata('design:type', Array), 
-        __metadata('design:paramtypes', [Array])
-    ], Md2Tags.prototype, "tags", null);
-    __decorate([
-        Input(), 
-        __metadata('design:type', Object)
-    ], Md2Tags.prototype, "value", null);
-    __decorate([
-        HostListener('keydown', ['$event']), 
-        __metadata('design:type', Function), 
-        __metadata('design:paramtypes', [KeyboardEvent]), 
-        __metadata('design:returntype', void 0)
-    ], Md2Tags.prototype, "_handleKeydown", null);
-    __decorate([
-        HostListener('focus'), 
-        __metadata('design:type', Function), 
-        __metadata('design:paramtypes', []), 
-        __metadata('design:returntype', void 0)
-    ], Md2Tags.prototype, "_handleFocus", null);
-    Md2Tags = __decorate([
-        Component({selector: 'md2-tags',
-            template: "<div class=\"md2-tags-container\"> <span *ngFor=\"let t of _items; let i = index;\" class=\"md2-tag\" [class.active]=\"_selectedTag === i\" (click)=\"_selectTag(i)\"> <span class=\"md2-tag-text\">{{t.text}}</span> <svg (click)=\"_removeTagAndFocusInput(i)\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"> <path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\" /> </svg> </span> <span class=\"md2-tag-add\"> <input [(ngModel)]=\"_inputValue\" type=\"text\" tabs=\"false\" autocomplete=\"off\" tabindex=\"-1\" [disabled]=\"disabled\" class=\"md2-tags-input\" [placeholder]=\"placeholder\" (focus)=\"_onInputFocus()\" (blur)=\"_onInputBlur()\" (keydown)=\"_handleInputKeydown($event)\" (change)=\"$event.stopPropagation()\" /> <ul *ngIf=\"isMenuVisible\" class=\"md2-tags-menu\" (mouseenter)=\"_listEnter()\" (mouseleave)=\"_listLeave()\"> <li class=\"md2-option\" *ngFor=\"let l of _list; let i = index;\" [class.focused]=\"_focusedTag === i\" (click)=\"_addTag($event, i)\"> <span class=\"md2-option-text\" [innerHtml]=\"l.text | highlight:_inputValue\"></span> </li> </ul> </span> </div> ",
-            styles: ["md2-tags { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-backface-visibility: hidden; backface-visibility: hidden; } md2-tags:focus { outline: none; } md2-tags .md2-tags-container { position: relative; display: block; max-width: 100%; padding: 2px 3px 8px; border-bottom: 1px solid rgba(0, 0, 0, 0.38); box-sizing: content-box; min-width: 64px; min-height: 26px; cursor: text; } md2-tags .md2-tags-container::before, md2-tags .md2-tags-container::after { display: table; content: ' '; } md2-tags .md2-tags-container::after { clear: both; } md2-tags.focus .md2-tags-container { padding-bottom: 7px; border-bottom: 2px solid #106cc8; } md2-tags.md2-tags-disabled .md2-tags-container { color: rgba(0, 0, 0, 0.38); cursor: default; } md2-tags.md2-tags-disabled.focus .md2-tags-container { padding-bottom: 8px; border-bottom: 1px solid rgba(0, 0, 0, 0.38); } md2-tags .md2-tags-container .md2-tag { position: relative; cursor: default; border-radius: 16px; display: block; height: 32px; line-height: 32px; margin: 8px 8px 0 0; padding: 0 26px 0 12px; float: left; box-sizing: border-box; max-width: 100%; background: #e0e0e0; color: #424242; white-space: nowrap; overflow: hidden; -ms-text-overflow: ellipsis; text-overflow: ellipsis; } md2-tags .md2-tags-container .md2-tag.active { background: #106cc8; color: rgba(255, 255, 255, 0.87); } md2-tags .md2-tags-container .md2-tag svg { position: absolute; top: 4px; right: 2px; cursor: pointer; display: inline-block; overflow: hidden; fill: currentColor; color: rgba(0, 0, 0, 0.54); } md2-tags .md2-tag.active svg { color: rgba(255, 255, 255, 0.87); } md2-tags .md2-tag-add { position: relative; display: inline-block; } md2-tags input { border: 0; outline: 0; margin-top: 8px; height: 32px; line-height: 32px; padding: 0; color: rgba(0, 0, 0, 0.87); background: 0 0; } md2-tags .md2-tags-container .md2-tags-placeholder { color: rgba(0, 0, 0, 0.38); } md2-tags .md2-tags-menu { position: absolute; left: 0; top: 100%; display: block; z-index: 10; flex-direction: column; width: 100%; margin: 6px 0 0; padding: 8px 0; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12); max-height: 256px; min-height: 48px; overflow-y: auto; transform: scale(1); background: #fff; } md2-tags .md2-tags-menu .md2-option { cursor: pointer; position: relative; display: block; color: #212121; align-items: center; width: auto; transition: background 150ms linear; padding: 0 16px; height: 48px; line-height: 48px; } md2-tags .md2-tags-menu .md2-option:hover, md2-tags .md2-tags-menu .md2-option.focused { background: #eeeeee; } md2-tags .md2-tags-menu .md2-option .md2-option-text { width: auto; white-space: nowrap; overflow: hidden; -ms-text-overflow: ellipsis; text-overflow: ellipsis; font-size: 16px; } md2-tags .highlight { color: #757575; } /*# sourceMappingURL=tags.css.map */ "],
-            host: {
-                'role': 'tags',
-                '[id]': 'id',
-                '[class.focus]': '_inputFocused || _selectedTag >= 0',
-                '[class.md2-tags-disabled]': 'disabled',
-                '[tabindex]': 'disabled ? -1 : tabindex',
-                '[attr.aria-disabled]': 'disabled'
-            },
-            providers: [MD2_TAGS_CONTROL_VALUE_ACCESSOR],
-            encapsulation: ViewEncapsulation.None,
-            exportAs: 'md2Tags'
-        }), 
-        __metadata('design:paramtypes', [ElementRef])
-    ], Md2Tags);
+    Md2Tags.prototype.setDisabledState = function (isDisabled) {
+        this.disabled = isDisabled;
+    };
     return Md2Tags;
 }());
+__decorate([
+    Output(),
+    __metadata("design:type", EventEmitter)
+], Md2Tags.prototype, "change", void 0);
+__decorate([
+    Input(),
+    __metadata("design:type", String)
+], Md2Tags.prototype, "id", void 0);
+__decorate([
+    Input(),
+    __metadata("design:type", Number)
+], Md2Tags.prototype, "tabindex", void 0);
+__decorate([
+    Input(),
+    __metadata("design:type", String)
+], Md2Tags.prototype, "placeholder", void 0);
+__decorate([
+    Input('md2-tag-text'),
+    __metadata("design:type", String)
+], Md2Tags.prototype, "textKey", void 0);
+__decorate([
+    Input('md2-tag-value'),
+    __metadata("design:type", String)
+], Md2Tags.prototype, "valueKey", void 0);
+__decorate([
+    Input(),
+    __metadata("design:type", Boolean),
+    __metadata("design:paramtypes", [Object])
+], Md2Tags.prototype, "disabled", null);
+__decorate([
+    Input('md2-tags'),
+    __metadata("design:type", Array),
+    __metadata("design:paramtypes", [Array])
+], Md2Tags.prototype, "tags", null);
+__decorate([
+    Input(),
+    __metadata("design:type", Object),
+    __metadata("design:paramtypes", [Object])
+], Md2Tags.prototype, "value", null);
+__decorate([
+    HostListener('keydown', ['$event']),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [KeyboardEvent]),
+    __metadata("design:returntype", void 0)
+], Md2Tags.prototype, "_handleKeydown", null);
+__decorate([
+    HostListener('focus'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], Md2Tags.prototype, "_handleFocus", null);
+Md2Tags = __decorate([
+    Component({selector: 'md2-tags',
+        template: "<div class=\"md2-tags-container\"><span *ngFor=\"let t of _items; let i = index;\" class=\"md2-tag\" [class.active]=\"_selectedTag === i\" (click)=\"_selectTag(i)\"><span class=\"md2-tag-text\">{{t.text}}</span> <svg (click)=\"_removeTagAndFocusInput(i)\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\"/></svg></span><div class=\"md2-tag-add\"><input [(ngModel)]=\"_inputValue\" type=\"text\" tabs=\"false\" autocomplete=\"off\" tabindex=\"-1\" [disabled]=\"disabled\" class=\"md2-tags-input\" [placeholder]=\"placeholder\" (focus)=\"_onInputFocus()\" (blur)=\"_onInputBlur()\" (keydown)=\"_handleInputKeydown($event)\" (change)=\"$event.stopPropagation()\"><ul *ngIf=\"isMenuVisible\" class=\"md2-tags-menu\" (mouseenter)=\"_listEnter()\" (mouseleave)=\"_listLeave()\"><li class=\"md2-option\" *ngFor=\"let l of _list; let i = index;\" [class.focused]=\"_focusedTag === i\" (click)=\"_addTag($event, i)\"><span class=\"md2-option-text\" [innerHtml]=\"l.text | highlight:_inputValue\"></span></li></ul></div></div>",
+        styles: ["md2-tags{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;-moz-backface-visibility:hidden;-webkit-backface-visibility:hidden;backface-visibility:hidden}md2-tags:focus{outline:0}md2-tags .md2-tags-container{position:relative;display:block;max-width:100%;padding:2px 3px 8px;border-bottom:1px solid rgba(0,0,0,.38);-moz-box-sizing:content-box;-webkit-box-sizing:content-box;box-sizing:content-box;min-width:64px;min-height:26px;cursor:text}md2-tags .md2-tags-container::after,md2-tags .md2-tags-container::before{display:table;content:' '}md2-tags .md2-tags-container::after{clear:both}md2-tags.focus .md2-tags-container{padding-bottom:7px;border-bottom:2px solid #106cc8}md2-tags.md2-tags-disabled .md2-tags-container{color:rgba(0,0,0,.38);cursor:default}md2-tags.md2-tags-disabled.focus .md2-tags-container{padding-bottom:8px;border-bottom:1px solid rgba(0,0,0,.38)}md2-tags .md2-tags-container .md2-tag{position:relative;cursor:default;border-radius:16px;display:block;height:32px;line-height:32px;margin:8px 8px 0 0;padding:0 26px 0 12px;float:left;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box;max-width:100%;background:#e0e0e0;color:#424242;white-space:nowrap;overflow:hidden;-ms-text-overflow:ellipsis;-o-text-overflow:ellipsis;text-overflow:ellipsis}md2-tags .md2-tags-container .md2-tag.active{background:#106cc8;color:rgba(255,255,255,.87)}md2-tags .md2-tags-container .md2-tag svg{position:absolute;top:4px;right:2px;cursor:pointer;display:inline-block;overflow:hidden;fill:currentColor;color:rgba(0,0,0,.54)}md2-tags .md2-tag.active svg{color:rgba(255,255,255,.87)}md2-tags .md2-tag-add{position:relative;display:inline-block}md2-tags input{border:0;outline:0;margin-top:8px;height:32px;line-height:32px;padding:0;color:rgba(0,0,0,.87);background:0 0}md2-tags .md2-tags-container .md2-tags-placeholder{color:rgba(0,0,0,.38)}md2-tags .md2-tags-menu{position:absolute;left:0;top:100%;display:block;z-index:10;-ms-flex-direction:column;-webkit-flex-direction:column;flex-direction:column;width:100%;margin:6px 0 0;padding:8px 0;box-shadow:0 1px 3px 0 rgba(0,0,0,.2),0 1px 1px 0 rgba(0,0,0,.14),0 2px 1px -1px rgba(0,0,0,.12);max-height:256px;min-height:48px;overflow-y:auto;-moz-transform:scale(1);-ms-transform:scale(1);-o-transform:scale(1);-webkit-transform:scale(1);transform:scale(1);background:#fff}md2-tags .md2-tags-menu .md2-option{cursor:pointer;position:relative;display:block;color:#212121;align-items:center;width:auto;transition:background 150ms linear;padding:12px 16px;line-height:24px}md2-tags .md2-tags-menu .md2-option.focused,md2-tags .md2-tags-menu .md2-option:hover{background:#eee}md2-tags .md2-tags-menu .md2-option .md2-option-text{width:auto;font-size:16px}md2-tags .highlight{color:#757575} /*# sourceMappingURL=tags.css.map */ "],
+        host: {
+            'role': 'tags',
+            '[id]': 'id',
+            '[class.focus]': '_inputFocused || _selectedTag >= 0',
+            '[class.md2-tags-disabled]': 'disabled',
+            '[tabindex]': 'disabled ? -1 : tabindex',
+            '[attr.aria-disabled]': 'disabled'
+        },
+        providers: [MD2_TAGS_CONTROL_VALUE_ACCESSOR],
+        encapsulation: ViewEncapsulation.None,
+        exportAs: 'md2Tags'
+    }),
+    __metadata("design:paramtypes", [ElementRef])
+], Md2Tags);
+export { Md2Tags };
 export var MD2_TAGS_DIRECTIVES = [Md2Tags];
-export var Md2TagsModule = (function () {
+var Md2TagsModule = Md2TagsModule_1 = (function () {
     function Md2TagsModule() {
     }
     Md2TagsModule.forRoot = function () {
         return {
-            ngModule: Md2TagsModule,
+            ngModule: Md2TagsModule_1,
             providers: []
         };
     };
-    Md2TagsModule = __decorate([
-        NgModule({
-            imports: [CommonModule, FormsModule, Md2AutocompleteModule],
-            exports: MD2_TAGS_DIRECTIVES,
-            declarations: MD2_TAGS_DIRECTIVES,
-        }), 
-        __metadata('design:paramtypes', [])
-    ], Md2TagsModule);
     return Md2TagsModule;
 }());
+Md2TagsModule = Md2TagsModule_1 = __decorate([
+    NgModule({
+        imports: [CommonModule, FormsModule, Md2AutocompleteModule],
+        exports: MD2_TAGS_DIRECTIVES,
+        declarations: MD2_TAGS_DIRECTIVES,
+    })
+], Md2TagsModule);
+export { Md2TagsModule };
+var Md2TagsModule_1;
 //# sourceMappingURL=tags.js.map

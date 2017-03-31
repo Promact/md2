@@ -3,7 +3,7 @@ import { Subject } from 'rxjs/Subject';
  * Reference to an overlay that has been created with the Overlay service.
  * Used to manipulate or dispose of said overlay.
  */
-export var OverlayRef = (function () {
+var OverlayRef = (function () {
     function OverlayRef(_portalHost, _pane, _state, _ngZone) {
         this._portalHost = _portalHost;
         this._pane = _pane;
@@ -26,16 +26,17 @@ export var OverlayRef = (function () {
      * @returns The portal attachment result.
      */
     OverlayRef.prototype.attach = function (portal) {
-        if (this._state.hasBackdrop) {
-            this._attachBackdrop();
-        }
         var attachResult = this._portalHost.attach(portal);
         // Update the pane element with the given state configuration.
+        this._updateStackingOrder();
         this.updateSize();
         this.updateDirection();
         this.updatePosition();
         // Enable pointer events for the overlay pane element.
         this._togglePointerEvents(true);
+        if (this._state.hasBackdrop) {
+            this._attachBackdrop();
+        }
         return attachResult;
     };
     /**
@@ -126,6 +127,18 @@ export var OverlayRef = (function () {
             }
         });
     };
+    /**
+     * Updates the stacking order of the element, moving it to the top if necessary.
+     * This is required in cases where one overlay was detached, while another one,
+     * that should be behind it, was destroyed. The next time both of them are opened,
+     * the stacking will be wrong, because the detached element's pane will still be
+     * in its original DOM position.
+     */
+    OverlayRef.prototype._updateStackingOrder = function () {
+        if (this._pane.nextSibling) {
+            this._pane.parentNode.appendChild(this._pane);
+        }
+    };
     /** Detaches the backdrop (if any) associated with the overlay. */
     OverlayRef.prototype.detachBackdrop = function () {
         var _this = this;
@@ -159,6 +172,7 @@ export var OverlayRef = (function () {
     };
     return OverlayRef;
 }());
+export { OverlayRef };
 function formatCssUnit(value) {
     return typeof value === 'string' ? value : value + "px";
 }

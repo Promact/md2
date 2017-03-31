@@ -31,8 +31,6 @@ import {
   RIGHT_ARROW
 } from '../core/keyboard/keycodes';
 
-const noop = () => { };
-
 export class Chip {
   public text: string;
   public value: string;
@@ -236,8 +234,9 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
 
   inputBlurred(event: Event): void {
     this.inputFocused = false;
-    if (this.inputValue)
+    if (this.inputValue) {
       this.addNewChip(this.inputValue);
+    }
     this._onTouched();
     this.addNewChip(this.inputValue);
   }
@@ -302,7 +301,8 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
     if (validInput) {
       if (this.maxChips) {
         if (this.chipItemList.length < this.maxChips) {
-          this.chipItemList.push(new Chip(chips, this.autocompleteItemText, this.autocompleteItemValue));
+          this.chipItemList.push(new Chip(chips,
+            this.autocompleteItemText, this.autocompleteItemValue));
         }
       } else {
         this.chipItemList.push(new Chip(chips, this.textKey, this.valueKey));
@@ -355,7 +355,7 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
     this._value = new Array<any>();
 
     this._value = this.chipItemList.map((chip: any) => {
-      let a: any = {}
+      let a: any = {};
       a[this.textKey] = chip.text;
       a[this.valueKey] = chip.value;
       return a;

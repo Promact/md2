@@ -2,7 +2,7 @@ const stylelint = require('stylelint');
 const NeedsPrefix = require('./needs-prefix');
 const parseSelector = require('stylelint/lib/utils/parseSelector');
 
-const ruleName = 'material/no-prefixes';
+const ruleName = 'md2/no-prefixes';
 const messages =  stylelint.utils.ruleMessages(ruleName, {
   property: property => `Unprefixed property "${property}".`,
   value: (property, value) => `Unprefixed value in "${property}: ${value}".`,

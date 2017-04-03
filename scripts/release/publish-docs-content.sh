@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# Publish material2 docs assets to the material2-docs-content repo
-# material.angular.io will pull from this assets repo to get the latest docs
+# Publish md2 docs assets to the md2-docs-content repo
+# code.promactinfo.com/md2 will pull from this assets repo to get the latest docs
 
 cd "$(dirname $0)/../../"
 
 docsPath="./dist/docs"
-repoPath="/tmp/material2-docs-content"
-repoUrl="https://github.com/angular/material2-docs-content"
+repoPath="/tmp/md2-docs-content"
+repoUrl="https://github.com/Promact/md2-docs-content"
 examplesSource="./dist/docs/examples"
 
 # If the docs directory is not present, generate docs

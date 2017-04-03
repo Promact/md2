@@ -33,7 +33,7 @@ const dgeniPackageDeps = [
   typescriptPackage,
 ];
 
-let apiDocsPackage = new DgeniPackage('material2-api-docs', dgeniPackageDeps)
+let apiDocsPackage = new DgeniPackage('md2-api-docs', dgeniPackageDeps)
 
 .processor(require('./processors/link-inherited-docs'))
 

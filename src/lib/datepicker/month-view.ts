@@ -85,7 +85,8 @@ export class Md2MonthView implements AfterContentInit {
     if (this._selectedDate == date) {
       return;
     }
-    this.selectedChange.emit(new Date(this.activeDate.getFullYear(), this.activeDate.getMonth(), date));
+    this.selectedChange.emit(new Date(this.activeDate.getFullYear(), this.activeDate.getMonth(), date,
+      this.activeDate.getHours(), this.activeDate.getMinutes(), this.activeDate.getSeconds()));
   }
 
   /** Initializes this month view. */
@@ -94,7 +95,8 @@ export class Md2MonthView implements AfterContentInit {
     this._todayDate = this._getDateInCurrentMonth(this._util.today());
     this._monthLabel = this._locale.shortMonths[this.activeDate.getMonth()].toLocaleUpperCase();
 
-    let firstOfMonth = new Date(this.activeDate.getFullYear(), this.activeDate.getMonth(), 1);
+    let firstOfMonth = new Date(this.activeDate.getFullYear(), this.activeDate.getMonth(), 1,
+      this.activeDate.getHours(), this.activeDate.getMinutes(), this.activeDate.getSeconds());
     this._firstWeekOffset =
       (DAYS_PER_WEEK + firstOfMonth.getDay() - this._locale.firstDayOfWeek) % DAYS_PER_WEEK;
 

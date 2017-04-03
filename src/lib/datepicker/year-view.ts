@@ -74,7 +74,8 @@ export class Md2YearView implements AfterContentInit {
 
   /** Handles when a new month is selected. */
   _monthSelected(month: number) {
-    this.selectedChange.emit(new Date(this.activeDate.getFullYear(), month, this._activeDate.getDate()));
+    this.selectedChange.emit(new Date(this.activeDate.getFullYear(), month, this._activeDate.getDate(),
+      this.activeDate.getHours(), this.activeDate.getMinutes(), this.activeDate.getSeconds()));
   }
 
   /** Initializes this month view. */

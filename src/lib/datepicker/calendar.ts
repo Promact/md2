@@ -190,10 +190,10 @@ export class Md2Calendar implements AfterContentInit {
         this._activeDate = this._util.incrementDays(this._activeDate, 7);
         break;
       case HOME:
-        this._activeDate = new Date(this._activeDate.getFullYear(), this._activeDate.getMonth(), 1);
+        this._activeDate = this._util.getFirstDateOfMonth(this._activeDate);
         break;
       case END:
-        this._activeDate = new Date(this._activeDate.getFullYear(), this._activeDate.getMonth() + 1, 0);
+        this._activeDate = this._util.getLastDateOfMonth(this._activeDate);
         break;
       case PAGE_UP:
         this._activeDate = event.altKey ?

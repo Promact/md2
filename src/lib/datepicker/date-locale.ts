@@ -13,6 +13,34 @@ function range<T>(length: number, valueFunction: (index: number) => T): T[] {
 /** Date locale info. TODO(mmalerba): Integrate with i18n solution once we know what we're doing. */
 @Injectable()
 export class DateLocale {
+  formatDate: (date: Date) => string;
+  parseDate(value: any) {
+    if (value instanceof Date) {
+      return value;
+    }
+    let timestamp = typeof value == 'number' ? value : Date.parse(value);
+    return isNaN(timestamp) ? null : new Date(timestamp);
+  }
+  dates = [null].concat(
+    SUPPORTS_INTL_API ? this._createDatesArray('numeric') : range(31, i => String(i + 1)));
+  private _createDatesArray(format: string) {
+    let dtf = new Intl.DateTimeFormat(undefined, { day: format });
+    return range(31, i => dtf.format(new Date(2017, 0, i + 1)));
+  }
+  getCalendarMonthHeaderLabel = this._createFormatFunction({ month: 'short', year: 'numeric' }) ||
+  ((date: Date) => this.shortMonths[date.getMonth()] + ' ' + date.getFullYear());
+
+  getCalendarYearHeaderLabel = this._createFormatFunction({ year: 'numeric' }) ||
+  ((date: Date) => String(date.getFullYear()));
+
+  private _createFormatFunction(options: Object): (date: Date) => string {
+    if (SUPPORTS_INTL_API) {
+      let dtf = new Intl.DateTimeFormat(undefined, options);
+      return (date: Date) => dtf.format(date);
+    }
+    return null;
+  }
+
   firstDayOfWeek = 0;
 
   months = [

@@ -2,6 +2,10 @@ import { DateLocale } from './date-locale';
 
 export class DateUtil {
 
+  today(): Date {
+    return new Date();
+  }
+
   _locale: DateLocale = new DateLocale();
 
   parseDateMap: any = {
@@ -217,7 +221,7 @@ export class DateUtil {
    * @returns {boolean}
    */
   isSameMonthAndYear(d1: Date, d2: Date) {
-    return d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth();
+    return d1 && d2 && d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth();
   }
 
   /**
@@ -227,7 +231,7 @@ export class DateUtil {
    * @returns {boolean}
    */
   isSameDay(d1: Date, d2: Date) {
-    return d1.getDate() == d2.getDate() && this.isSameMonthAndYear(d1, d2);
+    return d1 && d2 && d1.getDate() == d2.getDate() && this.isSameMonthAndYear(d1, d2);
   }
 
   /**

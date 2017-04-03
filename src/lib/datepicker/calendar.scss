@@ -1,77 +1,81 @@
-$primary: #106cc8 !default;
-$md2-datepicker-cell-size: 40px !default;
+$md2-calendar-padding: 8px !default;
+$md2-calendar-controls-vertical-padding: 5%;
+// We want to indent to the middle of the first tile. There are 7 tiles, so 100% / 7 / 2.
+// Then we back up a little bit since the text in the cells is center-aligned.
+$md2-calendar-controls-start-padding: calc(100% / 14 - 6px);
+// Same as above, but we back up a little more since the arrow buttons have more padding.
+$md2-calendar-controls-end-padding: calc(100% / 14 - 12px);
+$md2-calendar-period-font-size: 14px;
+$md2-calendar-arrow-size: 5px !default;
+$md2-calendar-arrow-disabled-opacity: 0.5 !default;
+$md2-calendar-weekday-table-font-size: 11px !default;
 
-md2-calendar {
+
+.md2-calendar {
+  display: block;
+  background-color: white;
 }
 
 .md2-calendar-header {
+  padding: $md2-calendar-padding;
+  border-bottom: 1px solid rgba(black, 0.12);
+}
+
+.md2-calendar-body {
+  padding: $md2-calendar-padding;
+}
+
+.md2-calendar-controls {
   display: flex;
-  justify-content: space-between;
-  font-size: 14px;
-  font-weight: 700;
-  text-align: center;
-  line-height: 48px;
+  padding: $md2-calendar-controls-vertical-padding $md2-calendar-controls-end-padding $md2-calendar-controls-vertical-padding $md2-calendar-controls-start-padding;
+}
 
-  .md2-calendar-month-year {
-    width: 100%;
-  }
+.md2-calendar-spacer {
+  flex: 1 1 auto;
+}
 
-  button {
-    display: inline-block;
-    width: 48px;
-    height: 48px;
-    padding: 12px;
-    outline: none;
-    border: 0;
-    cursor: pointer;
-    background: transparent;
+.md2-calendar-button {
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  border: none;
+  outline: none;
+
+  &.md2-calendar-disabled {
+    opacity: $md2-calendar-arrow-disabled-opacity;
   }
 }
 
-.md2-datepicker-week-days {
+.md2-calendar-period-button {
+  font: inherit;
+  font-size: $md2-calendar-period-font-size;
+  font-weight: bold;
 }
 
-.md2-calendar-week-day {
+.md2-calendar-button > svg {
+  vertical-align: middle;
+}
+
+.md2-calendar-arrow {
+  /*border-top-color: mat-color($foreground, icon);*/
   display: inline-block;
-  width: $md2-datepicker-cell-size;
-  line-height: $md2-datepicker-cell-size;
-  margin: 1px;
-  color: rgba(black, 0.38);
-  text-align: center;
-  text-transform: uppercase;
+  width: 0;
+  height: 0;
+  border-left: $md2-calendar-arrow-size solid transparent;
+  border-right: $md2-calendar-arrow-size solid transparent;
+  border-top-width: $md2-calendar-arrow-size;
+  border-top-style: solid;
+  margin: 0 $md2-calendar-arrow-size;
+  vertical-align: middle;
+
+  &.md2-calendar-invert {
+    transform: rotate(180deg);
+  }
 }
 
-.md2-calendar-dates {
-}
-
-.md2-calendar-date {
-  display: inline-block;
-  width: $md2-datepicker-cell-size;
-  line-height: $md2-datepicker-cell-size;
-  margin: 1px;
+.md2-calendar-weekday-table {
+  width: 100%;
   text-align: center;
-  cursor: pointer;
-  border-radius: 50%;
-  border: 1px solid transparent;
-
-  &.md2-calendar-date-today {
-    border-color: $primary;
-  }
-
-  &.md2-calendar-date-focused,
-  &:hover {
-    background: rgb(224, 224, 224);
-  }
-
-  &.md2-calendar-date-selected:not(.md2-calendar-date-disabled) {
-    background: $primary;
-    color: white;
-    border-color: transparent;
-  }
-
-  &.md2-calendar-date-disabled {
-    cursor: default;
-    pointer-events: none;
-    opacity: 0.5;
-  }
+  font-size: $md2-calendar-weekday-table-font-size;
+  color: rgba(black, 0.36);
 }

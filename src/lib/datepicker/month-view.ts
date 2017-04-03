@@ -65,6 +65,9 @@ export class Md2MonthView implements AfterContentInit {
   /** The number of blank cells in the first row before the 1st of the month. */
   _firstWeekOffset: number;
 
+  /** The names of the weekdays. */
+  _weekdays: string[];
+
   /**
    * The date of the month that the currently selected Date falls on.
    * Null if the currently selected Date is in another month.
@@ -74,7 +77,10 @@ export class Md2MonthView implements AfterContentInit {
   /** The date of the month that today falls on. Null if today is in another month. */
   _todayDate: number;
 
-  constructor(private _locale: DateLocale, private _util: DateUtil) { }
+  constructor(private _locale: DateLocale, private _util: DateUtil) {
+    this._weekdays = this._locale.narrowDays.slice(this._locale.firstDayOfWeek)
+      .concat(this._locale.narrowDays.slice(0, this._locale.firstDayOfWeek));
+  }
 
   ngAfterContentInit(): void {
     this._init();

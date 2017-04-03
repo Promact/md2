@@ -1,8 +1,11 @@
+<table class="md2-calendar-weekday-table">
+  <tr><td *ngFor="let day of _weekdays">{{day}}</td></tr>
+</table>
 <md2-calendar-table [label]="_monthLabel"
-                   [rows]="_weeks"
-                   [todayValue]="_todayDate"
-                   [selectedValue]="_selectedDate"
-                   [labelMinRequiredCells]="3"
-                   [activeCell]="activeDate.date - 1"
-                   (selectedValueChange)="_dateSelected($event)">
+                    [rows]="_weeks"
+                    [todayValue]="_todayDate"
+                    [selectedValue]="_selectedDate"
+                    [labelMinRequiredCells]="3"
+                    [activeCell]="activeDate.date - 1"
+                    (selectedValueChange)="_dateSelected($event)">
 </md2-calendar-table>

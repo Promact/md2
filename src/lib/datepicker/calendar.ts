@@ -91,9 +91,6 @@ export class Md2Calendar implements AfterContentInit {
   /** Whether the calendar is in month view. */
   _monthView: boolean;
 
-  /** The names of the weekdays. */
-  _weekdays: string[];
-
   /** The label for the current calendar view. */
   get _label(): string {
     return this._monthView ?
@@ -101,10 +98,7 @@ export class Md2Calendar implements AfterContentInit {
       this._locale.getCalendarYearHeaderLabel(this._activeDate);
   }
 
-  constructor(private _locale: DateLocale, private _util: DateUtil) {
-    this._weekdays = this._locale.narrowDays.slice(this._locale.firstDayOfWeek)
-      .concat(this._locale.narrowDays.slice(0, this._locale.firstDayOfWeek));
-  }
+  constructor(private _locale: DateLocale, private _util: DateUtil) { }
 
   ngAfterContentInit() {
     this._activeDate = this.startAt || this._util.today();

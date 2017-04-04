@@ -522,7 +522,7 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     }
     let el: any = event.target;
     let d: any = this._util.parseDate(el.value, this.format);
-    if (this._util.isValidDate(d) && !this._util.isSameDay(this.value, d)) {
+    if (this._util.isValidDate(d)) {
       this.value = d;
       this._emitChangeEvent();
     }

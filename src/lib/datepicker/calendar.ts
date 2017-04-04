@@ -94,7 +94,7 @@ export class Md2Calendar implements AfterContentInit {
   /** The label for the current calendar view. */
   get _label(): string {
     return this._monthView ?
-      this._locale.getCalendarMonthHeaderLabel(this._activeDate).toLocaleUpperCase() :
+      this._locale.getCalendarMonthHeaderLabel(this._activeDate) :
       this._locale.getCalendarYearHeaderLabel(this._activeDate);
   }
 

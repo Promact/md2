@@ -1,12 +1,6 @@
 $md2-calendar-padding: 8px !default;
 $md2-calendar-controls-vertical-padding: 5%;
-// We want to indent to the middle of the first tile. There are 7 tiles, so 100% / 7 / 2.
-// Then we back up a little bit since the text in the cells is center-aligned.
-$md2-calendar-controls-start-padding: calc(100% / 14 - 6px);
-// Same as above, but we back up a little more since the arrow buttons have more padding.
-$md2-calendar-controls-end-padding: calc(100% / 14 - 12px);
 $md2-calendar-period-font-size: 14px;
-$md2-calendar-arrow-size: 5px !default;
 $md2-calendar-arrow-disabled-opacity: 0.5 !default;
 $md2-calendar-weekday-table-font-size: 11px !default;
 
@@ -17,29 +11,32 @@ $md2-calendar-weekday-table-font-size: 11px !default;
 }
 
 .md2-calendar-header {
-  padding: $md2-calendar-padding;
-  border-bottom: 1px solid rgba(black, 0.12);
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 48px;
 }
 
 .md2-calendar-body {
   padding: $md2-calendar-padding;
 }
 
-.md2-calendar-controls {
+/*.md2-calendar-controls {
   display: flex;
-  padding: $md2-calendar-controls-vertical-padding $md2-calendar-controls-end-padding $md2-calendar-controls-vertical-padding $md2-calendar-controls-start-padding;
-}
-
-.md2-calendar-spacer {
-  flex: 1 1 auto;
-}
+  justify-content: space-between;
+}*/
 
 .md2-calendar-button {
+  display: inline-block;
+  min-width: 48px;
   background: transparent;
   padding: 0;
   margin: 0;
   border: none;
   outline: none;
+  cursor: pointer;
 
   &.md2-calendar-disabled {
     opacity: $md2-calendar-arrow-disabled-opacity;
@@ -54,23 +51,6 @@ $md2-calendar-weekday-table-font-size: 11px !default;
 
 .md2-calendar-button > svg {
   vertical-align: middle;
-}
-
-.md2-calendar-arrow {
-  /*border-top-color: mat-color($foreground, icon);*/
-  display: inline-block;
-  width: 0;
-  height: 0;
-  border-left: $md2-calendar-arrow-size solid transparent;
-  border-right: $md2-calendar-arrow-size solid transparent;
-  border-top-width: $md2-calendar-arrow-size;
-  border-top-style: solid;
-  margin: 0 $md2-calendar-arrow-size;
-  vertical-align: middle;
-
-  &.md2-calendar-invert {
-    transform: rotate(180deg);
-  }
 }
 
 .md2-calendar-weekday-table {

@@ -27,7 +27,7 @@ export class DateLocale {
     let dtf = new Intl.DateTimeFormat(undefined, { day: format });
     return range(31, i => dtf.format(new Date(2017, 0, i + 1)));
   }
-  getCalendarMonthHeaderLabel = this._createFormatFunction({ month: 'short', year: 'numeric' }) ||
+  getCalendarMonthHeaderLabel = this._createFormatFunction({ month: 'long', year: 'numeric' }) ||
   ((date: Date) => this.shortMonths[date.getMonth()] + ' ' + date.getFullYear());
 
   getCalendarYearHeaderLabel = this._createFormatFunction({ year: 'numeric' }) ||

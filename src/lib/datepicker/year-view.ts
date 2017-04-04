@@ -2,6 +2,7 @@ import {
   Component,
   ViewEncapsulation,
   ChangeDetectionStrategy,
+  ElementRef,
   Input,
   AfterContentInit,
   Output,
@@ -30,6 +31,7 @@ export class Md2YearView implements AfterContentInit {
   set activeDate(value) {
     let oldActiveDate = this._activeDate;
     this._activeDate = this._locale.parseDate(value) || this._util.today();
+    this._activeYear = this._getYearInCurrentDate(this._activeDate);
     if (oldActiveDate.getFullYear() != this._activeDate.getFullYear()) {
       this._init();
     }
@@ -41,7 +43,7 @@ export class Md2YearView implements AfterContentInit {
   get selected() { return this._selected; }
   set selected(value) {
     this._selected = this._locale.parseDate(value);
-    this._selectedMonth = this._getMonthInCurrentYear(this.selected);
+    this._selectedYear = this._getYearInCurrentDate(this.selected);
   }
   private _selected: Date;
 
@@ -52,71 +54,60 @@ export class Md2YearView implements AfterContentInit {
   @Output() selectedChange = new EventEmitter<Date>();
 
   /** Grid of calendar cells representing the months of the year. */
-  _months: Md2CalendarCell[][];
-
-  /** The label for this year (e.g. "2017"). */
-  _yearLabel: string;
-
-  /** The month in this year that today falls on. Null if today is in a different year. */
-  _todayMonth: number;
+  _years: Array<number>;
 
   /**
    * The month in this year that the selected Date falls on.
    * Null if the selected Date is in a different year.
    */
-  _selectedMonth: number;
+  _selectedYear: number;
+  _activeYear: number;
 
-  constructor(private _locale: DateLocale, private _util: DateUtil) { }
+  constructor(private _element: ElementRef,
+    private _locale: DateLocale, private _util: DateUtil) { }
 
   ngAfterContentInit() {
     this._init();
   }
 
   /** Handles when a new month is selected. */
-  _monthSelected(month: number) {
-    this.selectedChange.emit(new Date(this.activeDate.getFullYear(), month, this._activeDate.getDate(),
+  _yearSelected(year: number) {
+    this.selectedChange.emit(new Date(year, this.activeDate.getMonth(), this._activeDate.getDate(),
       this.activeDate.getHours(), this.activeDate.getMinutes(), this.activeDate.getSeconds()));
   }
 
   /** Initializes this month view. */
   private _init() {
-    this._selectedMonth = this._getMonthInCurrentYear(this.selected);
-    this._todayMonth = this._getMonthInCurrentYear(this._util.today());
-    this._yearLabel = this._locale.getCalendarYearHeaderLabel(this.activeDate);
+    this._selectedYear = this._getYearInCurrentDate(this.selected);
+    this._createYears();
+  }
 
-    // First row of months only contains 5 elements so we can fit the year label on the same row.
-    this._months = [[0, 1, 2, 3, 4], [5, 6, 7, 8, 9, 10, 11]].map(row => row.map(
-      month => this._createCellForMonth(month)));
+  /** Create years. */
+  private _createYears() {
+    let startYear = 1900; // this._min ? this._min.getFullYear() :
+    let endYear = this._util.today().getFullYear() + 100; // this._max ? this._max.getFullYear() : 
+    this._years = [];
+    for (let i = startYear; i <= endYear; i++) {
+      this._years.push(i);
+    }
+    this._setScrollTop();
+  }
+
+  /** Set Scroll of the years container. */
+  private _setScrollTop(): void {
+    setTimeout(() => {
+      const scrollContainer =
+        this._element.nativeElement;
+      const selectedIndex = (this._selectedYear ? this._selectedYear : this._activeYear) - 1900;
+      scrollContainer.scrollTop = 20 + (selectedIndex * 40) - (scrollContainer.clientHeight / 2);
+    }, 10);
   }
 
   /**
    * Gets the month in this year that the given Date falls on.
    * Returns null if the given Date is in another year.
    */
-  private _getMonthInCurrentYear(date: Date) {
-    return date && date.getFullYear() == this.activeDate.getFullYear() ? date.getMonth() : null;
-  }
-
-  /** Creates an Md2CalendarCell for the given month. */
-  private _createCellForMonth(month: number) {
-    return new Md2CalendarCell(
-      month, this._locale.shortMonths[month].toLocaleUpperCase(), this._isMonthEnabled(month));
-  }
-
-  /** Whether the given month is enabled. */
-  private _isMonthEnabled(month: number) {
-    if (!this.dateFilter) {
-      return true;
-    }
-
-    // If any date in the month is enabled count the month as enabled.
-    for (let date = new Date(this.activeDate.getFullYear(), month, 1); date.getMonth() === month;
-      date = this._util.incrementDays(date, 1)) {
-      if (this.dateFilter(date)) {
-        return true;
-      }
-    }
-
-    return false;
+  private _getYearInCurrentDate(date: Date) {
+    return date ? date.getFullYear() : null;
   }
 }

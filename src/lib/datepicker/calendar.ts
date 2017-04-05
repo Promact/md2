@@ -91,13 +91,6 @@ export class Md2Calendar implements AfterContentInit {
   /** Whether the calendar is in month view. */
   _monthView: boolean;
 
-  /** The label for the current calendar view. */
-  get _label(): string {
-    return this._monthView ?
-      this._locale.getCalendarMonthHeaderLabel(this._activeDate) :
-      this._locale.getCalendarYearHeaderLabel(this._activeDate);
-  }
-
   constructor(private _locale: DateLocale, private _util: DateUtil) { }
 
   ngAfterContentInit() {
@@ -121,39 +114,6 @@ export class Md2Calendar implements AfterContentInit {
   /** Handles user clicks on the period label. */
   _currentPeriodClicked(): void {
     this._monthView = !this._monthView;
-  }
-
-  /** Handles user clicks on the previous button. */
-  _previousClicked(): void {
-    this._activeDate = this._monthView ?
-      this._util.incrementMonths(this._activeDate, -1) :
-      this._util.incrementYears(this._activeDate, -1);
-  }
-
-  /** Handles user clicks on the next button. */
-  _nextClicked(): void {
-    this._activeDate = this._monthView ?
-      this._util.incrementMonths(this._activeDate, 1) : this._util.incrementYears(this._activeDate, 1);
-  }
-
-  /** Whether the previous period button is enabled. */
-  _previousEnabled(): boolean {
-    if (!this.minDate) {
-      return true;
-    }
-    return !this.minDate || !this._isSameView(this._activeDate, this.minDate);
-  }
-
-  /** Whether the next period button is enabled. */
-  _nextEnabled(): boolean {
-    return !this.maxDate || !this._isSameView(this._activeDate, this.maxDate);
-  }
-
-  /** Whether the two dates represent the same view in the current view mode (month or year). */
-  private _isSameView(date1: Date, date2: Date): boolean {
-    return this._monthView ?
-      date1.getFullYear() == date2.getFullYear() && date1.getMonth() == date2.getMonth() :
-      date1.getFullYear() == date2.getFullYear();
   }
 
   /** Handles keydown events on the calendar body. */

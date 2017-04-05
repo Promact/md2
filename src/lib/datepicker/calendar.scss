@@ -11,7 +11,11 @@ $md2-calendar-weekday-table-font-size: 11px !default;
   background-color: white;
 }
 
-.md2-calendar-header {
+.md2-calendar-body {
+  padding: $md2-calendar-padding;
+}
+
+.md2-calendar-controls {
   display: flex;
   justify-content: space-between;
   font-size: 14px;
@@ -19,15 +23,6 @@ $md2-calendar-weekday-table-font-size: 11px !default;
   text-align: center;
   line-height: 48px;
 }
-
-.md2-calendar-body {
-  padding: $md2-calendar-padding;
-}
-
-/*.md2-calendar-controls {
-  display: flex;
-  justify-content: space-between;
-}*/
 
 .md2-calendar-button {
   display: inline-block;
@@ -48,6 +43,7 @@ $md2-calendar-weekday-table-font-size: 11px !default;
   font: inherit;
   font-size: $md2-calendar-period-font-size;
   font-weight: bold;
+  cursor: default;
 }
 
 .md2-calendar-button > svg {

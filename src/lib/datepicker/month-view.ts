@@ -50,8 +50,23 @@ export class Md2MonthView implements AfterContentInit {
   }
   private _selected: Date;
 
+  /** The minimum selectable date. */
+  @Input()
+  get minDate(): Date { return this._minDate; };
+  set minDate(date: Date) { this._minDate = this._locale.parseDate(date); }
+  private _minDate: Date;
+
+  /** The maximum selectable date. */
+  @Input()
+  get maxDate(): Date { return this._maxDate; };
+  set maxDate(date: Date) { this._maxDate = this._locale.parseDate(date); }
+  private _maxDate: Date;
+
   /** A function used to filter which dates are selectable. */
   @Input() dateFilter: (date: Date) => boolean;
+
+  /** Emits when a new date is active. */
+  @Output() activeDateChange = new EventEmitter<Date>();
 
   /** Emits when a new date is selected. */
   @Output() selectedChange = new EventEmitter<Date>();
@@ -77,6 +92,11 @@ export class Md2MonthView implements AfterContentInit {
   /** The date of the month that today falls on. Null if today is in another month. */
   _todayDate: number;
 
+  /** The label for the current calendar view. */
+  get _label(): string {
+    return this._locale.getCalendarMonthHeaderLabel(this._activeDate);
+  }
+
   constructor(private _locale: DateLocale, private _util: DateUtil) {
     this._weekdays = this._locale.narrowDays.slice(this._locale.firstDayOfWeek)
       .concat(this._locale.narrowDays.slice(0, this._locale.firstDayOfWeek));
@@ -93,6 +113,36 @@ export class Md2MonthView implements AfterContentInit {
     }
     this.selectedChange.emit(new Date(this.activeDate.getFullYear(), this.activeDate.getMonth(), date,
       this.activeDate.getHours(), this.activeDate.getMinutes(), this.activeDate.getSeconds()));
+  }
+
+  /** Handles user clicks on the previous button. */
+  _previousClicked(): void {
+    this.activeDate = this._util.incrementMonths(this._activeDate, -1);
+    this.activeDateChange.emit(this._activeDate);
+  }
+
+  /** Handles user clicks on the next button. */
+  _nextClicked(): void {
+    this.activeDate = this._util.incrementMonths(this._activeDate, 1);
+    this.activeDateChange.emit(this._activeDate);
+  }
+
+  /** Whether the previous period button is enabled. */
+  _previousEnabled(): boolean {
+    if (!this.minDate) {
+      return true;
+    }
+    return !this.minDate || !this._isSameView(this._activeDate, this.minDate);
+  }
+
+  /** Whether the next period button is enabled. */
+  _nextEnabled(): boolean {
+    return !this.maxDate || !this._isSameView(this._activeDate, this.maxDate);
+  }
+
+  /** Whether the two dates represent the same view in the current view mode (month or year). */
+  private _isSameView(date1: Date, date2: Date): boolean {
+    return date1.getFullYear() == date2.getFullYear() && date1.getMonth() == date2.getMonth();
   }
 
   /** Initializes this month view. */

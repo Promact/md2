@@ -74,7 +74,8 @@ $md2-datepicker-today-fade-amount: 0.2;
 }
 
 
-:not(.md2-calendar-table-disabled):hover {
+:not(.md2-calendar-table-disabled):hover,
+.md2-calendar-table-active { // .cdk-keyboard-focused
   & > .md2-calendar-table-cell-content:not(.md2-calendar-table-selected) {
     background-color: rgba(black, 0.1);
   }

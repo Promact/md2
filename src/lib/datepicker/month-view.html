@@ -6,6 +6,6 @@
                     [todayValue]="_todayDate"
                     [selectedValue]="_selectedDate"
                     [labelMinRequiredCells]="3"
-                    [activeCell]="activeDate.date - 1"
+                    [activeCell]="activeDate.getDate() - 1"
                     (selectedValueChange)="_dateSelected($event)">
 </md2-calendar-table>

@@ -320,8 +320,12 @@ html, body {
       line-height: 28px;
     }
 
+    .pull-right {
+      margin-right: -15px;
+    }
+
     .source-code {
-      float: right;
+      margin-right: 16px;
       fill: currentColor;
       color: $white;
     }

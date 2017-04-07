@@ -26,27 +26,9 @@ const rollup = require('rollup-stream');
 const exec = require('child_process').exec;
 // const releaser = require('conventional-github-releaser');
 
-task(':demoapp:aot', sequenceTask(
-  'aot:build',
-  ':build:devapp:vendor',
-  ':demoapp:rollup1'
-));
-
-task('demoapp:aot', ['build:devapp'], (cb: any) => {
-  exec('node_modules\.bin\ngc -p ' + join(DIST_ROOT, 'tsconfig-aot.json'), (err: any) => {
-    cb(err);
-  });
-});
-
-task(':demoapp:rollup', execNodeTask(
-  join(PROJECT_ROOT, 'node_modules', '.bin', 'rollup'), ['-c', join(DIST_ROOT, 'rollup-config.js')])
-);
-
-task(':demoapp:rollup1', (cb: any) => {
-  exec('node_modules\.bin\rollup -c ' + join(DIST_ROOT, 'rollup-config.js'), (err: any) => {
-    cb(err);
-  });
-});
+//task(':build:devapp:bundle:sys', ['build:devapp'], () => {
+//  var builder = systemjsBuilder()
+//  builder.loadConfigSync(join(DIST_ROOT, 'system-config.js'))
 
 task('bundle', (done: any) => {
   var builder = new sysBuilder(DIST_ROOT, join(DIST_ROOT, 'system-config.ts'));
@@ -58,21 +40,29 @@ task('bundle', (done: any) => {
     });
 });
 
-task(':build:devapp:sysbundle', ['build:devapp'], () => {
-  var builder = systemjsBuilder()
-  builder.loadConfigSync(join(DIST_ROOT, 'system-config.js'))
+//  builder.buildStatic(join(DIST_ROOT, 'main.js'), {
+//    minify: false,
+//    mangle: false
+//  }).pipe(dest(join(DIST_ROOT, 'bundle')));
+//})
 
-  builder.buildStatic(join(DIST_ROOT, 'main.js'), {
-    minify: false,
-    mangle: false
-  }).pipe(dest(join(DIST_ROOT, 'bundle')));
-})
+/** Builds the demo-app with the Angular compiler to verify that all components work. */
+//task('rollup:build', ['aot:build'], execNodeTask(
+//  '@angular/compiler-cli', 'ngc', ['-p', join(DIST_ROOT, 'tsconfig-aot.json')])
+//);
+
+task('rollup:build', ['aot:build'], (cb: any) => {
+  exec('node_modules\.bin\rollup -c ' + join(DIST_ROOT, 'rollup-config.js'), (err: any) => {
+    cb(err);
+  });
+});
+
 
 /** Builds a bundle for demo app components. */
-task(':build:devapp:bundle', [':build:devapp:vendor'], () => {//'build:devapp',
-  return src(join(DIST_ROOT, 'main.js'))
+task(':build:devapp:bundle:rollup', ['aot:build'], () => {
+  return src(join(DIST_ROOT, 'main.ts'))
     .pipe(createRollupBundle('iife', 'bundle.js'))
-    .pipe(dest(join(DIST_ROOT, 'bundles')));
+    .pipe(dest(DIST_ROOT));
 });
 
 const ROLLUP_GLOBALS = {
@@ -81,10 +71,12 @@ const ROLLUP_GLOBALS = {
   '@angular/common': 'ng.common',
   '@angular/forms': 'ng.forms',
   '@angular/http': 'ng.http',
+  '@angular/router': 'ng.router',
   '@angular/animations': 'ng.animations',
   '@angular/animations/browser': 'ng.animations.browser',
   '@angular/platform-browser': 'ng.platformBrowser',
   '@angular/platform-browser/animations': 'ng.platformBrowser.animations',
+  '@angular/platform-browser-dynamic': 'ng.platformBrowserDynamic',
 
   // Rxjs dependencies
   'rxjs/Subject': 'Rx',
@@ -111,35 +103,19 @@ const ROLLUP_GLOBALS = {
 function createRollupBundle(format: string, outFile: string) {
   let rollupOptions = {
     context: 'this',
-    //external: Object.keys(ROLLUP_GLOBALS)
+    external: Object.keys(ROLLUP_GLOBALS)
   };
 
   let rollupGenerateOptions = {
     // Keep the moduleId empty because we don't want to force developers to a specific moduleId.
     moduleId: '',
-    moduleName: 'ng.app',
+    moduleName: 'ng.demo',
     banner: LICENSE_BANNER,
     format: format,
-    entry: 'main.js',
+    entry: './dist/main-aot.js',
     dest: outFile,
     sourceMap: false,
-    //globals: ROLLUP_GLOBALS,
-    //onwarn: (warning) =>{
-    //  // Skip certain warnings
-    //  // should intercept ... but doesn't in some rollup versions
-    //  if (warning.code === 'THIS_IS_UNDEFINED') { return; }
-    //  // intercepts in some rollup versions
-    //  if (warning.indexOf("The 'this' keyword is equivalent to 'undefined'") > -1) { return; }
-    //  // console.warn everything else
-    //  console.warn(warning.message);
-    //},
-    //plugins: [
-    //  nodeResolve({ jsnext: true, module: true }),
-    //  commonjs({
-    //    include: 'node_modules/rxjs/**',
-    //  }),
-    //  uglify()
-    //]
+    globals: ROLLUP_GLOBALS,
   };
 
   return gulpRollup(rollupOptions, rollupGenerateOptions);

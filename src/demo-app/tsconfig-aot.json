@@ -4,15 +4,13 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "lib": ["es6", "es2015", "dom"],
-    "module": "commonjs",
+    "module": "es2015",
     "moduleResolution": "node",
-    "noEmitOnError": true,
     "noImplicitAny": true,
     "target": "es5",
+    "sourceMap": true,
+    "suppressImplicitAnyIndexErrors": true,
     "baseUrl": "",
-    "typeRoots": [
-      "../node_modules/@types/!(node)"
-    ],
     "paths": {
       "md2": [
         "./md2"
@@ -20,12 +18,10 @@
     }
   },
   "files": [
-    "./demo-app-types.d.ts",
     "./demo-app-module.ts",
     "./main-aot.ts"
   ],
   "angularCompilerOptions": {
-    "skipTemplateCodegen": false,
-    "debug": true
+    "skipMetadataEmit": true
   }
 }

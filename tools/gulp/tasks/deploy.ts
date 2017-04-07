@@ -26,14 +26,10 @@ const rollup = require('rollup-stream');
 const exec = require('child_process').exec;
 // const releaser = require('conventional-github-releaser');
 
-//task(':build:devapp:bundle:sys', ['build:devapp'], () => {
-//  var builder = systemjsBuilder()
-//  builder.loadConfigSync(join(DIST_ROOT, 'system-config.js'))
-
-task('bundle', (done: any) => {
+task(':bundle:app', (done: any) => {//['build:devapp'], 
   var builder = new sysBuilder(DIST_ROOT, join(DIST_ROOT, 'system-config.ts'));
   builder
-    .buildStatic(DIST_ROOT, join(DIST_ROOT, 'bundle.js'), {
+    .buildStatic(join(DIST_ROOT, 'demo-app-module.js'), join(DIST_ROOT, 'bundle.js'), {
       runtime: false
     }).then(() => {
       done();
@@ -57,7 +53,6 @@ task('rollup:build', ['aot:build'], (cb: any) => {
   });
 });
 
-
 /** Builds a bundle for demo app components. */
 task(':build:devapp:bundle:rollup', ['aot:build'], () => {
   return src(join(DIST_ROOT, 'main.ts'))
@@ -77,6 +72,7 @@ const ROLLUP_GLOBALS = {
   '@angular/platform-browser': 'ng.platformBrowser',
   '@angular/platform-browser/animations': 'ng.platformBrowser.animations',
   '@angular/platform-browser-dynamic': 'ng.platformBrowserDynamic',
+  'md2': 'ng.md2',
 
   // Rxjs dependencies
   'rxjs/Subject': 'Rx',
@@ -109,7 +105,6 @@ function createRollupBundle(format: string, outFile: string) {
   let rollupGenerateOptions = {
     // Keep the moduleId empty because we don't want to force developers to a specific moduleId.
     moduleId: '',
-    moduleName: 'ng.demo',
     banner: LICENSE_BANNER,
     format: format,
     entry: './dist/main-aot.js',

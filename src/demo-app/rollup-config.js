@@ -4,9 +4,10 @@ import commonjs from 'rollup-plugin-commonjs';
 import uglify from 'rollup-plugin-uglify';
 
 export default {
+  moduleName: 'demo',
   entry: 'dist/main-aot.ts',
-  dest: 'dist/build.js', // output a single application bundle
-  sourceMap: false,
+  dest: 'dist/bundle.js', // output a single application bundle
+  sourceMap: true,
   format: 'iife',
   onwarn: function (warning) {
     // Skip certain warnings

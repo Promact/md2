@@ -6,11 +6,13 @@
     "lib": ["es6", "es2015", "dom"],
     "module": "es2015",
     "moduleResolution": "node",
+    "noEmitOnError": true,
     "noImplicitAny": true,
     "target": "es5",
-    "sourceMap": true,
-    "suppressImplicitAnyIndexErrors": true,
     "baseUrl": "",
+    "typeRoots": [
+      "../node_modules/@types/!(node)"
+    ],
     "paths": {
       "md2": [
         "./md2"
@@ -22,6 +24,7 @@
     "./main-aot.ts"
   ],
   "angularCompilerOptions": {
-    "skipMetadataEmit": true
+    "skipTemplateCodegen": false,
+    "debug": true
   }
 }

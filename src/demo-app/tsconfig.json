@@ -23,7 +23,6 @@
     }
   },
   "files": [
-    "./demo-app-types.d.ts",
     "./demo-app-module.ts",
     "./system-config.ts",
     "./main.ts"

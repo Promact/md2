@@ -240,13 +240,11 @@ html, body {
       padding: 16px 0;
       line-height: 28px; }
     .main .toolbar .pull-right {
-      margin-right: -15px; }
+      margin-right: -30px; }
     .main .toolbar .source-code {
       margin-right: 16px;
       fill: currentColor;
       color: #ffffff; }
-.main .toolbar .source-code + a {
-      margin-right: -15px; }
   .main .footer {
     position: absolute;
     right: 0;

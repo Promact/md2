@@ -1,5 +1,5 @@
 /**
- * @license Angular v4.0.0
+ * @license Angular v4.0.1
  * (c) 2010-2017 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -15,7 +15,7 @@ var __extends = (undefined && undefined.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 /**
- * @license Angular v4.0.0
+ * @license Angular v4.0.1
  * (c) 2010-2017 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -1521,7 +1521,6 @@ var DomAnimationEngine = (function () {
         var /** @type {?} */ players = instructions.map(function (instruction, i) {
             var /** @type {?} */ player = _this._buildPlayer(element, instruction, previousPlayers, i);
             player.onDestroy(function () { deleteFromArrayMap(_this._activeElementAnimations, element, player); });
-            player.init();
             _this._markPlayerAsActive(element, player);
             return player;
         });
@@ -1627,6 +1626,7 @@ var DomAnimationEngine = (function () {
             // in the event that an animation throws an error then we do
             // not want to re-run animations on any previous animations
             // if they have already been kicked off beforehand
+            player.init();
             if (!player.hasStarted()) {
                 player.play();
             }
@@ -2506,6 +2506,7 @@ exports.ɵDomAnimationEngine = DomAnimationEngine;
 exports.ɵNoopAnimationEngine = NoopAnimationEngine;
 exports.ɵWebAnimationsDriver = WebAnimationsDriver;
 exports.ɵsupportsWebAnimations = supportsWebAnimations;
+exports.ɵWebAnimationsPlayer = WebAnimationsPlayer;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 

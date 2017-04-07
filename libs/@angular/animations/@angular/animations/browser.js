@@ -1,5 +1,5 @@
 /**
- * @license Angular v4.0.0
+ * @license Angular v4.0.1
  * (c) 2010-2017 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -1438,7 +1438,6 @@ class DomAnimationEngine {
         const /** @type {?} */ players = instructions.map((instruction, i) => {
             const /** @type {?} */ player = this._buildPlayer(element, instruction, previousPlayers, i);
             player.onDestroy(() => { deleteFromArrayMap(this._activeElementAnimations, element, player); });
-            player.init();
             this._markPlayerAsActive(element, player);
             return player;
         });
@@ -1542,6 +1541,7 @@ class DomAnimationEngine {
             // in the event that an animation throws an error then we do
             // not want to re-run animations on any previous animations
             // if they have already been kicked off beforehand
+            player.init();
             if (!player.hasStarted()) {
                 player.play();
             }
@@ -2396,5 +2396,5 @@ function supportsWebAnimations() {
  * Generated bundle index. Do not edit.
  */
 
-export { AnimationDriver, AnimationEngine as ɵAnimationEngine, Animation as ɵAnimation, AnimationStyleNormalizer as ɵAnimationStyleNormalizer, NoopAnimationStyleNormalizer as ɵNoopAnimationStyleNormalizer, WebAnimationsStyleNormalizer as ɵWebAnimationsStyleNormalizer, NoopAnimationDriver as ɵNoopAnimationDriver, DomAnimationEngine as ɵDomAnimationEngine, NoopAnimationEngine as ɵNoopAnimationEngine, WebAnimationsDriver as ɵWebAnimationsDriver, supportsWebAnimations as ɵsupportsWebAnimations };
+export { AnimationDriver, AnimationEngine as ɵAnimationEngine, Animation as ɵAnimation, AnimationStyleNormalizer as ɵAnimationStyleNormalizer, NoopAnimationStyleNormalizer as ɵNoopAnimationStyleNormalizer, WebAnimationsStyleNormalizer as ɵWebAnimationsStyleNormalizer, NoopAnimationDriver as ɵNoopAnimationDriver, DomAnimationEngine as ɵDomAnimationEngine, NoopAnimationEngine as ɵNoopAnimationEngine, WebAnimationsDriver as ɵWebAnimationsDriver, supportsWebAnimations as ɵsupportsWebAnimations, WebAnimationsPlayer as ɵWebAnimationsPlayer };
 //# sourceMappingURL=browser.js.map

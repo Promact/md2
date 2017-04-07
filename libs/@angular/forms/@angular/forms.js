@@ -1,9 +1,9 @@
 /**
- * @license Angular v4.0.0
+ * @license Angular v4.0.1
  * (c) 2010-2017 Google, Inc. https://angular.io/
  * License: MIT
  */
-import { Directive, ElementRef, EventEmitter, Host, Inject, Injectable, InjectionToken, Injector, Input, NgModule, Optional, Output, Renderer, Self, SkipSelf, Version, forwardRef, ɵisObservable, ɵisPromise, ɵlooseIdentical, ɵmerge } from '@angular/core';
+import { Directive, ElementRef, EventEmitter, Host, Inject, Injectable, InjectionToken, Injector, Input, NgModule, Optional, Output, Renderer, Self, SkipSelf, Version, forwardRef, ɵisObservable, ɵisPromise, ɵlooseIdentical } from '@angular/core';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { fromPromise } from 'rxjs/observable/fromPromise';
 import { map } from 'rxjs/operator/map';
@@ -145,6 +145,14 @@ class ControlContainer extends AbstractControlDirective {
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+var __assign = (undefined && undefined.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 /**
  * @param {?} value
  * @return {?}
@@ -349,7 +357,7 @@ function _executeAsyncValidators(control, validators) {
  */
 function _mergeErrors(arrayOfErrors) {
     const /** @type {?} */ res = arrayOfErrors.reduce((res, errors) => {
-        return errors != null ? ɵmerge(res, errors) : res;
+        return errors != null ? __assign({}, res, errors) : res;
     }, {});
     return Object.keys(res).length === 0 ? null : res;
 }
@@ -5455,7 +5463,7 @@ FormBuilder.ctorParameters = () => [];
 /**
  * \@stable
  */
-const VERSION = new Version('4.0.0');
+const VERSION = new Version('4.0.1');
 
 /**
  * @license

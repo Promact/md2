@@ -1,5 +1,5 @@
 /**
- * @license Angular v4.0.0
+ * @license Angular v4.0.1
  * (c) 2010-2017 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -15,7 +15,7 @@ var __extends = (undefined && undefined.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 /**
- * @license Angular v4.0.0
+ * @license Angular v4.0.1
  * (c) 2010-2017 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -139,6 +139,7 @@ var ComponentFixture = (function () {
         this._autoDetect = _autoDetect;
         this._isStable = true;
         this._isDestroyed = false;
+        this._resolve = null;
         this._promise = null;
         this._onUnstableSubscription = null;
         this._onStableSubscription = null;
@@ -151,7 +152,7 @@ var ComponentFixture = (function () {
         this.nativeElement = this.elementRef.nativeElement;
         this.componentRef = componentRef;
         this.ngZone = ngZone;
-        if (ngZone != null) {
+        if (ngZone) {
             this._onUnstableSubscription =
                 ngZone.onUnstable.subscribe({ next: function () { _this._isStable = false; } });
             this._onMicrotaskEmptySubscription = ngZone.onMicrotaskEmpty.subscribe({
@@ -890,7 +891,6 @@ var InjectSetupWrapper = (function () {
     return InjectSetupWrapper;
 }());
 function withModule(moduleDef, fn) {
-    if (fn === void 0) { fn = null; }
     if (fn) {
         // Not using an arrow function to preserve context passed from call site
         return function () {
@@ -914,7 +914,7 @@ function getComponentType(error) {
  * found in the LICENSE file at https://angular.io/license
  */
 /**
- * Public Test Library for unit testing Angular2 Applications. Assumes that you are running
+ * Public Test Library for unit testing Angular applications. Assumes that you are running
  * with Jasmine, Mocha, or a similar framework which exports a beforeEach function and
  * allows tests to be asynchronous by either returning a promise or using a 'done' parameter.
  */

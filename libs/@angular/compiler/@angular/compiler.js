@@ -1,9 +1,9 @@
 /**
- * @license Angular v4.0.0
+ * @license Angular v4.0.1
  * (c) 2010-2017 Google, Inc. https://angular.io/
  * License: MIT
  */
-import { ANALYZE_FOR_ENTRY_COMPONENTS, Attribute, COMPILER_OPTIONS, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectionStrategy, ChangeDetectorRef, Compiler, CompilerFactory, Component, ComponentFactory, ComponentFactoryResolver, ComponentRef, ContentChild, ContentChildren, Directive, ElementRef, Host, HostBinding, HostListener, Inject, Injectable, InjectionToken, Injector, Input, LOCALE_ID, MissingTranslationStrategy, ModuleWithComponentFactories, NO_ERRORS_SCHEMA, NgModule, NgModuleFactory, NgModuleRef, Optional, Output, PACKAGE_ROOT_URL, PLATFORM_INITIALIZER, Pipe, Query, QueryList, ReflectiveInjector, Renderer, SecurityContext, Self, SkipSelf, TRANSLATIONS, TRANSLATIONS_FORMAT, TemplateRef, Type, Version, ViewChild, ViewChildren, ViewContainerRef, ViewEncapsulation, animate, createPlatformFactory, group, isDevMode, keyframes, platformCore, resolveForwardRef, sequence, state, style, transition, trigger, ɵCodegenComponentFactoryResolver, ɵConsole, ɵEMPTY_ARRAY, ɵEMPTY_MAP, ɵERROR_COMPONENT_TYPE, ɵLIFECYCLE_HOOKS_VALUES, ɵLifecycleHooks, ɵNgModuleInjector, ɵReflectionCapabilities, ɵReflector, ɵReflectorReader, ɵand, ɵccf, ɵcrt, ɵdid, ɵeld, ɵelementEventFullName, ɵgetComponentViewDefinitionFactory, ɵinlineInterpolate, ɵinterpolate, ɵmerge, ɵncd, ɵnov, ɵpad, ɵpid, ɵpod, ɵppd, ɵprd, ɵqud, ɵreflector, ɵregisterModuleFactory, ɵstringify, ɵted, ɵunv, ɵvid } from '@angular/core';
+import { ANALYZE_FOR_ENTRY_COMPONENTS, Attribute, COMPILER_OPTIONS, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectionStrategy, ChangeDetectorRef, Compiler, CompilerFactory, Component, ComponentFactory, ComponentFactoryResolver, ComponentRef, ContentChild, ContentChildren, Directive, ElementRef, Host, HostBinding, HostListener, Inject, Injectable, InjectionToken, Injector, Input, LOCALE_ID, MissingTranslationStrategy, ModuleWithComponentFactories, NO_ERRORS_SCHEMA, NgModule, NgModuleFactory, NgModuleRef, Optional, Output, PACKAGE_ROOT_URL, PLATFORM_INITIALIZER, Pipe, Query, QueryList, ReflectiveInjector, Renderer, SecurityContext, Self, SkipSelf, TRANSLATIONS, TRANSLATIONS_FORMAT, TemplateRef, Type, Version, ViewChild, ViewChildren, ViewContainerRef, ViewEncapsulation, animate, createPlatformFactory, group, isDevMode, keyframes, platformCore, resolveForwardRef, sequence, state, style, transition, trigger, ɵCodegenComponentFactoryResolver, ɵConsole, ɵEMPTY_ARRAY, ɵEMPTY_MAP, ɵERROR_COMPONENT_TYPE, ɵLIFECYCLE_HOOKS_VALUES, ɵLifecycleHooks, ɵNgModuleInjector, ɵReflectionCapabilities, ɵReflector, ɵReflectorReader, ɵand, ɵccf, ɵcrt, ɵdid, ɵeld, ɵelementEventFullName, ɵgetComponentViewDefinitionFactory, ɵinlineInterpolate, ɵinterpolate, ɵncd, ɵnov, ɵpad, ɵpid, ɵpod, ɵppd, ɵprd, ɵqud, ɵreflector, ɵregisterModuleFactory, ɵstringify, ɵted, ɵunv, ɵvid } from '@angular/core';
 
 /**
  * @license
@@ -20,7 +20,7 @@ import { ANALYZE_FOR_ENTRY_COMPONENTS, Attribute, COMPILER_OPTIONS, CUSTOM_ELEME
 /**
  * \@stable
  */
-const VERSION = new Version('4.0.0');
+const VERSION = new Version('4.0.1');
 
 /**
  * @license
@@ -6980,13 +6980,13 @@ class _I18nVisitor {
         return container;
     }
 }
-const _CUSTOM_PH_EXP = /\/\/[\s\S]*i18n[\s\S]*\([\s\S]*ph[\s\S]*=[\s\S]*"([\s\S]*?)"[\s\S]*\)/g;
+const _CUSTOM_PH_EXP = /\/\/[\s\S]*i18n[\s\S]*\([\s\S]*ph[\s\S]*=[\s\S]*("|')([\s\S]*?)\1[\s\S]*\)/g;
 /**
  * @param {?} input
  * @return {?}
  */
 function _extractPlaceholderName(input) {
-    return input.split(_CUSTOM_PH_EXP)[1];
+    return input.split(_CUSTOM_PH_EXP)[2];
 }
 
 /**
@@ -12311,6 +12311,9 @@ class DirectiveNormalizer {
         let /** @type {?} */ normalizedTemplateSync = null;
         let /** @type {?} */ normalizedTemplateAsync;
         if (prenormData.template != null) {
+            if (prenormData.templateUrl != null) {
+                throw syntaxError(`'${ɵstringify(prenormData.componentType)}' component cannot define both template and templateUrl`);
+            }
             if (typeof prenormData.template !== 'string') {
                 throw syntaxError(`The template specified for component ${ɵstringify(prenormData.componentType)} is not a string`);
             }
@@ -12538,6 +12541,14 @@ class TemplatePreparseVisitor {
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+var __assign = (undefined && undefined.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 class DirectiveResolver {
     /**
      * @param {?=} _reflector
@@ -12666,8 +12677,8 @@ class DirectiveResolver {
     _merge(directive, inputs, outputs, host, queries, directiveType) {
         const /** @type {?} */ mergedInputs = this._dedupeBindings(directive.inputs ? directive.inputs.concat(inputs) : inputs);
         const /** @type {?} */ mergedOutputs = this._dedupeBindings(directive.outputs ? directive.outputs.concat(outputs) : outputs);
-        const /** @type {?} */ mergedHost = directive.host ? ɵmerge(directive.host, host) : host;
-        const /** @type {?} */ mergedQueries = directive.queries ? ɵmerge(directive.queries, queries) : queries;
+        const /** @type {?} */ mergedHost = directive.host ? __assign({}, directive.host, host) : host;
+        const /** @type {?} */ mergedQueries = directive.queries ? __assign({}, directive.queries, queries) : queries;
         if (directive instanceof Component) {
             return new Component({
                 selector: directive.selector,
@@ -20443,7 +20454,8 @@ class ViewBuilder {
             return EventHandlerVars.event;
         }
         let /** @type {?} */ currViewExpr = VIEW_VAR;
-        for (let /** @type {?} */ currBuilder = this; currBuilder; currBuilder = currBuilder.parent, currViewExpr = currViewExpr.prop('parent')) {
+        for (let /** @type {?} */ currBuilder = this; currBuilder; currBuilder = currBuilder.parent,
+            currViewExpr = currViewExpr.prop('parent').cast(DYNAMIC_TYPE)) {
             // check references
             const /** @type {?} */ refNodeIndex = currBuilder.refNodeIndices[name];
             if (refNodeIndex != null) {
@@ -20521,7 +20533,7 @@ class ViewBuilder {
             let /** @type {?} */ compBuilder = this;
             while (compBuilder.parent) {
                 compBuilder = compBuilder.parent;
-                compViewExpr = compViewExpr.prop('parent');
+                compViewExpr = compViewExpr.prop('parent').cast(DYNAMIC_TYPE);
             }
             const /** @type {?} */ pipeNodeIndex = compBuilder.purePipeNodeIndices[name];
             const /** @type {?} */ pipeValueExpr = importExpr(createIdentifier(Identifiers.nodeValue)).callFn([
@@ -21962,7 +21974,7 @@ class StaticReflector {
             const /** @type {?} */ classMetadata = this.getTypeMetadata(type);
             propMetadata = {};
             if (classMetadata['extends']) {
-                const /** @type {?} */ parentType = this.simplify(type, classMetadata['extends']);
+                const /** @type {?} */ parentType = this.trySimplify(type, classMetadata['extends']);
                 if (parentType instanceof StaticSymbol) {
                     const /** @type {?} */ parentPropMetadata = this.propMetadata(parentType);
                     Object.keys(parentPropMetadata).forEach((parentProp) => {
@@ -22021,7 +22033,7 @@ class StaticReflector {
                     });
                 }
                 else if (classMetadata['extends']) {
-                    const /** @type {?} */ parentType = this.simplify(type, classMetadata['extends']);
+                    const /** @type {?} */ parentType = this.trySimplify(type, classMetadata['extends']);
                     if (parentType instanceof StaticSymbol) {
                         parameters = this.parameters(parentType);
                     }
@@ -22048,7 +22060,7 @@ class StaticReflector {
             const /** @type {?} */ classMetadata = this.getTypeMetadata(type);
             methodNames = {};
             if (classMetadata['extends']) {
-                const /** @type {?} */ parentType = this.simplify(type, classMetadata['extends']);
+                const /** @type {?} */ parentType = this.trySimplify(type, classMetadata['extends']);
                 if (parentType instanceof StaticSymbol) {
                     const /** @type {?} */ parentMethodNames = this._methodNames(parentType);
                     Object.keys(parentMethodNames).forEach((parentProp) => {
@@ -22661,6 +22673,7 @@ class StaticSymbolResolver {
         this.resolvedFilePaths = new Set();
         this.importAs = new Map();
         this.symbolResourcePaths = new Map();
+        this.symbolFromFile = new Map();
     }
     /**
      * @param {?} staticSymbol
@@ -22748,6 +22761,25 @@ class StaticSymbolResolver {
         sourceSymbol.assertNoMembers();
         targetSymbol.assertNoMembers();
         this.importAs.set(sourceSymbol, targetSymbol);
+    }
+    /**
+     * Invalidate all information derived from the given file.
+     *
+     * @param {?} fileName the file to invalidate
+     * @return {?}
+     */
+    invalidateFile(fileName) {
+        this.metadataCache.delete(fileName);
+        this.resolvedFilePaths.delete(fileName);
+        const /** @type {?} */ symbols = this.symbolFromFile.get(fileName);
+        if (symbols) {
+            this.symbolFromFile.delete(fileName);
+            for (const /** @type {?} */ symbol of symbols) {
+                this.resolvedSymbols.delete(symbol);
+                this.importAs.delete(symbol);
+                this.symbolResourcePaths.delete(symbol);
+            }
+        }
     }
     /**
      * @param {?} staticSymbol
@@ -22896,6 +22928,7 @@ class StaticSymbolResolver {
             }
         }
         resolvedSymbols.forEach((resolvedSymbol) => this.resolvedSymbols.set(resolvedSymbol.symbol, resolvedSymbol));
+        this.symbolFromFile.set(filePath, resolvedSymbols.map(resolvedSymbol => resolvedSymbol.symbol));
     }
     /**
      * @param {?} sourceSymbol

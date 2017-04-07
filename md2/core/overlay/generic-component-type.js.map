@@ -1,1 +1,0 @@
-{"version":3,"file":"generic-component-type.js","sourceRoot":"","sources":["../../../../src/lib/core/overlay/generic-component-type.ts"],"names":[],"mappings":"","sourcesContent":["\nexport interface ComponentType<T> {\n  new (...args: any[]): T;\n}\n"]}

@@ -4,11 +4,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 /**
- * @license Angular v4.0.0
+ * @license Angular v4.0.1
  * (c) 2010-2017 Google, Inc. https://angular.io/
  * License: MIT
  */
-import { ANALYZE_FOR_ENTRY_COMPONENTS, Attribute, COMPILER_OPTIONS, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectionStrategy, ChangeDetectorRef, Compiler, CompilerFactory, Component, ComponentFactory, ComponentFactoryResolver, ComponentRef, ContentChild, ContentChildren, Directive, ElementRef, Host, HostBinding, HostListener, Inject, Injectable, InjectionToken, Injector, Input, LOCALE_ID, MissingTranslationStrategy, ModuleWithComponentFactories, NO_ERRORS_SCHEMA, NgModule, NgModuleFactory, NgModuleRef, Optional, Output, PACKAGE_ROOT_URL, PLATFORM_INITIALIZER, Pipe, Query, QueryList, ReflectiveInjector, Renderer, SecurityContext, Self, SkipSelf, TRANSLATIONS, TRANSLATIONS_FORMAT, TemplateRef, Type, Version, ViewChild, ViewChildren, ViewContainerRef, ViewEncapsulation, animate, createPlatformFactory, group, isDevMode, keyframes, platformCore, resolveForwardRef, sequence, state, style, transition, trigger, ɵCodegenComponentFactoryResolver, ɵConsole, ɵEMPTY_ARRAY, ɵEMPTY_MAP, ɵERROR_COMPONENT_TYPE, ɵLIFECYCLE_HOOKS_VALUES, ɵLifecycleHooks, ɵNgModuleInjector, ɵReflectionCapabilities, ɵReflector, ɵReflectorReader, ɵand, ɵccf, ɵcrt, ɵdid, ɵeld, ɵelementEventFullName, ɵgetComponentViewDefinitionFactory, ɵinlineInterpolate, ɵinterpolate, ɵmerge, ɵncd, ɵnov, ɵpad, ɵpid, ɵpod, ɵppd, ɵprd, ɵqud, ɵreflector, ɵregisterModuleFactory, ɵstringify, ɵted, ɵunv, ɵvid } from '@angular/core';
+import { ANALYZE_FOR_ENTRY_COMPONENTS, Attribute, COMPILER_OPTIONS, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectionStrategy, ChangeDetectorRef, Compiler, CompilerFactory, Component, ComponentFactory, ComponentFactoryResolver, ComponentRef, ContentChild, ContentChildren, Directive, ElementRef, Host, HostBinding, HostListener, Inject, Injectable, InjectionToken, Injector, Input, LOCALE_ID, MissingTranslationStrategy, ModuleWithComponentFactories, NO_ERRORS_SCHEMA, NgModule, NgModuleFactory, NgModuleRef, Optional, Output, PACKAGE_ROOT_URL, PLATFORM_INITIALIZER, Pipe, Query, QueryList, ReflectiveInjector, Renderer, SecurityContext, Self, SkipSelf, TRANSLATIONS, TRANSLATIONS_FORMAT, TemplateRef, Type, Version, ViewChild, ViewChildren, ViewContainerRef, ViewEncapsulation, animate, createPlatformFactory, group, isDevMode, keyframes, platformCore, resolveForwardRef, sequence, state, style, transition, trigger, ɵCodegenComponentFactoryResolver, ɵConsole, ɵEMPTY_ARRAY, ɵEMPTY_MAP, ɵERROR_COMPONENT_TYPE, ɵLIFECYCLE_HOOKS_VALUES, ɵLifecycleHooks, ɵNgModuleInjector, ɵReflectionCapabilities, ɵReflector, ɵReflectorReader, ɵand, ɵccf, ɵcrt, ɵdid, ɵeld, ɵelementEventFullName, ɵgetComponentViewDefinitionFactory, ɵinlineInterpolate, ɵinterpolate, ɵncd, ɵnov, ɵpad, ɵpid, ɵpod, ɵppd, ɵprd, ɵqud, ɵreflector, ɵregisterModuleFactory, ɵstringify, ɵted, ɵunv, ɵvid } from '@angular/core';
 /**
  * @license
  * Copyright Google Inc. All Rights Reserved.
@@ -24,7 +24,7 @@ import { ANALYZE_FOR_ENTRY_COMPONENTS, Attribute, COMPILER_OPTIONS, CUSTOM_ELEME
 /**
  * \@stable
  */
-var VERSION = new Version('4.0.0');
+var VERSION = new Version('4.0.1');
 /**
  * @license
  * Copyright Google Inc. All Rights Reserved.
@@ -7268,13 +7268,13 @@ var _I18nVisitor = (function () {
     };
     return _I18nVisitor;
 }());
-var _CUSTOM_PH_EXP = /\/\/[\s\S]*i18n[\s\S]*\([\s\S]*ph[\s\S]*=[\s\S]*"([\s\S]*?)"[\s\S]*\)/g;
+var _CUSTOM_PH_EXP = /\/\/[\s\S]*i18n[\s\S]*\([\s\S]*ph[\s\S]*=[\s\S]*("|')([\s\S]*?)\1[\s\S]*\)/g;
 /**
  * @param {?} input
  * @return {?}
  */
 function _extractPlaceholderName(input) {
-    return input.split(_CUSTOM_PH_EXP)[1];
+    return input.split(_CUSTOM_PH_EXP)[2];
 }
 /**
  * @license
@@ -12780,6 +12780,9 @@ var DirectiveNormalizer = (function () {
         var /** @type {?} */ normalizedTemplateSync = null;
         var /** @type {?} */ normalizedTemplateAsync;
         if (prenormData.template != null) {
+            if (prenormData.templateUrl != null) {
+                throw syntaxError("'" + ɵstringify(prenormData.componentType) + "' component cannot define both template and templateUrl");
+            }
             if (typeof prenormData.template !== 'string') {
                 throw syntaxError("The template specified for component " + ɵstringify(prenormData.componentType) + " is not a string");
             }
@@ -13012,6 +13015,15 @@ var TemplatePreparseVisitor = (function () {
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+var __assign = (undefined && undefined.__assign) || Object.assign || function (t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s)
+            if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+    }
+    return t;
+};
 var DirectiveResolver = (function () {
     /**
      * @param {?=} _reflector
@@ -13142,8 +13154,8 @@ var DirectiveResolver = (function () {
     DirectiveResolver.prototype._merge = function (directive, inputs, outputs, host, queries, directiveType) {
         var /** @type {?} */ mergedInputs = this._dedupeBindings(directive.inputs ? directive.inputs.concat(inputs) : inputs);
         var /** @type {?} */ mergedOutputs = this._dedupeBindings(directive.outputs ? directive.outputs.concat(outputs) : outputs);
-        var /** @type {?} */ mergedHost = directive.host ? ɵmerge(directive.host, host) : host;
-        var /** @type {?} */ mergedQueries = directive.queries ? ɵmerge(directive.queries, queries) : queries;
+        var /** @type {?} */ mergedHost = directive.host ? __assign({}, directive.host, host) : host;
+        var /** @type {?} */ mergedQueries = directive.queries ? __assign({}, directive.queries, queries) : queries;
         if (directive instanceof Component) {
             return new Component({
                 selector: directive.selector,
@@ -21265,7 +21277,8 @@ var ViewBuilder = (function () {
             return EventHandlerVars.event;
         }
         var /** @type {?} */ currViewExpr = VIEW_VAR;
-        for (var /** @type {?} */ currBuilder = this; currBuilder; currBuilder = currBuilder.parent, currViewExpr = currViewExpr.prop('parent')) {
+        for (var /** @type {?} */ currBuilder = this; currBuilder; currBuilder = currBuilder.parent,
+            currViewExpr = currViewExpr.prop('parent').cast(DYNAMIC_TYPE)) {
             // check references
             var /** @type {?} */ refNodeIndex = currBuilder.refNodeIndices[name];
             if (refNodeIndex != null) {
@@ -21343,7 +21356,7 @@ var ViewBuilder = (function () {
             var /** @type {?} */ compBuilder = this;
             while (compBuilder.parent) {
                 compBuilder = compBuilder.parent;
-                compViewExpr = compViewExpr.prop('parent');
+                compViewExpr = compViewExpr.prop('parent').cast(DYNAMIC_TYPE);
             }
             var /** @type {?} */ pipeNodeIndex = compBuilder.purePipeNodeIndices[name];
             var /** @type {?} */ pipeValueExpr_1 = importExpr(createIdentifier(Identifiers.nodeValue)).callFn([
@@ -22799,7 +22812,7 @@ var StaticReflector = (function () {
             var /** @type {?} */ classMetadata = this.getTypeMetadata(type);
             propMetadata = {};
             if (classMetadata['extends']) {
-                var /** @type {?} */ parentType = this.simplify(type, classMetadata['extends']);
+                var /** @type {?} */ parentType = this.trySimplify(type, classMetadata['extends']);
                 if (parentType instanceof StaticSymbol) {
                     var /** @type {?} */ parentPropMetadata_1 = this.propMetadata(parentType);
                     Object.keys(parentPropMetadata_1).forEach(function (parentProp) {
@@ -22858,7 +22871,7 @@ var StaticReflector = (function () {
                     });
                 }
                 else if (classMetadata['extends']) {
-                    var /** @type {?} */ parentType = this.simplify(type, classMetadata['extends']);
+                    var /** @type {?} */ parentType = this.trySimplify(type, classMetadata['extends']);
                     if (parentType instanceof StaticSymbol) {
                         parameters_1 = this.parameters(parentType);
                     }
@@ -22885,7 +22898,7 @@ var StaticReflector = (function () {
             var /** @type {?} */ classMetadata = this.getTypeMetadata(type);
             methodNames = {};
             if (classMetadata['extends']) {
-                var /** @type {?} */ parentType = this.simplify(type, classMetadata['extends']);
+                var /** @type {?} */ parentType = this.trySimplify(type, classMetadata['extends']);
                 if (parentType instanceof StaticSymbol) {
                     var /** @type {?} */ parentMethodNames_1 = this._methodNames(parentType);
                     Object.keys(parentMethodNames_1).forEach(function (parentProp) {
@@ -23508,6 +23521,7 @@ var StaticSymbolResolver = (function () {
         this.resolvedFilePaths = new Set();
         this.importAs = new Map();
         this.symbolResourcePaths = new Map();
+        this.symbolFromFile = new Map();
     }
     /**
      * @param {?} staticSymbol
@@ -23595,6 +23609,26 @@ var StaticSymbolResolver = (function () {
         sourceSymbol.assertNoMembers();
         targetSymbol.assertNoMembers();
         this.importAs.set(sourceSymbol, targetSymbol);
+    };
+    /**
+     * Invalidate all information derived from the given file.
+     *
+     * @param {?} fileName the file to invalidate
+     * @return {?}
+     */
+    StaticSymbolResolver.prototype.invalidateFile = function (fileName) {
+        this.metadataCache.delete(fileName);
+        this.resolvedFilePaths.delete(fileName);
+        var /** @type {?} */ symbols = this.symbolFromFile.get(fileName);
+        if (symbols) {
+            this.symbolFromFile.delete(fileName);
+            for (var _i = 0, symbols_1 = symbols; _i < symbols_1.length; _i++) {
+                var symbol = symbols_1[_i];
+                this.resolvedSymbols.delete(symbol);
+                this.importAs.delete(symbol);
+                this.symbolResourcePaths.delete(symbol);
+            }
+        }
     };
     /**
      * @param {?} staticSymbol
@@ -23749,6 +23783,7 @@ var StaticSymbolResolver = (function () {
             }
         }
         resolvedSymbols.forEach(function (resolvedSymbol) { return _this.resolvedSymbols.set(resolvedSymbol.symbol, resolvedSymbol); });
+        this.symbolFromFile.set(filePath, resolvedSymbols.map(function (resolvedSymbol) { return resolvedSymbol.symbol; }));
     };
     /**
      * @param {?} sourceSymbol

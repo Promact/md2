@@ -4,7 +4,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 /**
- * @license Angular v4.0.0
+ * @license Angular v4.0.1
  * (c) 2010-2017 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -46,6 +46,7 @@ var MockAnimationPlayer = (function (_super) {
         _this.previousPlayers = previousPlayers;
         _this.__finished = false;
         _this.previousStyles = {};
+        _this._onInitFns = [];
         previousPlayers.forEach(function (player) {
             if (player instanceof MockAnimationPlayer) {
                 var styles_1 = player._captureStyles();
@@ -54,6 +55,14 @@ var MockAnimationPlayer = (function (_super) {
         });
         return _this;
     }
+    /* @internal */
+    MockAnimationPlayer.prototype.onInit = function (fn) { this._onInitFns.push(fn); };
+    /* @internal */
+    MockAnimationPlayer.prototype.init = function () {
+        _super.prototype.init.call(this);
+        this._onInitFns.forEach(function (fn) { return fn(); });
+        this._onInitFns = [];
+    };
     MockAnimationPlayer.prototype.finish = function () {
         _super.prototype.finish.call(this);
         this.__finished = true;

@@ -4,12 +4,12 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 /**
- * @license Angular v4.0.0
+ * @license Angular v4.0.1
  * (c) 2010-2017 Google, Inc. https://angular.io/
  * License: MIT
  */
 import { CommonModule, PlatformLocation, ɵPLATFORM_BROWSER_ID } from '@angular/common';
-import { APP_ID, APP_INITIALIZER, ApplicationModule, ApplicationRef, ErrorHandler, Inject, Injectable, InjectionToken, NgModule, NgProbeToken, NgZone, Optional, PLATFORM_ID, PLATFORM_INITIALIZER, RendererFactory2, RendererStyleFlags2, Sanitizer, SecurityContext, SkipSelf, Testability, Version, ViewEncapsulation, createPlatformFactory, getDebugNode, isDevMode, platformCore, setTestabilityGetter, ɵglobal, ɵmerge } from '@angular/core';
+import { APP_ID, APP_INITIALIZER, ApplicationModule, ApplicationRef, ErrorHandler, Inject, Injectable, InjectionToken, NgModule, NgProbeToken, NgZone, Optional, PLATFORM_ID, PLATFORM_INITIALIZER, RendererFactory2, RendererStyleFlags2, Sanitizer, SecurityContext, SkipSelf, Testability, Version, ViewEncapsulation, createPlatformFactory, getDebugNode, isDevMode, platformCore, setTestabilityGetter, ɵglobal } from '@angular/core';
 /**
  * @license
  * Copyright Google Inc. All Rights Reserved.
@@ -2320,6 +2320,15 @@ Title.ctorParameters = function () { return [
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+var __assign = (undefined && undefined.__assign) || Object.assign || function (t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s)
+            if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+    }
+    return t;
+};
 var CORE_TOKENS = {
     'ApplicationRef': ApplicationRef,
     'NgZone': NgZone,
@@ -2359,7 +2368,7 @@ var NgProbeToken$1 = (function () {
 function _createNgProbe(extraTokens, coreTokens) {
     var /** @type {?} */ tokens = (extraTokens || []).concat(coreTokens || []);
     getDOM().setGlobalVar(INSPECT_GLOBAL_NAME, inspectNativeElement);
-    getDOM().setGlobalVar(CORE_TOKENS_GLOBAL_NAME, ɵmerge(CORE_TOKENS, _ngProbeTokensToMap(tokens || [])));
+    getDOM().setGlobalVar(CORE_TOKENS_GLOBAL_NAME, __assign({}, CORE_TOKENS, _ngProbeTokensToMap(tokens || [])));
     return function () { return inspectNativeElement; };
 }
 /**
@@ -4416,7 +4425,7 @@ var By = (function () {
 /**
  * \@stable
  */
-var VERSION = new Version('4.0.0');
+var VERSION = new Version('4.0.1');
 /**
  * @license
  * Copyright Google Inc. All Rights Reserved.

@@ -4,7 +4,7 @@ import {DIST_ROOT} from '../constants';
 import {execNodeTask, sequenceTask} from '../util/task_helpers';
 
 /** Copies the source files of the demo-app to the dist folder. */
-task('aot:copy', [':build:devapp:scss', ':build:devapp:assets']);
+task('aot:copy', [':build:devapp:vendor', ':build:devapp:scss', ':build:devapp:assets']);
 
 /**
  * Prepares the AOT compilation by copying the demo-app and building the components with their

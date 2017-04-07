@@ -245,6 +245,8 @@ html, body {
       margin-right: 16px;
       fill: currentColor;
       color: #ffffff; }
+.main .toolbar .source-code + a {
+      margin-right: -15px; }
   .main .footer {
     position: absolute;
     right: 0;
@@ -287,7 +289,6 @@ html, body {
         color: rgba(255, 255, 255, 0.55); }
       .main .footer a.right {
         float: right;
-        margin-right:-30px;
         text-align: right; }
         .main .footer a.right .material-icons {
           float: right;

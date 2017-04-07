@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { Home } from './demo-app';
+import { Home } from '../home/home';
 import { AccordionDemo } from '../accordion/accordion-demo';
 import { AutocompleteDemo } from '../autocomplete/autocomplete-demo';
 import { ChipsDemo } from '../chips/chips-demo';

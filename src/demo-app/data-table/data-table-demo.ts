@@ -18,7 +18,6 @@ export class DataTablePipe implements PipeTransform {
 }
 
 @Component({
-  moduleId: module.id,
   selector: 'data-table-demo',
   templateUrl: 'data-table-demo.html',
   styleUrls: ['data-table-demo.css']

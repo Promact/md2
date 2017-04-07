@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { Md2Dialog } from 'md2';
 
 @Component({
-  moduleId: module.id,
   selector: 'dialog-demo',
   templateUrl: 'dialog-demo.html'
 })

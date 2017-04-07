@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 
 @Component({
-  moduleId: module.id,
   selector: 'colorpicker-demo',
   templateUrl: 'colorpicker-demo.html'
 })

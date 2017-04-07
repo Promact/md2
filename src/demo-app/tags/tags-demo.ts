@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 
 @Component({
-  moduleId: module.id,
   selector: 'tags-demo',
   templateUrl: 'tags-demo.html'
 })

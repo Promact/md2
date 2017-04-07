@@ -1,7 +1,6 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 
 @Component({
-  moduleId: module.id,
   selector: 'collapse-demo',
   templateUrl: 'collapse-demo.html',
   styles: [`

@@ -2,8 +2,8 @@ import { Component, ViewEncapsulation } from '@angular/core';
 
 @Component({
   selector: 'select-demo',
-  templateUrl: 'select-demo.html',
-  styleUrls: ['select-demo.css'],
+  templateUrl: '../select/select-demo.html',
+  styleUrls: ['../select/select-demo.css'],
   encapsulation: ViewEncapsulation.None
 })
 export class SelectDemo {

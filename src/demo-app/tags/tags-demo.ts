@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'tags-demo',
-  templateUrl: 'tags-demo.html'
+  templateUrl: '../tags/tags-demo.html'
 })
 export class TagsDemo {
   isRequired = false;

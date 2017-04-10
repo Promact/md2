@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'accordion-demo',
-  templateUrl: 'accordion-demo.html'
+  templateUrl: '../accordion/accordion-demo.html'
 })
 export class AccordionDemo {
   accordions: Array<any> = [

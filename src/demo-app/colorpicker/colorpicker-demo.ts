@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'colorpicker-demo',
-  templateUrl: 'colorpicker-demo.html'
+  templateUrl: '../colorpicker/colorpicker-demo.html'
 })
 export class ColorpickerDemo {
   _color: string = null;

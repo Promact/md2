@@ -320,8 +320,8 @@ html, body {
       line-height: 28px;
     }
 
-    .pull-right {
-      margin-right: -15px;
+    .right-nav {
+      margin-right: -30px;
     }
 
     .source-code {
@@ -396,6 +396,12 @@ html, body {
   }
 }
 
+.card {
+  .content {
+    overflow-x: auto;
+  }
+}
+
 @media (max-width: 767px) {
   .sidenav-backdrop.open {
     display: block;
@@ -424,6 +430,10 @@ html, body {
 
       .sidenav-toggle {
         display: block;
+      }
+
+      .right-nav {
+        margin-right: -15px;
       }
     }
 

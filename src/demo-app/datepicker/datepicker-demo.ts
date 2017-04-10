@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'datepicker-demo',
-  templateUrl: 'datepicker-demo.html',
+  templateUrl: '../datepicker/datepicker-demo.html',
   styles: [`
     .inline-control {
       display: inline-block;

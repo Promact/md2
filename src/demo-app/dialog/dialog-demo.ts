@@ -3,7 +3,7 @@ import { Md2Dialog } from 'md2';
 
 @Component({
   selector: 'dialog-demo',
-  templateUrl: 'dialog-demo.html'
+  templateUrl: '../dialog/dialog-demo.html'
 })
 export class DialogDemo {
   dialogHeader: string = 'Lorum Ipsum';

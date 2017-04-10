@@ -19,15 +19,15 @@ export class DataTablePipe implements PipeTransform {
 
 @Component({
   selector: 'data-table-demo',
-  templateUrl: 'data-table-demo.html',
-  styleUrls: ['data-table-demo.css']
+  templateUrl: '../data-table/data-table-demo.html',
+  styleUrls: ['../data-table/data-table-demo.css']
 })
 export class DataTableDemo {
   data: any = null;
   search: string = null;
 
   constructor(private http: Http) {
-    this.http.get('./data-table/data.json')
+    this.http.get('../assets/data/data.json')
       .subscribe((data) => {
         this.data = data.json();
       });

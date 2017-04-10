@@ -3,7 +3,7 @@ import { Md2Toast } from 'md2';
 
 @Component({
   selector: 'toast-demo',
-  templateUrl: 'toast-demo.html'
+  templateUrl: '../toast/toast-demo.html'
 })
 export class ToastDemo {
   constructor(private toast: Md2Toast) { }

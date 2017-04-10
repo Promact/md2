@@ -239,8 +239,8 @@ html, body {
       margin: 0;
       padding: 16px 0;
       line-height: 28px; }
-    .main .toolbar .pull-right {
-      margin-right: -15px; }
+    .main .toolbar .right-nav {
+      margin-right: -30px; }
     .main .toolbar .source-code {
       margin-right: 16px;
       fill: currentColor;
@@ -287,12 +287,14 @@ html, body {
         color: rgba(255, 255, 255, 0.55); }
       .main .footer a.right {
         float: right;
-        margin-right:-30px;
         text-align: right; }
         .main .footer a.right .material-icons {
           float: right;
           margin-right: 0;
           margin-left: 10px; }
+
+.card .content {
+  overflow-x: auto; }
 
 @media (max-width: 767px) {
   .sidenav-backdrop.open {
@@ -314,6 +316,8 @@ html, body {
       box-sizing: border-box; }
       .main .toolbar .sidenav-toggle {
         display: block; }
+      .main .toolbar .right-nav {
+        margin-right: -15px; }
     .main .footer {
       height: 56px; }
       .main .footer .footer-container {

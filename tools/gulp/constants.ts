@@ -25,7 +25,7 @@ export const LICENSE_BANNER = `/**
 
 export const NPM_VENDOR_FILES = [
   '@angular', 'core-js/client', 'hammerjs', 'rxjs', 'systemjs/dist',
-  'zone.js/dist', 'web-animations-js'
+  'zone.js/dist', 'reflect-metadata', 'web-animations-js'
 ];
 
 export const COMPONENTS_DIR = join(SOURCE_ROOT, 'lib');

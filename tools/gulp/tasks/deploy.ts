@@ -12,7 +12,6 @@ import {
 } from '../util/task_helpers';
 
 // There are no type definitions available for these imports.
-const gulpRollup = require('gulp-better-rollup');
 const gulpMinifyHtml = require('gulp-htmlmin');
 const gulpIf = require('gulp-if');
 
@@ -20,117 +19,25 @@ import gulpRunSequence = require('run-sequence');
 const bump = require('gulp-bump');
 const git = require('gulp-git');
 const changelog = require('gulp-conventional-changelog');
-const systemjsBuilder = require('gulp-systemjs-builder');
-const sysBuilder = require('systemjs-builder');
-const rollup = require('rollup-stream');
 const exec = require('child_process').exec;
+const rename = require('gulp-rename');
 // const releaser = require('conventional-github-releaser');
 
-task(':bundle:app', (done: any) => {//['build:devapp'], 
-  var builder = new sysBuilder(DIST_ROOT, join(DIST_ROOT, 'system-config.ts'));
-  builder
-    .buildStatic(join(DIST_ROOT, 'demo-app-module.js'), join(DIST_ROOT, 'bundle.js'), {
-      runtime: false
-    }).then(() => {
-      done();
-    });
+// Prepare rollup
+task(':rollup:build', () => {
+  return src('md2/**/*', { cwd: join(DIST_ROOT, '**') })
+    .pipe(dest(join(DIST_ROOT, 'node_modules')));
 });
-
-//  builder.buildStatic(join(DIST_ROOT, 'main.js'), {
-//    minify: false,
-//    mangle: false
-//  }).pipe(dest(join(DIST_ROOT, 'bundle')));
-//})
-
-/** Builds the demo-app with the Angular compiler to verify that all components work. */
-//task('rollup:build', ['aot:build'], execNodeTask(
-//  '@angular/compiler-cli', 'ngc', ['-p', join(DIST_ROOT, 'tsconfig-aot.json')])
-//);
-
-task('rollup:build', ['aot:build'], (cb: any) => {
-  exec('node_modules\.bin\rollup -c ' + join(DIST_ROOT, 'rollup-config.js'), (err: any) => {
-    cb(err);
-  });
-});
-
-/** Builds a bundle for demo app components. */
-task(':build:devapp:bundle:rollup', ['aot:build'], () => {
-  return src(join(DIST_ROOT, 'main.ts'))
-    .pipe(createRollupBundle('iife', 'bundle.js'))
-    .pipe(dest(DIST_ROOT));
-});
-
-const ROLLUP_GLOBALS = {
-  // Angular dependencies
-  '@angular/core': 'ng.core',
-  '@angular/common': 'ng.common',
-  '@angular/forms': 'ng.forms',
-  '@angular/http': 'ng.http',
-  '@angular/router': 'ng.router',
-  '@angular/animations': 'ng.animations',
-  '@angular/animations/browser': 'ng.animations.browser',
-  '@angular/platform-browser': 'ng.platformBrowser',
-  '@angular/platform-browser/animations': 'ng.platformBrowser.animations',
-  '@angular/platform-browser-dynamic': 'ng.platformBrowserDynamic',
-  'md2': 'ng.md2',
-
-  // Rxjs dependencies
-  'rxjs/Subject': 'Rx',
-  'rxjs/add/observable/fromEvent': 'Rx.Observable',
-  'rxjs/add/observable/forkJoin': 'Rx.Observable',
-  'rxjs/add/observable/of': 'Rx.Observable',
-  'rxjs/add/observable/merge': 'Rx.Observable',
-  'rxjs/add/observable/throw': 'Rx.Observable',
-  'rxjs/add/operator/auditTime': 'Rx.Observable.prototype',
-  'rxjs/add/operator/toPromise': 'Rx.Observable.prototype',
-  'rxjs/add/operator/map': 'Rx.Observable.prototype',
-  'rxjs/add/operator/filter': 'Rx.Observable.prototype',
-  'rxjs/add/operator/do': 'Rx.Observable.prototype',
-  'rxjs/add/operator/share': 'Rx.Observable.prototype',
-  'rxjs/add/operator/finally': 'Rx.Observable.prototype',
-  'rxjs/add/operator/catch': 'Rx.Observable.prototype',
-  'rxjs/add/operator/first': 'Rx.Observable.prototype',
-  'rxjs/add/operator/startWith': 'Rx.Observable.prototype',
-  'rxjs/add/operator/switchMap': 'Rx.Observable.prototype',
-  'rxjs/Observable': 'Rx'
-};
-
-/** Creates a rollup bundles of the Material components.*/
-function createRollupBundle(format: string, outFile: string) {
-  let rollupOptions = {
-    context: 'this',
-    external: Object.keys(ROLLUP_GLOBALS)
-  };
-
-  let rollupGenerateOptions = {
-    // Keep the moduleId empty because we don't want to force developers to a specific moduleId.
-    moduleId: '',
-    banner: LICENSE_BANNER,
-    format: format,
-    entry: './dist/main-aot.js',
-    dest: outFile,
-    sourceMap: false,
-    globals: ROLLUP_GLOBALS,
-  };
-
-  return gulpRollup(rollupOptions, rollupGenerateOptions);
-}
 
 // Deploy demo source
-task('deploy', ['build:devapp'], () => {
-  fs.readFile('./dist/index.html', 'utf8', (err, data) => {
-    if (err) { return console.log(err); }
-    const result = data.replace('<base href="/">', '<base href=".">');
+task('deploy', () => {
+  src(join(DIST_ROOT, 'index-aot.html'))
+    .pipe(rename('index.html'))
+    .pipe(dest(join(PROJECT_ROOT, 'deploy')));
 
-    fs.writeFile('./dist/index.html', result, 'utf8', (e) => {
-      if (e) {
-        return console.log(e);
-      } else {
-        return src('./dist/**/*')
-          .pipe(dest('./deploy'));
-      }
-    });
-  });
+  return src(['assets/**/*', 'libs/reflect-metadata/**/*', 'libs/zone.js/**/*', 'libs/hammerjs/**/*',
+    'bundle.js', 'bundle.js.map', 'favicon.ico'], { cwd: join(DIST_ROOT, '**') })
+    .pipe(dest(join(PROJECT_ROOT, 'deploy')));
 });
 
 // update package.json version

@@ -22,6 +22,8 @@ git clone https://Promact:$GH_TOKEN@github.com/Promact/md2.git --branch=gh-pages
 rm -rf deploy/**/* || exit 0
 
 # Deploy demo.
+gulp rollup:prepare
+./node_modules/.bin/rollup -c ./dist/rollup-config.js
 gulp deploy
 
 # Configure cloned repo.

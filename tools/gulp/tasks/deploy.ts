@@ -29,14 +29,8 @@ task('rollup:prepare',['aot:build'], () => {
     .pipe(dest(join(DIST_ROOT, 'node_modules')));
 });
 
-task('rollup:build', ['rollup:prepare'], (cb: any) => {
-   exec('./node_modules/.bin/rollup -c ./dist/rollup-config.js', (err: any) => {
-     cb(err);
-   });
- });
-
 // Deploy demo source
-task('deploy',['rollup:build'], () => {
+task('deploy', () => {
   src(join(DIST_ROOT, 'index-aot.html'))
     .pipe(rename('index.html'))
     .pipe(dest(join(PROJECT_ROOT, 'deploy')));

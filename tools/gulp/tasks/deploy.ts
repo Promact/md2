@@ -30,7 +30,7 @@ task('rollup:prepare',['aot:build'], () => {
 });
 
 task('rollup:build', ['rollup:prepare'], (cb: any) => {
-   exec('.\node_modules\.bin\\rollup -c dist\rollup-config.js', (err: any) => {
+   exec('./node_modules/.bin/rollup -c ./dist/rollup-config.js', (err: any) => {
      cb(err);
    });
  });

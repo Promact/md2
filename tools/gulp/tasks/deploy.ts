@@ -24,13 +24,19 @@ const rename = require('gulp-rename');
 // const releaser = require('conventional-github-releaser');
 
 // Prepare rollup
-task(':rollup:build', () => {
+task('rollup:prepare',['aot:build'], () => {
   return src('md2/**/*', { cwd: join(DIST_ROOT, '**') })
     .pipe(dest(join(DIST_ROOT, 'node_modules')));
 });
 
+task('rollup:build', ['rollup:prepare'], (cb: any) => {
+   exec('node_modules\\.bin\\rollup -c ' + join(DIST_ROOT, 'rollup-config.js'), (err: any) => {
+     cb(err);
+   });
+ });
+
 // Deploy demo source
-task('deploy', () => {
+task('deploy',['rollup:build'], () => {
   src(join(DIST_ROOT, 'index-aot.html'))
     .pipe(rename('index.html'))
     .pipe(dest(join(PROJECT_ROOT, 'deploy')));

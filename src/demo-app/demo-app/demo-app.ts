@@ -20,8 +20,8 @@ export class Home { }
   encapsulation: ViewEncapsulation.None,
 })
 export class DemoApp {
-  private isSidenavOpened: boolean = false;
-  private footerNav: any = { prev: null, next: null };
+  isSidenavOpened: boolean = false;
+  footerNav: any = { prev: null, next: null };
   navItems = [
     { name: 'Accordion', route: 'accordion' },
     { name: 'Autocomplete', route: 'autocomplete' },

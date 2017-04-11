@@ -1,3 +1,10 @@
+@import '../core/style/menu-common';
+@import '../core/style/list-common';
+@import '../core/style/form-common';
+@import '../core/style/variables';
+@import '../core/style/vendor-prefixes';
+@import '../core/a11y/a11y';
+
 $primary: #106cc8 !default;
 $warn: #f44336 !default;
 $md2-select-trigger-height: 30px !default;
@@ -5,58 +12,69 @@ $md2-select-trigger-min-width: 112px !default;
 $md2-select-arrow-size: 5px !default;
 $md2-select-arrow-margin: 4px !default;
 $md2-select-panel-max-height: 256px !default;
+$md2-select-trigger-font-size: 16px !default;
 
-md2-select {
-  display: block;
+.md2-select {
+  display: inline-block;
   outline: none;
 }
 
 .md2-select-trigger {
   color: rgba(black, 0.38);
-  border-bottom: 1px solid rgba(black, 0.12);
   display: flex;
-  justify-content: space-between;
   align-items: center;
   height: $md2-select-trigger-height;
   min-width: $md2-select-trigger-min-width;
-  line-height: 22px;
   cursor: pointer;
   position: relative;
   box-sizing: border-box;
+  font-size: $md2-select-trigger-font-size;
 
   [aria-disabled='true'] & {
-    background-image: linear-gradient(to right, rgba(black, 0.26) 0, rgba(black, 0.26) 33%, transparent 0);
-    background-size: 4px 1px;
-    background-repeat: repeat-x;
-    border-color: transparent;
-    background-position: 0 bottom;
+    @include user-select(none);
     cursor: default;
-    user-select: none;
   }
 
-  md2-select:focus:not(.md2-select-disabled) & {
+  .md2-select:focus:not(.md2-select-disabled) & {
     color: $primary;
-    border-color: $primary;
   }
 
-  md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) & {
+  .md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) & {
     color: $warn;
-    border-color: $warn;
+  }
+}
+
+.md2-select-underline {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-color: rgba(black, 0.12);
+
+  [aria-disabled='true'] & {
+    @include mat-control-disabled-underline();
+    background-color: transparent;
+    background-position: 0 bottom;
+  }
+
+  .md2-select:focus:not(.md2-select-disabled) & {
+    background-color: $primary;
+  }
+
+  .md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) & {
+    background-color: $warn;
   }
 }
 
 .md2-select-placeholder {
-  position: absolute;
-  right: 18px;
-  left: 0;
+  position: relative;
   padding: 0 2px;
   transform-origin: left top;
-  white-space: nowrap;
-  overflow-x: hidden;
-  text-overflow: ellipsis;
+  flex-grow: 1;
 
   &.md2-floating-placeholder {
-    top: -16px;
+    top: -22px;
     left: -2px;
     text-align: left;
     transform: scale(0.75);
@@ -77,25 +95,29 @@ md2-select {
 }
 
 .md2-select-value {
-  position: relative;
-  white-space: nowrap;
-  overflow-x: hidden;
-  text-overflow: ellipsis;
+  position: absolute;
+  max-width: calc(100% - #{($md2-select-arrow-size + $md2-select-arrow-margin) * 2});
+  flex-grow: 1;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
   color: rgba(black, 0.87);
-
-  .md2-select-disabled & {
-    color: rgba(black, 0.38);
-  }
 
   [dir='rtl'] & {
     left: auto;
     right: 0;
   }
+
+  .md2-select-disabled & {
+    color: rgba(black, 0.38);
+  }
 }
 
-.md2-select-value-text:not(:last-child)::after {
-  content: ',';
-  margin-left: -2px;
+.md2-select-value-text {
+  @include mat-truncate-line();
+  line-height: $md2-select-trigger-height;
 }
 
 .md2-select-arrow {
@@ -105,58 +127,48 @@ md2-select {
   border-right: $md2-select-arrow-size solid transparent;
   border-top: $md2-select-arrow-size solid;
   margin: 0 $md2-select-arrow-margin;
-  color: rgba(black, 0.38);
-
-  md2-select:focus:not(.md2-select-disabled) & {
-    color: $primary;
-  }
-
-  md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) & {
-    color: $warn;
-  }
 }
 
 .md2-select-panel {
-  box-shadow: 0 0 3px rgba(black, 0.2), 0 8px 10px 1px rgba(black, 0.14), 0 3px 14px 2px rgba(black, 0.12);
-  min-width: 112px;
-  max-width: 280px;
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
+  @include mat-menu-base();
   padding-top: 0;
   padding-bottom: 0;
   max-height: $md2-select-panel-max-height;
+
+  @include cdk-high-contrast {
+    outline: solid 1px;
+  }
+}
+
+.md2-select-content, .md2-select-panel-done-animating {
   background: white;
 }
 
-
-md2-option {
-  white-space: nowrap;
-  overflow-x: hidden;
-  text-overflow: ellipsis;
-  display: block;
-  flex-direction: row;
-  align-items: center;
-  padding: 13px 16px;
-  font-size: 16px;
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
-  text-align: start;
-  text-decoration: none;
+.md2-option {
+  @include mat-menu-item-base();
   position: relative;
   cursor: pointer;
   outline: none;
-  box-sizing: padding-box;
 
   &[aria-disabled='true'] {
+    @include user-select(none);
     cursor: default;
-    user-select: none;
   }
 
-  &:hover:not(.md2-option-disabled),
-  &:focus:not(.md2-option-disabled) {
+  &:hover:not(.md2-option-disabled), &:focus:not(.md2-option-disabled) {
     background: rgba(black, 0.04);
   }
 
   &.md2-selected {
+    color: $primary;
+    // In multiple mode there is a checkbox to show that the option is selected.
+    &:not(.md2-option-multiple) {
+      background: rgba(black, 0.04);
+    }
+  }
+
+  &.md2-active {
+    background: rgba(black, 0.04);
     color: $primary;
   }
 
@@ -164,7 +176,7 @@ md2-option {
     color: rgba(black, 0.38);
   }
 
-  [multiple='true'] & {
+  &.md2-option-multiple {
     padding-left: 40px;
 
     &::after {

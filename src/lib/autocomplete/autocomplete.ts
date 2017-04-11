@@ -240,7 +240,7 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
         break;
       default:
         setTimeout(() => {
-          this.updateItems(new RegExp(this._inputValue, 'ig'));
+          this.updateItems();
         }, 10);
     }
   }
@@ -266,7 +266,7 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
     if (this.disabled) { return; }
     this._inputValue = '';
     this.selectedItem = null;
-    this.updateItems(new RegExp(this._inputValue, 'ig'));
+    this.updateItems();
     this._value = this.selectedItem ? this.selectedItem.value : this.selectedItem;
     this.updateValue();
   }
@@ -293,7 +293,7 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
    */
   _handleFocus() {
     this._inputFocused = true;
-    this.updateItems(new RegExp(this._inputValue, 'ig'));
+    this.updateItems();
     this._focusedOption = 0;
   }
 
@@ -319,12 +319,12 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
    * Update suggestion to filter the query
    * @param query
    */
-  private updateItems(query: RegExp) {
+  private updateItems() {
     if (this._inputValue.length < this.minLength) {
       this._list = [];
     } else {
       this._list = this._items.map((i: any) => new Item(i, this.textKey,
-        this.valueKey)).filter(i => query.test(i.text));
+        this.valueKey)).filter(i => new RegExp(this._inputValue, 'ig').test(i.text));
       if (this._list.length && this._list[0].text !== this._inputValue) {
         this.selectedItem = null;
       }
@@ -356,6 +356,10 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
   registerOnChange(fn: (value: any) => void): void { this._onChange = fn; }
 
   registerOnTouched(fn: () => {}): void { this._onTouched = fn; }
+
+  setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
+  }
 
 }
 

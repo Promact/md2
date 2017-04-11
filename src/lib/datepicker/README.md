@@ -50,19 +50,15 @@ A datepicker would have the following markup.
 | second    | `s`    | -      | -          | -                | s(5)    | ss(05)  |
 
 
-### Keyboard Navigation
-
-Focus can be moved with the following keys:
-
-| Key | Description |
-| --- | --- |
-| LEFT_ARROW | a day backward |
-| RIGHT_ARROW | a day forward |
-| UP_ARROW | a week backward |
-| DOWN_ARROW | a week forward |
-| HOME | focus first day of the month |
-| END | focus last day of the month |
-| PAGE_UP | a month backward |
-| PAGE_DOWN | a month forward |
-| SHIFT + PAGE_UP | a year backward |
-| SHIFT + PAGE_DOWN | a year forward |
+#### Keyboard interaction:
+- <kbd>LEFT_ARROW</kbd>: Focus a day backward
+- <kbd>RIGHT_ARROW</kbd>: Focus a day forward
+- <kbd>UP_ARROW</kbd>: Focus a week backward
+- <kbd>DOWN_ARROW</kbd>: Focus a week forward
+- <kbd>HOME</kbd>: Focus first day of the month
+- <kbd>END</kbd>: Focus last day of the month
+- <kbd>PAGE_UP</kbd>: Focus a month backward
+- <kbd>PAGE_DOWN</kbd>: Focus a month forward
+- <kbd>SHIFT + PAGE_UP</kbd>: Focus a year backward
+- <kbd>SHIFT + PAGE_DOWN</kbd>: Focus a year forward
+- <kbd>ENTER</kbd> or <kbd>SPACE</kbd>: Select focused item

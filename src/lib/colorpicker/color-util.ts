@@ -5,7 +5,7 @@ export const COLOR_RGB = /(rgb)a?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*%?,\s*(\d{1,3}
 export const COLOR_HSL = /(hsl)a?\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*(?:,\s*(\d+(?:\.\d+)?)\s*)?\)/;
 
 @Injectable()
-export class ColorpickerService {
+export class ColorUtil {
   /**
 * hsla to hsva
 * @param hsla
@@ -70,7 +70,7 @@ export class ColorpickerService {
   }
 
   /**
-   * hsva to rgba 
+   * hsva to rgba
    * @param hsva
    */
   hsvaToRgba(hsva: Hsva) {

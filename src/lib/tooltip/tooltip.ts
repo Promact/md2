@@ -1,6 +1,4 @@
 import {
-  NgModule,
-  ModuleWithProviders,
   Component,
   Directive,
   Input,
@@ -23,13 +21,10 @@ import {
 import {
   Overlay,
   OverlayState,
-  OverlayModule,
   OverlayRef,
   ComponentPortal,
   OverlayConnectionPosition,
   OriginConnectionPosition,
-  CompatibilityModule,
-  PlatformModule,
 } from '../core';
 import { Md2TooltipInvalidPositionError } from './tooltip-errors';
 import { Observable } from 'rxjs/Observable';
@@ -39,6 +34,7 @@ import { Platform } from '../core/platform/index';
 import 'rxjs/add/operator/first';
 import { ScrollDispatcher } from '../core/overlay/scroll/scroll-dispatcher';
 import { Subscription } from 'rxjs/Subscription';
+import { coerceBooleanProperty } from '../core/coercion/boolean-property';
 
 export type TooltipPosition = 'left' | 'right' | 'above' | 'below' | 'before' | 'after';
 
@@ -68,6 +64,7 @@ export class Md2Tooltip implements OnInit, OnDestroy {
   scrollSubscription: Subscription;
 
   private _position: TooltipPosition = 'below';
+  private _disabled: boolean = false;
 
   /** Allows the user to define the position of the tooltip relative to the parent element */
   @Input('tooltip-position')
@@ -81,6 +78,18 @@ export class Md2Tooltip implements OnInit, OnDestroy {
       if (this._tooltipInstance) {
         this._disposeTooltip();
       }
+    }
+  }
+
+  /** Disables the display of the tooltip. */
+  @Input('tooltipDisabled')
+  get disabled(): boolean { return this._disabled; }
+  set disabled(value) {
+    this._disabled = coerceBooleanProperty(value);
+
+    // If tooltip is disabled, hide immediately.
+    if (this._disabled) {
+      this.hide(0);
     }
   }
 
@@ -143,7 +152,7 @@ export class Md2Tooltip implements OnInit, OnDestroy {
 
   /** Shows the tooltip after the delay in ms, defaults to tooltip-delay-show or 0ms if no input */
   show(delay: number = this.showDelay): void {
-    if (!this._message || !this._message.trim()) { return; }
+    if (this.disabled || !this._message || !this._message.trim()) { return; }
 
     if (!this._tooltipInstance) {
       this._createTooltip();
@@ -167,7 +176,7 @@ export class Md2Tooltip implements OnInit, OnDestroy {
 
   /** Returns true if the tooltip is currently visible to the user */
   _isTooltipVisible(): boolean {
-    return this._tooltipInstance && this._tooltipInstance.isVisible();
+    return !!this._tooltipInstance && this._tooltipInstance.isVisible();
   }
 
   /** Create the tooltip to display */
@@ -417,22 +426,5 @@ export class Md2TooltipComponent {
     if (this._closeOnInteraction) {
       this.hide(0);
     }
-  }
-}
-
-
-@NgModule({
-  imports: [OverlayModule, CompatibilityModule, PlatformModule],
-  exports: [Md2Tooltip, Md2TooltipComponent, CompatibilityModule],
-  declarations: [Md2Tooltip, Md2TooltipComponent],
-  entryComponents: [Md2TooltipComponent],
-})
-export class Md2TooltipModule {
-  /** @deprecated */
-  static forRoot(): ModuleWithProviders {
-    return {
-      ngModule: Md2TooltipModule,
-      providers: []
-    };
   }
 }

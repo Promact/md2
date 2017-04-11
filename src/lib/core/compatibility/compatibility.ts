@@ -5,7 +5,9 @@ import {
   OpaqueToken,
   Inject,
   Optional,
+  isDevMode,
 } from '@angular/core';
+import {DOCUMENT} from '@angular/platform-browser';
 
 
 export const MATERIAL_COMPATIBILITY_MODE = new OpaqueToken('md-compatibility-mode');
@@ -68,10 +70,11 @@ export const MAT_ELEMENTS_SELECTOR = `
   mat-spinner,
   mat-tab,
   mat-tab-group,
-  mat-toolbar`;
+  mat-toolbar,
+  mat-error`;
 
 /** Selector that matches all elements that may have style collisions with AngularJS Material. */
-export const MD_ELEMENTS_SELECTOR = `  
+export const MD_ELEMENTS_SELECTOR = `
   [md-button],
   [md-dialog-actions],
   [md-dialog-close],
@@ -128,7 +131,8 @@ export const MD_ELEMENTS_SELECTOR = `
   md-spinner,
   md-tab,
   md-tab-group,
-  md-toolbar`;
+  md-toolbar,
+  md-error`;
 
 /** Directive that enforces that the `mat-` prefix cannot be used. */
 @Directive({selector: MAT_ELEMENTS_SELECTOR})
@@ -166,6 +170,15 @@ export class CompatibilityModule {
       ngModule: CompatibilityModule,
       providers: [],
     };
+  }
+
+  constructor(@Optional() @Inject(DOCUMENT) document: any) {
+    if (isDevMode() && typeof document && !document.doctype) {
+      console.warn(
+        'Current document does not have a doctype. This may cause ' +
+        'some Angular Material components not to behave as expected.'
+      );
+    }
   }
 }
 

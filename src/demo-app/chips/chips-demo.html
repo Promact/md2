@@ -11,7 +11,6 @@
                  placeholder="Add"
                  [maxChips]="8"
                  [isRemovable]="true"
-                 [readonly]="false"
                  [isAutoComplete]="false"
                  (change)="handleChange($event)">
         <div class="md2-template" [hidden]="true">
@@ -30,7 +29,6 @@
                  placeholder="Add"
                  [maxChips]="8"
                  [isRemovable]="true"
-                 [readonly]="false"
                  [isAutoComplete]="true"
                  [autocompleteDataList]="_items"
                  (change)="handleChange($event)" item-text="name" autocomplete-item-text="text">
@@ -47,7 +45,6 @@
                  placeholder="Add"
                  [maxChips]="8"
                  [isRemovable]="true"
-                 [readonly]="true"
                  [isAutoComplete]="false"
                  (change)="handleChange($event)" item-text="name">
         <div class="md2-template" [hidden]="true">

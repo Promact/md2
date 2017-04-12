@@ -56,8 +56,36 @@ export class Md2MonthView implements AfterContentInit {
   /** Emits when a new date is selected. */
   @Output() selectedChange = new EventEmitter<Date>();
 
-  /** The label for this month (e.g. "January 2017"). */
-  _monthLabel: string;
+  /** Handles when a new date is selected. */
+  _cellClicked(cell: Md2CalendarCell): void {
+    if (!cell.enabled || this._selectedDate == cell.value) {
+      return;
+    }
+    this.selectedChange.emit(new Date(this.activeDate.getFullYear(), this.activeDate.getMonth(),
+      cell.value, this.activeDate.getHours(), this.activeDate.getMinutes(),
+      this.activeDate.getSeconds()));
+  }
+
+  /** The number of blank cells to put at the beginning for the first row. */
+  get _firstRowOffset(): number {
+    return this._weeks && this._weeks.length && this._weeks[0].length ?
+      DAYS_PER_WEEK - this._weeks[0].length : 0;
+  }
+
+  _isActiveCell(rowIndex: number, colIndex: number): boolean {
+    let cellNumber = rowIndex * DAYS_PER_WEEK + colIndex;
+
+    // Account for the fact that the first row may not have as many cells.
+    if (rowIndex) {
+      cellNumber -= this._firstRowOffset;
+    }
+
+    return cellNumber == this.activeDate.getDate() - 1;
+  }
+
+
+
+
 
   /** Grid of calendar cells representing the dates of the month. */
   _weeks: Md2CalendarCell[][];
@@ -86,20 +114,11 @@ export class Md2MonthView implements AfterContentInit {
     this._init();
   }
 
-  /** Handles when a new date is selected. */
-  _dateSelected(date: number) {
-    if (this._selectedDate == date) {
-      return;
-    }
-    this.selectedChange.emit(new Date(this.activeDate.getFullYear(), this.activeDate.getMonth(), date,
-      this.activeDate.getHours(), this.activeDate.getMinutes(), this.activeDate.getSeconds()));
-  }
 
   /** Initializes this month view. */
   private _init() {
     this._selectedDate = this._getDateInCurrentMonth(this.selected);
     this._todayDate = this._getDateInCurrentMonth(this._util.today());
-    this._monthLabel = this._locale.shortMonths[this.activeDate.getMonth()].toLocaleUpperCase();
 
     let firstOfMonth = new Date(this.activeDate.getFullYear(), this.activeDate.getMonth(), 1,
       this.activeDate.getHours(), this.activeDate.getMinutes(), this.activeDate.getSeconds());

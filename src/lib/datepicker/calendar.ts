@@ -107,7 +107,8 @@ export class Md2Calendar implements AfterContentInit {
 
   /** Handles date selection in the month view. */
   _dateSelected(date: Date): void {
-    if ((!date || !this.selected) && date != this.selected || this._util.isSameDay(date, this.selected)) {
+    if ((!date || !this.selected) && date != this.selected ||
+      this._util.isSameDay(date, this.selected)) {
       this.selectedChange.emit(date);
     }
   }
@@ -133,7 +134,8 @@ export class Md2Calendar implements AfterContentInit {
   /** Handles user clicks on the next button. */
   _nextClicked(): void {
     this._activeDate = this._monthView ?
-      this._util.incrementMonths(this._activeDate, 1) : this._util.incrementYears(this._activeDate, 1);
+      this._util.incrementMonths(this._activeDate, 1) :
+      this._util.incrementYears(this._activeDate, 1);
   }
 
   /** Whether the previous period button is enabled. */
@@ -229,10 +231,12 @@ export class Md2Calendar implements AfterContentInit {
         this._activeDate = this._nextMonthInSameCol(this._activeDate);
         break;
       case HOME:
-        this._activeDate = this._util.incrementMonths(this._activeDate, -this._activeDate.getMonth());
+        this._activeDate = this._util.incrementMonths(this._activeDate,
+          -this._activeDate.getMonth());
         break;
       case END:
-        this._activeDate = this._util.incrementMonths(this._activeDate, 11 - this._activeDate.getMonth());
+        this._activeDate = this._util.incrementMonths(this._activeDate,
+          11 - this._activeDate.getMonth());
         break;
       case PAGE_UP:
         this._activeDate = this._util.incrementYears(this._activeDate, event.altKey ? -10 : -1);

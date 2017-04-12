@@ -437,7 +437,7 @@ md2-datepicker {
   }
 }
 
-md2-clock {
+md2-clock1 {
   position: absolute;
   top: 0;
   left: 100%;
@@ -458,7 +458,7 @@ md2-clock {
   }
 }
 
-.md2-clock-center {
+/*.md2-clock-center {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -491,7 +491,7 @@ md2-clock {
     border-radius: 50%;
     background-color: $primary;
   }
-}
+}*/
 
 .md2-clock-hours,
 .md2-clock-minutes {

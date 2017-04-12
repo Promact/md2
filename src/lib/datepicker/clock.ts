@@ -106,10 +106,8 @@ export class Md2Clock implements AfterContentInit {
   }
 
   get _hand(): any {
-    let CLOCK_RADIUS = 50;
     let CLOCK_INNER_RADIUS = 27.5;
     let CLOCK_OUTER_RADIUS = 41.25;
-    let CLOCK_TICK_RADIUS = 7.0833;
 
     let deg = 0;
     let radius = CLOCK_OUTER_RADIUS;

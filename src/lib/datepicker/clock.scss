@@ -55,6 +55,29 @@ md2-clock {
   }
 }
 
+.md2-clock-hours,
+.md2-clock-minutes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  visibility: hidden;
+  transition: 350ms;
+  transform: scale(1.2);
+
+  &.active {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+  }
+}
+
+.md2-clock-minutes {
+  transform: scale(0.8);
+}
+
 .md2-clock-cell {
   position: absolute;
   display: flex;

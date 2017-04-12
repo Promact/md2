@@ -7,9 +7,17 @@ import {
   Output,
   AfterContentInit
 } from '@angular/core';
-import { Md2CalendarCell } from './calendar-table';
 import { DateLocale } from './date-locale';
 import { DateUtil } from './date-util';
+
+
+/**
+ * An internal class that represents the data corresponding to a single calendar cell.
+ * @docs-private
+ */
+export class Md2CalendarCell {
+  constructor(public value: number, public displayValue: string, public enabled: boolean) { }
+}
 
 
 const DAYS_PER_WEEK = 7;

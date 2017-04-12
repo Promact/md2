@@ -8,7 +8,6 @@ import {
   Output,
   EventEmitter
 } from '@angular/core';
-import { Md2CalendarCell } from './calendar-table';
 import { DateLocale } from './date-locale';
 import { DateUtil } from './date-util';
 

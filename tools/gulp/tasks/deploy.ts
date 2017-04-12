@@ -1,30 +1,20 @@
-import { task, watch, src, dest } from 'gulp';
+import { task, src, dest } from 'gulp';
 import { join } from 'path';
-import { ScriptTarget, ModuleKind } from 'typescript';
 import * as fs from 'fs';
 
 import {
-  DIST_ROOT, PROJECT_ROOT, COMPONENTS_DIR, HTML_MINIFIER_OPTIONS, LICENSE_BANNER
+  DIST_ROOT, PROJECT_ROOT
 } from '../constants';
-import {
-  sassBuildTask, tsBuildTask, execNodeTask, sequenceTask,
-  triggerLivereload
-} from '../util/task_helpers';
-
-// There are no type definitions available for these imports.
-const gulpMinifyHtml = require('gulp-htmlmin');
-const gulpIf = require('gulp-if');
 
 import gulpRunSequence = require('run-sequence');
 const bump = require('gulp-bump');
 const git = require('gulp-git');
 const changelog = require('gulp-conventional-changelog');
-const exec = require('child_process').exec;
 const rename = require('gulp-rename');
 // const releaser = require('conventional-github-releaser');
 
 // Prepare rollup
-task('rollup:prepare',['aot:build'], () => {
+task('rollup:prepare', ['aot:build'], () => {
   return src('md2/**/*', { cwd: join(DIST_ROOT, '**') })
     .pipe(dest(join(DIST_ROOT, 'node_modules')));
 });
@@ -35,8 +25,9 @@ task('deploy', () => {
     .pipe(rename('index.html'))
     .pipe(dest(join(PROJECT_ROOT, 'deploy')));
 
-  return src(['assets/**/*', 'libs/reflect-metadata/**/*', 'libs/zone.js/**/*', 'libs/hammerjs/**/*',
-    'bundle.js', 'bundle.js.map', 'favicon.ico'], { cwd: join(DIST_ROOT, '**') })
+  return src(['assets/**/*', 'libs/reflect-metadata/**/*', 'libs/zone.js/**/*',
+    'libs/hammerjs/**/*', 'bundle.js', 'bundle.js.map', 'favicon.ico'],
+    { cwd: join(DIST_ROOT, '**') })
     .pipe(dest(join(PROJECT_ROOT, 'deploy')));
 });
 

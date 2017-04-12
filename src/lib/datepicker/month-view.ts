@@ -138,7 +138,8 @@ export class Md2MonthView implements AfterContentInit {
 
   /** Creates Md2CalendarCells for the dates in this month. */
   private _createWeekCells() {
-    let daysInMonth = new Date(this.activeDate.getFullYear(), this.activeDate.getMonth() + 1, 0).getDate();
+    let daysInMonth = new Date(this.activeDate.getFullYear(),
+      this.activeDate.getMonth() + 1, 0).getDate();
     this._weeks = [[]];
     for (let i = 0, cell = this._firstWeekOffset; i < daysInMonth; i++ , cell++) {
       if (cell == DAYS_PER_WEEK) {

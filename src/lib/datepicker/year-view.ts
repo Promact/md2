@@ -96,7 +96,8 @@ export class Md2YearView implements AfterContentInit {
   /** Create years. */
   private _createYears() {
     let startYear = this._minDate ? this._minDate.getFullYear() : 1900;
-    let endYear = this._maxDate ? this._maxDate.getFullYear() : this._util.today().getFullYear() + 100;
+    let endYear = this._maxDate ? this._maxDate.getFullYear() :
+      this._util.today().getFullYear() + 100;
     this._years = [];
     for (let i = startYear; i <= endYear; i++) {
       this._years.push(i);

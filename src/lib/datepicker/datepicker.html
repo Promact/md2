@@ -56,9 +56,9 @@
               [class.active]="!_isCalendarVisible">
           <span class="md2-datepicker-header-hour"
                 [class.active]="_clockView === 'hour'"
-                (click)="_toggleHours('hour')">{{ date.getHours() }}</span>:<span class="md2-datepicker-header-minute"
+                (click)="_toggleHours('hour')">{{ hours }}</span>:<span class="md2-datepicker-header-minute"
                                                                                   [class.active]="_clockView === 'minute'"
-                                                                                  (click)="_toggleHours('minute')">{{ date.getMinutes() }}</span>
+                                                                                  (click)="_toggleHours('minute')">{{ minutes }}</span>
         </span>
       </div>
     </div>

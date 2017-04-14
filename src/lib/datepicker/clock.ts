@@ -40,7 +40,7 @@ const CLOCK_TICK_RADIUS = 7.0833;
     '(mousedown)': '_handleMousedown($event)',
   },
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  //changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Md2Clock implements AfterContentInit {
   /** A date representing the period (hour or minute) to start the clock in. */
@@ -65,15 +65,15 @@ export class Md2Clock implements AfterContentInit {
 
   /** The minimum selectable date. */
   @Input()
-  get minDate(): Date { return this._minDate; };
-  set minDate(date: Date) { this._minDate = this._locale.parseDate(date); }
-  private _minDate: Date;
+  get min(): Date { return this._min; };
+  set min(date: Date) { this._min = this._locale.parseDate(date); }
+  private _min: Date;
 
   /** The maximum selectable date. */
   @Input()
-  get maxDate(): Date { return this._maxDate; };
-  set maxDate(date: Date) { this._maxDate = this._locale.parseDate(date); }
-  private _maxDate: Date;
+  get max(): Date { return this._max; };
+  set max(date: Date) { this._max = this._locale.parseDate(date); }
+  private _max: Date;
 
   /** A function used to filter which dates are selectable. */
   @Input() dateFilter: (date: Date) => boolean;
@@ -85,8 +85,8 @@ export class Md2Clock implements AfterContentInit {
   _dateFilterForViews = (date: Date) => {
     return !!date &&
       (!this.dateFilter || this.dateFilter(date)) &&
-      (!this.minDate || this._util.isSameDay(date, this.minDate)) &&
-      (!this.maxDate || this._util.isSameDay(date, this.maxDate));
+      (!this.min || this._util.isSameDay(date, this.min)) &&
+      (!this.max || this._util.isSameDay(date, this.max));
   }
 
   /**
@@ -95,7 +95,7 @@ export class Md2Clock implements AfterContentInit {
    */
   get _activeDate() { return this._clampedActiveDate; }
   set _activeDate(value: Date) {
-    this._clampedActiveDate = this._util.clampDate(value, this.minDate, this.maxDate);
+    this._clampedActiveDate = this._util.clampDate(value, this.min, this.max);
     //this._init();
   }
 
@@ -193,15 +193,15 @@ export class Md2Clock implements AfterContentInit {
 
   /** Whether the previous period button is enabled. */
   _previousEnabled(): boolean {
-    if (!this.minDate) {
+    if (!this.min) {
       return true;
     }
-    return !this.minDate || !this._isSameView(this._activeDate, this.minDate);
+    return !this.min || !this._isSameView(this._activeDate, this.min);
   }
 
   /** Whether the next period button is enabled. */
   _nextEnabled(): boolean {
-    return !this.maxDate || !this._isSameView(this._activeDate, this.maxDate);
+    return !this.max || !this._isSameView(this._activeDate, this.max);
   }
 
   /** Whether the two dates represent the same view in the current view mode (hour or minute). */

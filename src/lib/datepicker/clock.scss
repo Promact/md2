@@ -1,5 +1,6 @@
 $primary: #106cc8 !default;
 $md2-clock-min-size: 224px !default;
+$md2-clock-padding: 8px !default;
 $md2-clock-font-size: 13px !default;
 $md2-clock-cell-size: 14.1666% !default;
 
@@ -7,9 +8,8 @@ md2-clock {
   position: relative;
   display: block;
   min-width: $md2-clock-min-size;
+  padding: $md2-clock-padding;
   font-size: $md2-clock-font-size;
-  background-color: darken(white, 12);
-  border-radius: 50%;
   box-sizing: border-box;
 }
 
@@ -18,6 +18,8 @@ md2-clock {
   width: 100%;
   height: 0;
   padding-top: 100%;
+  background-color: darken(white, 12);
+  border-radius: 50%;
 }
 
 .md2-clock-center {

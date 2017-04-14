@@ -44,7 +44,13 @@ export class Md2Calendar implements AfterContentInit {
   private _startAt: Date;
 
   /** Whether the calendar should be started in month or year view. */
-  @Input() startView: 'month' | 'year' = 'month';
+  @Input()
+  set startView(value: 'month' | 'year') {
+    this._monthView = value != 'year';
+  };
+
+  /** Whether the calendar is in month view. */
+  _monthView: boolean;
 
   /** The currently selected date. */
   @Input()
@@ -54,15 +60,15 @@ export class Md2Calendar implements AfterContentInit {
 
   /** The minimum selectable date. */
   @Input()
-  get minDate(): Date { return this._minDate; };
-  set minDate(date: Date) { this._minDate = this._locale.parseDate(date); }
-  private _minDate: Date;
+  get min(): Date { return this._min; };
+  set min(date: Date) { this._min = this._locale.parseDate(date); }
+  private _min: Date;
 
   /** The maximum selectable date. */
   @Input()
-  get maxDate(): Date { return this._maxDate; };
-  set maxDate(date: Date) { this._maxDate = this._locale.parseDate(date); }
-  private _maxDate: Date;
+  get max(): Date { return this._max; };
+  set max(date: Date) { this._max = this._locale.parseDate(date); }
+  private _max: Date;
 
   /** A function used to filter which dates are selectable. */
   @Input() dateFilter: (date: Date) => boolean;
@@ -74,8 +80,8 @@ export class Md2Calendar implements AfterContentInit {
   _dateFilterForViews = (date: Date) => {
     return !!date &&
       (!this.dateFilter || this.dateFilter(date)) &&
-      (!this.minDate || this._util.isSameDay(date, this.minDate)) &&
-      (!this.maxDate || this._util.isSameDay(date, this.maxDate));
+      (!this.min || this._util.isSameDay(date, this.min)) &&
+      (!this.max || this._util.isSameDay(date, this.max));
   }
 
   /**
@@ -84,12 +90,9 @@ export class Md2Calendar implements AfterContentInit {
    */
   get _activeDate() { return this._clampedActiveDate; }
   set _activeDate(value: Date) {
-    this._clampedActiveDate = this._util.clampDate(value, this.minDate, this.maxDate);
+    this._clampedActiveDate = this._util.clampDate(value, this.min, this.max);
   }
   private _clampedActiveDate: Date;
-
-  /** Whether the calendar is in month view. */
-  _monthView: boolean;
 
   /** The label for the current calendar view. */
   get _label(): string {
@@ -102,7 +105,6 @@ export class Md2Calendar implements AfterContentInit {
 
   ngAfterContentInit() {
     this._activeDate = this.startAt || this._util.today();
-    this._monthView = this.startView != 'year';
   }
 
   /** Handles date selection in the month view. */
@@ -140,15 +142,15 @@ export class Md2Calendar implements AfterContentInit {
 
   /** Whether the previous period button is enabled. */
   _previousEnabled(): boolean {
-    if (!this.minDate) {
+    if (!this.min) {
       return true;
     }
-    return !this.minDate || !this._isSameView(this._activeDate, this.minDate);
+    return !this.min || !this._isSameView(this._activeDate, this.min);
   }
 
   /** Whether the next period button is enabled. */
   _nextEnabled(): boolean {
-    return !this.maxDate || !this._isSameView(this._activeDate, this.maxDate);
+    return !this.max || !this._isSameView(this._activeDate, this.max);
   }
 
   /** Whether the two dates represent the same view in the current view mode (month or year). */

@@ -48,15 +48,15 @@ export class Md2YearView implements AfterContentInit {
 
   /** The minimum selectable date. */
   @Input()
-  get minDate(): Date { return this._minDate; };
-  set minDate(date: Date) { this._minDate = this._locale.parseDate(date); }
-  private _minDate: Date;
+  get min(): Date { return this._min; };
+  set min(date: Date) { this._min = this._locale.parseDate(date); }
+  private _min: Date;
 
   /** The maximum selectable date. */
   @Input()
-  get maxDate(): Date { return this._maxDate; };
-  set maxDate(date: Date) { this._maxDate = this._locale.parseDate(date); }
-  private _maxDate: Date;
+  get max(): Date { return this._max; };
+  set max(date: Date) { this._max = this._locale.parseDate(date); }
+  private _max: Date;
 
   /** A function used to filter which dates are selectable. */
   @Input() dateFilter: (date: Date) => boolean;
@@ -95,8 +95,8 @@ export class Md2YearView implements AfterContentInit {
 
   /** Create years. */
   private _createYears() {
-    let startYear = this._minDate ? this._minDate.getFullYear() : 1900;
-    let endYear = this._maxDate ? this._maxDate.getFullYear() :
+    let startYear = this._min ? this._min.getFullYear() : 1900;
+    let endYear = this._max ? this._max.getFullYear() :
       this._util.today().getFullYear() + 100;
     this._years = [];
     for (let i = startYear; i <= endYear; i++) {

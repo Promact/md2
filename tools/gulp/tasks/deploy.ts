@@ -26,7 +26,7 @@ task('deploy', () => {
     .pipe(dest(join(PROJECT_ROOT, 'deploy')));
 
   return src(['assets/**/*', 'libs/reflect-metadata/**/*', 'libs/zone.js/**/*',
-    'libs/hammerjs/**/*', 'bundle.js', 'bundle.js.map', 'favicon.ico'],
+    'libs/core-js/**/*', 'libs/hammerjs/**/*', 'bundle.js', 'bundle.js.map', 'favicon.ico'],
     { cwd: join(DIST_ROOT, '**') })
     .pipe(dest(join(PROJECT_ROOT, 'deploy')));
 });

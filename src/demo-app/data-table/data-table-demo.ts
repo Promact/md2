@@ -27,7 +27,7 @@ export class DataTableDemo {
   search: string = null;
 
   constructor(private http: Http) {
-    this.http.get('../assets/data/data.json')
+    this.http.get('./assets/data/data.json')
       .subscribe((data) => {
         this.data = data.json();
       });

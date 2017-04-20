@@ -1,19 +1,16 @@
-<div class="md2-clock" tabindex="0" (keydown)="_handleClockBodyKeydown($event)"
-     cdkMonitorSubtreeFocus>
-  <div class="md2-clock-center"></div>
-  <div class="md2-clock-hand" [ngStyle]="_hand"></div>
-  <div class="md2-clock-hours" [class.active]="_hourView">
-    <div *ngFor="let h of _hours"
-         class="md2-clock-cell"
-         [class.md2-clock-cell-selected]="_hour == h.hour"
-         [style.top]="h.top+'%'"
-         [style.left]="h.left+'%'">{{ h.hour }}</div>
-  </div>
-  <div class="md2-clock-minutes" [class.active]="!_hourView">
-    <div *ngFor="let m of _minutes"
-         class="md2-clock-cell"
-         [class.md2-clock-cell-selected]="_minute == m.minute"
-         [style.top]="m.top+'%'"
-         [style.left]="m.left+'%'">{{ m.minute }}</div>
-  </div>
+﻿<div class="md2-clock-center"></div>
+<div class="md2-clock-hand" [ngStyle]="hand"></div>
+<div class="md2-clock-hours" [class.active]="_view">
+  <div *ngFor="let h of _hours"
+       class="md2-clock-hour"
+       [class.active]="_hour == h.hour"
+       [style.top.px]="h.top"
+       [style.left.px]="h.left">{{ h.hour }}</div>
+</div>
+<div class="md2-clock-minutes" [class.active]="!_view">
+  <div *ngFor="let m of _minutes"
+       class="md2-clock-minute"
+       [class.active]="_minute == m.minute"
+       [style.top.px]="m.top"
+       [style.left.px]="m.left">{{ m.minute }}</div>
 </div>

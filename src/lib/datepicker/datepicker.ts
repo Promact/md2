@@ -214,7 +214,7 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     }
   }
 
-  get time() { return this.hours + ':' + this.minutes }
+  get time() { return this.date.getHours() + ':' + this.date.getMinutes(); }
   set time(value: string) {
     this.date = new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate(),
       parseInt(value.split(':')[0]), parseInt(value.split(':')[1]));
@@ -225,12 +225,11 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     // }
   }
 
-  private padWithZero(n: number){ return (n < 10 ? '0' : '') + n }
   get minutes(): string {
-    return this.padWithZero(this._date.getMinutes());
+    return ('0' + this._date.getMinutes()).slice(-2);
   }
   get hours(): string {
-    return this.padWithZero(this._date.getHours());
+    return ('0' + this._date.getHours()).slice(-2);
   }
 
   @Input()

@@ -1,254 +1,90 @@
 import {
-  AfterContentInit,
-  ChangeDetectionStrategy,
   Component,
   ElementRef,
-  EventEmitter,
   Input,
   Output,
-  ViewEncapsulation
+  EventEmitter,
+  ViewEncapsulation,
 } from '@angular/core';
-import { DateUtil } from './date-util';
-import { DateLocale } from './date-locale';
-import {
-  DOWN_ARROW,
-  END, ENTER,
-  HOME,
-  LEFT_ARROW,
-  PAGE_DOWN,
-  PAGE_UP,
-  RIGHT_ARROW,
-  UP_ARROW
-} from '../core/keyboard/keycodes';
 
-const CLOCK_RADIUS = 50;
-const CLOCK_INNER_RADIUS = 27.5;
-const CLOCK_OUTER_RADIUS = 41.25;
-const CLOCK_TICK_RADIUS = 7.0833;
+export const CLOCK_HOURS = 24;
+export const CLOCK_MINUTES = 60;
+export const CLOCK_RADIUS = 120;
+export const CLOCK_INNER_RADIUS = 66;
+export const CLOCK_OUTER_RADIUS = 99;
+export const CLOCK_TICK_RADIUS = 17;
 
-/**
- * A clock that is used as part of the datepicker.
- * @docs-private
- */
 @Component({
   moduleId: module.id,
   selector: 'md2-clock',
   templateUrl: 'clock.html',
-  styleUrls: ['clock.css'],
+  styleUrls: ['datepicker.css'],
   host: {
     'role': 'clock',
     '(mousedown)': '_handleMousedown($event)',
   },
-  encapsulation: ViewEncapsulation.None,
-  //changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None
 })
-export class Md2Clock implements AfterContentInit {
-  /** A date representing the period (hour or minute) to start the clock in. */
-  @Input()
-  get startAt() { return this._startAt; }
-  set startAt(value: any) { this._startAt = this._locale.parseDate(value); }
-  private _startAt: Date;
-
-  /** Whether the clock should be started in hour or minute view. */
-  @Input() startView: 'hour' | 'minute' = 'hour';
-
-  /** The currently selected date. */
-  @Input()
-  get selected() { return this._selected; }
-  set selected(value: any) {
-    this._selected = this._locale.parseDate(value);
-    this._getTimeInCurrentDate(this._selected);
-  }
-  private _selected: Date;
-  private _hour: number;
-  private _minute: number;
-
-  /** The minimum selectable date. */
-  @Input()
-  get min(): Date { return this._min; };
-  set min(date: Date) { this._min = this._locale.parseDate(date); }
-  private _min: Date;
-
-  /** The maximum selectable date. */
-  @Input()
-  get max(): Date { return this._max; };
-  set max(date: Date) { this._max = this._locale.parseDate(date); }
-  private _max: Date;
-
-  /** A function used to filter which dates are selectable. */
-  @Input() dateFilter: (date: Date) => boolean;
-
-  /** Emits when the currently selected date changes. */
-  @Output() selectedChange = new EventEmitter<Date>();
-
-  /** Date filter for the hour and minute views. */
-  _dateFilterForViews = (date: Date) => {
-    return !!date &&
-      (!this.dateFilter || this.dateFilter(date)) &&
-      (!this.min || this._util.isSameDay(date, this.min)) &&
-      (!this.max || this._util.isSameDay(date, this.max));
-  }
-
-  /**
-   * The current active date. This determines which time period is shown and which date is
-   * highlighted when using keyboard navigation.
-   */
-  get _activeDate() { return this._clampedActiveDate; }
-  set _activeDate(value: Date) {
-    this._clampedActiveDate = this._util.clampDate(value, this.min, this.max);
-    //this._init();
-  }
-
-  /** Grid of calendar cells representing the dates of the month. */
-  _hours: Array<Object> = [];
-  _minutes: Array<Object> = [];
-
-  private _clampedActiveDate: Date;
-
-  /** Whether the clock is in hour view. */
-  _hourView: boolean;
-
-  get _hand(): any {
-    let deg = 0;
-    let radius = CLOCK_OUTER_RADIUS;
-    if (this._hourView) {
-      let inner = this._activeDate.getHours() > 0 && this._activeDate.getHours() < 13;
-      radius = inner ? CLOCK_INNER_RADIUS : CLOCK_OUTER_RADIUS;
-      deg = Math.round(this._activeDate.getHours() * (360 / (24 / 2)));
-    } else {
-      deg = Math.round(this._activeDate.getMinutes() * (360 / 60));
-    }
-    return {
-      'transform': `rotate(${deg}deg)`,
-      'height': `${radius}%`,
-      'margin-top': `${50 - radius}%`
-    };
-  }
+export class Md2Clock {
 
   private mouseMoveListener: any;
   private mouseUpListener: any;
 
-  constructor(private _element: ElementRef, private _locale: DateLocale,
-    private _util: DateUtil) {
+  private _time: string;
+
+  _view: boolean = true;
+
+  _hours: Array<Object> = [];
+  _minutes: Array<Object> = [];
+
+  _hour: number = 0;
+  _minute: number = 0;
+
+  constructor(private _element: ElementRef) {
+    this.renderClock();
     this.mouseMoveListener = (event: any) => { this._handleMousemove(event); };
     this.mouseUpListener = (event: any) => { this._handleMouseup(event); };
   }
 
-  ngAfterContentInit() {
-    this._activeDate = this.startAt || this._util.today();
-    this._hourView = this.startView != 'minute';
-    this._init();
-  }
+  @Output() timeChange: EventEmitter<string> = new EventEmitter<string>();
+  @Output() onHourChange: EventEmitter<number> = new EventEmitter<number>();
+  @Output() onMinuteChange: EventEmitter<number> = new EventEmitter<number>();
 
-  /** Handles date selection in the hour view. */
-  _minuteSelected(date: Date): void {
-    //if ((!date || !this.selected) && date != this.selected || this._util.isSameDay(date, this.selected)) {
-    this.selectedChange.emit(date);
-    //}
-  }
-
-  /** Initializes this clock view. */
-  private _init() {
-    this._hours.length = 0;
-
-    for (let i = 0; i < 24; i++) {
-      let radian = i / 6 * Math.PI;
-      let inner = i > 0 && i < 13,
-        radius = inner ? CLOCK_INNER_RADIUS : CLOCK_OUTER_RADIUS;
-      this._hours.push({
-        hour: i === 0 ? '00' : i,
-        top: CLOCK_RADIUS - Math.cos(radian) * radius - CLOCK_TICK_RADIUS,
-        left: CLOCK_RADIUS + Math.sin(radian) * radius - CLOCK_TICK_RADIUS
-      });
-    }
-
-    for (let i = 0; i < 60; i += 5) {
-      let radian = i / 30 * Math.PI;
-      this._minutes.push({
-        minute: i === 0 ? '00' : i,
-        top: CLOCK_RADIUS - Math.cos(radian) * CLOCK_OUTER_RADIUS - CLOCK_TICK_RADIUS,
-        left: CLOCK_RADIUS + Math.sin(radian) * CLOCK_OUTER_RADIUS - CLOCK_TICK_RADIUS
-      });
+  @Input()
+  get time() { return this._time; }
+  set time(value: string) {
+    if (this._time !== value) {
+      this._time = value || '00:00';
+      this._hour = parseInt(this._time.split(':')[0]);
+      this._minute = parseInt(this._time.split(':')[1]);
     }
   }
 
-  /** Handles hour selection in the minute view. */
-  _hourSelected(hour: Date): void {
-    this._activeDate = hour;
-    this._hourView = false;
+  @Input()
+  set view(value: string) {
+    if (value === 'minute') {
+      this._view = false;
+    } else { this._view = true; }
   }
 
-  /** Handles user clicks on the previous button. */
-  _previousClicked(): void {
-    this._activeDate = this._hourView ?
-      this._util.incrementHours(this._activeDate, -1) :
-      this._util.incrementYears(this._activeDate, -1);
-  }
-
-  /** Handles user clicks on the next button. */
-  _nextClicked(): void {
-    this._activeDate = this._hourView ?
-      this._util.incrementHours(this._activeDate, 1) : this._util.incrementMinutes(this._activeDate, 1);
-  }
-
-  /** Whether the previous period button is enabled. */
-  _previousEnabled(): boolean {
-    if (!this.min) {
-      return true;
-    }
-    return !this.min || !this._isSameView(this._activeDate, this.min);
-  }
-
-  /** Whether the next period button is enabled. */
-  _nextEnabled(): boolean {
-    return !this.max || !this._isSameView(this._activeDate, this.max);
-  }
-
-  /** Whether the two dates represent the same view in the current view mode (hour or minute). */
-  private _isSameView(date1: Date, date2: Date): boolean {
-    return this._hourView ?
-      date1.getFullYear() == date2.getFullYear() && date1.getHours() == date2.getHours() :
-      date1.getFullYear() == date2.getFullYear();
-  }
-
-  /** Handles keydown events on the clock body. */
-  _handleClockBodyKeydown(event: KeyboardEvent): void {
-    if (this._hourView) {
-      switch (event.keyCode) {
-        case UP_ARROW:
-          this._activeDate = this._util.incrementHours(this._activeDate, -1);
-          break;
-        case DOWN_ARROW:
-          this._activeDate = this._util.incrementHours(this._activeDate, 1);
-          break;
-        case ENTER:
-          this._hourSelected(this._activeDate);
-          break;
-        default:
-          return;
-      }
+  get hand(): any {
+    let deg = 0;
+    let radius = CLOCK_OUTER_RADIUS;
+    if (this._view) {
+      let inner = this._hour > 0 && this._hour < 13;
+      radius = inner ? CLOCK_INNER_RADIUS : CLOCK_OUTER_RADIUS;
+      deg = Math.round(this._hour * (360 / (CLOCK_HOURS / 2)));
     } else {
-      switch (event.keyCode) {
-        case UP_ARROW:
-          this._activeDate = this._util.incrementMinutes(this._activeDate, -1);
-          break;
-        case DOWN_ARROW:
-          this._activeDate = this._util.incrementMinutes(this._activeDate, 1);
-          break;
-        case ENTER:
-          if (this._dateFilterForViews(this._activeDate)) {
-            this._minuteSelected(this._activeDate);
-            break;
-          }
-          return;
-        default:
-          return;
-      }
+      deg = Math.round(this._minute * (360 / CLOCK_MINUTES));
     }
-    event.preventDefault();
+
+    return {
+      'transform': `rotate(${deg}deg)`,
+      'height': `${radius}px`,
+      'margin-top': `${120 - radius}px`
+    };
   }
 
-  /** Handles mousedown events on the clock body. */
   _handleMousedown(event: any) {
     this.setTime(event);
     document.addEventListener('mousemove', this.mouseMoveListener);
@@ -260,7 +96,6 @@ export class Md2Clock implements AfterContentInit {
   _handleMousemove(event: any) {
     event.preventDefault();
     this.setTime(event);
-    console.log('moving');
   }
 
   _handleMouseup(event: any) {
@@ -268,15 +103,45 @@ export class Md2Clock implements AfterContentInit {
     document.removeEventListener('touchmove', this.mouseMoveListener);
     document.removeEventListener('mouseup', this.mouseUpListener);
     document.removeEventListener('touchend', this.mouseUpListener);
-    //if (!cell.enabled || this._selectedDate == cell.value) {
-    //  return;
-    //}
-    if (this._hourView) {
-      this._hourSelected(this._activeDate);
+    if (this._view) {
+      this.onHourChange.emit(this._hour);
     } else {
-      this.selectedChange.emit(this._activeDate);
+      this.onMinuteChange.emit(this._minute);
     }
-    console.log('up');
+  }
+
+  _handleKeydown(event: KeyboardEvent) { }
+
+  /** Emits an event when the user selects a time. */
+  _emitChangeEvent(): void {
+    this.timeChange.emit(this.time);
+  }
+
+  /**
+   * render Click
+   */
+  private renderClock() {
+    this._hours.length = 0;
+
+    for (let i = 0; i < CLOCK_HOURS; i++) {
+      let radian = i / 6 * Math.PI;
+      let inner = i > 0 && i < 13,
+        radius = inner ? CLOCK_INNER_RADIUS : CLOCK_OUTER_RADIUS;
+      this._hours.push({
+        hour: i === 0 ? '00' : i,
+        top: CLOCK_RADIUS - Math.cos(radian) * radius - CLOCK_TICK_RADIUS,
+        left: CLOCK_RADIUS + Math.sin(radian) * radius - CLOCK_TICK_RADIUS
+      });
+    }
+
+    for (let i = 0; i < CLOCK_MINUTES; i += 5) {
+      let radian = i / 30 * Math.PI;
+      this._minutes.push({
+        minute: i === 0 ? '00' : i,
+        top: CLOCK_RADIUS - Math.cos(radian) * CLOCK_OUTER_RADIUS - CLOCK_TICK_RADIUS,
+        left: CLOCK_RADIUS + Math.sin(radian) * CLOCK_OUTER_RADIUS - CLOCK_TICK_RADIUS
+      });
+    }
   }
 
   /**
@@ -293,40 +158,25 @@ export class Md2Clock implements AfterContentInit {
     let x = (width / 2) - (pageX - triggerRect.left - window.pageXOffset);
     let y = (height / 2) - (pageY - triggerRect.top - window.pageYOffset);
     let radian = Math.atan2(-x, y);
-    let unit = Math.PI / (this._hourView ? 6 : 30);
+    let unit = Math.PI / (this._view ? 6 : 30);
     let z = Math.sqrt(x * x + y * y);
-    let inner = false;//this._hourView && z < (CLOCK_OUTER_RADIUS + CLOCK_INNER_RADIUS) / 2;
+    let inner = this._view && z < (CLOCK_OUTER_RADIUS + CLOCK_INNER_RADIUS) / 2;
     let value = 0;
 
     if (radian < 0) { radian = Math.PI * 2 + radian; }
     value = Math.round(radian / unit);
     radian = value * unit;
 
-    if (this._hourView) {
+    if (this._view) {
       if (value === 12) { value = 0; }
       value = inner ? (value === 0 ? 12 : value) : value === 0 ? 0 : value + 12;
-      this._activeDate.setHours(value);
-      //this._activeDate = new Date(this._activeDate.getFullYear(),
-      //  this._activeDate.getMonth(), this._activeDate.getDate(), value,
-      //  this._activeDate.getMinutes(), this._activeDate.getSeconds());
+      this._hour = value;
     } else {
       if (value === 60) { value = 0; }
-      this._activeDate.setMinutes(value);
-      //this._activeDate = new Date(this._activeDate.getFullYear(),
-      //  this._activeDate.getMonth(), this._activeDate.getDate(), this._activeDate.getHours(),
-      //  value, this._activeDate.getSeconds());
-
+      this._minute = value;
     }
-    //this._time = this._hour + ':' + this._minute;
-    //this._emitChangeEvent();
+    this._time = this._hour + ':' + this._minute;
+    this._emitChangeEvent();
   }
 
-  /**
-   * Gets the time given in the Date falls on.
-   * Returns null if the given Time is in another Date.
-   */
-  private _getTimeInCurrentDate(date: Date) {
-    this._hour = date ? date.getHours() : null;
-    this._minute = date ? date.getMinutes() : null;
-  }
 }

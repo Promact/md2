@@ -1,9 +1,0 @@
-<div class="md2-year-view-content">
-  <div *ngFor="let year of _years"
-       class="md2-calendar-year"
-       [class.md2-year-focused]="_activeYear === year"
-       [class.md2-year-selected]="_selectedYear === year"
-       (click)="_yearSelected(year)">
-    {{ year }}
-  </div>
-</div>

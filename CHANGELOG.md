@@ -1,3 +1,17 @@
+<a name="0.0.19"></a>
+## [0.0.19](https://github.com/Promact/md2/compare/0.0.18...v0.0.19) (2017-04-20)
+
+### Bug Fixes
+
+* **datepicker:** emit change when time changed ([7058c17](https://github.com/Promact/md2/commit/7058c17))
+* fixed datepicker format related issues
+
+### Features
+
+* zero padded hours and minutes ([2b0ffec](https://github.com/Promact/md2/commit/2b0ffec))
+
+
+
 <a name="0.0.18"></a>
 ## [0.0.18](https://github.com/Promact/md2/compare/0.0.17...v0.0.18) (2017-03-31)
 

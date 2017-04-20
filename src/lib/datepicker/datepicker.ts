@@ -123,6 +123,7 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
   _onTouched = () => { };
 
   @ViewChild('portal') _templatePortal: TemplateRef<any>;
+  @ViewChild('input') _input: ElementRef;
 
   /** Event emitted when the select has been opened. */
   @Output() onOpen: EventEmitter<void> = new EventEmitter<void>();
@@ -167,6 +168,7 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
   get type() { return this._type; }
   set type(value: Type) {
     this._type = value || 'date';
+    this._input.nativeElement.value = this._formatDate(this._value);
   }
 
   @Input()
@@ -176,7 +178,10 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
         'dd/MM/y HH:mm' : 'dd/MM/y');
   }
   set format(value: string) {
-    if (this._format !== value) { this._format = value; }
+    if (this._format !== value) {
+      this._format = value;
+      this._input.nativeElement.value = this._formatDate(this._value);
+    }
   }
 
   @Input()
@@ -199,6 +204,9 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
   set value(value: Date) {
     this._value = this.coerceDateProperty(value);
     this.date = this._value;
+    setTimeout(() => {
+      this._input.nativeElement.value = this._formatDate(this._value);
+    });
   }
 
   get date() { return this._date || this.today; }
@@ -528,18 +536,11 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
       this._onTouched();
     }
     let el: any = event.target;
-    let d: any = this._util.parseDate(el.value, this.format);
-    if (this._util.isValidDate(d)) {
-      this.value = d;
+    let date: Date = this._util.parseDate(el.value, this.format);
+    if (this.value !== date) {
+      this.value = date ? date : null;
       this._emitChangeEvent();
     }
-  }
-
-  _clearValue(event: Event) {
-    event.stopPropagation();
-    this.value = null;
-    this._emitChangeEvent();
-    this._focusHost();
   }
 
   /**
@@ -792,6 +793,30 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
 
   setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
+  }
+
+  /**
+   * format date
+   * @param date Date Object
+   * @return string with formatted date
+   */
+  private _formatDate(date: Date): string {
+    if (!this.format || !date) { return ''; }
+    return this.format
+      .replace('yy', ('00' + date.getFullYear()).slice(-2))
+      .replace('y', '' + date.getFullYear())
+      .replace('MMMM', this._locale.months[date.getMonth()].full)
+      .replace('MMM', this._locale.months[date.getMonth()].short)
+      .replace('MM', ('0' + (date.getMonth() + 1)).slice(-2))
+      .replace('M', '' + (date.getMonth() + 1))
+      .replace('dd', ('0' + date.getDate()).slice(-2))
+      .replace('d', '' + date.getDate())
+      .replace('HH', ('0' + date.getHours()).slice(-2))
+      .replace('H', '' + date.getHours())
+      .replace('mm', ('0' + date.getMinutes()).slice(-2))
+      .replace('m', '' + date.getMinutes())
+      .replace('ss', ('0' + date.getSeconds()).slice(-2))
+      .replace('s', '' + date.getSeconds());
   }
 
   private _subscribeToBackdrop(): void {

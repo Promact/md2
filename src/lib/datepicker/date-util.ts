@@ -166,6 +166,33 @@ export class DateUtil {
     return d;
   }
 
+  parse(value: any, fmt?: Object): Date | null {
+    // We have no way using the native JS Date to set the parse format or locale, so we ignore these
+    // parameters.
+    let timestamp = typeof value == 'number' ? value : Date.parse(value);
+    return isNaN(timestamp) ? null : new Date(timestamp);
+  }
+
+  getYear(date: Date): number {
+    return date.getFullYear();
+  }
+
+  getMonth(date: Date): number {
+    return date.getMonth();
+  }
+
+  getDate(date: Date): number {
+    return date.getDate();
+  }
+
+  getHour(date: Date): number {
+    return date.getHours();
+  }
+
+  getMinute(date: Date): number {
+    return date.getMinutes();
+  }
+
   /**
    * Gets the first day of the month for the given date's month.
    * @param {Date} date

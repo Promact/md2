@@ -90,6 +90,7 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
   @Input() disabled: boolean = false;
   @Input() minChips: number = 0;
   @Input() maxChips: number = 10000;
+  @Input() type: string = 'text';
   @Input() id: string = 'md2-chips-' + (++nextId);
   @Input('autocomplete-item-text') autocompleteItemText: string = 'text';
   @Input('autocomplete-item-value') autocompleteItemValue: string = 'value';

@@ -121,6 +121,20 @@ export class Md2Clock1 implements AfterContentInit {
     this._init();
   }
 
+  //_cellClicked(cell: any): void {
+  //  if (!cell.enabled) {
+  //    return;
+  //  }
+  //  if (this._hourView) {
+  //    this.activeDate.setHours(cell.value);
+  //    this._hourSelected(this.activeDate);
+  //  } else {
+  //    this.activeDate.setMinutes(cell.value);
+  //    this._minuteSelected(this.activeDate);
+  //  }
+  //  //this.selectedValueChange.emit(cell.value);
+  //}
+
   /** Handles hour selection in the clock view. */
   _hourSelected(date: Date): void {
     //this.activeDate = this._selectedHour;
@@ -134,42 +148,6 @@ export class Md2Clock1 implements AfterContentInit {
     //this.selectedChange.emit(this.activeDate);
     //}
     this._hourView = true;
-  }
-
-  /** Initializes this clock view. */
-  private _init() {
-    this._hours.length = 0;
-    if (this.twelvehour) {
-      for (let i = 1; i < 13; i++) {
-        let radian = i / 6 * Math.PI;
-        let radius = CLOCK_OUTER_RADIUS;
-        this._hours.push({
-          hour: i === 0 ? '00' : i,
-          top: CLOCK_RADIUS - Math.cos(radian) * radius - CLOCK_TICK_RADIUS,
-          left: CLOCK_RADIUS + Math.sin(radian) * radius - CLOCK_TICK_RADIUS
-        });
-      }
-    } else {
-      for (let i = 0; i < 24; i++) {
-        let radian = i / 6 * Math.PI;
-        let outer = i > 0 && i < 13,
-          radius = outer ? CLOCK_OUTER_RADIUS : CLOCK_INNER_RADIUS;
-        this._hours.push({
-          hour: i === 0 ? '00' : i,
-          top: CLOCK_RADIUS - Math.cos(radian) * radius - CLOCK_TICK_RADIUS,
-          left: CLOCK_RADIUS + Math.sin(radian) * radius - CLOCK_TICK_RADIUS
-        });
-      }
-    }
-
-    for (let i = 0; i < 60; i += 5) {
-      let radian = i / 30 * Math.PI;
-      this._minutes.push({
-        minute: i === 0 ? '00' : i,
-        top: CLOCK_RADIUS - Math.cos(radian) * CLOCK_OUTER_RADIUS - CLOCK_TICK_RADIUS,
-        left: CLOCK_RADIUS + Math.sin(radian) * CLOCK_OUTER_RADIUS - CLOCK_TICK_RADIUS
-      });
-    }
   }
 
   /** Handles mousedown events on the clock body. */
@@ -202,6 +180,52 @@ export class Md2Clock1 implements AfterContentInit {
   }
 
   private twelvehour: boolean = false;
+  private interval: number = 10;
+
+  /** Initializes this clock view. */
+  private _init() {
+    this._hours.length = 0;
+    this._minutes.length = 0;
+
+    if (this.twelvehour) {
+      for (let i = 1; i < 13; i++) {
+        let radian = i / 6 * Math.PI;
+        let radius = CLOCK_OUTER_RADIUS;
+        this._hours.push({
+          value: i,
+          displayValue: i === 0 ? '00' : i,
+          enabled: true,
+          top: CLOCK_RADIUS - Math.cos(radian) * radius - CLOCK_TICK_RADIUS,
+          left: CLOCK_RADIUS + Math.sin(radian) * radius - CLOCK_TICK_RADIUS,
+        });
+      }
+    } else {
+      for (let i = 0; i < 24; i++) {
+        let radian = i / 6 * Math.PI;
+        let outer = i > 0 && i < 13,
+          radius = outer ? CLOCK_OUTER_RADIUS : CLOCK_INNER_RADIUS;
+        this._hours.push({
+          value: i,
+          displayValue: i === 0 ? '00' : i,
+          enabled: true,
+          top: CLOCK_RADIUS - Math.cos(radian) * radius - CLOCK_TICK_RADIUS,
+          left: CLOCK_RADIUS + Math.sin(radian) * radius - CLOCK_TICK_RADIUS,
+          fontSize: i > 0 && i < 13 ? '' : '80%'
+        });
+      }
+    }
+
+    for (let i = 0; i < 60; i += 5) {
+      let radian = i / 30 * Math.PI;
+      this._minutes.push({
+        value: i,
+        displayValue: i === 0 ? '00' : i,
+        enabled: true,
+        top: CLOCK_RADIUS - Math.cos(radian) * CLOCK_OUTER_RADIUS - CLOCK_TICK_RADIUS,
+        left: CLOCK_RADIUS + Math.sin(radian) * CLOCK_OUTER_RADIUS - CLOCK_TICK_RADIUS,
+      });
+    }
+  }
 
   /**
    * Set Time
@@ -237,6 +261,7 @@ export class Md2Clock1 implements AfterContentInit {
       this._selectedHour = value;
       this.activeDate.setHours(value);
     } else {
+      if (this.interval) { value *= this.interval; }
       this._selectedMinute = value;
       if (value === 60) { value = 0; }
       this.activeDate.setMinutes(value);

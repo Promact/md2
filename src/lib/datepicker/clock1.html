@@ -2,19 +2,21 @@
   <div class="md2-clock-center"></div>
   <div class="md2-clock-hand" [ngStyle]="_hand"></div>
   <div class="md2-clock-hours" [class.active]="_hourView">
-    <div *ngFor="let h of _hours"
+    <div *ngFor="let item of _hours"
          class="md2-clock-cell"
-         [class.md2-clock-cell-active]="_selectedHour == h.hour"
-         [class.md2-clock-cell-selected]="_selectedHour == h.hour"
-         [style.top]="h.top+'%'"
-         [style.left]="h.left+'%'">{{ h.hour }}</div>
+         [class.md2-clock-cell-active]="_selectedHour == item.value"
+         [class.md2-clock-cell-selected]="_selectedHour == item.value"
+         [style.top]="item.top+'%'"
+         [style.left]="item.left+'%'"
+         [style.fontSize]="item.fontSize">{{ item.displayValue }}</div>
+    <!--(click)="_cellClicked(item)"-->
   </div>
   <div class="md2-clock-minutes" [class.active]="!_hourView">
-    <div *ngFor="let m of _minutes"
+    <div *ngFor="let item of _minutes"
          class="md2-clock-cell"
-         [class.md2-clock-cell-active]="_selectedMinute == m.minute"
-         [class.md2-clock-cell-selected]="_selectedMinute == m.minute"
-         [style.top]="m.top+'%'"
-         [style.left]="m.left+'%'">{{ m.minute }}</div>
+         [class.md2-clock-cell-active]="_selectedMinute == item.value"
+         [class.md2-clock-cell-selected]="_selectedMinute == item.value"
+         [style.top]="item.top+'%'"
+         [style.left]="item.left+'%'">{{ item.displayValue }}</div>
   </div>
 </div>

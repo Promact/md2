@@ -90,8 +90,11 @@ export class Md2Clock1 implements AfterContentInit {
     let deg = 0;
     let radius = CLOCK_OUTER_RADIUS;
     if (this._hourView) {
-      let inner = this.activeDate.getHours() > 0 && this.activeDate.getHours() < 13;
-      radius = inner ? CLOCK_INNER_RADIUS : CLOCK_OUTER_RADIUS;
+      let outer = this.activeDate.getHours() > 0 && this.activeDate.getHours() < 13;
+      radius = outer ? CLOCK_OUTER_RADIUS : CLOCK_INNER_RADIUS;
+      if (this.twelvehour) {
+        radius = CLOCK_OUTER_RADIUS;
+      }
       deg = Math.round(this.activeDate.getHours() * (360 / (24 / 2)));
     } else {
       deg = Math.round(this.activeDate.getMinutes() * (360 / 60));
@@ -136,16 +139,27 @@ export class Md2Clock1 implements AfterContentInit {
   /** Initializes this clock view. */
   private _init() {
     this._hours.length = 0;
-
-    for (let i = 0; i < 24; i++) {
-      let radian = i / 6 * Math.PI;
-      let inner = i > 0 && i < 13,
-        radius = inner ? CLOCK_INNER_RADIUS : CLOCK_OUTER_RADIUS;
-      this._hours.push({
-        hour: i === 0 ? '00' : i,
-        top: CLOCK_RADIUS - Math.cos(radian) * radius - CLOCK_TICK_RADIUS,
-        left: CLOCK_RADIUS + Math.sin(radian) * radius - CLOCK_TICK_RADIUS
-      });
+    if (this.twelvehour) {
+      for (let i = 1; i < 13; i++) {
+        let radian = i / 6 * Math.PI;
+        let radius = CLOCK_OUTER_RADIUS;
+        this._hours.push({
+          hour: i === 0 ? '00' : i,
+          top: CLOCK_RADIUS - Math.cos(radian) * radius - CLOCK_TICK_RADIUS,
+          left: CLOCK_RADIUS + Math.sin(radian) * radius - CLOCK_TICK_RADIUS
+        });
+      }
+    } else {
+      for (let i = 0; i < 24; i++) {
+        let radian = i / 6 * Math.PI;
+        let outer = i > 0 && i < 13,
+          radius = outer ? CLOCK_OUTER_RADIUS : CLOCK_INNER_RADIUS;
+        this._hours.push({
+          hour: i === 0 ? '00' : i,
+          top: CLOCK_RADIUS - Math.cos(radian) * radius - CLOCK_TICK_RADIUS,
+          left: CLOCK_RADIUS + Math.sin(radian) * radius - CLOCK_TICK_RADIUS
+        });
+      }
     }
 
     for (let i = 0; i < 60; i += 5) {
@@ -205,7 +219,7 @@ export class Md2Clock1 implements AfterContentInit {
     let radian = Math.atan2(-x, y);
     let unit = Math.PI / (this._hourView ? 6 : 30);
     let z = Math.sqrt(x * x + y * y);
-    let inner = this._hourView && z < ((width * (CLOCK_OUTER_RADIUS / 100)) +
+    let outer = this._hourView && z > ((width * (CLOCK_OUTER_RADIUS / 100)) +
       (width * (CLOCK_INNER_RADIUS / 100))) / 2;
     let value = 0;
 
@@ -214,8 +228,12 @@ export class Md2Clock1 implements AfterContentInit {
     radian = value * unit;
 
     if (this._hourView) {
-      if (value === 12) { value = 0; }
-      value = inner ? (value === 0 ? 12 : value) : value === 0 ? 0 : value + 12;
+      if (this.twelvehour) {
+        value = value === 0 ? 12 : value;
+      } else {
+        if (value === 12) { value = 0; }
+        value = outer ? (value === 0 ? 12 : value) : value === 0 ? 0 : value + 12;
+      }
       this._selectedHour = value;
       this.activeDate.setHours(value);
     } else {

@@ -50,8 +50,9 @@ export class Md2Clock1 implements AfterContentInit {
   get activeDate(): Date { return this._activeDate; }
   set activeDate(value: Date) {
     let oldActiveDate = this._activeDate;
-    this._activeDate = this._util.parse(value) || this._util.today();
-    if (!this._util.isSameDay(oldActiveDate, this._activeDate)) {
+    this._activeDate = this._util.clampDate(value, this.min, this.max);
+    //this._activeDate = this._util.parse(value) || this._util.today();
+    if (!this._util.isSameMinute(oldActiveDate, this._activeDate)) {
       this._init();
     }
   }
@@ -62,10 +63,21 @@ export class Md2Clock1 implements AfterContentInit {
   get selected(): Date { return this._selected; }
   set selected(value: Date) {
     this._selected = this._util.parse(value);
-    this._selectedHour = this._util.getHour(this.selected);
-    this._selectedMinute = this._util.getMinute(this.selected);
+    if (this._selected) { this.activeDate = this._selected; }
   }
   private _selected: Date;
+
+  /** The minimum selectable date. */
+  @Input()
+  get min(): Date { return this._min; }
+  set min(date: Date) { this._min = this._util.parse(date); }
+  private _min: Date;
+
+  /** The maximum selectable date. */
+  @Input()
+  get max(): Date { return this._max; }
+  set max(date: Date) { this._max = this._util.parse(date); }
+  private _max: Date;
 
   /** Whether the clock should be started in hour or minute view. */
   @Input() startView: 'hour' | 'minute' = 'hour';
@@ -91,6 +103,8 @@ export class Md2Clock1 implements AfterContentInit {
   _selectedMinute: number;
 
   get _hand(): any {
+    this._selectedHour = this._util.getHour(this.activeDate);
+    this._selectedMinute = this._util.getMinute(this.activeDate);
     let deg = 0;
     let radius = CLOCK_OUTER_RADIUS;
     if (this._hourView) {
@@ -142,6 +156,7 @@ export class Md2Clock1 implements AfterContentInit {
   /** Handles hour selection in the clock view. */
   _hourSelected(date: Date): void {
     //this.activeDate = this._selectedHour;
+    this.selectedChange.emit(this.activeDate);
     this._hourView = false;
   }
 
@@ -151,6 +166,7 @@ export class Md2Clock1 implements AfterContentInit {
     //this.selectedChange.emit(date);
     //this.selectedChange.emit(this.activeDate);
     //}
+    this.selectedChange.emit(this.activeDate);
     this._hourView = true;
   }
 
@@ -259,12 +275,10 @@ export class Md2Clock1 implements AfterContentInit {
         if (value === 12) { value = 0; }
         value = outer ? (value === 0 ? 12 : value) : value === 0 ? 0 : value + 12;
       }
-      this._selectedHour = value;
       this.activeDate.setHours(value);
     } else {
       if (this.interval) { value *= this.interval; }
       if (value === 60) { value = 0; }
-      this._selectedMinute = value;
       this.activeDate.setMinutes(value);
     }
   }

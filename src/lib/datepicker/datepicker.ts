@@ -1,4 +1,5 @@
 import {
+  AfterContentInit,
   Component,
   ElementRef,
   HostListener,
@@ -75,7 +76,7 @@ export type PanelPositionY = 'above' | 'below';
   ],
   encapsulation: ViewEncapsulation.None
 })
-export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
+export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueAccessor {
 
   private _portal: TemplatePortal;
   private _overlayRef: OverlayRef;
@@ -146,6 +147,10 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     this.getYears();
   }
 
+  ngAfterContentInit() {
+    this.date = this._date || this._util.today();
+  }
+
   ngOnDestroy() { this.destroyPanel(); }
 
   @Input() placeholder: string;
@@ -209,17 +214,9 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     });
   }
 
-  get date() { return this._date || this.today; }
+  get date() { return this._date; }
   set date(value: Date) {
-    if (value && this._util.isValidDate(value)) {
-      if (this._min && this._min > value) {
-        value = this._min;
-      }
-      if (this._max && this._max < value) {
-        value = this._max;
-      }
-      this._date = value;
-    }
+    this._date = this._util.clampDate(value, this._min, this._max);
   }
 
   get time() { return this.date.getHours() + ':' + this.date.getMinutes(); }

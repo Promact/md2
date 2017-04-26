@@ -1,0 +1,1 @@
+<div *ngFor="let toast of toasts" class="md2-toast" [class.in]="toast.isVisible" (click)="remove(toast.id)">{{ toast.message }}</div>

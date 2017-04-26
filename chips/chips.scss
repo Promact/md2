@@ -1,0 +1,156 @@
+.template-content {
+  display: inline;
+}
+
+md2-chips {
+  outline: none;
+
+  .md2-chips-container {
+    display: block;
+    box-shadow: 0 1px #ccc;
+    padding: 5px 0;
+    margin-bottom: 10px;
+    min-height: 50px;
+    box-sizing: border-box;
+    clear: both;
+  }
+
+  .md2-chips-container::after {
+    clear: both;
+    content: '';
+    display: table;
+  }
+
+  &.chip-input-focus .md2-chips-container {
+    box-shadow: 0 2px #0d8bff;
+  }
+
+  .md2-chip-disabled {
+    cursor: default;
+  }
+
+  md2-autocomplete {
+    margin: 0;
+  }
+
+  .md2-autocomplete-wrap {
+    border-bottom: 0 !important;
+  }
+}
+
+.md2-chip-remove {
+  .md2-chip {
+    padding: 0 12px;
+  }
+}
+
+.md2-chip {
+  font-size: 14px;
+  position: relative;
+  cursor: default;
+  border-radius: 16px;
+  display: block;
+  height: 32px;
+  line-height: 32px;
+  margin: 8px 8px 0 0;
+  padding: 0 28px 0 12px;
+  float: left;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  max-width: 100%;
+  background: rgb(224, 224, 224);
+  color: rgb(66, 66, 66);
+  white-space: nowrap;
+  overflow: hidden;
+  -ms-text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+
+  &.active {
+    color: white;
+    background: #0d8bff;
+
+    svg {
+      color: rgba(white, 0.87);
+    }
+  }
+
+  svg {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    fill: currentColor;
+    color: rgba(black, 0.54);
+  }
+}
+
+.md2-template {
+  display: none;
+}
+
+.chip-input-disabled {
+  pointer-events: none;
+  cursor: default;
+}
+
+.chip-input-form {
+  display: inline-block;
+  height: 32px;
+  margin: 8px 8px 0 0;
+}
+
+.chip-remove {
+  cursor: pointer;
+  display: inline-block;
+  padding: 0 3px;
+  color: #616161;
+  font-size: 30px;
+  vertical-align: top;
+  line-height: 21px;
+  font-family: serif;
+}
+
+.chip-input {
+  display: inline-block;
+  width: auto;
+  border: 0;
+  outline: none;
+  height: 32px;
+  line-height: 32px;
+  font-size: 16px;
+  background: transparent;
+}
+
+.chip-error {
+  font-size: 13px;
+  color: #fd0f0f;
+}
+
+.md2-chips-container {
+  .chip-input-form .md2-autocomplete-wrap {
+    border-bottom: 0;
+  }
+
+  .md2-autocomplete-wrap {
+    &.is-focused .md2-autocomplete-placeholder {
+      display: none;
+    }
+
+    .md2-autocomplete-placeholder.has-value {
+      display: none;
+    }
+
+    svg {
+      display: none;
+    }
+
+    .md2-autocomplete-input {
+      height: 32px;
+      font-size: 16px;
+    }
+  }
+}

@@ -1,0 +1,156 @@
+$primary: #106cc8 !default;
+$warn: #f44336 !default;
+
+md2-autocomplete {
+  position: relative;
+  display: block;
+  margin: 18px 0;
+  outline: none;
+  user-select: none;
+  backface-visibility: hidden;
+}
+
+md2-autocomplete.md2-autocomplete-disabled {
+  pointer-events: none;
+  cursor: default;
+}
+
+.md2-autocomplete-trigger {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 2px 2px 1px;
+  border-bottom: 1px solid rgba(black, 0.12);
+  box-sizing: border-box;
+  min-width: 64px;
+  min-height: 26px;
+  cursor: pointer;
+
+  &.is-focused {
+    padding-bottom: 0;
+    border-bottom: 2px solid $primary;
+  }
+
+  md2-autocomplete.ng-invalid.ng-touched:not(.md2-autocomplete-disabled) & {
+    color: $warn;
+    border-bottom-color: $warn;
+  }
+}
+
+md2-autocomplete.md2-autocomplete-disabled .md2-autocomplete-trigger {
+  color: rgba(black, 0.38);
+  border-color: transparent;
+  background-image: linear-gradient(to right, rgba(black, 0.38) 0%, rgba(black, 0.38) 33%, transparent 0%);
+  background-position: bottom -1px left 0;
+  background-size: 4px 1px;
+  background-repeat: repeat-x;
+  cursor: default;
+
+  &.is-focused {
+    padding-bottom: 1px;
+    border-bottom: 1px solid transparent;
+  }
+}
+
+.md2-autocomplete-input {
+  width: 100%;
+  height: 26px;
+  font-size: 15px;
+  outline: none;
+  background: transparent;
+  border: 0;
+  box-sizing: border-box;
+}
+
+md2-autocomplete.md2-autocomplete-disabled .md2-autocomplete-input {
+  color: rgba(black, 0.38);
+}
+
+.md2-autocomplete-placeholder {
+  position: absolute;
+  right: 26px;
+  bottom: 100%;
+  left: 0;
+  max-width: 100%;
+  padding-left: 3px;
+  padding-right: 0;
+  line-height: 1.4;
+  color: rgba(black, 0.38);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 1;
+  transform: translate3d(0, 26px, 0) scale(1);
+  transition: transform 400ms cubic-bezier(0.25, 0.8, 0.25, 1);
+  transform-origin: left top;
+
+  [aria-required=true] &::after {
+    content: '*';
+  }
+}
+
+.md2-autocomplete-trigger.is-focused .md2-autocomplete-placeholder {
+  color: $primary;
+}
+
+.md2-autocomplete-trigger.is-focused .md2-autocomplete-placeholder,
+md2-autocomplete .md2-autocomplete-placeholder.has-value {
+  transform: translate3d(0, 6px, 0) scale(0.75);
+}
+
+.md2-autocomplete-trigger svg {
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: block;
+  height: 100%;
+  background: white;
+  fill: currentColor;
+  color: rgba(black, 0.54);
+}
+
+.md2-autocomplete-menu {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  display: block;
+  z-index: 10;
+  width: 100%;
+  margin: 0;
+  padding: 8px 0;
+  box-shadow: 0 1px 3px 0 rgba(black, 0.2), 0 1px 1px 0 rgba(black, 0.14), 0 2px 1px -1px rgba(black, 0.12);
+  max-height: 256px;
+  min-height: 48px;
+  overflow-y: auto;
+  background: white;
+}
+
+.md2-autocomplete-menu .md2-option {
+  position: relative;
+  display: block;
+  color: lighten(black, 13);
+  cursor: pointer;
+  width: auto;
+  padding: 0 16px;
+  height: 48px;
+  line-height: 48px;
+  transition: background 150ms linear;
+}
+
+.md2-autocomplete-menu .md2-option:hover,
+.md2-autocomplete-menu .md2-option.focus {
+  background: darken(white, 7);
+}
+
+.md2-autocomplete-menu .md2-option .md2-text {
+  width: auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 16px;
+}
+
+.md2-autocomplete-menu .highlight {
+  color: lighten(black, 45);
+}

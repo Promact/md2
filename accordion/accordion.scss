@@ -1,0 +1,81 @@
+$primary: #106cc8 !default;
+
+md2-accordion {
+  display: block;
+}
+
+md2-accordion-tab {
+  position: relative;
+  display: block;
+  outline: 0;
+  box-sizing: border-box;
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+.md2-accordion-header {
+  position: relative;
+  display: block;
+  padding-right: 30px;
+  font-weight: 500;
+  line-height: 40px;
+  text-align: left;
+  color: rgba(black, 0.87);
+  cursor: pointer;
+  white-space: nowrap;
+  border-bottom: 1px solid rgba(black, 0.12);
+  border-radius: 0;
+  box-sizing: border-box;
+  user-select: none;
+
+  md2-accordion-tab.md2-accordion-tab-active > & {
+    border-color: $primary;
+    box-shadow: 0 1px 0 $primary;
+  }
+
+  md2-accordion-tab.md2-accordion-tab-disabled > & {
+    pointer-events: none;
+    color: rgba(black, 0.26);
+    background-image: linear-gradient(to right, rgba(black, 0.26) 0, rgba(black, 0.26) 33%, transparent 0);
+    background-size: 4px 1px;
+    background-repeat: repeat-x;
+    background-position: 0 bottom;
+    border-color: transparent;
+    box-shadow: none;
+    cursor: default;
+  }
+}
+
+.md2-accordion-header-icon {
+  position: absolute;
+  top: 12px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  overflow: hidden;
+  display: inline-block;
+  border-width: 0 2px 2px 0;
+  border-style: solid;
+  border-color: currentColor;
+  opacity: 0.64;
+  transform: rotate(45deg);
+  transition: 300ms ease-in-out;
+
+  md2-accordion-tab.md2-accordion-tab-active > .md2-accordion-header > & {
+    transform: rotate(225deg);
+    top: 16px;
+  }
+}
+
+.md2-accordion-tab-body {
+  position: relative;
+  overflow: hidden;
+}
+
+.md2-accordion-tab-content {
+  position: relative;
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(black, 0.12);
+}

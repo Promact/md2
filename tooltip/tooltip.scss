@@ -1,0 +1,47 @@
+$md2-tooltip-target-height: 22px;
+$md2-tooltip-max-width: 250px;
+$md2-tooltip-font-size: 10px;
+$md2-tooltip-margin: 14px;
+$md2-tooltip-horizontal-padding: 8px;
+$md2-tooltip-vertical-padding: ($md2-tooltip-target-height - $md2-tooltip-font-size) / 2;
+
+md2-tooltip {
+  pointer-events: none;
+}
+
+.md2-tooltip {
+  color: white;
+  padding: $md2-tooltip-vertical-padding $md2-tooltip-horizontal-padding;
+  border-radius: 2px;
+  font-size: $md2-tooltip-font-size;
+  margin: $md2-tooltip-margin;
+  max-width: $md2-tooltip-max-width;
+  background: rgba(97, 97, 97, 0.9);
+  word-wrap: break-word;
+}
+
+.cdk-overlay-container, .cdk-global-overlay-wrapper {
+  pointer-events: none;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.cdk-overlay-container {
+  position: fixed;
+  z-index: 1000;
+}
+
+.cdk-global-overlay-wrapper {
+  display: flex;
+  position: absolute;
+  z-index: 1000;
+}
+
+.cdk-overlay-pane {
+  position: absolute;
+  pointer-events: auto;
+  box-sizing: border-box;
+  z-index: 1000;
+}

@@ -1,0 +1,41 @@
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+import { ViewportRuler } from './viewport-ruler';
+import { ConnectedPositionStrategy } from './connected-position-strategy';
+import { Injectable } from '@angular/core';
+import { GlobalPositionStrategy } from './global-position-strategy';
+/** Builder for overlay position strategy. */
+var OverlayPositionBuilder = (function () {
+    function OverlayPositionBuilder(_viewportRuler) {
+        this._viewportRuler = _viewportRuler;
+    }
+    /**
+     * Creates a global position strategy.
+     */
+    OverlayPositionBuilder.prototype.global = function () {
+        return new GlobalPositionStrategy();
+    };
+    /**
+     * Creates a relative position strategy.
+     * @param elementRef
+     * @param originPos
+     * @param overlayPos
+     */
+    OverlayPositionBuilder.prototype.connectedTo = function (elementRef, originPos, overlayPos) {
+        return new ConnectedPositionStrategy(elementRef, originPos, overlayPos, this._viewportRuler);
+    };
+    return OverlayPositionBuilder;
+}());
+OverlayPositionBuilder = __decorate([
+    Injectable(),
+    __metadata("design:paramtypes", [ViewportRuler])
+], OverlayPositionBuilder);
+export { OverlayPositionBuilder };
+//# sourceMappingURL=overlay-position-builder.js.map

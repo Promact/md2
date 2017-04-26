@@ -1,0 +1,119 @@
+$primary: #106cc8 !default;
+
+/*
+ * Data Table
+ */
+
+
+/*
+ * Sort
+ */
+[md2SortBy] {
+  line-height: 24px;
+  color: rgba(black, 0.54);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+
+  svg {
+    display: inline-block;
+    vertical-align: middle;
+    fill: currentColor;
+    opacity: 0;
+  }
+
+  &:hover:not(.md2-sort-active) {
+    svg {
+      color: rgba(black, 0.26);
+      opacity: 1;
+    }
+  }
+
+  &.md2-sort-active {
+    color: rgba(black, 0.87);
+
+    svg {
+      opacity: 1;
+    }
+  }
+}
+
+
+/*
+ * Pagination
+ */
+md2-pagination {
+  display: block;
+  color: rgba(black, 0.54);
+  user-select: none;
+
+  &::before,
+  &::after {
+    display: table;
+    content: '';
+  }
+
+  &::after {
+    clear: both;
+  }
+
+  .md2-pagination {
+    display: inline-block;
+    margin: 8px 0;
+    padding: 0;
+
+    li {
+      position: relative;
+      display: inline-block;
+      width: 36px;
+      vertical-align: top;
+      text-align: center;
+      line-height: 36px;
+      border-radius: 100px;
+      cursor: pointer;
+      box-sizing: border-box;
+
+      &:hover:not(.disabled):not(.active) {
+        background: rgba(black, 0.12);
+      }
+
+      &.disabled {
+        pointer-events: none;
+        background: transparent;
+        cursor: default;
+        opacity: 0.48;
+      }
+
+      &.active {
+        background: $primary;
+        color: white;
+        cursor: default;
+      }
+
+      svg {
+        fill: currentColor;
+        margin-bottom: -7px;
+      }
+    }
+  }
+
+  .md2-rows-select {
+    display: inline-block;
+    margin: 8px 0;
+    padding: 0;
+    float: right;
+    color: rgba(black, 0.54);
+    line-height: 36px;
+
+    md2-select {
+      display: inline-block;
+      border: 0;
+      outline: 0;
+    }
+
+    .md2-select-trigger {
+      border-width: 0;
+      min-width: 40px;
+    }
+  }
+}

@@ -73,6 +73,10 @@ export class Md2Clock1 implements AfterContentInit {
   /** A function used to filter which dates are selectable. */
   @Input() dateFilter: (date: Date) => boolean;
 
+  @Input() interval: number = 1;
+
+  @Input() twelvehour: boolean = false;
+
   /** Emits when the currently selected date changes. */
   @Output() selectedChange = new EventEmitter<Date>();
 
@@ -179,9 +183,6 @@ export class Md2Clock1 implements AfterContentInit {
     }
   }
 
-  private twelvehour: boolean = false;
-  private interval: number = 10;
-
   /** Initializes this clock view. */
   private _init() {
     this._hours.length = 0;
@@ -241,7 +242,7 @@ export class Md2Clock1 implements AfterContentInit {
     let x = (width / 2) - (pageX - triggerRect.left - window.pageXOffset);
     let y = (height / 2) - (pageY - triggerRect.top - window.pageYOffset);
     let radian = Math.atan2(-x, y);
-    let unit = Math.PI / (this._hourView ? 6 : 30);
+    let unit = Math.PI / (this._hourView ? 6 : (this.interval ? (30 / this.interval) : 30));
     let z = Math.sqrt(x * x + y * y);
     let outer = this._hourView && z > ((width * (CLOCK_OUTER_RADIUS / 100)) +
       (width * (CLOCK_INNER_RADIUS / 100))) / 2;
@@ -262,8 +263,8 @@ export class Md2Clock1 implements AfterContentInit {
       this.activeDate.setHours(value);
     } else {
       if (this.interval) { value *= this.interval; }
-      this._selectedMinute = value;
       if (value === 60) { value = 0; }
+      this._selectedMinute = value;
       this.activeDate.setMinutes(value);
     }
   }

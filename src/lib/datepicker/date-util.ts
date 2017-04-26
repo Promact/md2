@@ -262,6 +262,26 @@ export class DateUtil {
   }
 
   /**
+   * Gets whether two dates are the same hours.
+   * @param {Date} d1
+   * @param {Date} d2
+   * @returns {boolean}
+   */
+  isSameHour(d1: Date, d2: Date) {
+    return d1 && d2 && d1.getHours() == d2.getHours() && this.isSameDay(d1, d2);
+  }
+
+  /**
+   * Gets whether two dates are the same minutes.
+   * @param {Date} d1
+   * @param {Date} d2
+   * @returns {boolean}
+   */
+  isSameMinute(d1: Date, d2: Date) {
+    return d1 && d2 && d1.getMinutes() == d2.getMinutes() && this.isSameHour(d1, d2);
+  }
+
+  /**
    * Gets whether a date is in the month immediately after some date.
    * @param {Date} startDate The date from which to compare.
    * @param {Date} endDate The date to check.
@@ -436,6 +456,20 @@ export class DateUtil {
     let maxDateAtMidnight = this.isValidDate(maxDate) ? this.createDateAtMidnight(maxDate) : null;
     return (!minDateAtMidnight || minDateAtMidnight <= dateAtMidnight) &&
       (!maxDateAtMidnight || maxDateAtMidnight >= dateAtMidnight);
+  }
+
+  /**
+   * Checks if a date is within a min and max range.
+   * If minDate or maxDate are not dates, they are ignored.
+   * @param {Date} date
+   * @param {Date} minDate
+   * @param {Date} maxDate
+   */
+  isDateWithinRange1(date: Date, minDate: Date, maxDate: Date) {
+    minDate = this.isValidDate(minDate) ? minDate : null;
+    maxDate = this.isValidDate(maxDate) ? maxDate : null;
+    return (!minDate || minDate <= date) &&
+      (!maxDate || maxDate >= date);
   }
 
   /**

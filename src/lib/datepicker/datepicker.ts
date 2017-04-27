@@ -44,6 +44,8 @@ import {
 import { fadeInContent, slideCalendar } from './datepicker-animations';
 import { Subscription } from 'rxjs/Subscription';
 
+import { ClockView } from './clock';
+
 /** Change event object emitted by Md2Select. */
 export class Md2DateChange {
   constructor(public source: Md2Datepicker, public value: Date) { }
@@ -98,15 +100,12 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
 
   private today: Date = new Date();
 
-  private _min: Date = null;
-  private _max: Date = null;
-
   _years: Array<number> = [];
   _dates: Array<Object> = [];
 
   _isYearsVisible: boolean;
   _isCalendarVisible: boolean;
-  _clockView: string = 'hour';
+  _clockView: ClockView = 'hour';
   _calendarState: string;
 
   _weekDays: Array<any>;
@@ -216,18 +215,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
 
   get date() { return this._date; }
   set date(value: Date) {
-    this._date = this._util.clampDate(value, this._min, this._max);
-  }
-
-  get time() { return this.date.getHours() + ':' + this.date.getMinutes(); }
-  set time(value: string) {
-    this.date = new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate(),
-      parseInt(value.split(':')[0]), parseInt(value.split(':')[1]));
-    // if (this._clockView === 'hour') {
-    //  this.date.setHours(parseInt(value.split(':')[0]));
-    // } else {
-    //  this.date.setMinutes(parseInt(value.split(':')[1]));
-    // }
+    this._date = this._util.clampDate(value, this.min, this.max);
   }
 
   get minutes(): string {
@@ -249,23 +237,23 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   get disabled(): boolean { return this._disabled; }
   set disabled(value) { this._disabled = coerceBooleanProperty(value); }
 
+  /** The minimum selectable date. */
   @Input()
-  set min(value: Date) {
-    if (value && this._util.isValidDate(value)) {
-      this._min = new Date(value);
-      this._min.setHours(0, 0, 0, 0);
-      this.getYears();
-    } else { this._min = null; }
+  get min(): Date { return this._min; }
+  set min(date: Date) {
+    this._min = this._util.parse(date);
+    this.getYears();
   }
+  private _min: Date;
 
+  /** The maximum selectable date. */
   @Input()
-  set max(value: Date) {
-    if (value && this._util.isValidDate(value)) {
-      this._max = new Date(value);
-      this._max.setHours(0, 0, 0, 0);
-      this.getYears();
-    } else { this._max = null; }
+  get max(): Date { return this._max; }
+  set max(date: Date) {
+    this._max = this._util.parse(date);
+    this.getYears();
   }
+  private _max: Date;
 
   @Input()
   get openOnFocus(): boolean { return this._openOnFocus; }
@@ -532,12 +520,12 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
     if (!this.panelOpen) {
       this._onTouched();
     }
-    let el: any = event.target;
-    let date: Date = this._util.parseDate(el.value, this.format);
-    if (this.value !== date) {
-      this.value = date ? date : null;
-      this._emitChangeEvent();
-    }
+    // let el: any = event.target;
+    // let date: Date = this._util.parseDate(el.value, this.format);
+    // if (this.value !== date) {
+    //  this.value = date ? date : null;
+    //  this._emitChangeEvent();
+    // }
   }
 
   /**
@@ -550,7 +538,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   }
 
   private getYears() {
-    let startYear = this._min ? this._min.getFullYear() : 1900,
+    let startYear = this.min ? this.min.getFullYear() : 1900,
       endYear = this._max ? this._max.getFullYear() : this.today.getFullYear() + 100;
     this._years = [];
     for (let i = startYear; i <= endYear; i++) {
@@ -588,7 +576,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   /**
    * Toggle Hour visiblity
    */
-  _toggleHours(value: string) {
+  _toggleHours(value: ClockView) {
     this._isYearsVisible = false;
     this._isCalendarVisible = false;
     this._isYearsVisible = false;
@@ -670,8 +658,8 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
    * @return boolean
    */
   _isBeforeMonth() {
-    return !this._min ? true :
-      this._min && this._util.getMonthDistance(this.date, this._min) < 0;
+    return !this.min ? true :
+      this.min && this._util.getMonthDistance(this.date, this.min) < 0;
   }
 
   /**
@@ -683,19 +671,19 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
       this._max && this._util.getMonthDistance(this.date, this._max) > 0;
   }
 
-  _onTimeChange(event: string) {
-    if (this.time !== event) { this.time = event; }
+  _onActiveTimeChange(event: Date) {
+    this.date = event;
   }
 
-  _onHourChange(event: number) {
-    this._clockView = 'minute';
-  }
-
-  _onMinuteChange(event: number) {
-    this.value = this.date;
-    this._emitChangeEvent();
-    this._onBlur();
-    this.close();
+  _onTimeChange(event: Date) {
+    this.value = event;
+    if (this._clockView === 'hour') {
+      this._clockView = 'minute';
+    } else {
+      this._clockView = 'hour';
+      this._onBlur();
+      this.close();
+    }
   }
 
   /**
@@ -713,7 +701,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
     for (let d of this.disableWeekDays) {
       if (date.getDay() === d) { return true; }
     }
-    return !this._util.isDateWithinRange(date, this._min, this._max);
+    return !this._util.isDateWithinRange(date, this.min, this._max);
   }
 
   /**

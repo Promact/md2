@@ -4,7 +4,7 @@ $md2-clock-margin: 8px !default;
 $md2-clock-font-size: 14px !default;
 $md2-clock-cell-size: 14.1666% !default;
 
-:host { //md2-clock
+:host {
   position: relative;
   display: block;
   min-width: $md2-clock-min-size;
@@ -92,14 +92,16 @@ $md2-clock-cell-size: 14.1666% !default;
   border-radius: 50%;
   align-items: center;
   cursor: pointer;
-  /*&:not(.md2-clock-cell-selected) {
+
+  &:not(.md2-clock-cell-selected) {
     &:not(.md2-clock-cell-disabled):hover {
       background-color: rgba(black, 0.1);
     }
-  }*/
-  &:hover,
-  &.md2-clock-cell-active {
-    background-color: rgba(black, 0.1);
+  }
+
+  &.md2-clock-cell-disabled {
+    color: rgba(black, 0.38);
+    pointer-events: none;
   }
 
   &.md2-clock-cell-selected {

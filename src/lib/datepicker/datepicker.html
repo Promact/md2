@@ -105,11 +105,12 @@
         </div>
       </div>
       <md2-clock [class.active]="!_isCalendarVisible"
-                 [time]="time"
-                 [view]="_clockView"
-                 (timeChange)="_onTimeChange($event)"
-                 (onHourChange)="_onHourChange($event)"
-                 (onMinuteChange)="_onMinuteChange($event)"></md2-clock>
+                 [startView]="_clockView"
+                 [selected]="date"
+                 [min]="min"
+                 [max]="max"
+                 (activeDateChange)="_onActiveTimeChange($event)"
+                 (selectedChange)="_onTimeChange($event)"></md2-clock>
       <div class="md2-datepicker-actions">
         <div class="md2-button" (click)="close()">{{ cancelLabel }}</div>
         <div class="md2-button" (click)="_onClickOk()">{{ okLabel }}</div>

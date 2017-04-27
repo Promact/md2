@@ -22,6 +22,7 @@
            [disabled]="disabled"
            autocomplete="off"
            (change)="$event.stopPropagation()"
+           (click)="_handleFocus($event)"
            (focus)="_handleFocus($event)"
            (blur)="_handleBlur($event)"
            (keydown)="_handleKeydown($event)" />

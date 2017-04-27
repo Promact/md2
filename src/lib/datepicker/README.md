@@ -16,6 +16,7 @@ Datepicker allow the user to select date and time.
 | `cancelLabel` | `string` | Datepicker Cancel label |
 | `format` | `string` | The date format of datepicker |
 | `tabindex` | `number` | The tabIndex of the datepicker. |
+| `timeInterval` | `number` | Select minutes in specific time interval, default is 1. |
 | `openOnFocus` | `boolean` | Opend Calendar Whether or not the datepicker is openOnFocus. |
 | `isOpen` | `boolean` | Opend Calendar Whether or not the datepicker is isOpen. |
 | `enableDates` | `Array<Date>` | Enable dates. |

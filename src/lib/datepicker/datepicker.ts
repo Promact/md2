@@ -159,6 +159,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   @Input() enableDates: Array<Date> = [];
   @Input() disableDates: Array<Date> = [];
   @Input() disableWeekDays: Array<number> = [];
+  @Input() timeInterval: number = 1;
 
   /** Position of the menu in the X axis. */
   positionX: PanelPositionX = 'after';

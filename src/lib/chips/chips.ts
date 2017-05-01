@@ -237,6 +237,10 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
       this.autoCompleteFocued = true;
       this._onTouched();
     }
+    else {
+      this.autoCompleteFocued = true;
+      this._onTouched();
+    }
     this._resetSelected();
   }
 

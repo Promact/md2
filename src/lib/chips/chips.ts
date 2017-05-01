@@ -83,7 +83,7 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
   @Input() allowedPattern: RegExp = /.+/;
   @Input() ngModel: string[];
   @Input() pasteSplitPattern: string = ',';
-  @Input() placeholder: string = 'Add New';
+  @Input() placeholder: string = '';
   @Input() autocompleteDataList: string[];
   @Input() isAutoComplete: boolean = false;
   @Input() isRemovable: boolean = true;
@@ -107,6 +107,7 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
   inputValue: string = '';
   selectedChip: number = -1;
   inputFocused: boolean = false;
+  autoCompleteFocued: boolean = false;
 
   private _value: any = '';
   private splitRegExp: RegExp;
@@ -143,6 +144,10 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
       }
     }
     this._emitChangeEvent();
+  }
+
+  getFocusAutocomplete() {
+    this._onTouched();
   }
 
   changeAutocomplete(value: any) {
@@ -230,6 +235,10 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
     if (!this.isAutoComplete) {
       this.elementRef.nativeElement.querySelector('input.chip-input').focus();
     }
+    else {
+      this.autoCompleteFocued = true;
+      this._onTouched();
+    }
     this._resetSelected();
   }
 
@@ -285,12 +294,14 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
   }
 
   private _isValid(chipString: any): boolean {
-    if (chipString) {
-      let isExist: any;
-      isExist = this.chipItemList.filter((chip) => chip.text === chipString);
-      if (this.chipItemList.indexOf(chipString) === -1 && (isExist.length ? false : true)) {
-        return this.allowedPattern.test(chipString);
-      }
+    let typeString = typeof chipString;
+    if (typeString === 'string') {
+      chipString = chipString.trim();
+    }
+    let isExist: any;
+    isExist = this.chipItemList.filter((chip) => chip.text === chipString);
+    if (this.chipItemList.indexOf(chipString) === -1 && (isExist.length ? false : true)) {
+      return this.allowedPattern.test(chipString);
     }
   }
   /**

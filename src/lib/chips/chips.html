@@ -12,7 +12,7 @@
     <div *ngIf="isAutoComplete">
       <md2-autocomplete [items]="autocompleteDataList"
                         [item-text]="autocompleteItemText"
-                        [(ngModel)]="item" name="autocomplete" [disabled]="disabled" (textChange)="valueupdate($event)" (change)="changeAutocomplete($event)" [placeholder]="placeholder" (keydown)="inputChanged($event)">
+                        [(ngModel)]="item" name="autocomplete" [disabled]="disabled" (textChange)="valueupdate($event)" (change)="changeAutocomplete($event)" [placeholder]="placeholder" (keydown)="inputChanged($event)" (click)="getFocusAutocomplete()">
       </md2-autocomplete>
     </div>
   </form>

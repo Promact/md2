@@ -66,7 +66,7 @@ const MD2_MODULES = [
     Md2DialogModule.forRoot(),
     Md2MenuModule.forRoot(),
     MdRippleModule,
-    Md2SelectModule.forRoot(),
+    Md2SelectModule,
     Md2TabsModule.forRoot(),
     Md2TagsModule.forRoot(),
     Md2ToastModule.forRoot(),

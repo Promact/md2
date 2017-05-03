@@ -134,6 +134,7 @@ $md2-select-trigger-font-size: 16px !default;
   padding-top: 0;
   padding-bottom: 0;
   max-height: $md2-select-panel-max-height;
+  min-width: 100%;
 
   @include cdk-high-contrast {
     outline: solid 1px;
@@ -161,7 +162,7 @@ $md2-select-trigger-font-size: 16px !default;
 
   &.md2-selected {
     color: $primary;
-    // In multiple mode there is a checkbox to show that the option is selected.
+
     &:not(.md2-option-multiple) {
       background: rgba(black, 0.04);
     }

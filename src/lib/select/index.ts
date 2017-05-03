@@ -1,25 +1,22 @@
-import { NgModule, ModuleWithProviders } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Md2Select } from './select';
 import { Md2SelectHeader } from './select-header';
 import { Md2OptionModule } from './option';
-import { CompatibilityModule, OverlayModule } from '../core';
+import { MdCommonModule, OverlayModule } from '../core';
 
 
 @NgModule({
-  imports: [CommonModule, OverlayModule, Md2OptionModule, CompatibilityModule],
-  exports: [Md2Select, Md2SelectHeader, Md2OptionModule, CompatibilityModule],
+  imports: [
+    CommonModule,
+    OverlayModule,
+    Md2OptionModule,
+    MdCommonModule,
+  ],
+  exports: [Md2Select, Md2SelectHeader, Md2OptionModule, MdCommonModule],
   declarations: [Md2Select, Md2SelectHeader],
 })
-export class Md2SelectModule {
-  /** @deprecated */
-  static forRoot(): ModuleWithProviders {
-    return {
-      ngModule: Md2SelectModule,
-      providers: []
-    };
-  }
-}
+export class Md2SelectModule { }
 
 
 export * from './select';

@@ -5,9 +5,9 @@ import {
   Input,
   Output,
   NgModule,
-  ModuleWithProviders,
-  Renderer,
   ViewEncapsulation,
+  Inject,
+  Optional,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ENTER, SPACE } from '../core/keyboard/keycodes';
@@ -79,8 +79,7 @@ export class Md2Option {
   @Output() onSelectionChange = new EventEmitter<Md2OptionSelectionChange>();
 
   constructor(
-    private _element: ElementRef,
-    private _renderer: Renderer) { }
+    private _element: ElementRef) { }
 
   /**
    * Whether or not the option is currently active and ready to be selected.
@@ -114,7 +113,7 @@ export class Md2Option {
 
   /** Sets focus onto this option. */
   focus(): void {
-    this._renderer.invokeElementMethod(this._getHostElement(), 'focus');
+    this._getHostElement().focus();
   }
 
   /**
@@ -166,7 +165,7 @@ export class Md2Option {
   /** Emits the selection change event. */
   private _emitSelectionChangeEvent(isUserInput = false): void {
     this.onSelectionChange.emit(new Md2OptionSelectionChange(this, isUserInput));
-  };
+  }
 
 }
 
@@ -175,11 +174,4 @@ export class Md2Option {
   exports: [Md2Option],
   declarations: [Md2Option]
 })
-export class Md2OptionModule {
-  static forRoot(): ModuleWithProviders {
-    return {
-      ngModule: Md2OptionModule,
-      providers: []
-    };
-  }
-}
+export class Md2OptionModule { }

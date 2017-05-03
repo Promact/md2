@@ -307,7 +307,7 @@ export const MD2_DATA_TABLE_DIRECTIVES: any[] = [
 ];
 
 @NgModule({
-  imports: [CommonModule, FormsModule, Md2SelectModule.forRoot()],
+  imports: [CommonModule, FormsModule, Md2SelectModule],
   exports: MD2_DATA_TABLE_DIRECTIVES,
   declarations: MD2_DATA_TABLE_DIRECTIVES,
 })

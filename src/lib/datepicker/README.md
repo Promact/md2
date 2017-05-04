@@ -22,8 +22,8 @@ Datepicker allow the user to select date and time.
 | `enableDates` | `Array<Date>` | Enable dates. |
 | `disableDates` | `Array<Date>` | Disable Dates. |
 | `disableWeekDays` | `Array<number>` | Disable Week Days. |
-| `mode` | `'auto' | 'portrait' | 'landscape'` | Mode of the Datepicker, default auto. |
-| `container` | `'inline' | 'dialog'` | Container of the Datepicker, default inline. |
+| `mode` | `'auto'` | `'portrait'` | `'landscape'` | Mode of the Datepicker, default auto. |
+| `container` | `'inline'` | `'dialog'` | Container of the Datepicker, default inline. |
 
 ### Events
 

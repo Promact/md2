@@ -1,0 +1,106 @@
+$md2-calendar-body-font-size: 13px !default;
+$md2-calendar-body-header-font-size: 14px !default;
+$md2-calendar-body-label-padding-start: 5% !default;
+$md2-calendar-body-label-translation: -6px !default;
+$md2-calendar-body-cell-min-size: 32px !default;
+$md2-calendar-body-cell-size: 100% / 7 !default;
+$md2-calendar-body-cell-content-margin: 5% !default;
+$md2-calendar-body-cell-content-border-width: 1px !default;
+
+$md2-calendar-body-min-size: 7 * $md2-calendar-body-cell-min-size !default;
+$md2-calendar-body-cell-padding: $md2-calendar-body-cell-size / 2 !default;
+$md2-calendar-body-cell-content-size: 100% - $md2-calendar-body-cell-content-margin * 2 !default;
+$md2-datepicker-selected-today-box-shadow-width: 1px;
+$md2-datepicker-selected-fade-amount: 0.6;
+$md2-datepicker-today-fade-amount: 0.2;
+
+$primary: #0094ff;
+$foreground: black;
+$background: white;
+
+.md2-calendar-body {
+  font-size: $md2-calendar-body-font-size;
+  min-width: $md2-calendar-body-min-size;
+}
+
+.md2-calendar-body-label {
+  padding: $md2-calendar-body-cell-padding 0 $md2-calendar-body-cell-padding $md2-calendar-body-cell-padding;
+  height: 0;
+  line-height: 0;
+  color: $foreground;
+  transform: translateX($md2-calendar-body-label-translation);
+  text-align: left;
+  font-size: $md2-calendar-body-header-font-size;
+  font-weight: bold;
+}
+
+.md2-calendar-body-cell {
+  position: relative;
+  width: $md2-calendar-body-cell-size;
+  height: 0;
+  line-height: 0;
+  padding: $md2-calendar-body-cell-padding 0;
+  text-align: center;
+  outline: none;
+}
+
+.md2-calendar-body-cell-content {
+  position: absolute;
+  top: $md2-calendar-body-cell-content-margin;
+  left: $md2-calendar-body-cell-content-margin;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: $md2-calendar-body-cell-content-size;
+  height: $md2-calendar-body-cell-content-size;
+  border-width: $md2-calendar-body-cell-content-border-width;
+  border-style: solid;
+  border-radius: 50%;
+  color: $foreground;
+  border-color: transparent;
+
+  .md2-calendar-body-disabled > &:not(.md2-calendar-body-selected) {
+    color: $foreground;
+  }
+}
+
+[dir='rtl'] {
+  .md2-calendar-body-label {
+    padding: 0 $md2-calendar-body-cell-padding 0 0;
+    transform: translateX(-$md2-calendar-body-label-translation);
+    text-align: right;
+  }
+}
+
+:not(.md2-calendar-body-disabled):hover,
+.cdk-keyboard-focused .md2-calendar-body-active {
+  & > .md2-calendar-body-cell-content:not(.md2-calendar-body-selected) {
+    background-color: $background;
+  }
+}
+
+.md2-calendar-body-selected {
+  background-color: $primary;
+  color: $primary;
+}
+
+.md2-calendar-body-disabled > .md2-calendar-body-selected {
+  background-color: fade-out($primary, $md2-datepicker-selected-fade-amount);
+}
+
+.md2-calendar-body-today {
+  &:not(.md2-calendar-body-selected) {
+    // Note: though it's not text, the border is a hint about the fact that this is today's date,
+    // so we use the hint color.
+    border-color: $foreground;
+  }
+
+  &.md2-calendar-body-selected {
+    box-shadow: inset 0 0 0 $md2-datepicker-selected-today-box-shadow-width $primary;
+  }
+}
+
+.md2-calendar-body-disabled > .md2-calendar-body-today:not(.md2-calendar-body-selected) {
+  border-color: fade-out($foreground, $md2-datepicker-today-fade-amount);
+}

@@ -72,4 +72,9 @@ export class DatepickerDemo {
     this.maxDate.setMonth(this.maxDate.getMonth() + 3);
   }
 
+  touch = false;
+  dateFilter =
+  (date: Date) => !this._blacklistedMonths.has(date.getMonth()) && date.getDate() % 2 == 0
+  private _blacklistedMonths = new Set([2, 3]);
+
 }

@@ -5,6 +5,30 @@
     <div class="header">
       <h3 class="title">Basic Date Picker</h3>
     </div>
+
+    <label>
+      <input type="checkbox" [(ngModel)]="touch" />Use touch UI
+    </label>
+    <br>
+    <p>
+      <input [mdDatepicker]="dp" [(ngModel)]="date" aria-label="Departure date">
+      <button [mdDatepickerToggle]="dp"></button>
+      <md-datepicker #dp [touchUi]="touch"></md-datepicker>
+    </p>
+    <p>
+      <input [mdDatepicker]="dp2" [(ngModel)]="date" aria-label="Departure date">
+      <button [mdDatepickerToggle]="dp2"></button>
+      <md-datepicker #dp2 [touchUi]="touch"></md-datepicker>
+    </p>
+    <p>
+      <button [mdDatepickerToggle]="dp3"></button>
+      <input [mdDatepicker]="dp3" [(ngModel)]="date" min="1/1/16" max="1/1/18"
+             aria-label="Departure date">
+      <md-datepicker #dp3 [touchUi]="touch" startAt="1/1/17" [dateFilter]="dateFilter">
+      </md-datepicker>
+    </p>
+    <br />
+    <hr />
     <form class="content">
       <md2-datepicker name="birthdate"
                       placeholder="Select Date"

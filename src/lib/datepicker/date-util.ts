@@ -22,7 +22,8 @@ export class DateUtil {
     'k': [3, 1],
     's': 5,
     'S': 6,
-    'a': [3, ['am', 'pm']]
+    'a': [3, ['am', 'pm']],
+    'A': [3, ['AM', 'PM']]
   };
 
   replace(s: string, regexp: any, sub?: string) {
@@ -112,7 +113,7 @@ export class DateUtil {
           timezoneIndex = reIndex;
           reIndex += 3;
           return '([+-])(\\d\\d)(\\d\\d)';
-        } else if (/[Nna]/.test(placeholderChar)) {
+        } else if (/[NnaA]/.test(placeholderChar)) {
           indexMap[reIndex++] = [placeholderChar, param && param.split(',')];
           return '([a-zA-Z\\u0080-\\u1fff]+)';
         } else if (/w/i.test(placeholderChar)) {
@@ -146,7 +147,7 @@ export class DateUtil {
         if (listValue == null) {
           return undefined;
         }
-        if (placeholderChar == 'a') {
+        if (placeholderChar == 'a' || placeholderChar == 'A') {
           ctorArgs[ctorIndex] += listValue * 12;
         } else {
           ctorArgs[ctorIndex] = listValue;

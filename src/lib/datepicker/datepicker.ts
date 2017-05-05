@@ -793,6 +793,20 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   }
 
   /**
+   * Get an hour of the date in the 12-hour format
+   * @param date Date Object
+   * @return hour of the date in the 12-hour format
+   */
+  private _getHours12(date: Date): number {
+    let hrs = date.getHours();
+    if (hrs == 0)
+      hrs = 12;
+    else if (hrs > 12)
+      hrs -= 12;
+    return hrs;
+  }
+
+  /**
    * format date
    * @param date Date Object
    * @return string with formatted date
@@ -824,10 +838,23 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
       format = format.replace('d', '' + date.getDate());
     }
 
-    if (format.indexOf('HH') > -1) {
-      format = format.replace('HH', ('0' + date.getHours()).slice(-2));
-    } else if (format.indexOf('H') > -1) {
-      format = format.replace('H', '' + date.getHours());
+    if (/[aA]/.test(format)) {
+      // 12-hour
+      if (format.indexOf('HH') > -1) {
+        format = format.replace('HH', ('0' + this._getHours12(date)).slice(-2));
+      } else if (format.indexOf('H') > -1) {
+        format = format.replace('H', '' + this._getHours12(date));
+      }
+      format = format.replace('A', ((date.getHours() < 12) ? 'AM' : 'PM'))
+        .replace('a', ((date.getHours() < 12) ? 'am' : 'pm'));
+    }
+    else {
+      // 24-hour 
+      if (format.indexOf('HH') > -1) {
+        format = format.replace('HH', ('0' + date.getHours()).slice(-2));
+      } else if (format.indexOf('H') > -1) {
+        format = format.replace('H', '' + date.getHours());
+      }
     }
 
     if (format.indexOf('mm') > -1) {

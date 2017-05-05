@@ -49,6 +49,8 @@ A datepicker would have the following markup.
 | hour      | `H`    | -      | -          | -                | H(13)   | HH(13)  |
 | minute    | `m`    | -      | -          | -                | m(5)    | mm(05)  |
 | second    | `s`    | -      | -          | -                | s(5)    | ss(05)  |
+| am/pm     | `a`    | -      | -          | -                | -       | -       |
+| AM/PM     | `A`    | -      | -          | -                | -       | -       |
 
 
 #### Keyboard interaction:

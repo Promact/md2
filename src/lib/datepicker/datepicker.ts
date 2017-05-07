@@ -222,7 +222,26 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
     return ('0' + this._activeDate.getMinutes()).slice(-2);
   }
   get hours(): string {
-    return ('0' + this._activeDate.getHours()).slice(-2);
+    if (!this.is12HourClock())
+      return ('0' + this._activeDate.getHours()).slice(-2);
+    else
+      return ('0' + this._getHours12(this._activeDate)).slice(-2);
+  }
+
+  /**
+   * Return the am/pm part of the hour description
+   * @param upperCase  boolean if true return AM/PM, default false
+   * @return string the am/pm part of the hour description
+   */
+  private _ampm(upperCase: boolean = false): string {
+    if (this.is12HourClock()) {
+      if (upperCase)
+        return (this._activeDate.getHours() < 12) ? 'AM' : 'PM';
+      else
+        return (this._activeDate.getHours() < 12) ? 'am' : 'pm';
+    }
+    else
+      return "";
   }
 
   @Input() selected: Date;
@@ -804,6 +823,10 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
     else if (hrs > 12)
       hrs -= 12;
     return hrs;
+  }
+
+  public is12HourClock(): boolean {
+    return /[aA]/.test(this.format);
   }
 
   /**

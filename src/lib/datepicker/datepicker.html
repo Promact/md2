@@ -54,7 +54,9 @@
                 (click)="_toggleHours('hour')">{{ hours }}</span>:<span class="md2-datepicker-header-minute"
                                                                         [class.active]="_clockView === 'minute'"
                                                                         (click)="_toggleHours('minute')">{{ minutes }}</span>
+          <span class ="md2-datepicker-header-ampm" *ngIf="is12HourClock()" >{{ _ampm(true) }} </span>                                                                       
         </span>
+       
       </div>
     </div>
     <div class="md2-datepicker-content">

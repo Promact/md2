@@ -232,7 +232,10 @@ md2-datepicker {
 }
 
 .md2-datepicker-header-date-time {
-  font-size: 32px;
+  font-size: 24px;
+  [mode='landscape'] & {
+    font-size: 32px;
+  }
 }
 
 .md2-datepicker-header-date {
@@ -250,6 +253,11 @@ md2-datepicker {
   display: inline-block;
   padding-left: 8px;
   cursor: pointer;
+
+  .md2-datepicker-header-ampm {
+      opacity: 0.7;
+      cursor: default;
+  }
 
   &.active {
     opacity: 1;
@@ -492,6 +500,10 @@ md2-clock {
     .md2-datepicker-header-time {
       display: block;
       padding-left: 0;
+    }
+
+    .md2-datepicker-header-date-time {
+      font-size: 32px 
     }
   }
 }

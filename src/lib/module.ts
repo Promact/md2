@@ -64,7 +64,7 @@ const MD2_MODULES = [
     Md2DataTableModule.forRoot(),
     Md2DatepickerModule,
     Md2Datepicker2Module,
-    Md2DialogModule.forRoot(),
+    Md2DialogModule,
     Md2MenuModule.forRoot(),
     MdRippleModule,
     Md2SelectModule,

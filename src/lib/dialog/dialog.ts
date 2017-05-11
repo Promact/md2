@@ -11,23 +11,19 @@ import {
   Directive,
   ViewContainerRef,
   TemplateRef,
-  NgModule,
-  ModuleWithProviders
 } from '@angular/core';
 import {
-  animate,
-  state,
   style,
+  trigger,
+  state,
   transition,
-  trigger
+  animate,
 } from '@angular/animations';
-import { CommonModule } from '@angular/common';
 import {
   ESCAPE,
   Overlay,
   OverlayState,
   OverlayRef,
-  OverlayModule,
   TemplatePortalDirective
 } from '../core/core';
 import { extendObject } from '../core/util/object-extend';
@@ -106,7 +102,7 @@ export class Md2Dialog implements OnDestroy {
     @Optional() @SkipSelf() private _parentDialog: Md2Dialog) { }
 
   @Output() onOpen: EventEmitter<Md2Dialog> = new EventEmitter<Md2Dialog>();
-  @Output() onClose: EventEmitter<any> = new EventEmitter<any>();
+  @Output() onClose: EventEmitter<Md2Dialog> = new EventEmitter<Md2Dialog>();
 
   /** The portal to send the dialog content through */
   @ViewChild(Md2DialogPortal) _portal: Md2DialogPortal;
@@ -177,7 +173,7 @@ export class Md2Dialog implements OnDestroy {
     if (this._panelOpen) {
       this.onOpen.emit(this);
     } else {
-      this.onClose.emit();
+      this.onClose.emit(this);
     }
   }
 
@@ -225,26 +221,4 @@ export class Md2Dialog implements OnDestroy {
  */
 function _applyConfigDefaults(dialogConfig: Md2DialogConfig): Md2DialogConfig {
   return extendObject(new Md2DialogConfig(), dialogConfig);
-}
-
-export const MD2_DIALOG_DIRECTIVES: any[] = [
-  Md2Dialog,
-  Md2DialogTitle,
-  Md2DialogContent,
-  Md2DialogActions,
-  Md2DialogPortal
-];
-
-@NgModule({
-  imports: [CommonModule, OverlayModule],
-  exports: MD2_DIALOG_DIRECTIVES,
-  declarations: MD2_DIALOG_DIRECTIVES,
-})
-export class Md2DialogModule {
-  static forRoot(): ModuleWithProviders {
-    return {
-      ngModule: Md2DialogModule,
-      providers: []
-    };
-  }
 }

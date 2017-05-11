@@ -6,8 +6,6 @@ import {
   Output,
   NgModule,
   ViewEncapsulation,
-  Inject,
-  Optional,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ENTER, SPACE } from '../core/keyboard/keycodes';

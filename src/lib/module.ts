@@ -71,7 +71,7 @@ const MD2_MODULES = [
     Md2TabsModule.forRoot(),
     Md2TagsModule.forRoot(),
     Md2ToastModule.forRoot(),
-    Md2TooltipModule.forRoot(),
+    Md2TooltipModule,
     PortalModule,
     RtlModule,
 

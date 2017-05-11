@@ -7,10 +7,8 @@ import {
   NgZone,
   Optional,
   OnDestroy,
-  Renderer,
-  OnInit,
-  ViewEncapsulation,
-  ChangeDetectorRef
+  Renderer2,
+  ChangeDetectorRef,
 } from '@angular/core';
 import {
   style,
@@ -27,6 +25,7 @@ import {
   ComponentPortal,
   OverlayConnectionPosition,
   OriginConnectionPosition,
+  RepositionScrollStrategy,
 } from '../core';
 import { Md2TooltipInvalidPositionError } from './tooltip-errors';
 import { Observable } from 'rxjs/Observable';
@@ -35,7 +34,6 @@ import { Dir } from '../core/rtl/dir';
 import { Platform } from '../core/platform/index';
 import 'rxjs/add/operator/first';
 import { ScrollDispatcher } from '../core/overlay/scroll/scroll-dispatcher';
-import { Subscription } from 'rxjs/Subscription';
 import { coerceBooleanProperty } from '../core/coercion/boolean-property';
 
 export type TooltipPosition = 'left' | 'right' | 'above' | 'below' | 'before' | 'after';
@@ -60,10 +58,9 @@ export const SCROLL_THROTTLE_MS = 20;
   },
   exportAs: 'md2Tooltip',
 })
-export class Md2Tooltip implements OnInit, OnDestroy {
+export class Md2Tooltip implements OnDestroy {
   _overlayRef: OverlayRef;
   _tooltipInstance: Md2TooltipComponent;
-  scrollSubscription: Subscription;
 
   private _position: TooltipPosition = 'below';
   private _disabled: boolean = false;
@@ -117,26 +114,16 @@ export class Md2Tooltip implements OnInit, OnDestroy {
     private _scrollDispatcher: ScrollDispatcher,
     private _viewContainerRef: ViewContainerRef,
     private _ngZone: NgZone,
-    private _renderer: Renderer,
+    private _renderer: Renderer2,
     private _platform: Platform,
     @Optional() private _dir: Dir) {
 
     // The mouse events shouldn't be bound on iOS devices, because
-    // they can prevent the first tap from firing it's click event.
+    // they can prevent the first tap from firing its click event.
     if (!_platform.IOS) {
       _renderer.listen(_elementRef.nativeElement, 'mouseenter', () => this.show());
       _renderer.listen(_elementRef.nativeElement, 'mouseleave', () => this.hide());
     }
-  }
-
-  ngOnInit() {
-    // When a scroll on the page occurs, update the position in case this tooltip needs
-    // to be repositioned.
-    this.scrollSubscription = this._scrollDispatcher.scrolled(SCROLL_THROTTLE_MS, () => {
-      if (this._overlayRef) {
-        this._overlayRef.updatePosition();
-      }
-    });
   }
 
   /**
@@ -145,10 +132,6 @@ export class Md2Tooltip implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this._tooltipInstance) {
       this._disposeTooltip();
-    }
-
-    if (this.scrollSubscription) {
-      this.scrollSubscription.unsubscribe();
     }
   }
 
@@ -214,6 +197,8 @@ export class Md2Tooltip implements OnInit, OnDestroy {
     });
     let config = new OverlayState();
     config.positionStrategy = strategy;
+    config.scrollStrategy =
+      new RepositionScrollStrategy(this._scrollDispatcher, SCROLL_THROTTLE_MS);
 
     this._overlayRef = this._overlay.create(config);
   }
@@ -278,6 +263,8 @@ export class Md2Tooltip implements OnInit, OnDestroy {
     // Must wait for the message to be painted to the tooltip so that the overlay can properly
     // calculate the correct positioning based on the size of the text.
     this._tooltipInstance.message = message;
+    this._tooltipInstance._markForCheck();
+
     this._ngZone.onMicrotaskEmpty.first().subscribe(() => {
       if (this._tooltipInstance) {
         this._overlayRef.updatePosition();
@@ -309,8 +296,7 @@ export type TooltipVisibility = 'initial' | 'visible' | 'hidden';
   ],
   host: {
     '(body:click)': 'this._handleBodyInteraction()'
-  },
-  encapsulation: ViewEncapsulation.None
+  }
 })
 export class Md2TooltipComponent {
   /** Message to display in the tooltip */
@@ -360,8 +346,8 @@ export class Md2TooltipComponent {
 
       // Mark for check so if any parent component has set the
       // ChangeDetectionStrategy to OnPush it will be checked anyways
-      this._changeDetectorRef.markForCheck();
-      setTimeout(() => { this._closeOnInteraction = true; }, 0);
+      this._markForCheck();
+      setTimeout(() => this._closeOnInteraction = true, 0);
     }, delay);
   }
 
@@ -381,7 +367,7 @@ export class Md2TooltipComponent {
 
       // Mark for check so if any parent component has set the
       // ChangeDetectionStrategy to OnPush it will be checked anyways
-      this._changeDetectorRef.markForCheck();
+      this._markForCheck();
     }, delay);
   }
 
@@ -428,5 +414,14 @@ export class Md2TooltipComponent {
     if (this._closeOnInteraction) {
       this.hide(0);
     }
+  }
+
+  /**
+   * Marks that the tooltip needs to be checked in the next change detection run.
+   * Mainly used for rendering the initial text before positioning a tooltip, which
+   * can be problematic in components with OnPush change detection.
+   */
+  _markForCheck(): void {
+    this._changeDetectorRef.markForCheck();
   }
 }

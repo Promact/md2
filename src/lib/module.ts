@@ -55,44 +55,7 @@ const MD2_MODULES = [
 ];
 
 @NgModule({
-  imports: [
-    Md2AccordionModule,
-    Md2AutocompleteModule,
-    Md2ChipsModule,
-    Md2CollapseModule,
-    Md2ColorpickerModule,
-    Md2DataTableModule,
-    Md2DatepickerModule,
-    Md2Datepicker2Module,
-    Md2DialogModule,
-    Md2MenuModule,
-    MdRippleModule,
-    Md2SelectModule,
-    Md2TabsModule,
-    Md2TagsModule,
-    Md2ToastModule,
-    Md2TooltipModule,
-    PortalModule,
-    RtlModule,
-
-    // These modules include providers.
-    A11yModule,
-    PlatformModule,
-    OverlayModule,
-    CompatibilityModule,
-  ],
-  exports: MD2_MODULES,
-})
-export class Md2RootModule { }
-
-
-@NgModule({
   imports: MD2_MODULES,
   exports: MD2_MODULES,
 })
-export class Md2Module {
-  /** @deprecated */
-  static forRoot(): ModuleWithProviders {
-    return { ngModule: Md2RootModule };
-  }
-}
+export class Md2Module { }

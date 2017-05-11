@@ -3,7 +3,6 @@ import { NgModule, ModuleWithProviders } from '@angular/core';
 import {
   MdRippleModule,
   RtlModule,
-  ObserveContentModule,
   PortalModule,
   OverlayModule,
   A11yModule,
@@ -53,7 +52,6 @@ const MD2_MODULES = [
   A11yModule,
   PlatformModule,
   CompatibilityModule,
-  ObserveContentModule
 ];
 
 @NgModule({
@@ -76,7 +74,6 @@ const MD2_MODULES = [
     Md2TooltipModule.forRoot(),
     PortalModule,
     RtlModule,
-    ObserveContentModule,
 
     // These modules include providers.
     A11yModule,

@@ -6,7 +6,6 @@ import {
   ViewChild,
   NgModule,
   ElementRef,
-  ModuleWithProviders,
   EventEmitter,
   AfterContentInit,
   HostListener,
@@ -20,7 +19,7 @@ import {
 } from '@angular/forms';
 
 import { CommonModule } from '@angular/common';
-import { Md2AutocompleteModule } from '../autocomplete/autocomplete';
+import { Md2AutocompleteModule } from '../autocomplete/index';
 import {
   ENTER,
   SPACE,
@@ -397,11 +396,4 @@ export const MD2_CHIPS_DIRECTIVES: any[] = [Md2Chips];
   declarations: MD2_CHIPS_DIRECTIVES,
   exports: MD2_CHIPS_DIRECTIVES
 })
-export class Md2ChipsModule {
-  static forRoot(): ModuleWithProviders {
-    return {
-      ngModule: Md2ChipsModule,
-      providers: []
-    };
-  }
-}
+export class Md2ChipsModule { }

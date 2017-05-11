@@ -11,7 +11,7 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-import { Md2Accordion } from './accordionpanel';
+import { Md2Accordion } from './accordion';
 import { coerceBooleanProperty } from '../core';
 
 @Directive({ selector: 'md2-accordion-header' })

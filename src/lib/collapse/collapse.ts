@@ -3,10 +3,7 @@ import {
   EventEmitter,
   Input,
   Output,
-  NgModule,
-  ModuleWithProviders
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 @Directive({
   selector: '[collapse]',
@@ -65,20 +62,4 @@ export class Md2Collapse {
     this.collapsed.emit();
   }
 
-}
-
-export const MD2_COLLAPSE_DIRECTIVES = [Md2Collapse];
-
-@NgModule({
-  imports: [CommonModule],
-  exports: MD2_COLLAPSE_DIRECTIVES,
-  declarations: MD2_COLLAPSE_DIRECTIVES,
-})
-export class Md2CollapseModule {
-  static forRoot(): ModuleWithProviders {
-    return {
-      ngModule: Md2CollapseModule,
-      providers: []
-    };
-  }
 }

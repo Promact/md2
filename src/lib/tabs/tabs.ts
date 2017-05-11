@@ -12,7 +12,6 @@ import {
   ViewContainerRef,
   ViewEncapsulation,
   NgModule,
-  ModuleWithProviders
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -326,11 +325,4 @@ export const MD2_TABS_DIRECTIVES: any[] = [Md2TabLabel, Md2Tabs, Md2Tab];
   exports: MD2_TABS_DIRECTIVES,
   declarations: [Md2Transclude, Md2TabLabel, Md2Tabs, Md2Tab],
 })
-export class Md2TabsModule {
-  static forRoot(): ModuleWithProviders {
-    return {
-      ngModule: Md2TabsModule,
-      providers: []
-    };
-  }
-}
+export class Md2TabsModule { }

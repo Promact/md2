@@ -3,7 +3,6 @@ import {
   Injectable,
   ViewContainerRef,
   NgModule,
-  ModuleWithProviders,
   ViewEncapsulation,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -194,11 +193,4 @@ export const MD2_TOAST_DIRECTIVES: any[] = [Md2ToastComponent];
   entryComponents: MD2_TOAST_DIRECTIVES,
   providers: [Md2Toast, Md2ToastConfig, OVERLAY_PROVIDERS]
 })
-export class Md2ToastModule {
-  static forRoot(): ModuleWithProviders {
-    return {
-      ngModule: Md2ToastModule,
-      providers: []
-    };
-  }
-}
+export class Md2ToastModule { }

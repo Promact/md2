@@ -2,7 +2,6 @@ import {
   Component,
   ViewEncapsulation,
   NgModule,
-  ModuleWithProviders
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Md2MenuContent } from './menu-content';
@@ -27,10 +26,4 @@ export class Md2Menu { }
   exports: [Md2Menu, Md2MenuContent, Md2MenuItem, Md2MenuTrigger],
   declarations: [Md2Menu, Md2MenuContent, Md2MenuItem, Md2MenuTrigger],
 })
-export class Md2MenuModule {
-  static forRoot(): ModuleWithProviders {
-    return {
-      ngModule: Md2MenuModule,
-    };
-  }
-}
+export class Md2MenuModule { }

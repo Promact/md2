@@ -9,7 +9,6 @@ import {
   Output,
   ViewEncapsulation,
   NgModule,
-  ModuleWithProviders
 } from '@angular/core';
 import {
   NG_VALUE_ACCESSOR,
@@ -26,7 +25,7 @@ import {
   TAB,
   ESCAPE
 } from '../core/core';
-import { Md2AutocompleteModule } from '../autocomplete/autocomplete';
+import { Md2AutocompleteModule } from '../autocomplete/index';
 
 const noop = () => { };
 
@@ -426,11 +425,4 @@ export const MD2_TAGS_DIRECTIVES = [Md2Tags];
   exports: MD2_TAGS_DIRECTIVES,
   declarations: MD2_TAGS_DIRECTIVES,
 })
-export class Md2TagsModule {
-  static forRoot(): ModuleWithProviders {
-    return {
-      ngModule: Md2TagsModule,
-      providers: []
-    };
-  }
-}
+export class Md2TagsModule { }

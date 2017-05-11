@@ -6,7 +6,6 @@ import {
   ElementRef,
   ViewEncapsulation,
   NgModule,
-  ModuleWithProviders,
   Directive,
   OnDestroy,
   Optional,
@@ -688,11 +687,4 @@ export const MD2_COLORPICKER_DIRECTIVES = [
   exports: MD2_COLORPICKER_DIRECTIVES,
   providers: [ColorUtil]
 })
-export class Md2ColorpickerModule {
-  static forRoot(): ModuleWithProviders {
-    return {
-      ngModule: Md2ColorpickerModule,
-      providers: []
-    };
-  }
-}
+export class Md2ColorpickerModule { }

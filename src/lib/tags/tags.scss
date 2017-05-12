@@ -1,10 +1,5 @@
 md2-tags {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
-  -moz-backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
 }
 
@@ -17,9 +12,7 @@ md2-tags .md2-tags-container {
   display: block;
   max-width: 100%;
   padding: 2px 3px 8px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.38);
-  -moz-box-sizing: content-box;
-  -webkit-box-sizing: content-box;
+  border-bottom: 1px solid rgba(black, 0.12);
   box-sizing: content-box;
   min-width: 64px;
   min-height: 26px;
@@ -41,13 +34,13 @@ md2-tags.focus .md2-tags-container {
 }
 
 md2-tags.md2-tags-disabled .md2-tags-container {
-  color: rgba(0, 0, 0, 0.38);
+  color: rgba(black, 0.38);
   cursor: default;
 }
 
 md2-tags.md2-tags-disabled.focus .md2-tags-container {
   padding-bottom: 8px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.38);
+  border-bottom: 1px solid rgba(black, 0.38);
 }
 
 md2-tags .md2-tags-container .md2-tag {
@@ -60,16 +53,12 @@ md2-tags .md2-tags-container .md2-tag {
   margin: 8px 8px 0 0;
   padding: 0 26px 0 12px;
   float: left;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
   box-sizing: border-box;
   max-width: 100%;
   background: #e0e0e0;
   color: rgb(66, 66, 66);
   white-space: nowrap;
   overflow: hidden;
-  -ms-text-overflow: ellipsis;
-  -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
 }
 
@@ -86,7 +75,7 @@ md2-tags .md2-tags-container .md2-tag svg {
   display: inline-block;
   overflow: hidden;
   fill: currentColor;
-  color: rgba(0, 0, 0, 0.54);
+  color: rgba(black, 0.54);
 }
 
 md2-tags .md2-tag.active svg {
@@ -105,12 +94,12 @@ md2-tags input {
   height: 32px;
   line-height: 32px;
   padding: 0;
-  color: rgba(0, 0, 0, 0.87);
+  color: rgba(black, 0.87);
   background: 0 0;
 }
 
 md2-tags .md2-tags-container .md2-tags-placeholder {
-  color: rgba(0, 0, 0, 0.38);
+  color: rgba(black, 0.38);
 }
 
 md2-tags .md2-tags-menu {
@@ -119,20 +108,14 @@ md2-tags .md2-tags-menu {
   top: 100%;
   display: block;
   z-index: 10;
-  -ms-flex-direction: column;
-  -webkit-flex-direction: column;
   flex-direction: column;
   width: 100%;
   margin: 6px 0 0;
   padding: 8px 0;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 1px 3px 0 rgba(black, 0.2), 0 1px 1px 0 rgba(black, 0.14), 0 2px 1px -1px rgba(black, 0.12);
   max-height: 256px;
   min-height: 48px;
   overflow-y: auto;
-  -moz-transform: scale(1);
-  -ms-transform: scale(1);
-  -o-transform: scale(1);
-  -webkit-transform: scale(1);
   transform: scale(1);
   background: #fff;
 }

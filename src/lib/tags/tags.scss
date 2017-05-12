@@ -11,7 +11,7 @@ md2-tags .md2-tags-container {
   position: relative;
   display: block;
   max-width: 100%;
-  padding: 2px 3px 8px;
+  padding: 2px 2px 4px;
   border-bottom: 1px solid rgba(black, 0.12);
   box-sizing: content-box;
   min-width: 64px;
@@ -50,7 +50,7 @@ md2-tags .md2-tags-container .md2-tag {
   display: block;
   height: 32px;
   line-height: 32px;
-  margin: 8px 8px 0 0;
+  margin: 4px 4px 0 0;
   padding: 0 26px 0 12px;
   float: left;
   box-sizing: border-box;
@@ -85,14 +85,15 @@ md2-tags .md2-tag.active svg {
 md2-tags .md2-tag-add {
   position: relative;
   display: inline-block;
+  margin-left: 4px;
 }
 
 md2-tags input {
   border: 0;
   outline: 0;
-  margin-top: 8px;
-  height: 32px;
-  line-height: 32px;
+  margin-top: 6px;
+  height: 30px;
+  line-height: 30px;
   padding: 0;
   color: rgba(black, 0.87);
   background: 0 0;

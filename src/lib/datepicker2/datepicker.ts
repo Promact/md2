@@ -4,7 +4,6 @@ import {
   Component,
   ComponentRef,
   EventEmitter,
-  Inject,
   Input,
   OnDestroy,
   Optional,
@@ -29,7 +28,6 @@ import 'rxjs/add/operator/first';
 import { Subscription } from 'rxjs/Subscription';
 import { DateAdapter } from './date-adapter';
 import { createMissingDateImplError } from './datepicker-errors';
-import { MD_DATE_FORMATS, MdDateFormats } from './date-formats';
 import { ESCAPE } from '../core/keyboard/keycodes';
 import { MdCalendar } from './calendar';
 
@@ -103,17 +101,17 @@ export class MdDatepicker<D> implements OnDestroy {
     // selected value is.
     return this._startAt || (this._datepickerInput ? this._datepickerInput.value : null);
   }
-  set startAt(date: D) {
-    this._startAt = this._dateAdapter.parse(date, this._dateFormats.parse.dateInput);
-  }
+  set startAt(date: D) { this._startAt = date; }
   private _startAt: D;
+
+  /** The view that the calendar should start in. */
+  @Input() startView: 'month' | 'year' = 'month';
 
   /**
    * Whether the calendar UI is in touch mode. In touch mode the calendar opens in a dialog rather
    * than a popup and elements have more padding to allow for bigger touch targets.
    */
-  @Input()
-  touchUi = false;
+  @Input() touchUi = false;
 
   /** A function used to filter which dates are selectable. */
   @Input()
@@ -141,6 +139,10 @@ export class MdDatepicker<D> implements OnDestroy {
     return this._datepickerInput && this._datepickerInput.max;
   }
 
+  get _dateFilter(): (date: D | null) => boolean {
+    return this._datepickerInput && this._datepickerInput._dateFilter;
+  }
+
   /** A reference to the overlay when the calendar is opened as a popup. */
   private _popupRef: OverlayRef;
 
@@ -155,14 +157,11 @@ export class MdDatepicker<D> implements OnDestroy {
   constructor(private _overlay: Overlay,
     private _viewContainerRef: ViewContainerRef,
     @Optional() private _dateAdapter: DateAdapter<D>,
-    @Optional() @Inject(MD_DATE_FORMATS) private _dateFormats: MdDateFormats,
     @Optional() private _dir: Dir) {
     if (!this._dateAdapter) {
       throw createMissingDateImplError('DateAdapter');
     }
-    if (!this._dateFormats) {
-      throw createMissingDateImplError('MD_DATE_FORMATS');
-    }
+
   }
 
   ngOnDestroy() {

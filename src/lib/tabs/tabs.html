@@ -6,7 +6,7 @@
     <em class="next-icon">Next</em>
   </div>
   <div class="md2-tabs-canvas" [class.md2-paginated]="_shouldPaginate" role="tablist" tabindex="0" (keydown.arrowRight)="focusNextTab()" (keydown.arrowLeft)="focusPreviousTab()" (keydown.enter)="selectedIndex = focusIndex" (mousewheel)="scroll($event)">
-    <div class="md2-tabs-header" [style.marginLeft]="-_offsetLeft + 'px'">
+    <div class="md2-tabs-header" [style.marginLeft.px]="-_offsetLeft">
       <div class="md2-tab-label" role="tab" *ngFor="let tab of tabs; let i = index" [class.focus]="focusIndex === i" [class.active]="selectedIndex === i" [class.disabled]="tab.disabled" (click)="focusIndex = selectedIndex = i">
         <span [md2Transclude]="tab.labelRef">{{tab.label}}</span>
       </div>

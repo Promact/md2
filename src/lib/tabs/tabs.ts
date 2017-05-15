@@ -311,8 +311,8 @@ export class Md2Tabs implements AfterContentInit {
     if (!elements.tabs.length || !this._shouldPaginate) { return 0; }
     let lastTab = elements.tabs[elements.tabs.length - 1],
       totalWidth = lastTab.offsetLeft + lastTab.offsetWidth;
-    value = Math.max(0, value);
     value = Math.min(totalWidth - elements.canvas.clientWidth, value);
+    value = Math.max(0, value);
     return value;
   }
 

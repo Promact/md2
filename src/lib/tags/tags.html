@@ -8,8 +8,8 @@
   <div class="md2-tag-add">
     <input [(ngModel)]="_inputValue" type="text" tabs="false" autocomplete="off" tabindex="-1" [disabled]="disabled" class="md2-tags-input" [placeholder]="placeholder" (focus)="_onInputFocus()" (blur)="_onInputBlur()" (keydown)="_handleInputKeydown($event)" (change)="$event.stopPropagation()" />
     <ul *ngIf="isMenuVisible" class="md2-tags-menu" (mouseenter)="_listEnter()" (mouseleave)="_listLeave()">
-      <li class="md2-option" *ngFor="let l of _list; let i = index;" [class.focused]="_focusedTag === i" (click)="_addTag($event, i)">
-        <span class="md2-option-text" [innerHtml]="l.text | highlight:_inputValue"></span>
+      <li class="md2-tag-option" *ngFor="let l of _list; let i = index;" [class.focused]="_focusedTag === i" (click)="_addTag($event, i)">
+        <span class="md2-tag-option-text" [innerHtml]="l.text | highlight:_inputValue"></span>
       </li>
     </ul>
   </div>

@@ -43,21 +43,6 @@ export class DateLocale {
 
   firstDayOfWeek = 0;
 
-  months = [
-    { full: 'January', short: 'Jan' },
-    { full: 'February', short: 'Feb' },
-    { full: 'March', short: 'Mar' },
-    { full: 'April', short: 'Apr' },
-    { full: 'May', short: 'May' },
-    { full: 'June', short: 'Jun' },
-    { full: 'July', short: 'Jul' },
-    { full: 'August', short: 'Aug' },
-    { full: 'September', short: 'Sep' },
-    { full: 'October', short: 'Oct' },
-    { full: 'November', short: 'Nov' },
-    { full: 'December', short: 'Dec' },
-  ];
-
   fullMonths = SUPPORTS_INTL_API ? this._createMonthsArray('long') :
     [
       'January',
@@ -80,15 +65,10 @@ export class DateLocale {
   narrowMonths = SUPPORTS_INTL_API ? this._createMonthsArray('narrow') :
     ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
 
-  days = [
-    { full: 'Sunday', short: 'Sun', xshort: 'S' },
-    { full: 'Monday', short: 'Mon', xshort: 'M' },
-    { full: 'Tuesday', short: 'Tue', xshort: 'T' },
-    { full: 'Wednesday', short: 'Wed', xshort: 'W' },
-    { full: 'Thursday', short: 'Thu', xshort: 'T' },
-    { full: 'Friday', short: 'Fri', xshort: 'F' },
-    { full: 'Saturday', short: 'Sat', xshort: 'S' },
-  ];
+  months = this.fullMonths.map((val, index) => {
+      return { full: val, short: this.shortMonths[index], xshort: this.narrowMonths[index]  };
+    });
+
 
   fullDays = SUPPORTS_INTL_API ? this._createDaysArray('long') :
     ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -98,6 +78,11 @@ export class DateLocale {
 
   narrowDays = SUPPORTS_INTL_API ? this._createDaysArray('narrow') :
     ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+
+  days = this.fullDays.map((val, index) => {
+        return { full: val, short: this.shortDays[index], xshort: this.narrowDays[index] };
+      });
+
 
   getDays() {
     return this.days.slice(this.firstDayOfWeek, this.days.length)

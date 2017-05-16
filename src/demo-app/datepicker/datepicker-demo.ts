@@ -35,9 +35,10 @@ export class DatepickerDemo {
     { text: 'Inline', value: 'inline' },
     { text: 'Dialog', value: 'dialog' }];
 
-  date: Date = null;
-  minDate: Date = null;
-  maxDate: Date = null;
+  date: Date;
+  minDate: Date;
+  maxDate: Date;
+  startAt: Date;
   enableDates: Array<Date> = [
     new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 7),
     new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 1),
@@ -72,9 +73,9 @@ export class DatepickerDemo {
     this.maxDate.setMonth(this.maxDate.getMonth() + 3);
   }
 
-  touch = false;
-  dateFilter =
-  (date: Date) => !this._blacklistedMonths.has(date.getMonth()) && date.getDate() % 2 == 0
-  private _blacklistedMonths = new Set([2, 3]);
+  touch: boolean;
+  filterOdd: boolean;
+  yearView: boolean;
+  dateFilter = (date: Date) => date.getMonth() % 2 == 1 && date.getDate() % 2 == 0;
 
 }

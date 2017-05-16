@@ -38,7 +38,7 @@
       <div class="md2-datepicker-header-year"
            *ngIf="type!=='time'"
            [class.active]="_isYearsVisible"
-           (click)="_showYear()">{{ date | date: 'y' }}</div>
+           (click)="_showYear()">{{ activeDate | date: 'y' }}</div>
       <div class="md2-datepicker-header-date-time">
         <span class="md2-datepicker-header-date"
               *ngIf="type!=='time'"
@@ -63,7 +63,7 @@
           <div class="md2-calendar-years-content">
             <div *ngFor="let y of _years"
                  class="md2-calendar-year"
-                 [class.selected]="y === date.getFullYear()"
+                 [class.selected]="y === activeDate.getFullYear()"
                  (click)="_setYear(y)">{{y}}</div>
           </div>
         </div>
@@ -92,7 +92,7 @@
                 <td *ngFor="let d of w">
                   <div class="md2-calendar-day"
                        [class.today]="d.today"
-                       [class.focus]="_util.isSameDay(date, d.date)"
+                       [class.focus]="_util.isSameDay(activeDate, d.date)"
                        [class.selected]="_util.isSameDay(selected, d.date)"
                        [class.disabled]="d.disabled"
                        [class.prev-month]="d.calMonth===_prevMonth"
@@ -108,7 +108,7 @@
       <md2-clock [class.active]="!_isCalendarVisible"
                  [startView]="_clockView"
                  [interval]="timeInterval"
-                 [selected]="date"
+                 [selected]="activeDate"
                  [min]="min"
                  [max]="max"
                  (activeDateChange)="_onActiveTimeChange($event)"

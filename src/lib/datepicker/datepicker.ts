@@ -86,7 +86,6 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
 
   private _value: Date = null;
   private _selected: Date = null;
-  private _date: Date = null;
 
   private _panelOpen = false;
 
@@ -147,7 +146,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   }
 
   ngAfterContentInit() {
-    this.date = this._date || this._util.today();
+    this.activeDate = this._activeDate || this._util.today();
   }
 
   ngOnDestroy() { this.destroyPanel(); }
@@ -208,22 +207,23 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   get value() { return this._value; }
   set value(value: Date) {
     this._value = this.coerceDateProperty(value);
-    this.date = this._value;
+    if (this._value) { this.activeDate = this._value; }
     setTimeout(() => {
       this._input.nativeElement.value = this._formatDate(this._value);
     });
   }
 
-  get date() { return this._date; }
-  set date(value: Date) {
-    this._date = this._util.clampDate(value, this.min, this.max);
+  get activeDate(): Date { return this._activeDate; }
+  set activeDate(value: Date) {
+    this._activeDate = this._util.clampDate(value, this.min, this.max);
   }
+  private _activeDate: Date;
 
   get minutes(): string {
-    return ('0' + this._date.getMinutes()).slice(-2);
+    return ('0' + this._activeDate.getMinutes()).slice(-2);
   }
   get hours(): string {
-    return ('0' + this._date.getHours()).slice(-2);
+    return ('0' + this._activeDate.getHours()).slice(-2);
   }
 
   @Input()
@@ -272,11 +272,11 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   }
 
   get getDateLabel(): string {
-    return this._locale.getDateLabel(this.date);
+    return this._locale.getDateLabel(this.activeDate);
   }
 
   get getMonthLabel(): string {
-    return this._locale.getMonthLabel(this.date.getMonth(), this.date.getFullYear());
+    return this._locale.getMonthLabel(this.activeDate.getMonth(), this.activeDate.getFullYear());
   }
 
   toggle(): void {
@@ -297,7 +297,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
     this._subscribeToBackdrop();
     this._panelOpen = true;
     this.selected = this.value || new Date(1, 0, 1);
-    this.date = this.value || this.today;
+    this.activeDate = this.value || this.today;
     this.generateCalendar();
   }
 
@@ -309,7 +309,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
         this._openOnFocus = false;
         setTimeout(() => { this._openOnFocus = true; }, 100);
       }
-      // if (!this._date) {
+      // if (!this._activeDate) {
       //  this._placeholderState = '';
       // }
       if (this._overlayRef) {
@@ -400,21 +400,21 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
         case TAB:
         case ESCAPE: this._onBlur(); this.close(); break;
       }
-      let date = this.date;
+      let date = this.activeDate;
       if (this._isYearsVisible) {
         switch (event.keyCode) {
           case ENTER:
           case SPACE: this._onClickOk(); break;
 
           case DOWN_ARROW:
-            if (this.date.getFullYear() < (this.today.getFullYear() + 100)) {
-              this.date = this._util.incrementYears(date, 1);
+            if (this.activeDate.getFullYear() < (this.today.getFullYear() + 100)) {
+              this.activeDate = this._util.incrementYears(date, 1);
               this._scrollToSelectedYear();
             }
             break;
           case UP_ARROW:
-            if (this.date.getFullYear() > 1900) {
-              this.date = this._util.incrementYears(date, -1);
+            if (this.activeDate.getFullYear() > 1900) {
+              this.activeDate = this._util.incrementYears(date, -1);
               this._scrollToSelectedYear();
             }
             break;
@@ -423,71 +423,71 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
       } else if (this._isCalendarVisible) {
         switch (event.keyCode) {
           case ENTER:
-          case SPACE: this.setDate(this.date); break;
+          case SPACE: this.setDate(this.activeDate); break;
 
           case RIGHT_ARROW:
-            this.date = this._util.incrementDays(date, 1);
+            this.activeDate = this._util.incrementDays(date, 1);
             break;
           case LEFT_ARROW:
-            this.date = this._util.incrementDays(date, -1);
+            this.activeDate = this._util.incrementDays(date, -1);
             break;
 
           case PAGE_DOWN:
             if (event.shiftKey) {
-              this.date = this._util.incrementYears(date, 1);
+              this.activeDate = this._util.incrementYears(date, 1);
             } else {
-              this.date = this._util.incrementMonths(date, 1);
+              this.activeDate = this._util.incrementMonths(date, 1);
             }
             break;
           case PAGE_UP:
             if (event.shiftKey) {
-              this.date = this._util.incrementYears(date, -1);
+              this.activeDate = this._util.incrementYears(date, -1);
             } else {
-              this.date = this._util.incrementMonths(date, -1);
+              this.activeDate = this._util.incrementMonths(date, -1);
             }
             break;
 
           case DOWN_ARROW:
-            this.date = this._util.incrementDays(date, 7);
+            this.activeDate = this._util.incrementDays(date, 7);
             break;
           case UP_ARROW:
-            this.date = this._util.incrementDays(date, -7);
+            this.activeDate = this._util.incrementDays(date, -7);
             break;
 
           case HOME:
-            this.date = this._util.getFirstDateOfMonth(date);
+            this.activeDate = this._util.getFirstDateOfMonth(date);
             break;
           case END:
-            this.date = this._util.getLastDateOfMonth(date);
+            this.activeDate = this._util.getLastDateOfMonth(date);
             break;
         }
-        if (!this._util.isSameMonthAndYear(date, this.date)) {
+        if (!this._util.isSameMonthAndYear(date, this.activeDate)) {
           this.generateCalendar();
         }
       } else if (this._clockView === 'hour') {
         switch (event.keyCode) {
           case ENTER:
-          case SPACE: this.setHour(this.date.getHours()); break;
+          case SPACE: this.setHour(this.activeDate.getHours()); break;
 
           case UP_ARROW:
-            this.date = this._util.incrementHours(date, 1);
+            this.activeDate = this._util.incrementHours(date, 1);
             break;
           case DOWN_ARROW:
-            this.date = this._util.incrementHours(date, -1);
+            this.activeDate = this._util.incrementHours(date, -1);
             break;
         }
       } else {
         switch (event.keyCode) {
           case ENTER:
           case SPACE:
-            this.setMinute(this.date.getMinutes());
+            this.setMinute(this.activeDate.getMinutes());
             break;
 
           case UP_ARROW:
-            this.date = this._util.incrementMinutes(date, 1);
+            this.activeDate = this._util.incrementMinutes(date, 1);
             break;
           case DOWN_ARROW:
-            this.date = this._util.incrementMinutes(date, -1);
+            this.activeDate = this._util.incrementMinutes(date, -1);
             break;
         }
       }
@@ -574,8 +574,8 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
    * @param year
    */
   _setYear(year: number) {
-    this.date = new Date(year, this.date.getMonth(), this.date.getDate(),
-      this.date.getHours(), this.date.getMinutes());
+    this.activeDate = new Date(year, this.activeDate.getMonth(), this.activeDate.getDate(),
+      this.activeDate.getHours(), this.activeDate.getMinutes());
     this.generateCalendar();
     this._isYearsVisible = false;
   }
@@ -607,11 +607,11 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
       this._isYearsVisible = false;
       this._isCalendarVisible = true;
     } else if (this._isCalendarVisible) {
-      this.setDate(this.date);
+      this.setDate(this.activeDate);
     } else if (this._clockView === 'hour') {
       this._clockView = 'minute';
     } else {
-      this.value = this.date;
+      this.value = this.activeDate;
       this._emitChangeEvent();
       this._onBlur();
       this.close();
@@ -648,7 +648,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
       this.close();
     } else {
       this.selected = date;
-      this.date = date;
+      this.activeDate = date;
       this._isCalendarVisible = false;
       this._clockView = 'hour';
     }
@@ -659,7 +659,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
    * @param noOfMonths increment number of months
    */
   _updateMonth(noOfMonths: number) {
-    this.date = this._util.incrementMonths(this.date, noOfMonths);
+    this.activeDate = this._util.incrementMonths(this.activeDate, noOfMonths);
     this.generateCalendar();
     if (noOfMonths > 0) {
       this.calendarState('right');
@@ -674,7 +674,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
    */
   _isBeforeMonth() {
     return !this.min ? true :
-      this.min && this._util.getMonthDistance(this.date, this.min) < 0;
+      this.min && this._util.getMonthDistance(this.activeDate, this.min) < 0;
   }
 
   /**
@@ -683,11 +683,11 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
    */
   _isAfterMonth() {
     return !this._max ? true :
-      this._max && this._util.getMonthDistance(this.date, this._max) > 0;
+      this._max && this._util.getMonthDistance(this.activeDate, this._max) > 0;
   }
 
   _onActiveTimeChange(event: Date) {
-    this.date = event;
+    this.activeDate = event;
   }
 
   _onTimeChange(event: Date) {
@@ -724,9 +724,9 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
    */
   private generateCalendar(): void {
     this._dates.length = 0;
-    let year = this.date.getFullYear();
-    let month = this.date.getMonth();
-    let firstDayOfMonth = this._util.getFirstDateOfMonth(this.date);
+    let year = this.activeDate.getFullYear();
+    let month = this.activeDate.getMonth();
+    let firstDayOfMonth = this._util.getFirstDateOfMonth(this.activeDate);
     let calMonth = this._prevMonth;
     let date = this._util.getFirstDateOfWeek(firstDayOfMonth, this._locale.firstDayOfWeek);
     do {
@@ -759,8 +759,8 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
    */
   private setHour(hour: number) {
     this._clockView = 'minute';
-    this.date = new Date(this.date.getFullYear(), this.date.getMonth(),
-      this.date.getDate(), hour, this.date.getMinutes());
+    this.activeDate = new Date(this.activeDate.getFullYear(), this.activeDate.getMonth(),
+      this.activeDate.getDate(), hour, this.activeDate.getMinutes());
   }
 
   /**
@@ -768,10 +768,10 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
    * @param minute number of minutes
    */
   private setMinute(minute: number) {
-    this.date = new Date(this.date.getFullYear(), this.date.getMonth(),
-      this.date.getDate(), this.date.getHours(), minute);
-    this.selected = this.date;
-    this.value = this.date;
+    this.activeDate = new Date(this.activeDate.getFullYear(), this.activeDate.getMonth(),
+      this.activeDate.getDate(), this.activeDate.getHours(), minute);
+    this.selected = this.activeDate;
+    this.value = this.activeDate;
     this._emitChangeEvent();
     this._onBlur();
     this.close();
@@ -802,21 +802,50 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
    */
   private _formatDate(date: Date): string {
     if (!this.format || !date) { return ''; }
-    return this.format
-      .replace('yy', ('00' + date.getFullYear()).slice(-2))
-      .replace('y', '' + date.getFullYear())
-      .replace('MMMM', this._locale.months[date.getMonth()].full)
-      .replace('MMM', this._locale.months[date.getMonth()].short)
-      .replace('MM', ('0' + (date.getMonth() + 1)).slice(-2))
-      .replace('M', '' + (date.getMonth() + 1))
-      .replace('dd', ('0' + date.getDate()).slice(-2))
-      .replace('d', '' + date.getDate())
-      .replace('HH', ('0' + date.getHours()).slice(-2))
-      .replace('H', '' + date.getHours())
-      .replace('mm', ('0' + date.getMinutes()).slice(-2))
-      .replace('m', '' + date.getMinutes())
-      .replace('ss', ('0' + date.getSeconds()).slice(-2))
-      .replace('s', '' + date.getSeconds());
+
+    let format = this.format;
+
+    if (format.indexOf('yy') > -1) {
+      format = format.replace('yy', ('00' + date.getFullYear()).slice(-2));
+    } else if (format.indexOf('y') > -1) {
+      format = format.replace('y', '' + date.getFullYear());
+    }
+
+    if (format.indexOf('MMMM') > -1) {
+      format = format.replace('MMMM', this._locale.months[date.getMonth()].full);
+    } else if (format.indexOf('MMM') > -1) {
+      format = format.replace('MMM', this._locale.months[date.getMonth()].short);
+    } else if (format.indexOf('MM') > -1) {
+      format = format.replace('MM', ('0' + (date.getMonth() + 1)).slice(-2));
+    } else if (format.indexOf('M') > -1) {
+      format = format.replace('M', '' + (date.getMonth() + 1));
+    }
+
+    if (format.indexOf('dd') > -1) {
+      format = format.replace('dd', ('0' + date.getDate()).slice(-2));
+    } else if (format.indexOf('d') > -1) {
+      format = format.replace('d', '' + date.getDate());
+    }
+
+    if (format.indexOf('HH') > -1) {
+      format = format.replace('HH', ('0' + date.getHours()).slice(-2));
+    } else if (format.indexOf('H') > -1) {
+      format = format.replace('H', '' + date.getHours());
+    }
+
+    if (format.indexOf('mm') > -1) {
+      format = format.replace('mm', ('0' + date.getMinutes()).slice(-2));
+    } else if (format.indexOf('m') > -1) {
+      format = format.replace('m', '' + date.getMinutes());
+    }
+
+    if (format.indexOf('ss') > -1) {
+      format = format.replace('ss', ('0' + date.getSeconds()).slice(-2));
+    } else if (format.indexOf('s') > -1) {
+      format = format.replace('s', '' + date.getSeconds());
+    }
+
+    return format;
   }
 
   private _subscribeToBackdrop(): void {

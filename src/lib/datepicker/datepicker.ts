@@ -85,7 +85,6 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   private _backdropSubscription: Subscription;
 
   private _value: Date = null;
-  private _selected: Date = null;
 
   private _panelOpen = false;
 
@@ -226,9 +225,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
     return ('0' + this._activeDate.getHours()).slice(-2);
   }
 
-  @Input()
-  get selected() { return this._selected; }
-  set selected(value: Date) { this._selected = value; }
+  @Input() selected: Date;
 
   @Input()
   get required(): boolean { return this._required; }
@@ -423,7 +420,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
       } else if (this._isCalendarVisible) {
         switch (event.keyCode) {
           case ENTER:
-          case SPACE: this.setDate(this.activeDate); break;
+          case SPACE: this._dateSelected(this.activeDate); break;
 
           case RIGHT_ARROW:
             this.activeDate = this._util.incrementDays(date, 1);
@@ -467,7 +464,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
       } else if (this._clockView === 'hour') {
         switch (event.keyCode) {
           case ENTER:
-          case SPACE: this.setHour(this.activeDate.getHours()); break;
+          case SPACE: this._hourSelected(this.activeDate.getHours()); break;
 
           case UP_ARROW:
             this.activeDate = this._util.incrementHours(date, 1);
@@ -480,7 +477,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
         switch (event.keyCode) {
           case ENTER:
           case SPACE:
-            this.setMinute(this.activeDate.getMinutes());
+            this._minuteSelected(this.activeDate.getMinutes());
             break;
 
           case UP_ARROW:
@@ -607,7 +604,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
       this._isYearsVisible = false;
       this._isCalendarVisible = true;
     } else if (this._isCalendarVisible) {
-      this.setDate(this.activeDate);
+      this._dateSelected(this.activeDate);
     } else if (this._clockView === 'hour') {
       this._clockView = 'minute';
     } else {
@@ -630,17 +627,17 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
     if (date.calMonth === this._prevMonth) {
       this._updateMonth(-1);
     } else if (date.calMonth === this._currMonth) {
-      this.setDate(date.date);
+      this._dateSelected(date.date);
     } else if (date.calMonth === this._nextMonth) {
       this._updateMonth(1);
     }
   }
 
   /**
-   * Set Date
+   * date selected
    * @param date Date Object
    */
-  private setDate(date: Date) {
+  _dateSelected(date: Date): void {
     if (this.type === 'date') {
       this.value = date;
       this._emitChangeEvent();
@@ -757,7 +754,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
    * Set hours
    * @param hour number of hours
    */
-  private setHour(hour: number) {
+  _hourSelected(hour: number) {
     this._clockView = 'minute';
     this.activeDate = new Date(this.activeDate.getFullYear(), this.activeDate.getMonth(),
       this.activeDate.getDate(), hour, this.activeDate.getMinutes());
@@ -767,7 +764,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
    * Set minutes
    * @param minute number of minutes
    */
-  private setMinute(minute: number) {
+  _minuteSelected(minute: number) {
     this.activeDate = new Date(this.activeDate.getFullYear(), this.activeDate.getMonth(),
       this.activeDate.getDate(), this.activeDate.getHours(), minute);
     this.selected = this.activeDate;

@@ -396,37 +396,51 @@ md2-datepicker {
   }
 }
 
-.md2-calendar-day {
+.md2-calendar-date {
   position: relative;
   display: inline-block;
   width: 35px;
   height: 35px;
+  border: 1px solid transparent;
   border-radius: 50%;
   text-align: center;
   cursor: pointer;
   line-height: 35px;
   box-sizing: border-box;
 
-  &.today {
-    color: $primary;
+  &.md2-calendar-date-today {
+    border-color: $primary;
   }
 
   &:hover,
-  &.focus {
+  &.md2-calendar-date-active {
     background: darken(white, 12);
   }
 
-  &.selected,
-  &.selected:hover {
+  &.md2-calendar-date-selected,
+  &.md2-calendar-date-selected:hover {
     color: white;
     background: $primary;
+
+    &.md2-calendar-date-today {
+      box-shadow: inset 0 0 0 1px white;
+    }
   }
 
-  &.disabled,
-  &.disabled:hover {
+  &.md2-calendar-date-disabled,
+  &.md2-calendar-date-disabled:hover {
     color: rgba(black, 0.43);
     background: transparent;
     pointer-events: none;
+
+    &.md2-calendar-date-selected {
+      color: white;
+      background: rgba($primary, 0.4);
+    }
+
+    &.md2-calendar-date-today {
+      border-color: rgba($primary, 0.18);
+    }
   }
 
   &.prev-month,

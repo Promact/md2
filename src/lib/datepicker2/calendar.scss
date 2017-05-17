@@ -50,6 +50,14 @@ $background: white;
   font-size: $md2-calendar-period-font-size;
   font-weight: bold;
   min-width: 0;
+  cursor: pointer;
+  outline: 0;
+  color: currentColor;
+  border: none;
+  display: inline-block;
+  line-height: 36px;
+  padding: 0 16px;
+  background: transparent;
 }
 
 .md2-calendar-arrow {
@@ -73,6 +81,18 @@ $background: white;
 .md2-calendar-next-button {
   position: relative;
   color: $foreground;
+  padding: 0;
+  min-width: 0;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  line-height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  outline: 0;
+  border: none;
+  display: inline-block;
+  background: transparent;
 
   &::after {
     content: '';
@@ -104,7 +124,7 @@ $background: white;
 }
 
 .md2-calendar-table-header {
-  color: $foreground;
+  color: rgba(black, 0.38);
 
   th {
     text-align: center;
@@ -126,6 +146,6 @@ $background: white;
     left: -$md2-calendar-padding;
     right: -$md2-calendar-padding;
     height: $md2-calendar-header-divider-width;
-    background: $foreground;
+    background: rgba(black, 0.12);
   }
 }

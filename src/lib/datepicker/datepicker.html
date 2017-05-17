@@ -90,11 +90,11 @@
             <tbody [@slideCalendar]="_calendarState">
               <tr *ngFor="let w of _dates">
                 <td *ngFor="let d of w">
-                  <div class="md2-calendar-day"
-                       [class.today]="d.today"
-                       [class.focus]="_util.isSameDay(activeDate, d.date)"
-                       [class.selected]="_util.isSameDay(selected, d.date)"
-                       [class.disabled]="d.disabled"
+                  <div class="md2-calendar-date"
+                       [class.md2-calendar-date-today]="d.today"
+                       [class.md2-calendar-date-active]="_util.isSameDay(activeDate, d.date)"
+                       [class.md2-calendar-date-selected]="_util.isSameDay(selected, d.date)"
+                       [class.md2-calendar-date-disabled]="d.disabled"
                        [class.prev-month]="d.calMonth===_prevMonth"
                        [class.curr-month]="d.calMonth===_currMonth"
                        [class.next-month]="d.calMonth===_nextMonth"

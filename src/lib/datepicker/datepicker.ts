@@ -15,8 +15,15 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import {
+  AbstractControl,
   ControlValueAccessor,
   NgControl,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  ValidationErrors,
+  Validator,
+  ValidatorFn,
+  Validators
 } from '@angular/forms';
 import { DateLocale } from './date-locale';
 import { DateUtil } from './date-util';
@@ -78,7 +85,8 @@ export type PanelPositionY = 'above' | 'below';
   ],
   encapsulation: ViewEncapsulation.None
 })
-export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueAccessor {
+export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueAccessor,
+  Validator {
 
   private _portal: TemplatePortal;
   private _overlayRef: OverlayRef;
@@ -119,6 +127,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
 
   _onChange = (value: any) => { };
   _onTouched = () => { };
+  private _validatorOnChange = () => { };
 
   @ViewChild('portal') _templatePortal: TemplateRef<any>;
   @ViewChild('input') _input: ElementRef;
@@ -149,6 +158,10 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   }
 
   ngOnDestroy() { this.destroyPanel(); }
+
+  registerOnValidatorChange(fn: () => void): void {
+    this._validatorOnChange = fn;
+  }
 
   @Input() placeholder: string;
   @Input() okLabel: string = 'Ok';
@@ -241,6 +254,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   set min(date: Date) {
     this._min = this._util.parse(date);
     this.getYears();
+    this._validatorOnChange();
   }
   private _min: Date;
 
@@ -250,6 +264,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   set max(date: Date) {
     this._max = this._util.parse(date);
     this.getYears();
+    this._validatorOnChange();
   }
   private _max: Date;
 
@@ -275,6 +290,31 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   get getMonthLabel(): string {
     return this._locale.getMonthLabel(this.activeDate.getMonth(), this.activeDate.getFullYear());
   }
+
+  /** The form control validator for the min date. */
+  private _minValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+    return (!this.min || !control.value ||
+      this._util.compareDate(this.min, control.value) < 0) ?
+      null : { 'mdDatepickerMin': { 'min': this.min, 'actual': control.value } };
+  }
+
+  /** The form control validator for the max date. */
+  private _maxValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+    return (!this.max || !control.value ||
+      this._util.compareDate(this.max, control.value) > 0) ?
+      null : { 'mdDatepickerMax': { 'max': this.max, 'actual': control.value } };
+  }
+
+  _dateFilter: (date: Date | null) => boolean;
+
+  /** The form control validator for the date filter. */
+  private _filterValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+    return !this._util || !control.value || this._dateFilter(control.value) ?
+      null : { 'mdDatepickerFilter': true };
+  }
+
+  private _validator: ValidatorFn =
+  Validators.compose([this._minValidator, this._maxValidator, this._filterValidator]);
 
   toggle(): void {
     this.panelOpen ? this.close() : this.open();
@@ -778,6 +818,10 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   _emitChangeEvent(): void {
     this._onChange(this.value);
     this.change.emit(new Md2DateChange(this, this.value));
+  }
+
+  validate(c: AbstractControl): ValidationErrors | null {
+    return this._validator ? this._validator(c) : null;
   }
 
   writeValue(value: any): void {

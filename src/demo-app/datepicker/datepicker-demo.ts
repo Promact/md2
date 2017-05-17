@@ -66,13 +66,6 @@ export class DatepickerDemo {
     this.date = new Date(this.today);
   }
 
-  setDateRange() {
-    this.minDate = new Date(this.today);
-    this.minDate.setMonth(this.minDate.getMonth() - 3);
-    this.maxDate = new Date(this.today);
-    this.maxDate.setMonth(this.maxDate.getMonth() + 3);
-  }
-
   touch: boolean;
   filterOdd: boolean;
   yearView: boolean;

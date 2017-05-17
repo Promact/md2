@@ -173,6 +173,12 @@ export class DateUtil {
     return isNaN(timestamp) ? null : new Date(timestamp);
   }
 
+  compareDate(first: Date, second: Date): number {
+    return this.getYear(first) - this.getYear(second) ||
+      this.getMonth(first) - this.getMonth(second) ||
+      this.getDate(first) - this.getDate(second);
+  }
+
   getYear(date: Date): number {
     return date.getFullYear();
   }

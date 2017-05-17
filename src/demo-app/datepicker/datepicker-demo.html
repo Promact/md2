@@ -17,15 +17,15 @@
     </label>
     <br />
     <p>
-      <input [mdDatepicker]="minDatePicker" [(ngModel)]="minDate" placeholder="Min date">
+      <input class="md2-input" [mdDatepicker]="minDatePicker" [(ngModel)]="minDate" placeholder="Min date">
       <button [mdDatepickerToggle]="minDatePicker"></button>
       <md-datepicker #minDatePicker [touchUi]="touch"></md-datepicker>
-      <input [mdDatepicker]="maxDatePicker" [(ngModel)]="maxDate" placeholder="Max date">
+      <input class="md2-input" [mdDatepicker]="maxDatePicker" [(ngModel)]="maxDate" placeholder="Max date">
       <button [mdDatepickerToggle]="maxDatePicker"></button>
       <md-datepicker #maxDatePicker [touchUi]="touch"></md-datepicker>
     </p>
     <p>
-      <input [mdDatepicker]="startAtPicker" [(ngModel)]="startAt" placeholder="Start at date">
+      <input class="md2-input" [mdDatepicker]="startAtPicker" [(ngModel)]="startAt" placeholder="Start at date">
       <button [mdDatepickerToggle]="startAtPicker"></button>
       <md-datepicker #startAtPicker [touchUi]="touch"></md-datepicker>
     </p>
@@ -33,7 +33,7 @@
     <p>
       <button [mdDatepickerToggle]="resultPicker"></button>
       <span>
-        <input #resultPickerModel="ngModel"
+        <input class="md2-input" #resultPickerModel="ngModel"
                [mdDatepicker]="resultPicker"
                [(ngModel)]="date"
                [min]="minDate"
@@ -51,7 +51,7 @@
       </md-datepicker>
     </p>
     <p>
-      <input [mdDatepicker]="resultPicker2"
+      <input class="md2-input" [mdDatepicker]="resultPicker2"
              [(ngModel)]="date"
              [min]="minDate"
              [max]="maxDate"

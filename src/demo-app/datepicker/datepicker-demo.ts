@@ -18,7 +18,16 @@ export class DatepickerDemo {
   isOpenOnFocus = false;
   isOpen = false;
   today: Date = new Date();
-  type: string = 'date';
+
+  private _type: string = 'date';
+  set type(val: string) {
+    this._type = val;
+    this.dateFormat = null;
+  }
+  get type() {
+    return this._type;
+  }
+
   types: Array<any> = [
     { text: 'Date', value: 'date' },
     { text: 'Time', value: 'time' },
@@ -54,6 +63,33 @@ export class DatepickerDemo {
     new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() + 9)
   ];
   disableWeekDays: Array<number> = [0, 6];
+
+  dateFormat: string = null;
+  dateFormatsDateTime: Array<any> = [
+    { name: 'US:', value: 'M/d/y H:mm A' },
+    { name: 'England:', value: 'dd/MM/y H:mm A' },
+    { name: 'Poland:', value: 'd.MM.y HH:mm' },
+    { name: 'Germany:', value: 'd.M.y HH:mm' },
+    { name: 'France:', value: 'd/MM/y HH:mm' },
+    { name: 'ISO 8601', value: 'y-MM-dd HH:mm' }
+  ];
+  dateFormatsDate: Array<any> = [
+    { name: 'US:', value: 'M/d/y' },
+    { name: 'England:', value: 'dd/MM/y' },
+    { name: 'Poland:', value: 'd.MM.y' },
+    { name: 'Germany:', value: 'd.M.y' },
+    { name: 'France:', value: 'd/MM/y' },
+    { name: 'ISO 8601', value: 'y-MM-dd' }
+  ];
+  dateFormatsTime: Array<any> = [
+    { name: 'US:', value: 'H:mm A' },
+    { name: 'England:', value: 'H:mm A' },
+    { name: 'Poland:', value: 'HH:mm' },
+    { name: 'Germany:', value: 'HH:mm' },
+    { name: 'France:', value: 'HH:mm' },
+    { name: 'ISO 8601', value: 'HH:mm' }
+  ];
+  dateFormats: { [index: string]: Array<any>; } = { 'datetime': this.dateFormatsDateTime, 'date': this.dateFormatsDate, 'time': this.dateFormatsTime };
 
   openDatepicker() {
     this.isOpen = true;

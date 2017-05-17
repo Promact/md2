@@ -82,6 +82,7 @@
                       [max]="maxDate"
                       [mode]="mode"
                       [container]="container"
+                      [format]="dateFormat"
                       #dateControl="ngModel"></md2-datepicker>
       <p> Value: {{ date }} </p>
       <p> Touched: {{ dateControl.touched }} </p>
@@ -102,6 +103,14 @@
           <md2-select name="container" [(ngModel)]="container" placeholder="Picker Container">
             <md2-option *ngFor="let c of containers" [value]="c.value">{{ c.text }}</md2-option>
           </md2-select>
+        </div>
+        <div class="inline-control">
+          <md2-select name="container" [(ngModel)]="dateFormat" placeholder="Source format">
+            <md2-option *ngFor="let c of dateFormats[type]" [value]="c.value">{{ c.name }}</md2-option>
+          </md2-select>
+        </div>
+        <div class="inline-control">
+         <input name="formatInput" [(ngModel)]="dateFormat" placeholder="date format">
         </div>
       </div>
       <div>

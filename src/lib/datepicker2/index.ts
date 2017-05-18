@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
-import { MdMonthView } from './month-view';
+import { Md2MonthView } from './month-view';
 import { CommonModule } from '@angular/common';
-import { MdCalendarBody } from './calendar-body';
-import { MdYearView } from './year-view';
+import { Md2CalendarBody } from './calendar-body';
+import { Md2YearView } from './year-view';
 import { OverlayModule } from '../core/overlay/overlay-directives';
 import { MdDatepicker, MdDatepickerContent } from './datepicker';
 import { MdDatepickerInput } from './datepicker-input';
@@ -43,13 +43,13 @@ export * from './native-date-adapter';
   ],
   declarations: [
     MdCalendar,
-    MdCalendarBody,
+    Md2CalendarBody,
     MdDatepicker,
     MdDatepickerContent,
     MdDatepickerInput,
     MdDatepickerToggle,
-    MdMonthView,
-    MdYearView,
+    Md2MonthView,
+    Md2YearView,
   ],
   providers: [
     MdDatepickerIntl,

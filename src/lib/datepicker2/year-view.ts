@@ -9,7 +9,7 @@ import {
   Output,
   ViewEncapsulation
 } from '@angular/core';
-import {MdCalendarCell} from './calendar-body';
+import {Md2CalendarCell} from './calendar-body';
 import { DateAdapter } from './date-adapter';
 import {createMissingDateImplError} from './datepicker-errors';
 import {MD_DATE_FORMATS, MdDateFormats} from './date-formats';
@@ -26,7 +26,7 @@ import {MD_DATE_FORMATS, MdDateFormats} from './date-formats';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MdYearView<D> implements AfterContentInit {
+export class Md2YearView<D> implements AfterContentInit {
   /** The date to display in this year view (everything other than the year is ignored). */
   @Input()
   get activeDate(): D { return this._activeDate; }
@@ -55,7 +55,7 @@ export class MdYearView<D> implements AfterContentInit {
   @Output() selectedChange = new EventEmitter<D>();
 
   /** Grid of calendar cells representing the months of the year. */
-  _months: MdCalendarCell[][];
+  _months: Md2CalendarCell[][];
 
   /** The label for this year (e.g. "2017"). */
   _yearLabel: string;
@@ -118,7 +118,7 @@ export class MdYearView<D> implements AfterContentInit {
     let ariaLabel = this._dateAdapter.format(
         this._dateAdapter.createDate(this._dateAdapter.getYear(this.activeDate), month, 1),
         this._dateFormats.display.monthYearA11yLabel);
-    return new MdCalendarCell(
+    return new Md2CalendarCell(
         month, monthName.toLocaleUpperCase(), ariaLabel, this._isMonthEnabled(month));
   }
 

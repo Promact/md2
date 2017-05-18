@@ -9,7 +9,7 @@ import {
   Output,
   ViewEncapsulation
 } from '@angular/core';
-import { MdCalendarCell } from './calendar-body';
+import { Md2CalendarCell } from './calendar-body';
 import { DateAdapter } from './date-adapter';
 import { createMissingDateImplError } from './datepicker-errors';
 import { MD_DATE_FORMATS, MdDateFormats } from './date-formats';
@@ -29,7 +29,7 @@ const DAYS_PER_WEEK = 7;
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MdMonthView<D> implements AfterContentInit {
+export class Md2MonthView<D> implements AfterContentInit {
   /**
    * The date to display in this month view (everything other than the month and year is ignored).
    */
@@ -63,7 +63,7 @@ export class MdMonthView<D> implements AfterContentInit {
   _monthLabel: string;
 
   /** Grid of calendar cells representing the dates of the month. */
-  _weeks: MdCalendarCell[][];
+  _weeks: Md2CalendarCell[][];
 
   /** The number of blank cells in the first row before the 1st of the month. */
   _firstWeekOffset: number;
@@ -150,7 +150,7 @@ export class MdMonthView<D> implements AfterContentInit {
         this.dateFilter(date);
       let ariaLabel = this._dateAdapter.format(date, this._dateFormats.display.dateA11yLabel);
       this._weeks[this._weeks.length - 1]
-        .push(new MdCalendarCell(i + 1, dateNames[i], ariaLabel, enabled));
+        .push(new Md2CalendarCell(i + 1, dateNames[i], ariaLabel, enabled));
     }
   }
 

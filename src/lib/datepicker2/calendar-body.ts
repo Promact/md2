@@ -12,7 +12,7 @@ import {
  * An internal class that represents the data corresponding to a single calendar cell.
  * @docs-private
  */
-export class MdCalendarCell {
+export class Md2CalendarCell {
   constructor(public value: number,
               public displayValue: string,
               public ariaLabel: string,
@@ -35,12 +35,12 @@ export class MdCalendarCell {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MdCalendarBody {
+export class Md2CalendarBody {
   /** The label for the table. (e.g. "Jan 2017"). */
   @Input() label: string;
 
   /** The cells to display in the table. */
-  @Input() rows: MdCalendarCell[][];
+  @Input() rows: Md2CalendarCell[][];
 
   /** The value in the table that corresponds to today. */
   @Input() todayValue: number;
@@ -63,7 +63,7 @@ export class MdCalendarBody {
   /** Emits when a new value is selected. */
   @Output() selectedValueChange = new EventEmitter<number>();
 
-  _cellClicked(cell: MdCalendarCell): void {
+  _cellClicked(cell: Md2CalendarCell): void {
     if (!this.allowDisabledSelection && !cell.enabled) {
       return;
     }

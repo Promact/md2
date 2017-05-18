@@ -64,4 +64,4 @@ A datepicker would have the following markup.
 - <kbd>PAGE_DOWN</kbd>: Focus a month forward
 - <kbd>SHIFT + PAGE_UP</kbd>: Focus a year backward
 - <kbd>SHIFT + PAGE_DOWN</kbd>: Focus a year forward
-- <kbd>ENTER</kbd> or <kbd>SPACE</kbd>: Select focused item
+- <kbd>ENTER</kbd>: Select focused item

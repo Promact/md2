@@ -167,9 +167,7 @@ export class DateUtil {
     return d;
   }
 
-  parse(value: any, fmt?: Object): Date | null {
-    // We have no way using the native JS Date to set the parse format or locale, so we ignore these
-    // parameters.
+  parse(value: any, format?: Object): Date | null {
     let timestamp = typeof value == 'number' ? value : Date.parse(value);
     return isNaN(timestamp) ? null : new Date(timestamp);
   }

@@ -84,6 +84,9 @@
                       [container]="container"
                       [format]="dateFormat"
                       #dateControl="ngModel"></md2-datepicker>
+      <span *ngIf="dateControl.hasError('mdDatepickerMin')">Too early!</span>
+      <span *ngIf="dateControl.hasError('mdDatepickerMax')">Too late!</span>
+      <span *ngIf="dateControl.hasError('mdDatepickerFilter')">Date unavailable!</span>
       <p> Value: {{ date }} </p>
       <p> Touched: {{ dateControl.touched }} </p>
       <p> Dirty: {{ dateControl.dirty }} </p>
@@ -110,7 +113,7 @@
           </md2-select>
         </div>
         <div class="inline-control">
-         <input name="formatInput" [(ngModel)]="dateFormat" placeholder="date format">
+          <input class="md2-input" name="formatInput" [(ngModel)]="dateFormat" placeholder="date format">
         </div>
       </div>
       <div>

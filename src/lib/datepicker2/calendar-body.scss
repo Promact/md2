@@ -42,6 +42,11 @@ $background: white;
   padding: $md2-calendar-body-cell-padding 0;
   text-align: center;
   outline: none;
+  cursor: pointer;
+
+  .md2-calendar-body-disabled {
+    cursor: default;
+  }
 }
 
 .md2-calendar-body-cell-content {

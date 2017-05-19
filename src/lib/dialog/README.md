@@ -27,7 +27,6 @@ Dialog allow the user to display content in popup.
 | --- | --- |
 | `<md2-dialog-title>` | Title of Dialog. |
 | `<md2-dialog-content>` | Content of Dialog. |
-| `<md2-dialog-content>` | Content of Dialog. |
 | `<md2-dialog-footer> or <md2-dialog-actions>` | Footer of Dialog. |
 
 
@@ -48,5 +47,5 @@ A dialog would have the following markup.
 	<md2-dialog-title>Confirm Title</md2-dialog-title>
 	Body Content...
 </md2-dialog>
-<button (click)="confirm.show()">Open Confirm Dialog</button>
+<button (click)="confirm.open()">Open Confirm Dialog</button>
 ```

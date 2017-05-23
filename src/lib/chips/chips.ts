@@ -106,7 +106,7 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
   inputValue: string = '';
   selectedChip: number = -1;
   inputFocused: boolean = false;
-  autoCompleteFocued: boolean = false;
+  autoCompleteFocused: boolean = false;
 
   private _value: any = '';
   private splitRegExp: RegExp;
@@ -235,7 +235,7 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
       this.elementRef.nativeElement.querySelector('input.chip-input').focus();
     }
     else {
-      this.autoCompleteFocued = true;
+      this.autoCompleteFocused = true;
       this._onTouched();
     }
     this._resetSelected();

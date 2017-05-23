@@ -107,7 +107,6 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
   selectedChip: number = -1;
   inputFocused: boolean = false;
   autoCompleteFocused: boolean = false;
-
   private _value: any = '';
   private splitRegExp: RegExp;
   private templateHtmlString: any;

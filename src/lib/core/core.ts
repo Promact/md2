@@ -1,7 +1,8 @@
 import {NgModule} from '@angular/core';
 import {MdLineModule} from './line/line';
 import {RtlModule} from './rtl/dir';
-import {MdOptionModule} from './option/option';
+import {ObserveContentModule} from './observe-content/observe-content';
+import {MdOptionModule} from './option/index';
 import {PortalModule} from './portal/portal-directives';
 import {OverlayModule} from './overlay/overlay-directives';
 import {A11yModule} from './a11y/index';
@@ -12,7 +13,10 @@ import {MdRippleModule} from './ripple/index';
 // RTL
 export {Dir, LayoutDirection, RtlModule} from './rtl/dir';
 
-export {MdOptionModule, MdOption, MdOptionSelectionChange} from './option/option';
+// Mutation Observer
+export {ObserveContentModule, ObserveContent} from './observe-content/observe-content';
+
+export * from './option/index';
 
 // Portals
 export {
@@ -33,7 +37,24 @@ export {DomPortalHost} from './portal/dom-portal-host';
 export * from './platform/index';
 
 // Overlay
-export * from './overlay/index';
+export {Overlay, OVERLAY_PROVIDERS} from './overlay/overlay';
+export {OverlayContainer} from './overlay/overlay-container';
+export {FullscreenOverlayContainer} from './overlay/fullscreen-overlay-container';
+export {OverlayRef} from './overlay/overlay-ref';
+export {OverlayState} from './overlay/overlay-state';
+export {
+  ConnectedOverlayDirective,
+  OverlayOrigin,
+  OverlayModule,
+} from './overlay/overlay-directives';
+export * from './overlay/position/global-position-strategy';
+export * from './overlay/position/connected-position-strategy';
+export * from './overlay/position/connected-position';
+export {ScrollDispatcher} from './overlay/scroll/scroll-dispatcher';
+export {ScrollStrategy} from './overlay/scroll/scroll-strategy';
+export {RepositionScrollStrategy} from './overlay/scroll/reposition-scroll-strategy';
+export {CloseScrollStrategy} from './overlay/scroll/close-scroll-strategy';
+export {NoopScrollStrategy} from './overlay/scroll/noop-scroll-strategy';
 
 // Gestures
 export {GestureConfig} from './gestures/gesture-config';
@@ -105,6 +126,7 @@ export {MdCommonModule} from './common-behaviors/common-module';
     MdLineModule,
     RtlModule,
     MdRippleModule,
+    ObserveContentModule,
     PortalModule,
     OverlayModule,
     A11yModule,
@@ -115,6 +137,7 @@ export {MdCommonModule} from './common-behaviors/common-module';
     MdLineModule,
     RtlModule,
     MdRippleModule,
+    ObserveContentModule,
     PortalModule,
     OverlayModule,
     A11yModule,

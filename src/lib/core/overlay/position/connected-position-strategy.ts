@@ -350,7 +350,7 @@ export class ConnectedPositionStrategy implements PositionStrategy {
 
   /** Physically positions the overlay element to the given coordinate. */
   private _setElementPosition(
-      element: any,
+      element: HTMLElement,
       overlayRect: ClientRect,
       overlayPoint: Point,
       pos: ConnectionPositionPair) {

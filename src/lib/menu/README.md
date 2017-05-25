@@ -13,8 +13,8 @@ Menu is a list of options that displays when triggered.
 
 ### Attributes
 
-| attributes | Value | Description |
-| --- | --- |
+| Attributes | Value | Description |
+| --- | --- | --- |
 | `x-position` | `before | after` | The horizontal position of the menu in relation to the trigger. Defaults to `after`. |
 | `y-position` | `above | below` | The vertical position of the menu in relation to the trigger. Defaults to `below`. |
 

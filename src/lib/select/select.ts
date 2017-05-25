@@ -18,7 +18,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { Md2Option, Md2OptionSelectionChange } from './option';
-import { ENTER, SPACE, UP_ARROW, DOWN_ARROW } from '../core/keyboard/keycodes';
+import { ENTER, SPACE, UP_ARROW, DOWN_ARROW, HOME, END } from '../core/keyboard/keycodes';
 import { FocusKeyManager } from '../core/a11y/focus-key-manager';
 import { Dir } from '../core/rtl/dir';
 import { Observable } from 'rxjs/Observable';
@@ -29,10 +29,11 @@ import { coerceBooleanProperty } from '../core/coercion/boolean-property';
 import { ConnectedOverlayDirective } from '../core/overlay/overlay-directives';
 import { ViewportRuler } from '../core/overlay/position/viewport-ruler';
 import { SelectionModel } from '../core/selection/selection';
-import { MdSelectDynamicMultipleError, MdSelectNonArrayValueError } from './select-errors';
-import 'rxjs/add/operator/filter';
+import { ScrollDispatcher } from '../core/overlay/scroll/scroll-dispatcher';
+import { getMdSelectDynamicMultipleError, getMdSelectNonArrayValueError } from './select-errors';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/startWith';
+import 'rxjs/add/operator/filter';
 
 
 /**
@@ -72,7 +73,7 @@ export const SELECT_PANEL_PADDING_X = 16;
  * the browser adds ~4px, because we're using inline elements.
  * The checkbox width is 20px.
  */
-export const SELECT_MULTIPLE_PANEL_PADDING_X = SELECT_PANEL_PADDING_X * 1.25 + 20;
+export const SELECT_MULTIPLE_PANEL_PADDING_X = SELECT_PANEL_PADDING_X * 1.75 + 20;
 
 /**
  * The panel's padding on the y-axis. This padding indicates there are more
@@ -111,8 +112,8 @@ export type Md2SelectFloatPlaceholderType = 'always' | 'never' | 'auto';
     '[attr.aria-owns]': '_optionIds',
     '[class.md2-select-disabled]': 'disabled',
     '[class.md2-select]': 'true',
-    '(keydown)': '_handleKeydown($event)',
-    '(blur)': '_onBlur()'
+    '(keydown)': '_handleClosedKeydown($event)',
+    '(blur)': '_onBlur()',
   },
   animations: [
     transformPlaceholder,
@@ -158,20 +159,23 @@ export class Md2Select implements AfterContentInit, OnDestroy, OnInit, ControlVa
   /** Tab index for the element. */
   private _tabIndex: number;
 
+  /** Theme color for the component. */
+  private _color: string;
+
   /**
    * The width of the trigger. Must be saved to set the min width of the overlay panel
    * and the width of the selected value.
    */
   _triggerWidth: number;
 
+  /** Manages keyboard events for options in the panel. */
+  _keyManager: FocusKeyManager;
+
   /**
    * The width of the selected option's value. Must be set programmatically
    * to ensure its overflow is clipped, as it's absolutely positioned.
    */
   _selectedValueWidth: number;
-
-  /** Manages keyboard events for options in the panel. */
-  _keyManager: FocusKeyManager;
 
   /** View -> model callback called when value changes */
   _onChange = (value: any) => { };
@@ -252,7 +256,7 @@ export class Md2Select implements AfterContentInit, OnDestroy, OnInit, ControlVa
   get multiple(): boolean { return this._multiple; }
   set multiple(value: boolean) {
     if (this._selectionModel) {
-      throw new MdSelectDynamicMultipleError();
+      throw getMdSelectDynamicMultipleError();
     }
 
     this._multiple = coerceBooleanProperty(value);
@@ -454,7 +458,7 @@ export class Md2Select implements AfterContentInit, OnDestroy, OnInit, ControlVa
   }
 
   /** Handles the keyboard interactions of a closed select. */
-  _handleKeydown(event: KeyboardEvent): void {
+  _handleClosedKeydown(event: KeyboardEvent): void {
     if (!this.disabled) {
       if (event.keyCode === ENTER || event.keyCode === SPACE) {
         event.preventDefault(); // prevents the page from scrolling down when pressing space
@@ -462,6 +466,17 @@ export class Md2Select implements AfterContentInit, OnDestroy, OnInit, ControlVa
       } else if (event.keyCode === UP_ARROW || event.keyCode === DOWN_ARROW) {
         this._handleArrowKey(event);
       }
+    }
+  }
+
+  /** Handles keypresses inside the panel. */
+  _handlePanelKeydown(event: KeyboardEvent): void {
+    if (event.keyCode === HOME || event.keyCode === END) {
+      event.preventDefault();
+      event.keyCode === HOME ? this._keyManager.setFirstItemActive() :
+        this._keyManager.setLastItemActive();
+    } else {
+      this._keyManager.onKeydown(event);
     }
   }
 
@@ -525,15 +540,16 @@ export class Md2Select implements AfterContentInit, OnDestroy, OnInit, ControlVa
     const isArray = Array.isArray(value);
 
     if (this.multiple && value && !isArray) {
-      throw new MdSelectNonArrayValueError();
+      throw getMdSelectNonArrayValueError();
     }
 
+    this._clearSelection();
+
     if (isArray) {
-      this._clearSelection();
       value.forEach((currentValue: any) => this._selectValue(currentValue));
       this._sortValues();
-    } else if (!this._selectValue(value)) {
-      this._clearSelection();
+    } else {
+      this._selectValue(value);
     }
 
     this._setValueWidth();
@@ -551,7 +567,7 @@ export class Md2Select implements AfterContentInit, OnDestroy, OnInit, ControlVa
    */
   private _selectValue(value: any): Md2Option {
     let optionsArray = this.options.toArray();
-    let correspondingOption = optionsArray.find(option => this.equals(option.value, value));
+    let correspondingOption = optionsArray.find(option => option.value && this.equals(option.value, value));
 
     if (correspondingOption) {
       correspondingOption.select();
@@ -641,8 +657,13 @@ export class Md2Select implements AfterContentInit, OnDestroy, OnInit, ControlVa
       wasSelected ? option.deselect() : option.select();
       this._sortValues();
     } else {
-      this._clearSelection(option);
-      this._selectionModel.select(option);
+      this._clearSelection(option.value == null ? null : option);
+
+      if (option.value == null) {
+        this._propagateChanges(option.value);
+      } else {
+        this._selectionModel.select(option);
+      }
     }
 
     if (wasSelected !== this._selectionModel.isSelected(option)) {
@@ -675,10 +696,14 @@ export class Md2Select implements AfterContentInit, OnDestroy, OnInit, ControlVa
   }
 
   /** Emits change event to set the model value. */
-  private _propagateChanges(): void {
-    let valueToEmit = Array.isArray(this.selected) ?
-      this.selected.map(option => option.value) :
-      this.selected.value;
+  private _propagateChanges(fallbackValue?: any): void {
+    let valueToEmit = null;
+
+    if (Array.isArray(this.selected)) {
+      valueToEmit = this.selected.map(option => option.value);
+    } else {
+      valueToEmit = this.selected ? this.selected.value : fallbackValue;
+    }
 
     this._onChange(valueToEmit);
     this.change.emit(new Md2SelectChange(this, valueToEmit));

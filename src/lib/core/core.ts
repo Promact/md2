@@ -37,24 +37,7 @@ export {DomPortalHost} from './portal/dom-portal-host';
 export * from './platform/index';
 
 // Overlay
-export {Overlay, OVERLAY_PROVIDERS} from './overlay/overlay';
-export {OverlayContainer} from './overlay/overlay-container';
-export {FullscreenOverlayContainer} from './overlay/fullscreen-overlay-container';
-export {OverlayRef} from './overlay/overlay-ref';
-export {OverlayState} from './overlay/overlay-state';
-export {
-  ConnectedOverlayDirective,
-  OverlayOrigin,
-  OverlayModule,
-} from './overlay/overlay-directives';
-export * from './overlay/position/global-position-strategy';
-export * from './overlay/position/connected-position-strategy';
-export * from './overlay/position/connected-position';
-export {ScrollDispatcher} from './overlay/scroll/scroll-dispatcher';
-export {ScrollStrategy} from './overlay/scroll/scroll-strategy';
-export {RepositionScrollStrategy} from './overlay/scroll/reposition-scroll-strategy';
-export {CloseScrollStrategy} from './overlay/scroll/close-scroll-strategy';
-export {NoopScrollStrategy} from './overlay/scroll/noop-scroll-strategy';
+export * from './overlay/index';
 
 // Gestures
 export {GestureConfig} from './gestures/gesture-config';
@@ -93,9 +76,6 @@ export {MdLineModule, MdLine, MdLineSetter} from './line/line';
 // Style
 export * from './style/index';
 
-// Error
-export {MdError} from './errors/error';
-
 // Misc
 export {ComponentType} from './overlay/generic-component-type';
 
@@ -120,6 +100,8 @@ export {CompatibilityModule, NoConflictStyleCompatibilityMode} from './compatibi
 // Common material module
 export {MdCommonModule} from './common-behaviors/common-module';
 
+// Datetime
+export * from './datetime/index';
 
 @NgModule({
   imports: [

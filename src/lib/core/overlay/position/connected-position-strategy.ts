@@ -16,7 +16,7 @@ import {Scrollable} from '../scroll/scrollable';
  * where top and bottom are the y-axis coordinates of the bounding rectangle and left and right are
  * the x-axis coordinates.
  */
-export type ElementBoundingPositions = {
+type ElementBoundingPositions = {
   top: number;
   right: number;
   bottom: number;
@@ -354,7 +354,6 @@ export class ConnectedPositionStrategy implements PositionStrategy {
       overlayRect: ClientRect,
       overlayPoint: Point,
       pos: ConnectionPositionPair) {
-    const  viewport = this._viewportRuler.getViewportRect();
 
     // We want to set either `top` or `bottom` based on whether the overlay wants to appear above
     // or below the origin and the direction in which the element will expand.
@@ -364,7 +363,7 @@ export class ConnectedPositionStrategy implements PositionStrategy {
     // from the bottom of the viewport rather than the top.
     let y = verticalStyleProperty === 'top' ?
         overlayPoint.y :
-        viewport.height - (overlayPoint.y + overlayRect.height);
+        document.documentElement.clientHeight - (overlayPoint.y + overlayRect.height);
 
     // We want to set either `left` or `right` based on whether the overlay wants to appear "before"
     // or "after" the origin, which determines the direction in which the element will expand.
@@ -381,7 +380,7 @@ export class ConnectedPositionStrategy implements PositionStrategy {
     // from the right edge of the viewport rather than the left edge.
     let x = horizontalStyleProperty === 'left' ?
       overlayPoint.x :
-      viewport.width - (overlayPoint.x + overlayRect.width);
+      document.documentElement.clientWidth - (overlayPoint.x + overlayRect.width);
 
 
     // Reset any existing styles. This is necessary in case the preferred position has

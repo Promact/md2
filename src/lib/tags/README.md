@@ -6,7 +6,7 @@ Tags allow the user to add tag.
 
 | Name | Type | Description |
 | --- | --- | --- |
-| `items` | `Array<any>` | List of items |
+| `md2-tags` | `Array<any>` | List of items |
 | `md2-tag-text` | `string` | Map property for display text |
 | `md2-tag-value` | `string` | Map property for return value, by default it returns whole object of tag |
 | `placeholder` | `string` | Hint label |

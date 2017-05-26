@@ -7,9 +7,9 @@ Tooltip is a directive, it allows the user to show hint text while the user mous
 | --- | --- | --- |
 | `tooltip` | `string` | The message of the Tooltip |
 | `tooltipDisabled` | `boolean` | Enable/Disable the Tooltip |
-| `tooltip-position` | `'above'|'below'|'before'|'after'` | The position of the Tooltip |
+| `tooltip-position` | `above` &#124; `below` &#124; `before` &#124; `after` | The position of the Tooltip |
 | `tooltip-delay` | `number` | The delay of the Tooltip |
-| `tooltip-delay` | `number` | The delay of the Tooltip |
+| `tooltip-hide-delay` | `number` | The delay of the Tooltip |
 
 ### Examples
 A tooltip would have the following markup.

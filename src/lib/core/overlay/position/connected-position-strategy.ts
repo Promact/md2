@@ -60,7 +60,7 @@ export class ConnectedPositionStrategy implements PositionStrategy {
   private _lastConnectedPosition: ConnectionPositionPair;
 
   _onPositionChange:
-      Subject<ConnectedOverlayPositionChange> = new Subject<ConnectedOverlayPositionChange>();
+  Subject<ConnectedOverlayPositionChange> = new Subject<ConnectedOverlayPositionChange>();
 
   /** Emits an event when the connection point changes. */
   get onPositionChange(): Observable<ConnectedOverlayPositionChange> {
@@ -68,10 +68,10 @@ export class ConnectedPositionStrategy implements PositionStrategy {
   }
 
   constructor(
-      private _connectedTo: ElementRef,
-      private _originPos: OriginConnectionPosition,
-      private _overlayPos: OverlayConnectionPosition,
-      private _viewportRuler: ViewportRuler) {
+    private _connectedTo: ElementRef,
+    private _originPos: OriginConnectionPosition,
+    private _overlayPos: OverlayConnectionPosition,
+    private _viewportRuler: ViewportRuler) {
     this._origin = this._connectedTo.nativeElement;
     this.withFallbackPosition(_originPos, _overlayPos);
   }
@@ -175,8 +175,8 @@ export class ConnectedPositionStrategy implements PositionStrategy {
    * @param overlayPos
    */
   withFallbackPosition(
-      originPos: OriginConnectionPosition,
-      overlayPos: OverlayConnectionPosition): this {
+    originPos: OriginConnectionPosition,
+    overlayPos: OverlayConnectionPosition): this {
     this._preferredPositions.push(new ConnectionPositionPair(originPos, overlayPos));
     return this;
   }
@@ -258,10 +258,10 @@ export class ConnectedPositionStrategy implements PositionStrategy {
    * would be inside the viewport at that position.
    */
   private _getOverlayPoint(
-      originPoint: Point,
-      overlayRect: ClientRect,
-      viewportRect: ClientRect,
-      pos: ConnectionPositionPair): OverlayPoint {
+    originPoint: Point,
+    overlayRect: ClientRect,
+    viewportRect: ClientRect,
+    pos: ConnectionPositionPair): OverlayPoint {
     // Calculate the (overlayStartX, overlayStartY), the start of the potential overlay position
     // relative to the origin point.
     let overlayStartX: number;
@@ -322,8 +322,8 @@ export class ConnectedPositionStrategy implements PositionStrategy {
 
   /** Whether the element is completely out of the view of any of the containers. */
   private isElementOutsideView(
-      elementBounds: ElementBoundingPositions,
-      containersBounds: ElementBoundingPositions[]): boolean {
+    elementBounds: ElementBoundingPositions,
+    containersBounds: ElementBoundingPositions[]): boolean {
     return containersBounds.some((containerBounds: ElementBoundingPositions) => {
       const outsideAbove = elementBounds.bottom < containerBounds.top;
       const outsideBelow = elementBounds.top > containerBounds.bottom;
@@ -336,8 +336,8 @@ export class ConnectedPositionStrategy implements PositionStrategy {
 
   /** Whether the element is clipped by any of the containers. */
   private isElementClipped(
-      elementBounds: ElementBoundingPositions,
-      containersBounds: ElementBoundingPositions[]): boolean {
+    elementBounds: ElementBoundingPositions,
+    containersBounds: ElementBoundingPositions[]): boolean {
     return containersBounds.some((containerBounds: ElementBoundingPositions) => {
       const clippedAbove = elementBounds.top < containerBounds.top;
       const clippedBelow = elementBounds.bottom > containerBounds.bottom;
@@ -350,26 +350,26 @@ export class ConnectedPositionStrategy implements PositionStrategy {
 
   /** Physically positions the overlay element to the given coordinate. */
   private _setElementPosition(
-      element: HTMLElement,
-      overlayRect: ClientRect,
-      overlayPoint: Point,
-      pos: ConnectionPositionPair) {
+    element: HTMLElement,
+    overlayRect: ClientRect,
+    overlayPoint: Point,
+    pos: ConnectionPositionPair) {
 
     // We want to set either `top` or `bottom` based on whether the overlay wants to appear above
     // or below the origin and the direction in which the element will expand.
-    let verticalStyleProperty = pos.overlayY === 'bottom' ? 'bottom' : 'top';
+    let verticalStyleProperty: any = pos.overlayY === 'bottom' ? 'bottom' : 'top';
 
     // When using `bottom`, we adjust the y position such that it is the distance
     // from the bottom of the viewport rather than the top.
     let y = verticalStyleProperty === 'top' ?
-        overlayPoint.y :
-        document.documentElement.clientHeight - (overlayPoint.y + overlayRect.height);
+      overlayPoint.y :
+      document.documentElement.clientHeight - (overlayPoint.y + overlayRect.height);
 
     // We want to set either `left` or `right` based on whether the overlay wants to appear "before"
     // or "after" the origin, which determines the direction in which the element will expand.
     // For the horizontal axis, the meaning of "before" and "after" change based on whether the
     // page is in RTL or LTR.
-    let horizontalStyleProperty: string;
+    let horizontalStyleProperty: any;
     if (this._dir === 'rtl') {
       horizontalStyleProperty = pos.overlayX === 'end' ? 'left' : 'right';
     } else {
@@ -385,7 +385,7 @@ export class ConnectedPositionStrategy implements PositionStrategy {
 
     // Reset any existing styles. This is necessary in case the preferred position has
     // changed since the last `apply`.
-    ['top', 'bottom', 'left', 'right'].forEach(p => element.style[p] = null);
+    ['top', 'bottom', 'left', 'right'].forEach((p: any) => element.style[p] = null);
 
     element.style[verticalStyleProperty] = `${y}px`;
     element.style[horizontalStyleProperty] = `${x}px`;

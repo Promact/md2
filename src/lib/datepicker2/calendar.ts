@@ -34,7 +34,7 @@ import {MD_DATE_FORMATS, MdDateFormats} from '../core/datetime/date-formats';
  */
 @Component({
   moduleId: module.id,
-  selector: 'md-calendar',
+  selector: 'md2-calendar',
   templateUrl: 'calendar.html',
   styleUrls: ['calendar.css'],
   host: {

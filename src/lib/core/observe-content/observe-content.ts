@@ -18,7 +18,7 @@ import 'rxjs/add/operator/debounceTime';
  */
 @Injectable()
 export class MdMutationObserverFactory {
-  create(callback): MutationObserver {
+  create(callback: any): MutationObserver {
     return new MutationObserver(callback);
   }
 }

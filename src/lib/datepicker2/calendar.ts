@@ -22,10 +22,10 @@ import {
   RIGHT_ARROW,
   UP_ARROW
 } from '../core/keyboard/keycodes';
-import {DateAdapter} from './date-adapter';
+import {DateAdapter} from '../core/datetime/index';
 import {MdDatepickerIntl} from './datepicker-intl';
 import {createMissingDateImplError} from './datepicker-errors';
-import {MD_DATE_FORMATS, MdDateFormats} from './date-formats';
+import {MD_DATE_FORMATS, MdDateFormats} from '../core/datetime/date-formats';
 
 
 /**
@@ -34,7 +34,7 @@ import {MD_DATE_FORMATS, MdDateFormats} from './date-formats';
  */
 @Component({
   moduleId: module.id,
-  selector: 'md2-calendar',
+  selector: 'md-calendar',
   templateUrl: 'calendar.html',
   styleUrls: ['calendar.css'],
   host: {

@@ -10,23 +10,20 @@ import {
   Output,
   ViewChild,
   ViewContainerRef,
-  ViewEncapsulation
+  ViewEncapsulation,
+  NgZone,
 } from '@angular/core';
 import { Overlay } from '../core/overlay/overlay';
 import { OverlayRef } from '../core/overlay/overlay-ref';
 import { ComponentPortal } from '../core/portal/portal';
 import { OverlayState } from '../core/overlay/overlay-state';
 import { Dir } from '../core/rtl/dir';
-import { MdError } from '../core/errors/error';
 import { PositionStrategy } from '../core/overlay/position/position-strategy';
-import {
-  OriginConnectionPosition,
-  OverlayConnectionPosition
-} from '../core/overlay/position/connected-position';
+import { RepositionScrollStrategy, ScrollDispatcher } from '../core/overlay/index';
 import { MdDatepickerInput } from './datepicker-input';
 import 'rxjs/add/operator/first';
 import { Subscription } from 'rxjs/Subscription';
-import { DateAdapter } from './date-adapter';
+import { DateAdapter } from '../core/datetime/index';
 import { createMissingDateImplError } from './datepicker-errors';
 import { ESCAPE } from '../core/keyboard/keycodes';
 import { MdCalendar } from './calendar';
@@ -113,10 +110,6 @@ export class MdDatepicker<D> implements OnDestroy {
    */
   @Input() touchUi = false;
 
-  /** A function used to filter which dates are selectable. */
-  @Input()
-  dateFilter: (date: D) => boolean;
-
   /** Emits new selected date when selected date changes. */
   @Output() selectedChanged = new EventEmitter<D>();
 
@@ -155,7 +148,9 @@ export class MdDatepicker<D> implements OnDestroy {
   private _inputSubscription: Subscription;
 
   constructor(private _overlay: Overlay,
+    private _ngZone: NgZone,
     private _viewContainerRef: ViewContainerRef,
+    private _scrollDispatcher: ScrollDispatcher,
     @Optional() private _dateAdapter: DateAdapter<D>,
     @Optional() private _dir: Dir) {
     if (!this._dateAdapter) {
@@ -190,7 +185,7 @@ export class MdDatepicker<D> implements OnDestroy {
    */
   _registerInput(input: MdDatepickerInput<D>): void {
     if (this._datepickerInput) {
-      throw new MdError('An MdDatepicker can only be associated with a single input.');
+      throw new Error('An MdDatepicker can only be associated with a single input.');
     }
     this._datepickerInput = input;
     this._inputSubscription =
@@ -203,7 +198,7 @@ export class MdDatepicker<D> implements OnDestroy {
       return;
     }
     if (!this._datepickerInput) {
-      throw new MdError('Attempted to open an MdDatepicker with no associated input.');
+      throw new Error('Attempted to open an MdDatepicker with no associated input.');
     }
 
     //this.touchUi ? this._openAsDialog() :
@@ -253,6 +248,7 @@ export class MdDatepicker<D> implements OnDestroy {
       let componentRef: ComponentRef<MdDatepickerContent<D>> =
         this._popupRef.attach(this._calendarPortal);
       componentRef.instance.datepicker = this;
+      this._ngZone.onStable.first().subscribe(() => this._popupRef.updatePosition());
     }
 
     this._popupRef.backdropClick().first().subscribe(() => this.close());
@@ -265,15 +261,29 @@ export class MdDatepicker<D> implements OnDestroy {
     overlayState.hasBackdrop = true;
     overlayState.backdropClass = 'md-overlay-transparent-backdrop';
     overlayState.direction = this._dir ? this._dir.value : 'ltr';
+    overlayState.scrollStrategy = new RepositionScrollStrategy(this._scrollDispatcher);
 
     this._popupRef = this._overlay.create(overlayState);
   }
 
   /** Create the popup PositionStrategy. */
   private _createPopupPositionStrategy(): PositionStrategy {
-    let origin = { originX: 'start', originY: 'bottom' } as OriginConnectionPosition;
-    let overlay = { overlayX: 'start', overlayY: 'top' } as OverlayConnectionPosition;
-    return this._overlay.position().connectedTo(
-      this._datepickerInput.getPopupConnectionElementRef(), origin, overlay);
+    return this._overlay.position()
+      .connectedTo(this._datepickerInput.getPopupConnectionElementRef(),
+      { originX: 'start', originY: 'bottom' },
+      { overlayX: 'start', overlayY: 'top' }
+      )
+      .withFallbackPosition(
+      { originX: 'start', originY: 'top' },
+      { overlayX: 'start', overlayY: 'bottom' }
+      )
+      .withFallbackPosition(
+      { originX: 'end', originY: 'bottom' },
+      { overlayX: 'end', overlayY: 'top' }
+      )
+      .withFallbackPosition(
+      { originX: 'end', originY: 'top' },
+      { overlayX: 'end', overlayY: 'bottom' }
+      );
   }
 }

@@ -10,10 +10,6 @@ import { MdCalendar } from './calendar';
 import { MdDatepickerToggle } from './datepicker-toggle';
 import { StyleModule } from '../core/style/index';
 import { MdDatepickerIntl } from './datepicker-intl';
-import { DateAdapter } from './date-adapter';
-import { NativeDateAdapter } from './native-date-adapter';
-import { MD_DATE_FORMATS } from './date-formats';
-import { MD_NATIVE_DATE_FORMATS } from './native-date-formats';
 
 
 
@@ -25,8 +21,6 @@ export * from './datepicker-intl';
 export * from './datepicker-toggle';
 export * from './month-view';
 export * from './year-view';
-export * from './date-adapter';
-export * from './native-date-adapter';
 
 
 @NgModule({
@@ -51,11 +45,7 @@ export * from './native-date-adapter';
     Md2MonthView,
     Md2YearView,
   ],
-  providers: [
-    MdDatepickerIntl,
-    { provide: DateAdapter, useClass: NativeDateAdapter },
-    { provide: MD_DATE_FORMATS, useValue: MD_NATIVE_DATE_FORMATS }
-  ],
+  providers: [MdDatepickerIntl],
   entryComponents: [
     MdDatepickerContent,
   ]

@@ -23,9 +23,9 @@ import {
 } from '@angular/forms';
 import { Subscription } from 'rxjs/Subscription';
 import { DOWN_ARROW } from '../core/keyboard/keycodes';
-import { DateAdapter } from './date-adapter';
+import { DateAdapter } from '../core/datetime/index';
 import { createMissingDateImplError } from './datepicker-errors';
-import { MD_DATE_FORMATS, MdDateFormats } from './date-formats';
+import { MD_DATE_FORMATS, MdDateFormats } from '../core/datetime/date-formats';
 
 
 export const MD_DATEPICKER_VALUE_ACCESSOR: any = {

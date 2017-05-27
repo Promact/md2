@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Md2CalendarBody } from './calendar-body';
 import { Md2YearView } from './year-view';
 import { OverlayModule } from '../core/overlay/overlay-directives';
+import { MdNativeDateModule } from '../core/datetime/index';
 import { MdDatepicker, MdDatepickerContent } from './datepicker';
 import { MdDatepickerInput } from './datepicker-input';
 import { MdCalendar } from './calendar';
@@ -28,6 +29,7 @@ export * from './year-view';
     CommonModule,
     OverlayModule,
     StyleModule,
+    MdNativeDateModule
   ],
   exports: [
     MdDatepicker,

@@ -1,4 +1,4 @@
-import { EventEmitter, ElementRef, ModuleWithProviders, OnDestroy, Renderer, TemplateRef, ViewContainerRef } from '@angular/core';
+import { EventEmitter, ElementRef, OnDestroy, Renderer, TemplateRef, ViewContainerRef } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { Overlay } from '../core';
 import { ColorUtil } from './color-util';
@@ -259,5 +259,4 @@ export declare class SliderDimension {
 }
 export declare const MD2_COLORPICKER_DIRECTIVES: (typeof TextDirective | typeof ColorpickerSliderDirective | typeof Md2Colorpicker)[];
 export declare class Md2ColorpickerModule {
-    static forRoot(): ModuleWithProviders;
 }

@@ -1,8 +1,13 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 import { BasePortalHost } from './portal';
 /**
  * A PortalHost for attaching portals to an arbitrary DOM element outside of the Angular
@@ -57,6 +62,7 @@ var DomPortalHost = (function (_super) {
         var _this = this;
         var viewContainer = portal.viewContainerRef;
         var viewRef = viewContainer.createEmbeddedView(portal.templateRef);
+        viewRef.detectChanges();
         // The method `createEmbeddedView` will add the view as a child of the viewContainer.
         // But for the DomPortalHost the view can be added everywhere in the DOM (e.g Overlay Container)
         // To move the view to the specified host element. We just re-append the existing root nodes.

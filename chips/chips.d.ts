@@ -1,4 +1,4 @@
-import { ElementRef, ModuleWithProviders, EventEmitter, AfterContentInit } from '@angular/core';
+import { ElementRef, EventEmitter, AfterContentInit } from '@angular/core';
 import { ControlValueAccessor, NgForm } from '@angular/forms';
 export declare class Chip {
     text: string;
@@ -42,6 +42,7 @@ export declare class Md2Chips implements ControlValueAccessor, AfterContentInit 
     inputValue: string;
     selectedChip: number;
     inputFocused: boolean;
+    autoCompleteFocued: boolean;
     private _value;
     private splitRegExp;
     private templateHtmlString;
@@ -55,6 +56,7 @@ export declare class Md2Chips implements ControlValueAccessor, AfterContentInit 
      * @param value
      */
     setValue: any;
+    getFocusAutocomplete(): void;
     changeAutocomplete(value: any): void;
     ngAfterContentInit(): void;
     valueupdate(evt: Event): void;
@@ -96,5 +98,4 @@ export declare class Md2Chips implements ControlValueAccessor, AfterContentInit 
 }
 export declare const MD2_CHIPS_DIRECTIVES: any[];
 export declare class Md2ChipsModule {
-    static forRoot(): ModuleWithProviders;
 }

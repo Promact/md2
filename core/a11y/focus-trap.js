@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 import { Directive, ElementRef, Input, NgZone, Injectable, } from '@angular/core';
 import { InteractivityChecker } from './interactivity-checker';
 import { coerceBooleanProperty } from '../coercion/boolean-property';
+import 'rxjs/add/operator/first';
 /**
  * Class that allows for trapping focus within a DOM element.
  *
@@ -70,6 +71,10 @@ var FocusTrap = (function () {
             _this._element.parentNode.insertBefore(_this._endAnchor, _this._element.nextSibling);
         });
     };
+    FocusTrap.prototype.focusInitialElementWhenReady = function () {
+        var _this = this;
+        this._ngZone.onMicrotaskEmpty.first().subscribe(function () { return _this.focusInitialElement(); });
+    };
     /**
      * Waits for microtask queue to empty, then focuses
      * the first tabbable element within the focus trap region.
@@ -86,24 +91,45 @@ var FocusTrap = (function () {
         var _this = this;
         this._ngZone.onMicrotaskEmpty.first().subscribe(function () { return _this.focusLastTabbableElement(); });
     };
+    /**
+     * Get the specified boundary element of the trapped region.
+     * @param bound The boundary to get (start or end of trapped region).
+     * @returns The boundary element.
+     */
+    FocusTrap.prototype._getRegionBoundary = function (bound) {
+        var markers = Array.prototype.slice.call(this._element.querySelectorAll("[cdk-focus-region-" + bound + "]")).concat(Array.prototype.slice.call(this._element.querySelectorAll("[cdk-focus-" + bound + "]")));
+        markers.forEach(function (el) {
+            if (el.hasAttribute("cdk-focus-" + bound)) {
+                console.warn("Found use of deprecated attribute 'cdk-focus-" + bound + "'," +
+                    (" use 'cdk-focus-region-" + bound + "' instead."), el);
+            }
+        });
+        if (bound == 'start') {
+            return markers.length ? markers[0] : this._getFirstTabbableElement(this._element);
+        }
+        return markers.length ?
+            markers[markers.length - 1] : this._getLastTabbableElement(this._element);
+    };
+    /** Focuses the element that should be focused when the focus trap is initialized. */
+    FocusTrap.prototype.focusInitialElement = function () {
+        var redirectToElement = this._element.querySelector('[cdk-focus-initial]');
+        if (redirectToElement) {
+            redirectToElement.focus();
+        }
+        else {
+            this.focusFirstTabbableElement();
+        }
+    };
     /** Focuses the first tabbable element within the focus trap region. */
     FocusTrap.prototype.focusFirstTabbableElement = function () {
-        var redirectToElement = this._element.querySelector('[cdk-focus-start]') ||
-            this._getFirstTabbableElement(this._element);
+        var redirectToElement = this._getRegionBoundary('start');
         if (redirectToElement) {
             redirectToElement.focus();
         }
     };
     /** Focuses the last tabbable element within the focus trap region. */
     FocusTrap.prototype.focusLastTabbableElement = function () {
-        var focusTargets = this._element.querySelectorAll('[cdk-focus-end]');
-        var redirectToElement = null;
-        if (focusTargets.length) {
-            redirectToElement = focusTargets[focusTargets.length - 1];
-        }
-        else {
-            redirectToElement = this._getLastTabbableElement(this._element);
-        }
+        var redirectToElement = this._getRegionBoundary('end');
         if (redirectToElement) {
             redirectToElement.focus();
         }

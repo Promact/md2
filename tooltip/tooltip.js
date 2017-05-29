@@ -10,10 +10,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { Component, Directive, Input, ElementRef, ViewContainerRef, NgZone, Optional, Renderer, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
+import { Component, Directive, Input, ElementRef, ViewContainerRef, NgZone, Optional, Renderer2, ChangeDetectorRef, } from '@angular/core';
 import { style, trigger, state, transition, animate, } from '@angular/animations';
-import { Overlay, OverlayState, ComponentPortal, } from '../core';
-import { Md2TooltipInvalidPositionError } from './tooltip-errors';
+import { Overlay, OverlayState, ComponentPortal, RepositionScrollStrategy, } from '../core';
 import { Subject } from 'rxjs/Subject';
 import { Dir } from '../core/rtl/dir';
 import { Platform } from '../core/platform/index';
@@ -24,6 +23,10 @@ import { coerceBooleanProperty } from '../core/coercion/boolean-property';
 export var TOUCHEND_HIDE_DELAY = 1500;
 /** Time in ms to throttle repositioning after scroll events. */
 export var SCROLL_THROTTLE_MS = 20;
+/** Throws an error if the user supplied an invalid tooltip position. */
+export function throwMd2TooltipInvalidPositionError(position) {
+    throw new Error("Tooltip position \"" + position + "\" is invalid.");
+}
 /**
  * Directive that attaches a material design tooltip to the host element. Animates the showing and
  * hiding of a tooltip provided position (defaults to below the element).
@@ -48,7 +51,7 @@ var Md2Tooltip = (function () {
         /** The default delay in ms before hiding the tooltip after hide is called */
         this.hideDelay = 0;
         // The mouse events shouldn't be bound on iOS devices, because
-        // they can prevent the first tap from firing it's click event.
+        // they can prevent the first tap from firing its click event.
         if (!_platform.IOS) {
             _renderer.listen(_elementRef.nativeElement, 'mouseenter', function () { return _this.show(); });
             _renderer.listen(_elementRef.nativeElement, 'mouseleave', function () { return _this.hide(); });
@@ -95,25 +98,12 @@ var Md2Tooltip = (function () {
         enumerable: true,
         configurable: true
     });
-    Md2Tooltip.prototype.ngOnInit = function () {
-        var _this = this;
-        // When a scroll on the page occurs, update the position in case this tooltip needs
-        // to be repositioned.
-        this.scrollSubscription = this._scrollDispatcher.scrolled(SCROLL_THROTTLE_MS, function () {
-            if (_this._overlayRef) {
-                _this._overlayRef.updatePosition();
-            }
-        });
-    };
     /**
      * Dispose the tooltip when destroyed.
      */
     Md2Tooltip.prototype.ngOnDestroy = function () {
         if (this._tooltipInstance) {
             this._disposeTooltip();
-        }
-        if (this.scrollSubscription) {
-            this.scrollSubscription.unsubscribe();
         }
     };
     /** Shows the tooltip after the delay in ms, defaults to tooltip-delay-show or 0ms if no input */
@@ -174,7 +164,10 @@ var Md2Tooltip = (function () {
             }
         });
         var config = new OverlayState();
+        config.direction = this._dir ? this._dir.value : 'ltr';
         config.positionStrategy = strategy;
+        config.scrollStrategy =
+            new RepositionScrollStrategy(this._scrollDispatcher, SCROLL_THROTTLE_MS);
         this._overlayRef = this._overlay.create(config);
     };
     /** Disposes the current tooltip and the overlay it is attached to */
@@ -199,7 +192,7 @@ var Md2Tooltip = (function () {
             this.position == 'before' && !isDirectionLtr) {
             return { originX: 'end', originY: 'center' };
         }
-        throw new Md2TooltipInvalidPositionError(this.position);
+        throwMd2TooltipInvalidPositionError(this.position);
     };
     /** Returns the overlay position based on the user's preference */
     Md2Tooltip.prototype._getOverlayPosition = function () {
@@ -220,7 +213,7 @@ var Md2Tooltip = (function () {
             this.position == 'before' && !isLtr) {
             return { overlayX: 'start', overlayY: 'center' };
         }
-        throw new Md2TooltipInvalidPositionError(this.position);
+        throwMd2TooltipInvalidPositionError(this.position);
     };
     /** Updates the tooltip message and repositions the overlay according to the new message length */
     Md2Tooltip.prototype._setTooltipMessage = function (message) {
@@ -228,6 +221,7 @@ var Md2Tooltip = (function () {
         // Must wait for the message to be painted to the tooltip so that the overlay can properly
         // calculate the correct positioning based on the size of the text.
         this._tooltipInstance.message = message;
+        this._tooltipInstance._markForCheck();
         this._ngZone.onMicrotaskEmpty.first().subscribe(function () {
             if (_this._tooltipInstance) {
                 _this._overlayRef.updatePosition();
@@ -274,7 +268,7 @@ Md2Tooltip = __decorate([
         ScrollDispatcher,
         ViewContainerRef,
         NgZone,
-        Renderer,
+        Renderer2,
         Platform,
         Dir])
 ], Md2Tooltip);
@@ -317,8 +311,8 @@ var Md2TooltipComponent = (function () {
             _this._closeOnInteraction = false;
             // Mark for check so if any parent component has set the
             // ChangeDetectionStrategy to OnPush it will be checked anyways
-            _this._changeDetectorRef.markForCheck();
-            setTimeout(function () { _this._closeOnInteraction = true; }, 0);
+            _this._markForCheck();
+            setTimeout(function () { return _this._closeOnInteraction = true; }, 0);
         }, delay);
     };
     /**
@@ -336,7 +330,7 @@ var Md2TooltipComponent = (function () {
             _this._closeOnInteraction = false;
             // Mark for check so if any parent component has set the
             // ChangeDetectionStrategy to OnPush it will be checked anyways
-            _this._changeDetectorRef.markForCheck();
+            _this._markForCheck();
         }, delay);
     };
     /**
@@ -373,7 +367,7 @@ var Md2TooltipComponent = (function () {
             case 'below':
                 this._transformOrigin = 'top';
                 break;
-            default: throw new Md2TooltipInvalidPositionError(value);
+            default: throwMd2TooltipInvalidPositionError(value);
         }
     };
     Md2TooltipComponent.prototype._afterVisibilityAnimation = function (e) {
@@ -391,12 +385,20 @@ var Md2TooltipComponent = (function () {
             this.hide(0);
         }
     };
+    /**
+     * Marks that the tooltip needs to be checked in the next change detection run.
+     * Mainly used for rendering the initial text before positioning a tooltip, which
+     * can be problematic in components with OnPush change detection.
+     */
+    Md2TooltipComponent.prototype._markForCheck = function () {
+        this._changeDetectorRef.markForCheck();
+    };
     return Md2TooltipComponent;
 }());
 Md2TooltipComponent = __decorate([
     Component({selector: 'md2-tooltip',
         template: "<div class=\"md2-tooltip\" [style.transform-origin]=\"_transformOrigin\" [@state]=\"_visibility\" (@state.done)=\"_afterVisibilityAnimation($event)\" [innerHTML]=\"message\"></div>",
-        styles: ["md2-tooltip{pointer-events:none}.md2-tooltip{color:#fff;padding:6px 8px;border-radius:2px;font-size:10px;margin:14px;max-width:250px;background:rgba(97,97,97,.9);word-wrap:break-word}.cdk-global-overlay-wrapper,.cdk-overlay-container{pointer-events:none;top:0;left:0;height:100%;width:100%}.cdk-overlay-container{position:fixed;z-index:1000}.cdk-global-overlay-wrapper{display:flex;position:absolute;z-index:1000}.cdk-overlay-pane{position:absolute;pointer-events:auto;box-sizing:border-box;z-index:1000} /*# sourceMappingURL=tooltip.css.map */ "],
+        styles: [":host{pointer-events:none}.md2-tooltip{color:#fff;padding:6px 8px;border-radius:2px;font-size:10px;margin:14px;max-width:250px;background:rgba(97,97,97,.9);word-wrap:break-word}.cdk-global-overlay-wrapper,.cdk-overlay-container{pointer-events:none;top:0;left:0;height:100%;width:100%}.cdk-overlay-container{position:fixed;z-index:1000}.cdk-global-overlay-wrapper{display:flex;position:absolute;z-index:1000}.cdk-overlay-pane{position:absolute;pointer-events:auto;box-sizing:border-box;z-index:1000} /*# sourceMappingURL=tooltip.css.map */ "],
         animations: [
             trigger('state', [
                 state('void', style({ transform: 'scale(0)' })),
@@ -409,8 +411,7 @@ Md2TooltipComponent = __decorate([
         ],
         host: {
             '(body:click)': 'this._handleBodyInteraction()'
-        },
-        encapsulation: ViewEncapsulation.None
+        }
     }),
     __param(0, Optional()),
     __metadata("design:paramtypes", [Dir, ChangeDetectorRef])

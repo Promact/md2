@@ -1,0 +1,111 @@
+$primary: #106cc8 !default;
+$md2-clock-min-size: 224px !default;
+$md2-clock-margin: 8px !default;
+$md2-clock-font-size: 14px !default;
+$md2-clock-cell-size: 14.1666% !default;
+
+:host {
+  position: relative;
+  display: block;
+  min-width: $md2-clock-min-size;
+  margin: $md2-clock-margin;
+  font-size: $md2-clock-font-size;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+.md2-clock {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-top: 100%;
+  background-color: darken(white, 12);
+  border-radius: 50%;
+}
+
+.md2-clock-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2%;
+  height: 2%;
+  margin: -1%;
+  border-radius: 50%;
+  background-color: $primary;
+}
+
+.md2-clock-hand {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 1px;
+  /*height: $md2-clock-hand-size;*/
+  margin: 0 auto;
+  background-color: $primary;
+  transform-origin: bottom;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: $primary;
+  }
+}
+
+.md2-clock-hours,
+.md2-clock-minutes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  visibility: hidden;
+  transition: 350ms;
+  transform: scale(1.2);
+
+  &.active {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+  }
+}
+
+.md2-clock-minutes {
+  transform: scale(0.8);
+}
+
+.md2-clock-cell {
+  position: absolute;
+  display: flex;
+  width: $md2-clock-cell-size;
+  height: $md2-clock-cell-size;
+  color: rgba(black, 0.87);
+  justify-content: center;
+  box-sizing: border-box;
+  border-radius: 50%;
+  align-items: center;
+  cursor: pointer;
+
+  &:not(.md2-clock-cell-selected) {
+    &:not(.md2-clock-cell-disabled):hover {
+      background-color: rgba(black, 0.1);
+    }
+  }
+
+  &.md2-clock-cell-disabled {
+    color: rgba(black, 0.38);
+    pointer-events: none;
+  }
+
+  &.md2-clock-cell-selected {
+    color: white;
+    background-color: lighten($primary, 5);
+  }
+}

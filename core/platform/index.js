@@ -6,19 +6,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 import { NgModule } from '@angular/core';
 import { Platform } from './platform';
-var PlatformModule = PlatformModule_1 = (function () {
+var PlatformModule = (function () {
     function PlatformModule() {
     }
-    /** @deprecated */
-    PlatformModule.forRoot = function () {
-        return {
-            ngModule: PlatformModule_1,
-            providers: [],
-        };
-    };
     return PlatformModule;
 }());
-PlatformModule = PlatformModule_1 = __decorate([
+PlatformModule = __decorate([
     NgModule({
         providers: [Platform]
     })
@@ -26,5 +19,4 @@ PlatformModule = PlatformModule_1 = __decorate([
 export { PlatformModule };
 export * from './platform';
 export * from './features';
-var PlatformModule_1;
 //# sourceMappingURL=index.js.map

@@ -1,4 +1,4 @@
-import { Md2Accordion } from './accordionpanel';
+import { Md2Accordion } from './accordion';
 export declare class Md2AccordionHeader {
 }
 export declare class Md2AccordionTab {

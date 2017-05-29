@@ -1,4 +1,5 @@
-import { ElementRef, EventEmitter, ModuleWithProviders, Renderer } from '@angular/core';
+import { ElementRef, EventEmitter } from '@angular/core';
+import { MdOptgroup } from './optgroup';
 /** Event object emitted by MdOption when selected or deselected. */
 export declare class MdOptionSelectionChange {
     source: MdOption;
@@ -10,7 +11,7 @@ export declare class MdOptionSelectionChange {
  */
 export declare class MdOption {
     private _element;
-    private _renderer;
+    readonly group: MdOptgroup;
     _isCompatibilityMode: boolean;
     private _selected;
     private _active;
@@ -29,7 +30,7 @@ export declare class MdOption {
     disabled: any;
     /** Event emitted when the option is selected or deselected. */
     onSelectionChange: EventEmitter<MdOptionSelectionChange>;
-    constructor(_element: ElementRef, _renderer: Renderer, _isCompatibilityMode: boolean);
+    constructor(_element: ElementRef, group: MdOptgroup, _isCompatibilityMode: boolean);
     /**
      * Whether or not the option is currently active and ready to be selected.
      * An active option displays styles as if it is focused, but the
@@ -73,7 +74,4 @@ export declare class MdOption {
     _getHostElement(): HTMLElement;
     /** Emits the selection change event. */
     private _emitSelectionChangeEvent(isUserInput?);
-}
-export declare class MdOptionModule {
-    static forRoot(): ModuleWithProviders;
 }

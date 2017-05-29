@@ -21,20 +21,6 @@ var DateLocale = (function () {
         this.getCalendarYearHeaderLabel = this._createFormatFunction({ year: 'numeric' }) ||
             (function (date) { return String(date.getFullYear()); });
         this.firstDayOfWeek = 0;
-        this.months = [
-            { full: 'January', short: 'Jan' },
-            { full: 'February', short: 'Feb' },
-            { full: 'March', short: 'Mar' },
-            { full: 'April', short: 'Apr' },
-            { full: 'May', short: 'May' },
-            { full: 'June', short: 'Jun' },
-            { full: 'July', short: 'Jul' },
-            { full: 'August', short: 'Aug' },
-            { full: 'September', short: 'Sep' },
-            { full: 'October', short: 'Oct' },
-            { full: 'November', short: 'Nov' },
-            { full: 'December', short: 'Dec' },
-        ];
         this.fullMonths = SUPPORTS_INTL_API ? this._createMonthsArray('long') :
             [
                 'January',
@@ -54,21 +40,18 @@ var DateLocale = (function () {
             ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         this.narrowMonths = SUPPORTS_INTL_API ? this._createMonthsArray('narrow') :
             ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
-        this.days = [
-            { full: 'Sunday', short: 'Sun', xshort: 'S' },
-            { full: 'Monday', short: 'Mon', xshort: 'M' },
-            { full: 'Tuesday', short: 'Tue', xshort: 'T' },
-            { full: 'Wednesday', short: 'Wed', xshort: 'W' },
-            { full: 'Thursday', short: 'Thu', xshort: 'T' },
-            { full: 'Friday', short: 'Fri', xshort: 'F' },
-            { full: 'Saturday', short: 'Sat', xshort: 'S' },
-        ];
+        this.months = this.fullMonths.map(function (val, index) {
+            return { full: val, short: _this.shortMonths[index], xshort: _this.narrowMonths[index] };
+        });
         this.fullDays = SUPPORTS_INTL_API ? this._createDaysArray('long') :
             ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         this.shortDays = SUPPORTS_INTL_API ? this._createDaysArray('short') :
             ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
         this.narrowDays = SUPPORTS_INTL_API ? this._createDaysArray('narrow') :
             ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+        this.days = this.fullDays.map(function (val, index) {
+            return { full: val, short: _this.shortDays[index], xshort: _this.narrowDays[index] };
+        });
     }
     DateLocale.prototype.parseDate = function (value) {
         if (value instanceof Date) {

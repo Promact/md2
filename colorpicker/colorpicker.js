@@ -266,7 +266,6 @@ var Md2Colorpicker = (function () {
         enumerable: true,
         configurable: true
     });
-    ;
     Object.defineProperty(Md2Colorpicker.prototype, "container", {
         get: function () { return this._container; },
         set: function (value) {
@@ -728,18 +727,12 @@ export { SliderDimension };
 export var MD2_COLORPICKER_DIRECTIVES = [
     Md2Colorpicker, ColorpickerSliderDirective, TextDirective
 ];
-var Md2ColorpickerModule = Md2ColorpickerModule_1 = (function () {
+var Md2ColorpickerModule = (function () {
     function Md2ColorpickerModule() {
     }
-    Md2ColorpickerModule.forRoot = function () {
-        return {
-            ngModule: Md2ColorpickerModule_1,
-            providers: []
-        };
-    };
     return Md2ColorpickerModule;
 }());
-Md2ColorpickerModule = Md2ColorpickerModule_1 = __decorate([
+Md2ColorpickerModule = __decorate([
     NgModule({
         declarations: MD2_COLORPICKER_DIRECTIVES,
         imports: [CommonModule, FormsModule, OverlayModule, PortalModule],
@@ -748,5 +741,4 @@ Md2ColorpickerModule = Md2ColorpickerModule_1 = __decorate([
     })
 ], Md2ColorpickerModule);
 export { Md2ColorpickerModule };
-var Md2ColorpickerModule_1;
 //# sourceMappingURL=colorpicker.js.map

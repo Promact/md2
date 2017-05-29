@@ -16,6 +16,13 @@ export declare class DateUtil {
     getFindIndex(list: any, index: any, defaultIndex: any): any;
     find(list: any, findFunc: any, startIndex?: any, endIndex?: any): any;
     parseDate(date: string, fmt: string): Date;
+    parse(value: any, format?: Object): Date | null;
+    compareDate(first: Date, second: Date): number;
+    getYear(date: Date): number;
+    getMonth(date: Date): number;
+    getDate(date: Date): number;
+    getHour(date: Date): number;
+    getMinute(date: Date): number;
     /**
      * Gets the first day of the month for the given date's month.
      * @param {Date} date
@@ -60,6 +67,20 @@ export declare class DateUtil {
      * @returns {boolean}
      */
     isSameDay(d1: Date, d2: Date): boolean;
+    /**
+     * Gets whether two dates are the same hours.
+     * @param {Date} d1
+     * @param {Date} d2
+     * @returns {boolean}
+     */
+    isSameHour(d1: Date, d2: Date): boolean;
+    /**
+     * Gets whether two dates are the same minutes.
+     * @param {Date} d1
+     * @param {Date} d2
+     * @returns {boolean}
+     */
+    isSameMinute(d1: Date, d2: Date): boolean;
     /**
      * Gets whether a date is in the month immediately after some date.
      * @param {Date} startDate The date from which to compare.
@@ -162,6 +183,14 @@ export declare class DateUtil {
      * @param {Date} maxDate
      */
     isDateWithinRange(date: Date, minDate: Date, maxDate: Date): boolean;
+    /**
+     * Checks if a date is within a min and max range.
+     * If minDate or maxDate are not dates, they are ignored.
+     * @param {Date} date
+     * @param {Date} minDate
+     * @param {Date} maxDate
+     */
+    isDateWithinRange1(date: Date, minDate: Date, maxDate: Date): boolean;
     /**
      * Gets a new date incremented by the given number of years. Number of years can be negative.
      * See `incrementMonths` for notes on overflow for specific dates.

@@ -1,1 +1,1 @@
-{"version":3,"file":"index.js","sourceRoot":"","sources":["../../../src/lib/tabs/index.ts"],"names":[],"mappings":"AAAA,cAAc,QAAQ,CAAC","sourcesContent":["export * from './tabs';\r\n"]}
+{"version":3,"file":"index.js","sourceRoot":"","sources":["../../../src/lib/tabs/index.ts"],"names":[],"mappings":"AAAA,cAAc,QAAQ,CAAC","sourcesContent":["export * from './tabs';\n"]}

@@ -1,4 +1,4 @@
-import { EventEmitter, OnInit, DoCheck, IterableDiffers, ModuleWithProviders } from '@angular/core';
+import { EventEmitter, OnInit, DoCheck, IterableDiffers } from '@angular/core';
 export declare class Md2PaginationChange {
     source: Md2Pagination;
     activePage: number;
@@ -71,5 +71,4 @@ export declare class Md2Pagination {
 }
 export declare const MD2_DATA_TABLE_DIRECTIVES: any[];
 export declare class Md2DataTableModule {
-    static forRoot(): ModuleWithProviders;
 }

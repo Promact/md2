@@ -1,6 +1,5 @@
-import { AfterContentInit, ElementRef, EventEmitter, ModuleWithProviders } from '@angular/core';
+import { AfterContentInit, ElementRef, EventEmitter } from '@angular/core';
 import { ControlValueAccessor } from '@angular/forms';
-import { HighlightPipe } from './autocomplete-pipe';
 export declare class Item {
     text: string;
     value: string;
@@ -104,8 +103,4 @@ export declare class Md2Autocomplete implements AfterContentInit, ControlValueAc
     registerOnChange(fn: (value: any) => void): void;
     registerOnTouched(fn: () => {}): void;
     setDisabledState(isDisabled: boolean): void;
-}
-export declare const MD2_AUTOCOMPLETE_DIRECTIVES: (typeof HighlightPipe | typeof Md2Autocomplete)[];
-export declare class Md2AutocompleteModule {
-    static forRoot(): ModuleWithProviders;
 }

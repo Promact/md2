@@ -4,8 +4,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import { NgModule, Directive } from '@angular/core';
-import { CompatibilityModule } from '../compatibility/compatibility';
+import { NgModule, Directive, } from '@angular/core';
+import { MdCommonModule } from '../common-behaviors/common-module';
 /**
  * Shared directive to count lines inside a text area, such as a list item.
  * Line elements can be extracted with a @ContentChildren(MdLine) query, then
@@ -54,8 +54,13 @@ var MdLineSetter = (function () {
         this._setClass('mat-3-line', false);
         this._setClass('mat-multi-line', false);
     };
-    MdLineSetter.prototype._setClass = function (className, bool) {
-        this._renderer.setElementClass(this._element.nativeElement, className, bool);
+    MdLineSetter.prototype._setClass = function (className, isAdd) {
+        if (isAdd) {
+            this._renderer.addClass(this._element.nativeElement, className);
+        }
+        else {
+            this._renderer.removeClass(this._element.nativeElement, className);
+        }
     };
     return MdLineSetter;
 }());
@@ -67,8 +72,8 @@ var MdLineModule = (function () {
 }());
 MdLineModule = __decorate([
     NgModule({
-        imports: [CompatibilityModule],
-        exports: [MdLine, CompatibilityModule],
+        imports: [MdCommonModule],
+        exports: [MdLine, MdCommonModule],
         declarations: [MdLine],
     })
 ], MdLineModule);

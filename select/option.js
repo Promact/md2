@@ -7,11 +7,15 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Component, ElementRef, EventEmitter, Input, Output, NgModule, Renderer, ViewEncapsulation, } from '@angular/core';
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+import { Component, ElementRef, EventEmitter, Input, Output, Optional, NgModule, ViewEncapsulation, } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ENTER, SPACE } from '../core/keyboard/keycodes';
 import { coerceBooleanProperty } from '../core/coercion/boolean-property';
 import { MdSelectionModule } from '../core/selection/index';
+import { Md2Optgroup } from './optgroup';
 /**
  * Option IDs need to be unique across components, so this counter exists outside of
  * the component definition.
@@ -31,9 +35,9 @@ export { Md2OptionSelectionChange };
  * Single option inside of a `<md2-select>` element.
  */
 var Md2Option = (function () {
-    function Md2Option(_element, _renderer) {
+    function Md2Option(group, _element) {
+        this.group = group;
         this._element = _element;
-        this._renderer = _renderer;
         this._selected = false;
         this._active = false;
         /** Whether the option is disabled.  */
@@ -58,7 +62,7 @@ var Md2Option = (function () {
     });
     Object.defineProperty(Md2Option.prototype, "disabled", {
         /** Whether the option is disabled. */
-        get: function () { return this._disabled; },
+        get: function () { return (this.group && this.group.disabled) || this._disabled; },
         set: function (value) { this._disabled = coerceBooleanProperty(value); },
         enumerable: true,
         configurable: true
@@ -99,7 +103,7 @@ var Md2Option = (function () {
     };
     /** Sets focus onto this option. */
     Md2Option.prototype.focus = function () {
-        this._renderer.invokeElementMethod(this._getHostElement(), 'focus');
+        this._getHostElement().focus();
     };
     /**
      * This method sets display styles on the option to make it appear
@@ -146,7 +150,6 @@ var Md2Option = (function () {
         if (isUserInput === void 0) { isUserInput = false; }
         this.onSelectionChange.emit(new Md2OptionSelectionChange(this, isUserInput));
     };
-    ;
     return Md2Option;
 }());
 __decorate([
@@ -179,30 +182,25 @@ Md2Option = __decorate([
             '[class.md2-option]': 'true',
         },
         template: '<ng-content></ng-content>',
+        styles: [".md2-option{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;line-height:48px;height:48px;padding:0 16px;font-size:16px;font-family:Roboto,\"Helvetica Neue\",sans-serif;text-align:left;text-decoration:none;position:relative;cursor:pointer;outline:0}.md2-option[disabled]{cursor:default}[dir=rtl] .md2-option{text-align:right}.md2-option .mat-icon{margin-right:16px}[dir=rtl] .md2-option .mat-icon{margin-left:16px;margin-right:0}.md2-option[aria-disabled=true]{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;cursor:default}.md2-option:focus:not(.md2-option-disabled),.md2-option:hover:not(.md2-option-disabled){background:rgba(0,0,0,.04)}.md2-option.md2-selected{color:#106cc8}.md2-option.md2-selected:not(.md2-option-multiple){background:rgba(0,0,0,.04)}.md2-option.md2-active{background:rgba(0,0,0,.04);color:#106cc8}.md2-option.md2-option-disabled{color:rgba(0,0,0,.38)}.md2-option.md2-option-multiple{padding-left:40px}.md2-option.md2-option-multiple::after{content:'';position:absolute;top:50%;left:12px;display:block;width:16px;height:16px;margin-top:-8px;border:2px solid;border-radius:2px;box-sizing:border-box;transition:240ms}.md2-option.md2-option-multiple.md2-selected::after{transform:rotate(-45deg);height:8px;border-width:0 0 2px 2px}.md2-optgroup .md2-option:not(.md2-option-multiple){padding-left:32px} /*# sourceMappingURL=option.css.map */ "],
         encapsulation: ViewEncapsulation.None
     }),
-    __metadata("design:paramtypes", [ElementRef,
-        Renderer])
+    __param(0, Optional()),
+    __metadata("design:paramtypes", [Md2Optgroup,
+        ElementRef])
 ], Md2Option);
 export { Md2Option };
-var Md2OptionModule = Md2OptionModule_1 = (function () {
+var Md2OptionModule = (function () {
     function Md2OptionModule() {
     }
-    Md2OptionModule.forRoot = function () {
-        return {
-            ngModule: Md2OptionModule_1,
-            providers: []
-        };
-    };
     return Md2OptionModule;
 }());
-Md2OptionModule = Md2OptionModule_1 = __decorate([
+Md2OptionModule = __decorate([
     NgModule({
         imports: [CommonModule, MdSelectionModule],
-        exports: [Md2Option],
-        declarations: [Md2Option]
+        exports: [Md2Option, Md2Optgroup],
+        declarations: [Md2Option, Md2Optgroup]
     })
 ], Md2OptionModule);
 export { Md2OptionModule };
-var Md2OptionModule_1;
 //# sourceMappingURL=option.js.map

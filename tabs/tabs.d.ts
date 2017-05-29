@@ -1,4 +1,4 @@
-import { AfterContentInit, ElementRef, EventEmitter, QueryList, TemplateRef, ViewContainerRef, ModuleWithProviders } from '@angular/core';
+import { AfterContentInit, ElementRef, EventEmitter, QueryList, TemplateRef, ViewContainerRef } from '@angular/core';
 /** Change event object that is emitted when the tab has changed. */
 export declare class Md2TabChange {
     tab: Md2Tab;
@@ -106,5 +106,4 @@ export declare class Md2Tabs implements AfterContentInit {
 }
 export declare const MD2_TABS_DIRECTIVES: any[];
 export declare class Md2TabsModule {
-    static forRoot(): ModuleWithProviders;
 }

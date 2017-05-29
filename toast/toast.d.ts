@@ -1,4 +1,4 @@
-import { ViewContainerRef, ModuleWithProviders } from '@angular/core';
+import { ViewContainerRef } from '@angular/core';
 import { Overlay, OverlayRef } from '../core';
 export declare class Toast {
     message: string;
@@ -71,5 +71,4 @@ export declare class Md2ToastComponent {
 }
 export declare const MD2_TOAST_DIRECTIVES: any[];
 export declare class Md2ToastModule {
-    static forRoot(): ModuleWithProviders;
 }

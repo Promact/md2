@@ -10,15 +10,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { NgModule, Directive, EventEmitter, TemplateRef, ViewContainerRef, Optional, Input, Output, ElementRef } from '@angular/core';
+import { NgModule, Directive, EventEmitter, TemplateRef, ViewContainerRef, Optional, Input, Output, ElementRef, Renderer2, } from '@angular/core';
 import { Overlay, OVERLAY_PROVIDERS } from './overlay';
 import { TemplatePortal } from '../portal/portal';
 import { OverlayState } from './overlay-state';
 import { ConnectionPositionPair } from './position/connected-position';
 import { PortalModule } from '../portal/portal-directives';
 import { Dir } from '../rtl/dir';
-import { Scrollable } from './scroll/scrollable';
+import { RepositionScrollStrategy } from './scroll/reposition-scroll-strategy';
 import { coerceBooleanProperty } from '../coercion/boolean-property';
+import { ESCAPE } from '../keyboard/keycodes';
+import { ScrollDispatcher } from './scroll/scroll-dispatcher';
+import { ScrollDispatchModule } from './scroll/index';
 /** Default set of positions for the overlay. Follows the behavior of a dropdown. */
 var defaultPositionList = [
     new ConnectionPositionPair({ originX: 'start', originY: 'bottom' }, { overlayX: 'start', overlayY: 'top' }),
@@ -36,7 +39,7 @@ var OverlayOrigin = (function () {
 }());
 OverlayOrigin = __decorate([
     Directive({
-        selector: '[cdk-overlay-origin], [overlay-origin]',
+        selector: '[cdk-overlay-origin], [overlay-origin], [cdkOverlayOrigin]',
         exportAs: 'cdkOverlayOrigin',
     }),
     __metadata("design:paramtypes", [ElementRef])
@@ -47,13 +50,18 @@ export { OverlayOrigin };
  */
 var ConnectedOverlayDirective = (function () {
     // TODO(jelbourn): inputs for size, scroll behavior, animation, etc.
-    function ConnectedOverlayDirective(_overlay, templateRef, viewContainerRef, _dir) {
+    function ConnectedOverlayDirective(_overlay, _renderer, _scrollDispatcher, templateRef, viewContainerRef, _dir) {
         this._overlay = _overlay;
+        this._renderer = _renderer;
+        this._scrollDispatcher = _scrollDispatcher;
         this._dir = _dir;
-        this._open = false;
         this._hasBackdrop = false;
         this._offsetX = 0;
         this._offsetY = 0;
+        /** Strategy to be used when handling scroll events while the overlay is open. */
+        this.scrollStrategy = new RepositionScrollStrategy(this._scrollDispatcher);
+        /** Whether the overlay is open. */
+        this.open = false;
         /** Event emitted when the backdrop is clicked. */
         this.backdropClick = new EventEmitter();
         /** Event emitted when the position has changed. */
@@ -103,17 +111,6 @@ var ConnectedOverlayDirective = (function () {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(ConnectedOverlayDirective.prototype, "open", {
-        get: function () {
-            return this._open;
-        },
-        set: function (value) {
-            value ? this._attachOverlay() : this._detachOverlay();
-            this._open = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
     Object.defineProperty(ConnectedOverlayDirective.prototype, "overlayRef", {
         /** The associated overlay reference. */
         get: function () {
@@ -132,6 +129,11 @@ var ConnectedOverlayDirective = (function () {
     });
     ConnectedOverlayDirective.prototype.ngOnDestroy = function () {
         this._destroyOverlay();
+    };
+    ConnectedOverlayDirective.prototype.ngOnChanges = function (changes) {
+        if (changes['open']) {
+            this.open ? this._attachOverlay() : this._detachOverlay();
+        }
     };
     /** Creates an overlay */
     ConnectedOverlayDirective.prototype._createOverlay = function () {
@@ -161,6 +163,7 @@ var ConnectedOverlayDirective = (function () {
         }
         this._position = this._createPositionStrategy();
         overlayConfig.positionStrategy = this._position;
+        overlayConfig.scrollStrategy = this.scrollStrategy;
         return overlayConfig;
     };
     /** Returns the position strategy of the overlay to be set on the overlay config */
@@ -191,6 +194,7 @@ var ConnectedOverlayDirective = (function () {
         }
         this._position.withDirection(this.dir);
         this._overlayRef.getState().direction = this.dir;
+        this._initEscapeListener();
         if (!this._overlayRef.hasAttached()) {
             this._overlayRef.attach(this._templatePortal);
             this.attach.emit();
@@ -211,6 +215,9 @@ var ConnectedOverlayDirective = (function () {
             this._backdropSubscription.unsubscribe();
             this._backdropSubscription = null;
         }
+        if (this._escapeListener) {
+            this._escapeListener();
+        }
     };
     /** Destroys the overlay created by this directive. */
     ConnectedOverlayDirective.prototype._destroyOverlay = function () {
@@ -223,6 +230,18 @@ var ConnectedOverlayDirective = (function () {
         if (this._positionSubscription) {
             this._positionSubscription.unsubscribe();
         }
+        if (this._escapeListener) {
+            this._escapeListener();
+        }
+    };
+    /** Sets the event listener that closes the overlay when pressing Escape. */
+    ConnectedOverlayDirective.prototype._initEscapeListener = function () {
+        var _this = this;
+        this._escapeListener = this._renderer.listen('document', 'keydown', function (event) {
+            if (event.keyCode === ESCAPE) {
+                _this._detachOverlay();
+            }
+        });
     };
     return ConnectedOverlayDirective;
 }());
@@ -266,14 +285,17 @@ __decorate([
 ], ConnectedOverlayDirective.prototype, "backdropClass", void 0);
 __decorate([
     Input(),
-    __metadata("design:type", Object),
-    __metadata("design:paramtypes", [Object])
-], ConnectedOverlayDirective.prototype, "hasBackdrop", null);
+    __metadata("design:type", Object)
+], ConnectedOverlayDirective.prototype, "scrollStrategy", void 0);
+__decorate([
+    Input(),
+    __metadata("design:type", Boolean)
+], ConnectedOverlayDirective.prototype, "open", void 0);
 __decorate([
     Input(),
     __metadata("design:type", Object),
-    __metadata("design:paramtypes", [Boolean])
-], ConnectedOverlayDirective.prototype, "open", null);
+    __metadata("design:paramtypes", [Object])
+], ConnectedOverlayDirective.prototype, "hasBackdrop", null);
 __decorate([
     Output(),
     __metadata("design:type", Object)
@@ -292,36 +314,30 @@ __decorate([
 ], ConnectedOverlayDirective.prototype, "detach", void 0);
 ConnectedOverlayDirective = __decorate([
     Directive({
-        selector: '[cdk-connected-overlay], [connected-overlay]',
+        selector: '[cdk-connected-overlay], [connected-overlay], [cdkConnectedOverlay]',
         exportAs: 'cdkConnectedOverlay'
     }),
-    __param(3, Optional()),
+    __param(5, Optional()),
     __metadata("design:paramtypes", [Overlay,
+        Renderer2,
+        ScrollDispatcher,
         TemplateRef,
         ViewContainerRef,
         Dir])
 ], ConnectedOverlayDirective);
 export { ConnectedOverlayDirective };
-var OverlayModule = OverlayModule_1 = (function () {
+var OverlayModule = (function () {
     function OverlayModule() {
     }
-    /** @deprecated */
-    OverlayModule.forRoot = function () {
-        return {
-            ngModule: OverlayModule_1,
-            providers: [],
-        };
-    };
     return OverlayModule;
 }());
-OverlayModule = OverlayModule_1 = __decorate([
+OverlayModule = __decorate([
     NgModule({
-        imports: [PortalModule],
-        exports: [ConnectedOverlayDirective, OverlayOrigin, Scrollable],
-        declarations: [ConnectedOverlayDirective, OverlayOrigin, Scrollable],
+        imports: [PortalModule, ScrollDispatchModule],
+        exports: [ConnectedOverlayDirective, OverlayOrigin, ScrollDispatchModule],
+        declarations: [ConnectedOverlayDirective, OverlayOrigin],
         providers: [OVERLAY_PROVIDERS],
     })
 ], OverlayModule);
 export { OverlayModule };
-var OverlayModule_1;
 //# sourceMappingURL=overlay-directives.js.map

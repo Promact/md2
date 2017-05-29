@@ -7,16 +7,20 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Directive, ElementRef, EventEmitter, Injectable, NgZone, Optional, Output, Renderer, SkipSelf } from '@angular/core';
+import { Directive, ElementRef, EventEmitter, Injectable, NgZone, Optional, Output, Renderer2, SkipSelf, } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
+import { Platform } from '../platform/platform';
+import 'rxjs/add/observable/of';
 // This is the value used by AngularJS Material. Through trial and error (on iPhone 6S) they found
 // that a value of around 650ms seems appropriate.
 export var TOUCH_BUFFER_MS = 650;
 /** Monitors mouse and keyboard events to determine the cause of focus events. */
 var FocusOriginMonitor = (function () {
-    function FocusOriginMonitor(_ngZone) {
+    function FocusOriginMonitor(_ngZone, _platform) {
         var _this = this;
         this._ngZone = _ngZone;
+        this._platform = _platform;
         /** The focus origin that the next focus event is a result of. */
         this._origin = null;
         /** Whether the window has just been focused. */
@@ -35,6 +39,10 @@ var FocusOriginMonitor = (function () {
      */
     FocusOriginMonitor.prototype.monitor = function (element, renderer, checkChildren) {
         var _this = this;
+        // Do nothing if we're not on the browser platform.
+        if (!this._platform.isBrowser) {
+            return Observable.of();
+        }
         // Check if we're already monitoring this element.
         if (this._elementInfo.has(element)) {
             var info_1 = this._elementInfo.get(element);
@@ -67,7 +75,7 @@ var FocusOriginMonitor = (function () {
      * Stops monitoring an element and removes all focus classes.
      * @param element The element to stop monitoring.
      */
-    FocusOriginMonitor.prototype.unmonitor = function (element) {
+    FocusOriginMonitor.prototype.stopMonitoring = function (element) {
         var elementInfo = this._elementInfo.get(element);
         if (elementInfo) {
             elementInfo.unlisten();
@@ -84,13 +92,17 @@ var FocusOriginMonitor = (function () {
      */
     FocusOriginMonitor.prototype.focusVia = function (element, renderer, origin) {
         this._setOriginForCurrentEventQueue(origin);
-        renderer.invokeElementMethod(element, 'focus');
+        element.focus();
     };
     /** Register necessary event listeners on the document and window. */
     FocusOriginMonitor.prototype._registerDocumentEvents = function () {
+        var _this = this;
+        // Do nothing if we're not on the browser platform.
+        if (!this._platform.isBrowser) {
+            return;
+        }
         // Note: we listen to events in the capture phase so we can detect them even if the user stops
         // propagation.
-        var _this = this;
         // On keydown record the origin and clear any touch event that may be in progress.
         document.addEventListener('keydown', function () {
             _this._lastTouchTarget = null;
@@ -127,11 +139,14 @@ var FocusOriginMonitor = (function () {
      */
     FocusOriginMonitor.prototype._setClasses = function (element, origin) {
         var renderer = this._elementInfo.get(element).renderer;
-        renderer.setElementClass(element, 'cdk-focused', !!origin);
-        renderer.setElementClass(element, 'cdk-touch-focused', origin === 'touch');
-        renderer.setElementClass(element, 'cdk-keyboard-focused', origin === 'keyboard');
-        renderer.setElementClass(element, 'cdk-mouse-focused', origin === 'mouse');
-        renderer.setElementClass(element, 'cdk-program-focused', origin === 'program');
+        var toggleClass = function (className, shouldSet) {
+            shouldSet ? renderer.addClass(element, className) : renderer.removeClass(element, className);
+        };
+        toggleClass('cdk-focused', !!origin);
+        toggleClass('cdk-touch-focused', origin === 'touch');
+        toggleClass('cdk-keyboard-focused', origin === 'keyboard');
+        toggleClass('cdk-mouse-focused', origin === 'mouse');
+        toggleClass('cdk-program-focused', origin === 'program');
     };
     /**
      * Sets the origin and schedules an async function to clear it at the end of the event queue.
@@ -225,7 +240,7 @@ var FocusOriginMonitor = (function () {
 }());
 FocusOriginMonitor = __decorate([
     Injectable(),
-    __metadata("design:paramtypes", [NgZone])
+    __metadata("design:paramtypes", [NgZone, Platform])
 ], FocusOriginMonitor);
 export { FocusOriginMonitor };
 /**
@@ -247,7 +262,7 @@ var CdkMonitorFocus = (function () {
             .subscribe(function (origin) { return _this.cdkFocusChange.emit(origin); });
     }
     CdkMonitorFocus.prototype.ngOnDestroy = function () {
-        this._focusOriginMonitor.unmonitor(this._elementRef.nativeElement);
+        this._focusOriginMonitor.stopMonitoring(this._elementRef.nativeElement);
     };
     return CdkMonitorFocus;
 }());
@@ -260,16 +275,16 @@ CdkMonitorFocus = __decorate([
         selector: '[cdkMonitorElementFocus], [cdkMonitorSubtreeFocus]',
     }),
     __metadata("design:paramtypes", [ElementRef, FocusOriginMonitor,
-        Renderer])
+        Renderer2])
 ], CdkMonitorFocus);
 export { CdkMonitorFocus };
-export function FOCUS_ORIGIN_MONITOR_PROVIDER_FACTORY(parentDispatcher, ngZone) {
-    return parentDispatcher || new FocusOriginMonitor(ngZone);
+export function FOCUS_ORIGIN_MONITOR_PROVIDER_FACTORY(parentDispatcher, ngZone, platform) {
+    return parentDispatcher || new FocusOriginMonitor(ngZone, platform);
 }
 export var FOCUS_ORIGIN_MONITOR_PROVIDER = {
     // If there is already a FocusOriginMonitor available, use that. Otherwise, provide a new one.
     provide: FocusOriginMonitor,
-    deps: [[new Optional(), new SkipSelf(), FocusOriginMonitor], NgZone],
+    deps: [[new Optional(), new SkipSelf(), FocusOriginMonitor], NgZone, Platform],
     useFactory: FOCUS_ORIGIN_MONITOR_PROVIDER_FACTORY
 };
 //# sourceMappingURL=focus-origin-monitor.js.map

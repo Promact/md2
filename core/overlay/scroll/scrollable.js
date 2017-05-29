@@ -7,7 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Directive, ElementRef, NgZone, Renderer } from '@angular/core';
+import { Directive, ElementRef, NgZone, Renderer2 } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { ScrollDispatcher } from './scroll-dispatcher';
 import 'rxjs/add/observable/fromEvent';
@@ -53,12 +53,12 @@ var Scrollable = (function () {
 }());
 Scrollable = __decorate([
     Directive({
-        selector: '[cdk-scrollable]'
+        selector: '[cdk-scrollable], [cdkScrollable]'
     }),
     __metadata("design:paramtypes", [ElementRef,
         ScrollDispatcher,
         NgZone,
-        Renderer])
+        Renderer2])
 ], Scrollable);
 export { Scrollable };
 //# sourceMappingURL=scrollable.js.map

@@ -1,5 +1,6 @@
-import { AfterContentInit, ElementRef, EventEmitter, OnDestroy, QueryList, Renderer, ChangeDetectorRef } from '@angular/core';
+import { AfterContentInit, ElementRef, EventEmitter, OnDestroy, QueryList, Renderer2, ChangeDetectorRef, OnInit } from '@angular/core';
 import { Md2Option, Md2OptionSelectionChange } from './option';
+import { Md2Optgroup } from './optgroup';
 import { FocusKeyManager } from '../core/a11y/focus-key-manager';
 import { Dir } from '../core/rtl/dir';
 import { Observable } from 'rxjs/Observable';
@@ -7,30 +8,31 @@ import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { ConnectedOverlayDirective } from '../core/overlay/overlay-directives';
 import { ViewportRuler } from '../core/overlay/position/viewport-ruler';
 import { SelectionModel } from '../core/selection/selection';
-import 'rxjs/add/operator/filter';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/startWith';
+import 'rxjs/add/operator/filter';
 /**
  * The following style constants are necessary to save here in order
  * to properly calculate the alignment of the selected option over
  * the trigger element.
  */
-/** The fixed height of every option element. */
-export declare const SELECT_OPTION_HEIGHT = 48;
+/** The fixed height of every option element (option, group header etc.). */
+export declare const SELECT_ITEM_HEIGHT = 48;
 /** The max height of the select's overlay panel */
 export declare const SELECT_PANEL_MAX_HEIGHT = 256;
 /** The max number of options visible at once in the select panel. */
-export declare const SELECT_MAX_OPTIONS_DISPLAYED = 5;
+export declare const SELECT_MAX_OPTIONS_DISPLAYED: number;
 /** The fixed height of the select's trigger element. */
 export declare const SELECT_TRIGGER_HEIGHT = 30;
 /**
  * Must adjust for the difference in height between the option and the trigger,
  * so the text will align on the y axis.
- * (SELECT_OPTION_HEIGHT (48) - SELECT_TRIGGER_HEIGHT (30)) / 2 = 9
  */
-export declare const SELECT_OPTION_HEIGHT_ADJUSTMENT = 9;
+export declare const SELECT_ITEM_HEIGHT_ADJUSTMENT: number;
 /** The panel's padding on the x-axis */
 export declare const SELECT_PANEL_PADDING_X = 16;
+/** The panel's x axis padding if it is indented (e.g. there is an option group). */
+export declare const SELECT_PANEL_INDENT_PADDING_X: number;
 /**
  * Distance between the panel edge and the option text in
  * multi-selection mode.
@@ -59,7 +61,7 @@ export declare class Md2SelectChange {
 }
 /** Allowed values for the floatPlaceholder option. */
 export declare type Md2SelectFloatPlaceholderType = 'always' | 'never' | 'auto';
-export declare class Md2Select implements AfterContentInit, ControlValueAccessor, OnDestroy {
+export declare class Md2Select implements AfterContentInit, OnDestroy, OnInit, ControlValueAccessor {
     private _element;
     private _renderer;
     private _viewportRuler;
@@ -90,18 +92,20 @@ export declare class Md2Select implements AfterContentInit, ControlValueAccessor
     private _placeholderState;
     /** Tab index for the element. */
     private _tabIndex;
+    /** Theme color for the component. */
+    private _color;
     /**
      * The width of the trigger. Must be saved to set the min width of the overlay panel
      * and the width of the selected value.
      */
     _triggerWidth: number;
+    /** Manages keyboard events for options in the panel. */
+    _keyManager: FocusKeyManager;
     /**
      * The width of the selected option's value. Must be set programmatically
      * to ensure its overflow is clipped, as it's absolutely positioned.
      */
     _selectedValueWidth: number;
-    /** Manages keyboard events for options in the panel. */
-    _keyManager: FocusKeyManager;
     /** View -> model callback called when value changes */
     _onChange: (value: any) => void;
     /** View -> model callback called when select has been touched */
@@ -112,12 +116,6 @@ export declare class Md2Select implements AfterContentInit, ControlValueAccessor
     _transformOrigin: string;
     /** Whether the panel's animation is done. */
     _panelDoneAnimating: boolean;
-    /**
-     * The x-offset of the overlay panel in relation to the trigger's top start corner.
-     * This must be adjusted to align the selected option text over the trigger text when
-     * the panel opens. Will change based on LTR or RTL text direction.
-     */
-    _offsetX: number;
     /**
      * The y-offset of the overlay panel in relation to the trigger's top start corner.
      * This must be adjusted to align the selected option text over the trigger text.
@@ -142,6 +140,8 @@ export declare class Md2Select implements AfterContentInit, ControlValueAccessor
     overlayDir: ConnectedOverlayDirective;
     /** All of the defined select options. */
     options: QueryList<Md2Option>;
+    /** All of the defined groups of options. */
+    optionGroups: QueryList<Md2Optgroup>;
     /** Placeholder to be shown if no value has been selected. */
     placeholder: string;
     /** Whether the component is disabled. */
@@ -167,7 +167,8 @@ export declare class Md2Select implements AfterContentInit, ControlValueAccessor
     onClose: EventEmitter<void>;
     /** Event emitted when the selected value has been changed by the user. */
     change: EventEmitter<Md2SelectChange>;
-    constructor(_element: ElementRef, _renderer: Renderer, _viewportRuler: ViewportRuler, _changeDetectorRef: ChangeDetectorRef, _dir: Dir, _control: NgControl, tabIndex: string);
+    constructor(_element: ElementRef, _renderer: Renderer2, _viewportRuler: ViewportRuler, _changeDetectorRef: ChangeDetectorRef, _dir: Dir, _control: NgControl, tabIndex: string);
+    ngOnInit(): void;
     ngAfterContentInit(): void;
     ngOnDestroy(): void;
     /** Toggles the overlay panel open or closed. */
@@ -214,12 +215,15 @@ export declare class Md2Select implements AfterContentInit, ControlValueAccessor
     readonly triggerValue: string;
     /** Whether the element is in RTL mode. */
     _isRtl(): boolean;
-    /** The width of the trigger element. This is necessary to match
+    /**
+     * Sets the width of the trigger element. This is necessary to match
      * the overlay width to the trigger width.
      */
-    _getWidth(): number;
-    /** Ensures the panel opens if activated by the keyboard. */
-    _handleKeydown(event: KeyboardEvent): void;
+    private _setTriggerWidth();
+    /** Handles the keyboard interactions of a closed select. */
+    _handleClosedKeydown(event: KeyboardEvent): void;
+    /** Handles keypresses inside the panel. */
+    _handlePanelKeydown(event: KeyboardEvent): void;
     /**
      * When the panel element is finished transforming in (though not fading in), it
      * emits an event and focuses an option if the panel is open.
@@ -236,11 +240,15 @@ export declare class Md2Select implements AfterContentInit, ControlValueAccessor
      */
     _onBlur(): void;
     /**
+     * Callback that is invoked when the overlay panel has been attached.
+     */
+    _onAttached(): void;
+    /**
      * Sets the scroll position of the scroll container. This must be called after
      * the overlay pane is attached or the scroll container element will not yet be
      * present in the DOM.
      */
-    _setScrollTop(): void;
+    private _setScrollTop();
     /**
      * Sets the selected option based on a value. If no option can be
      * found with the designated value, the select trigger is cleared.
@@ -280,13 +288,12 @@ export declare class Md2Select implements AfterContentInit, ControlValueAccessor
     /** Unsubscribes from all option subscriptions. */
     private _dropSubscriptions();
     /** Emits change event to set the model value. */
-    private _propagateChanges();
+    private _propagateChanges(fallbackValue?);
     /** Records option IDs to pass to the aria-owns property. */
     private _setOptionIds();
     /**
      * Sets the `multiple` property on each option. The promise is necessary
      * in order to avoid Angular errors when modifying the property after init.
-     * TODO: there should be a better way of doing this.
      */
     private _setOptionMultiple();
     /**
@@ -319,17 +326,25 @@ export declare class Md2Select implements AfterContentInit, ControlValueAccessor
      */
     _getPlaceholderAnimationState(): string;
     /**
-     * Determines the CSS `visibility` of the placeholder element.
+     * Determines the CSS `opacity` of the placeholder element.
      */
-    _getPlaceholderVisibility(): 'visible' | 'hidden';
+    _getPlaceholderOpacity(): string;
     /** Returns the aria-label of the select component. */
     readonly _ariaLabel: string;
+    /**
+     * Sets the x-offset of the overlay panel in relation to the trigger's top start corner.
+     * This must be adjusted to align the selected option text over the trigger text when
+     * the panel opens. Will change based on LTR or RTL text direction. Note that the offset
+     * can't be calculated until the panel has been attached, because we need to know the
+     * content width in order to constrain the panel within the viewport.
+     */
+    private _calculateOverlayOffsetX();
     /**
      * Calculates the y-offset of the select's overlay panel in relation to the
      * top start corner of the trigger. It has to be adjusted in order for the
      * selected option to be aligned over the trigger when the panel opens.
      */
-    private _calculateOverlayOffset(selectedIndex, scrollBuffer, maxScroll);
+    private _calculateOverlayOffsetY(selectedIndex, scrollBuffer, maxScroll);
     /**
      * Checks that the attempted overlay position will fit within the viewport.
      * If it will not fit, tries to adjust the scroll position and the associated
@@ -345,4 +360,14 @@ export declare class Md2Select implements AfterContentInit, ControlValueAccessor
     private _getOriginBasedOnOption();
     /** Figures out the floating placeholder state value. */
     private _floatPlaceholderState();
+    /** Handles the user pressing the arrow keys on a closed select.  */
+    private _handleArrowKey(event);
+    /** Calculates the amount of items in the select. This includes options and group labels. */
+    private _getItemCount();
+    /**
+     * Calculates the amount of option group labels that precede the specified option.
+     * Useful when positioning the panel, because the labels will offset the index of the
+     * currently-selected option.
+     */
+    private _getLabelCountBeforeOption(optionIndex);
 }

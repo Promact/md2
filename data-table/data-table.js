@@ -335,23 +335,17 @@ export var MD2_DATA_TABLE_DIRECTIVES = [
     Md2DataTableSortBy,
     Md2Pagination
 ];
-var Md2DataTableModule = Md2DataTableModule_1 = (function () {
+var Md2DataTableModule = (function () {
     function Md2DataTableModule() {
     }
-    Md2DataTableModule.forRoot = function () {
-        return {
-            ngModule: Md2DataTableModule_1
-        };
-    };
     return Md2DataTableModule;
 }());
-Md2DataTableModule = Md2DataTableModule_1 = __decorate([
+Md2DataTableModule = __decorate([
     NgModule({
-        imports: [CommonModule, FormsModule, Md2SelectModule.forRoot()],
+        imports: [CommonModule, FormsModule, Md2SelectModule],
         exports: MD2_DATA_TABLE_DIRECTIVES,
         declarations: MD2_DATA_TABLE_DIRECTIVES,
     })
 ], Md2DataTableModule);
 export { Md2DataTableModule };
-var Md2DataTableModule_1;
 //# sourceMappingURL=data-table.js.map

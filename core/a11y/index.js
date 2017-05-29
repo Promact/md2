@@ -10,19 +10,12 @@ import { LIVE_ANNOUNCER_PROVIDER } from './live-announcer';
 import { InteractivityChecker } from './interactivity-checker';
 import { CommonModule } from '@angular/common';
 import { PlatformModule } from '../platform/index';
-var A11yModule = A11yModule_1 = (function () {
+var A11yModule = (function () {
     function A11yModule() {
     }
-    /** @deprecated */
-    A11yModule.forRoot = function () {
-        return {
-            ngModule: A11yModule_1,
-            providers: [],
-        };
-    };
     return A11yModule;
 }());
-A11yModule = A11yModule_1 = __decorate([
+A11yModule = __decorate([
     NgModule({
         imports: [CommonModule, PlatformModule],
         declarations: [FocusTrapDirective, FocusTrapDeprecatedDirective],
@@ -31,5 +24,4 @@ A11yModule = A11yModule_1 = __decorate([
     })
 ], A11yModule);
 export { A11yModule };
-var A11yModule_1;
 //# sourceMappingURL=index.js.map

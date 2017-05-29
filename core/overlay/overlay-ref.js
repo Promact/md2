@@ -11,6 +11,9 @@ var OverlayRef = (function () {
         this._ngZone = _ngZone;
         this._backdropElement = null;
         this._backdropClick = new Subject();
+        this._attachments = new Subject();
+        this._detachments = new Subject();
+        this._state.scrollStrategy.attach(this);
     }
     Object.defineProperty(OverlayRef.prototype, "overlayElement", {
         /** The overlay's HTML element */
@@ -32,6 +35,8 @@ var OverlayRef = (function () {
         this.updateSize();
         this.updateDirection();
         this.updatePosition();
+        this._attachments.next();
+        this._state.scrollStrategy.enable();
         // Enable pointer events for the overlay pane element.
         this._togglePointerEvents(true);
         if (this._state.hasBackdrop) {
@@ -49,6 +54,8 @@ var OverlayRef = (function () {
         // This is necessary because otherwise the pane element will cover the page and disable
         // pointer events therefore. Depends on the position strategy and the applied pane boundaries.
         this._togglePointerEvents(false);
+        this._state.scrollStrategy.disable();
+        this._detachments.next();
         return this._portalHost.detach();
     };
     /**
@@ -60,6 +67,10 @@ var OverlayRef = (function () {
         }
         this.detachBackdrop();
         this._portalHost.dispose();
+        this._state.scrollStrategy.disable();
+        this._detachments.next();
+        this._detachments.complete();
+        this._attachments.complete();
     };
     /**
      * Checks whether the overlay has been attached.
@@ -73,6 +84,14 @@ var OverlayRef = (function () {
     OverlayRef.prototype.backdropClick = function () {
         return this._backdropClick.asObservable();
     };
+    /** Returns an observable that emits when the overlay has been attached. */
+    OverlayRef.prototype.attachments = function () {
+        return this._attachments.asObservable();
+    };
+    /** Returns an observable that emits when the overlay has been detached. */
+    OverlayRef.prototype.detachments = function () {
+        return this._detachments.asObservable();
+    };
     /**
      * Gets the current state config of the overlay.
      */
@@ -85,7 +104,7 @@ var OverlayRef = (function () {
             this._state.positionStrategy.apply(this._pane);
         }
     };
-    /** Updates the text direction of the overlay panel. **/
+    /** Updates the text direction of the overlay panel. */
     OverlayRef.prototype.updateDirection = function () {
         this._pane.setAttribute('dir', this._state.direction);
     };

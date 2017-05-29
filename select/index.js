@@ -9,23 +9,21 @@ import { CommonModule } from '@angular/common';
 import { Md2Select } from './select';
 import { Md2SelectHeader } from './select-header';
 import { Md2OptionModule } from './option';
-import { CompatibilityModule, OverlayModule } from '../core';
-var Md2SelectModule = Md2SelectModule_1 = (function () {
+import { MdCommonModule, OverlayModule } from '../core';
+var Md2SelectModule = (function () {
     function Md2SelectModule() {
     }
-    /** @deprecated */
-    Md2SelectModule.forRoot = function () {
-        return {
-            ngModule: Md2SelectModule_1,
-            providers: []
-        };
-    };
     return Md2SelectModule;
 }());
-Md2SelectModule = Md2SelectModule_1 = __decorate([
+Md2SelectModule = __decorate([
     NgModule({
-        imports: [CommonModule, OverlayModule, Md2OptionModule, CompatibilityModule],
-        exports: [Md2Select, Md2SelectHeader, Md2OptionModule, CompatibilityModule],
+        imports: [
+            CommonModule,
+            OverlayModule,
+            Md2OptionModule,
+            MdCommonModule,
+        ],
+        exports: [Md2Select, Md2SelectHeader, Md2OptionModule, MdCommonModule],
         declarations: [Md2Select, Md2SelectHeader],
     })
 ], Md2SelectModule);
@@ -33,6 +31,6 @@ export { Md2SelectModule };
 export * from './select';
 export * from './select-header';
 export * from './option';
+export * from './optgroup';
 export { fadeInContent, transformPanel, transformPlaceholder } from './select-animations';
-var Md2SelectModule_1;
 //# sourceMappingURL=index.js.map

@@ -1,5 +1,6 @@
 import { ElementRef, NgZone, OnDestroy, AfterContentInit } from '@angular/core';
 import { InteractivityChecker } from './interactivity-checker';
+import 'rxjs/add/operator/first';
 /**
  * Class that allows for trapping focus within a DOM element.
  *
@@ -25,6 +26,7 @@ export declare class FocusTrap {
      * in the constructor, but can be deferred for cases like directives with `*ngIf`.
      */
     attachAnchors(): void;
+    focusInitialElementWhenReady(): void;
     /**
      * Waits for microtask queue to empty, then focuses
      * the first tabbable element within the focus trap region.
@@ -35,6 +37,14 @@ export declare class FocusTrap {
      * the last tabbable element within the focus trap region.
      */
     focusLastTabbableElementWhenReady(): void;
+    /**
+     * Get the specified boundary element of the trapped region.
+     * @param bound The boundary to get (start or end of trapped region).
+     * @returns The boundary element.
+     */
+    private _getRegionBoundary(bound);
+    /** Focuses the element that should be focused when the focus trap is initialized. */
+    focusInitialElement(): void;
     /** Focuses the first tabbable element within the focus trap region. */
     focusFirstTabbableElement(): void;
     /** Focuses the last tabbable element within the focus trap region. */

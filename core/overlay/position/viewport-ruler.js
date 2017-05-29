@@ -16,14 +16,17 @@ import { ScrollDispatcher } from '../scroll/scroll-dispatcher';
 var ViewportRuler = (function () {
     function ViewportRuler(scrollDispatcher) {
         var _this = this;
-        // Initially cache the document rectangle.
-        this._cacheViewportGeometry();
         // Subscribe to scroll and resize events and update the document rectangle on changes.
         scrollDispatcher.scrolled(null, function () { return _this._cacheViewportGeometry(); });
     }
     /** Gets a ClientRect for the viewport's bounds. */
     ViewportRuler.prototype.getViewportRect = function (documentRect) {
         if (documentRect === void 0) { documentRect = this._documentRect; }
+        // Cache the document bounding rect so that we don't recompute it for multiple calls.
+        if (!documentRect) {
+            this._cacheViewportGeometry();
+            documentRect = this._documentRect;
+        }
         // Use the document element's bounding rect rather than the window scroll properties
         // (e.g. pageYOffset, scrollY) due to in issue in Chrome and IE where window scroll
         // properties and client coordinates (boundingClientRect, clientX/Y, etc.) are in different
@@ -51,14 +54,21 @@ var ViewportRuler = (function () {
      */
     ViewportRuler.prototype.getViewportScrollPosition = function (documentRect) {
         if (documentRect === void 0) { documentRect = this._documentRect; }
+        // Cache the document bounding rect so that we don't recompute it for multiple calls.
+        if (!documentRect) {
+            this._cacheViewportGeometry();
+            documentRect = this._documentRect;
+        }
         // The top-left-corner of the viewport is determined by the scroll position of the document
         // body, normally just (scrollLeft, scrollTop). However, Chrome and Firefox disagree about
         // whether `document.body` or `document.documentElement` is the scrolled element, so reading
         // `scrollTop` and `scrollLeft` is inconsistent. However, using the bounding rect of
         // `document.documentElement` works consistently, where the `top` and `left` values will
         // equal negative the scroll position.
-        var top = -documentRect.top || document.body.scrollTop || window.scrollY || 0;
-        var left = -documentRect.left || document.body.scrollLeft || window.scrollX || 0;
+        var top = -documentRect.top || document.body.scrollTop || window.scrollY ||
+            document.documentElement.scrollTop || 0;
+        var left = -documentRect.left || document.body.scrollLeft || window.scrollX ||
+            document.documentElement.scrollLeft || 0;
         return { top: top, left: left };
     };
     /** Caches the latest client rectangle of the document element. */

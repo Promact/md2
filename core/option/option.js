@@ -10,13 +10,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { Component, ElementRef, EventEmitter, Input, Output, NgModule, Renderer, ViewEncapsulation, Inject, Optional, } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, ElementRef, EventEmitter, Input, Output, ViewEncapsulation, Inject, Optional, } from '@angular/core';
 import { ENTER, SPACE } from '../keyboard/keycodes';
 import { coerceBooleanProperty } from '../coercion/boolean-property';
-import { MdRippleModule } from '../ripple/index';
-import { MdSelectionModule } from '../selection/index';
 import { MATERIAL_COMPATIBILITY_MODE } from '../../core/compatibility/compatibility';
+import { MdOptgroup } from './optgroup';
 /**
  * Option IDs need to be unique across components, so this counter exists outside of
  * the component definition.
@@ -36,9 +34,9 @@ export { MdOptionSelectionChange };
  * Single option inside of a `<md-select>` element.
  */
 var MdOption = (function () {
-    function MdOption(_element, _renderer, _isCompatibilityMode) {
+    function MdOption(_element, group, _isCompatibilityMode) {
         this._element = _element;
-        this._renderer = _renderer;
+        this.group = group;
         this._isCompatibilityMode = _isCompatibilityMode;
         this._selected = false;
         this._active = false;
@@ -64,7 +62,7 @@ var MdOption = (function () {
     });
     Object.defineProperty(MdOption.prototype, "disabled", {
         /** Whether the option is disabled. */
-        get: function () { return this._disabled; },
+        get: function () { return (this.group && this.group.disabled) || this._disabled; },
         set: function (value) { this._disabled = coerceBooleanProperty(value); },
         enumerable: true,
         configurable: true
@@ -106,7 +104,7 @@ var MdOption = (function () {
     };
     /** Sets focus onto this option. */
     MdOption.prototype.focus = function () {
-        this._renderer.invokeElementMethod(this._getHostElement(), 'focus');
+        this._getHostElement().focus();
     };
     /**
      * This method sets display styles on the option to make it appear
@@ -153,7 +151,6 @@ var MdOption = (function () {
         if (isUserInput === void 0) { isUserInput = false; }
         this.onSelectionChange.emit(new MdOptionSelectionChange(this, isUserInput));
     };
-    ;
     return MdOption;
 }());
 __decorate([
@@ -188,29 +185,10 @@ MdOption = __decorate([
         template: "<span [ngSwitch]=\"_isCompatibilityMode\" *ngIf=\"multiple\"><mat-pseudo-checkbox class=\"mat-option-pseudo-checkbox\" *ngSwitchCase=\"true\" [state]=\"selected ? 'checked' : ''\" color=\"primary\"></mat-pseudo-checkbox><md-pseudo-checkbox class=\"mat-option-pseudo-checkbox\" *ngSwitchDefault [state]=\"selected ? 'checked' : ''\" color=\"primary\"></md-pseudo-checkbox></span><ng-content></ng-content><div class=\"mat-option-ripple\" *ngIf=\"!disabled\" md-ripple [mdRippleTrigger]=\"_getHostElement()\"></div>",
         encapsulation: ViewEncapsulation.None
     }),
+    __param(1, Optional()),
     __param(2, Optional()), __param(2, Inject(MATERIAL_COMPATIBILITY_MODE)),
     __metadata("design:paramtypes", [ElementRef,
-        Renderer, Boolean])
+        MdOptgroup, Boolean])
 ], MdOption);
 export { MdOption };
-var MdOptionModule = MdOptionModule_1 = (function () {
-    function MdOptionModule() {
-    }
-    MdOptionModule.forRoot = function () {
-        return {
-            ngModule: MdOptionModule_1,
-            providers: []
-        };
-    };
-    return MdOptionModule;
-}());
-MdOptionModule = MdOptionModule_1 = __decorate([
-    NgModule({
-        imports: [MdRippleModule, CommonModule, MdSelectionModule],
-        exports: [MdOption],
-        declarations: [MdOption]
-    })
-], MdOptionModule);
-export { MdOptionModule };
-var MdOptionModule_1;
 //# sourceMappingURL=option.js.map

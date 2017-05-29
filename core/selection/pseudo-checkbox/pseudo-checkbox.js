@@ -7,7 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Component, ViewEncapsulation, Input, ElementRef, Renderer, } from '@angular/core';
+import { Component, ViewEncapsulation, Input, ElementRef, Renderer2, } from '@angular/core';
 /**
  * Component that shows a simplified checkbox without including any kind of "real" checkbox.
  * Meant to be used when the checkbox is purely decorative and a large number of them will be
@@ -35,15 +35,14 @@ var MdPseudoCheckbox = (function () {
         set: function (value) {
             if (value) {
                 var nativeElement = this._elementRef.nativeElement;
-                this._renderer.setElementClass(nativeElement, "mat-" + this.color, false);
-                this._renderer.setElementClass(nativeElement, "mat-" + value, true);
+                this._renderer.removeClass(nativeElement, "mat-" + this.color);
+                this._renderer.addClass(nativeElement, "mat-" + value);
                 this._color = value;
             }
         },
         enumerable: true,
         configurable: true
     });
-    ;
     return MdPseudoCheckbox;
 }());
 __decorate([
@@ -71,7 +70,7 @@ MdPseudoCheckbox = __decorate([
             '[class.mat-pseudo-checkbox-disabled]': 'disabled',
         },
     }),
-    __metadata("design:paramtypes", [ElementRef, Renderer])
+    __metadata("design:paramtypes", [ElementRef, Renderer2])
 ], MdPseudoCheckbox);
 export { MdPseudoCheckbox };
 //# sourceMappingURL=pseudo-checkbox.js.map

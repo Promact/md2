@@ -1,4 +1,4 @@
-import { UP_ARROW, DOWN_ARROW, TAB, HOME, END } from '../core';
+import { UP_ARROW, DOWN_ARROW, TAB } from '../core';
 import { Subject } from 'rxjs/Subject';
 /**
  * This class manages keyboard events for selectable lists. If you pass it a query list
@@ -41,12 +41,6 @@ var ListKeyManager = (function () {
                 break;
             case UP_ARROW:
                 this.setPreviousItemActive();
-                break;
-            case HOME:
-                this.setFirstItemActive();
-                break;
-            case END:
-                this.setLastItemActive();
                 break;
             case TAB:
                 // Note that we shouldn't prevent the default action on tab.

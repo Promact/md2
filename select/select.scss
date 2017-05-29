@@ -134,6 +134,7 @@ $md2-select-trigger-font-size: 16px !default;
   padding-top: 0;
   padding-bottom: 0;
   max-height: $md2-select-panel-max-height;
+  min-width: 100%;
 
   @include cdk-high-contrast {
     outline: solid 1px;
@@ -142,64 +143,6 @@ $md2-select-trigger-font-size: 16px !default;
 
 .md2-select-content, .md2-select-panel-done-animating {
   background: white;
-}
-
-.md2-option {
-  @include mat-menu-item-base();
-  position: relative;
-  cursor: pointer;
-  outline: none;
-
-  &[aria-disabled='true'] {
-    @include user-select(none);
-    cursor: default;
-  }
-
-  &:hover:not(.md2-option-disabled), &:focus:not(.md2-option-disabled) {
-    background: rgba(black, 0.04);
-  }
-
-  &.md2-selected {
-    color: $primary;
-    // In multiple mode there is a checkbox to show that the option is selected.
-    &:not(.md2-option-multiple) {
-      background: rgba(black, 0.04);
-    }
-  }
-
-  &.md2-active {
-    background: rgba(black, 0.04);
-    color: $primary;
-  }
-
-  &.md2-option-disabled {
-    color: rgba(black, 0.38);
-  }
-
-  &.md2-option-multiple {
-    padding-left: 40px;
-
-    &::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 12px;
-      display: block;
-      width: 16px;
-      height: 16px;
-      margin-top: -8px;
-      border: 2px solid;
-      border-radius: 2px;
-      box-sizing: border-box;
-      transition: 240ms;
-    }
-
-    &.md2-selected::after {
-      transform: rotate(-45deg);
-      height: 8px;
-      border-width: 0 0 2px 2px;
-    }
-  }
 }
 
 .cdk-overlay-container, .cdk-global-overlay-wrapper {

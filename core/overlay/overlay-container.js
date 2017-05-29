@@ -63,7 +63,6 @@ export { OverlayContainer };
 export function OVERLAY_CONTAINER_PROVIDER_FACTORY(parentContainer) {
     return parentContainer || new OverlayContainer();
 }
-;
 export var OVERLAY_CONTAINER_PROVIDER = {
     // If there is already an OverlayContainer available, use that. Otherwise, provide a new one.
     provide: OverlayContainer,

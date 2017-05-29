@@ -9,8 +9,6 @@ $md2-datepicker-date-cell-size: 40px !default;
 $md2-datepicker-calendar-height: 280px !default;
 
 $md2-clock-size: 240px !default;
-$md2-clock-tick-size: 34px !default;
-$md2-clock-hand-size: 99px !default;
 
 md2-datepicker {
   position: relative;
@@ -234,7 +232,11 @@ md2-datepicker {
 }
 
 .md2-datepicker-header-date-time {
-  font-size: 32px;
+  font-size: 24px;
+
+  [mode='landscape'] & {
+    font-size: 32px;
+  }
 }
 
 .md2-datepicker-header-date {
@@ -252,6 +254,11 @@ md2-datepicker {
   display: inline-block;
   padding-left: 8px;
   cursor: pointer;
+
+  .md2-datepicker-header-ampm {
+    opacity: 0.7;
+    cursor: default;
+  }
 
   &.active {
     opacity: 1;
@@ -376,7 +383,14 @@ md2-datepicker {
     background: transparent;
     box-sizing: border-box;
 
+    &.disabled {
+      color: rgba(black, 0.38);
+      cursor: default;
+      pointer-events: none;
+    }
+
     svg {
+      fill: currentColor;
       vertical-align: top;
     }
   }
@@ -398,37 +412,51 @@ md2-datepicker {
   }
 }
 
-.md2-calendar-day {
+.md2-calendar-date {
   position: relative;
   display: inline-block;
   width: 35px;
   height: 35px;
+  border: 1px solid transparent;
   border-radius: 50%;
   text-align: center;
   cursor: pointer;
   line-height: 35px;
   box-sizing: border-box;
 
-  &.today {
-    color: $primary;
+  &.md2-calendar-date-today {
+    border-color: $primary;
   }
 
   &:hover,
-  &.focus {
+  &.md2-calendar-date-active {
     background: darken(white, 12);
   }
 
-  &.selected,
-  &.selected:hover {
+  &.md2-calendar-date-selected,
+  &.md2-calendar-date-selected:hover {
     color: white;
     background: $primary;
+
+    &.md2-calendar-date-today {
+      box-shadow: inset 0 0 0 1px white;
+    }
   }
 
-  &.disabled,
-  &.disabled:hover {
+  &.md2-calendar-date-disabled,
+  &.md2-calendar-date-disabled:hover {
     color: rgba(black, 0.43);
     background: transparent;
     pointer-events: none;
+
+    &.md2-calendar-date-selected {
+      color: white;
+      background: rgba($primary, 0.4);
+    }
+
+    &.md2-calendar-date-today {
+      border-color: rgba($primary, 0.18);
+    }
   }
 
   &.prev-month,
@@ -438,100 +466,17 @@ md2-datepicker {
 }
 
 md2-clock {
-  position: absolute;
+  position: absolute !important;
   top: 0;
   left: 100%;
   display: block;
   width: $md2-clock-size;
   height: $md2-clock-size;
-  margin: 30px;
-  font-size: 14px;
-  font-weight: 400;
-  text-align: center;
-  background-color: darken(white, 12);
-  border-radius: 50%;
-  overflow: hidden;
+  margin: 18px !important;
   transition: 300ms;
 
   &.active {
     left: 0;
-  }
-}
-
-.md2-clock-center {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  height: 6px;
-  width: 6px;
-  margin: -3px;
-  border-radius: 50%;
-  background-color: $primary;
-}
-
-.md2-clock-hand {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  width: 1px;
-  height: $md2-clock-hand-size;
-  margin: 0 auto;
-  background-color: $primary;
-  transform-origin: bottom;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: -4px;
-    left: -4px;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: $primary;
-  }
-}
-
-.md2-clock-hours,
-.md2-clock-minutes {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  visibility: hidden;
-  transition: 350ms;
-  transform: scale(1.2);
-
-  &.active {
-    opacity: 1;
-    visibility: visible;
-    transform: scale(1);
-  }
-}
-
-.md2-clock-minutes {
-  transform: scale(0.8);
-}
-
-.md2-clock-hour,
-.md2-clock-minute {
-  position: absolute;
-  width: $md2-clock-tick-size;
-  height: $md2-clock-tick-size;
-  line-height: $md2-clock-tick-size;
-  text-align: center;
-  border-radius: 50%;
-  cursor: pointer;
-
-  &:hover {
-    background: darken(white, 2);
-  }
-
-  &.active {
-    background: lighten($primary, 25);
   }
 }
 
@@ -577,6 +522,10 @@ md2-clock {
     .md2-datepicker-header-time {
       display: block;
       padding-left: 0;
+    }
+
+    .md2-datepicker-header-date-time {
+      font-size: 32px
     }
   }
 }

@@ -1,4 +1,4 @@
-import { AfterContentInit, ElementRef, EventEmitter, ModuleWithProviders } from '@angular/core';
+import { AfterContentInit, ElementRef, EventEmitter } from '@angular/core';
 import { ControlValueAccessor } from '@angular/forms';
 export declare class Tag {
     text: string;
@@ -94,8 +94,4 @@ export declare class Md2Tags implements AfterContentInit, ControlValueAccessor {
     registerOnChange(fn: any): void;
     registerOnTouched(fn: any): void;
     setDisabledState(isDisabled: boolean): void;
-}
-export declare const MD2_TAGS_DIRECTIVES: typeof Md2Tags[];
-export declare class Md2TagsModule {
-    static forRoot(): ModuleWithProviders;
 }

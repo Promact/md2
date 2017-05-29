@@ -10,9 +10,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { Component, ContentChildren, ElementRef, EventEmitter, Input, Optional, Output, QueryList, Renderer, Self, ViewEncapsulation, ViewChild, ChangeDetectorRef, Attribute, } from '@angular/core';
+import { Component, ContentChildren, ElementRef, EventEmitter, Input, Optional, Output, QueryList, Renderer2, Self, ViewEncapsulation, ViewChild, ChangeDetectorRef, Attribute, } from '@angular/core';
 import { Md2Option } from './option';
-import { ENTER, SPACE } from '../core/keyboard/keycodes';
+import { Md2Optgroup } from './optgroup';
+import { ENTER, SPACE, UP_ARROW, DOWN_ARROW, HOME, END } from '../core/keyboard/keycodes';
 import { FocusKeyManager } from '../core/a11y/focus-key-manager';
 import { Dir } from '../core/rtl/dir';
 import { Observable } from 'rxjs/Observable';
@@ -22,31 +23,32 @@ import { coerceBooleanProperty } from '../core/coercion/boolean-property';
 import { ConnectedOverlayDirective } from '../core/overlay/overlay-directives';
 import { ViewportRuler } from '../core/overlay/position/viewport-ruler';
 import { SelectionModel } from '../core/selection/selection';
-import { MdSelectDynamicMultipleError, MdSelectNonArrayValueError } from './select-errors';
-import 'rxjs/add/operator/filter';
+import { getMdSelectDynamicMultipleError, getMdSelectNonArrayValueError } from './select-errors';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/startWith';
+import 'rxjs/add/operator/filter';
 /**
  * The following style constants are necessary to save here in order
  * to properly calculate the alignment of the selected option over
  * the trigger element.
  */
-/** The fixed height of every option element. */
-export var SELECT_OPTION_HEIGHT = 48;
+/** The fixed height of every option element (option, group header etc.). */
+export var SELECT_ITEM_HEIGHT = 48;
 /** The max height of the select's overlay panel */
 export var SELECT_PANEL_MAX_HEIGHT = 256;
 /** The max number of options visible at once in the select panel. */
-export var SELECT_MAX_OPTIONS_DISPLAYED = 5;
+export var SELECT_MAX_OPTIONS_DISPLAYED = Math.floor(SELECT_PANEL_MAX_HEIGHT / SELECT_ITEM_HEIGHT);
 /** The fixed height of the select's trigger element. */
 export var SELECT_TRIGGER_HEIGHT = 30;
 /**
  * Must adjust for the difference in height between the option and the trigger,
  * so the text will align on the y axis.
- * (SELECT_OPTION_HEIGHT (48) - SELECT_TRIGGER_HEIGHT (30)) / 2 = 9
  */
-export var SELECT_OPTION_HEIGHT_ADJUSTMENT = 9;
+export var SELECT_ITEM_HEIGHT_ADJUSTMENT = (SELECT_ITEM_HEIGHT - SELECT_TRIGGER_HEIGHT) / 2;
 /** The panel's padding on the x-axis */
 export var SELECT_PANEL_PADDING_X = 16;
+/** The panel's x axis padding if it is indented (e.g. there is an option group). */
+export var SELECT_PANEL_INDENT_PADDING_X = SELECT_PANEL_PADDING_X * 2;
 /**
  * Distance between the panel edge and the option text in
  * multi-selection mode.
@@ -56,7 +58,7 @@ export var SELECT_PANEL_PADDING_X = 16;
  * the browser adds ~4px, because we're using inline elements.
  * The checkbox width is 20px.
  */
-export var SELECT_MULTIPLE_PANEL_PADDING_X = SELECT_PANEL_PADDING_X * 1.25 + 20;
+export var SELECT_MULTIPLE_PANEL_PADDING_X = SELECT_PANEL_PADDING_X * 1.75 + 20;
 /**
  * The panel's padding on the y-axis. This padding indicates there are more
  * options available if you scroll.
@@ -107,12 +109,6 @@ var Md2Select = (function () {
         /** Whether the panel's animation is done. */
         this._panelDoneAnimating = false;
         /**
-         * The x-offset of the overlay panel in relation to the trigger's top start corner.
-         * This must be adjusted to align the selected option text over the trigger text when
-         * the panel opens. Will change based on LTR or RTL text direction.
-         */
-        this._offsetX = 0;
-        /**
          * The y-offset of the overlay panel in relation to the trigger's top start corner.
          * This must be adjusted to align the selected option text over the trigger text.
          * when the panel opens. Will change based on the y-position of the selected option.
@@ -161,7 +157,7 @@ var Md2Select = (function () {
             var _this = this;
             this._placeholder = value;
             // Must wait to record the trigger width to ensure placeholder width is included.
-            Promise.resolve(null).then(function () { return _this._triggerWidth = _this._getWidth(); });
+            Promise.resolve(null).then(function () { return _this._setTriggerWidth(); });
         },
         enumerable: true,
         configurable: true
@@ -187,7 +183,7 @@ var Md2Select = (function () {
         get: function () { return this._multiple; },
         set: function (value) {
             if (this._selectionModel) {
-                throw new MdSelectDynamicMultipleError();
+                throw getMdSelectDynamicMultipleError();
             }
             this._multiple = coerceBooleanProperty(value);
         },
@@ -222,9 +218,11 @@ var Md2Select = (function () {
         enumerable: true,
         configurable: true
     });
+    Md2Select.prototype.ngOnInit = function () {
+        this._selectionModel = new SelectionModel(this.multiple, null, false);
+    };
     Md2Select.prototype.ngAfterContentInit = function () {
         var _this = this;
-        this._selectionModel = new SelectionModel(this.multiple, null, false);
         this._initKeyManager();
         this._changeSubscription = this.options.changes.startWith(null).subscribe(function () {
             _this._resetOptions();
@@ -252,6 +250,9 @@ var Md2Select = (function () {
     Md2Select.prototype.open = function () {
         if (this.disabled || !this.options.length) {
             return;
+        }
+        if (!this._triggerWidth) {
+            this._setTriggerWidth();
         }
         this._calculateOverlayPosition();
         this._placeholderState = this._floatPlaceholderState();
@@ -326,9 +327,15 @@ var Md2Select = (function () {
     Object.defineProperty(Md2Select.prototype, "triggerValue", {
         /** The value displayed in the trigger. */
         get: function () {
-            return this.multiple ?
-                this._selectionModel.selected.map(function (option) { return option.viewValue; }).join(', ') :
-                this._selectionModel.selected[0].viewValue;
+            if (this._multiple) {
+                var selectedOptions = this._selectionModel.selected.map(function (option) { return option.viewValue; });
+                if (this._isRtl()) {
+                    selectedOptions.reverse();
+                }
+                // TODO(crisbeto): delimiter should be configurable for proper localization.
+                return selectedOptions.join(', ');
+            }
+            return this._selectionModel.selected[0].viewValue;
         },
         enumerable: true,
         configurable: true
@@ -337,16 +344,34 @@ var Md2Select = (function () {
     Md2Select.prototype._isRtl = function () {
         return this._dir ? this._dir.value === 'rtl' : false;
     };
-    /** The width of the trigger element. This is necessary to match
+    /**
+     * Sets the width of the trigger element. This is necessary to match
      * the overlay width to the trigger width.
      */
-    Md2Select.prototype._getWidth = function () {
-        return this._getTriggerRect().width;
+    Md2Select.prototype._setTriggerWidth = function () {
+        this._triggerWidth = this._getTriggerRect().width;
     };
-    /** Ensures the panel opens if activated by the keyboard. */
-    Md2Select.prototype._handleKeydown = function (event) {
-        if (event.keyCode === ENTER || event.keyCode === SPACE) {
-            this.open();
+    /** Handles the keyboard interactions of a closed select. */
+    Md2Select.prototype._handleClosedKeydown = function (event) {
+        if (!this.disabled) {
+            if (event.keyCode === ENTER || event.keyCode === SPACE) {
+                event.preventDefault(); // prevents the page from scrolling down when pressing space
+                this.open();
+            }
+            else if (event.keyCode === UP_ARROW || event.keyCode === DOWN_ARROW) {
+                this._handleArrowKey(event);
+            }
+        }
+    };
+    /** Handles keypresses inside the panel. */
+    Md2Select.prototype._handlePanelKeydown = function (event) {
+        if (event.keyCode === HOME || event.keyCode === END) {
+            event.preventDefault();
+            event.keyCode === HOME ? this._keyManager.setFirstItemActive() :
+                this._keyManager.setLastItemActive();
+        }
+        else {
+            this._keyManager.onKeydown(event);
         }
     };
     /**
@@ -361,6 +386,7 @@ var Md2Select = (function () {
         else {
             this.onClose.emit();
             this._panelDoneAnimating = false;
+            this.overlayDir.offsetX = 0;
         }
     };
     /**
@@ -380,6 +406,13 @@ var Md2Select = (function () {
         }
     };
     /**
+     * Callback that is invoked when the overlay panel has been attached.
+     */
+    Md2Select.prototype._onAttached = function () {
+        this._calculateOverlayOffsetX();
+        this._setScrollTop();
+    };
+    /**
      * Sets the scroll position of the scroll container. This must be called after
      * the overlay pane is attached or the scroll container element will not yet be
      * present in the DOM.
@@ -396,15 +429,15 @@ var Md2Select = (function () {
         var _this = this;
         var isArray = Array.isArray(value);
         if (this.multiple && value && !isArray) {
-            throw new MdSelectNonArrayValueError();
+            throw getMdSelectNonArrayValueError();
         }
+        this._clearSelection();
         if (isArray) {
-            this._clearSelection();
             value.forEach(function (currentValue) { return _this._selectValue(currentValue); });
             this._sortValues();
         }
-        else if (!this._selectValue(value)) {
-            this._clearSelection();
+        else {
+            this._selectValue(value);
         }
         this._setValueWidth();
         if (this._selectionModel.isEmpty()) {
@@ -418,10 +451,14 @@ var Md2Select = (function () {
      */
     Md2Select.prototype._selectValue = function (value) {
         var _this = this;
-        var correspondingOption = this.options.find(function (option) { return _this.equals(option.value, value); });
+        var optionsArray = this.options.toArray();
+        var correspondingOption = optionsArray.find(function (option) {
+            return option.value && _this.equals(option.value, value);
+        });
         if (correspondingOption) {
             correspondingOption.select();
             this._selectionModel.select(correspondingOption);
+            this._keyManager.setActiveItem(optionsArray.indexOf(correspondingOption));
         }
         return correspondingOption;
     };
@@ -509,8 +546,13 @@ var Md2Select = (function () {
             this._sortValues();
         }
         else {
-            this._clearSelection(option);
-            this._selectionModel.select(option);
+            this._clearSelection(option.value == null ? null : option);
+            if (option.value == null) {
+                this._propagateChanges(option.value);
+            }
+            else {
+                this._selectionModel.select(option);
+            }
         }
         if (wasSelected !== this._selectionModel.isSelected(option)) {
             this._propagateChanges();
@@ -539,10 +581,14 @@ var Md2Select = (function () {
         }
     };
     /** Emits change event to set the model value. */
-    Md2Select.prototype._propagateChanges = function () {
-        var valueToEmit = Array.isArray(this.selected) ?
-            this.selected.map(function (option) { return option.value; }) :
-            this.selected.value;
+    Md2Select.prototype._propagateChanges = function (fallbackValue) {
+        var valueToEmit = null;
+        if (Array.isArray(this.selected)) {
+            valueToEmit = this.selected.map(function (option) { return option.value; });
+        }
+        else {
+            valueToEmit = this.selected ? this.selected.value : fallbackValue;
+        }
         this._onChange(valueToEmit);
         this.change.emit(new Md2SelectChange(this, valueToEmit));
     };
@@ -553,7 +599,6 @@ var Md2Select = (function () {
     /**
      * Sets the `multiple` property on each option. The promise is necessary
      * in order to avoid Angular errors when modifying the property after init.
-     * TODO: there should be a better way of doing this.
      */
     Md2Select.prototype._setOptionMultiple = function () {
         var _this = this;
@@ -585,7 +630,7 @@ var Md2Select = (function () {
     };
     /** Focuses the host element when the panel closes. */
     Md2Select.prototype._focusHost = function () {
-        this._renderer.invokeElementMethod(this._element.nativeElement, 'focus');
+        this._element.nativeElement.focus();
     };
     /** Gets the index of the provided option in the option list. */
     Md2Select.prototype._getOptionIndex = function (option) {
@@ -595,28 +640,26 @@ var Md2Select = (function () {
     };
     /** Calculates the scroll position and x- and y-offsets of the overlay panel. */
     Md2Select.prototype._calculateOverlayPosition = function () {
-        this._offsetX = this.multiple ? SELECT_MULTIPLE_PANEL_PADDING_X : SELECT_PANEL_PADDING_X;
-        if (!this._isRtl()) {
-            this._offsetX *= -1;
-        }
-        var panelHeight = Math.min(this.options.length * SELECT_OPTION_HEIGHT, SELECT_PANEL_MAX_HEIGHT);
-        var scrollContainerHeight = this.options.length * SELECT_OPTION_HEIGHT;
+        var items = this._getItemCount();
+        var panelHeight = Math.min(items * SELECT_ITEM_HEIGHT, SELECT_PANEL_MAX_HEIGHT);
+        var scrollContainerHeight = items * SELECT_ITEM_HEIGHT;
         // The farthest the panel can be scrolled before it hits the bottom
         var maxScroll = scrollContainerHeight - panelHeight;
         if (this._selectionModel.hasValue()) {
             var selectedIndex = this._getOptionIndex(this._selectionModel.selected[0]);
+            selectedIndex += this._getLabelCountBeforeOption(selectedIndex);
             // We must maintain a scroll buffer so the selected option will be scrolled to the
             // center of the overlay panel rather than the top.
             var scrollBuffer = panelHeight / 2;
             this._scrollTop = this._calculateOverlayScroll(selectedIndex, scrollBuffer, maxScroll);
-            this._offsetY = this._calculateOverlayOffset(selectedIndex, scrollBuffer, maxScroll);
+            this._offsetY = this._calculateOverlayOffsetY(selectedIndex, scrollBuffer, maxScroll);
         }
         else {
             // If no option is selected, the panel centers on the first option. In this case,
             // we must only adjust for the height difference between the option element
             // and the trigger element, then multiply it by -1 to ensure the panel moves
             // in the correct direction up the page.
-            this._offsetY = (SELECT_OPTION_HEIGHT - SELECT_TRIGGER_HEIGHT) / 2 * -1;
+            this._offsetY = (SELECT_ITEM_HEIGHT - SELECT_TRIGGER_HEIGHT) / 2 * -1;
         }
         this._checkOverlayWithinViewport(maxScroll);
     };
@@ -628,8 +671,8 @@ var Md2Select = (function () {
      * scroll position to the min or max scroll positions respectively.
      */
     Md2Select.prototype._calculateOverlayScroll = function (selectedIndex, scrollBuffer, maxScroll) {
-        var optionOffsetFromScrollTop = SELECT_OPTION_HEIGHT * selectedIndex;
-        var halfOptionHeight = SELECT_OPTION_HEIGHT / 2;
+        var optionOffsetFromScrollTop = SELECT_ITEM_HEIGHT * selectedIndex;
+        var halfOptionHeight = SELECT_ITEM_HEIGHT / 2;
         // Starts at the optionOffsetFromScrollTop, which scrolls the option to the top of the
         // scroll container, then subtracts the scroll buffer to scroll the option down to
         // the center of the overlay panel. Half the option height must be re-added to the
@@ -650,11 +693,11 @@ var Md2Select = (function () {
         return this._placeholderState;
     };
     /**
-     * Determines the CSS `visibility` of the placeholder element.
+     * Determines the CSS `opacity` of the placeholder element.
      */
-    Md2Select.prototype._getPlaceholderVisibility = function () {
+    Md2Select.prototype._getPlaceholderOpacity = function () {
         return (this.floatPlaceholder !== 'never' || this._selectionModel.isEmpty()) ?
-            'visible' : 'hidden';
+            '1' : '0';
     };
     Object.defineProperty(Md2Select.prototype, "_ariaLabel", {
         /** Returns the aria-label of the select component. */
@@ -667,35 +710,76 @@ var Md2Select = (function () {
         configurable: true
     });
     /**
+     * Sets the x-offset of the overlay panel in relation to the trigger's top start corner.
+     * This must be adjusted to align the selected option text over the trigger text when
+     * the panel opens. Will change based on LTR or RTL text direction. Note that the offset
+     * can't be calculated until the panel has been attached, because we need to know the
+     * content width in order to constrain the panel within the viewport.
+     */
+    Md2Select.prototype._calculateOverlayOffsetX = function () {
+        var overlayRect = this.overlayDir.overlayRef.overlayElement.getBoundingClientRect();
+        var viewportRect = this._viewportRuler.getViewportRect();
+        var isRtl = this._isRtl();
+        var offsetX;
+        // Adjust the offset, depending on the option padding.
+        if (this.multiple) {
+            offsetX = SELECT_MULTIPLE_PANEL_PADDING_X;
+        }
+        else {
+            var selected = this._selectionModel.selected[0];
+            offsetX = selected && selected.group ? SELECT_PANEL_INDENT_PADDING_X : SELECT_PANEL_PADDING_X;
+        }
+        // Invert the offset in LTR.
+        if (!isRtl) {
+            offsetX *= -1;
+        }
+        // Determine how much the select overflows on each side.
+        var leftOverflow = 0 - (overlayRect.left + offsetX
+            - (isRtl ? SELECT_PANEL_PADDING_X * 2 : 0));
+        var rightOverflow = overlayRect.right + offsetX - viewportRect.width
+            + (isRtl ? 0 : SELECT_PANEL_PADDING_X * 2);
+        // If the element overflows on either side, reduce the offset to allow it to fit.
+        if (leftOverflow > 0) {
+            offsetX += leftOverflow + SELECT_PANEL_VIEWPORT_PADDING;
+        }
+        else if (rightOverflow > 0) {
+            offsetX -= rightOverflow + SELECT_PANEL_VIEWPORT_PADDING;
+        }
+        // Set the offset directly in order to avoid having to go through change detection and
+        // potentially triggering "changed after it was checked" errors.
+        this.overlayDir.offsetX = offsetX;
+        this.overlayDir.overlayRef.updatePosition();
+    };
+    /**
      * Calculates the y-offset of the select's overlay panel in relation to the
      * top start corner of the trigger. It has to be adjusted in order for the
      * selected option to be aligned over the trigger when the panel opens.
      */
-    Md2Select.prototype._calculateOverlayOffset = function (selectedIndex, scrollBuffer, maxScroll) {
+    Md2Select.prototype._calculateOverlayOffsetY = function (selectedIndex, scrollBuffer, maxScroll) {
         var optionOffsetFromPanelTop;
         if (this._scrollTop === 0) {
-            optionOffsetFromPanelTop = selectedIndex * SELECT_OPTION_HEIGHT;
+            optionOffsetFromPanelTop = selectedIndex * SELECT_ITEM_HEIGHT;
         }
         else if (this._scrollTop === maxScroll) {
-            var firstDisplayedIndex = this.options.length - SELECT_MAX_OPTIONS_DISPLAYED;
+            var firstDisplayedIndex = this._getItemCount() - SELECT_MAX_OPTIONS_DISPLAYED;
             var selectedDisplayIndex = selectedIndex - firstDisplayedIndex;
             // Because the panel height is longer than the height of the options alone,
             // there is always extra padding at the top or bottom of the panel. When
             // scrolled to the very bottom, this padding is at the top of the panel and
             // must be added to the offset.
             optionOffsetFromPanelTop =
-                selectedDisplayIndex * SELECT_OPTION_HEIGHT + SELECT_PANEL_PADDING_Y;
+                selectedDisplayIndex * SELECT_ITEM_HEIGHT + SELECT_PANEL_PADDING_Y;
         }
         else {
             // If the option was scrolled to the middle of the panel using a scroll buffer,
             // its offset will be the scroll buffer minus the half height that was added to
             // center it.
-            optionOffsetFromPanelTop = scrollBuffer - SELECT_OPTION_HEIGHT / 2;
+            optionOffsetFromPanelTop = scrollBuffer - SELECT_ITEM_HEIGHT / 2;
         }
         // The final offset is the option's offset from the top, adjusted for the height
         // difference, multiplied by -1 to ensure that the overlay moves in the correct
         // direction up the page.
-        return optionOffsetFromPanelTop * -1 - SELECT_OPTION_HEIGHT_ADJUSTMENT;
+        return optionOffsetFromPanelTop * -1 - SELECT_ITEM_HEIGHT_ADJUSTMENT;
     };
     /**
      * Checks that the attempted overlay position will fit within the viewport.
@@ -709,7 +793,7 @@ var Md2Select = (function () {
         var topSpaceAvailable = triggerRect.top - SELECT_PANEL_VIEWPORT_PADDING;
         var bottomSpaceAvailable = viewportRect.height - triggerRect.bottom - SELECT_PANEL_VIEWPORT_PADDING;
         var panelHeightTop = Math.abs(this._offsetY);
-        var totalPanelHeight = Math.min(this.options.length * SELECT_OPTION_HEIGHT, SELECT_PANEL_MAX_HEIGHT);
+        var totalPanelHeight = Math.min(this._getItemCount() * SELECT_ITEM_HEIGHT, SELECT_PANEL_MAX_HEIGHT);
         var panelHeightBottom = totalPanelHeight - panelHeightTop - triggerRect.height;
         if (panelHeightBottom > bottomSpaceAvailable) {
             this._adjustPanelUp(panelHeightBottom, bottomSpaceAvailable);
@@ -758,12 +842,56 @@ var Md2Select = (function () {
     };
     /** Sets the transform origin point based on the selected option. */
     Md2Select.prototype._getOriginBasedOnOption = function () {
-        var originY = Math.abs(this._offsetY) - SELECT_OPTION_HEIGHT_ADJUSTMENT + SELECT_OPTION_HEIGHT / 2;
+        var originY = Math.abs(this._offsetY) - SELECT_ITEM_HEIGHT_ADJUSTMENT + SELECT_ITEM_HEIGHT / 2;
         return "50% " + originY + "px 0px";
     };
     /** Figures out the floating placeholder state value. */
     Md2Select.prototype._floatPlaceholderState = function () {
         return this._isRtl() ? 'floating-rtl' : 'floating-ltr';
+    };
+    /** Handles the user pressing the arrow keys on a closed select.  */
+    Md2Select.prototype._handleArrowKey = function (event) {
+        if (this._multiple) {
+            event.preventDefault();
+            this.open();
+        }
+        else {
+            var prevActiveItem = this._keyManager.activeItem;
+            // Cycle though the select options even when the select is closed,
+            // matching the behavior of the native select element.
+            // TODO(crisbeto): native selects also cycle through the options with left/right arrows,
+            // however the key manager only supports up/down at the moment.
+            this._keyManager.onKeydown(event);
+            var currentActiveItem = this._keyManager.activeItem;
+            if (currentActiveItem !== prevActiveItem) {
+                this._clearSelection();
+                this._setSelectionByValue(currentActiveItem.value);
+                this._propagateChanges();
+            }
+        }
+    };
+    /** Calculates the amount of items in the select. This includes options and group labels. */
+    Md2Select.prototype._getItemCount = function () {
+        return this.options.length + this.optionGroups.length;
+    };
+    /**
+     * Calculates the amount of option group labels that precede the specified option.
+     * Useful when positioning the panel, because the labels will offset the index of the
+     * currently-selected option.
+     */
+    Md2Select.prototype._getLabelCountBeforeOption = function (optionIndex) {
+        if (this.optionGroups.length) {
+            var options = this.options.toArray();
+            var groups = this.optionGroups.toArray();
+            var groupCounter = 0;
+            for (var i = 0; i < optionIndex + 1; i++) {
+                if (options[i].group && options[i].group === groups[groupCounter]) {
+                    groupCounter++;
+                }
+            }
+            return groupCounter;
+        }
+        return 0;
     };
     return Md2Select;
 }());
@@ -776,9 +904,13 @@ __decorate([
     __metadata("design:type", ConnectedOverlayDirective)
 ], Md2Select.prototype, "overlayDir", void 0);
 __decorate([
-    ContentChildren(Md2Option),
+    ContentChildren(Md2Option, { descendants: true }),
     __metadata("design:type", QueryList)
 ], Md2Select.prototype, "options", void 0);
+__decorate([
+    ContentChildren(Md2Optgroup),
+    __metadata("design:type", QueryList)
+], Md2Select.prototype, "optionGroups", void 0);
 __decorate([
     Input(),
     __metadata("design:type", Object),
@@ -831,8 +963,8 @@ __decorate([
 ], Md2Select.prototype, "change", void 0);
 Md2Select = __decorate([
     Component({selector: 'md2-select',
-        template: "<div class=\"md2-select-trigger\" cdk-overlay-origin (click)=\"toggle()\" #origin=\"cdkOverlayOrigin\" #trigger><span class=\"md2-select-placeholder\" [class.md2-floating-placeholder]=\"_selectionModel.hasValue()\" [@transformPlaceholder]=\"_getPlaceholderAnimationState()\" [style.visibility]=\"_getPlaceholderVisibility()\" [style.width.px]=\"_selectedValueWidth\">{{ placeholder }}</span> <span class=\"md2-select-value\" *ngIf=\"_selectionModel.hasValue()\"><span class=\"md2-select-value-text\">{{ triggerValue }}</span> </span><span class=\"md2-select-arrow\"></span> <span class=\"md2-select-underline\"></span></div><ng-template cdk-connected-overlay [origin]=\"origin\" [open]=\"panelOpen\" hasBackdrop (backdropClick)=\"close()\" backdropClass=\"cdk-overlay-transparent-backdrop\" [positions]=\"_positions\" [minWidth]=\"_triggerWidth\" [offsetY]=\"_offsetY\" [offsetX]=\"_offsetX\" (attach)=\"_setScrollTop()\"><div class=\"md2-select-panel\" [@transformPanel]=\"'showing'\" (@transformPanel.done)=\"_onPanelDone()\" (keydown)=\"_keyManager.onKeydown($event)\" [style.transformOrigin]=\"_transformOrigin\" [class.md2-select-panel-done-animating]=\"_panelDoneAnimating\"><div class=\"md2-select-content\" [@fadeInContent]=\"'showing'\" (@fadeInContent.done)=\"_onFadeInDone()\"><ng-content select=\"md2-select-header\"></ng-content><ng-content></ng-content></div></div></ng-template>",
-        styles: [".md2-select{display:inline-block;outline:0}.md2-select-trigger{color:rgba(0,0,0,.38);display:flex;align-items:center;height:30px;min-width:112px;cursor:pointer;position:relative;box-sizing:border-box;font-size:16px}[aria-disabled=true] .md2-select-trigger{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;cursor:default}.md2-select:focus:not(.md2-select-disabled) .md2-select-trigger{color:#106cc8}.md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) .md2-select-trigger{color:#f44336}.md2-select-underline{position:absolute;bottom:0;left:0;right:0;height:1px;background-color:rgba(0,0,0,.12)}[aria-disabled=true] .md2-select-underline{background-image:linear-gradient(to right,rgba(0,0,0,.26) 0,rgba(0,0,0,.26) 33%,transparent 0);background-size:4px 1px;background-repeat:repeat-x;background-color:transparent;background-position:0 bottom}.md2-select:focus:not(.md2-select-disabled) .md2-select-underline{background-color:#106cc8}.md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) .md2-select-underline{background-color:#f44336}.md2-select-placeholder{position:relative;padding:0 2px;transform-origin:left top;flex-grow:1}.md2-select-placeholder.md2-floating-placeholder{top:-22px;left:-2px;text-align:left;transform:scale(.75)}[dir=rtl] .md2-select-placeholder{transform-origin:right top}[dir=rtl] .md2-select-placeholder.md2-floating-placeholder{left:2px;text-align:right}[aria-required=true] .md2-select-placeholder::after{content:'*'}.md2-select-value{position:absolute;max-width:calc(100% - 18px);flex-grow:1;top:0;left:0;bottom:0;display:flex;align-items:center;color:rgba(0,0,0,.87)}[dir=rtl] .md2-select-value{left:auto;right:0}.md2-select-disabled .md2-select-value{color:rgba(0,0,0,.38)}.md2-select-value-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:30px}.md2-select-arrow{width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid;margin:0 4px}.md2-select-panel{box-shadow:0 5px 5px -3px rgba(0,0,0,.2),0 8px 10px 1px rgba(0,0,0,.14),0 3px 14px 2px rgba(0,0,0,.12);min-width:112px;max-width:280px;overflow:auto;-webkit-overflow-scrolling:touch;padding-top:0;padding-bottom:0;max-height:256px}@media screen and (-ms-high-contrast:active){.md2-select-panel{outline:solid 1px}}.md2-select-content,.md2-select-panel-done-animating{background:#fff}.md2-option{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;line-height:48px;height:48px;padding:0 16px;font-size:16px;font-family:Roboto,\"Helvetica Neue\",sans-serif;text-align:left;text-decoration:none;position:relative;cursor:pointer;outline:0}.md2-option[disabled]{cursor:default}[dir=rtl] .md2-option{text-align:right}.md2-option .mat-icon{margin-right:16px}[dir=rtl] .md2-option .mat-icon{margin-left:16px}.md2-option[aria-disabled=true]{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;cursor:default}.md2-option:focus:not(.md2-option-disabled),.md2-option:hover:not(.md2-option-disabled){background:rgba(0,0,0,.04)}.md2-option.md2-selected{color:#106cc8}.md2-option.md2-selected:not(.md2-option-multiple){background:rgba(0,0,0,.04)}.md2-option.md2-active{background:rgba(0,0,0,.04);color:#106cc8}.md2-option.md2-option-disabled{color:rgba(0,0,0,.38)}.md2-option.md2-option-multiple{padding-left:40px}.md2-option.md2-option-multiple::after{content:'';position:absolute;top:50%;left:12px;display:block;width:16px;height:16px;margin-top:-8px;border:2px solid;border-radius:2px;box-sizing:border-box;transition:240ms}.md2-option.md2-option-multiple.md2-selected::after{transform:rotate(-45deg);height:8px;border-width:0 0 2px 2px}.cdk-global-overlay-wrapper,.cdk-overlay-container{pointer-events:none;top:0;left:0;height:100%;width:100%}.cdk-overlay-container{position:fixed;z-index:1000}.cdk-overlay-pane{position:absolute;pointer-events:auto;box-sizing:border-box;z-index:1000}.cdk-overlay-backdrop{position:absolute;top:0;bottom:0;left:0;right:0;z-index:1000;pointer-events:auto;transition:opacity .4s cubic-bezier(.25,.8,.25,1);opacity:0}.cdk-overlay-transparent-backdrop{background:0 0}.cdk-overlay-backdrop.cdk-overlay-backdrop-showing{opacity:.48} /*# sourceMappingURL=select.css.map */ "],
+        template: "<div class=\"md2-select-trigger\" cdk-overlay-origin (click)=\"toggle()\" #origin=\"cdkOverlayOrigin\" #trigger><span class=\"md2-select-placeholder\" [class.md2-floating-placeholder]=\"_selectionModel.hasValue()\" [@transformPlaceholder]=\"_getPlaceholderAnimationState()\" [style.opacity]=\"_getPlaceholderOpacity()\" [style.width.px]=\"_selectedValueWidth\">{{ placeholder }}</span> <span class=\"md2-select-value\" *ngIf=\"_selectionModel.hasValue()\"><span class=\"md2-select-value-text\">{{ triggerValue }}</span> </span><span class=\"md2-select-arrow\"></span> <span class=\"md2-select-underline\"></span></div><ng-template cdk-connected-overlay [origin]=\"origin\" [open]=\"panelOpen\" hasBackdrop (backdropClick)=\"close()\" backdropClass=\"cdk-overlay-transparent-backdrop\" [positions]=\"_positions\" [minWidth]=\"_triggerWidth\" [offsetY]=\"_offsetY\" (attach)=\"_onAttached()\" (detach)=\"close()\"><div class=\"md2-select-panel\" [@transformPanel]=\"'showing'\" (@transformPanel.done)=\"_onPanelDone()\" (keydown)=\"_keyManager.onKeydown($event)\" [style.transformOrigin]=\"_transformOrigin\" [class.md2-select-panel-done-animating]=\"_panelDoneAnimating\"><div class=\"md2-select-content\" [@fadeInContent]=\"'showing'\" (@fadeInContent.done)=\"_onFadeInDone()\"><ng-content select=\"md2-select-header\"></ng-content><ng-content></ng-content></div></div></ng-template>",
+        styles: [".md2-select{display:inline-block;outline:0}.md2-select-trigger{color:rgba(0,0,0,.38);display:flex;align-items:center;height:30px;min-width:112px;cursor:pointer;position:relative;box-sizing:border-box;font-size:16px}[aria-disabled=true] .md2-select-trigger{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;cursor:default}.md2-select:focus:not(.md2-select-disabled) .md2-select-trigger{color:#106cc8}.md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) .md2-select-trigger{color:#f44336}.md2-select-underline{position:absolute;bottom:0;left:0;right:0;height:1px;background-color:rgba(0,0,0,.12)}[aria-disabled=true] .md2-select-underline{background-image:linear-gradient(to right,rgba(0,0,0,.26) 0,rgba(0,0,0,.26) 33%,transparent 0);background-size:4px 1px;background-repeat:repeat-x;background-color:transparent;background-position:0 bottom}.md2-select:focus:not(.md2-select-disabled) .md2-select-underline{background-color:#106cc8}.md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) .md2-select-underline{background-color:#f44336}.md2-select-placeholder{position:relative;padding:0 2px;transform-origin:left top;flex-grow:1}.md2-select-placeholder.md2-floating-placeholder{top:-22px;left:-2px;text-align:left;transform:scale(.75)}[dir=rtl] .md2-select-placeholder{transform-origin:right top}[dir=rtl] .md2-select-placeholder.md2-floating-placeholder{left:2px;text-align:right}[aria-required=true] .md2-select-placeholder::after{content:'*'}.md2-select-value{position:absolute;max-width:calc(100% - 18px);flex-grow:1;top:0;left:0;bottom:0;display:flex;align-items:center;color:rgba(0,0,0,.87)}[dir=rtl] .md2-select-value{left:auto;right:0}.md2-select-disabled .md2-select-value{color:rgba(0,0,0,.38)}.md2-select-value-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:30px}.md2-select-arrow{width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid;margin:0 4px}.md2-select-panel{box-shadow:0 5px 5px -3px rgba(0,0,0,.2),0 8px 10px 1px rgba(0,0,0,.14),0 3px 14px 2px rgba(0,0,0,.12);min-width:112px;max-width:280px;overflow:auto;-webkit-overflow-scrolling:touch;padding-top:0;padding-bottom:0;max-height:256px;min-width:100%}@media screen and (-ms-high-contrast:active){.md2-select-panel{outline:solid 1px}}.md2-select-content,.md2-select-panel-done-animating{background:#fff}.cdk-global-overlay-wrapper,.cdk-overlay-container{pointer-events:none;top:0;left:0;height:100%;width:100%}.cdk-overlay-container{position:fixed;z-index:1000}.cdk-overlay-pane{position:absolute;pointer-events:auto;box-sizing:border-box;z-index:1000}.cdk-overlay-backdrop{position:absolute;top:0;bottom:0;left:0;right:0;z-index:1000;pointer-events:auto;transition:opacity .4s cubic-bezier(.25,.8,.25,1);opacity:0}.cdk-overlay-transparent-backdrop{background:0 0}.cdk-overlay-backdrop.cdk-overlay-backdrop-showing{opacity:.48} /*# sourceMappingURL=select.css.map */ "],
         encapsulation: ViewEncapsulation.None,
         host: {
             'role': 'listbox',
@@ -845,8 +977,8 @@ Md2Select = __decorate([
             '[attr.aria-owns]': '_optionIds',
             '[class.md2-select-disabled]': 'disabled',
             '[class.md2-select]': 'true',
-            '(keydown)': '_handleKeydown($event)',
-            '(blur)': '_onBlur()'
+            '(keydown)': '_handleClosedKeydown($event)',
+            '(blur)': '_onBlur()',
         },
         animations: [
             transformPlaceholder,
@@ -857,7 +989,7 @@ Md2Select = __decorate([
     }),
     __param(4, Optional()), __param(5, Self()), __param(5, Optional()),
     __param(6, Attribute('tabindex')),
-    __metadata("design:paramtypes", [ElementRef, Renderer,
+    __metadata("design:paramtypes", [ElementRef, Renderer2,
         ViewportRuler, ChangeDetectorRef,
         Dir, NgControl, String])
 ], Md2Select);

@@ -1,4 +1,4 @@
-import { ElementRef, Renderer } from '@angular/core';
+import { ElementRef, Renderer2 } from '@angular/core';
 export declare type MdPseudoCheckboxState = 'unchecked' | 'checked' | 'indeterminate';
 /**
  * Component that shows a simplified checkbox without including any kind of "real" checkbox.
@@ -21,5 +21,5 @@ export declare class MdPseudoCheckbox {
     /** Color of the checkbox. */
     color: string;
     private _color;
-    constructor(_elementRef: ElementRef, _renderer: Renderer);
+    constructor(_elementRef: ElementRef, _renderer: Renderer2);
 }

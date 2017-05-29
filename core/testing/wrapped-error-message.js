@@ -9,5 +9,4 @@
     var escapedMessage = e.message.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&');
     return new RegExp(escapedMessage);
 }
-;
 //# sourceMappingURL=wrapped-error-message.js.map

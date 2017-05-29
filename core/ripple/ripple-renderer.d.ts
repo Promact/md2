@@ -1,4 +1,5 @@
 import { ElementRef, NgZone } from '@angular/core';
+import { Platform } from '../platform/platform';
 import { ViewportRuler } from '../overlay/position/viewport-ruler';
 import { RippleRef } from './ripple-ref';
 /** Fade-in duration for the ripples. Can be modified with the speedFactor option. */
@@ -36,7 +37,7 @@ export declare class RippleRenderer {
     rippleConfig: RippleConfig;
     /** Whether mouse ripples should be created or not. */
     rippleDisabled: boolean;
-    constructor(_elementRef: ElementRef, _ngZone: NgZone, _ruler: ViewportRuler);
+    constructor(elementRef: ElementRef, _ngZone: NgZone, _ruler: ViewportRuler, platform: Platform);
     /** Fades in a ripple at the given coordinates. */
     fadeInRipple(pageX: number, pageY: number, config?: RippleConfig): RippleRef;
     /** Fades out a ripple reference. */

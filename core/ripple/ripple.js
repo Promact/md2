@@ -10,15 +10,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { Directive, ElementRef, Input, Inject, NgZone, OpaqueToken, Optional, } from '@angular/core';
+import { Directive, ElementRef, Input, Inject, NgZone, InjectionToken, Optional, } from '@angular/core';
 import { RippleRenderer } from './ripple-renderer';
 import { ViewportRuler } from '../overlay/position/viewport-ruler';
-/** OpaqueToken that can be used to specify the global ripple options. */
-export var MD_RIPPLE_GLOBAL_OPTIONS = new OpaqueToken('md-ripple-global-options');
+import { Platform } from '../platform/platform';
+/** Injection token that can be used to specify the global ripple options. */
+export var MD_RIPPLE_GLOBAL_OPTIONS = new InjectionToken('md-ripple-global-options');
 var MdRipple = (function () {
-    function MdRipple(elementRef, ngZone, ruler, 
-        // Type needs to be `any` because of https://github.com/angular/angular/issues/12631
-        globalOptions) {
+    function MdRipple(elementRef, ngZone, ruler, platform, globalOptions) {
         /**
          * If set, the radius in pixels of foreground ripples when fully expanded. If unset, the radius
          * will be the distance from the center of the ripple to the furthest corner of the host element's
@@ -31,15 +30,15 @@ var MdRipple = (function () {
          * A changed speedFactor will not modify the fade-out duration of the ripples.
          */
         this.speedFactor = 1;
-        this._rippleRenderer = new RippleRenderer(elementRef, ngZone, ruler);
+        this._rippleRenderer = new RippleRenderer(elementRef, ngZone, ruler, platform);
         this._globalOptions = globalOptions ? globalOptions : {};
+        this._updateRippleRenderer();
     }
     MdRipple.prototype.ngOnChanges = function (changes) {
         if (changes['trigger'] && this.trigger) {
             this._rippleRenderer.setTriggerElement(this.trigger);
         }
-        this._rippleRenderer.rippleDisabled = this._globalOptions.disabled || this.disabled;
-        this._rippleRenderer.rippleConfig = this.rippleConfig;
+        this._updateRippleRenderer();
     };
     MdRipple.prototype.ngOnDestroy = function () {
         // Set the trigger element to null to cleanup all listeners.
@@ -67,6 +66,11 @@ var MdRipple = (function () {
         enumerable: true,
         configurable: true
     });
+    /** Updates the ripple renderer with the latest ripple configuration. */
+    MdRipple.prototype._updateRippleRenderer = function () {
+        this._rippleRenderer.rippleDisabled = this._globalOptions.disabled || this.disabled;
+        this._rippleRenderer.rippleConfig = this.rippleConfig;
+    };
     return MdRipple;
 }());
 __decorate([
@@ -102,14 +106,15 @@ MdRipple = __decorate([
         selector: '[md-ripple], [mat-ripple], [mdRipple], [matRipple]',
         exportAs: 'mdRipple',
         host: {
-            '[class.mat-ripple]': 'true',
+            'class': 'mat-ripple',
             '[class.mat-ripple-unbounded]': 'unbounded'
         }
     }),
-    __param(3, Optional()), __param(3, Inject(MD_RIPPLE_GLOBAL_OPTIONS)),
+    __param(4, Optional()), __param(4, Inject(MD_RIPPLE_GLOBAL_OPTIONS)),
     __metadata("design:paramtypes", [ElementRef,
         NgZone,
-        ViewportRuler, Object])
+        ViewportRuler,
+        Platform, Object])
 ], MdRipple);
 export { MdRipple };
 //# sourceMappingURL=ripple.js.map

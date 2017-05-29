@@ -1,4 +1,5 @@
-import { ElementRef, EventEmitter, ModuleWithProviders, Renderer } from '@angular/core';
+import { ElementRef, EventEmitter } from '@angular/core';
+import { Md2Optgroup } from './optgroup';
 /** Event object emitted by MdOption when selected or deselected. */
 export declare class Md2OptionSelectionChange {
     source: Md2Option;
@@ -9,8 +10,8 @@ export declare class Md2OptionSelectionChange {
  * Single option inside of a `<md2-select>` element.
  */
 export declare class Md2Option {
+    readonly group: Md2Optgroup;
     private _element;
-    private _renderer;
     private _selected;
     private _active;
     /** Whether the option is disabled.  */
@@ -28,7 +29,7 @@ export declare class Md2Option {
     disabled: any;
     /** Event emitted when the option is selected or deselected. */
     onSelectionChange: EventEmitter<Md2OptionSelectionChange>;
-    constructor(_element: ElementRef, _renderer: Renderer);
+    constructor(group: Md2Optgroup, _element: ElementRef);
     /**
      * Whether or not the option is currently active and ready to be selected.
      * An active option displays styles as if it is focused, but the
@@ -74,5 +75,4 @@ export declare class Md2Option {
     private _emitSelectionChangeEvent(isUserInput?);
 }
 export declare class Md2OptionModule {
-    static forRoot(): ModuleWithProviders;
 }

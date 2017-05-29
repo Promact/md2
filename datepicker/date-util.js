@@ -16,7 +16,8 @@ var DateUtil = (function () {
             'k': [3, 1],
             's': 5,
             'S': 6,
-            'a': [3, ['am', 'pm']]
+            'a': [3, ['am', 'pm']],
+            'A': [3, ['AM', 'PM']]
         };
     }
     DateUtil.prototype.today = function () {
@@ -96,7 +97,7 @@ var DateUtil = (function () {
                 reIndex += 3;
                 return '([+-])(\\d\\d)(\\d\\d)';
             }
-            else if (/[Nna]/.test(placeholderChar)) {
+            else if (/[NnaA]/.test(placeholderChar)) {
                 indexMap[reIndex++] = [placeholderChar, param && param.split(',')];
                 return '([a-zA-Z\\u0080-\\u1fff]+)';
             }
@@ -130,7 +131,7 @@ var DateUtil = (function () {
                 if (listValue == null) {
                     return { value: undefined };
                 }
-                if (placeholderChar == 'a') {
+                if (placeholderChar == 'a' || placeholderChar == 'A') {
                     ctorArgs[ctorIndex] += listValue * 12;
                 }
                 else {
@@ -156,6 +157,30 @@ var DateUtil = (function () {
         }
         var d = new Date(ctorArgs[0], ctorArgs[1], ctorArgs[2], ctorArgs[3], ctorArgs[4], ctorArgs[5], ctorArgs[6]);
         return d;
+    };
+    DateUtil.prototype.parse = function (value, format) {
+        var timestamp = typeof value == 'number' ? value : Date.parse(value);
+        return isNaN(timestamp) ? null : new Date(timestamp);
+    };
+    DateUtil.prototype.compareDate = function (first, second) {
+        return this.getYear(first) - this.getYear(second) ||
+            this.getMonth(first) - this.getMonth(second) ||
+            this.getDate(first) - this.getDate(second);
+    };
+    DateUtil.prototype.getYear = function (date) {
+        return date.getFullYear();
+    };
+    DateUtil.prototype.getMonth = function (date) {
+        return date.getMonth();
+    };
+    DateUtil.prototype.getDate = function (date) {
+        return date.getDate();
+    };
+    DateUtil.prototype.getHour = function (date) {
+        return date.getHours();
+    };
+    DateUtil.prototype.getMinute = function (date) {
+        return date.getMinutes();
     };
     /**
      * Gets the first day of the month for the given date's month.
@@ -215,6 +240,24 @@ var DateUtil = (function () {
      */
     DateUtil.prototype.isSameDay = function (d1, d2) {
         return d1 && d2 && d1.getDate() == d2.getDate() && this.isSameMonthAndYear(d1, d2);
+    };
+    /**
+     * Gets whether two dates are the same hours.
+     * @param {Date} d1
+     * @param {Date} d2
+     * @returns {boolean}
+     */
+    DateUtil.prototype.isSameHour = function (d1, d2) {
+        return d1 && d2 && d1.getHours() == d2.getHours() && this.isSameDay(d1, d2);
+    };
+    /**
+     * Gets whether two dates are the same minutes.
+     * @param {Date} d1
+     * @param {Date} d2
+     * @returns {boolean}
+     */
+    DateUtil.prototype.isSameMinute = function (d1, d2) {
+        return d1 && d2 && d1.getMinutes() == d2.getMinutes() && this.isSameHour(d1, d2);
     };
     /**
      * Gets whether a date is in the month immediately after some date.
@@ -374,6 +417,19 @@ var DateUtil = (function () {
         var maxDateAtMidnight = this.isValidDate(maxDate) ? this.createDateAtMidnight(maxDate) : null;
         return (!minDateAtMidnight || minDateAtMidnight <= dateAtMidnight) &&
             (!maxDateAtMidnight || maxDateAtMidnight >= dateAtMidnight);
+    };
+    /**
+     * Checks if a date is within a min and max range.
+     * If minDate or maxDate are not dates, they are ignored.
+     * @param {Date} date
+     * @param {Date} minDate
+     * @param {Date} maxDate
+     */
+    DateUtil.prototype.isDateWithinRange1 = function (date, minDate, maxDate) {
+        minDate = this.isValidDate(minDate) ? minDate : null;
+        maxDate = this.isValidDate(maxDate) ? maxDate : null;
+        return (!minDate || minDate <= date) &&
+            (!maxDate || maxDate >= date);
     };
     /**
      * Gets a new date incremented by the given number of years. Number of years can be negative.

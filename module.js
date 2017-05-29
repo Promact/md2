@@ -5,7 +5,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import { NgModule } from '@angular/core';
-import { MdRippleModule, RtlModule, ObserveContentModule, PortalModule, OverlayModule, A11yModule, CompatibilityModule, } from './core/index';
+import { MdRippleModule, RtlModule, PortalModule, OverlayModule, A11yModule, CompatibilityModule, MdNativeDateModule, } from './core/index';
 import { Md2AccordionModule } from './accordion/index';
 import { Md2AutocompleteModule } from './autocomplete/index';
 import { Md2ChipsModule } from './chips/index';
@@ -45,51 +45,11 @@ var MD2_MODULES = [
     A11yModule,
     PlatformModule,
     CompatibilityModule,
-    ObserveContentModule
+    MdNativeDateModule,
 ];
-var Md2RootModule = (function () {
-    function Md2RootModule() {
-    }
-    return Md2RootModule;
-}());
-Md2RootModule = __decorate([
-    NgModule({
-        imports: [
-            Md2AccordionModule.forRoot(),
-            Md2AutocompleteModule.forRoot(),
-            Md2ChipsModule.forRoot(),
-            Md2CollapseModule.forRoot(),
-            Md2ColorpickerModule.forRoot(),
-            Md2DataTableModule.forRoot(),
-            Md2DatepickerModule,
-            Md2DialogModule.forRoot(),
-            Md2MenuModule.forRoot(),
-            MdRippleModule.forRoot(),
-            Md2SelectModule.forRoot(),
-            Md2TabsModule.forRoot(),
-            Md2TagsModule.forRoot(),
-            Md2ToastModule.forRoot(),
-            Md2TooltipModule.forRoot(),
-            PortalModule.forRoot(),
-            RtlModule.forRoot(),
-            ObserveContentModule.forRoot(),
-            // These modules include providers.
-            A11yModule.forRoot(),
-            PlatformModule.forRoot(),
-            OverlayModule.forRoot(),
-            CompatibilityModule.forRoot(),
-        ],
-        exports: MD2_MODULES,
-    })
-], Md2RootModule);
-export { Md2RootModule };
 var Md2Module = (function () {
     function Md2Module() {
     }
-    /** @deprecated */
-    Md2Module.forRoot = function () {
-        return { ngModule: Md2RootModule };
-    };
     return Md2Module;
 }());
 Md2Module = __decorate([

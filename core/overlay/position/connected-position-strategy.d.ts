@@ -6,17 +6,6 @@ import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 import { Scrollable } from '../scroll/scrollable';
 /**
- * Container to hold the bounding positions of a particular element with respect to the viewport,
- * where top and bottom are the y-axis coordinates of the bounding rectangle and left and right are
- * the x-axis coordinates.
- */
-export declare type ElementBoundingPositions = {
-    top: number;
-    right: number;
-    bottom: number;
-    left: number;
-};
-/**
  * A strategy for positioning overlays. Using this strategy, an overlay is given an
  * implicit position relative some origin element. The relative position is defined in terms of
  * a point on the origin element that is connected to a point on the overlay element. For example,
@@ -128,12 +117,8 @@ export declare class ConnectedPositionStrategy implements PositionStrategy {
     private isElementOutsideView(elementBounds, containersBounds);
     /** Whether the element is clipped by any of the containers. */
     private isElementClipped(elementBounds, containersBounds);
-    /**
-     * Physically positions the overlay element to the given coordinate.
-     * @param element
-     * @param overlayPoint
-     */
-    private _setElementPosition(element, overlayPoint);
+    /** Physically positions the overlay element to the given coordinate. */
+    private _setElementPosition(element, overlayRect, overlayPoint, pos);
     /** Returns the bounding positions of the provided element with respect to the viewport. */
     private _getElementBounds(element);
     /**

@@ -1,9 +1,14 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-import { NullPortalHostError, PortalAlreadyAttachedError, NoPortalAttachedError, NullPortalError, PortalHostAlreadyDisposedError, UnknownPortalTypeError } from './portal-errors';
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+import { throwNullPortalHostError, throwPortalAlreadyAttachedError, throwNoPortalAttachedError, throwNullPortalError, throwPortalHostAlreadyDisposedError, throwUnknownPortalTypeError } from './portal-errors';
 /**
  * A `Portal` is something that you want to render somewhere else.
  * It can be attach to / detached from a `PortalHost`.
@@ -14,10 +19,10 @@ var Portal = (function () {
     /** Attach this portal to a host. */
     Portal.prototype.attach = function (host) {
         if (host == null) {
-            throw new NullPortalHostError();
+            throwNullPortalHostError();
         }
         if (host.hasAttached()) {
-            throw new PortalAlreadyAttachedError();
+            throwPortalAlreadyAttachedError();
         }
         this._attachedHost = host;
         return host.attach(this);
@@ -26,7 +31,7 @@ var Portal = (function () {
     Portal.prototype.detach = function () {
         var host = this._attachedHost;
         if (host == null) {
-            throw new NoPortalAttachedError();
+            throwNoPortalAttachedError();
         }
         this._attachedHost = null;
         return host.detach();
@@ -117,13 +122,13 @@ var BasePortalHost = (function () {
     };
     BasePortalHost.prototype.attach = function (portal) {
         if (!portal) {
-            throw new NullPortalError();
+            throwNullPortalError();
         }
         if (this.hasAttached()) {
-            throw new PortalAlreadyAttachedError();
+            throwPortalAlreadyAttachedError();
         }
         if (this._isDisposed) {
-            throw new PortalHostAlreadyDisposedError();
+            throwPortalHostAlreadyDisposedError();
         }
         if (portal instanceof ComponentPortal) {
             this._attachedPortal = portal;
@@ -133,7 +138,7 @@ var BasePortalHost = (function () {
             this._attachedPortal = portal;
             return this.attachTemplatePortal(portal);
         }
-        throw new UnknownPortalTypeError();
+        throwUnknownPortalTypeError();
     };
     BasePortalHost.prototype.detach = function () {
         if (this._attachedPortal) {

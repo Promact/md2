@@ -7,8 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Directive, EventEmitter, Input, Output, NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Directive, EventEmitter, Input, Output, } from '@angular/core';
 var Md2Collapse = (function () {
     function Md2Collapse() {
         this._collapse = true;
@@ -90,25 +89,4 @@ Md2Collapse = __decorate([
     })
 ], Md2Collapse);
 export { Md2Collapse };
-export var MD2_COLLAPSE_DIRECTIVES = [Md2Collapse];
-var Md2CollapseModule = Md2CollapseModule_1 = (function () {
-    function Md2CollapseModule() {
-    }
-    Md2CollapseModule.forRoot = function () {
-        return {
-            ngModule: Md2CollapseModule_1,
-            providers: []
-        };
-    };
-    return Md2CollapseModule;
-}());
-Md2CollapseModule = Md2CollapseModule_1 = __decorate([
-    NgModule({
-        imports: [CommonModule],
-        exports: MD2_COLLAPSE_DIRECTIVES,
-        declarations: MD2_COLLAPSE_DIRECTIVES,
-    })
-], Md2CollapseModule);
-export { Md2CollapseModule };
-var Md2CollapseModule_1;
 //# sourceMappingURL=collapse.js.map

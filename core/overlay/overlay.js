@@ -14,7 +14,6 @@ import { OverlayRef } from './overlay-ref';
 import { OverlayPositionBuilder } from './position/overlay-position-builder';
 import { VIEWPORT_RULER_PROVIDER } from './position/viewport-ruler';
 import { OverlayContainer, OVERLAY_CONTAINER_PROVIDER } from './overlay-container';
-import { SCROLL_DISPATCHER_PROVIDER } from './scroll/scroll-dispatcher';
 /** Next overlay unique ID. */
 var nextUniqueId = 0;
 /** The default state for newly created overlays. */
@@ -96,7 +95,6 @@ export var OVERLAY_PROVIDERS = [
     Overlay,
     OverlayPositionBuilder,
     VIEWPORT_RULER_PROVIDER,
-    SCROLL_DISPATCHER_PROVIDER,
     OVERLAY_CONTAINER_PROVIDER,
 ];
 //# sourceMappingURL=overlay.js.map

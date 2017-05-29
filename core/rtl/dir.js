@@ -66,24 +66,16 @@ Dir = __decorate([
     })
 ], Dir);
 export { Dir };
-var RtlModule = RtlModule_1 = (function () {
+var RtlModule = (function () {
     function RtlModule() {
     }
-    /** @deprecated */
-    RtlModule.forRoot = function () {
-        return {
-            ngModule: RtlModule_1,
-            providers: []
-        };
-    };
     return RtlModule;
 }());
-RtlModule = RtlModule_1 = __decorate([
+RtlModule = __decorate([
     NgModule({
         exports: [Dir],
         declarations: [Dir]
     })
 ], RtlModule);
 export { RtlModule };
-var RtlModule_1;
 //# sourceMappingURL=dir.js.map

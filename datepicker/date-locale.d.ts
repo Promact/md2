@@ -8,14 +8,10 @@ export declare class DateLocale {
     getCalendarYearHeaderLabel: (date: Date) => string;
     private _createFormatFunction(options);
     firstDayOfWeek: number;
-    months: {
-        full: string;
-        short: string;
-    }[];
     fullMonths: string[];
     shortMonths: string[];
     narrowMonths: string[];
-    days: {
+    months: {
         full: string;
         short: string;
         xshort: string;
@@ -23,6 +19,11 @@ export declare class DateLocale {
     fullDays: string[];
     shortDays: string[];
     narrowDays: string[];
+    days: {
+        full: string;
+        short: string;
+        xshort: string;
+    }[];
     getDays(): {
         full: string;
         short: string;

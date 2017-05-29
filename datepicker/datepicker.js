@@ -11,10 +11,10 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { Component, ElementRef, HostListener, Input, Output, Optional, EventEmitter, Self, TemplateRef, ViewChild, ViewContainerRef, ViewEncapsulation, } from '@angular/core';
-import { NgControl, } from '@angular/forms';
+import { NgControl, Validators } from '@angular/forms';
 import { DateLocale } from './date-locale';
 import { DateUtil } from './date-util';
-import { coerceBooleanProperty, ENTER, SPACE, TAB, ESCAPE, HOME, END, PAGE_UP, PAGE_DOWN, LEFT_ARROW, RIGHT_ARROW, UP_ARROW, DOWN_ARROW, Overlay, OverlayState, TemplatePortal, } from '../core';
+import { coerceBooleanProperty, ENTER, TAB, ESCAPE, HOME, END, PAGE_UP, PAGE_DOWN, LEFT_ARROW, RIGHT_ARROW, UP_ARROW, DOWN_ARROW, Overlay, OverlayState, TemplatePortal, } from '../core';
 import { fadeInContent, slideCalendar } from './datepicker-animations';
 /** Change event object emitted by Md2Select. */
 var Md2DateChange = (function () {
@@ -27,6 +27,7 @@ var Md2DateChange = (function () {
 export { Md2DateChange };
 var Md2Datepicker = (function () {
     function Md2Datepicker(_element, overlay, _viewContainerRef, _locale, _util, _control) {
+        var _this = this;
         this._element = _element;
         this.overlay = overlay;
         this._viewContainerRef = _viewContainerRef;
@@ -34,8 +35,6 @@ var Md2Datepicker = (function () {
         this._util = _util;
         this._control = _control;
         this._value = null;
-        this._selected = null;
-        this._date = null;
         this._panelOpen = false;
         this._openOnFocus = false;
         this._type = 'date';
@@ -44,8 +43,6 @@ var Md2Datepicker = (function () {
         this._required = false;
         this._disabled = false;
         this.today = new Date();
-        this._min = null;
-        this._max = null;
         this._years = [];
         this._dates = [];
         this._clockView = 'hour';
@@ -57,6 +54,7 @@ var Md2Datepicker = (function () {
         this._inputFocused = false;
         this._onChange = function (value) { };
         this._onTouched = function () { };
+        this._validatorOnChange = function () { };
         /** Event emitted when the select has been opened. */
         this.onOpen = new EventEmitter();
         /** Event emitted when the select has been closed. */
@@ -69,18 +67,43 @@ var Md2Datepicker = (function () {
         this.enableDates = [];
         this.disableDates = [];
         this.disableWeekDays = [];
+        this.timeInterval = 1;
         /** Position of the menu in the X axis. */
         this.positionX = 'after';
         /** Position of the menu in the Y axis. */
         this.positionY = 'below';
         this.overlapTrigger = true;
+        /** The form control validator for the min date. */
+        this._minValidator = function (control) {
+            return (!_this.min || !control.value ||
+                _this._util.compareDate(_this.min, control.value) < 0) ?
+                null : { 'mdDatepickerMin': { 'min': _this.min, 'actual': control.value } };
+        };
+        /** The form control validator for the max date. */
+        this._maxValidator = function (control) {
+            return (!_this.max || !control.value ||
+                _this._util.compareDate(_this.max, control.value) > 0) ?
+                null : { 'mdDatepickerMax': { 'max': _this.max, 'actual': control.value } };
+        };
+        /** The form control validator for the date filter. */
+        this._filterValidator = function (control) {
+            return !_this._util || !control.value || _this._dateFilter(control.value) ?
+                null : { 'mdDatepickerFilter': true };
+        };
+        this._validator = Validators.compose([this._minValidator, this._maxValidator, this._filterValidator]);
         if (this._control) {
             this._control.valueAccessor = this;
         }
         this._weekDays = this._locale.getDays();
         this.getYears();
     }
+    Md2Datepicker.prototype.ngAfterContentInit = function () {
+        this.activeDate = this._activeDate || this._util.today();
+    };
     Md2Datepicker.prototype.ngOnDestroy = function () { this.destroyPanel(); };
+    Md2Datepicker.prototype.registerOnValidatorChange = function (fn) {
+        this._validatorOnChange = fn;
+    };
     Object.defineProperty(Md2Datepicker.prototype, "type", {
         get: function () { return this._type; },
         set: function (value) {
@@ -129,7 +152,9 @@ var Md2Datepicker = (function () {
         set: function (value) {
             var _this = this;
             this._value = this.coerceDateProperty(value);
-            this.date = this._value;
+            if (this._value) {
+                this.activeDate = this._value;
+            }
             setTimeout(function () {
                 _this._input.nativeElement.value = _this._formatDate(_this._value);
             });
@@ -137,55 +162,52 @@ var Md2Datepicker = (function () {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(Md2Datepicker.prototype, "date", {
-        get: function () { return this._date || this.today; },
+    Object.defineProperty(Md2Datepicker.prototype, "activeDate", {
+        get: function () { return this._activeDate; },
         set: function (value) {
-            if (value && this._util.isValidDate(value)) {
-                if (this._min && this._min > value) {
-                    value = this._min;
-                }
-                if (this._max && this._max < value) {
-                    value = this._max;
-                }
-                this._date = value;
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Md2Datepicker.prototype, "time", {
-        get: function () { return this.date.getHours() + ':' + this.date.getMinutes(); },
-        set: function (value) {
-            this.date = new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate(), parseInt(value.split(':')[0]), parseInt(value.split(':')[1]));
-            // if (this._clockView === 'hour') {
-            //  this.date.setHours(parseInt(value.split(':')[0]));
-            // } else {
-            //  this.date.setMinutes(parseInt(value.split(':')[1]));
-            // }
+            this._activeDate = this._util.clampDate(value, this.min, this.max);
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Md2Datepicker.prototype, "minutes", {
         get: function () {
-            return ('0' + this._date.getMinutes()).slice(-2);
+            return ('0' + this._activeDate.getMinutes()).slice(-2);
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Md2Datepicker.prototype, "hours", {
         get: function () {
-            return ('0' + this._date.getHours()).slice(-2);
+            if (!this.is12HourClock()) {
+                return ('0' + this._activeDate.getHours()).slice(-2);
+            }
+            else {
+                return ('0' + this._getHours12(this._activeDate)).slice(-2);
+            }
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(Md2Datepicker.prototype, "selected", {
-        get: function () { return this._selected; },
-        set: function (value) { this._selected = value; },
-        enumerable: true,
-        configurable: true
-    });
+    /**
+     * Return the am/pm part of the hour description
+     * @param upperCase  boolean if true return AM/PM, default false
+     * @return string the am/pm part of the hour description
+     */
+    Md2Datepicker.prototype._ampm = function (upperCase) {
+        if (upperCase === void 0) { upperCase = false; }
+        if (this.is12HourClock()) {
+            if (upperCase) {
+                return (this._activeDate.getHours() < 12) ? 'AM' : 'PM';
+            }
+            else {
+                return (this._activeDate.getHours() < 12) ? 'am' : 'pm';
+            }
+        }
+        else {
+            return '';
+        }
+    };
     Object.defineProperty(Md2Datepicker.prototype, "required", {
         get: function () { return this._required; },
         set: function (value) { this._required = coerceBooleanProperty(value); },
@@ -199,29 +221,23 @@ var Md2Datepicker = (function () {
         configurable: true
     });
     Object.defineProperty(Md2Datepicker.prototype, "min", {
-        set: function (value) {
-            if (value && this._util.isValidDate(value)) {
-                this._min = new Date(value);
-                this._min.setHours(0, 0, 0, 0);
-                this.getYears();
-            }
-            else {
-                this._min = null;
-            }
+        /** The minimum selectable date. */
+        get: function () { return this._min; },
+        set: function (date) {
+            this._min = this._util.parse(date);
+            this.getYears();
+            this._validatorOnChange();
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Md2Datepicker.prototype, "max", {
-        set: function (value) {
-            if (value && this._util.isValidDate(value)) {
-                this._max = new Date(value);
-                this._max.setHours(0, 0, 0, 0);
-                this.getYears();
-            }
-            else {
-                this._max = null;
-            }
+        /** The maximum selectable date. */
+        get: function () { return this._max; },
+        set: function (date) {
+            this._max = this._util.parse(date);
+            this.getYears();
+            this._validatorOnChange();
         },
         enumerable: true,
         configurable: true
@@ -250,14 +266,14 @@ var Md2Datepicker = (function () {
     });
     Object.defineProperty(Md2Datepicker.prototype, "getDateLabel", {
         get: function () {
-            return this._locale.getDateLabel(this.date);
+            return this._locale.getDateLabel(this.activeDate);
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Md2Datepicker.prototype, "getMonthLabel", {
         get: function () {
-            return this._locale.getMonthLabel(this.date.getMonth(), this.date.getFullYear());
+            return this._locale.getMonthLabel(this.activeDate.getMonth(), this.activeDate.getFullYear());
         },
         enumerable: true,
         configurable: true
@@ -279,7 +295,7 @@ var Md2Datepicker = (function () {
         this._subscribeToBackdrop();
         this._panelOpen = true;
         this.selected = this.value || new Date(1, 0, 1);
-        this.date = this.value || this.today;
+        this.activeDate = this.value || this.today;
         this.generateCalendar();
     };
     /** Closes the overlay panel and focuses the host element. */
@@ -291,7 +307,7 @@ var Md2Datepicker = (function () {
                 _this._openOnFocus = false;
                 setTimeout(function () { _this._openOnFocus = true; }, 100);
             }
-            // if (!this._date) {
+            // if (!this._activeDate) {
             //  this._placeholderState = '';
             // }
             if (_this._overlayRef) {
@@ -376,22 +392,21 @@ var Md2Datepicker = (function () {
                     this.close();
                     break;
             }
-            var date = this.date;
+            var date = this.activeDate;
             if (this._isYearsVisible) {
                 switch (event.keyCode) {
                     case ENTER:
-                    case SPACE:
                         this._onClickOk();
                         break;
                     case DOWN_ARROW:
-                        if (this.date.getFullYear() < (this.today.getFullYear() + 100)) {
-                            this.date = this._util.incrementYears(date, 1);
+                        if (this.activeDate.getFullYear() < (this.today.getFullYear() + 100)) {
+                            this.activeDate = this._util.incrementYears(date, 1);
                             this._scrollToSelectedYear();
                         }
                         break;
                     case UP_ARROW:
-                        if (this.date.getFullYear() > 1900) {
-                            this.date = this._util.incrementYears(date, -1);
+                        if (this.activeDate.getFullYear() > 1900) {
+                            this.activeDate = this._util.incrementYears(date, -1);
                             this._scrollToSelectedYear();
                         }
                         break;
@@ -400,73 +415,70 @@ var Md2Datepicker = (function () {
             else if (this._isCalendarVisible) {
                 switch (event.keyCode) {
                     case ENTER:
-                    case SPACE:
-                        this.setDate(this.date);
+                        this._dateSelected(this.activeDate);
                         break;
                     case RIGHT_ARROW:
-                        this.date = this._util.incrementDays(date, 1);
+                        this.activeDate = this._util.incrementDays(date, 1);
                         break;
                     case LEFT_ARROW:
-                        this.date = this._util.incrementDays(date, -1);
+                        this.activeDate = this._util.incrementDays(date, -1);
                         break;
                     case PAGE_DOWN:
                         if (event.shiftKey) {
-                            this.date = this._util.incrementYears(date, 1);
+                            this.activeDate = this._util.incrementYears(date, 1);
                         }
                         else {
-                            this.date = this._util.incrementMonths(date, 1);
+                            this.activeDate = this._util.incrementMonths(date, 1);
                         }
                         break;
                     case PAGE_UP:
                         if (event.shiftKey) {
-                            this.date = this._util.incrementYears(date, -1);
+                            this.activeDate = this._util.incrementYears(date, -1);
                         }
                         else {
-                            this.date = this._util.incrementMonths(date, -1);
+                            this.activeDate = this._util.incrementMonths(date, -1);
                         }
                         break;
                     case DOWN_ARROW:
-                        this.date = this._util.incrementDays(date, 7);
+                        this.activeDate = this._util.incrementDays(date, 7);
                         break;
                     case UP_ARROW:
-                        this.date = this._util.incrementDays(date, -7);
+                        this.activeDate = this._util.incrementDays(date, -7);
                         break;
                     case HOME:
-                        this.date = this._util.getFirstDateOfMonth(date);
+                        this.activeDate = this._util.getFirstDateOfMonth(date);
                         break;
                     case END:
-                        this.date = this._util.getLastDateOfMonth(date);
+                        this.activeDate = this._util.getLastDateOfMonth(date);
                         break;
                 }
-                if (!this._util.isSameMonthAndYear(date, this.date)) {
+                if (!this._util.isSameMonthAndYear(date, this.activeDate)) {
                     this.generateCalendar();
                 }
             }
             else if (this._clockView === 'hour') {
                 switch (event.keyCode) {
                     case ENTER:
-                    case SPACE:
-                        this.setHour(this.date.getHours());
+                        this._hourSelected(this.activeDate.getHours());
                         break;
                     case UP_ARROW:
-                        this.date = this._util.incrementHours(date, 1);
+                        this.activeDate = this._util.incrementHours(date, 1);
                         break;
                     case DOWN_ARROW:
-                        this.date = this._util.incrementHours(date, -1);
+                        this.activeDate = this._util.incrementHours(date, -1);
                         break;
                 }
             }
             else {
                 switch (event.keyCode) {
                     case ENTER:
-                    case SPACE:
-                        this.setMinute(this.date.getMinutes());
+                        this._minuteSelected(this.activeDate.getMinutes());
                         break;
                     case UP_ARROW:
-                        this.date = this._util.incrementMinutes(date, 1);
+                        this.activeDate = this._util.incrementMinutes(date, 1);
                         break;
                     case DOWN_ARROW:
-                        this.date = this._util.incrementMinutes(date, -1);
+                        this.activeDate = this._util.incrementMinutes(date, -1);
                         break;
                 }
             }
@@ -474,7 +486,6 @@ var Md2Datepicker = (function () {
         else {
             switch (event.keyCode) {
                 case ENTER:
-                case SPACE:
                     event.preventDefault();
                     event.stopPropagation();
                     this.open();
@@ -499,10 +510,25 @@ var Md2Datepicker = (function () {
             this._onTouched();
         }
         var el = event.target;
-        var date = this._util.parseDate(el.value, this.format);
-        if (this.value !== date) {
-            this.value = date ? date : null;
-            this._emitChangeEvent();
+        var date = this._util.parse(el.value, this.format);
+        if (this._util.isValidDate(date)) {
+            var d = new Date(this.value);
+            if (this.type !== 'time') {
+                d.setFullYear(date.getFullYear(), date.getMonth(), date.getDate());
+            }
+            if (this.type !== 'date') {
+                d.setHours(date.getHours(), date.getMinutes());
+            }
+            if (this.value !== d) {
+                this.value = d;
+                this._emitChangeEvent();
+            }
+        }
+        else {
+            if (this.value) {
+                this.value = null;
+                this._emitChangeEvent();
+            }
         }
     };
     /**
@@ -514,7 +540,7 @@ var Md2Datepicker = (function () {
         this._scrollToSelectedYear();
     };
     Md2Datepicker.prototype.getYears = function () {
-        var startYear = this._min ? this._min.getFullYear() : 1900, endYear = this._max ? this._max.getFullYear() : this.today.getFullYear() + 100;
+        var startYear = this.min ? this.min.getFullYear() : 1900, endYear = this._max ? this._max.getFullYear() : this.today.getFullYear() + 100;
         this._years = [];
         for (var i = startYear; i <= endYear; i++) {
             this._years.push(i);
@@ -531,7 +557,7 @@ var Md2Datepicker = (function () {
      * @param year
      */
     Md2Datepicker.prototype._setYear = function (year) {
-        this.date = new Date(year, this.date.getMonth(), this.date.getDate(), this.date.getHours(), this.date.getMinutes());
+        this.activeDate = new Date(year, this.activeDate.getMonth(), this.activeDate.getDate(), this.activeDate.getHours(), this.activeDate.getMinutes());
         this.generateCalendar();
         this._isYearsVisible = false;
     };
@@ -561,13 +587,13 @@ var Md2Datepicker = (function () {
             this._isCalendarVisible = true;
         }
         else if (this._isCalendarVisible) {
-            this.setDate(this.date);
+            this._dateSelected(this.activeDate);
         }
         else if (this._clockView === 'hour') {
             this._clockView = 'minute';
         }
         else {
-            this.value = this.date;
+            this.value = this.activeDate;
             this._emitChangeEvent();
             this._onBlur();
             this.close();
@@ -588,17 +614,17 @@ var Md2Datepicker = (function () {
             this._updateMonth(-1);
         }
         else if (date.calMonth === this._currMonth) {
-            this.setDate(date.date);
+            this._dateSelected(date.date);
         }
         else if (date.calMonth === this._nextMonth) {
             this._updateMonth(1);
         }
     };
     /**
-     * Set Date
+     * date selected
      * @param date Date Object
      */
-    Md2Datepicker.prototype.setDate = function (date) {
+    Md2Datepicker.prototype._dateSelected = function (date) {
         if (this.type === 'date') {
             this.value = date;
             this._emitChangeEvent();
@@ -607,7 +633,7 @@ var Md2Datepicker = (function () {
         }
         else {
             this.selected = date;
-            this.date = date;
+            this.activeDate = date;
             this._isCalendarVisible = false;
             this._clockView = 'hour';
         }
@@ -617,7 +643,7 @@ var Md2Datepicker = (function () {
      * @param noOfMonths increment number of months
      */
     Md2Datepicker.prototype._updateMonth = function (noOfMonths) {
-        this.date = this._util.incrementMonths(this.date, noOfMonths);
+        this.activeDate = this._util.incrementMonths(this.activeDate, noOfMonths);
         this.generateCalendar();
         if (noOfMonths > 0) {
             this.calendarState('right');
@@ -631,8 +657,8 @@ var Md2Datepicker = (function () {
      * @return boolean
      */
     Md2Datepicker.prototype._isBeforeMonth = function () {
-        return !this._min ? true :
-            this._min && this._util.getMonthDistance(this.date, this._min) < 0;
+        return !this.min ? true :
+            this.min && this._util.getMonthDistance(this.activeDate, this.min) < 0;
     };
     /**
      * Check is After month enabled or not
@@ -640,21 +666,21 @@ var Md2Datepicker = (function () {
      */
     Md2Datepicker.prototype._isAfterMonth = function () {
         return !this._max ? true :
-            this._max && this._util.getMonthDistance(this.date, this._max) > 0;
+            this._max && this._util.getMonthDistance(this.activeDate, this._max) > 0;
+    };
+    Md2Datepicker.prototype._onActiveTimeChange = function (event) {
+        this.activeDate = event;
     };
     Md2Datepicker.prototype._onTimeChange = function (event) {
-        if (this.time !== event) {
-            this.time = event;
+        this.value = event;
+        if (this._clockView === 'hour') {
+            this._clockView = 'minute';
         }
-    };
-    Md2Datepicker.prototype._onHourChange = function (event) {
-        this._clockView = 'minute';
-    };
-    Md2Datepicker.prototype._onMinuteChange = function (event) {
-        this.value = this.date;
-        this._emitChangeEvent();
-        this._onBlur();
-        this.close();
+        else {
+            this._clockView = 'hour';
+            this._onBlur();
+            this.close();
+        }
     };
     /**
      * Check the date is enabled or not
@@ -680,16 +706,16 @@ var Md2Datepicker = (function () {
                 return true;
             }
         }
-        return !this._util.isDateWithinRange(date, this._min, this._max);
+        return !this._util.isDateWithinRange(date, this.min, this._max);
     };
     /**
      * Generate Month Calendar
      */
     Md2Datepicker.prototype.generateCalendar = function () {
         this._dates.length = 0;
-        var year = this.date.getFullYear();
-        var month = this.date.getMonth();
-        var firstDayOfMonth = this._util.getFirstDateOfMonth(this.date);
+        var year = this.activeDate.getFullYear();
+        var month = this.activeDate.getMonth();
+        var firstDayOfMonth = this._util.getFirstDateOfMonth(this.activeDate);
         var calMonth = this._prevMonth;
         var date = this._util.getFirstDateOfWeek(firstDayOfMonth, this._locale.firstDayOfWeek);
         do {
@@ -720,18 +746,18 @@ var Md2Datepicker = (function () {
      * Set hours
      * @param hour number of hours
      */
-    Md2Datepicker.prototype.setHour = function (hour) {
+    Md2Datepicker.prototype._hourSelected = function (hour) {
         this._clockView = 'minute';
-        this.date = new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate(), hour, this.date.getMinutes());
+        this.activeDate = new Date(this.activeDate.getFullYear(), this.activeDate.getMonth(), this.activeDate.getDate(), hour, this.activeDate.getMinutes());
     };
     /**
      * Set minutes
      * @param minute number of minutes
      */
-    Md2Datepicker.prototype.setMinute = function (minute) {
-        this.date = new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate(), this.date.getHours(), minute);
-        this.selected = this.date;
-        this.value = this.date;
+    Md2Datepicker.prototype._minuteSelected = function (minute) {
+        this.activeDate = new Date(this.activeDate.getFullYear(), this.activeDate.getMonth(), this.activeDate.getDate(), this.activeDate.getHours(), minute);
+        this.selected = this.activeDate;
+        this.value = this.activeDate;
         this._emitChangeEvent();
         this._onBlur();
         this.close();
@@ -740,6 +766,9 @@ var Md2Datepicker = (function () {
     Md2Datepicker.prototype._emitChangeEvent = function () {
         this._onChange(this.value);
         this.change.emit(new Md2DateChange(this, this.value));
+    };
+    Md2Datepicker.prototype.validate = function (c) {
+        return this._validator ? this._validator(c) : null;
     };
     Md2Datepicker.prototype.writeValue = function (value) {
         this.value = value;
@@ -750,6 +779,24 @@ var Md2Datepicker = (function () {
         this.disabled = isDisabled;
     };
     /**
+     * Get an hour of the date in the 12-hour format
+     * @param date Date Object
+     * @return hour of the date in the 12-hour format
+     */
+    Md2Datepicker.prototype._getHours12 = function (date) {
+        var hrs = date.getHours();
+        if (hrs == 0) {
+            hrs = 12;
+        }
+        else if (hrs > 12) {
+            hrs -= 12;
+        }
+        return hrs;
+    };
+    Md2Datepicker.prototype.is12HourClock = function () {
+        return /[aA]/.test(this.format);
+    };
+    /**
      * format date
      * @param date Date Object
      * @return string with formatted date
@@ -758,21 +805,70 @@ var Md2Datepicker = (function () {
         if (!this.format || !date) {
             return '';
         }
-        return this.format
-            .replace('yy', ('00' + date.getFullYear()).slice(-2))
-            .replace('y', '' + date.getFullYear())
-            .replace('MMMM', this._locale.months[date.getMonth()].full)
-            .replace('MMM', this._locale.months[date.getMonth()].short)
-            .replace('MM', ('0' + (date.getMonth() + 1)).slice(-2))
-            .replace('M', '' + (date.getMonth() + 1))
-            .replace('dd', ('0' + date.getDate()).slice(-2))
-            .replace('d', '' + date.getDate())
-            .replace('HH', ('0' + date.getHours()).slice(-2))
-            .replace('H', '' + date.getHours())
-            .replace('mm', ('0' + date.getMinutes()).slice(-2))
-            .replace('m', '' + date.getMinutes())
-            .replace('ss', ('0' + date.getSeconds()).slice(-2))
-            .replace('s', '' + date.getSeconds());
+        var format = this.format;
+        // Years
+        if (format.indexOf('yy') > -1) {
+            format = format.replace('yy', ('00' + date.getFullYear()).slice(-2));
+        }
+        else if (format.indexOf('y') > -1) {
+            format = format.replace('y', '' + date.getFullYear());
+        }
+        // Days
+        if (format.indexOf('dd') > -1) {
+            format = format.replace('dd', ('0' + date.getDate()).slice(-2));
+        }
+        else if (format.indexOf('d') > -1) {
+            format = format.replace('d', '' + date.getDate());
+        }
+        // Hours
+        if (/[aA]/.test(format)) {
+            // 12-hour
+            if (format.indexOf('HH') > -1) {
+                format = format.replace('HH', ('0' + this._getHours12(date)).slice(-2));
+            }
+            else if (format.indexOf('H') > -1) {
+                format = format.replace('H', '' + this._getHours12(date));
+            }
+            format = format.replace('A', ((date.getHours() < 12) ? 'AM' : 'PM'))
+                .replace('a', ((date.getHours() < 12) ? 'am' : 'pm'));
+        }
+        else {
+            // 24-hour
+            if (format.indexOf('HH') > -1) {
+                format = format.replace('HH', ('0' + date.getHours()).slice(-2));
+            }
+            else if (format.indexOf('H') > -1) {
+                format = format.replace('H', '' + date.getHours());
+            }
+        }
+        // Minutes
+        if (format.indexOf('mm') > -1) {
+            format = format.replace('mm', ('0' + date.getMinutes()).slice(-2));
+        }
+        else if (format.indexOf('m') > -1) {
+            format = format.replace('m', '' + date.getMinutes());
+        }
+        // Seconds
+        if (format.indexOf('ss') > -1) {
+            format = format.replace('ss', ('0' + date.getSeconds()).slice(-2));
+        }
+        else if (format.indexOf('s') > -1) {
+            format = format.replace('s', '' + date.getSeconds());
+        }
+        // Months
+        if (format.indexOf('MMMM') > -1) {
+            format = format.replace('MMMM', this._locale.months[date.getMonth()].full);
+        }
+        else if (format.indexOf('MMM') > -1) {
+            format = format.replace('MMM', this._locale.months[date.getMonth()].short);
+        }
+        else if (format.indexOf('MM') > -1) {
+            format = format.replace('MM', ('0' + (date.getMonth() + 1)).slice(-2));
+        }
+        else if (format.indexOf('M') > -1) {
+            format = format.replace('M', '' + (date.getMonth() + 1));
+        }
+        return format;
     };
     Md2Datepicker.prototype._subscribeToBackdrop = function () {
         var _this = this;
@@ -875,6 +971,10 @@ __decorate([
 ], Md2Datepicker.prototype, "disableWeekDays", void 0);
 __decorate([
     Input(),
+    __metadata("design:type", Number)
+], Md2Datepicker.prototype, "timeInterval", void 0);
+__decorate([
+    Input(),
     __metadata("design:type", Object),
     __metadata("design:paramtypes", [String])
 ], Md2Datepicker.prototype, "type", null);
@@ -900,9 +1000,8 @@ __decorate([
 ], Md2Datepicker.prototype, "value", null);
 __decorate([
     Input(),
-    __metadata("design:type", Object),
-    __metadata("design:paramtypes", [Date])
-], Md2Datepicker.prototype, "selected", null);
+    __metadata("design:type", Date)
+], Md2Datepicker.prototype, "selected", void 0);
 __decorate([
     Input(),
     __metadata("design:type", Boolean),
@@ -941,8 +1040,8 @@ __decorate([
 ], Md2Datepicker.prototype, "_handleClick", null);
 Md2Datepicker = __decorate([
     Component({selector: 'md2-datepicker',
-        template: "<div class=\"md2-datepicker-trigger\"><button type=\"button\" class=\"md2-datepicker-button\" tabindex=\"-1\" (click)=\"toggle()\"><svg *ngIf=\"type==='date'\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z\"></path></svg> <svg *ngIf=\"type==='time'\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z\"></path></svg> <svg *ngIf=\"type==='datetime'\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M15,13H16.5V15.82L18.94,17.23L18.19,18.53L15,16.69V13M19,8H5V19H9.67C9.24,18.09 9,17.07 9,16A7,7 0 0,1 16,9C17.07,9 18.09,9.24 19,9.67V8M5,21C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H6V1H8V3H16V1H18V3H19A2,2 0 0,1 21,5V11.1C22.24,12.36 23,14.09 23,16A7,7 0 0,1 16,23C14.09,23 12.36,22.24 11.1,21H5M16,11.15A4.85,4.85 0 0,0 11.15,16C11.15,18.68 13.32,20.85 16,20.85A4.85,4.85 0 0,0 20.85,16C20.85,13.32 18.68,11.15 16,11.15Z\"></path></svg></button><div class=\"md2-datepicker-input\" [class.md2-datepicker-input-focused]=\"_inputFocused\"><span class=\"md2-datepicker-placeholder\" [class.md2-floating-placeholder]=\"value || _inputFocused\">{{ placeholder }}</span> <input #input type=\"text\" class=\"md2-datepicker-value\" [tabindex]=\"tabindex\" [disabled]=\"disabled\" autocomplete=\"off\" (change)=\"$event.stopPropagation()\" (focus)=\"_handleFocus($event)\" (blur)=\"_handleBlur($event)\" (keydown)=\"_handleKeydown($event)\"> <span class=\"md2-datepicker-arrow\"></span></div></div><ng-template #portal><div class=\"md2-datepicker-panel\" [@fadeInContent]=\"'showing'\" (@fadeInContent.done)=\"_onPanelDone()\" (keydown)=\"_handleKeydown($event)\" [style.transformOrigin]=\"_transformOrigin\" [class.md2-datepicker-panel-done-animating]=\"_panelDoneAnimating\" tabindex=\"0\" [attr.container]=\"container\" [attr.mode]=\"mode\"><div class=\"md2-datepicker-header\"><div class=\"md2-datepicker-header-year\" *ngIf=\"type!=='time'\" [class.active]=\"_isYearsVisible\" (click)=\"_showYear()\">{{ date | date: 'y' }}</div><div class=\"md2-datepicker-header-date-time\"><span class=\"md2-datepicker-header-date\" *ngIf=\"type!=='time'\" [class.active]=\"_isCalendarVisible && !_isYearsVisible\" (click)=\"_showCalendar()\">{{ getDateLabel }} </span><span class=\"md2-datepicker-header-time\" *ngIf=\"type!=='date'\" [class.active]=\"!_isCalendarVisible\"><span class=\"md2-datepicker-header-hour\" [class.active]=\"_clockView === 'hour'\" (click)=\"_toggleHours('hour')\">{{ hours }}</span>:<span class=\"md2-datepicker-header-minute\" [class.active]=\"_clockView === 'minute'\" (click)=\"_toggleHours('minute')\">{{ minutes }}</span></span></div></div><div class=\"md2-datepicker-content\"><div class=\"md2-datepicker-calendar\" [class.active]=\"_isCalendarVisible\"><div class=\"md2-calendar-years\" [class.active]=\"_isYearsVisible\"><div class=\"md2-calendar-years-content\"><div *ngFor=\"let y of _years\" class=\"md2-calendar-year\" [class.selected]=\"y === date.getFullYear()\" (click)=\"_setYear(y)\">{{y}}</div></div></div><div class=\"md2-calendar-month\" [class.active]=\"!_isYearsVisible\"><div class=\"md2-calendar-header\"><div class=\"md2-button\" [class.disabled]=\"!_isBeforeMonth()\" (click)=\"_isBeforeMonth() && _updateMonth(-1)\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z\"></path></svg></div><div class=\"md2-calendar-month-year\" [@slideCalendar]=\"_calendarState\">{{ getMonthLabel }}</div><div class=\"md2-button\" [class.disabled]=\"!_isAfterMonth()\" (click)=\"_isAfterMonth() && _updateMonth(1)\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z\"></path></svg></div></div><table class=\"md2-calendar-dates\"><thead><tr><th *ngFor=\"let day of _weekDays\">{{day.xshort}}</th></tr></thead><tbody [@slideCalendar]=\"_calendarState\"><tr *ngFor=\"let w of _dates\"><td *ngFor=\"let d of w\"><div class=\"md2-calendar-day\" [class.today]=\"d.today\" [class.focus]=\"_util.isSameDay(date, d.date)\" [class.selected]=\"_util.isSameDay(selected, d.date)\" [class.disabled]=\"d.disabled\" [class.prev-month]=\"d.calMonth===_prevMonth\" [class.curr-month]=\"d.calMonth===_currMonth\" [class.next-month]=\"d.calMonth===_nextMonth\" (click)=\"_onClickDate($event,d)\">{{d.index}}</div></td></tr></tbody></table></div></div><md2-clock [class.active]=\"!_isCalendarVisible\" [time]=\"time\" [view]=\"_clockView\" (timeChange)=\"_onTimeChange($event)\" (onHourChange)=\"_onHourChange($event)\" (onMinuteChange)=\"_onMinuteChange($event)\"></md2-clock><div class=\"md2-datepicker-actions\"><div class=\"md2-button\" (click)=\"close()\">{{ cancelLabel }}</div><div class=\"md2-button\" (click)=\"_onClickOk()\">{{ okLabel }}</div></div></div></div></ng-template>",
-        styles: ["md2-datepicker{position:relative;display:inline-block;min-width:175px;outline:0;backface-visibility:hidden}md2-datepicker.md2-datepicker-disabled{pointer-events:none;cursor:default}.md2-datepicker-trigger{display:block;padding:18px 0 4px 46px;white-space:nowrap}.md2-datepicker-button{position:absolute;top:13px;left:0;display:inline-block;height:40px;width:40px;padding:8px;line-height:24px;color:rgba(0,0,0,.54);fill:currentColor;border:0;border-radius:50%;outline:0;user-select:none;cursor:pointer;box-sizing:border-box;background:0 0;vertical-align:middle;align-items:center;text-align:center}.md2-datepicker-button:focus{background-color:rgba(158,158,158,.2)}.md2-datepicker-disabled .md2-datepicker-button{color:rgba(0,0,0,.38)}.md2-datepicker-input{color:rgba(0,0,0,.38);border-bottom:1px solid rgba(0,0,0,.12);display:flex;justify-content:space-between;align-items:center;height:30px;min-width:168px;line-height:22px;position:relative;padding-right:20px;box-sizing:border-box}[aria-disabled=true] .md2-datepicker-input{background-image:linear-gradient(to right,rgba(0,0,0,.26) 0,rgba(0,0,0,.26) 33%,transparent 0);background-size:4px 1px;background-repeat:repeat-x;border-color:transparent;background-position:0 bottom;cursor:default;user-select:none}.md2-datepicker-input.md2-datepicker-input-focused{color:#106cc8;border-color:#106cc8}md2-datepicker.ng-invalid.ng-touched:not(.md2-datepicker-disabled) .md2-datepicker-input{color:#f44336;border-color:#f44336}.md2-datepicker-placeholder{position:absolute;right:18px;bottom:100%;left:0;padding:0 2px;transform:translate3d(0,26px,0) scale(1);transform-origin:left top;white-space:nowrap;overflow-x:hidden;text-overflow:ellipsis;transition:all 150ms cubic-bezier(.25,.8,.25,1)}.md2-datepicker-placeholder.md2-floating-placeholder{left:-2px;text-align:left;transform:translate3d(0,6px,0) scale(.75)}[dir=rtl] .md2-datepicker-placeholder{right:0;left:18px;transform-origin:right top}[dir=rtl] .md2-datepicker-placeholder.md2-floating-placeholder{right:-2px;text-align:right}[aria-required=true] .md2-datepicker-placeholder::after{content:'*'}.md2-datepicker-value{position:relative;width:100%;white-space:nowrap;overflow-x:hidden;text-overflow:ellipsis;color:rgba(0,0,0,.87);border:0;outline:0;background:0 0}.md2-datepicker-disabled .md2-datepicker-value{color:rgba(0,0,0,.38)}[dir=rtl] .md2-datepicker-value{left:auto;right:0}.md2-datepicker-arrow{position:absolute;right:0;width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid;margin:0 4px;color:rgba(0,0,0,.38)}.md2-datepicker-input-focused .md2-datepicker-arrow{color:#106cc8}md2-datepicker.ng-invalid.ng-touched:not(.md2-datepicker-disabled) .md2-datepicker-arrow{color:#f44336}.md2-datepicker-clear{position:absolute;right:0;height:20px;color:rgba(0,0,0,.54);cursor:pointer}.md2-datepicker-clear svg{fill:currentColor}.md2-datepicker-panel{width:276px;border-radius:3px;color:rgba(0,0,0,.87);background-color:#fff;overflow:hidden;box-shadow:0 5px 5px -3px rgba(0,0,0,.2),0 8px 10px 1px rgba(0,0,0,.14),0 3px 14px 2px rgba(0,0,0,.12);outline:0;user-select:none}.md2-datepicker-panel[container=dialog]{box-shadow:0 11px 15px -7px rgba(0,0,0,.2),0 24px 38px 3px rgba(0,0,0,.14),0 9px 46px 8px rgba(0,0,0,.12)}.md2-datepicker-panel[mode=landscape]{display:flex;width:426px}.md2-datepicker-header{padding:16px;color:#fff;font-weight:500;white-space:nowrap;background:#106cc8;box-sizing:border-box}[mode=landscape] .md2-datepicker-header{width:150px;min-width:150px;padding-right:15px;white-space:normal;word-wrap:break-word}.md2-datepicker-header-year{font-size:16px;opacity:.7;cursor:pointer}.md2-datepicker-header-year.active{opacity:1;pointer-events:none}.md2-datepicker-header-date-time{font-size:32px}.md2-datepicker-header-date{opacity:.7;cursor:pointer}.md2-datepicker-header-date.active{opacity:1;pointer-events:none}.md2-datepicker-header-time{opacity:.7;display:inline-block;padding-left:8px;cursor:pointer}.md2-datepicker-header-time.active{opacity:1;cursor:default}.md2-datepicker-header-time.active .md2-datepicker-header-hour,.md2-datepicker-header-time.active .md2-datepicker-header-minute{opacity:.7;cursor:pointer}.md2-datepicker-header-time.active .md2-datepicker-header-hour.active,.md2-datepicker-header-time.active .md2-datepicker-header-minute.active{opacity:1;pointer-events:none}[mode=landscape] .md2-datepicker-header-time{display:block;padding-left:0}.md2-datepicker-content{position:relative;width:100%;padding-top:280px;overflow:hidden}.md2-datepicker-calendar{position:absolute;top:0;right:100%;display:block;width:100%;height:280px;transition:.3s}.md2-datepicker-calendar.active{right:0}.md2-calendar-years{position:absolute;top:10px;right:100%;bottom:10px;display:block;width:100%;line-height:40px;background:#fff;overflow-x:hidden;overflow-y:auto;transition:.3s}.md2-calendar-years.active{right:0}.md2-calendar-years .md2-calendar-years-content{display:flex;flex-direction:column;justify-content:center;min-height:100%}.md2-calendar-year{position:relative;display:block;margin:0 auto;padding:0;font-size:17px;font-weight:400;text-align:center;cursor:pointer}.md2-calendar-year.selected{color:#106cc8;font-size:26px;font-weight:500}.md2-calendar-month{position:absolute;left:100%;display:block;width:100%;font-size:12px;font-weight:400;text-align:center;transition:.3s}.md2-calendar-month.active{left:0}.md2-calendar-header{display:flex;justify-content:space-between;font-size:14px;font-weight:700;text-align:center;line-height:48px}.md2-calendar-header .md2-calendar-month-year-header{width:100%}.md2-calendar-header .md2-button{display:inline-block;width:48px;height:48px;padding:12px;outline:0;border:0;cursor:pointer;background:0 0;box-sizing:border-box}.md2-calendar-header .md2-button svg{vertical-align:top}.md2-calendar-dates{margin:0 8px}.md2-calendar-dates th{width:35px;height:16px;font-weight:500;line-height:10px;opacity:.5}.md2-calendar-dates td{padding:0}.md2-calendar-day{position:relative;display:inline-block;width:35px;height:35px;border-radius:50%;text-align:center;cursor:pointer;line-height:35px;box-sizing:border-box}.md2-calendar-day.today{color:#106cc8}.md2-calendar-day.focus,.md2-calendar-day:hover{background:#e0e0e0}.md2-calendar-day.selected,.md2-calendar-day.selected:hover{color:#fff;background:#106cc8}.md2-calendar-day.disabled,.md2-calendar-day.disabled:hover{color:rgba(0,0,0,.43);background:0 0;pointer-events:none}.md2-calendar-day.next-month,.md2-calendar-day.prev-month{visibility:hidden}md2-clock{position:absolute;top:0;left:100%;display:block;width:240px;height:240px;margin:30px;font-size:14px;font-weight:400;text-align:center;background-color:#e0e0e0;border-radius:50%;overflow:hidden;transition:.3s}md2-clock.active{left:0}.md2-clock-center{position:absolute;top:50%;left:50%;height:6px;width:6px;margin:-3px;border-radius:50%;background-color:#106cc8}.md2-clock-hand{position:absolute;top:0;right:0;bottom:0;left:0;width:1px;height:99px;margin:0 auto;background-color:#106cc8;transform-origin:bottom}.md2-clock-hand::before{content:'';position:absolute;top:-4px;left:-4px;width:8px;height:8px;border-radius:50%;background-color:#106cc8}.md2-clock-hours,.md2-clock-minutes{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;visibility:hidden;transition:350ms;transform:scale(1.2)}.md2-clock-hours.active,.md2-clock-minutes.active{opacity:1;visibility:visible;transform:scale(1)}.md2-clock-minutes{transform:scale(.8)}.md2-clock-hour,.md2-clock-minute{position:absolute;width:34px;height:34px;line-height:34px;text-align:center;border-radius:50%;cursor:pointer}.md2-clock-hour:hover,.md2-clock-minute:hover{background:#fafafa}.md2-clock-hour.active,.md2-clock-minute.active{background:#65acf3}.md2-datepicker-actions{text-align:right}.md2-datepicker-actions .md2-button{display:inline-block;min-width:64px;margin:4px 8px 8px 0;padding:0 12px;font-size:14px;color:#106cc8;line-height:36px;text-align:center;text-transform:uppercase;border-radius:2px;cursor:pointer;box-sizing:border-box;transition:all 450ms cubic-bezier(.23,1,.32,1)}.md2-datepicker-actions .md2-button:hover{background:#ebebeb}@media (min-width:480px){.md2-datepicker-panel[mode=auto]{display:flex;width:426px}[mode=auto] .md2-datepicker-header{width:150px;min-width:150px;padding-right:15px;white-space:normal;word-wrap:break-word}[mode=auto] .md2-datepicker-header-time{display:block;padding-left:0}}.cdk-global-overlay-wrapper,.cdk-overlay-container{pointer-events:none;top:0;left:0;height:100%;width:100%}.cdk-overlay-container{position:fixed;z-index:1000}.cdk-global-overlay-wrapper{display:flex;position:absolute;z-index:1000}.cdk-overlay-pane{position:absolute;pointer-events:auto;box-sizing:border-box;z-index:1000}.cdk-overlay-backdrop{position:absolute;top:0;bottom:0;left:0;right:0;z-index:1000;pointer-events:auto;transition:opacity .4s cubic-bezier(.25,.8,.25,1);opacity:0}.cdk-overlay-backdrop.cdk-overlay-backdrop-showing{opacity:.48}.cdk-overlay-dark-backdrop{background:rgba(0,0,0,.6)} /*# sourceMappingURL=datepicker.css.map */ "],
+        template: "<div class=\"md2-datepicker-trigger\"><button type=\"button\" class=\"md2-datepicker-button\" tabindex=\"-1\" (click)=\"toggle()\"><svg *ngIf=\"type==='date'\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z\"></path></svg> <svg *ngIf=\"type==='time'\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z\"></path></svg> <svg *ngIf=\"type==='datetime'\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M15,13H16.5V15.82L18.94,17.23L18.19,18.53L15,16.69V13M19,8H5V19H9.67C9.24,18.09 9,17.07 9,16A7,7 0 0,1 16,9C17.07,9 18.09,9.24 19,9.67V8M5,21C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H6V1H8V3H16V1H18V3H19A2,2 0 0,1 21,5V11.1C22.24,12.36 23,14.09 23,16A7,7 0 0,1 16,23C14.09,23 12.36,22.24 11.1,21H5M16,11.15A4.85,4.85 0 0,0 11.15,16C11.15,18.68 13.32,20.85 16,20.85A4.85,4.85 0 0,0 20.85,16C20.85,13.32 18.68,11.15 16,11.15Z\"></path></svg></button><div class=\"md2-datepicker-input\" [class.md2-datepicker-input-focused]=\"_inputFocused\"><span class=\"md2-datepicker-placeholder\" [class.md2-floating-placeholder]=\"value || _inputFocused\">{{ placeholder }}</span> <input #input type=\"text\" class=\"md2-datepicker-value\" [tabindex]=\"tabindex\" [disabled]=\"disabled\" autocomplete=\"off\" (change)=\"$event.stopPropagation()\" (click)=\"_handleFocus($event)\" (focus)=\"_handleFocus($event)\" (blur)=\"_handleBlur($event)\" (keydown)=\"_handleKeydown($event)\"> <span class=\"md2-datepicker-arrow\" (click)=\"toggle()\"></span></div></div><ng-template #portal><div class=\"md2-datepicker-panel\" [@fadeInContent]=\"'showing'\" (@fadeInContent.done)=\"_onPanelDone()\" (keydown)=\"_handleKeydown($event)\" [style.transformOrigin]=\"_transformOrigin\" [class.md2-datepicker-panel-done-animating]=\"_panelDoneAnimating\" tabindex=\"0\" [attr.container]=\"container\" [attr.mode]=\"mode\"><div class=\"md2-datepicker-header\"><div class=\"md2-datepicker-header-year\" *ngIf=\"type!=='time'\" [class.active]=\"_isYearsVisible\" (click)=\"_showYear()\">{{ activeDate | date: 'y' }}</div><div class=\"md2-datepicker-header-date-time\"><span class=\"md2-datepicker-header-date\" *ngIf=\"type!=='time'\" [class.active]=\"_isCalendarVisible && !_isYearsVisible\" (click)=\"_showCalendar()\">{{ getDateLabel }} </span><span class=\"md2-datepicker-header-time\" *ngIf=\"type!=='date'\" [class.active]=\"!_isCalendarVisible\"><span class=\"md2-datepicker-header-hour\" [class.active]=\"_clockView === 'hour'\" (click)=\"_toggleHours('hour')\">{{ hours }}</span>:<span class=\"md2-datepicker-header-minute\" [class.active]=\"_clockView === 'minute'\" (click)=\"_toggleHours('minute')\">{{ minutes }}</span> <span class=\"md2-datepicker-header-ampm\" *ngIf=\"is12HourClock()\">{{ _ampm(true) }}</span></span></div></div><div class=\"md2-datepicker-content\"><div class=\"md2-datepicker-calendar\" [class.active]=\"_isCalendarVisible\"><div class=\"md2-calendar-years\" [class.active]=\"_isYearsVisible\"><div class=\"md2-calendar-years-content\"><div *ngFor=\"let y of _years\" class=\"md2-calendar-year\" [class.selected]=\"y === activeDate.getFullYear()\" (click)=\"_setYear(y)\">{{y}}</div></div></div><div class=\"md2-calendar-month\" [class.active]=\"!_isYearsVisible\"><div class=\"md2-calendar-header\"><div class=\"md2-button\" [class.disabled]=\"!_isBeforeMonth()\" (click)=\"_isBeforeMonth() && _updateMonth(-1)\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z\"></path></svg></div><div class=\"md2-calendar-month-year\" [@slideCalendar]=\"_calendarState\">{{ getMonthLabel }}</div><div class=\"md2-button\" [class.disabled]=\"!_isAfterMonth()\" (click)=\"_isAfterMonth() && _updateMonth(1)\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z\"></path></svg></div></div><table class=\"md2-calendar-dates\"><thead><tr><th *ngFor=\"let day of _weekDays\">{{day.xshort}}</th></tr></thead><tbody [@slideCalendar]=\"_calendarState\"><tr *ngFor=\"let w of _dates\"><td *ngFor=\"let d of w\"><div class=\"md2-calendar-date\" [class.md2-calendar-date-today]=\"d.today\" [class.md2-calendar-date-active]=\"_util.isSameDay(activeDate, d.date)\" [class.md2-calendar-date-selected]=\"_util.isSameDay(selected, d.date)\" [class.md2-calendar-date-disabled]=\"d.disabled\" [class.prev-month]=\"d.calMonth===_prevMonth\" [class.curr-month]=\"d.calMonth===_currMonth\" [class.next-month]=\"d.calMonth===_nextMonth\" (click)=\"_onClickDate($event,d)\">{{d.index}}</div></td></tr></tbody></table></div></div><md2-clock [class.active]=\"!_isCalendarVisible\" [startView]=\"_clockView\" [interval]=\"timeInterval\" [selected]=\"activeDate\" [min]=\"min\" [max]=\"max\" (activeDateChange)=\"_onActiveTimeChange($event)\" (selectedChange)=\"_onTimeChange($event)\"></md2-clock><div class=\"md2-datepicker-actions\"><div class=\"md2-button\" (click)=\"close()\">{{ cancelLabel }}</div><div class=\"md2-button\" (click)=\"_onClickOk()\">{{ okLabel }}</div></div></div></div></ng-template>",
+        styles: ["md2-datepicker{position:relative;display:inline-block;min-width:175px;outline:0;backface-visibility:hidden}md2-datepicker.md2-datepicker-disabled{pointer-events:none;cursor:default}.md2-datepicker-trigger{display:block;padding:18px 0 4px 46px;white-space:nowrap}.md2-datepicker-button{position:absolute;top:13px;left:0;display:inline-block;height:40px;width:40px;padding:8px;line-height:24px;color:rgba(0,0,0,.54);fill:currentColor;border:0;border-radius:50%;outline:0;user-select:none;cursor:pointer;box-sizing:border-box;background:0 0;vertical-align:middle;align-items:center;text-align:center}.md2-datepicker-button:focus{background-color:rgba(158,158,158,.2)}.md2-datepicker-disabled .md2-datepicker-button{color:rgba(0,0,0,.38)}.md2-datepicker-input{color:rgba(0,0,0,.38);border-bottom:1px solid rgba(0,0,0,.12);display:flex;justify-content:space-between;align-items:center;height:30px;min-width:168px;line-height:22px;position:relative;padding-right:20px;box-sizing:border-box}[aria-disabled=true] .md2-datepicker-input{background-image:linear-gradient(to right,rgba(0,0,0,.26) 0,rgba(0,0,0,.26) 33%,transparent 0);background-size:4px 1px;background-repeat:repeat-x;border-color:transparent;background-position:0 bottom;cursor:default;user-select:none}.md2-datepicker-input.md2-datepicker-input-focused{color:#106cc8;border-color:#106cc8}md2-datepicker.ng-invalid.ng-touched:not(.md2-datepicker-disabled) .md2-datepicker-input{color:#f44336;border-color:#f44336}.md2-datepicker-placeholder{position:absolute;right:18px;bottom:100%;left:0;padding:0 2px;transform:translate3d(0,26px,0) scale(1);transform-origin:left top;white-space:nowrap;overflow-x:hidden;text-overflow:ellipsis;transition:all 150ms cubic-bezier(.25,.8,.25,1)}.md2-datepicker-placeholder.md2-floating-placeholder{left:-2px;text-align:left;transform:translate3d(0,6px,0) scale(.75)}[dir=rtl] .md2-datepicker-placeholder{right:0;left:18px;transform-origin:right top}[dir=rtl] .md2-datepicker-placeholder.md2-floating-placeholder{right:-2px;text-align:right}[aria-required=true] .md2-datepicker-placeholder::after{content:'*'}.md2-datepicker-value{position:relative;width:100%;white-space:nowrap;overflow-x:hidden;text-overflow:ellipsis;color:rgba(0,0,0,.87);border:0;outline:0;background:0 0}.md2-datepicker-disabled .md2-datepicker-value{color:rgba(0,0,0,.38)}[dir=rtl] .md2-datepicker-value{left:auto;right:0}.md2-datepicker-arrow{position:absolute;right:0;width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid;margin:0 4px;color:rgba(0,0,0,.38)}.md2-datepicker-input-focused .md2-datepicker-arrow{color:#106cc8}md2-datepicker.ng-invalid.ng-touched:not(.md2-datepicker-disabled) .md2-datepicker-arrow{color:#f44336}.md2-datepicker-clear{position:absolute;right:0;height:20px;color:rgba(0,0,0,.54);cursor:pointer}.md2-datepicker-clear svg{fill:currentColor}.md2-datepicker-panel{width:276px;border-radius:3px;color:rgba(0,0,0,.87);background-color:#fff;overflow:hidden;box-shadow:0 5px 5px -3px rgba(0,0,0,.2),0 8px 10px 1px rgba(0,0,0,.14),0 3px 14px 2px rgba(0,0,0,.12);outline:0;user-select:none}.md2-datepicker-panel[container=dialog]{box-shadow:0 11px 15px -7px rgba(0,0,0,.2),0 24px 38px 3px rgba(0,0,0,.14),0 9px 46px 8px rgba(0,0,0,.12)}.md2-datepicker-panel[mode=landscape]{display:flex;width:426px}.md2-datepicker-header{padding:16px;color:#fff;font-weight:500;white-space:nowrap;background:#106cc8;box-sizing:border-box}[mode=landscape] .md2-datepicker-header{width:150px;min-width:150px;padding-right:15px;white-space:normal;word-wrap:break-word}.md2-datepicker-header-year{font-size:16px;opacity:.7;cursor:pointer}.md2-datepicker-header-year.active{opacity:1;pointer-events:none}.md2-datepicker-header-date-time{font-size:24px}[mode=landscape] .md2-datepicker-header-date-time{font-size:32px}.md2-datepicker-header-date{opacity:.7;cursor:pointer}.md2-datepicker-header-date.active{opacity:1;pointer-events:none}.md2-datepicker-header-time{opacity:.7;display:inline-block;padding-left:8px;cursor:pointer}.md2-datepicker-header-time .md2-datepicker-header-ampm{opacity:.7;cursor:default}.md2-datepicker-header-time.active{opacity:1;cursor:default}.md2-datepicker-header-time.active .md2-datepicker-header-hour,.md2-datepicker-header-time.active .md2-datepicker-header-minute{opacity:.7;cursor:pointer}.md2-datepicker-header-time.active .md2-datepicker-header-hour.active,.md2-datepicker-header-time.active .md2-datepicker-header-minute.active{opacity:1;pointer-events:none}[mode=landscape] .md2-datepicker-header-time{display:block;padding-left:0}.md2-datepicker-content{position:relative;width:100%;padding-top:280px;overflow:hidden}.md2-datepicker-calendar{position:absolute;top:0;right:100%;display:block;width:100%;height:280px;transition:.3s}.md2-datepicker-calendar.active{right:0}.md2-calendar-years{position:absolute;top:10px;right:100%;bottom:10px;display:block;width:100%;line-height:40px;background:#fff;overflow-x:hidden;overflow-y:auto;transition:.3s}.md2-calendar-years.active{right:0}.md2-calendar-years .md2-calendar-years-content{display:flex;flex-direction:column;justify-content:center;min-height:100%}.md2-calendar-year{position:relative;display:block;margin:0 auto;padding:0;font-size:17px;font-weight:400;text-align:center;cursor:pointer}.md2-calendar-year.selected{color:#106cc8;font-size:26px;font-weight:500}.md2-calendar-month{position:absolute;left:100%;display:block;width:100%;font-size:12px;font-weight:400;text-align:center;transition:.3s}.md2-calendar-month.active{left:0}.md2-calendar-header{display:flex;justify-content:space-between;font-size:14px;font-weight:700;text-align:center;line-height:48px}.md2-calendar-header .md2-calendar-month-year-header{width:100%}.md2-calendar-header .md2-button{display:inline-block;width:48px;height:48px;padding:12px;outline:0;border:0;cursor:pointer;background:0 0;box-sizing:border-box}.md2-calendar-header .md2-button.disabled{color:rgba(0,0,0,.38);cursor:default;pointer-events:none}.md2-calendar-header .md2-button svg{fill:currentColor;vertical-align:top}.md2-calendar-dates{margin:0 8px}.md2-calendar-dates th{width:35px;height:16px;font-weight:500;line-height:10px;opacity:.5}.md2-calendar-dates td{padding:0}.md2-calendar-date{position:relative;display:inline-block;width:35px;height:35px;border:1px solid transparent;border-radius:50%;text-align:center;cursor:pointer;line-height:35px;box-sizing:border-box}.md2-calendar-date.md2-calendar-date-today{border-color:#106cc8}.md2-calendar-date.md2-calendar-date-active,.md2-calendar-date:hover{background:#e0e0e0}.md2-calendar-date.md2-calendar-date-selected,.md2-calendar-date.md2-calendar-date-selected:hover{color:#fff;background:#106cc8}.md2-calendar-date.md2-calendar-date-selected.md2-calendar-date-today,.md2-calendar-date.md2-calendar-date-selected:hover.md2-calendar-date-today{box-shadow:inset 0 0 0 1px #fff}.md2-calendar-date.md2-calendar-date-disabled,.md2-calendar-date.md2-calendar-date-disabled:hover{color:rgba(0,0,0,.43);background:0 0;pointer-events:none}.md2-calendar-date.md2-calendar-date-disabled.md2-calendar-date-selected,.md2-calendar-date.md2-calendar-date-disabled:hover.md2-calendar-date-selected{color:#fff;background:rgba(16,108,200,.4)}.md2-calendar-date.md2-calendar-date-disabled.md2-calendar-date-today,.md2-calendar-date.md2-calendar-date-disabled:hover.md2-calendar-date-today{border-color:rgba(16,108,200,.18)}.md2-calendar-date.next-month,.md2-calendar-date.prev-month{visibility:hidden}md2-clock{position:absolute!important;top:0;left:100%;display:block;width:240px;height:240px;margin:18px!important;transition:.3s}md2-clock.active{left:0}.md2-datepicker-actions{text-align:right}.md2-datepicker-actions .md2-button{display:inline-block;min-width:64px;margin:4px 8px 8px 0;padding:0 12px;font-size:14px;color:#106cc8;line-height:36px;text-align:center;text-transform:uppercase;border-radius:2px;cursor:pointer;box-sizing:border-box;transition:all 450ms cubic-bezier(.23,1,.32,1)}.md2-datepicker-actions .md2-button:hover{background:#ebebeb}@media (min-width:480px){.md2-datepicker-panel[mode=auto]{display:flex;width:426px}[mode=auto] .md2-datepicker-header{width:150px;min-width:150px;padding-right:15px;white-space:normal;word-wrap:break-word}[mode=auto] .md2-datepicker-header-time{display:block;padding-left:0}[mode=auto] .md2-datepicker-header-date-time{font-size:32px}}.cdk-global-overlay-wrapper,.cdk-overlay-container{pointer-events:none;top:0;left:0;height:100%;width:100%}.cdk-overlay-container{position:fixed;z-index:1000}.cdk-global-overlay-wrapper{display:flex;position:absolute;z-index:1000}.cdk-overlay-pane{position:absolute;pointer-events:auto;box-sizing:border-box;z-index:1000}.cdk-overlay-backdrop{position:absolute;top:0;bottom:0;left:0;right:0;z-index:1000;pointer-events:auto;transition:opacity .4s cubic-bezier(.25,.8,.25,1);opacity:0}.cdk-overlay-backdrop.cdk-overlay-backdrop-showing{opacity:.48}.cdk-overlay-dark-backdrop{background:rgba(0,0,0,.6)} /*# sourceMappingURL=datepicker.css.map */ "],
         host: {
             'role': 'datepicker',
             '[class.md2-datepicker-disabled]': 'disabled',

@@ -11,7 +11,7 @@ export var RIPPLE_FADE_OUT_DURATION = 400;
  * @docs-private
  */
 var RippleRenderer = (function () {
-    function RippleRenderer(_elementRef, _ngZone, _ruler) {
+    function RippleRenderer(elementRef, _ngZone, _ruler, platform) {
         this._ngZone = _ngZone;
         this._ruler = _ruler;
         /** Whether the mouse is currently down or not. */
@@ -24,13 +24,16 @@ var RippleRenderer = (function () {
         this.rippleConfig = {};
         /** Whether mouse ripples should be created or not. */
         this.rippleDisabled = false;
-        this._containerElement = _elementRef.nativeElement;
-        // Specify events which need to be registered on the trigger.
-        this._triggerEvents.set('mousedown', this.onMousedown.bind(this));
-        this._triggerEvents.set('mouseup', this.onMouseup.bind(this));
-        this._triggerEvents.set('mouseleave', this.onMouseLeave.bind(this));
-        // By default use the host element as trigger element.
-        this.setTriggerElement(this._containerElement);
+        // Only do anything if we're on the browser.
+        if (platform.isBrowser) {
+            this._containerElement = elementRef.nativeElement;
+            // Specify events which need to be registered on the trigger.
+            this._triggerEvents.set('mousedown', this.onMousedown.bind(this));
+            this._triggerEvents.set('mouseup', this.onMouseup.bind(this));
+            this._triggerEvents.set('mouseleave', this.onMouseLeave.bind(this));
+            // By default use the host element as trigger element.
+            this.setTriggerElement(this._containerElement);
+        }
     }
     /** Fades in a ripple at the given coordinates. */
     RippleRenderer.prototype.fadeInRipple = function (pageX, pageY, config) {

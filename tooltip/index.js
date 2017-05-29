@@ -5,30 +5,22 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import { NgModule } from '@angular/core';
-import { OverlayModule, CompatibilityModule } from '../core';
+import { OverlayModule, MdCommonModule } from '../core';
 import { PlatformModule } from '../core/platform/index';
 import { Md2Tooltip, Md2TooltipComponent } from './tooltip';
-var Md2TooltipModule = Md2TooltipModule_1 = (function () {
+var Md2TooltipModule = (function () {
     function Md2TooltipModule() {
     }
-    /** @deprecated */
-    Md2TooltipModule.forRoot = function () {
-        return {
-            ngModule: Md2TooltipModule_1,
-            providers: []
-        };
-    };
     return Md2TooltipModule;
 }());
-Md2TooltipModule = Md2TooltipModule_1 = __decorate([
+Md2TooltipModule = __decorate([
     NgModule({
-        imports: [OverlayModule, CompatibilityModule, PlatformModule],
-        exports: [Md2Tooltip, Md2TooltipComponent, CompatibilityModule],
+        imports: [OverlayModule, MdCommonModule, PlatformModule],
+        exports: [Md2Tooltip, Md2TooltipComponent, MdCommonModule],
         declarations: [Md2Tooltip, Md2TooltipComponent],
         entryComponents: [Md2TooltipComponent],
     })
 ], Md2TooltipModule);
 export { Md2TooltipModule };
 export * from './tooltip';
-var Md2TooltipModule_1;
 //# sourceMappingURL=index.js.map

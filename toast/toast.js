@@ -181,25 +181,19 @@ var Md2ToastComponent = (function () {
 Md2ToastComponent = __decorate([
     Component({
         selector: 'md2-toast',
-        template: "<div *ngFor=\"let toast of toasts\" class=\"md2-toast\" [class.in]=\"toast.isVisible\" (click)=\"remove(toast.id)\">{{ toast.message }}</div>",
+        template: "<div *ngFor=\"let toast of toasts\" class=\"md2-toast\" [class.in]=\"toast.isVisible\" (click)=\"removeToast(toast.id)\">{{ toast.message }}</div>",
         styles: ["md2-toast{display:block;box-sizing:border-box;cursor:default;overflow:hidden;min-width:304px;max-width:100%;padding:8px;user-select:none}.md2-toast{position:relative;padding:14px 24px;margin-bottom:5px;display:block;margin-top:-53px;opacity:0;background-color:#323232;color:#fafafa;box-shadow:0 2px 5px 0 rgba(0,0,0,.26);border-radius:2px;font-size:14px;overflow:hidden;word-wrap:break-word;transition:all 250ms linear}.md2-toast.in{margin-top:0;opacity:1}.cdk-visually-hidden{border:0;clip:rect(0 0 0 0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;text-transform:none;width:1px}.cdk-global-overlay-wrapper,.cdk-overlay-container{pointer-events:none;top:0;left:0;height:100%;width:100%}.cdk-overlay-container{position:fixed;z-index:1000}.cdk-global-overlay-wrapper{display:flex;position:absolute;z-index:1000}.cdk-overlay-pane{position:absolute;pointer-events:auto;box-sizing:border-box;z-index:1000} /*# sourceMappingURL=toast.css.map */ "],
         encapsulation: ViewEncapsulation.None,
     })
 ], Md2ToastComponent);
 export { Md2ToastComponent };
 export var MD2_TOAST_DIRECTIVES = [Md2ToastComponent];
-var Md2ToastModule = Md2ToastModule_1 = (function () {
+var Md2ToastModule = (function () {
     function Md2ToastModule() {
     }
-    Md2ToastModule.forRoot = function () {
-        return {
-            ngModule: Md2ToastModule_1,
-            providers: []
-        };
-    };
     return Md2ToastModule;
 }());
-Md2ToastModule = Md2ToastModule_1 = __decorate([
+Md2ToastModule = __decorate([
     NgModule({
         imports: [CommonModule],
         exports: MD2_TOAST_DIRECTIVES,
@@ -209,5 +203,4 @@ Md2ToastModule = Md2ToastModule_1 = __decorate([
     })
 ], Md2ToastModule);
 export { Md2ToastModule };
-var Md2ToastModule_1;
 //# sourceMappingURL=toast.js.map

@@ -6,6 +6,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 import { NgModule } from '@angular/core';
 import { CdkMonitorFocus, FOCUS_ORIGIN_MONITOR_PROVIDER } from './focus-origin-monitor';
+import { PlatformModule } from '../platform/index';
 var StyleModule = (function () {
     function StyleModule() {
     }
@@ -13,6 +14,7 @@ var StyleModule = (function () {
 }());
 StyleModule = __decorate([
     NgModule({
+        imports: [PlatformModule],
         declarations: [CdkMonitorFocus],
         exports: [CdkMonitorFocus],
         providers: [FOCUS_ORIGIN_MONITOR_PROVIDER],

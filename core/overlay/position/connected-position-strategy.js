@@ -73,6 +73,7 @@ var ConnectedPositionStrategy = (function () {
         var viewportRect = this._viewportRuler.getViewportRect();
         // Fallback point if none of the fallbacks fit into the viewport.
         var fallbackPoint = null;
+        var fallbackPosition = null;
         // We want to place the overlay in the first of the preferred positions such that the
         // overlay fits on-screen.
         for (var _i = 0, _a = this._preferredPositions; _i < _a.length; _i++) {
@@ -83,7 +84,7 @@ var ConnectedPositionStrategy = (function () {
             var overlayPoint = this._getOverlayPoint(originPoint, overlayRect, viewportRect, pos);
             // If the overlay in the calculated position fits on-screen, put it there and we're done.
             if (overlayPoint.fitsInViewport) {
-                this._setElementPosition(element, overlayPoint);
+                this._setElementPosition(element, overlayRect, overlayPoint, pos);
                 // Save the last connected position in case the position needs to be re-calculated.
                 this._lastConnectedPosition = pos;
                 // Notify that the position has been changed along with its change properties.
@@ -94,11 +95,12 @@ var ConnectedPositionStrategy = (function () {
             }
             else if (!fallbackPoint || fallbackPoint.visibleArea < overlayPoint.visibleArea) {
                 fallbackPoint = overlayPoint;
+                fallbackPosition = pos;
             }
         }
         // If none of the preferred positions were in the viewport, take the one
         // with the largest visible area.
-        this._setElementPosition(element, fallbackPoint);
+        this._setElementPosition(element, overlayRect, fallbackPoint, fallbackPosition);
         return Promise.resolve(null);
     };
     /**
@@ -113,7 +115,7 @@ var ConnectedPositionStrategy = (function () {
         var lastPosition = this._lastConnectedPosition || this._preferredPositions[0];
         var originPoint = this._getOriginConnectionPoint(originRect, lastPosition);
         var overlayPoint = this._getOverlayPoint(originPoint, overlayRect, viewportRect, lastPosition);
-        this._setElementPosition(this._pane, overlayPoint);
+        this._setElementPosition(this._pane, overlayRect, overlayPoint, lastPosition);
     };
     /**
      * Sets the list of Scrollable containers that host the origin element so that
@@ -273,14 +275,37 @@ var ConnectedPositionStrategy = (function () {
             return clippedAbove || clippedBelow || clippedLeft || clippedRight;
         });
     };
-    /**
-     * Physically positions the overlay element to the given coordinate.
-     * @param element
-     * @param overlayPoint
-     */
-    ConnectedPositionStrategy.prototype._setElementPosition = function (element, overlayPoint) {
-        element.style.left = overlayPoint.x + 'px';
-        element.style.top = overlayPoint.y + 'px';
+    /** Physically positions the overlay element to the given coordinate. */
+    ConnectedPositionStrategy.prototype._setElementPosition = function (element, overlayRect, overlayPoint, pos) {
+        // We want to set either `top` or `bottom` based on whether the overlay wants to appear above
+        // or below the origin and the direction in which the element will expand.
+        var verticalStyleProperty = pos.overlayY === 'bottom' ? 'bottom' : 'top';
+        // When using `bottom`, we adjust the y position such that it is the distance
+        // from the bottom of the viewport rather than the top.
+        var y = verticalStyleProperty === 'top' ?
+            overlayPoint.y :
+            document.documentElement.clientHeight - (overlayPoint.y + overlayRect.height);
+        // We want to set either `left` or `right` based on whether the overlay wants to appear "before"
+        // or "after" the origin, which determines the direction in which the element will expand.
+        // For the horizontal axis, the meaning of "before" and "after" change based on whether the
+        // page is in RTL or LTR.
+        var horizontalStyleProperty;
+        if (this._dir === 'rtl') {
+            horizontalStyleProperty = pos.overlayX === 'end' ? 'left' : 'right';
+        }
+        else {
+            horizontalStyleProperty = pos.overlayX === 'end' ? 'right' : 'left';
+        }
+        // When we're setting `right`, we adjust the x position such that it is the distance
+        // from the right edge of the viewport rather than the left edge.
+        var x = horizontalStyleProperty === 'left' ?
+            overlayPoint.x :
+            document.documentElement.clientWidth - (overlayPoint.x + overlayRect.width);
+        // Reset any existing styles. This is necessary in case the preferred position has
+        // changed since the last `apply`.
+        ['top', 'bottom', 'left', 'right'].forEach(function (p) { return element.style[p] = null; });
+        element.style[verticalStyleProperty] = y + "px";
+        element.style[horizontalStyleProperty] = x + "px";
     };
     /** Returns the bounding positions of the provided element with respect to the viewport. */
     ConnectedPositionStrategy.prototype._getElementBounds = function (element) {

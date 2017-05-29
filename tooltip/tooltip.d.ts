@@ -1,4 +1,4 @@
-import { ElementRef, ViewContainerRef, NgZone, OnDestroy, Renderer, OnInit, ChangeDetectorRef } from '@angular/core';
+import { ElementRef, ViewContainerRef, NgZone, OnDestroy, Renderer2, ChangeDetectorRef } from '@angular/core';
 import { AnimationEvent } from '@angular/animations';
 import { Overlay, OverlayRef, OverlayConnectionPosition, OriginConnectionPosition } from '../core';
 import { Observable } from 'rxjs/Observable';
@@ -6,19 +6,20 @@ import { Dir } from '../core/rtl/dir';
 import { Platform } from '../core/platform/index';
 import 'rxjs/add/operator/first';
 import { ScrollDispatcher } from '../core/overlay/scroll/scroll-dispatcher';
-import { Subscription } from 'rxjs/Subscription';
 export declare type TooltipPosition = 'left' | 'right' | 'above' | 'below' | 'before' | 'after';
 /** Time in ms to delay before changing the tooltip visibility to hidden */
 export declare const TOUCHEND_HIDE_DELAY = 1500;
 /** Time in ms to throttle repositioning after scroll events. */
 export declare const SCROLL_THROTTLE_MS = 20;
+/** Throws an error if the user supplied an invalid tooltip position. */
+export declare function throwMd2TooltipInvalidPositionError(position: string): void;
 /**
  * Directive that attaches a material design tooltip to the host element. Animates the showing and
  * hiding of a tooltip provided position (defaults to below the element).
  *
  * https://material.google.com/components/tooltips.html
  */
-export declare class Md2Tooltip implements OnInit, OnDestroy {
+export declare class Md2Tooltip implements OnDestroy {
     private _overlay;
     private _elementRef;
     private _scrollDispatcher;
@@ -29,7 +30,6 @@ export declare class Md2Tooltip implements OnInit, OnDestroy {
     private _dir;
     _overlayRef: OverlayRef;
     _tooltipInstance: Md2TooltipComponent;
-    scrollSubscription: Subscription;
     private _position;
     private _disabled;
     /** Allows the user to define the position of the tooltip relative to the parent element */
@@ -43,8 +43,7 @@ export declare class Md2Tooltip implements OnInit, OnDestroy {
     private _message;
     /** The message to be displayed in the tooltip */
     message: string;
-    constructor(_overlay: Overlay, _elementRef: ElementRef, _scrollDispatcher: ScrollDispatcher, _viewContainerRef: ViewContainerRef, _ngZone: NgZone, _renderer: Renderer, _platform: Platform, _dir: Dir);
-    ngOnInit(): void;
+    constructor(_overlay: Overlay, _elementRef: ElementRef, _scrollDispatcher: ScrollDispatcher, _viewContainerRef: ViewContainerRef, _ngZone: NgZone, _renderer: Renderer2, _platform: Platform, _dir: Dir);
     /**
      * Dispose the tooltip when destroyed.
      */
@@ -121,4 +120,10 @@ export declare class Md2TooltipComponent {
      * https://material.google.com/components/tooltips.html#tooltips-interaction
      */
     _handleBodyInteraction(): void;
+    /**
+     * Marks that the tooltip needs to be checked in the next change detection run.
+     * Mainly used for rendering the initial text before positioning a tooltip, which
+     * can be problematic in components with OnPush change detection.
+     */
+    _markForCheck(): void;
 }

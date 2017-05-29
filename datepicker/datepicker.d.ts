@@ -1,8 +1,9 @@
-import { ElementRef, OnDestroy, EventEmitter, TemplateRef, ViewContainerRef } from '@angular/core';
-import { ControlValueAccessor, NgControl } from '@angular/forms';
+import { AfterContentInit, ElementRef, OnDestroy, EventEmitter, TemplateRef, ViewContainerRef } from '@angular/core';
+import { AbstractControl, ControlValueAccessor, NgControl, ValidationErrors, Validator } from '@angular/forms';
 import { DateLocale } from './date-locale';
 import { DateUtil } from './date-util';
 import { Overlay } from '../core';
+import { ClockView } from './clock';
 /** Change event object emitted by Md2Select. */
 export declare class Md2DateChange {
     source: Md2Datepicker;
@@ -14,7 +15,7 @@ export declare type Mode = 'auto' | 'portrait' | 'landscape';
 export declare type Container = 'inline' | 'dialog';
 export declare type PanelPositionX = 'before' | 'after';
 export declare type PanelPositionY = 'above' | 'below';
-export declare class Md2Datepicker implements OnDestroy, ControlValueAccessor {
+export declare class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueAccessor, Validator {
     private _element;
     private overlay;
     private _viewContainerRef;
@@ -25,8 +26,6 @@ export declare class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     private _overlayRef;
     private _backdropSubscription;
     private _value;
-    private _selected;
-    private _date;
     private _panelOpen;
     private _openOnFocus;
     private _type;
@@ -36,13 +35,11 @@ export declare class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     private _required;
     private _disabled;
     private today;
-    private _min;
-    private _max;
     _years: Array<number>;
     _dates: Array<Object>;
     _isYearsVisible: boolean;
     _isCalendarVisible: boolean;
-    _clockView: string;
+    _clockView: ClockView;
     _calendarState: string;
     _weekDays: Array<any>;
     _prevMonth: number;
@@ -53,6 +50,7 @@ export declare class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     _inputFocused: boolean;
     _onChange: (value: any) => void;
     _onTouched: () => void;
+    private _validatorOnChange;
     _templatePortal: TemplateRef<any>;
     _input: ElementRef;
     /** Event emitted when the select has been opened. */
@@ -62,7 +60,9 @@ export declare class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     /** Event emitted when the selected date has been changed by the user. */
     change: EventEmitter<Md2DateChange>;
     constructor(_element: ElementRef, overlay: Overlay, _viewContainerRef: ViewContainerRef, _locale: DateLocale, _util: DateUtil, _control: NgControl);
+    ngAfterContentInit(): void;
     ngOnDestroy(): void;
+    registerOnValidatorChange(fn: () => void): void;
     placeholder: string;
     okLabel: string;
     cancelLabel: string;
@@ -70,6 +70,7 @@ export declare class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     enableDates: Array<Date>;
     disableDates: Array<Date>;
     disableWeekDays: Array<number>;
+    timeInterval: number;
     /** Position of the menu in the X axis. */
     positionX: PanelPositionX;
     /** Position of the menu in the Y axis. */
@@ -80,20 +81,38 @@ export declare class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     mode: Mode;
     container: Container;
     value: Date;
-    date: Date;
-    time: string;
+    activeDate: Date;
+    private _activeDate;
     readonly minutes: string;
     readonly hours: string;
+    /**
+     * Return the am/pm part of the hour description
+     * @param upperCase  boolean if true return AM/PM, default false
+     * @return string the am/pm part of the hour description
+     */
+    private _ampm(upperCase?);
     selected: Date;
     required: boolean;
     disabled: boolean;
+    /** The minimum selectable date. */
     min: Date;
+    private _min;
+    /** The maximum selectable date. */
     max: Date;
+    private _max;
     openOnFocus: boolean;
     isOpen: boolean;
     readonly panelOpen: boolean;
     readonly getDateLabel: string;
     readonly getMonthLabel: string;
+    /** The form control validator for the min date. */
+    private _minValidator;
+    /** The form control validator for the max date. */
+    private _maxValidator;
+    _dateFilter: (date: Date | null) => boolean;
+    /** The form control validator for the date filter. */
+    private _filterValidator;
+    private _validator;
     toggle(): void;
     /** Opens the overlay panel. */
     open(): void;
@@ -130,7 +149,7 @@ export declare class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     /**
      * Toggle Hour visiblity
      */
-    _toggleHours(value: string): void;
+    _toggleHours(value: ClockView): void;
     /**
      * Ok Button Event
      */
@@ -142,10 +161,10 @@ export declare class Md2Datepicker implements OnDestroy, ControlValueAccessor {
      */
     _onClickDate(event: Event, date: any): void;
     /**
-     * Set Date
+     * date selected
      * @param date Date Object
      */
-    private setDate(date);
+    _dateSelected(date: Date): void;
     /**
      * Update Month
      * @param noOfMonths increment number of months
@@ -161,9 +180,8 @@ export declare class Md2Datepicker implements OnDestroy, ControlValueAccessor {
      * @return boolean
      */
     _isAfterMonth(): boolean;
-    _onTimeChange(event: string): void;
-    _onHourChange(event: number): void;
-    _onMinuteChange(event: number): void;
+    _onActiveTimeChange(event: Date): void;
+    _onTimeChange(event: Date): void;
     /**
      * Check the date is enabled or not
      * @param date Date Object
@@ -178,18 +196,26 @@ export declare class Md2Datepicker implements OnDestroy, ControlValueAccessor {
      * Set hours
      * @param hour number of hours
      */
-    private setHour(hour);
+    _hourSelected(hour: number): void;
     /**
      * Set minutes
      * @param minute number of minutes
      */
-    private setMinute(minute);
+    _minuteSelected(minute: number): void;
     /** Emits an event when the user selects a date. */
     _emitChangeEvent(): void;
+    validate(c: AbstractControl): ValidationErrors | null;
     writeValue(value: any): void;
     registerOnChange(fn: (value: any) => void): void;
     registerOnTouched(fn: () => {}): void;
     setDisabledState(isDisabled: boolean): void;
+    /**
+     * Get an hour of the date in the 12-hour format
+     * @param date Date Object
+     * @return hour of the date in the 12-hour format
+     */
+    private _getHours12(date);
+    is12HourClock(): boolean;
     /**
      * format date
      * @param date Date Object

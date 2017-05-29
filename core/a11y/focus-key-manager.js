@@ -1,8 +1,13 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 import { ListKeyManager } from './list-key-manager';
 var FocusKeyManager = (function (_super) {
     __extends(FocusKeyManager, _super);
@@ -15,7 +20,9 @@ var FocusKeyManager = (function (_super) {
      */
     FocusKeyManager.prototype.setActiveItem = function (index) {
         _super.prototype.setActiveItem.call(this, index);
-        this.activeItem.focus();
+        if (this.activeItem) {
+            this.activeItem.focus();
+        }
     };
     return FocusKeyManager;
 }(ListKeyManager));

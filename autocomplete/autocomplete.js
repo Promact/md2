@@ -7,10 +7,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Component, ElementRef, EventEmitter, forwardRef, Input, Output, ViewEncapsulation, NgModule } from '@angular/core';
-import { NG_VALUE_ACCESSOR, FormsModule, } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { HighlightPipe } from './autocomplete-pipe';
+import { Component, ElementRef, EventEmitter, forwardRef, Input, Output, ViewEncapsulation } from '@angular/core';
+import { NG_VALUE_ACCESSOR, } from '@angular/forms';
 import { coerceBooleanProperty, UP_ARROW, DOWN_ARROW, ENTER, ESCAPE, TAB } from '../core/core';
 var Item = (function () {
     function Item(source, textKey, valueKey) {
@@ -426,25 +424,4 @@ Md2Autocomplete = __decorate([
     __metadata("design:paramtypes", [ElementRef])
 ], Md2Autocomplete);
 export { Md2Autocomplete };
-export var MD2_AUTOCOMPLETE_DIRECTIVES = [Md2Autocomplete, HighlightPipe];
-var Md2AutocompleteModule = Md2AutocompleteModule_1 = (function () {
-    function Md2AutocompleteModule() {
-    }
-    Md2AutocompleteModule.forRoot = function () {
-        return {
-            ngModule: Md2AutocompleteModule_1,
-            providers: []
-        };
-    };
-    return Md2AutocompleteModule;
-}());
-Md2AutocompleteModule = Md2AutocompleteModule_1 = __decorate([
-    NgModule({
-        imports: [CommonModule, FormsModule],
-        exports: MD2_AUTOCOMPLETE_DIRECTIVES,
-        declarations: MD2_AUTOCOMPLETE_DIRECTIVES,
-    })
-], Md2AutocompleteModule);
-export { Md2AutocompleteModule };
-var Md2AutocompleteModule_1;
 //# sourceMappingURL=autocomplete.js.map

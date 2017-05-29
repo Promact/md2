@@ -1,4 +1,3 @@
-import { QueryList } from '@angular/core';
 import { ListKeyManager, CanDisable } from './list-key-manager';
 /**
  * This is the interface for highlightable items (used by the ActiveDescendantKeyManager).
@@ -10,7 +9,6 @@ export interface Highlightable extends CanDisable {
     setInactiveStyles(): void;
 }
 export declare class ActiveDescendantKeyManager extends ListKeyManager<Highlightable> {
-    constructor(items: QueryList<Highlightable>);
     /**
      * This method sets the active item to the item at the specified index.
      * It also adds active styles to the newly active item and removes active

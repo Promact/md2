@@ -1,0 +1,1 @@
+[{"__symbolic":"module","version":3,"metadata":{"CollectionViewer":{"__symbolic":"interface"},"DataSource":{"__symbolic":"class","arity":1,"members":{"connect":[{"__symbolic":"method"}]}}}},{"__symbolic":"module","version":1,"metadata":{"CollectionViewer":{"__symbolic":"interface"},"DataSource":{"__symbolic":"class","arity":1,"members":{"connect":[{"__symbolic":"method"}]}}}}]

@@ -4,7 +4,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import { Component, ViewEncapsulation, NgModule } from '@angular/core';
+import { Component, ViewEncapsulation, NgModule, } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Md2MenuContent } from './menu-content';
 import { Md2MenuItem } from './menu-item';
@@ -25,17 +25,12 @@ Md2Menu = __decorate([
     })
 ], Md2Menu);
 export { Md2Menu };
-var Md2MenuModule = Md2MenuModule_1 = (function () {
+var Md2MenuModule = (function () {
     function Md2MenuModule() {
     }
-    Md2MenuModule.forRoot = function () {
-        return {
-            ngModule: Md2MenuModule_1,
-        };
-    };
     return Md2MenuModule;
 }());
-Md2MenuModule = Md2MenuModule_1 = __decorate([
+Md2MenuModule = __decorate([
     NgModule({
         imports: [CommonModule],
         exports: [Md2Menu, Md2MenuContent, Md2MenuItem, Md2MenuTrigger],
@@ -43,5 +38,4 @@ Md2MenuModule = Md2MenuModule_1 = __decorate([
     })
 ], Md2MenuModule);
 export { Md2MenuModule };
-var Md2MenuModule_1;
 //# sourceMappingURL=menu.js.map

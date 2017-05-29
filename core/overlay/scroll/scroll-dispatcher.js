@@ -7,9 +7,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Injectable, Optional, SkipSelf, NgZone } from '@angular/core';
+import { Injectable, NgZone, Optional, SkipSelf } from '@angular/core';
+import { Platform } from '../../platform/index';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/auditTime';
@@ -20,8 +22,9 @@ export var DEFAULT_SCROLL_TIME = 20;
  * Scrollable references emit a scrolled event.
  */
 var ScrollDispatcher = (function () {
-    function ScrollDispatcher(_ngZone) {
+    function ScrollDispatcher(_ngZone, _platform) {
         this._ngZone = _ngZone;
+        this._platform = _platform;
         /** Subject for notifying that a registered scrollable reference element has been scrolled. */
         this._scrolled = new Subject();
         /** Keeps track of the global `scroll` and `resize` subscriptions. */
@@ -62,6 +65,10 @@ var ScrollDispatcher = (function () {
     ScrollDispatcher.prototype.scrolled = function (auditTimeInMs, callback) {
         var _this = this;
         if (auditTimeInMs === void 0) { auditTimeInMs = DEFAULT_SCROLL_TIME; }
+        // Scroll events can only happen on the browser, so do nothing if we're not on the browser.
+        if (!this._platform.isBrowser) {
+            return Subscription.EMPTY;
+        }
         // In the case of a 0ms delay, use an observable without auditTime
         // since it does add a perceptible delay in processing overhead.
         var observable = auditTimeInMs > 0 ?
@@ -75,13 +82,15 @@ var ScrollDispatcher = (function () {
         }
         // Note that we need to do the subscribing from here, in order to be able to remove
         // the global event listeners once there are no more subscriptions.
-        return observable.subscribe(callback).add(function () {
+        var subscription = observable.subscribe(callback);
+        subscription.add(function () {
             _this._scrolledCount--;
             if (_this._globalSubscription && !_this.scrollableReferences.size && !_this._scrolledCount) {
                 _this._globalSubscription.unsubscribe();
                 _this._globalSubscription = null;
             }
         });
+        return subscription;
     };
     /** Returns all registered Scrollables that contain the provided element. */
     ScrollDispatcher.prototype.getScrollContainers = function (elementRef) {
@@ -114,16 +123,16 @@ var ScrollDispatcher = (function () {
 }());
 ScrollDispatcher = __decorate([
     Injectable(),
-    __metadata("design:paramtypes", [NgZone])
+    __metadata("design:paramtypes", [NgZone, Platform])
 ], ScrollDispatcher);
 export { ScrollDispatcher };
-export function SCROLL_DISPATCHER_PROVIDER_FACTORY(parentDispatcher, ngZone) {
-    return parentDispatcher || new ScrollDispatcher(ngZone);
+export function SCROLL_DISPATCHER_PROVIDER_FACTORY(parentDispatcher, ngZone, platform) {
+    return parentDispatcher || new ScrollDispatcher(ngZone, platform);
 }
 export var SCROLL_DISPATCHER_PROVIDER = {
     // If there is already a ScrollDispatcher available, use that. Otherwise, provide a new one.
     provide: ScrollDispatcher,
-    deps: [[new Optional(), new SkipSelf(), ScrollDispatcher], NgZone],
+    deps: [[new Optional(), new SkipSelf(), ScrollDispatcher], NgZone, Platform],
     useFactory: SCROLL_DISPATCHER_PROVIDER_FACTORY
 };
 //# sourceMappingURL=scroll-dispatcher.js.map

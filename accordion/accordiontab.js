@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 import { Component, Directive, Input, ViewEncapsulation, } from '@angular/core';
 import { animate, state, style, transition, trigger, } from '@angular/animations';
-import { Md2Accordion } from './accordionpanel';
+import { Md2Accordion } from './accordion';
 import { coerceBooleanProperty } from '../core';
 var Md2AccordionHeader = (function () {
     function Md2AccordionHeader() {
@@ -31,7 +31,7 @@ var Md2AccordionTab = (function () {
         get: function () { return this._active; },
         set: function (value) {
             this._active = coerceBooleanProperty(value);
-            if (this._active) {
+            if (this._active && !this._accordion.multiple) {
                 for (var i = 0; i < this._accordion.tabs.length; i++) {
                     if (this._accordion.tabs[i] !== this) {
                         this._accordion.tabs[i].active = false;

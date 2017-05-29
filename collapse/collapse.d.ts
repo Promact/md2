@@ -1,4 +1,4 @@
-import { EventEmitter, ModuleWithProviders } from '@angular/core';
+import { EventEmitter } from '@angular/core';
 export declare class Md2Collapse {
     _collapse: boolean;
     _collapsing: boolean;
@@ -17,8 +17,4 @@ export declare class Md2Collapse {
      * hide collapse
      */
     hide(): void;
-}
-export declare const MD2_COLLAPSE_DIRECTIVES: typeof Md2Collapse[];
-export declare class Md2CollapseModule {
-    static forRoot(): ModuleWithProviders;
 }

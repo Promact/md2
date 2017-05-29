@@ -1,0 +1,67 @@
+@import '../core/style/menu-common';
+@import '../core/style/vendor-prefixes';
+@import '../core/a11y/a11y';
+
+$primary: #106cc8 !default;
+
+.md2-option {
+  @include mat-menu-item-base();
+  position: relative;
+  cursor: pointer;
+  outline: none;
+
+  &[aria-disabled='true'] {
+    @include user-select(none);
+    cursor: default;
+  }
+
+  &:hover:not(.md2-option-disabled), &:focus:not(.md2-option-disabled) {
+    background: rgba(black, 0.04);
+  }
+
+  &.md2-selected {
+    color: $primary;
+
+    &:not(.md2-option-multiple) {
+      background: rgba(black, 0.04);
+    }
+  }
+
+  &.md2-active {
+    background: rgba(black, 0.04);
+    color: $primary;
+  }
+
+  &.md2-option-disabled {
+    color: rgba(black, 0.38);
+  }
+
+  &.md2-option-multiple {
+    padding-left: 40px;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 12px;
+      display: block;
+      width: 16px;
+      height: 16px;
+      margin-top: -8px;
+      border: 2px solid;
+      border-radius: 2px;
+      box-sizing: border-box;
+      transition: 240ms;
+    }
+
+    &.md2-selected::after {
+      transform: rotate(-45deg);
+      height: 8px;
+      border-width: 0 0 2px 2px;
+    }
+  }
+}
+
+.md2-optgroup .md2-option:not(.md2-option-multiple) {
+  padding-left: 32px;
+}

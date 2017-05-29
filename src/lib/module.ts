@@ -17,7 +17,6 @@ import { Md2CollapseModule } from './collapse/index';
 import { Md2ColorpickerModule } from './colorpicker/index';
 import { Md2DataTableModule } from './data-table/index';
 import { Md2DatepickerModule } from './datepicker/index';
-import { Md2Datepicker2Module } from './datepicker2/index';
 import { Md2DialogModule } from './dialog/index';
 import { Md2MenuModule } from './menu/index';
 import { Md2SelectModule } from './select/index';
@@ -37,7 +36,6 @@ const MD2_MODULES = [
   Md2ColorpickerModule,
   Md2DataTableModule,
   Md2DatepickerModule,
-  Md2Datepicker2Module,
   Md2DialogModule,
   Md2MenuModule,
   MdRippleModule,

@@ -8,7 +8,6 @@ export * from './collapse/index';
 export * from './colorpicker/index';
 export * from './data-table/index';
 export * from './datepicker/index';
-export * from './datepicker2/index';
 export * from './dialog/index';
 export * from './menu/index';
 export * from './select/index';

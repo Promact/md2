@@ -16,7 +16,7 @@ fi
 SHA=`git rev-parse --verify HEAD`
 
 # Clone the existing gh-pages for this repo into deploy/
-git clone https://Promact:$GH_TOKEN@github.com/Promact/md2.git --branch=gh-pages deploy
+git clone https://Promact:$GH_TOKEN@github.com/Promact/md2.git --depth 1 --branch=gh-pages deploy
 
 # Clean deploy existing contents
 rm -rf deploy/**/* || exit 0

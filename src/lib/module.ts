@@ -7,6 +7,7 @@ import {
   OverlayModule,
   A11yModule,
   CompatibilityModule,
+  MdNativeDateModule,
 } from './core/index';
 
 import { Md2AccordionModule } from './accordion/index';
@@ -52,6 +53,7 @@ const MD2_MODULES = [
   A11yModule,
   PlatformModule,
   CompatibilityModule,
+  MdNativeDateModule,
 ];
 
 @NgModule({

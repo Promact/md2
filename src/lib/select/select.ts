@@ -567,7 +567,8 @@ export class Md2Select implements AfterContentInit, OnDestroy, OnInit, ControlVa
    */
   private _selectValue(value: any): Md2Option {
     let optionsArray = this.options.toArray();
-    let correspondingOption = optionsArray.find(option => option.value && this.equals(option.value, value));
+    let correspondingOption = optionsArray.find(option =>
+      option.value && this.equals(option.value, value));
 
     if (correspondingOption) {
       correspondingOption.select();

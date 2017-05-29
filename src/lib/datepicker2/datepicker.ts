@@ -201,7 +201,7 @@ export class MdDatepicker<D> implements OnDestroy {
       throw new Error('Attempted to open an MdDatepicker with no associated input.');
     }
 
-    //this.touchUi ? this._openAsDialog() :
+    // this.touchUi ? this._openAsDialog() :
     this._openAsPopup();
     this.opened = true;
   }
@@ -214,10 +214,10 @@ export class MdDatepicker<D> implements OnDestroy {
     if (this._popupRef && this._popupRef.hasAttached()) {
       this._popupRef.detach();
     }
-    //if (this._dialogRef) {
+    // if (this._dialogRef) {
     //  this._dialogRef.close();
     //  this._dialogRef = null;
-    //}
+    // }
     if (this._calendarPortal && this._calendarPortal.isAttached) {
       this._calendarPortal.detach();
     }
@@ -225,14 +225,14 @@ export class MdDatepicker<D> implements OnDestroy {
   }
 
   /** Open the calendar as a dialog. */
-  //private _openAsDialog(): void {
+  // private _openAsDialog(): void {
   //  let config = new MdDialogConfig();
   //  config.viewContainerRef = this._viewContainerRef;
 
   //  this._dialogRef = this._dialog.open(MdDatepickerContent, config);
   //  this._dialogRef.afterClosed().first().subscribe(() => this.close());
   //  this._dialogRef.componentInstance.datepicker = this;
-  //}
+  // }
 
   /** Open the calendar as a popup. */
   private _openAsPopup(): void {

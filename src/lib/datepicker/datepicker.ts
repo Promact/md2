@@ -234,10 +234,11 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
     return ('0' + this._activeDate.getMinutes()).slice(-2);
   }
   get hours(): string {
-    if (!this.is12HourClock())
+    if (!this.is12HourClock()) {
       return ('0' + this._activeDate.getHours()).slice(-2);
-    else
+    } else {
       return ('0' + this._getHours12(this._activeDate)).slice(-2);
+    }
   }
 
   /**
@@ -247,13 +248,14 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
    */
   private _ampm(upperCase: boolean = false): string {
     if (this.is12HourClock()) {
-      if (upperCase)
+      if (upperCase) {
         return (this._activeDate.getHours() < 12) ? 'AM' : 'PM';
-      else
+      } else {
         return (this._activeDate.getHours() < 12) ? 'am' : 'pm';
+      }
+    } else {
+      return '';
     }
-    else
-      return "";
   }
 
   @Input() selected: Date;
@@ -856,10 +858,11 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
    */
   private _getHours12(date: Date): number {
     let hrs = date.getHours();
-    if (hrs == 0)
+    if (hrs == 0) {
       hrs = 12;
-    else if (hrs > 12)
+    } else if (hrs > 12) {
       hrs -= 12;
+    }
     return hrs;
   }
 
@@ -901,9 +904,8 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
       }
       format = format.replace('A', ((date.getHours() < 12) ? 'AM' : 'PM'))
         .replace('a', ((date.getHours() < 12) ? 'am' : 'pm'));
-    }
-    else {
-      // 24-hour 
+    } else {
+      // 24-hour
       if (format.indexOf('HH') > -1) {
         format = format.replace('HH', ('0' + date.getHours()).slice(-2));
       } else if (format.indexOf('H') > -1) {

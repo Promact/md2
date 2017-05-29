@@ -265,7 +265,7 @@ export class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
   get value(): any {
     return this._innerValue;
 
-  };
+  }
   /**
   * set accessor including call the onchange callback
   */

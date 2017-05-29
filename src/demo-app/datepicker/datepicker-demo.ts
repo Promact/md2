@@ -89,7 +89,12 @@ export class DatepickerDemo {
     { name: 'France:', value: 'HH:mm' },
     { name: 'ISO 8601', value: 'HH:mm' }
   ];
-  dateFormats: { [index: string]: Array<any>; } = { 'datetime': this.dateFormatsDateTime, 'date': this.dateFormatsDate, 'time': this.dateFormatsTime };
+  dateFormats: { [index: string]: Array<any>; } =
+  {
+    'datetime': this.dateFormatsDateTime,
+    'date': this.dateFormatsDate,
+    'time': this.dateFormatsTime
+  };
 
   openDatepicker() {
     this.isOpen = true;

@@ -233,8 +233,7 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
     if (this.disabled) { return; }
     if (!this.isAutoComplete) {
       this.elementRef.nativeElement.querySelector('input.chip-input').focus();
-    }
-    else {
+    } else {
       this.autoCompleteFocued = true;
       this._onTouched();
     }

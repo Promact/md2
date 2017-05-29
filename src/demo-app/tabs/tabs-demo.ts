@@ -13,5 +13,5 @@ export class TabsDemo {
 
   handleChange(tab: Event) {
     console.log('Tab Changed');
-  };
+  }
 }

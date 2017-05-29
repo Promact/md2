@@ -56,4 +56,19 @@
       <button type="button" button="primary" (click)="pokemonControl.reset()">RESET</button>
     </form>
   </div>
+  <div class="card">
+    <div class="header">
+      <h3 class="title">Option Groups</h3>
+    </div>
+    <form class="content">
+      <md2-select name="pokemongo" placeholder="Pokemon" [(ngModel)]="currentPokemonFromGroup">
+        <md2-optgroup *ngFor="let group of pokemonGroups" [label]="group.name"
+                     [disabled]="group.disabled">
+          <md2-option *ngFor="let creature of group.pokemon" [value]="creature.value">
+            {{ creature.viewValue }}
+          </md2-option>
+        </md2-optgroup>
+      </md2-select>
+    </form>
+  </div>
 </div>

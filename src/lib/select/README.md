@@ -21,6 +21,14 @@ Select allow the user to select option from options.
 | `onClose` | `Event` | Fired when close the Panel |
 
 
+## `<md2-optgroup>`
+### Properties of Option Group
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `label` | `string` | Label of option group |
+| `disabled` | `boolean` | Whether or not the options of the group is disabled |
+
 ## `<md2-option>`
 ### Properties of Option
 

@@ -4,6 +4,7 @@ import {
   EventEmitter,
   Input,
   Output,
+  Optional,
   NgModule,
   ViewEncapsulation,
 } from '@angular/core';
@@ -11,6 +12,7 @@ import { CommonModule } from '@angular/common';
 import { ENTER, SPACE } from '../core/keyboard/keycodes';
 import { coerceBooleanProperty } from '../core/coercion/boolean-property';
 import { MdSelectionModule } from '../core/selection/index';
+import { Md2Optgroup } from './optgroup';
 
 /**
  * Option IDs need to be unique across components, so this counter exists outside of
@@ -45,6 +47,7 @@ export class Md2OptionSelectionChange {
     '[class.md2-option]': 'true',
   },
   template: '<ng-content></ng-content>',
+  styleUrls: ['option.css'],
   encapsulation: ViewEncapsulation.None
 })
 export class Md2Option {
@@ -70,13 +73,14 @@ export class Md2Option {
 
   /** Whether the option is disabled. */
   @Input()
-  get disabled() { return this._disabled; }
+  get disabled() { return (this.group && this.group.disabled) || this._disabled; }
   set disabled(value: any) { this._disabled = coerceBooleanProperty(value); }
 
   /** Event emitted when the option is selected or deselected. */
   @Output() onSelectionChange = new EventEmitter<Md2OptionSelectionChange>();
 
   constructor(
+    @Optional() public readonly group: Md2Optgroup,
     private _element: ElementRef) { }
 
   /**
@@ -169,7 +173,7 @@ export class Md2Option {
 
 @NgModule({
   imports: [CommonModule, MdSelectionModule],
-  exports: [Md2Option],
-  declarations: [Md2Option]
+  exports: [Md2Option, Md2Optgroup],
+  declarations: [Md2Option, Md2Optgroup]
 })
 export class Md2OptionModule { }

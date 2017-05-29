@@ -1,3 +1,26 @@
+<a name="0.0.20"></a>
+## [0.0.20](https://github.com/Promact/md2/compare/0.0.19...v0.0.20) (2017-05-29)
+
+
+### Breaking Changes
+
+* The forRoot method on all MD2 modules has been removed. It was previously deprecated and a no-op. Importing the modules directly will have the same effect.
+
+
+### Features
+
+* feat(select) option group
+
+
+### Bug Fixes
+
+* datepicker issue ([fab045c](https://github.com/Promact/md2/commit/fab045c))
+* datepicker toggle issue ([c4ef84d](https://github.com/Promact/md2/commit/c4ef84d))
+* rollup warnings while compilation ([a09b4d6](https://github.com/Promact/md2/commit/a09b4d6))
+* usage of dynamic i18n arrays ([dd69e76](https://github.com/Promact/md2/commit/dd69e76))
+* fix(tabs) responsive design destort issue
+
+
 <a name="0.0.19"></a>
 ## [0.0.19](https://github.com/Promact/md2/compare/0.0.18...v0.0.19) (2017-04-20)
 

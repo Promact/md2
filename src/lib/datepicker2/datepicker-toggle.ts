@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, Input, ViewEncapsulation } from '@angular/core';
-import { MdDatepicker } from './datepicker';
-import { MdDatepickerIntl } from './datepicker-intl';
+import { Md2Datepicker } from './datepicker';
+import { Md2DatepickerIntl } from './datepicker-intl';
 
 
 @Component({
   moduleId: module.id,
-  selector: 'button[mdDatepickerToggle], button[matDatepickerToggle]',
+  selector: 'button[md2DatepickerToggle]',
   template: '',
   styleUrls: ['datepicker-toggle.css'],
   host: {
@@ -17,12 +17,12 @@ import { MdDatepickerIntl } from './datepicker-intl';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MdDatepickerToggle<D> {
-  @Input('mdDatepickerToggle') datepicker: MdDatepicker<D>;
+export class Md2DatepickerToggle<D> {
+  @Input('md2DatepickerToggle') datepicker: Md2Datepicker<D>;
 
   @Input() type: string = 'button';
 
-  constructor(public _intl: MdDatepickerIntl) { }
+  constructor(public _intl: Md2DatepickerIntl) { }
 
   _open(event: Event): void {
     if (this.datepicker) {

@@ -22,10 +22,10 @@ import {
   RIGHT_ARROW,
   UP_ARROW
 } from '../core/keyboard/keycodes';
-import {DateAdapter} from '../core/datetime/index';
-import {MdDatepickerIntl} from './datepicker-intl';
-import {createMissingDateImplError} from './datepicker-errors';
-import {MD_DATE_FORMATS, MdDateFormats} from '../core/datetime/date-formats';
+import { DateAdapter } from '../core/datetime/index';
+import { Md2DatepickerIntl } from './datepicker-intl';
+import { createMissingDateImplError } from './datepicker-errors';
+import { MD_DATE_FORMATS, MdDateFormats } from '../core/datetime/date-formats';
 
 
 /**
@@ -43,7 +43,7 @@ import {MD_DATE_FORMATS, MdDateFormats} from '../core/datetime/date-formats';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MdCalendar<D> implements AfterContentInit {
+export class Md2Calendar<D> implements AfterContentInit {
   /** A date representing the period (month or year) to start the calendar in. */
   @Input() startAt: D;
 
@@ -68,9 +68,9 @@ export class MdCalendar<D> implements AfterContentInit {
   /** Date filter for the month and year views. */
   _dateFilterForViews = (date: D) => {
     return !!date &&
-        (!this.dateFilter || this.dateFilter(date)) &&
-        (!this.minDate || this._dateAdapter.compareDate(date, this.minDate) >= 0) &&
-        (!this.maxDate || this._dateAdapter.compareDate(date, this.maxDate) <= 0);
+      (!this.dateFilter || this.dateFilter(date)) &&
+      (!this.minDate || this._dateAdapter.compareDate(date, this.minDate) >= 0) &&
+      (!this.maxDate || this._dateAdapter.compareDate(date, this.maxDate) <= 0);
   }
 
   /**
@@ -84,35 +84,35 @@ export class MdCalendar<D> implements AfterContentInit {
   private _clampedActiveDate: D;
 
   /** Whether the calendar is in month view. */
-  _monthView: boolean;
+  _view: 'month' | 'year' | 'time' = 'month';
 
   /** The label for the current calendar view. */
   get _periodButtonText(): string {
-    return this._monthView ?
-        this._dateAdapter.format(this._activeDate, this._dateFormats.display.monthYearLabel)
-            .toLocaleUpperCase() :
-        this._dateAdapter.getYearName(this._activeDate);
+    return this._view ?
+      this._dateAdapter.format(this._activeDate, this._dateFormats.display.monthYearLabel)
+        .toLocaleUpperCase() :
+      this._dateAdapter.getYearName(this._activeDate);
   }
 
   get _periodButtonLabel(): string {
-    return this._monthView ? this._intl.switchToYearViewLabel : this._intl.switchToMonthViewLabel;
+    return this._view ? this._intl.switchToYearViewLabel : this._intl.switchToMonthViewLabel;
   }
 
   /** The label for the the previous button. */
   get _prevButtonLabel(): string {
-    return this._monthView ? this._intl.prevMonthLabel : this._intl.prevYearLabel;
+    return this._view ? this._intl.prevMonthLabel : this._intl.prevYearLabel;
   }
 
   /** The label for the the next button. */
   get _nextButtonLabel(): string {
-    return this._monthView ? this._intl.nextMonthLabel : this._intl.nextYearLabel;
+    return this._view ? this._intl.nextMonthLabel : this._intl.nextYearLabel;
   }
 
   constructor(private _elementRef: ElementRef,
-              private _intl: MdDatepickerIntl,
-              private _ngZone: NgZone,
-              @Optional() private _dateAdapter: DateAdapter<D>,
-              @Optional() @Inject(MD_DATE_FORMATS) private _dateFormats: MdDateFormats) {
+    private _intl: Md2DatepickerIntl,
+    private _ngZone: NgZone,
+    @Optional() private _dateAdapter: DateAdapter<D>,
+    @Optional() @Inject(MD_DATE_FORMATS) private _dateFormats: MdDateFormats) {
     if (!this._dateAdapter) {
       throw createMissingDateImplError('DateAdapter');
     }
@@ -124,7 +124,7 @@ export class MdCalendar<D> implements AfterContentInit {
   ngAfterContentInit() {
     this._activeDate = this.startAt || this._dateAdapter.today();
     this._focusActiveCell();
-    this._monthView = this.startView != 'year';
+    this._view = this.startView;
   }
 
   /** Handles date selection in the month view. */
@@ -137,26 +137,26 @@ export class MdCalendar<D> implements AfterContentInit {
   /** Handles month selection in the year view. */
   _monthSelected(month: D): void {
     this._activeDate = month;
-    this._monthView = true;
+    this._view = 'month';
   }
 
   /** Handles user clicks on the period label. */
   _currentPeriodClicked(): void {
-    this._monthView = !this._monthView;
+    this._view = this._view === 'month' ? 'year' : 'month';
   }
 
   /** Handles user clicks on the previous button. */
   _previousClicked(): void {
-    this._activeDate = this._monthView ?
-        this._dateAdapter.addCalendarMonths(this._activeDate, -1) :
-        this._dateAdapter.addCalendarYears(this._activeDate, -1);
+    this._activeDate = this._view ?
+      this._dateAdapter.addCalendarMonths(this._activeDate, -1) :
+      this._dateAdapter.addCalendarYears(this._activeDate, -1);
   }
 
   /** Handles user clicks on the next button. */
   _nextClicked(): void {
-    this._activeDate = this._monthView ?
-        this._dateAdapter.addCalendarMonths(this._activeDate, 1) :
-        this._dateAdapter.addCalendarYears(this._activeDate, 1);
+    this._activeDate = this._view ?
+      this._dateAdapter.addCalendarMonths(this._activeDate, 1) :
+      this._dateAdapter.addCalendarYears(this._activeDate, 1);
   }
 
   /** Whether the previous period button is enabled. */
@@ -177,7 +177,7 @@ export class MdCalendar<D> implements AfterContentInit {
     // TODO(mmalerba): We currently allow keyboard navigation to disabled dates, but just prevent
     // disabled ones from being selected. This may not be ideal, we should look into whether
     // navigation should skip over disabled dates, and if so, how to implement that efficiently.
-    if (this._monthView) {
+    if (this._view === 'month') {
       this._handleCalendarBodyKeydownInMonthView(event);
     } else {
       this._handleCalendarBodyKeydownInYearView(event);
@@ -194,10 +194,10 @@ export class MdCalendar<D> implements AfterContentInit {
 
   /** Whether the two dates represent the same view in the current view mode (month or year). */
   private _isSameView(date1: D, date2: D): boolean {
-    return this._monthView ?
-        this._dateAdapter.getYear(date1) == this._dateAdapter.getYear(date2) &&
-        this._dateAdapter.getMonth(date1) == this._dateAdapter.getMonth(date2) :
-        this._dateAdapter.getYear(date1) == this._dateAdapter.getYear(date2);
+    return this._view ?
+      this._dateAdapter.getYear(date1) == this._dateAdapter.getYear(date2) &&
+      this._dateAdapter.getMonth(date1) == this._dateAdapter.getMonth(date2) :
+      this._dateAdapter.getYear(date1) == this._dateAdapter.getYear(date2);
   }
 
   /** Handles keydown events on the calendar body when calendar is in month view. */
@@ -217,22 +217,22 @@ export class MdCalendar<D> implements AfterContentInit {
         break;
       case HOME:
         this._activeDate = this._dateAdapter.addCalendarDays(this._activeDate,
-            1 - this._dateAdapter.getDate(this._activeDate));
+          1 - this._dateAdapter.getDate(this._activeDate));
         break;
       case END:
         this._activeDate = this._dateAdapter.addCalendarDays(this._activeDate,
-            (this._dateAdapter.getNumDaysInMonth(this._activeDate) -
-             this._dateAdapter.getDate(this._activeDate)));
+          (this._dateAdapter.getNumDaysInMonth(this._activeDate) -
+            this._dateAdapter.getDate(this._activeDate)));
         break;
       case PAGE_UP:
         this._activeDate = event.altKey ?
-            this._dateAdapter.addCalendarYears(this._activeDate, -1) :
-            this._dateAdapter.addCalendarMonths(this._activeDate, -1);
+          this._dateAdapter.addCalendarYears(this._activeDate, -1) :
+          this._dateAdapter.addCalendarMonths(this._activeDate, -1);
         break;
       case PAGE_DOWN:
         this._activeDate = event.altKey ?
-            this._dateAdapter.addCalendarYears(this._activeDate, 1) :
-            this._dateAdapter.addCalendarMonths(this._activeDate, 1);
+          this._dateAdapter.addCalendarYears(this._activeDate, 1) :
+          this._dateAdapter.addCalendarMonths(this._activeDate, 1);
         break;
       case ENTER:
         if (this._dateFilterForViews(this._activeDate)) {
@@ -268,19 +268,19 @@ export class MdCalendar<D> implements AfterContentInit {
         break;
       case HOME:
         this._activeDate = this._dateAdapter.addCalendarMonths(this._activeDate,
-            -this._dateAdapter.getMonth(this._activeDate));
+          -this._dateAdapter.getMonth(this._activeDate));
         break;
       case END:
         this._activeDate = this._dateAdapter.addCalendarMonths(this._activeDate,
-            11 - this._dateAdapter.getMonth(this._activeDate));
+          11 - this._dateAdapter.getMonth(this._activeDate));
         break;
       case PAGE_UP:
         this._activeDate =
-            this._dateAdapter.addCalendarYears(this._activeDate, event.altKey ? -10 : -1);
+          this._dateAdapter.addCalendarYears(this._activeDate, event.altKey ? -10 : -1);
         break;
       case PAGE_DOWN:
         this._activeDate =
-            this._dateAdapter.addCalendarYears(this._activeDate, event.altKey ? 10 : 1);
+          this._dateAdapter.addCalendarYears(this._activeDate, event.altKey ? 10 : 1);
         break;
       case ENTER:
         this._monthSelected(this._activeDate);
@@ -303,7 +303,7 @@ export class MdCalendar<D> implements AfterContentInit {
     // Determine how many months to jump forward given that there are 2 empty slots at the beginning
     // of each year.
     let increment = this._dateAdapter.getMonth(date) <= 4 ? -5 :
-        (this._dateAdapter.getMonth(date) >= 7 ? -7 : -12);
+      (this._dateAdapter.getMonth(date) >= 7 ? -7 : -12);
     return this._dateAdapter.addCalendarMonths(date, increment);
   }
 
@@ -315,7 +315,7 @@ export class MdCalendar<D> implements AfterContentInit {
     // Determine how many months to jump forward given that there are 2 empty slots at the beginning
     // of each year.
     let increment = this._dateAdapter.getMonth(date) <= 4 ? 7 :
-        (this._dateAdapter.getMonth(date) >= 7 ? 5 : 12);
+      (this._dateAdapter.getMonth(date) >= 7 ? 5 : 12);
     return this._dateAdapter.addCalendarMonths(date, increment);
   }
 }

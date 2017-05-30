@@ -13,17 +13,27 @@
   </div>
 </div>
 <div class="md2-calendar-content" (keydown)="_handleCalendarBodyKeydown($event)"
-     [ngSwitch]="_monthView" cdkMonitorSubtreeFocus>
-  <md2-month-view *ngSwitchCase="true"
+     [ngSwitch]="_view" cdkMonitorSubtreeFocus>
+  <md2-month-view *ngSwitchCase="'month'"
                   [activeDate]="_activeDate"
                   [selected]="selected"
                   [dateFilter]="_dateFilterForViews"
                   (selectedChange)="_dateSelected($event)">
   </md2-month-view>
-  <md2-year-view *ngSwitchDefault
+  <md2-year-view *ngSwitchCase="'year'"
                  [activeDate]="_activeDate"
                  [selected]="selected"
                  [dateFilter]="_dateFilterForViews"
                  (selectedChange)="_monthSelected($event)">
   </md2-year-view>
+  <md2-clock-view *ngSwitchDefault></md2-clock-view>
+  <!--
+    [class.active]="!_isCalendarVisible"
+             [startView]="_clockView"
+             [interval]="timeInterval"
+             [selected]="activeDate"
+             [min]="min"
+             [max]="max"
+             (selectedChange)="_onTimeChange($event)"
+    (activeDateChange)="_onActiveTimeChange($event)"-->
 </div>

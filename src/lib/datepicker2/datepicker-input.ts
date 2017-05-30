@@ -10,7 +10,7 @@ import {
   Optional,
   Renderer2
 } from '@angular/core';
-import { MdDatepicker } from './datepicker';
+import { Md2Datepicker } from './datepicker';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -28,24 +28,24 @@ import { createMissingDateImplError } from './datepicker-errors';
 import { MD_DATE_FORMATS, MdDateFormats } from '../core/datetime/date-formats';
 
 
-export const MD_DATEPICKER_VALUE_ACCESSOR: any = {
+export const MD2_DATEPICKER_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
-  useExisting: forwardRef(() => MdDatepickerInput),
+  useExisting: forwardRef(() => Md2DatepickerInput),
   multi: true
 };
 
 
-export const MD_DATEPICKER_VALIDATORS: any = {
+export const MD2_DATEPICKER_VALIDATORS: any = {
   provide: NG_VALIDATORS,
-  useExisting: forwardRef(() => MdDatepickerInput),
+  useExisting: forwardRef(() => Md2DatepickerInput),
   multi: true
 };
 
 
 /** Directive used to connect an input to a MdDatepicker. */
 @Directive({
-  selector: 'input[mdDatepicker], input[matDatepicker]',
-  providers: [MD_DATEPICKER_VALUE_ACCESSOR, MD_DATEPICKER_VALIDATORS],
+  selector: 'input[md2Datepicker]',
+  providers: [MD2_DATEPICKER_VALUE_ACCESSOR, MD2_DATEPICKER_VALIDATORS],
   host: {
     '[attr.aria-expanded]': '_datepicker?.opened || "false"',
     '[attr.aria-haspopup]': 'true',
@@ -57,19 +57,19 @@ export const MD_DATEPICKER_VALIDATORS: any = {
     '(keydown)': '_onKeydown($event)',
   }
 })
-export class MdDatepickerInput<D> implements AfterContentInit, ControlValueAccessor, OnDestroy,
+export class Md2DatepickerInput<D> implements AfterContentInit, ControlValueAccessor, OnDestroy,
   Validator {
   /** The datepicker that this input is associated with. */
   @Input()
-  set mdDatepicker(value: MdDatepicker<D>) {
+  set md2Datepicker(value: Md2Datepicker<D>) {
     if (value) {
       this._datepicker = value;
       this._datepicker._registerInput(this);
     }
   }
-  _datepicker: MdDatepicker<D>;
+  _datepicker: Md2Datepicker<D>;
 
-  @Input() set mdDatepickerFilter(filter: (date: D | null) => boolean) {
+  @Input() set md2DatepickerFilter(filter: (date: D | null) => boolean) {
     this._dateFilter = filter;
     this._validatorOnChange();
   }
@@ -124,20 +124,20 @@ export class MdDatepickerInput<D> implements AfterContentInit, ControlValueAcces
   private _minValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
     return (!this.min || !control.value ||
       this._dateAdapter.compareDate(this.min, control.value) <= 0) ?
-      null : { 'mdDatepickerMin': { 'min': this.min, 'actual': control.value } };
+      null : { 'md2DatepickerMin': { 'min': this.min, 'actual': control.value } };
   }
 
   /** The form control validator for the max date. */
   private _maxValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
     return (!this.max || !control.value ||
       this._dateAdapter.compareDate(this.max, control.value) >= 0) ?
-      null : { 'mdDatepickerMax': { 'max': this.max, 'actual': control.value } };
+      null : { 'md2DatepickerMax': { 'max': this.max, 'actual': control.value } };
   }
 
   /** The form control validator for the date filter. */
   private _filterValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
     return !this._dateFilter || !control.value || this._dateFilter(control.value) ?
-      null : { 'mdDatepickerFilter': true };
+      null : { 'md2DatepickerFilter': true };
   }
 
   /** The combined form control validator for this input. */

@@ -113,7 +113,7 @@ export class Md2YearView<D> implements AfterContentInit {
         this._dateAdapter.getMonth(date) : null;
   }
 
-  /** Creates an MdCalendarCell for the given month. */
+  /** Creates an Md2CalendarCell for the given month. */
   private _createCellForMonth(month: number, monthName: string) {
     let ariaLabel = this._dateAdapter.format(
         this._dateAdapter.createDate(this._dateAdapter.getYear(this.activeDate), month, 1),

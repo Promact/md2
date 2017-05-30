@@ -3,13 +3,14 @@ import { Md2MonthView } from './month-view';
 import { CommonModule } from '@angular/common';
 import { Md2CalendarBody } from './calendar-body';
 import { Md2YearView } from './year-view';
+import { Md2ClockView } from './clock-view';
 import { OverlayModule } from '../core/overlay/overlay-directives';
-import { MdDatepicker, MdDatepickerContent } from './datepicker';
-import { MdDatepickerInput } from './datepicker-input';
-import { MdCalendar } from './calendar';
-import { MdDatepickerToggle } from './datepicker-toggle';
+import { Md2Datepicker, Md2DatepickerContent } from './datepicker';
+import { Md2DatepickerInput } from './datepicker-input';
+import { Md2Calendar } from './calendar';
+import { Md2DatepickerToggle } from './datepicker-toggle';
 import { StyleModule } from '../core/style/index';
-import { MdDatepickerIntl } from './datepicker-intl';
+import { Md2DatepickerIntl } from './datepicker-intl';
 
 
 
@@ -30,24 +31,25 @@ export * from './year-view';
     StyleModule,
   ],
   exports: [
-    MdDatepicker,
-    MdDatepickerContent,
-    MdDatepickerInput,
-    MdDatepickerToggle,
+    Md2Datepicker,
+    Md2DatepickerContent,
+    Md2DatepickerInput,
+    Md2DatepickerToggle,
   ],
   declarations: [
-    MdCalendar,
+    Md2Calendar,
     Md2CalendarBody,
-    MdDatepicker,
-    MdDatepickerContent,
-    MdDatepickerInput,
-    MdDatepickerToggle,
+    Md2Datepicker,
+    Md2DatepickerContent,
+    Md2DatepickerInput,
+    Md2DatepickerToggle,
     Md2MonthView,
     Md2YearView,
+    Md2ClockView,
   ],
-  providers: [MdDatepickerIntl],
+  providers: [Md2DatepickerIntl],
   entryComponents: [
-    MdDatepickerContent,
+    Md2DatepickerContent,
   ]
 })
 export class Md2Datepicker2Module { }

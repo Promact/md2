@@ -20,13 +20,13 @@ import { OverlayState } from '../core/overlay/overlay-state';
 import { Dir } from '../core/rtl/dir';
 import { PositionStrategy } from '../core/overlay/position/position-strategy';
 import { RepositionScrollStrategy, ScrollDispatcher } from '../core/overlay/index';
-import { MdDatepickerInput } from './datepicker-input';
+import { Md2DatepickerInput } from './datepicker-input';
 import 'rxjs/add/operator/first';
 import { Subscription } from 'rxjs/Subscription';
 import { DateAdapter } from '../core/datetime/index';
 import { createMissingDateImplError } from './datepicker-errors';
 import { ESCAPE } from '../core/keyboard/keycodes';
-import { MdCalendar } from './calendar';
+import { Md2Calendar } from './calendar';
 
 
 /** Used to generate a unique ID for each datepicker instance. */
@@ -35,7 +35,7 @@ let datepickerUid = 0;
 
 /**
  * Component used as the content for the datepicker dialog and popup. We use this instead of using
- * MdCalendar directly as the content so we can control the initial focus. This also gives us a
+ * Md2Calendar directly as the content so we can control the initial focus. This also gives us a
  * place to put additional features of the popup that are not part of the calendar itself in the
  * future. (e.g. confirmation buttons).
  * @docs-internal
@@ -53,10 +53,10 @@ let datepickerUid = 0;
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MdDatepickerContent<D> implements AfterContentInit {
-  datepicker: MdDatepicker<D>;
+export class Md2DatepickerContent<D> implements AfterContentInit {
+  datepicker: Md2Datepicker<D>;
 
-  @ViewChild(MdCalendar) _calendar: MdCalendar<D>;
+  @ViewChild(Md2Calendar) _calendar: Md2Calendar<D>;
 
   ngAfterContentInit() {
     this._calendar._focusActiveCell();
@@ -82,15 +82,15 @@ export class MdDatepickerContent<D> implements AfterContentInit {
 
 
 // TODO(mmalerba): We use a component instead of a directive here so the user can use implicit
-// template reference variables (e.g. #d vs #d="mdDatepicker"). We can change this to a directive if
+// template reference variables (e.g. #d vs #d="md2Datepicker"). We can change this to a directive if
 // angular adds support for `exportAs: '$implicit'` on directives.
 /** Component responsible for managing the datepicker popup/dialog. */
 @Component({
   moduleId: module.id,
-  selector: 'md-datepicker',
+  selector: 'md2-datepicker',
   template: '',
 })
-export class MdDatepicker<D> implements OnDestroy {
+export class Md2Datepicker<D> implements OnDestroy {
   /** The date to open the calendar to initially. */
   @Input()
   get startAt(): D {
@@ -117,7 +117,7 @@ export class MdDatepicker<D> implements OnDestroy {
   opened = false;
 
   /** The id for the datepicker calendar. */
-  id = `md-datepicker-${datepickerUid++}`;
+  id = `md2-datepicker-${datepickerUid++}`;
 
   /** The currently selected date. */
   _selected: D = null;
@@ -140,10 +140,10 @@ export class MdDatepicker<D> implements OnDestroy {
   private _popupRef: OverlayRef;
 
   /** A portal containing the calendar for this datepicker. */
-  private _calendarPortal: ComponentPortal<MdDatepickerContent<D>>;
+  private _calendarPortal: ComponentPortal<Md2DatepickerContent<D>>;
 
   /** The input element this datepicker is associated with. */
-  private _datepickerInput: MdDatepickerInput<D>;
+  private _datepickerInput: Md2DatepickerInput<D>;
 
   private _inputSubscription: Subscription;
 
@@ -183,9 +183,9 @@ export class MdDatepicker<D> implements OnDestroy {
    * Register an input with this datepicker.
    * @param input The datepicker input to register with this datepicker.
    */
-  _registerInput(input: MdDatepickerInput<D>): void {
+  _registerInput(input: Md2DatepickerInput<D>): void {
     if (this._datepickerInput) {
-      throw new Error('An MdDatepicker can only be associated with a single input.');
+      throw new Error('An Md2Datepicker can only be associated with a single input.');
     }
     this._datepickerInput = input;
     this._inputSubscription =
@@ -198,7 +198,7 @@ export class MdDatepicker<D> implements OnDestroy {
       return;
     }
     if (!this._datepickerInput) {
-      throw new Error('Attempted to open an MdDatepicker with no associated input.');
+      throw new Error('Attempted to open an Md2Datepicker with no associated input.');
     }
 
     // this.touchUi ? this._openAsDialog() :
@@ -226,10 +226,10 @@ export class MdDatepicker<D> implements OnDestroy {
 
   /** Open the calendar as a dialog. */
   // private _openAsDialog(): void {
-  //  let config = new MdDialogConfig();
+  //  let config = new Md2DialogConfig();
   //  config.viewContainerRef = this._viewContainerRef;
 
-  //  this._dialogRef = this._dialog.open(MdDatepickerContent, config);
+  //  this._dialogRef = this._dialog.open(Md2DatepickerContent, config);
   //  this._dialogRef.afterClosed().first().subscribe(() => this.close());
   //  this._dialogRef.componentInstance.datepicker = this;
   // }
@@ -237,7 +237,7 @@ export class MdDatepicker<D> implements OnDestroy {
   /** Open the calendar as a popup. */
   private _openAsPopup(): void {
     if (!this._calendarPortal) {
-      this._calendarPortal = new ComponentPortal(MdDatepickerContent, this._viewContainerRef);
+      this._calendarPortal = new ComponentPortal(Md2DatepickerContent, this._viewContainerRef);
     }
 
     if (!this._popupRef) {
@@ -245,7 +245,7 @@ export class MdDatepicker<D> implements OnDestroy {
     }
 
     if (!this._popupRef.hasAttached()) {
-      let componentRef: ComponentRef<MdDatepickerContent<D>> =
+      let componentRef: ComponentRef<Md2DatepickerContent<D>> =
         this._popupRef.attach(this._calendarPortal);
       componentRef.instance.datepicker = this;
       this._ngZone.onStable.first().subscribe(() => this._popupRef.updatePosition());
@@ -259,7 +259,7 @@ export class MdDatepicker<D> implements OnDestroy {
     const overlayState = new OverlayState();
     overlayState.positionStrategy = this._createPopupPositionStrategy();
     overlayState.hasBackdrop = true;
-    overlayState.backdropClass = 'md-overlay-transparent-backdrop';
+    overlayState.backdropClass = 'md2-overlay-transparent-backdrop';
     overlayState.direction = this._dir ? this._dir.value : 'ltr';
     overlayState.scrollStrategy = new RepositionScrollStrategy(this._scrollDispatcher);
 

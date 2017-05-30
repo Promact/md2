@@ -575,6 +575,9 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
     }
     let el: any = event.target;
     let date: Date = this._util.parse(el.value, this.format);
+    if (!date) {
+      date = this._util.parseDate(el.value, this.format);
+    }
     if (this._util.isValidDate(date)) {
       let d: Date = new Date(this.value);
       if (this.type !== 'time') {

@@ -7,6 +7,7 @@ $primary: #106cc8 !default;
 .md2-option {
   @include mat-menu-item-base();
   position: relative;
+  font-family: inherit;
   cursor: pointer;
   outline: none;
 

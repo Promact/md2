@@ -43,6 +43,9 @@ import {
   Overlay,
   OverlayState,
   OverlayRef,
+  PositionStrategy,
+  RepositionScrollStrategy,
+  ScrollDispatcher,
   TemplatePortal,
   HorizontalConnectionPos,
   VerticalConnectionPos,
@@ -140,8 +143,9 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   /** Event emitted when the selected date has been changed by the user. */
   @Output() change: EventEmitter<Md2DateChange> = new EventEmitter<Md2DateChange>();
 
-  constructor(private _element: ElementRef, private overlay: Overlay,
+  constructor(private _element: ElementRef, private _overlay: Overlay,
     private _viewContainerRef: ViewContainerRef, private _locale: DateLocale,
+    private _scrollDispatcher: ScrollDispatcher,
     private _util: DateUtil, @Self() @Optional() public _control: NgControl) {
     if (this._control) {
       this._control.valueAccessor = this;
@@ -170,14 +174,6 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   @Input() disableDates: Array<Date> = [];
   @Input() disableWeekDays: Array<number> = [];
   @Input() timeInterval: number = 1;
-
-  /** Position of the menu in the X axis. */
-  positionX: PanelPositionX = 'after';
-
-  /** Position of the menu in the Y axis. */
-  positionY: PanelPositionY = 'below';
-
-  overlapTrigger: boolean = true;
 
   @Input()
   get type() { return this._type; }
@@ -958,42 +954,40 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
     if (!this._overlayRef) {
       let config = new OverlayState();
       if (this.container === 'inline') {
-        const [posX, fallbackX]: HorizontalConnectionPos[] =
-          this.positionX === 'before' ? ['end', 'start'] : ['start', 'end'];
-
-        const [overlayY, fallbackOverlayY]: VerticalConnectionPos[] =
-          this.positionY === 'above' ? ['bottom', 'top'] : ['top', 'bottom'];
-
-        let originY = overlayY;
-        let fallbackOriginY = fallbackOverlayY;
-
-        if (!this.overlapTrigger) {
-          originY = overlayY === 'top' ? 'bottom' : 'top';
-          fallbackOriginY = fallbackOverlayY === 'top' ? 'bottom' : 'top';
-        }
-        config.positionStrategy = this.overlay.position().connectedTo(this._element,
-          { originX: posX, originY: originY },
-          { overlayX: posX, overlayY: overlayY })
-          .withFallbackPosition(
-          { originX: fallbackX, originY: originY },
-          { overlayX: fallbackX, overlayY: overlayY })
-          .withFallbackPosition(
-          { originX: posX, originY: fallbackOriginY },
-          { overlayX: posX, overlayY: fallbackOverlayY })
-          .withFallbackPosition(
-          { originX: fallbackX, originY: fallbackOriginY },
-          { overlayX: fallbackX, overlayY: fallbackOverlayY });
+        config.positionStrategy = this._createPopupPositionStrategy();
         config.hasBackdrop = true;
         config.backdropClass = 'cdk-overlay-transparent-backdrop';
+        config.scrollStrategy = new RepositionScrollStrategy(this._scrollDispatcher);
       } else {
-        config.positionStrategy = this.overlay.position()
+        config.positionStrategy = this._overlay.position()
           .global()
           .centerHorizontally()
           .centerVertically();
         config.hasBackdrop = true;
       }
-      this._overlayRef = this.overlay.create(config);
+      this._overlayRef = this._overlay.create(config);
     }
+  }
+
+  /** Create the popup PositionStrategy. */
+  private _createPopupPositionStrategy(): PositionStrategy {
+    return this._overlay.position()
+      .connectedTo(this._element,
+      { originX: 'start', originY: 'top' },
+      { overlayX: 'start', overlayY: 'top' }
+      )
+      .withFallbackPosition(
+      { originX: 'end', originY: 'top' },
+      { overlayX: 'end', overlayY: 'top' }
+      )
+      .withFallbackPosition(
+      { originX: 'start', originY: 'bottom' },
+      { overlayX: 'start', overlayY: 'bottom' }
+      )
+      .withFallbackPosition(
+      { originX: 'end', originY: 'bottom' },
+      { overlayX: 'end', overlayY: 'bottom' }
+      );
   }
 
   private _cleanUpSubscriptions(): void {

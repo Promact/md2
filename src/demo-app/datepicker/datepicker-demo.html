@@ -6,6 +6,20 @@
       <h3 class="title">Basic Date Picker</h3>
     </div>
     <form class="content">
+      <md2-datepicker name="mindate"
+                      placeholder="Minimum Date"
+                      [(ngModel)]="minDate"
+                      [mode]="mode"
+                      [container]="container"
+                      [format]="dateFormat"></md2-datepicker>
+      <md2-datepicker name="maxdate"
+                      placeholder="Maximum Date"
+                      [(ngModel)]="maxDate"
+                      [min]="minDate"
+                      [mode]="mode"
+                      [container]="container"
+                      [format]="dateFormat"></md2-datepicker>
+      <br />
       <md2-datepicker name="birthdate"
                       placeholder="Select Date"
                       [(ngModel)]="date"
@@ -14,9 +28,6 @@
                       [openOnFocus]="isOpenOnFocus"
                       [isOpen]="isOpen"
                       [type]="type"
-                      [enableDates]="enableDates"
-                      [disableDates]="disableDates"
-                      [disableWeekDays]="disableWeekDays"
                       [min]="minDate"
                       [max]="maxDate"
                       [mode]="mode"

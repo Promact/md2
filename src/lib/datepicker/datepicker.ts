@@ -63,8 +63,6 @@ export class Md2DateChange {
 export type Type = 'date' | 'time' | 'datetime';
 export type Mode = 'auto' | 'portrait' | 'landscape';
 export type Container = 'inline' | 'dialog';
-export type PanelPositionX = 'before' | 'after';
-export type PanelPositionY = 'above' | 'below';
 
 @Component({
   moduleId: module.id,

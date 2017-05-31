@@ -26,6 +26,9 @@ import {
   OverlayModule,
   OverlayState,
   OverlayRef,
+  PositionStrategy,
+  RepositionScrollStrategy,
+  ScrollDispatcher,
   TemplatePortal,
   PortalModule,
   HorizontalConnectionPos,
@@ -34,7 +37,7 @@ import {
 import { Subscription } from 'rxjs/Subscription';
 import { ColorUtil } from './color-util';
 import { coerceBooleanProperty } from '../core/coercion/boolean-property';
-import { Container, PanelPositionX, PanelPositionY } from '../datepicker/datepicker';
+import { Container } from '../datepicker/datepicker';
 
 let nextId = 0;
 
@@ -256,12 +259,6 @@ export class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
   @Input() tabindex: number = 0;
   @Input() id: string = 'md2-colorpicker-' + (++nextId);
 
-  /** Position of the colorpicker in the X axis. */
-  positionX: PanelPositionX = 'after';
-
-  /** Position of the colorpicker in the Y axis. */
-  positionY: PanelPositionY = 'below';
-  overlapTrigger: boolean = true;
   get value(): any {
     return this._innerValue;
 
@@ -303,8 +300,9 @@ export class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
 
   @ViewChild('portal') _templatePortal: TemplateRef<any>;
 
-  constructor(private _element: ElementRef, private overlay: Overlay,
+  constructor(private _element: ElementRef, private _overlay: Overlay,
     private _viewContainerRef: ViewContainerRef, private _renderer: Renderer,
+    private _scrollDispatcher: ScrollDispatcher,
     private _util: ColorUtil, @Self() @Optional() public _control: NgControl) {
     this._created = false;
     if (this._control) {
@@ -612,42 +610,40 @@ export class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
     if (!this._overlayRef) {
       let config = new OverlayState();
       if (this.container === 'inline') {
-        const [posX, fallbackX]: HorizontalConnectionPos[] =
-          this.positionX === 'before' ? ['end', 'start'] : ['start', 'end'];
-
-        const [overlayY, fallbackOverlayY]: VerticalConnectionPos[] =
-          this.positionY === 'above' ? ['bottom', 'top'] : ['top', 'bottom'];
-
-        let originY = overlayY;
-        let fallbackOriginY = fallbackOverlayY;
-
-        if (!this.overlapTrigger) {
-          originY = overlayY === 'top' ? 'bottom' : 'top';
-          fallbackOriginY = fallbackOverlayY === 'top' ? 'bottom' : 'top';
-        }
-        config.positionStrategy = this.overlay.position().connectedTo(this._element,
-          { originX: posX, originY: originY },
-          { overlayX: posX, overlayY: overlayY })
-          .withFallbackPosition(
-          { originX: fallbackX, originY: originY },
-          { overlayX: fallbackX, overlayY: overlayY })
-          .withFallbackPosition(
-          { originX: posX, originY: fallbackOriginY },
-          { overlayX: posX, overlayY: fallbackOverlayY })
-          .withFallbackPosition(
-          { originX: fallbackX, originY: fallbackOriginY },
-          { overlayX: fallbackX, overlayY: fallbackOverlayY });
+        config.positionStrategy = this._createPickerPositionStrategy();
         config.hasBackdrop = true;
         config.backdropClass = 'cdk-overlay-transparent-backdrop';
+        config.scrollStrategy = new RepositionScrollStrategy(this._scrollDispatcher);
       } else {
-        config.positionStrategy = this.overlay.position()
+        config.positionStrategy = this._overlay.position()
           .global()
           .centerHorizontally()
           .centerVertically();
         config.hasBackdrop = true;
       }
-      this._overlayRef = this.overlay.create(config);
+      this._overlayRef = this._overlay.create(config);
     }
+  }
+
+  /** Create the popup PositionStrategy. */
+  private _createPickerPositionStrategy(): PositionStrategy {
+    return this._overlay.position()
+      .connectedTo(this._element,
+      { originX: 'start', originY: 'top' },
+      { overlayX: 'start', overlayY: 'top' }
+      )
+      .withFallbackPosition(
+      { originX: 'end', originY: 'top' },
+      { overlayX: 'end', overlayY: 'top' }
+      )
+      .withFallbackPosition(
+      { originX: 'start', originY: 'bottom' },
+      { overlayX: 'start', overlayY: 'bottom' }
+      )
+      .withFallbackPosition(
+      { originX: 'end', originY: 'bottom' },
+      { overlayX: 'end', overlayY: 'bottom' }
+      );
   }
 
   private _cleanUpSubscriptions(): void {

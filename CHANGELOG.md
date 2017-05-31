@@ -1,3 +1,16 @@
+<a name="0.0.21"></a>
+## [0.0.21](https://github.com/Promact/md2/compare/0.0.20...v0.0.21) (2017-05-31)
+
+
+### Bug Fixes
+
+* fix(select) design with multiple select #221
+* fix(datepicker) format date issue
+* fix(datepicker) prevent unnecessary fire change event onblur of textbox
+* fix(tags) menu option design improvement
+
+
+
 <a name="0.0.20"></a>
 ## [0.0.20](https://github.com/Promact/md2/compare/0.0.19...v0.0.20) (2017-05-29)
 

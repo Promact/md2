@@ -360,9 +360,6 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
         this._openOnFocus = false;
         setTimeout(() => { this._openOnFocus = true; }, 100);
       }
-      // if (!this._activeDate) {
-      //  this._placeholderState = '';
-      // }
       if (this._overlayRef) {
         this._overlayRef.detach();
         this._backdropSubscription.unsubscribe();
@@ -580,7 +577,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
       if (this.type !== 'date') {
         d.setHours(date.getHours(), date.getMinutes());
       }
-      if (this.value !== d) {
+      if (!this._util.isSameMinute(this.value, d)) {
         this.value = d;
         this._emitChangeEvent();
       }
@@ -952,7 +949,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
     if (!this._overlayRef) {
       let config = new OverlayState();
       if (this.container === 'inline') {
-        config.positionStrategy = this._createPopupPositionStrategy();
+        config.positionStrategy = this._createPickerPositionStrategy();
         config.hasBackdrop = true;
         config.backdropClass = 'cdk-overlay-transparent-backdrop';
         config.scrollStrategy = new RepositionScrollStrategy(this._scrollDispatcher);
@@ -968,7 +965,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   }
 
   /** Create the popup PositionStrategy. */
-  private _createPopupPositionStrategy(): PositionStrategy {
+  private _createPickerPositionStrategy(): PositionStrategy {
     return this._overlay.position()
       .connectedTo(this._element,
       { originX: 'start', originY: 'top' },

@@ -2,7 +2,7 @@ import { AfterContentInit, ElementRef, OnDestroy, EventEmitter, TemplateRef, Vie
 import { AbstractControl, ControlValueAccessor, NgControl, ValidationErrors, Validator } from '@angular/forms';
 import { DateLocale } from './date-locale';
 import { DateUtil } from './date-util';
-import { Overlay } from '../core';
+import { Overlay, ScrollDispatcher } from '../core';
 import { ClockView } from './clock';
 /** Change event object emitted by Md2Select. */
 export declare class Md2DateChange {
@@ -13,13 +13,12 @@ export declare class Md2DateChange {
 export declare type Type = 'date' | 'time' | 'datetime';
 export declare type Mode = 'auto' | 'portrait' | 'landscape';
 export declare type Container = 'inline' | 'dialog';
-export declare type PanelPositionX = 'before' | 'after';
-export declare type PanelPositionY = 'above' | 'below';
 export declare class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueAccessor, Validator {
     private _element;
-    private overlay;
+    private _overlay;
     private _viewContainerRef;
     private _locale;
+    private _scrollDispatcher;
     private _util;
     _control: NgControl;
     private _portal;
@@ -59,7 +58,7 @@ export declare class Md2Datepicker implements AfterContentInit, OnDestroy, Contr
     onClose: EventEmitter<void>;
     /** Event emitted when the selected date has been changed by the user. */
     change: EventEmitter<Md2DateChange>;
-    constructor(_element: ElementRef, overlay: Overlay, _viewContainerRef: ViewContainerRef, _locale: DateLocale, _util: DateUtil, _control: NgControl);
+    constructor(_element: ElementRef, _overlay: Overlay, _viewContainerRef: ViewContainerRef, _locale: DateLocale, _scrollDispatcher: ScrollDispatcher, _util: DateUtil, _control: NgControl);
     ngAfterContentInit(): void;
     ngOnDestroy(): void;
     registerOnValidatorChange(fn: () => void): void;
@@ -71,11 +70,6 @@ export declare class Md2Datepicker implements AfterContentInit, OnDestroy, Contr
     disableDates: Array<Date>;
     disableWeekDays: Array<number>;
     timeInterval: number;
-    /** Position of the menu in the X axis. */
-    positionX: PanelPositionX;
-    /** Position of the menu in the Y axis. */
-    positionY: PanelPositionY;
-    overlapTrigger: boolean;
     type: Type;
     format: string;
     mode: Mode;
@@ -228,6 +222,8 @@ export declare class Md2Datepicker implements AfterContentInit, OnDestroy, Contr
      *  OverlayRef so that it can be attached to the DOM when open is called.
      */
     private _createOverlay();
+    /** Create the popup PositionStrategy. */
+    private _createPickerPositionStrategy();
     private _cleanUpSubscriptions();
     private calendarState(direction);
 }

@@ -1,5 +1,5 @@
 /**
-  * @license Md2 v0.0.20
+  * @license Md2 v0.0.21
   * Copyright (c) 2017 Promact, Inc. http://code.promactinfo.com/md2/
   * License: MIT
   */
@@ -6326,11 +6326,12 @@ class Md2ColorChange {
     }
 }
 let Md2Colorpicker = class Md2Colorpicker {
-    constructor(_element, overlay, _viewContainerRef, _renderer, _util, _control) {
+    constructor(_element, _overlay, _viewContainerRef, _renderer, _scrollDispatcher, _util, _control) {
         this._element = _element;
-        this.overlay = overlay;
+        this._overlay = _overlay;
         this._viewContainerRef = _viewContainerRef;
         this._renderer = _renderer;
+        this._scrollDispatcher = _scrollDispatcher;
         this._util = _util;
         this._control = _control;
         this._innerValue = '';
@@ -6354,11 +6355,6 @@ let Md2Colorpicker = class Md2Colorpicker {
         this.change = new EventEmitter();
         this.tabindex = 0;
         this.id = 'md2-colorpicker-' + (++nextId$3);
-        /** Position of the colorpicker in the X axis. */
-        this.positionX = 'after';
-        /** Position of the colorpicker in the Y axis. */
-        this.positionY = 'below';
-        this.overlapTrigger = true;
         /** Event emitted when the select has been opened. */
         this.onOpen = new EventEmitter();
         /** Event emitted when the select has been closed. */
@@ -6678,30 +6674,28 @@ let Md2Colorpicker = class Md2Colorpicker {
         if (!this._overlayRef) {
             let config = new OverlayState();
             if (this.container === 'inline') {
-                const [posX, fallbackX] = this.positionX === 'before' ? ['end', 'start'] : ['start', 'end'];
-                const [overlayY, fallbackOverlayY] = this.positionY === 'above' ? ['bottom', 'top'] : ['top', 'bottom'];
-                let originY = overlayY;
-                let fallbackOriginY = fallbackOverlayY;
-                if (!this.overlapTrigger) {
-                    originY = overlayY === 'top' ? 'bottom' : 'top';
-                    fallbackOriginY = fallbackOverlayY === 'top' ? 'bottom' : 'top';
-                }
-                config.positionStrategy = this.overlay.position().connectedTo(this._element, { originX: posX, originY: originY }, { overlayX: posX, overlayY: overlayY })
-                    .withFallbackPosition({ originX: fallbackX, originY: originY }, { overlayX: fallbackX, overlayY: overlayY })
-                    .withFallbackPosition({ originX: posX, originY: fallbackOriginY }, { overlayX: posX, overlayY: fallbackOverlayY })
-                    .withFallbackPosition({ originX: fallbackX, originY: fallbackOriginY }, { overlayX: fallbackX, overlayY: fallbackOverlayY });
+                config.positionStrategy = this._createPickerPositionStrategy();
                 config.hasBackdrop = true;
                 config.backdropClass = 'cdk-overlay-transparent-backdrop';
+                config.scrollStrategy = new RepositionScrollStrategy(this._scrollDispatcher);
             }
             else {
-                config.positionStrategy = this.overlay.position()
+                config.positionStrategy = this._overlay.position()
                     .global()
                     .centerHorizontally()
                     .centerVertically();
                 config.hasBackdrop = true;
             }
-            this._overlayRef = this.overlay.create(config);
+            this._overlayRef = this._overlay.create(config);
         }
+    }
+    /** Create the popup PositionStrategy. */
+    _createPickerPositionStrategy() {
+        return this._overlay.position()
+            .connectedTo(this._element, { originX: 'start', originY: 'top' }, { overlayX: 'start', overlayY: 'top' })
+            .withFallbackPosition({ originX: 'end', originY: 'top' }, { overlayX: 'end', overlayY: 'top' })
+            .withFallbackPosition({ originX: 'start', originY: 'bottom' }, { overlayX: 'start', overlayY: 'bottom' })
+            .withFallbackPosition({ originX: 'end', originY: 'bottom' }, { overlayX: 'end', overlayY: 'bottom' });
     }
     _cleanUpSubscriptions() {
         if (this._backdropSubscription) {
@@ -6782,9 +6776,10 @@ Md2Colorpicker = __decorate$45([
         },
         encapsulation: ViewEncapsulation.None
     }),
-    __param$6(5, Self()), __param$6(5, Optional()),
+    __param$6(6, Self()), __param$6(6, Optional()),
     __metadata$25("design:paramtypes", [ElementRef, Overlay,
         ViewContainerRef, Renderer,
+        ScrollDispatcher,
         ColorUtil, NgControl])
 ], Md2Colorpicker);
 class Hsva {
@@ -7044,7 +7039,7 @@ Md2Option = __decorate$50([
             '[class.md2-option]': 'true',
         },
         template: '<ng-content></ng-content>',
-        styles: [".md2-option{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;line-height:48px;height:48px;padding:0 16px;font-size:16px;font-family:Roboto,\"Helvetica Neue\",sans-serif;text-align:left;text-decoration:none;position:relative;cursor:pointer;outline:0}.md2-option[disabled]{cursor:default}[dir=rtl] .md2-option{text-align:right}.md2-option .mat-icon{margin-right:16px}[dir=rtl] .md2-option .mat-icon{margin-left:16px;margin-right:0}.md2-option[aria-disabled=true]{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;cursor:default}.md2-option:focus:not(.md2-option-disabled),.md2-option:hover:not(.md2-option-disabled){background:rgba(0,0,0,.04)}.md2-option.md2-selected{color:#106cc8}.md2-option.md2-selected:not(.md2-option-multiple){background:rgba(0,0,0,.04)}.md2-option.md2-active{background:rgba(0,0,0,.04);color:#106cc8}.md2-option.md2-option-disabled{color:rgba(0,0,0,.38)}.md2-option.md2-option-multiple{padding-left:40px}.md2-option.md2-option-multiple::after{content:'';position:absolute;top:50%;left:12px;display:block;width:16px;height:16px;margin-top:-8px;border:2px solid;border-radius:2px;box-sizing:border-box;transition:240ms}.md2-option.md2-option-multiple.md2-selected::after{transform:rotate(-45deg);height:8px;border-width:0 0 2px 2px}.md2-optgroup .md2-option:not(.md2-option-multiple){padding-left:32px} /*# sourceMappingURL=option.css.map */ "],
+        styles: [".md2-option{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;line-height:48px;height:48px;padding:0 16px;font-size:16px;font-family:Roboto,\"Helvetica Neue\",sans-serif;text-align:left;text-decoration:none;position:relative;font-family:inherit;cursor:pointer;outline:0}.md2-option[disabled]{cursor:default}[dir=rtl] .md2-option{text-align:right}.md2-option .mat-icon{margin-right:16px}[dir=rtl] .md2-option .mat-icon{margin-left:16px;margin-right:0}.md2-option[aria-disabled=true]{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;cursor:default}.md2-option:focus:not(.md2-option-disabled),.md2-option:hover:not(.md2-option-disabled){background:rgba(0,0,0,.04)}.md2-option.md2-selected{color:#106cc8}.md2-option.md2-selected:not(.md2-option-multiple){background:rgba(0,0,0,.04)}.md2-option.md2-active{background:rgba(0,0,0,.04);color:#106cc8}.md2-option.md2-option-disabled{color:rgba(0,0,0,.38)}.md2-option.md2-option-multiple{padding-left:40px}.md2-option.md2-option-multiple::after{content:'';position:absolute;top:50%;left:12px;display:block;width:16px;height:16px;margin-top:-8px;border:2px solid;border-radius:2px;box-sizing:border-box;transition:240ms}.md2-option.md2-option-multiple.md2-selected::after{transform:rotate(-45deg);height:8px;border-width:0 0 2px 2px}.md2-optgroup .md2-option:not(.md2-option-multiple){padding-left:32px} /*# sourceMappingURL=option.css.map */ "],
         encapsulation: ViewEncapsulation.None
     }),
     __param$9(0, Optional()),
@@ -7350,7 +7345,7 @@ const SELECT_PANEL_INDENT_PADDING_X = SELECT_PANEL_PADDING_X * 2;
  * the browser adds ~4px, because we're using inline elements.
  * The checkbox width is 20px.
  */
-const SELECT_MULTIPLE_PANEL_PADDING_X = SELECT_PANEL_PADDING_X * 1.75 + 20;
+const SELECT_MULTIPLE_PANEL_PADDING_X = SELECT_PANEL_PADDING_X * 1.25 + 20;
 /**
  * The panel's padding on the y-axis. This padding indicates there are more
  * options available if you scroll.
@@ -9217,11 +9212,12 @@ class Md2DateChange {
     }
 }
 let Md2Datepicker = class Md2Datepicker {
-    constructor(_element, overlay, _viewContainerRef, _locale, _util, _control) {
+    constructor(_element, _overlay, _viewContainerRef, _locale, _scrollDispatcher, _util, _control) {
         this._element = _element;
-        this.overlay = overlay;
+        this._overlay = _overlay;
         this._viewContainerRef = _viewContainerRef;
         this._locale = _locale;
+        this._scrollDispatcher = _scrollDispatcher;
         this._util = _util;
         this._control = _control;
         this._value = null;
@@ -9258,11 +9254,6 @@ let Md2Datepicker = class Md2Datepicker {
         this.disableDates = [];
         this.disableWeekDays = [];
         this.timeInterval = 1;
-        /** Position of the menu in the X axis. */
-        this.positionX = 'after';
-        /** Position of the menu in the Y axis. */
-        this.positionY = 'below';
-        this.overlapTrigger = true;
         /** The form control validator for the min date. */
         this._minValidator = (control) => {
             return (!this.min || !control.value ||
@@ -9426,9 +9417,6 @@ let Md2Datepicker = class Md2Datepicker {
                 this._openOnFocus = false;
                 setTimeout(() => { this._openOnFocus = true; }, 100);
             }
-            // if (!this._activeDate) {
-            //  this._placeholderState = '';
-            // }
             if (this._overlayRef) {
                 this._overlayRef.detach();
                 this._backdropSubscription.unsubscribe();
@@ -9629,7 +9617,10 @@ let Md2Datepicker = class Md2Datepicker {
             this._onTouched();
         }
         let el = event.target;
-        let date = this._util.parse(el.value, this.format);
+        let date = this._util.parseDate(el.value, this.format);
+        if (!date) {
+            date = this._util.parse(el.value, this.format);
+        }
         if (this._util.isValidDate(date)) {
             let d = new Date(this.value);
             if (this.type !== 'time') {
@@ -9638,7 +9629,7 @@ let Md2Datepicker = class Md2Datepicker {
             if (this.type !== 'date') {
                 d.setHours(date.getHours(), date.getMinutes());
             }
-            if (this.value !== d) {
+            if (!this._util.isSameMinute(this.value, d)) {
                 this.value = d;
                 this._emitChangeEvent();
             }
@@ -9999,30 +9990,28 @@ let Md2Datepicker = class Md2Datepicker {
         if (!this._overlayRef) {
             let config = new OverlayState();
             if (this.container === 'inline') {
-                const [posX, fallbackX] = this.positionX === 'before' ? ['end', 'start'] : ['start', 'end'];
-                const [overlayY, fallbackOverlayY] = this.positionY === 'above' ? ['bottom', 'top'] : ['top', 'bottom'];
-                let originY = overlayY;
-                let fallbackOriginY = fallbackOverlayY;
-                if (!this.overlapTrigger) {
-                    originY = overlayY === 'top' ? 'bottom' : 'top';
-                    fallbackOriginY = fallbackOverlayY === 'top' ? 'bottom' : 'top';
-                }
-                config.positionStrategy = this.overlay.position().connectedTo(this._element, { originX: posX, originY: originY }, { overlayX: posX, overlayY: overlayY })
-                    .withFallbackPosition({ originX: fallbackX, originY: originY }, { overlayX: fallbackX, overlayY: overlayY })
-                    .withFallbackPosition({ originX: posX, originY: fallbackOriginY }, { overlayX: posX, overlayY: fallbackOverlayY })
-                    .withFallbackPosition({ originX: fallbackX, originY: fallbackOriginY }, { overlayX: fallbackX, overlayY: fallbackOverlayY });
+                config.positionStrategy = this._createPickerPositionStrategy();
                 config.hasBackdrop = true;
                 config.backdropClass = 'cdk-overlay-transparent-backdrop';
+                config.scrollStrategy = new RepositionScrollStrategy(this._scrollDispatcher);
             }
             else {
-                config.positionStrategy = this.overlay.position()
+                config.positionStrategy = this._overlay.position()
                     .global()
                     .centerHorizontally()
                     .centerVertically();
                 config.hasBackdrop = true;
             }
-            this._overlayRef = this.overlay.create(config);
+            this._overlayRef = this._overlay.create(config);
         }
+    }
+    /** Create the popup PositionStrategy. */
+    _createPickerPositionStrategy() {
+        return this._overlay.position()
+            .connectedTo(this._element, { originX: 'start', originY: 'top' }, { overlayX: 'start', overlayY: 'top' })
+            .withFallbackPosition({ originX: 'end', originY: 'top' }, { overlayX: 'end', overlayY: 'top' })
+            .withFallbackPosition({ originX: 'start', originY: 'bottom' }, { overlayX: 'start', overlayY: 'bottom' })
+            .withFallbackPosition({ originX: 'end', originY: 'bottom' }, { overlayX: 'end', overlayY: 'bottom' });
     }
     _cleanUpSubscriptions() {
         if (this._backdropSubscription) {
@@ -10171,9 +10160,10 @@ Md2Datepicker = __decorate$54([
         ],
         encapsulation: ViewEncapsulation.None
     }),
-    __param$10(5, Self()), __param$10(5, Optional()),
+    __param$10(6, Self()), __param$10(6, Optional()),
     __metadata$30("design:paramtypes", [ElementRef, Overlay,
         ViewContainerRef, DateLocale,
+        ScrollDispatcher,
         DateUtil, NgControl])
 ], Md2Datepicker);
 
@@ -11700,7 +11690,7 @@ __decorate$65([
 Md2Tags = __decorate$65([
     Component({selector: 'md2-tags',
         template: "<div class=\"md2-tags-container\"><span *ngFor=\"let t of _items; let i = index;\" class=\"md2-tag\" [class.active]=\"_selectedTag === i\" (click)=\"_selectTag(i)\"><span class=\"md2-tag-text\">{{t.text}}</span> <svg (click)=\"_removeTagAndFocusInput(i)\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\"/></svg></span><div class=\"md2-tag-add\"><input [(ngModel)]=\"_inputValue\" type=\"text\" tabs=\"false\" autocomplete=\"off\" tabindex=\"-1\" [disabled]=\"disabled\" class=\"md2-tags-input\" [placeholder]=\"placeholder\" (focus)=\"_onInputFocus()\" (blur)=\"_onInputBlur()\" (keydown)=\"_handleInputKeydown($event)\" (change)=\"$event.stopPropagation()\"><ul *ngIf=\"isMenuVisible\" class=\"md2-tags-menu\" (mouseenter)=\"_listEnter()\" (mouseleave)=\"_listLeave()\"><li class=\"md2-tag-option\" *ngFor=\"let l of _list; let i = index;\" [class.focused]=\"_focusedTag === i\" (click)=\"_addTag($event, i)\"><span class=\"md2-tag-option-text\" [innerHtml]=\"l.text | highlight:_inputValue\"></span></li></ul></div></div>",
-        styles: [":host{outline:0;user-select:none;backface-visibility:hidden}.md2-tags-container{position:relative;display:block;max-width:100%;padding:2px 2px 4px;border-bottom:1px solid rgba(0,0,0,.12);box-sizing:content-box;min-width:64px;min-height:26px;cursor:text}.md2-tags-container::after,.md2-tags-container::before{display:table;content:' '}.md2-tags-container::after{clear:both}.focus .md2-tags-container{padding-bottom:3px;border-bottom:2px solid #106cc8}.md2-tags-disabled .md2-tags-container{color:rgba(0,0,0,.38);cursor:default}.md2-tags-disabled.focus .md2-tags-container{padding-bottom:4px;border-bottom:1px solid rgba(0,0,0,.38)}.md2-tag{position:relative;cursor:default;border-radius:16px;display:block;height:32px;line-height:32px;margin:4px 4px 0 0;padding:0 26px 0 12px;float:left;box-sizing:border-box;max-width:100%;background:#e0e0e0;color:#424242;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.md2-tag.active{background:#106cc8;color:rgba(255,255,255,.87)}.md2-tag.active svg{color:rgba(255,255,255,.87)}.md2-tag svg{position:absolute;top:4px;right:2px;cursor:pointer;display:inline-block;overflow:hidden;fill:currentColor;color:rgba(0,0,0,.54)}.md2-tag-add{position:relative;display:inline-block;margin-left:4px}input{border:0;outline:0;margin-top:6px;height:30px;line-height:30px;padding:0;color:rgba(0,0,0,.87);background:0 0}.md2-tags-placeholder{color:rgba(0,0,0,.38)}.md2-tags-menu{position:absolute;left:0;top:100%;display:block;z-index:10;flex-direction:column;width:100%;margin:6px 0 0;padding:8px 0;box-shadow:0 1px 3px 0 rgba(0,0,0,.2),0 1px 1px 0 rgba(0,0,0,.14),0 2px 1px -1px rgba(0,0,0,.12);max-height:256px;min-height:48px;overflow-y:auto;transform:scale(1);background:#fff;backface-visibility:hidden}.md2-tags-menu .md2-tag-option{cursor:pointer;position:relative;display:block;color:#212121;align-items:center;width:auto;transition:background 150ms linear;padding:12px 16px;line-height:24px;box-sizing:border-box}.md2-tags-menu .md2-tag-option.focused,.md2-tags-menu .md2-tag-option:hover{background:#eee}.md2-tags-menu .md2-tag-option .md2-tag-option-text{width:auto;font-size:16px}.highlight{color:#757575} /*# sourceMappingURL=tags.css.map */ "],
+        styles: [":host{outline:0;user-select:none;backface-visibility:hidden}.md2-tags-container{position:relative;display:block;max-width:100%;padding:2px 2px 4px;border-bottom:1px solid rgba(0,0,0,.12);box-sizing:content-box;min-width:64px;min-height:26px;cursor:text}.md2-tags-container::after,.md2-tags-container::before{display:table;content:' '}.md2-tags-container::after{clear:both}.focus .md2-tags-container{padding-bottom:3px;border-bottom:2px solid #106cc8}.md2-tags-disabled .md2-tags-container{color:rgba(0,0,0,.38);cursor:default}.md2-tags-disabled.focus .md2-tags-container{padding-bottom:4px;border-bottom:1px solid rgba(0,0,0,.38)}.md2-tag{position:relative;cursor:default;border-radius:16px;display:block;height:32px;line-height:32px;margin:4px 4px 0 0;padding:0 26px 0 12px;float:left;box-sizing:border-box;max-width:100%;background:#e0e0e0;color:#424242;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.md2-tag.active{background:#106cc8;color:rgba(255,255,255,.87)}.md2-tag.active svg{color:rgba(255,255,255,.87)}.md2-tag svg{position:absolute;top:4px;right:2px;cursor:pointer;display:inline-block;overflow:hidden;fill:currentColor;color:rgba(0,0,0,.54)}.md2-tag-add{position:relative;display:inline-block;margin-left:4px}input{border:0;outline:0;margin-top:6px;height:30px;line-height:30px;padding:0;color:rgba(0,0,0,.87);background:0 0}.md2-tags-placeholder{color:rgba(0,0,0,.38)}.md2-tags-menu{position:absolute;left:0;top:100%;display:block;z-index:10;flex-direction:column;width:100%;margin:6px 0 0;padding:8px 0;box-shadow:0 1px 3px 0 rgba(0,0,0,.2),0 1px 1px 0 rgba(0,0,0,.14),0 2px 1px -1px rgba(0,0,0,.12);max-height:256px;min-height:48px;overflow-y:auto;transform:scale(1);background:#fff;backface-visibility:hidden}.md2-tags-menu .md2-tag-option{cursor:pointer;position:relative;display:block;color:#212121;align-items:center;width:auto;transition:background 150ms linear;padding:12px 16px;line-height:24px;box-sizing:border-box;word-wrap:break-word}.md2-tags-menu .md2-tag-option.focused,.md2-tags-menu .md2-tag-option:hover{background:#eee}.md2-tags-menu .md2-tag-option .md2-tag-option-text{width:auto;font-size:16px}.highlight{color:#757575} /*# sourceMappingURL=tags.css.map */ "],
         host: {
             'role': 'tags',
             '[id]': 'id',

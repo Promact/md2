@@ -14,7 +14,7 @@ import { Component, ElementRef, HostListener, Input, Output, Optional, EventEmit
 import { NgControl, Validators } from '@angular/forms';
 import { DateLocale } from './date-locale';
 import { DateUtil } from './date-util';
-import { coerceBooleanProperty, ENTER, TAB, ESCAPE, HOME, END, PAGE_UP, PAGE_DOWN, LEFT_ARROW, RIGHT_ARROW, UP_ARROW, DOWN_ARROW, Overlay, OverlayState, TemplatePortal, } from '../core';
+import { coerceBooleanProperty, ENTER, TAB, ESCAPE, HOME, END, PAGE_UP, PAGE_DOWN, LEFT_ARROW, RIGHT_ARROW, UP_ARROW, DOWN_ARROW, Overlay, OverlayState, RepositionScrollStrategy, ScrollDispatcher, TemplatePortal, } from '../core';
 import { fadeInContent, slideCalendar } from './datepicker-animations';
 /** Change event object emitted by Md2Select. */
 var Md2DateChange = (function () {
@@ -26,12 +26,13 @@ var Md2DateChange = (function () {
 }());
 export { Md2DateChange };
 var Md2Datepicker = (function () {
-    function Md2Datepicker(_element, overlay, _viewContainerRef, _locale, _util, _control) {
+    function Md2Datepicker(_element, _overlay, _viewContainerRef, _locale, _scrollDispatcher, _util, _control) {
         var _this = this;
         this._element = _element;
-        this.overlay = overlay;
+        this._overlay = _overlay;
         this._viewContainerRef = _viewContainerRef;
         this._locale = _locale;
+        this._scrollDispatcher = _scrollDispatcher;
         this._util = _util;
         this._control = _control;
         this._value = null;
@@ -68,11 +69,6 @@ var Md2Datepicker = (function () {
         this.disableDates = [];
         this.disableWeekDays = [];
         this.timeInterval = 1;
-        /** Position of the menu in the X axis. */
-        this.positionX = 'after';
-        /** Position of the menu in the Y axis. */
-        this.positionY = 'below';
-        this.overlapTrigger = true;
         /** The form control validator for the min date. */
         this._minValidator = function (control) {
             return (!_this.min || !control.value ||
@@ -307,9 +303,6 @@ var Md2Datepicker = (function () {
                 _this._openOnFocus = false;
                 setTimeout(function () { _this._openOnFocus = true; }, 100);
             }
-            // if (!this._activeDate) {
-            //  this._placeholderState = '';
-            // }
             if (_this._overlayRef) {
                 _this._overlayRef.detach();
                 _this._backdropSubscription.unsubscribe();
@@ -510,7 +503,10 @@ var Md2Datepicker = (function () {
             this._onTouched();
         }
         var el = event.target;
-        var date = this._util.parse(el.value, this.format);
+        var date = this._util.parseDate(el.value, this.format);
+        if (!date) {
+            date = this._util.parse(el.value, this.format);
+        }
         if (this._util.isValidDate(date)) {
             var d = new Date(this.value);
             if (this.type !== 'time') {
@@ -519,7 +515,7 @@ var Md2Datepicker = (function () {
             if (this.type !== 'date') {
                 d.setHours(date.getHours(), date.getMinutes());
             }
-            if (this.value !== d) {
+            if (!this._util.isSameMinute(this.value, d)) {
                 this.value = d;
                 this._emitChangeEvent();
             }
@@ -884,30 +880,28 @@ var Md2Datepicker = (function () {
         if (!this._overlayRef) {
             var config = new OverlayState();
             if (this.container === 'inline') {
-                var _a = this.positionX === 'before' ? ['end', 'start'] : ['start', 'end'], posX = _a[0], fallbackX = _a[1];
-                var _b = this.positionY === 'above' ? ['bottom', 'top'] : ['top', 'bottom'], overlayY = _b[0], fallbackOverlayY = _b[1];
-                var originY = overlayY;
-                var fallbackOriginY = fallbackOverlayY;
-                if (!this.overlapTrigger) {
-                    originY = overlayY === 'top' ? 'bottom' : 'top';
-                    fallbackOriginY = fallbackOverlayY === 'top' ? 'bottom' : 'top';
-                }
-                config.positionStrategy = this.overlay.position().connectedTo(this._element, { originX: posX, originY: originY }, { overlayX: posX, overlayY: overlayY })
-                    .withFallbackPosition({ originX: fallbackX, originY: originY }, { overlayX: fallbackX, overlayY: overlayY })
-                    .withFallbackPosition({ originX: posX, originY: fallbackOriginY }, { overlayX: posX, overlayY: fallbackOverlayY })
-                    .withFallbackPosition({ originX: fallbackX, originY: fallbackOriginY }, { overlayX: fallbackX, overlayY: fallbackOverlayY });
+                config.positionStrategy = this._createPickerPositionStrategy();
                 config.hasBackdrop = true;
                 config.backdropClass = 'cdk-overlay-transparent-backdrop';
+                config.scrollStrategy = new RepositionScrollStrategy(this._scrollDispatcher);
             }
             else {
-                config.positionStrategy = this.overlay.position()
+                config.positionStrategy = this._overlay.position()
                     .global()
                     .centerHorizontally()
                     .centerVertically();
                 config.hasBackdrop = true;
             }
-            this._overlayRef = this.overlay.create(config);
+            this._overlayRef = this._overlay.create(config);
         }
+    };
+    /** Create the popup PositionStrategy. */
+    Md2Datepicker.prototype._createPickerPositionStrategy = function () {
+        return this._overlay.position()
+            .connectedTo(this._element, { originX: 'start', originY: 'top' }, { overlayX: 'start', overlayY: 'top' })
+            .withFallbackPosition({ originX: 'end', originY: 'top' }, { overlayX: 'end', overlayY: 'top' })
+            .withFallbackPosition({ originX: 'start', originY: 'bottom' }, { overlayX: 'start', overlayY: 'bottom' })
+            .withFallbackPosition({ originX: 'end', originY: 'bottom' }, { overlayX: 'end', overlayY: 'bottom' });
     };
     Md2Datepicker.prototype._cleanUpSubscriptions = function () {
         if (this._backdropSubscription) {
@@ -1058,9 +1052,10 @@ Md2Datepicker = __decorate([
         ],
         encapsulation: ViewEncapsulation.None
     }),
-    __param(5, Self()), __param(5, Optional()),
+    __param(6, Self()), __param(6, Optional()),
     __metadata("design:paramtypes", [ElementRef, Overlay,
         ViewContainerRef, DateLocale,
+        ScrollDispatcher,
         DateUtil, NgControl])
 ], Md2Datepicker);
 export { Md2Datepicker };

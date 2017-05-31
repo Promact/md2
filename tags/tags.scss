@@ -132,6 +132,7 @@ input {
     padding: 12px 16px;
     line-height: 24px;
     box-sizing: border-box;
+    word-wrap:break-word;
 
     &:hover,
     &.focused {

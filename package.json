@@ -1,66 +1,14 @@
 {
-  "_args": [
-    [
-      {
-        "raw": "md2",
-        "scope": null,
-        "escapedName": "md2",
-        "name": "md2",
-        "rawSpec": "",
-        "spec": "latest",
-        "type": "tag"
-      },
-      "D:\\Promact\\Git\\dist"
-    ]
-  ],
-  "_from": "md2@latest",
-  "_id": "md2@0.0.20",
-  "_inCache": true,
-  "_location": "/md2",
-  "_nodeVersion": "6.10.2",
-  "_npmOperationalInternal": {
-    "host": "s3://npm-registry-packages",
-    "tmp": "tmp/md2-0.0.20.tgz_1496050445861_0.023438430624082685"
-  },
-  "_npmUser": {
-    "name": "dharmeshpipariya",
-    "email": "pipariyadharmesh@gmail.com"
-  },
-  "_npmVersion": "3.10.10",
-  "_phantomChildren": {},
-  "_requested": {
-    "raw": "md2",
-    "scope": null,
-    "escapedName": "md2",
-    "name": "md2",
-    "rawSpec": "",
-    "spec": "latest",
-    "type": "tag"
-  },
-  "_requiredBy": [
-    "#USER"
-  ],
-  "_resolved": "https://registry.npmjs.org/md2/-/md2-0.0.20.tgz",
-  "_shasum": "ab87994a86120bad33702f9c55f79bf210c6cf93",
-  "_shrinkwrap": null,
-  "_spec": "md2",
-  "_where": "D:\\Promact\\Git\\dist",
-  "author": {
-    "name": "Dharmesh Pipariya",
-    "email": "pipariyadharmesh@gmail.com"
-  },
-  "bugs": {
-    "url": "https://github.com/Promact/md2/issues"
-  },
-  "dependencies": {},
+  "name": "md2",
+  "version": "0.0.21",
   "description": "Angular2 based Material Design components, directives and services are Accordion, Autocomplete, Chips(Tags), Collapse, Colorpicker, Data Table, Datepicker, Dialog(Modal), Menu, Multiselect, Select, Tabs, Tags(Chips), Toast and Tooltip.",
-  "devDependencies": {},
-  "directories": {},
-  "dist": {
-    "shasum": "ab87994a86120bad33702f9c55f79bf210c6cf93",
-    "tarball": "https://registry.npmjs.org/md2/-/md2-0.0.20.tgz"
+  "main": "./md2.umd.js",
+  "module": "./index.js",
+  "typings": "./index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Promact/md2.git"
   },
-  "homepage": "https://github.com/Promact/md2#readme",
   "keywords": [
     "angular",
     "material",
@@ -85,28 +33,14 @@
     "tooltip"
   ],
   "license": "MIT",
-  "main": "./md2.umd.js",
-  "maintainers": [
-    {
-      "name": "dharmeshpipariya",
-      "email": "pipariyadharmesh@gmail.com"
-    }
-  ],
-  "module": "./index.js",
-  "name": "md2",
-  "optionalDependencies": {},
+  "bugs": {
+    "url": "https://github.com/Promact/md2/issues"
+  },
+  "homepage": "https://github.com/Promact/md2#readme",
+  "author": "Dharmesh Pipariya <pipariyadharmesh@gmail.com>",
   "peerDependencies": {
     "@angular/core": "^4.0.0",
     "@angular/common": "^4.0.0",
     "@angular/http": "^4.0.0"
-  },
-  "readme": "# MD2\n\nAngular2 based Material Design components, directives and services are Accordion, Autocomplete, Chips(Tags), Collapse, Colorpicker, Data Table, Datepicker, Dialog(Modal), Menu, Multiselect, Select, Tabs, Tags(Chips), Toast and Tooltip.\n\n[![npm version](https://badge.fury.io/js/md2.svg)](https://www.npmjs.com/package/md2)\n[![Build Status](https://travis-ci.org/Promact/md2.svg?branch=master)](https://travis-ci.org/Promact/md2)\n\n### Installation\n\nThe latest release of MD2 can be installed from npm\n\n`npm install --save md2`\n\nPlaying with the latest changes from [master](https://github.com/Promact/md2/tree/master) is also possible\n\n`npm install --save https://github.com/Promact/md2.git`\n\n### Getting started\n\nSetup `MD2` in your project\n\n```ts\n// system.config.js\n// ================\n{\n  map: {\n    'md2': 'node_modules/md2/bundles/md2.umd.js'\n  }\n}\n\n\n// app.module.ts\n// =============\n\nimport { Md2Module }  from 'md2';\n@NgModule({\n  imports: [\n    ...,\n    Md2Module.forRoot(),\n  ],\n  ...\n})\nexport class AppModule { }\n\n```\n\n### Demo\n\n[demo](http://code.promactinfo.com/md2) and [demo sources](https://github.com/Promact/md2/tree/master/src/demo-app).\n\n\n### Components:\n\n- [md2-accordion](https://github.com/Promact/md2/tree/master/src/lib/accordion)\n- [md2-autocomplete](https://github.com/Promact/md2/tree/master/src/lib/autocomplete)\n- [md2-chips](https://github.com/Promact/md2/tree/master/src/lib/chips)\n- [md2-collapse](https://github.com/Promact/md2/tree/master/src/lib/collapse)\n- [md2-colorpicker](https://github.com/Promact/md2/tree/master/src/lib/colorpicker)\n- [md2-data-table](https://github.com/Promact/md2/tree/master/src/lib/data-table)\n- [md2-datepicker](https://github.com/Promact/md2/tree/master/src/lib/datepicker)\n- [md2-dialog](https://github.com/Promact/md2/tree/master/src/lib/dialog)\n- [md2-menu](https://github.com/Promact/md2/tree/master/src/lib/menu)\n- [md2-select](https://github.com/Promact/md2/tree/master/src/lib/select)\n- [md2-tabs](https://github.com/Promact/md2/tree/master/src/lib/tabs)\n- [md2-tags](https://github.com/Promact/md2/tree/master/src/lib/tags)\n- [md2-toast](https://github.com/Promact/md2/tree/master/src/lib/toast)\n- [md2-tooltip](https://github.com/Promact/md2/tree/master/src/lib/tooltip)\n\n\n## The goal of MD2\nOur goal is to build a set of high-quality UI components built with Angular and TypeScript,\nfollowing the Material Design spec. These\ncomponents will serve as an example of how to write Angular code following best practices.\n\n### What do we mean by \"high-quality\"?\n* Internationalized and accessible so that all users can use them.\n* Straightforward APIs that don't confuse developers.\n* Behave as expected across a wide variety of use-cases without bugs.\n* Behavior is well-tested with both unit and integration tests.\n* Customizable within the bounds of the Material Design specification.\n* Performance cost is minimized.\n* Code is clean and well-documented to serve as an example for Angular devs.\n\n## Browser and screen reader support\nMD2 supports the most recent two versions of all major browsers:\nChrome (including Android), Firefox, Safari (including iOS), and IE11 / Edge\n\nWe also aim for great user experience with the following screen readers:\n* NVDA and JAWS with IE / FF / Chrome (on Windows).\n* VoiceOver with Safari on iOS and Safari / Chrome on OSX.\n* TalkBack with Chrome on Android.\n",
-  "readmeFilename": "README.md",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Promact/md2.git"
-  },
-  "scripts": {},
-  "typings": "./index.d.ts",
-  "version": "0.0.20"
+  }
 }

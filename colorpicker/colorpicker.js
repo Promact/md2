@@ -13,7 +13,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 import { Component, Input, Output, EventEmitter, ElementRef, ViewEncapsulation, NgModule, Directive, Optional, Renderer, Self, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormsModule, NgControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Overlay, OverlayModule, OverlayState, TemplatePortal, PortalModule } from '../core';
+import { Overlay, OverlayModule, OverlayState, RepositionScrollStrategy, ScrollDispatcher, TemplatePortal, PortalModule } from '../core';
 import { ColorUtil } from './color-util';
 import { coerceBooleanProperty } from '../core/coercion/boolean-property';
 var nextId = 0;
@@ -178,11 +178,12 @@ var Md2ColorChange = (function () {
 }());
 export { Md2ColorChange };
 var Md2Colorpicker = (function () {
-    function Md2Colorpicker(_element, overlay, _viewContainerRef, _renderer, _util, _control) {
+    function Md2Colorpicker(_element, _overlay, _viewContainerRef, _renderer, _scrollDispatcher, _util, _control) {
         this._element = _element;
-        this.overlay = overlay;
+        this._overlay = _overlay;
         this._viewContainerRef = _viewContainerRef;
         this._renderer = _renderer;
+        this._scrollDispatcher = _scrollDispatcher;
         this._util = _util;
         this._control = _control;
         this._innerValue = '';
@@ -206,11 +207,6 @@ var Md2Colorpicker = (function () {
         this.change = new EventEmitter();
         this.tabindex = 0;
         this.id = 'md2-colorpicker-' + (++nextId);
-        /** Position of the colorpicker in the X axis. */
-        this.positionX = 'after';
-        /** Position of the colorpicker in the Y axis. */
-        this.positionY = 'below';
-        this.overlapTrigger = true;
         /** Event emitted when the select has been opened. */
         this.onOpen = new EventEmitter();
         /** Event emitted when the select has been closed. */
@@ -563,30 +559,28 @@ var Md2Colorpicker = (function () {
         if (!this._overlayRef) {
             var config = new OverlayState();
             if (this.container === 'inline') {
-                var _a = this.positionX === 'before' ? ['end', 'start'] : ['start', 'end'], posX = _a[0], fallbackX = _a[1];
-                var _b = this.positionY === 'above' ? ['bottom', 'top'] : ['top', 'bottom'], overlayY = _b[0], fallbackOverlayY = _b[1];
-                var originY = overlayY;
-                var fallbackOriginY = fallbackOverlayY;
-                if (!this.overlapTrigger) {
-                    originY = overlayY === 'top' ? 'bottom' : 'top';
-                    fallbackOriginY = fallbackOverlayY === 'top' ? 'bottom' : 'top';
-                }
-                config.positionStrategy = this.overlay.position().connectedTo(this._element, { originX: posX, originY: originY }, { overlayX: posX, overlayY: overlayY })
-                    .withFallbackPosition({ originX: fallbackX, originY: originY }, { overlayX: fallbackX, overlayY: overlayY })
-                    .withFallbackPosition({ originX: posX, originY: fallbackOriginY }, { overlayX: posX, overlayY: fallbackOverlayY })
-                    .withFallbackPosition({ originX: fallbackX, originY: fallbackOriginY }, { overlayX: fallbackX, overlayY: fallbackOverlayY });
+                config.positionStrategy = this._createPickerPositionStrategy();
                 config.hasBackdrop = true;
                 config.backdropClass = 'cdk-overlay-transparent-backdrop';
+                config.scrollStrategy = new RepositionScrollStrategy(this._scrollDispatcher);
             }
             else {
-                config.positionStrategy = this.overlay.position()
+                config.positionStrategy = this._overlay.position()
                     .global()
                     .centerHorizontally()
                     .centerVertically();
                 config.hasBackdrop = true;
             }
-            this._overlayRef = this.overlay.create(config);
+            this._overlayRef = this._overlay.create(config);
         }
+    };
+    /** Create the popup PositionStrategy. */
+    Md2Colorpicker.prototype._createPickerPositionStrategy = function () {
+        return this._overlay.position()
+            .connectedTo(this._element, { originX: 'start', originY: 'top' }, { overlayX: 'start', overlayY: 'top' })
+            .withFallbackPosition({ originX: 'end', originY: 'top' }, { overlayX: 'end', overlayY: 'top' })
+            .withFallbackPosition({ originX: 'start', originY: 'bottom' }, { overlayX: 'start', overlayY: 'bottom' })
+            .withFallbackPosition({ originX: 'end', originY: 'bottom' }, { overlayX: 'end', overlayY: 'bottom' });
     };
     Md2Colorpicker.prototype._cleanUpSubscriptions = function () {
         if (this._backdropSubscription) {
@@ -668,9 +662,10 @@ Md2Colorpicker = __decorate([
         },
         encapsulation: ViewEncapsulation.None
     }),
-    __param(5, Self()), __param(5, Optional()),
+    __param(6, Self()), __param(6, Optional()),
     __metadata("design:paramtypes", [ElementRef, Overlay,
         ViewContainerRef, Renderer,
+        ScrollDispatcher,
         ColorUtil, NgControl])
 ], Md2Colorpicker);
 export { Md2Colorpicker };

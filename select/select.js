@@ -58,7 +58,7 @@ export var SELECT_PANEL_INDENT_PADDING_X = SELECT_PANEL_PADDING_X * 2;
  * the browser adds ~4px, because we're using inline elements.
  * The checkbox width is 20px.
  */
-export var SELECT_MULTIPLE_PANEL_PADDING_X = SELECT_PANEL_PADDING_X * 1.75 + 20;
+export var SELECT_MULTIPLE_PANEL_PADDING_X = SELECT_PANEL_PADDING_X * 1.25 + 20;
 /**
  * The panel's padding on the y-axis. This padding indicates there are more
  * options available if you scroll.

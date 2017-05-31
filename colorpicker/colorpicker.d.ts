@@ -1,8 +1,8 @@
 import { EventEmitter, ElementRef, OnDestroy, Renderer, TemplateRef, ViewContainerRef } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
-import { Overlay } from '../core';
+import { Overlay, ScrollDispatcher } from '../core';
 import { ColorUtil } from './color-util';
-import { Container, PanelPositionX, PanelPositionY } from '../datepicker/datepicker';
+import { Container } from '../datepicker/datepicker';
 export declare class TextDirective {
     newValue: EventEmitter<any>;
     text: any;
@@ -59,9 +59,10 @@ export declare class Md2ColorChange {
 }
 export declare class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
     private _element;
-    private overlay;
+    private _overlay;
     private _viewContainerRef;
     private _renderer;
+    private _scrollDispatcher;
     private _util;
     _control: NgControl;
     private _portal;
@@ -112,11 +113,6 @@ export declare class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
     change: EventEmitter<Md2ColorChange>;
     tabindex: number;
     id: string;
-    /** Position of the colorpicker in the X axis. */
-    positionX: PanelPositionX;
-    /** Position of the colorpicker in the Y axis. */
-    positionY: PanelPositionY;
-    overlapTrigger: boolean;
     /**
     * set accessor including call the onchange callback
     */
@@ -130,7 +126,7 @@ export declare class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
     /** Event emitted when the select has been closed. */
     onClose: EventEmitter<void>;
     _templatePortal: TemplateRef<any>;
-    constructor(_element: ElementRef, overlay: Overlay, _viewContainerRef: ViewContainerRef, _renderer: Renderer, _util: ColorUtil, _control: NgControl);
+    constructor(_element: ElementRef, _overlay: Overlay, _viewContainerRef: ViewContainerRef, _renderer: Renderer, _scrollDispatcher: ScrollDispatcher, _util: ColorUtil, _control: NgControl);
     ngOnDestroy(): void;
     /** Whether or not the overlay panel is open. */
     readonly panelOpen: boolean;
@@ -220,6 +216,8 @@ export declare class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
      *  OverlayRef so that it can be attached to the DOM when open is called.
      */
     private _createOverlay();
+    /** Create the popup PositionStrategy. */
+    private _createPickerPositionStrategy();
     private _cleanUpSubscriptions();
 }
 export declare class Hsva {

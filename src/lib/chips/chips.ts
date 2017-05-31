@@ -94,7 +94,7 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
   @Input('autocomplete-item-text') autocompleteItemText: string = 'text';
   @Input('autocomplete-item-value') autocompleteItemValue: string = 'value';
   @Input('item-text') textKey: string = 'text';
-  @Input('item-value') valueKey: string = 'value';
+  @Input('item-value') valueKey: string = null;
 
   @Output() change: EventEmitter<any> = new EventEmitter<any>();
   @ViewChild('chipInputForm') chipInputForm: NgForm;
@@ -151,8 +151,7 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
 
   changeAutocomplete(value: any) {
     if (value) {
-      let objText = value.value;
-      this.addNewChip(objText);
+      this.addNewChip(value.value);
       this.item = null;
     }
   }
@@ -309,11 +308,8 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
   private addNewChip(chips: any): void {
     let validInput = this._isValid(chips);
     if (validInput) {
-      if (this.maxChips) {
-        if (this.chipItemList.length < this.maxChips) {
-          this.chipItemList.push(new Chip(chips,
-            this.autocompleteItemText, this.autocompleteItemValue));
-        }
+      if (this.maxChips && this.maxChips < this.chipItemList.length - 1) {
+        return;
       } else {
         this.chipItemList.push(new Chip(chips, this.textKey, this.valueKey));
         this.item = null;
@@ -361,15 +357,8 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
    * update value
    */
   private updateValue() {
-
     this._value = new Array<any>();
-
-    this._value = this.chipItemList.map((chip: any) => {
-      let a: any = {};
-      a[this.textKey] = chip.text;
-      a[this.valueKey] = chip.value;
-      return a;
-    });
+    this._value = this.chipItemList.map((chip: any) => chip.value);
     this._emitChangeEvent();
   }
 

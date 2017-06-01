@@ -37,12 +37,12 @@
     <div class="md2-datepicker-header">
       <div class="md2-datepicker-header-year"
            *ngIf="type!=='time'"
-           [class.active]="_isYearsVisible"
+           [class.active]="startView === 'year'"
            (click)="_showYear()">{{ activeDate | date: 'y' }}</div>
       <div class="md2-datepicker-header-date-time">
         <span class="md2-datepicker-header-date"
               *ngIf="type!=='time'"
-              [class.active]="_isCalendarVisible && !_isYearsVisible"
+              [class.active]="_isCalendarVisible && startView === 'month'"
               (click)="_showCalendar()">
           {{ getDateLabel }}
         </span>
@@ -54,14 +54,21 @@
                 (click)="_toggleHours('hour')">{{ hours }}</span>:<span class="md2-datepicker-header-minute"
                                                                         [class.active]="_clockView === 'minute'"
                                                                         (click)="_toggleHours('minute')">{{ minutes }}</span>
-          <span class ="md2-datepicker-header-ampm" *ngIf="is12HourClock()" >{{ _ampm(true) }} </span>                                                                       
+          <span class="md2-datepicker-header-ampm" *ngIf="is12HourClock()">{{ _ampm(true) }} </span>
         </span>
-       
+
       </div>
     </div>
     <div class="md2-datepicker-content">
       <div class="md2-datepicker-calendar" [class.active]="_isCalendarVisible">
-        <div class="md2-calendar-years" [class.active]="_isYearsVisible">
+        <md2-calendar [startView]="startView"
+                      [minDate]="min"
+                      [maxDate]="max"
+                      [activeDate]="activeDate"
+                      [selected]="value"
+                      [dateFilter]="_dateFilterForViews"
+                      (selectedChange)="_onDateChange($event)"></md2-calendar>
+        <!--<div class="md2-calendar-years" [class.active]="_isYearsVisible">
           <div class="md2-calendar-years-content">
             <div *ngFor="let y of _years"
                  class="md2-calendar-year"
@@ -105,7 +112,7 @@
               </tr>
             </tbody>
           </table>
-        </div>
+        </div>-->
       </div>
       <md2-clock [class.active]="!_isCalendarVisible"
                  [startView]="_clockView"
@@ -113,7 +120,7 @@
                  [selected]="activeDate"
                  [min]="min"
                  [max]="max"
-                 (activeDateChange)="_onActiveTimeChange($event)"
+                 (activeDateChange)="_onActiveDateChange($event)"
                  (selectedChange)="_onTimeChange($event)"></md2-clock>
       <div class="md2-datepicker-actions">
         <div class="md2-button" (click)="close()">{{ cancelLabel }}</div>

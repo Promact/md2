@@ -25,6 +25,7 @@ import {
   ValidatorFn,
   Validators
 } from '@angular/forms';
+import { DateAdapter } from '../core/datetime/index';
 import { DateLocale } from './date-locale';
 import { DateUtil } from './date-util';
 import {
@@ -109,7 +110,6 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   _years: Array<number> = [];
   _dates: Array<Object> = [];
 
-  _isYearsVisible: boolean;
   _isCalendarVisible: boolean;
   _clockView: ClockView = 'hour';
   _calendarState: string;
@@ -141,7 +141,23 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   /** Event emitted when the selected date has been changed by the user. */
   @Output() change: EventEmitter<Md2DateChange> = new EventEmitter<Md2DateChange>();
 
+
+  /** The view that the calendar should start in. */
+  @Input() startView: 'month' | 'year' = 'month';
+
+  /** A function used to filter which dates are selectable. */
+  @Input() dateFilter: (date: Date) => boolean;
+
+  /** Date filter for the month and year views. */
+  _dateFilterForViews = (date: Date) => {
+    return !!date &&
+      (!this.dateFilter || this.dateFilter(date)) &&
+      (!this.min || this._dateAdapter.compareDate(date, this.min) >= 0) &&
+      (!this.max || this._dateAdapter.compareDate(date, this.max) <= 0);
+  }
+
   constructor(private _element: ElementRef, private _overlay: Overlay,
+    @Optional() public _dateAdapter: DateAdapter<Date>,
     private _viewContainerRef: ViewContainerRef, private _locale: DateLocale,
     private _scrollDispatcher: ScrollDispatcher,
     private _util: DateUtil, @Self() @Optional() public _control: NgControl) {
@@ -366,7 +382,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
       }
       this._focusHost();
 
-      this._isYearsVisible = false;
+      this.startView = 'month';
       this._isCalendarVisible = this.type !== 'time' ? true : false;
       this._clockView = 'hour';
     }, 10);
@@ -449,7 +465,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
         case ESCAPE: this._onBlur(); this.close(); break;
       }
       let date = this.activeDate;
-      if (this._isYearsVisible) {
+      if (this.startView === 'year') {
         switch (event.keyCode) {
           case ENTER: this._onClickOk(); break;
 
@@ -593,9 +609,9 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
    * Display Years
    */
   _showYear() {
-    this._isYearsVisible = true;
+    this.startView = 'year';
     this._isCalendarVisible = true;
-    this._scrollToSelectedYear();
+    //this._scrollToSelectedYear();
   }
 
   private getYears() {
@@ -623,14 +639,14 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
     this.activeDate = new Date(year, this.activeDate.getMonth(), this.activeDate.getDate(),
       this.activeDate.getHours(), this.activeDate.getMinutes());
     this.generateCalendar();
-    this._isYearsVisible = false;
+    this.startView = 'month';
   }
 
   /**
    * Display Calendar
    */
   _showCalendar() {
-    this._isYearsVisible = false;
+    this.startView = 'month';
     this._isCalendarVisible = true;
   }
 
@@ -638,9 +654,8 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
    * Toggle Hour visiblity
    */
   _toggleHours(value: ClockView) {
-    this._isYearsVisible = false;
+    this.startView = 'month';
     this._isCalendarVisible = false;
-    this._isYearsVisible = false;
     this._clockView = value;
   }
 
@@ -648,9 +663,9 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
    * Ok Button Event
    */
   _onClickOk() {
-    if (this._isYearsVisible) {
+    if (this.startView === 'year') {
       this.generateCalendar();
-      this._isYearsVisible = false;
+      this.startView = 'month';
       this._isCalendarVisible = true;
     } else if (this._isCalendarVisible) {
       this._dateSelected(this.activeDate);
@@ -732,8 +747,17 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
       this._max && this._util.getMonthDistance(this.activeDate, this._max) > 0;
   }
 
-  _onActiveTimeChange(event: Date) {
-    this.activeDate = event;
+  _onActiveDateChange(date: Date) {
+    this.activeDate = date;
+  }
+
+  _onDateChange(date: Date) {
+    this.value = date;
+    if (this.startView === 'year') {
+      this.startView = 'month';
+    } else {
+      this._dateSelected(date);
+    }
   }
 
   _onTimeChange(event: Date) {

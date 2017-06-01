@@ -265,9 +265,10 @@ export class Md2Tabs implements AfterContentInit {
    */
   updatePagination() {
     let canvasWidth = this.element.root.clientWidth;
-    this.element.tabs.forEach((tab: any) => {
-      canvasWidth -= tab.offsetWidth;
-    });
+    let tabs: any[] = this.element.tabs ? this.element.tabs : [];
+    for (let i = 0; i < tabs.length; i++) {
+      canvasWidth -= tabs[i].offsetWidth;
+    }
     this._shouldPaginate = canvasWidth < 0;
   }
 

@@ -23,8 +23,7 @@ import {
   UP_ARROW
 } from '../core/keyboard/keycodes';
 import {DateAdapter} from '../core/datetime/index';
-//import {MdDatepickerIntl} from './datepicker-intl';
-//import {createMissingDateImplError} from './datepicker-errors';
+//import {Md2DatepickerIntl} from './datepicker-intl';
 import {MD_DATE_FORMATS, MdDateFormats} from '../core/datetime/date-formats';
 
 

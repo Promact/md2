@@ -6,6 +6,7 @@
       <h3 class="title">Basic Date Picker</h3>
     </div>
     <form class="content">
+      <md2-calendar [(selected)]="date"></md2-calendar>
       <md2-datepicker name="mindate"
                       placeholder="Minimum Date"
                       [(ngModel)]="minDate"

@@ -2,28 +2,34 @@ import {
   AfterContentInit,
   ChangeDetectionStrategy,
   Component,
+  ElementRef,
   EventEmitter,
   Inject,
   Input,
+  NgZone,
   Optional,
   Output,
   ViewEncapsulation
 } from '@angular/core';
-import { DateAdapter } from '../core/datetime/index';
-import { MD_DATE_FORMATS, MdDateFormats } from '../core/datetime/date-formats';
-
-export class Md2CalendarCell {
-  constructor(public value: number,
-    public displayValue: string,
-    public ariaLabel: string,
-    public enabled: boolean) { }
-}
-
-const DAYS_PER_WEEK = 7;
+import {
+  DOWN_ARROW,
+  END,
+  ENTER,
+  HOME,
+  LEFT_ARROW,
+  PAGE_DOWN,
+  PAGE_UP,
+  RIGHT_ARROW,
+  UP_ARROW
+} from '../core/keyboard/keycodes';
+import {DateAdapter} from '../core/datetime/index';
+//import {MdDatepickerIntl} from './datepicker-intl';
+//import {createMissingDateImplError} from './datepicker-errors';
+import {MD_DATE_FORMATS, MdDateFormats} from '../core/datetime/date-formats';
 
 
 /**
- * An internal component used to display a calendar in the datepicker.
+ * A calendar that is used as part of the datepicker.
  * @docs-private
  */
 @Component({
@@ -37,137 +43,120 @@ const DAYS_PER_WEEK = 7;
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Md2Calendar implements AfterContentInit {
+export class Md2Calendar<D> implements AfterContentInit {
+  /** A date representing the period (month or year) to start the calendar in. */
+  @Input() startAt: D;
 
-  @Input()
-  get startView() { return this._startView; }
-  set startView(value: 'month' | 'year') {
-    this._startView = value;
-    this._monthView = value != 'year';
-    if (value === 'year') {
-      this._scrollToSelectedYear();
-    }
+  /** Whether the calendar should be started in month or year view. */
+  @Input() startView: 'month' | 'year' = 'month';
+
+  /** The currently selected date. */
+  @Input() selected: D;
+
+  /** The minimum selectable date. */
+  @Input() minDate: D;
+
+  /** The maximum selectable date. */
+  @Input() maxDate: D;
+
+  /** A function used to filter which dates are selectable. */
+  @Input() dateFilter: (date: D) => boolean;
+
+  /** Emits when the currently selected date changes. */
+  @Output() selectedChange = new EventEmitter<D>();
+
+  /** Date filter for the month and year views. */
+  _dateFilterForViews = (date: D) => {
+    return !!date &&
+        (!this.dateFilter || this.dateFilter(date)) &&
+        (!this.minDate || this._dateAdapter.compareDate(date, this.minDate) >= 0) &&
+        (!this.maxDate || this._dateAdapter.compareDate(date, this.maxDate) <= 0);
   }
-  private _startView: 'month' | 'year' = 'month';
+
+  /**
+   * The current active date. This determines which time period is shown and which date is
+   * highlighted when using keyboard navigation.
+   */
+  get _activeDate(): D { return this._clampedActiveDate; }
+  set _activeDate(value: D) {
+    this._clampedActiveDate = this._dateAdapter.clampDate(value, this.minDate, this.maxDate);
+  }
+  private _clampedActiveDate: D;
 
   /** Whether the calendar is in month view. */
   _monthView: boolean;
 
-  /**
-   * The date to display in this calendar (everything other than the month and year is ignored).
-   */
-  @Input()
-  get activeDate(): Date { return this._activeDate; }
-  set activeDate(value: Date) {
-    let oldActiveDate = this._activeDate;
-    this._activeDate = value || this._dateAdapter.today();
-    if (!this._hasSameMonthAndYear(oldActiveDate, this._activeDate) && this._monthView !== undefined) {
-      this._init();
-    }
-  }
-  private _activeDate: Date;
-
-  get _periodLabel(): string {
-    return this._dateAdapter.format(this.activeDate, this._dateFormats.display.monthYearLabel)
-      .toLocaleUpperCase();
+  /** The label for the current calendar view. */
+  get _periodButtonText(): string {
+    return this._monthView ?
+        this._dateAdapter.format(this._activeDate, this._dateFormats.display.monthYearLabel)
+            .toLocaleUpperCase() :
+        this._dateAdapter.getYearName(this._activeDate);
   }
 
-  /** The currently selected date. */
-  @Input()
-  get selected(): Date { return this._selected; }
-  set selected(value: Date) {
-    this._selected = value;
-    this._selectedDate = this._getDateInCurrentMonth(this.selected);
-  }
-  private _selected: Date;
+  //get _periodButtonLabel(): string {
+  //  return this._monthView ? this._intl.switchToYearViewLabel : this._intl.switchToMonthViewLabel;
+  //}
 
-  /** The minimum selectable date. */
-  @Input() minDate: Date;
+  ///** The label for the the previous button. */
+  //get _prevButtonLabel(): string {
+  //  return this._monthView ? this._intl.prevMonthLabel : this._intl.prevYearLabel;
+  //}
 
-  /** The maximum selectable date. */
-  @Input() maxDate: Date;
+  ///** The label for the the next button. */
+  //get _nextButtonLabel(): string {
+  //  return this._monthView ? this._intl.nextMonthLabel : this._intl.nextYearLabel;
+  //}
 
-  /** A function used to filter which dates are selectable. */
-  @Input() dateFilter: (date: Date) => boolean;
-
-  /** Emits when a new date is selected. */
-  @Output() selectedChange = new EventEmitter<Date>();
-
-  /** The label for this month (e.g. "January 2017"). */
-  _monthLabel: string;
-
-  /** Grid of calendar cells representing the dates of the month. */
-  _weeks: Md2CalendarCell[][];
-
-  _years: Array<number> = [];
-
-  /** The number of blank cells in the first row before the 1st of the month. */
-  _firstWeekOffset: number;
-
-  /**
-   * The date of the month that the currently selected Date falls on.
-   * Null if the currently selected Date is in another month.
-   */
-  _selectedDate: number;
-
-  /** The date of the month that today falls on. Null if today is in another month. */
-  _todayDate: number;
-
-  /** The names of the weekdays. */
-  _weekdays: { long: string, narrow: string }[];
-
-  constructor( @Optional() public _dateAdapter: DateAdapter<Date>,
-    @Optional() @Inject(MD_DATE_FORMATS) private _dateFormats: MdDateFormats) {
+  constructor(private _elementRef: ElementRef,
+              //private _intl: Md2DatepickerIntl,
+              private _ngZone: NgZone,
+              @Optional() private _dateAdapter: DateAdapter<D>,
+              @Optional() @Inject(MD_DATE_FORMATS) private _dateFormats: MdDateFormats) {
     if (!this._dateAdapter) {
       throw Error('DateAdapter');
     }
     if (!this._dateFormats) {
       throw Error('MD_DATE_FORMATS');
     }
-
-    const firstDayOfWeek = this._dateAdapter.getFirstDayOfWeek();
-    const narrowWeekdays = this._dateAdapter.getDayOfWeekNames('narrow');
-    const longWeekdays = this._dateAdapter.getDayOfWeekNames('long');
-
-    // Rotate the labels for days of the week based on the configured first day of the week.
-    let weekdays = longWeekdays.map((long, i) => {
-      return { long, narrow: narrowWeekdays[i] };
-    });
-    this._weekdays = weekdays.slice(firstDayOfWeek).concat(weekdays.slice(0, firstDayOfWeek));
-
-    this.activeDate = this._dateAdapter.today();
   }
 
-  ngAfterContentInit(): void {
+  ngAfterContentInit() {
+    this._activeDate = this.startAt || this._dateAdapter.today();
+    this._focusActiveCell();
     this._monthView = this.startView != 'year';
-    this._init();
   }
 
-  /** Handles when a new date is selected. */
-  _dateSelected(cell: Md2CalendarCell) {
-    if (!cell.enabled) { return; }
-    if (this._selectedDate == cell.value) {
-      return;
+  /** Handles date selection in the month view. */
+  _dateSelected(date: D): void {
+    if (!this._dateAdapter.sameDate(date, this.selected)) {
+      this.selectedChange.emit(date);
     }
-    this.selectedChange.emit(this._dateAdapter.createDate(
-      this._dateAdapter.getYear(this.activeDate), this._dateAdapter.getMonth(this.activeDate),
-      cell.value));
   }
 
   /** Handles month selection in the year view. */
-  _yearSelected(year: number): void {
-    this.selectedChange.emit(new Date(year, this.activeDate.getMonth(), this.activeDate.getDate(),
-      this.activeDate.getHours(), this.activeDate.getMinutes()));
+  _monthSelected(month: D): void {
+    this._activeDate = month;
+    this._monthView = true;
+  }
+
+  /** Handles user clicks on the period label. */
+  _currentPeriodClicked(): void {
+    this._monthView = !this._monthView;
   }
 
   /** Handles user clicks on the previous button. */
   _previousClicked(): void {
-    this.activeDate = this._dateAdapter.addCalendarMonths(this.activeDate, -1);
+    this._activeDate = this._monthView ?
+        this._dateAdapter.addCalendarMonths(this._activeDate, -1) :
+        this._dateAdapter.addCalendarYears(this._activeDate, -1);
   }
 
   /** Handles user clicks on the next button. */
   _nextClicked(): void {
-    this.activeDate = this._dateAdapter.addCalendarMonths(this.activeDate, 1);
+    this._activeDate = this._monthView ?
+        this._dateAdapter.addCalendarMonths(this._activeDate, 1) :
+        this._dateAdapter.addCalendarYears(this._activeDate, 1);
   }
 
   /** Whether the previous period button is enabled. */
@@ -175,99 +164,158 @@ export class Md2Calendar implements AfterContentInit {
     if (!this.minDate) {
       return true;
     }
-    return !this.minDate || !this._hasSameMonthAndYear(this.activeDate, this.minDate);
+    return !this.minDate || !this._isSameView(this._activeDate, this.minDate);
   }
 
   /** Whether the next period button is enabled. */
   _nextEnabled(): boolean {
-    return !this.maxDate || !this._hasSameMonthAndYear(this.activeDate, this.maxDate);
+    return !this.maxDate || !this._isSameView(this._activeDate, this.maxDate);
   }
 
-  /** The number of blank cells to put at the beginning for the first row. */
-  get _firstRowOffset(): number {
-    return this._weeks && this._weeks.length && this._weeks[0].length ?
-      DAYS_PER_WEEK - this._weeks[0].length : 0;
-  }
-
-  _isActiveCell(rowIndex: number, colIndex: number): boolean {
-    let cellNumber = rowIndex * DAYS_PER_WEEK + colIndex;
-
-    // Account for the fact that the first row may not have as many cells.
-    if (rowIndex) {
-      cellNumber -= this._firstRowOffset;
-    }
-
-    return cellNumber == this._dateAdapter.getDate(this.activeDate) - 1;
-  }
-
-  /** Initializes this month view. */
-  private _init() {
-    this._selectedDate = this._getDateInCurrentMonth(this.selected);
-    this._todayDate = this._getDateInCurrentMonth(this._dateAdapter.today());
-    this._monthLabel =
-      this._dateAdapter.getMonthNames('short')[this._dateAdapter.getMonth(this.activeDate)]
-        .toLocaleUpperCase();
-
-    let firstOfMonth = this._dateAdapter.createDate(this._dateAdapter.getYear(this.activeDate),
-      this._dateAdapter.getMonth(this.activeDate), 1);
-    this._firstWeekOffset =
-      (DAYS_PER_WEEK + this._dateAdapter.getDayOfWeek(firstOfMonth) -
-        this._dateAdapter.getFirstDayOfWeek()) % DAYS_PER_WEEK;
-
-    this._createWeekCells();
-    this._createYears();
-  }
-
-  /** Creates Md2CalendarCells for the dates in this month. */
-  private _createWeekCells() {
-    let daysInMonth = this._dateAdapter.getNumDaysInMonth(this.activeDate);
-    let dateNames = this._dateAdapter.getDateNames();
-    this._weeks = [[]];
-    for (let i = 0, cell = this._firstWeekOffset; i < daysInMonth; i++ , cell++) {
-      if (cell == DAYS_PER_WEEK) {
-        this._weeks.push([]);
-        cell = 0;
-      }
-      let date = this._dateAdapter.createDate(
-        this._dateAdapter.getYear(this.activeDate),
-        this._dateAdapter.getMonth(this.activeDate), i + 1);
-      let enabled = !this.dateFilter ||
-        this.dateFilter(date);
-      let ariaLabel = this._dateAdapter.format(date, this._dateFormats.display.dateA11yLabel);
-      this._weeks[this._weeks.length - 1]
-        .push(new Md2CalendarCell(i + 1, dateNames[i], ariaLabel, enabled));
+  /** Handles keydown events on the calendar body. */
+  _handleCalendarBodyKeydown(event: KeyboardEvent): void {
+    // TODO(mmalerba): We currently allow keyboard navigation to disabled dates, but just prevent
+    // disabled ones from being selected. This may not be ideal, we should look into whether
+    // navigation should skip over disabled dates, and if so, how to implement that efficiently.
+    if (this._monthView) {
+      this._handleCalendarBodyKeydownInMonthView(event);
+    } else {
+      this._handleCalendarBodyKeydownInYearView(event);
     }
   }
 
-  private _createYears() {
-    let startYear = this.minDate ? this.minDate.getFullYear() : 1900,
-      endYear = this.maxDate ? this.maxDate.getFullYear() : this._dateAdapter.today().getFullYear() + 100;
-    this._years = [];
-    for (let i = startYear; i <= endYear; i++) {
-      this._years.push(i);
-    }
+  /** Focuses the active cell after the microtask queue is empty. */
+  _focusActiveCell() {
+    this._ngZone.runOutsideAngular(() => this._ngZone.onStable.first().subscribe(() => {
+      let activeEl = this._elementRef.nativeElement.querySelector('.md2-calendar-body-active');
+      activeEl.focus();
+    }));
   }
 
-  private _scrollToSelectedYear() {
-    setTimeout(() => {
-      let yearContainer: any = document.querySelector('.md2-calendar-years'),
-        selectedYear: any = document.querySelector('.md2-calendar-year.selected');
-      yearContainer.scrollTop = (selectedYear.offsetTop + 20) - yearContainer.clientHeight / 2;
-    }, 0);
+  /** Whether the two dates represent the same view in the current view mode (month or year). */
+  private _isSameView(date1: D, date2: D): boolean {
+    return this._monthView ?
+        this._dateAdapter.getYear(date1) == this._dateAdapter.getYear(date2) &&
+        this._dateAdapter.getMonth(date1) == this._dateAdapter.getMonth(date2) :
+        this._dateAdapter.getYear(date1) == this._dateAdapter.getYear(date2);
+  }
+
+  /** Handles keydown events on the calendar body when calendar is in month view. */
+  private _handleCalendarBodyKeydownInMonthView(event: KeyboardEvent): void {
+    switch (event.keyCode) {
+      case LEFT_ARROW:
+        this._activeDate = this._dateAdapter.addCalendarDays(this._activeDate, -1);
+        break;
+      case RIGHT_ARROW:
+        this._activeDate = this._dateAdapter.addCalendarDays(this._activeDate, 1);
+        break;
+      case UP_ARROW:
+        this._activeDate = this._dateAdapter.addCalendarDays(this._activeDate, -7);
+        break;
+      case DOWN_ARROW:
+        this._activeDate = this._dateAdapter.addCalendarDays(this._activeDate, 7);
+        break;
+      case HOME:
+        this._activeDate = this._dateAdapter.addCalendarDays(this._activeDate,
+            1 - this._dateAdapter.getDate(this._activeDate));
+        break;
+      case END:
+        this._activeDate = this._dateAdapter.addCalendarDays(this._activeDate,
+            (this._dateAdapter.getNumDaysInMonth(this._activeDate) -
+             this._dateAdapter.getDate(this._activeDate)));
+        break;
+      case PAGE_UP:
+        this._activeDate = event.altKey ?
+            this._dateAdapter.addCalendarYears(this._activeDate, -1) :
+            this._dateAdapter.addCalendarMonths(this._activeDate, -1);
+        break;
+      case PAGE_DOWN:
+        this._activeDate = event.altKey ?
+            this._dateAdapter.addCalendarYears(this._activeDate, 1) :
+            this._dateAdapter.addCalendarMonths(this._activeDate, 1);
+        break;
+      case ENTER:
+        if (this._dateFilterForViews(this._activeDate)) {
+          this._dateSelected(this._activeDate);
+          // Prevent unexpected default actions such as form submission.
+          event.preventDefault();
+        }
+        return;
+      default:
+        // Don't prevent default or focus active cell on keys that we don't explicitly handle.
+        return;
+    }
+
+    this._focusActiveCell();
+    // Prevent unexpected default actions such as form submission.
+    event.preventDefault();
+  }
+
+  /** Handles keydown events on the calendar body when calendar is in year view. */
+  private _handleCalendarBodyKeydownInYearView(event: KeyboardEvent): void {
+    switch (event.keyCode) {
+      case LEFT_ARROW:
+        this._activeDate = this._dateAdapter.addCalendarMonths(this._activeDate, -1);
+        break;
+      case RIGHT_ARROW:
+        this._activeDate = this._dateAdapter.addCalendarMonths(this._activeDate, 1);
+        break;
+      case UP_ARROW:
+        this._activeDate = this._prevMonthInSameCol(this._activeDate);
+        break;
+      case DOWN_ARROW:
+        this._activeDate = this._nextMonthInSameCol(this._activeDate);
+        break;
+      case HOME:
+        this._activeDate = this._dateAdapter.addCalendarMonths(this._activeDate,
+            -this._dateAdapter.getMonth(this._activeDate));
+        break;
+      case END:
+        this._activeDate = this._dateAdapter.addCalendarMonths(this._activeDate,
+            11 - this._dateAdapter.getMonth(this._activeDate));
+        break;
+      case PAGE_UP:
+        this._activeDate =
+            this._dateAdapter.addCalendarYears(this._activeDate, event.altKey ? -10 : -1);
+        break;
+      case PAGE_DOWN:
+        this._activeDate =
+            this._dateAdapter.addCalendarYears(this._activeDate, event.altKey ? 10 : 1);
+        break;
+      case ENTER:
+        this._monthSelected(this._activeDate);
+        break;
+      default:
+        // Don't prevent default or focus active cell on keys that we don't explicitly handle.
+        return;
+    }
+
+    this._focusActiveCell();
+    // Prevent unexpected default actions such as form submission.
+    event.preventDefault();
   }
 
   /**
-   * Gets the date in this month that the given Date falls on.
-   * Returns null if the given Date is in another month.
+   * Determine the date for the month that comes before the given month in the same column in the
+   * calendar table.
    */
-  private _getDateInCurrentMonth(date: Date): number {
-    return this._hasSameMonthAndYear(date, this.activeDate) ?
-      this._dateAdapter.getDate(date) : null;
+  private _prevMonthInSameCol(date: D): D {
+    // Determine how many months to jump forward given that there are 2 empty slots at the beginning
+    // of each year.
+    let increment = this._dateAdapter.getMonth(date) <= 4 ? -5 :
+        (this._dateAdapter.getMonth(date) >= 7 ? -7 : -12);
+    return this._dateAdapter.addCalendarMonths(date, increment);
   }
 
-  /** Checks whether the 2 dates are non-null and fall within the same month of the same year. */
-  private _hasSameMonthAndYear(d1: Date, d2: Date): boolean {
-    return !!(d1 && d2 && this._dateAdapter.getMonth(d1) == this._dateAdapter.getMonth(d2) &&
-      this._dateAdapter.getYear(d1) == this._dateAdapter.getYear(d2));
+  /**
+   * Determine the date for the month that comes after the given month in the same column in the
+   * calendar table.
+   */
+  private _nextMonthInSameCol(date: D): D {
+    // Determine how many months to jump forward given that there are 2 empty slots at the beginning
+    // of each year.
+    let increment = this._dateAdapter.getMonth(date) <= 4 ? 7 :
+        (this._dateAdapter.getMonth(date) >= 7 ? 5 : 12);
+    return this._dateAdapter.addCalendarMonths(date, increment);
   }
 }

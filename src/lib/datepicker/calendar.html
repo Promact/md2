@@ -1,54 +1,39 @@
-﻿<div [ngSwitch]="_monthView">
-  <div *ngSwitchCase="true" class="">
+<div class="md2-calendar-header">
+  <div class=""></div>
+</div>
+<div class="md2-calendar-content" (keydown)="_handleCalendarBodyKeydown($event)"
+     [ngSwitch]="_monthView" cdkMonitorSubtreeFocus>
+  <div class="md2-month-content" *ngSwitchCase="true">
     <div class="md2-calendar-controls">
-      <button type="button" class="md2-calendar-previous-button" [disabled]="!_previousEnabled()"
-              (click)="_previousClicked()" [attr.aria-label]="_prevButtonLabel">
+      <button type="button" class="md2-calendar-previous-button"
+              [disabled]="!_previousEnabled()" (click)="_previousClicked()"
+              [attr.aria-label]="_prevButtonLabel">
         <svg width="24" height="24" viewBox="0 0 24 24">
           <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
         </svg>
       </button>
-      <span class="md2-calendar-period-label">{{ _periodLabel }}</span>
-      <button type="button" class="md2-calendar-next-button" [disabled]="!_nextEnabled()"
-              (click)="_nextClicked()" [attr.aria-label]="_nextButtonLabel">
+      <button type="button" class="md2-calendar-period-button"
+              (click)="_currentPeriodClicked()" [attr.aria-label]="_periodButtonLabel">
+        {{_periodButtonText}}
+      </button>
+      <button type="button" class="md2-calendar-next-button"
+              [disabled]="!_nextEnabled()" (click)="_nextClicked()"
+              [attr.aria-label]="_nextButtonLabel">
         <svg width="24" height="24" viewBox="0 0 24 24">
           <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path>
         </svg>
       </button>
     </div>
-    <table class="md2-calendar-table">
-      <thead class="md2-calendar-table-header">
-        <tr><th *ngFor="let day of _weekdays" [attr.aria-label]="day.long">{{day.narrow}}</th></tr>
-      </thead>
-      <tbody role="grid" class="md2-calendar-body">
-        <tr *ngFor="let row of _weeks; let rowIndex = index" role="row">
-          <td *ngIf="rowIndex === 0 && _firstRowOffset"
-              aria-hidden="true"
-              [attr.colspan]="_firstRowOffset"></td>
-          <td *ngFor="let item of row; let colIndex = index"
-              role="gridcell"
-              class="md2-calendar-body-cell"
-              [tabindex]="_isActiveCell(rowIndex, colIndex) ? 0 : -1"
-              [class.md2-calendar-body-disabled]="!item.enabled"
-              [class.md2-calendar-body-active]="_isActiveCell(rowIndex, colIndex)"
-              [attr.aria-label]="item.ariaLabel"
-              [attr.aria-disabled]="!item.enabled || null"
-              (click)="_dateSelected(item)">
-            <div class="md2-calendar-body-cell-content"
-                 [class.md2-calendar-body-selected]="_selectedDate === item.value"
-                 [class.md2-calendar-body-today]="_todayDate === item.value">
-              {{item.displayValue}}
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <md2-month-view [activeDate]="_activeDate"
+                    [selected]="selected"
+                    [dateFilter]="_dateFilterForViews"
+                    (selectedChange)="_dateSelected($event)">
+    </md2-month-view>
   </div>
-  <div *ngSwitchDefault class="md2-calendar-years">
-    <div class="md2-calendar-years-content">
-      <div *ngFor="let y of _years"
-           class="md2-calendar-year"
-           [class.selected]="y === activeDate.getFullYear()"
-           (click)="_yearSelected(y)">{{y}}</div>
-    </div>
-  </div>
+  <md2-year-view *ngSwitchDefault
+                 [activeDate]="_activeDate"
+                 [selected]="selected"
+                 [dateFilter]="_dateFilterForViews"
+                 (selectedChange)="_monthSelected($event)">
+  </md2-year-view>
 </div>

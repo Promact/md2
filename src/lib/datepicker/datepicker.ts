@@ -110,6 +110,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   _years: Array<number> = [];
   _dates: Array<Object> = [];
 
+  _isYearsVisible: boolean;
   _isCalendarVisible: boolean;
   _clockView: ClockView = 'hour';
   _calendarState: string;
@@ -382,7 +383,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
       }
       this._focusHost();
 
-      this.startView = 'month';
+      this._isYearsVisible = false;
       this._isCalendarVisible = this.type !== 'time' ? true : false;
       this._clockView = 'hour';
     }, 10);
@@ -465,7 +466,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
         case ESCAPE: this._onBlur(); this.close(); break;
       }
       let date = this.activeDate;
-      if (this.startView === 'year') {
+      if (this._isYearsVisible) {
         switch (event.keyCode) {
           case ENTER: this._onClickOk(); break;
 
@@ -609,7 +610,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
    * Display Years
    */
   _showYear() {
-    this.startView = 'year';
+    this._isYearsVisible = true;
     this._isCalendarVisible = true;
     //this._scrollToSelectedYear();
   }
@@ -639,14 +640,14 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
     this.activeDate = new Date(year, this.activeDate.getMonth(), this.activeDate.getDate(),
       this.activeDate.getHours(), this.activeDate.getMinutes());
     this.generateCalendar();
-    this.startView = 'month';
+    this._isYearsVisible = false;
   }
 
   /**
    * Display Calendar
    */
   _showCalendar() {
-    this.startView = 'month';
+    this._isYearsVisible = false;
     this._isCalendarVisible = true;
   }
 
@@ -654,7 +655,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
    * Toggle Hour visiblity
    */
   _toggleHours(value: ClockView) {
-    this.startView = 'month';
+    this._isYearsVisible = false;
     this._isCalendarVisible = false;
     this._clockView = value;
   }
@@ -663,9 +664,9 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
    * Ok Button Event
    */
   _onClickOk() {
-    if (this.startView === 'year') {
+    if (this._isYearsVisible) {
       this.generateCalendar();
-      this.startView = 'month';
+      this._isYearsVisible = false;
       this._isCalendarVisible = true;
     } else if (this._isCalendarVisible) {
       this._dateSelected(this.activeDate);
@@ -753,8 +754,8 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
 
   _onDateChange(date: Date) {
     this.value = date;
-    if (this.startView === 'year') {
-      this.startView = 'month';
+    if (this._isYearsVisible) {
+      this._isYearsVisible = false;
     } else {
       this._dateSelected(date);
     }

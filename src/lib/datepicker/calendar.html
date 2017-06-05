@@ -2,8 +2,8 @@
   <div class=""></div>
 </div>
 <div class="md2-calendar-content" (keydown)="_handleCalendarBodyKeydown($event)"
-     [ngSwitch]="_monthView" cdkMonitorSubtreeFocus>
-  <div class="md2-month-content" *ngSwitchCase="true">
+     [ngSwitch]="_currentView" cdkMonitorSubtreeFocus>
+  <div class="md2-month-content" *ngSwitchCase="'month'">
     <div class="md2-calendar-controls">
       <button type="button" class="md2-calendar-previous-button"
               [disabled]="!_previousEnabled()" (click)="_previousClicked()"
@@ -30,10 +30,14 @@
                     (selectedChange)="_dateSelected($event)">
     </md2-month-view>
   </div>
-  <md2-year-view *ngSwitchDefault
+  <md2-year-view *ngSwitchCase="'year'"
                  [activeDate]="_activeDate"
                  [selected]="selected"
                  [dateFilter]="_dateFilterForViews"
                  (selectedChange)="_monthSelected($event)">
   </md2-year-view>
+  <md2-clock *ngSwitchDefault
+             [selected]="selected"
+             [startView]="_clockView"
+             (selectedChange)="_timeSelected($event)"></md2-clock>
 </div>

@@ -48,7 +48,7 @@ export class Md2Calendar<D> implements AfterContentInit {
   @Input() startAt: D;
 
   /** Whether the calendar should be started in month or year view. */
-  @Input() startView: 'month' | 'year' = 'month';
+  @Input() startView: 'time' | 'month' | 'year' = 'month';
 
   /** The currently selected date. */
   @Input() selected: D;
@@ -84,28 +84,29 @@ export class Md2Calendar<D> implements AfterContentInit {
   private _clampedActiveDate: D;
 
   /** Whether the calendar is in month view. */
-  _monthView: boolean;
+  _currentView: 'time' | 'month' | 'year' = 'month';
+  _clockView: 'hour' | 'minute' = 'hour';
 
   /** The label for the current calendar view. */
   get _periodButtonText(): string {
-    return this._monthView ?
+    return this._currentView === 'month' ?
       this._dateAdapter.format(this._activeDate, this._dateFormats.display.monthYearLabel)
         .toLocaleUpperCase() :
       this._dateAdapter.getYearName(this._activeDate);
   }
 
   get _periodButtonLabel(): string {
-    return this._monthView ? this._intl.switchToYearViewLabel : this._intl.switchToMonthViewLabel;
+    return this._currentView === 'month' ? this._intl.switchToYearViewLabel : this._intl.switchToMonthViewLabel;
   }
 
   /** The label for the the previous button. */
   get _prevButtonLabel(): string {
-    return this._monthView ? this._intl.prevMonthLabel : this._intl.prevYearLabel;
+    return this._currentView === 'month' ? this._intl.prevMonthLabel : this._intl.prevYearLabel;
   }
 
   /** The label for the the next button. */
   get _nextButtonLabel(): string {
-    return this._monthView ? this._intl.nextMonthLabel : this._intl.nextYearLabel;
+    return this._currentView === 'month' ? this._intl.nextMonthLabel : this._intl.nextYearLabel;
   }
 
   constructor(private _elementRef: ElementRef,
@@ -124,7 +125,7 @@ export class Md2Calendar<D> implements AfterContentInit {
   ngAfterContentInit() {
     this._activeDate = this.startAt || this._dateAdapter.today();
     this._focusActiveCell();
-    this._monthView = this.startView != 'year';
+    this._currentView = this.startView || 'month';
   }
 
   /** Handles date selection in the month view. */
@@ -137,24 +138,29 @@ export class Md2Calendar<D> implements AfterContentInit {
   /** Handles month selection in the year view. */
   _monthSelected(month: D): void {
     this._activeDate = month;
-    this._monthView = true;
+    this._currentView = 'month';
+  }
+
+  _timeSelected(time: D): void {
+    this._activeDate = time;
+    this._currentView = 'month';
   }
 
   /** Handles user clicks on the period label. */
   _currentPeriodClicked(): void {
-    this._monthView = !this._monthView;
+    this._currentView = this._currentView === 'month' ? 'year' : 'month';
   }
 
   /** Handles user clicks on the previous button. */
   _previousClicked(): void {
-    this._activeDate = this._monthView ?
+    this._activeDate = this._currentView === 'month' ?
       this._dateAdapter.addCalendarMonths(this._activeDate, -1) :
       this._dateAdapter.addCalendarYears(this._activeDate, -1);
   }
 
   /** Handles user clicks on the next button. */
   _nextClicked(): void {
-    this._activeDate = this._monthView ?
+    this._activeDate = this._currentView === 'month' ?
       this._dateAdapter.addCalendarMonths(this._activeDate, 1) :
       this._dateAdapter.addCalendarYears(this._activeDate, 1);
   }
@@ -177,7 +183,7 @@ export class Md2Calendar<D> implements AfterContentInit {
     // TODO(mmalerba): We currently allow keyboard navigation to disabled dates, but just prevent
     // disabled ones from being selected. This may not be ideal, we should look into whether
     // navigation should skip over disabled dates, and if so, how to implement that efficiently.
-    if (this._monthView) {
+    if (this._currentView === 'month') {
       this._handleCalendarBodyKeydownInMonthView(event);
     } else {
       this._handleCalendarBodyKeydownInYearView(event);
@@ -194,7 +200,7 @@ export class Md2Calendar<D> implements AfterContentInit {
 
   /** Whether the two dates represent the same view in the current view mode (month or year). */
   private _isSameView(date1: D, date2: D): boolean {
-    return this._monthView ?
+    return this._currentView === 'month' ?
       this._dateAdapter.getYear(date1) == this._dateAdapter.getYear(date2) &&
       this._dateAdapter.getMonth(date1) == this._dateAdapter.getMonth(date2) :
       this._dateAdapter.getYear(date1) == this._dateAdapter.getYear(date2);

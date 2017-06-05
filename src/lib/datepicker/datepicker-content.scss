@@ -1,0 +1,52 @@
+@import '../core/style/elevation';
+
+
+$md2-datepicker-calendar-padding: 8px;
+$md2-datepicker-non-touch-calendar-cell-size: 40px;
+$md2-datepicker-non-touch-calendar-width:
+    $md2-datepicker-non-touch-calendar-cell-size * 7 + $md2-datepicker-calendar-padding * 2;
+
+// Ideally the calendar would have a constant aspect ratio, no matter its size, and we would base
+// these measurements off the aspect ratio. Unfortunately, the aspect ratio does change a little as
+// the calendar grows, since some of the elements have pixel-based sizes. These numbers have been
+// chosen to minimize extra whitespace at larger sizes, while still ensuring we won't need
+// scrollbars at smaller sizes.
+$md2-datepicker-touch-width: 64vmin;
+$md2-datepicker-touch-height: 80vmin;
+$md2-datepicker-touch-min-width: 250px;
+$md2-datepicker-touch-min-height: 312px;
+$md2-datepicker-touch-max-width: 750px;
+$md2-datepicker-touch-max-height: 788px;
+
+
+.md2-datepicker-content {
+  @include mat-elevation(8);
+
+  display: block;
+}
+
+.md2-calendar {
+  width: $md2-datepicker-non-touch-calendar-width;
+}
+
+.md2-datepicker-content-touch {
+  @include mat-elevation(0);
+
+  display: block;
+  // make sure the dialog scrolls rather than being cropped on ludicrously small screens
+  max-height: 80vh;
+  overflow: auto;
+
+  // TODO(mmalerba): hack to offset the padding of the dialog. Can be removed when we switch away
+  // from using dialog.
+  margin: -24px;
+
+  .md2-calendar {
+    width: $md2-datepicker-touch-width;
+    height: $md2-datepicker-touch-height;
+    min-width: $md2-datepicker-touch-min-width;
+    min-height: $md2-datepicker-touch-min-height;
+    max-width: $md2-datepicker-touch-max-width;
+    max-height: $md2-datepicker-touch-max-height;
+  }
+}

@@ -10,7 +10,7 @@ $md2-datepicker-calendar-height: 280px !default;
 
 $md2-clock-size: 240px !default;
 
-md2-datepicker {
+:host {
   position: relative;
   display: inline-block;
   min-width: 175px;

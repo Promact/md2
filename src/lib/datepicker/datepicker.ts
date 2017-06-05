@@ -84,7 +84,7 @@ export type Container = 'inline' | 'dialog';
     fadeInContent,
     slideCalendar
   ],
-  encapsulation: ViewEncapsulation.None
+  //encapsulation: ViewEncapsulation.None
 })
 export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueAccessor,
   Validator {

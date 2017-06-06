@@ -880,6 +880,17 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
     } else if (format.indexOf('y') > -1) {
       format = format.replace('y', '' + date.getFullYear());
     }
+    
+     // Months
+    if (format.indexOf('MMMM') > -1) {
+      format = format.replace('MMMM', this._locale.months[date.getMonth()].full);
+    } else if (format.indexOf('MMM') > -1) {
+      format = format.replace('MMM', this._locale.months[date.getMonth()].short);
+    } else if (format.indexOf('MM') > -1) {
+      format = format.replace('MM', ('0' + (date.getMonth() + 1)).slice(-2));
+    } else if (format.indexOf('M') > -1) {
+      format = format.replace('M', '' + (date.getMonth() + 1));
+    }
 
     // Days
     if (format.indexOf('dd') > -1) {
@@ -919,17 +930,6 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
       format = format.replace('ss', ('0' + date.getSeconds()).slice(-2));
     } else if (format.indexOf('s') > -1) {
       format = format.replace('s', '' + date.getSeconds());
-    }
-
-    // Months
-    if (format.indexOf('MMMM') > -1) {
-      format = format.replace('MMMM', this._locale.months[date.getMonth()].full);
-    } else if (format.indexOf('MMM') > -1) {
-      format = format.replace('MMM', this._locale.months[date.getMonth()].short);
-    } else if (format.indexOf('MM') > -1) {
-      format = format.replace('MM', ('0' + (date.getMonth() + 1)).slice(-2));
-    } else if (format.indexOf('M') > -1) {
-      format = format.replace('M', '' + (date.getMonth() + 1));
     }
 
     return format;

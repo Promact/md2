@@ -106,6 +106,7 @@ export class Md2DataTable implements DoCheck {
   }
 
   @Output() activePageChange = new EventEmitter<number>();
+  @Output() rowsPerPageChange = new EventEmitter<number>();
   @Output() sortByChange = new EventEmitter<string | string[]>();
   @Output() sortOrderChange = new EventEmitter<string>();
 
@@ -156,7 +157,10 @@ export class Md2DataTable implements DoCheck {
     if (this.rowsPerPage !== rowsPerPage || this.activePage !== activePage) {
       this.activePage = this.activePage !== activePage ?
         activePage : this.calculateNewActivePage(this.rowsPerPage, rowsPerPage);
-      this.rowsPerPage = rowsPerPage;
+      if (this.rowsPerPage !== rowsPerPage) {
+        this._rowsPerPage = rowsPerPage;
+        this.rowsPerPageChange.emit(this.rowsPerPage);
+      }
       this.isDataChanged = true;
       this.onPageChange.emit({
         activePage: this.activePage,

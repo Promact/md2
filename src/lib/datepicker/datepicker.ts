@@ -766,6 +766,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
     if (this._clockView === 'hour') {
       this._clockView = 'minute';
     } else {
+      this._emitChangeEvent();
       this._clockView = 'hour';
       this._onBlur();
       this.close();

@@ -136,7 +136,10 @@ export class Md2Datepicker2<D> implements OnDestroy {
   }
 
   /** A reference to the overlay when the calendar is opened as a popup. */
-  private _pickerRef: OverlayRef;
+  private _popupRef: OverlayRef;
+
+  /** A reference to the overlay when the calendar is opened as a dialog. */
+  private _dialogRef: OverlayRef;
 
   /** A portal containing the calendar for this datepicker. */
   private _calendarPortal: ComponentPortal<Md2DatepickerContent<D>>;
@@ -160,8 +163,11 @@ export class Md2Datepicker2<D> implements OnDestroy {
 
   ngOnDestroy() {
     this.close();
-    if (this._pickerRef) {
-      this._pickerRef.dispose();
+    if (this._popupRef) {
+      this._popupRef.dispose();
+    }
+    if (this._dialogRef) {
+      this._dialogRef.dispose();
     }
     if (this._inputSubscription) {
       this._inputSubscription.unsubscribe();
@@ -200,8 +206,11 @@ export class Md2Datepicker2<D> implements OnDestroy {
       throw new Error('Attempted to open an Md2Datepicker with no associated input.');
     }
 
-    // this.touchUi ? this._openAsDialog() :
-    this._openAsPopup();
+    if (!this._calendarPortal) {
+      this._calendarPortal = new ComponentPortal(Md2DatepickerContent, this._viewContainerRef);
+    }
+
+    this.touchUi ? this._openAsDialog() : this._openAsPopup();
     this.opened = true;
   }
 
@@ -210,8 +219,11 @@ export class Md2Datepicker2<D> implements OnDestroy {
     if (!this.opened) {
       return;
     }
-    if (this._pickerRef && this._pickerRef.hasAttached()) {
-      this._pickerRef.detach();
+    if (this._popupRef && this._popupRef.hasAttached()) {
+      this._popupRef.detach();
+    }
+    if (this._dialogRef && this._dialogRef.hasAttached()) {
+      this._dialogRef.detach();
     }
     if (this._calendarPortal && this._calendarPortal.isAttached) {
       this._calendarPortal.detach();
@@ -219,26 +231,49 @@ export class Md2Datepicker2<D> implements OnDestroy {
     this.opened = false;
   }
 
-  /** Open the calendar as a popup. */
-  private _openAsPopup(): void {
-    if (!this._calendarPortal) {
-      this._calendarPortal = new ComponentPortal(Md2DatepickerContent, this._viewContainerRef);
+  /** Open the calendar as a dialog. */
+  private _openAsDialog(): void {
+    if (!this._dialogRef) {
+      this._createDialog();
     }
 
-    if (!this._pickerRef) {
+    if (!this._dialogRef.hasAttached()) {
+      let componentRef: ComponentRef<Md2DatepickerContent<D>> =
+        this._dialogRef.attach(this._calendarPortal);
+      componentRef.instance.datepicker = this;
+    }
+
+    this._dialogRef.backdropClick().first().subscribe(() => this.close());
+  }
+
+  /** Open the calendar as a popup. */
+  private _openAsPopup(): void {
+    if (!this._popupRef) {
       this._createPopup();
     }
 
-    if (!this._pickerRef.hasAttached()) {
+    if (!this._popupRef.hasAttached()) {
       let componentRef: ComponentRef<Md2DatepickerContent<D>> =
-        this._pickerRef.attach(this._calendarPortal);
+        this._popupRef.attach(this._calendarPortal);
       componentRef.instance.datepicker = this;
 
       // Update the position once the calendar has rendered.
-      this._ngZone.onStable.first().subscribe(() => this._pickerRef.updatePosition());
+      this._ngZone.onStable.first().subscribe(() => this._popupRef.updatePosition());
     }
 
-    this._pickerRef.backdropClick().first().subscribe(() => this.close());
+    this._popupRef.backdropClick().first().subscribe(() => this.close());
+  }
+
+  /** Create the dialog. */
+  private _createDialog(): void {
+    const overlayState = new OverlayState();
+    overlayState.positionStrategy = this._overlay.position().global()
+      .centerHorizontally()
+      .centerVertically();
+    overlayState.hasBackdrop = true;
+    overlayState.backdropClass = 'cdk-overlay-dark-backdrop';
+    overlayState.direction = this._dir ? this._dir.value : 'ltr';
+    this._dialogRef = this._overlay.create(overlayState);
   }
 
   /** Create the popup. */
@@ -246,11 +281,15 @@ export class Md2Datepicker2<D> implements OnDestroy {
     const overlayState = new OverlayState();
     overlayState.positionStrategy = this._createPopupPositionStrategy();
     overlayState.hasBackdrop = true;
-    overlayState.backdropClass = 'md2-overlay-transparent-backdrop';
+    if (this.touchUi) {
+      overlayState.backdropClass = 'cdk-overlay-dark-backdrop';
+    } else {
+      overlayState.backdropClass = 'cdk-overlay-transparent-backdrop';
+    }
     overlayState.direction = this._dir ? this._dir.value : 'ltr';
     overlayState.scrollStrategy = new RepositionScrollStrategy(this._scrollDispatcher);
 
-    this._pickerRef = this._overlay.create(overlayState);
+    this._popupRef = this._overlay.create(overlayState);
   }
 
   /** Create the popup PositionStrategy. */

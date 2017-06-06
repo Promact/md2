@@ -1,5 +1,10 @@
 <div class="md2-calendar-header">
-  <div class=""></div>
+  <div class="md2-calendar-header-year"
+       [class.active]="false">{{ _yearText }}</div>
+  <div class="md2-calendar-header-date"
+       [class.active]="true">
+    {{ _dateText }}
+  </div>
 </div>
 <div class="md2-calendar-content" (keydown)="_handleCalendarBodyKeydown($event)"
      [ngSwitch]="_currentView" cdkMonitorSubtreeFocus>
@@ -40,4 +45,14 @@
              [selected]="selected"
              [startView]="_clockView"
              (selectedChange)="_timeSelected($event)"></md2-clock>
+</div>
+<div class="md2-calendar-footer">
+  <button type="button" class="md2-calendar-cancel-button"
+          [attr.aria-label]="_cancelButtonLabel">
+    {{ _cancelButtonLabel }}
+  </button>
+  <button type="button" class="md2-calendar-ok-button"
+          [attr.aria-label]="_okButtonLabel" (click)="_okButtonClicked()">
+    {{ _okButtonLabel }}
+  </button>
 </div>

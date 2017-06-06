@@ -88,6 +88,14 @@ export class Md2Calendar<D> implements AfterContentInit {
   _clockView: 'hour' | 'minute' = 'hour';
 
   /** The label for the current calendar view. */
+  get _yearText(): string {
+    return this._dateAdapter.getYearName(this._activeDate);
+  }
+
+  get _dateText(): string {
+    return this._dateAdapter.getISODateString(this._activeDate);
+  }
+
   get _periodButtonText(): string {
     return this._currentView === 'month' ?
       this._dateAdapter.format(this._activeDate, this._dateFormats.display.monthYearLabel)
@@ -107,6 +115,14 @@ export class Md2Calendar<D> implements AfterContentInit {
   /** The label for the the next button. */
   get _nextButtonLabel(): string {
     return this._currentView === 'month' ? this._intl.nextMonthLabel : this._intl.nextYearLabel;
+  }
+
+  get _okButtonLabel(): string {
+    return 'OK';
+  }
+
+  get _cancelButtonLabel(): string {
+    return 'CANCEL';
   }
 
   constructor(private _elementRef: ElementRef,
@@ -149,6 +165,10 @@ export class Md2Calendar<D> implements AfterContentInit {
   /** Handles user clicks on the period label. */
   _currentPeriodClicked(): void {
     this._currentView = this._currentView === 'month' ? 'year' : 'month';
+  }
+
+  _okButtonClicked(): void {
+    this._currentView = this._currentView === 'month' ? 'time' : 'month';
   }
 
   /** Handles user clicks on the previous button. */

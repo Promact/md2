@@ -17,6 +17,7 @@ Data Table is a arrange data in ordering searching and paginate it.
 | Name | Type | Description |
 | --- | --- | --- |
 | `activePageChange` | `Event` | Fired when change the active page |
+| `rowsPerPageChange` | `Event` | Fired when change the rows per page |
 | `sortByChange` | `Event` | Fired when change sort by |
 | `sortOrderChange` | `Event` | Fired when change sort order |
 

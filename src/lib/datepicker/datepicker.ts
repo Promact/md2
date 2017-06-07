@@ -12,7 +12,6 @@ import {
   TemplateRef,
   ViewChild,
   ViewContainerRef,
-  ViewEncapsulation,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -84,7 +83,6 @@ export type Container = 'inline' | 'dialog';
     fadeInContent,
     slideCalendar
   ],
-  //encapsulation: ViewEncapsulation.None
 })
 export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueAccessor,
   Validator {
@@ -612,7 +610,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   _showYear() {
     this._isYearsVisible = true;
     this._isCalendarVisible = true;
-    //this._scrollToSelectedYear();
+    this._scrollToSelectedYear();
   }
 
   private getYears() {

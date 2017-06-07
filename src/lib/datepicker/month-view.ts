@@ -58,9 +58,6 @@ export class Md2MonthView<D> implements AfterContentInit {
   /** Emits when a new date is selected. */
   @Output() selectedChange = new EventEmitter<D>();
 
-  /** The label for this month (e.g. "January 2017"). */
-  _monthLabel: string;
-
   /** Grid of calendar cells representing the dates of the month. */
   _weeks: Md2CalendarCell[][];
 
@@ -119,9 +116,6 @@ export class Md2MonthView<D> implements AfterContentInit {
   private _init() {
     this._selectedDate = this._getDateInCurrentMonth(this.selected);
     this._todayDate = this._getDateInCurrentMonth(this._dateAdapter.today());
-    this._monthLabel =
-        this._dateAdapter.getMonthNames('short')[this._dateAdapter.getMonth(this.activeDate)]
-            .toLocaleUpperCase();
 
     let firstOfMonth = this._dateAdapter.createDate(this._dateAdapter.getYear(this.activeDate),
         this._dateAdapter.getMonth(this.activeDate), 1);

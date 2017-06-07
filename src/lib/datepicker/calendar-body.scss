@@ -1,0 +1,104 @@
+$primary: #106cc8 !default;
+$md2-calendar-body-font-size: 13px !default;
+$md2-calendar-body-header-font-size: 14px !default;
+$md2-calendar-body-label-padding-start: 5% !default;
+$md2-calendar-body-label-translation: -6px !default;
+$md2-calendar-body-cell-min-size: 32px !default;
+$md2-calendar-body-cell-size: 100% / 7 !default;
+$md2-calendar-body-cell-content-margin: 5% !default;
+$md2-calendar-body-cell-content-border-width: 1px !default;
+
+$md2-calendar-body-min-size: 7 * $md2-calendar-body-cell-min-size !default;
+$md2-calendar-body-cell-padding: $md2-calendar-body-cell-size / 2 !default;
+$md2-calendar-body-cell-content-size: 100% - $md2-calendar-body-cell-content-margin * 2 !default;
+$md2-datepicker-selected-today-box-shadow-width: 1px;
+
+.md2-calendar-body {
+  font-size: $md2-calendar-body-font-size;
+  min-width: $md2-calendar-body-min-size;
+}
+
+.md2-calendar-body-label {
+  padding: $md2-calendar-body-cell-padding 0 $md2-calendar-body-cell-padding $md2-calendar-body-cell-padding;
+  height: 0;
+  line-height: 0;
+  color: rgba(black, 0.54);
+  transform: translateX($md2-calendar-body-label-translation);
+  text-align: left;
+  font-size: $md2-calendar-body-header-font-size;
+  font-weight: bold;
+}
+
+.md2-calendar-body-cell {
+  position: relative;
+  width: $md2-calendar-body-cell-size;
+  height: 0;
+  line-height: 0;
+  padding: $md2-calendar-body-cell-padding 0;
+  text-align: center;
+  outline: none;
+  cursor: pointer;
+}
+
+.md2-calendar-body-disabled {
+  cursor: default;
+}
+
+.md2-calendar-body-cell-content {
+  position: absolute;
+  top: $md2-calendar-body-cell-content-margin;
+  left: $md2-calendar-body-cell-content-margin;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: $md2-calendar-body-cell-content-size;
+  height: $md2-calendar-body-cell-content-size;
+  color: rgba(black, 0.87);
+  border-width: $md2-calendar-body-cell-content-border-width;
+  border-style: solid;
+  border-color: transparent;
+  border-radius: 50%;
+
+  .md2-calendar-body-disabled > &:not(.md2-calendar-body-selected) {
+    color: rgba(0,0,0,.38);
+  }
+}
+
+:not(.md2-calendar-body-disabled):hover,
+.cdk-keyboard-focused .md2-calendar-body-active {
+  & > .md2-calendar-body-cell-content:not(.md2-calendar-body-selected) {
+    background-color: rgba(black, 0.12);
+  }
+}
+
+.md2-calendar-body-selected {
+  background-color: $primary;
+  color: white;
+}
+
+.md2-calendar-body-disabled > .md2-calendar-body-selected {
+  background-color: rgba($primary, 0.4);
+}
+
+.md2-calendar-body-today {
+  &:not(.md2-calendar-body-selected) {
+    border-color: $primary;
+  }
+
+  &.md2-calendar-body-selected {
+    box-shadow: inset 0 0 0 $md2-datepicker-selected-today-box-shadow-width md2-color($primary, default-contrast);
+  }
+}
+
+.md2-calendar-body-disabled > .md2-calendar-body-today:not(.md2-calendar-body-selected) {
+  border-color: rgba(black, 0.18);
+}
+
+[dir='rtl'] {
+  .md2-calendar-body-label {
+    padding: 0 $md2-calendar-body-cell-padding 0 0;
+    transform: translateX(-$md2-calendar-body-label-translation);
+    text-align: right;
+  }
+}

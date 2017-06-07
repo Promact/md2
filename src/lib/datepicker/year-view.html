@@ -1,0 +1,13 @@
+﻿<table class="md2-calendar-table">
+  <thead class="md2-calendar-table-header"></thead>
+  <tbody md2-calendar-body
+         role="grid"
+         allowDisabledSelection="true"
+         [label]="_yearLabel"
+         [rows]="_months"
+         [todayValue]="_todayMonth"
+         [selectedValue]="_selectedMonth"
+         [labelMinRequiredCells]="2"
+         [activeCell]="_dateAdapter.getMonth(activeDate)"
+         (selectedValueChange)="_monthSelected($event)"></tbody>
+</table>

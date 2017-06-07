@@ -59,7 +59,7 @@ var Md2Chips = (function () {
         this.autocompleteItemText = 'text';
         this.autocompleteItemValue = 'value';
         this.textKey = 'text';
-        this.valueKey = 'value';
+        this.valueKey = null;
         this.change = new EventEmitter();
         this._onChange = function (value) { };
         this._onTouched = function () { };
@@ -114,8 +114,7 @@ var Md2Chips = (function () {
     };
     Md2Chips.prototype.changeAutocomplete = function (value) {
         if (value) {
-            var objText = value.value;
-            this.addNewChip(objText);
+            this.addNewChip(value.value);
             this.item = null;
         }
     };
@@ -270,10 +269,8 @@ var Md2Chips = (function () {
     Md2Chips.prototype.addNewChip = function (chips) {
         var validInput = this._isValid(chips);
         if (validInput) {
-            if (this.maxChips) {
-                if (this.chipItemList.length < this.maxChips) {
-                    this.chipItemList.push(new Chip(chips, this.autocompleteItemText, this.autocompleteItemValue));
-                }
+            if (this.maxChips && this.maxChips < this.chipItemList.length - 1) {
+                return;
             }
             else {
                 this.chipItemList.push(new Chip(chips, this.textKey, this.valueKey));
@@ -320,14 +317,8 @@ var Md2Chips = (function () {
      * update value
      */
     Md2Chips.prototype.updateValue = function () {
-        var _this = this;
         this._value = new Array();
-        this._value = this.chipItemList.map(function (chip) {
-            var a = {};
-            a[_this.textKey] = chip.text;
-            a[_this.valueKey] = chip.value;
-            return a;
-        });
+        this._value = this.chipItemList.map(function (chip) { return chip.value; });
         this._emitChangeEvent();
     };
     /** Emits an event when the user selects a color. */

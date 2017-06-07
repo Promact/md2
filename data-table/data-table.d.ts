@@ -31,6 +31,7 @@ export declare class Md2DataTable implements DoCheck {
     sortBy: string | Array<string>;
     sortOrder: string;
     activePageChange: EventEmitter<number>;
+    rowsPerPageChange: EventEmitter<number>;
     sortByChange: EventEmitter<string | string[]>;
     sortOrderChange: EventEmitter<string>;
     onSortChange: EventEmitter<SortEvent>;

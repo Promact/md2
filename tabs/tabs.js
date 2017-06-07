@@ -275,9 +275,10 @@ var Md2Tabs = (function () {
      */
     Md2Tabs.prototype.updatePagination = function () {
         var canvasWidth = this.element.root.clientWidth;
-        this.element.tabs.forEach(function (tab) {
-            canvasWidth -= tab.offsetWidth;
-        });
+        var tabs = this.element.tabs ? this.element.tabs : [];
+        for (var i = 0; i < tabs.length; i++) {
+            canvasWidth -= tabs[i].offsetWidth;
+        }
         this._shouldPaginate = canvasWidth < 0;
     };
     /**

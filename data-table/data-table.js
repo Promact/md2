@@ -30,6 +30,7 @@ var Md2DataTable = (function () {
         this._sortBy = '';
         this._sortOrder = 'asc';
         this.activePageChange = new EventEmitter();
+        this.rowsPerPageChange = new EventEmitter();
         this.sortByChange = new EventEmitter();
         this.sortOrderChange = new EventEmitter();
         this.onSortChange = new EventEmitter();
@@ -135,7 +136,10 @@ var Md2DataTable = (function () {
         if (this.rowsPerPage !== rowsPerPage || this.activePage !== activePage) {
             this.activePage = this.activePage !== activePage ?
                 activePage : this.calculateNewActivePage(this.rowsPerPage, rowsPerPage);
-            this.rowsPerPage = rowsPerPage;
+            if (this.rowsPerPage !== rowsPerPage) {
+                this._rowsPerPage = rowsPerPage;
+                this.rowsPerPageChange.emit(this.rowsPerPage);
+            }
             this.isDataChanged = true;
             this.onPageChange.emit({
                 activePage: this.activePage,
@@ -226,6 +230,10 @@ __decorate([
     Output(),
     __metadata("design:type", Object)
 ], Md2DataTable.prototype, "activePageChange", void 0);
+__decorate([
+    Output(),
+    __metadata("design:type", Object)
+], Md2DataTable.prototype, "rowsPerPageChange", void 0);
 __decorate([
     Output(),
     __metadata("design:type", Object)

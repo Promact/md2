@@ -1,5 +1,6 @@
 import { AfterContentInit, ElementRef, OnDestroy, EventEmitter, TemplateRef, ViewContainerRef } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, NgControl, ValidationErrors, Validator } from '@angular/forms';
+import { DateAdapter } from '../core/datetime/index';
 import { DateLocale } from './date-locale';
 import { DateUtil } from './date-util';
 import { Overlay, ScrollDispatcher } from '../core';
@@ -16,6 +17,7 @@ export declare type Container = 'inline' | 'dialog';
 export declare class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueAccessor, Validator {
     private _element;
     private _overlay;
+    _dateAdapter: DateAdapter<Date>;
     private _viewContainerRef;
     private _locale;
     private _scrollDispatcher;
@@ -58,7 +60,13 @@ export declare class Md2Datepicker implements AfterContentInit, OnDestroy, Contr
     onClose: EventEmitter<void>;
     /** Event emitted when the selected date has been changed by the user. */
     change: EventEmitter<Md2DateChange>;
-    constructor(_element: ElementRef, _overlay: Overlay, _viewContainerRef: ViewContainerRef, _locale: DateLocale, _scrollDispatcher: ScrollDispatcher, _util: DateUtil, _control: NgControl);
+    /** The view that the calendar should start in. */
+    startView: 'month' | 'year';
+    /** A function used to filter which dates are selectable. */
+    dateFilter: (date: Date) => boolean;
+    /** Date filter for the month and year views. */
+    _dateFilterForViews: (date: Date) => boolean;
+    constructor(_element: ElementRef, _overlay: Overlay, _dateAdapter: DateAdapter<Date>, _viewContainerRef: ViewContainerRef, _locale: DateLocale, _scrollDispatcher: ScrollDispatcher, _util: DateUtil, _control: NgControl);
     ngAfterContentInit(): void;
     ngOnDestroy(): void;
     registerOnValidatorChange(fn: () => void): void;
@@ -174,7 +182,8 @@ export declare class Md2Datepicker implements AfterContentInit, OnDestroy, Contr
      * @return boolean
      */
     _isAfterMonth(): boolean;
-    _onActiveTimeChange(event: Date): void;
+    _onActiveDateChange(date: Date): void;
+    _onDateChange(date: Date): void;
     _onTimeChange(event: Date): void;
     /**
      * Check the date is enabled or not

@@ -31,16 +31,13 @@ Md2DatepickerModule = __decorate([
         ],
         exports: [
             Md2Datepicker,
-            Md2Clock,
         ],
         declarations: [
             Md2Datepicker,
             Md2Clock,
         ],
         providers: [DateLocale, DateUtil],
-        entryComponents: [
-            Md2Datepicker,
-        ]
+        entryComponents: [Md2Datepicker]
     })
 ], Md2DatepickerModule);
 export { Md2DatepickerModule };

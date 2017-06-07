@@ -1,3 +1,18 @@
+<a name="0.0.22"></a>
+## [0.0.22](https://github.com/Promact/md2/compare/0.0.21...v0.0.22) (2017-06-07)
+
+
+### Bug Fixes
+
+* fix(datepicker) invalid time after selecting it #227
+* fix(tabs) runtime forEach issue #211
+
+
+### Features
+
+* feat(data-table) added event for rows per page change #228
+
+
 <a name="0.0.21"></a>
 ## [0.0.21](https://github.com/Promact/md2/compare/0.0.20...v0.0.21) (2017-05-31)
 

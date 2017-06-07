@@ -3,7 +3,7 @@ import {
 } from '@angular/core';
 
 /** Whether the browser supports the Intl API. */
-const SUPPORTS_INTL_API = !!Intl;
+const SUPPORTS_INTL_API = false;//typeof Intl != 'undefined';
 
 /** Creates an array and fills it with values. */
 function range<T>(length: number, valueFunction: (index: number) => T): T[] {
@@ -66,8 +66,8 @@ export class DateLocale {
     ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
 
   months = this.fullMonths.map((val, index) => {
-      return { full: val, short: this.shortMonths[index], xshort: this.narrowMonths[index]  };
-    });
+    return { full: val, short: this.shortMonths[index], xshort: this.narrowMonths[index] };
+  });
 
 
   fullDays = SUPPORTS_INTL_API ? this._createDaysArray('long') :
@@ -80,8 +80,8 @@ export class DateLocale {
     ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
   days = this.fullDays.map((val, index) => {
-        return { full: val, short: this.shortDays[index], xshort: this.narrowDays[index] };
-      });
+    return { full: val, short: this.shortDays[index], xshort: this.narrowDays[index] };
+  });
 
 
   getDays() {

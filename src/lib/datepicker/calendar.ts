@@ -22,6 +22,7 @@ import {
   RIGHT_ARROW,
   UP_ARROW
 } from '../core/keyboard/keycodes';
+import { DateLocale } from './date-locale';
 import { DateAdapter } from '../core/datetime/index';
 import { Md2DatepickerIntl } from './datepicker-intl';
 import { MD_DATE_FORMATS, MdDateFormats } from '../core/datetime/date-formats';
@@ -44,11 +45,14 @@ import { MATERIAL_COMPATIBILITY_MODE } from '../core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Md2Calendar<D> implements AfterContentInit {
+
+  @Input() type: 'date' | 'time' | 'datetime' = 'date';
+
   /** A date representing the period (month or year) to start the calendar in. */
   @Input() startAt: D;
 
   /** Whether the calendar should be started in month or year view. */
-  @Input() startView: 'time' | 'month' | 'year' = 'month';
+  @Input() startView: 'clock' | 'month' | 'year' = 'month';
 
   /** The currently selected date. */
   @Input() selected: D;
@@ -84,7 +88,7 @@ export class Md2Calendar<D> implements AfterContentInit {
   private _clampedActiveDate: D;
 
   /** Whether the calendar is in month view. */
-  _currentView: 'time' | 'month' | 'year' = 'month';
+  _currentView: 'clock' | 'month' | 'year' = 'month';
   _clockView: 'hour' | 'minute' = 'hour';
 
   /** The label for the current calendar view. */
@@ -93,7 +97,7 @@ export class Md2Calendar<D> implements AfterContentInit {
   }
 
   get _dateText(): string {
-    return this._dateAdapter.getISODateString(this._activeDate);
+    return this._locale.getDateLabel(new Date('' + this._activeDate));
   }
 
   get _periodButtonText(): string {
@@ -128,6 +132,7 @@ export class Md2Calendar<D> implements AfterContentInit {
   constructor(private _elementRef: ElementRef,
     private _intl: Md2DatepickerIntl,
     private _ngZone: NgZone,
+    private _locale: DateLocale,
     @Optional() private _dateAdapter: DateAdapter<D>,
     @Optional() @Inject(MD_DATE_FORMATS) private _dateFormats: MdDateFormats) {
     if (!this._dateAdapter) {
@@ -157,9 +162,14 @@ export class Md2Calendar<D> implements AfterContentInit {
     this._currentView = 'month';
   }
 
-  _timeSelected(time: D): void {
-    this._activeDate = time;
-    this._currentView = 'month';
+  _timeSelected(date: D): void {
+    this._activeDate = date;
+    if (this._clockView !== 'minute') {
+      this._clockView = 'minute';
+    } else {
+      this._clockView = 'hour';
+      this._currentView = 'month';
+    }
   }
 
   /** Handles user clicks on the period label. */
@@ -168,21 +178,17 @@ export class Md2Calendar<D> implements AfterContentInit {
   }
 
   _okButtonClicked(): void {
-    this._currentView = this._currentView === 'month' ? 'time' : 'month';
+    this._currentView = this._currentView === 'month' ? 'clock' : 'month';
   }
 
   /** Handles user clicks on the previous button. */
   _previousClicked(): void {
-    this._activeDate = this._currentView === 'month' ?
-      this._dateAdapter.addCalendarMonths(this._activeDate, -1) :
-      this._dateAdapter.addCalendarYears(this._activeDate, -1);
+    this._activeDate = this._dateAdapter.addCalendarMonths(this._activeDate, -1);
   }
 
   /** Handles user clicks on the next button. */
   _nextClicked(): void {
-    this._activeDate = this._currentView === 'month' ?
-      this._dateAdapter.addCalendarMonths(this._activeDate, 1) :
-      this._dateAdapter.addCalendarYears(this._activeDate, 1);
+    this._activeDate = this._dateAdapter.addCalendarMonths(this._activeDate, 1);
   }
 
   /** Whether the previous period button is enabled. */

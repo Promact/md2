@@ -42,9 +42,17 @@
                  (selectedChange)="_monthSelected($event)">
   </md2-year-view>
   <md2-clock *ngSwitchDefault
-             [selected]="selected"
              [startView]="_clockView"
+             [selected]="_activeDate"
              (selectedChange)="_timeSelected($event)"></md2-clock>
+  <!--<md2-clock *ngSwitchDefault
+             [startView]="_clockView"
+             [interval]="timeInterval"
+             [selected]="activeDate"
+             [min]="min"
+             [max]="max"
+             (activeDateChange)="_onActiveDateChange($event)"
+             (selectedChange)="_onTimeChange($event)"></md2-clock>-->
 </div>
 <div class="md2-calendar-footer">
   <button type="button" class="md2-calendar-cancel-button"

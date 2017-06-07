@@ -134,16 +134,6 @@ export class Md2Clock implements AfterContentInit {
     this._init();
   }
 
-  /** Handles hour selection in the clock view. */
-  _hourSelected(): void {
-    this._hourView = false;
-  }
-
-  /** Handles minute selection in the clock view. */
-  _minuteSelected(): void {
-    this._hourView = true;
-  }
-
   /** Handles mousedown events on the clock body. */
   _handleMousedown(event: any) {
     this.setTime(event);
@@ -164,11 +154,6 @@ export class Md2Clock implements AfterContentInit {
     document.removeEventListener('mouseup', this.mouseUpListener);
     document.removeEventListener('touchend', this.mouseUpListener);
     this.selectedChange.emit(this.activeDate);
-    if (this._hourView) {
-      this._hourSelected();
-    } else {
-      this._minuteSelected();
-    }
   }
 
   /** Initializes this clock view. */

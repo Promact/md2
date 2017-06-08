@@ -46,7 +46,7 @@ import { MATERIAL_COMPATIBILITY_MODE } from '../core';
 })
 export class Md2Calendar<D> implements AfterContentInit {
 
-  @Input() type: 'date' | 'time' | 'datetime' = 'date';
+  @Input() type: 'date' | 'time' | 'datetime' = 'datetime';
 
   /** A date representing the period (month or year) to start the calendar in. */
   @Input() startAt: D;
@@ -100,15 +100,19 @@ export class Md2Calendar<D> implements AfterContentInit {
     return this._locale.getDateLabel(new Date('' + this._activeDate));
   }
 
+  get _hoursPeriodText(): string {
+    return ('0' + this._dateAdapter.getHours(this._activeDate)).slice(-2);
+  }
+
+  get _minutesPeriodText(): string {
+    return ('0' + this._dateAdapter.getMinutes(this._activeDate)).slice(-2);
+  }
+
   get _periodButtonText(): string {
     return this._currentView === 'month' ?
       this._dateAdapter.format(this._activeDate, this._dateFormats.display.monthYearLabel)
         .toLocaleUpperCase() :
       this._dateAdapter.getYearName(this._activeDate);
-  }
-
-  get _periodButtonLabel(): string {
-    return this._currentView === 'month' ? this._intl.switchToYearViewLabel : this._intl.switchToMonthViewLabel;
   }
 
   /** The label for the the previous button. */
@@ -119,14 +123,6 @@ export class Md2Calendar<D> implements AfterContentInit {
   /** The label for the the next button. */
   get _nextButtonLabel(): string {
     return this._currentView === 'month' ? this._intl.nextMonthLabel : this._intl.nextYearLabel;
-  }
-
-  get _okButtonLabel(): string {
-    return 'OK';
-  }
-
-  get _cancelButtonLabel(): string {
-    return 'CANCEL';
   }
 
   constructor(private _elementRef: ElementRef,
@@ -151,8 +147,13 @@ export class Md2Calendar<D> implements AfterContentInit {
 
   /** Handles date selection in the month view. */
   _dateSelected(date: D): void {
-    if (!this._dateAdapter.sameDate(date, this.selected)) {
-      this.selectedChange.emit(date);
+    if (this.type == 'date') {
+      if (!this._dateAdapter.sameDate(date, this.selected)) {
+        this.selectedChange.emit(date);
+      }
+    } else {
+      this._activeDate = date;
+      this._currentView = 'clock';
     }
   }
 
@@ -163,22 +164,32 @@ export class Md2Calendar<D> implements AfterContentInit {
   }
 
   _timeSelected(date: D): void {
-    this._activeDate = date;
     if (this._clockView !== 'minute') {
+      this._activeDate = date;
       this._clockView = 'minute';
     } else {
       this._clockView = 'hour';
       this._currentView = 'month';
+      if (!this._dateAdapter.sameDate(date, this.selected)) {
+        this.selectedChange.emit(date);
+      }
     }
   }
 
-  /** Handles user clicks on the period label. */
-  _currentPeriodClicked(): void {
-    this._currentView = this._currentView === 'month' ? 'year' : 'month';
+  _yearClicked(): void {
+    this._currentView = 'year';
+  }
+  _dateClicked(): void {
+    this._currentView = 'month';
   }
 
-  _okButtonClicked(): void {
-    this._currentView = this._currentView === 'month' ? 'clock' : 'month';
+  _hoursClicked(): void {
+    this._currentView = 'clock';
+    this._clockView = 'hour';
+  }
+  _minutesClicked(): void {
+    this._currentView = 'clock';
+    this._clockView = 'minute';
   }
 
   /** Handles user clicks on the previous button. */
@@ -211,8 +222,10 @@ export class Md2Calendar<D> implements AfterContentInit {
     // navigation should skip over disabled dates, and if so, how to implement that efficiently.
     if (this._currentView === 'month') {
       this._handleCalendarBodyKeydownInMonthView(event);
-    } else {
+    } else if (this._currentView === 'year') {
       this._handleCalendarBodyKeydownInYearView(event);
+    } else {
+      this._handleCalendarBodyKeydownInClockView(event);
     }
   }
 
@@ -220,7 +233,9 @@ export class Md2Calendar<D> implements AfterContentInit {
   _focusActiveCell() {
     this._ngZone.runOutsideAngular(() => this._ngZone.onStable.first().subscribe(() => {
       let activeEl = this._elementRef.nativeElement.querySelector('.md2-calendar-body-active');
-      activeEl.focus();
+      if (activeEl) {
+        activeEl.focus();
+      }
     }));
   }
 
@@ -317,6 +332,30 @@ export class Md2Calendar<D> implements AfterContentInit {
       case ENTER:
         this._monthSelected(this._activeDate);
         break;
+      default:
+        // Don't prevent default or focus active cell on keys that we don't explicitly handle.
+        return;
+    }
+
+    this._focusActiveCell();
+    // Prevent unexpected default actions such as form submission.
+    event.preventDefault();
+  }
+
+  /** Handles keydown events on the calendar body when calendar is in month view. */
+  private _handleCalendarBodyKeydownInClockView(event: KeyboardEvent): void {
+    switch (event.keyCode) {
+      case UP_ARROW:
+        this._activeDate = this._clockView == 'hour' ? this._dateAdapter.addCalendarHours(this._activeDate, 1) :
+          this._dateAdapter.addCalendarMinutes(this._activeDate, 1);
+        break;
+      case DOWN_ARROW:
+        this._activeDate = this._clockView == 'hour' ? this._dateAdapter.addCalendarHours(this._activeDate, -1) :
+          this._dateAdapter.addCalendarMinutes(this._activeDate, -1);
+        break;
+      case ENTER:
+        this._timeSelected(this._activeDate);
+        return;
       default:
         // Don't prevent default or focus active cell on keys that we don't explicitly handle.
         return;

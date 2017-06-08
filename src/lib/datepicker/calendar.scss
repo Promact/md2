@@ -1,6 +1,5 @@
 $primary: #106cc8 !default;
 $md2-calendar-padding: 8px !default;
-$md2-calendar-period-font-size: 14px;
 $md2-calendar-weekday-table-font-size: 11px !default;
 
 // Values chosen to approximate https://material.io/icons/#ic_navigate_before and
@@ -26,21 +25,39 @@ $md2-calendar-next-icon-transform: translateX(-2px) rotate(45deg);
 }
 
 .md2-calendar-header-year,
-.md2-calendar-header-date {
+.md2-calendar-header-date-time {
   width: 100%;
   font-weight: 500;
-  transition: .3s cubic-bezier(.25,.8,.25,1);
+  white-space: nowrap;
+}
 
+.md2-calendar-header-date-time {
+  font-size: 30px;
+  line-height: 34px;
+}
 
+.md2-calendar-header-year,
+.md2-calendar-header-date,
+.md2-calendar-header-hours,
+.md2-calendar-header-minutes {
   &:not(.active) {
     cursor: pointer;
     opacity: 0.6;
   }
 }
 
-.md2-calendar-header-date {
-  font-size: 30px;
-  line-height: 34px;
+.md2-calendar-header-time {
+  padding-left: 8px;
+
+  &:not(.active) {
+    opacity: 0.6;
+
+    .md2-calendar-header-hours,
+    .md2-calendar-header-minutes {
+      cursor: pointer;
+      opacity: 1;
+    }
+  }
 }
 
 .md2-calendar-content {
@@ -57,9 +74,6 @@ $md2-calendar-next-icon-transform: translateX(-2px) rotate(45deg);
   display: inline-block;
   height: 48px;
   padding: 12px;
-  font: inherit;
-  font-size: $md2-calendar-period-font-size;
-  font-weight: bold;
   outline: none;
   border: 0;
   cursor: pointer;
@@ -102,35 +116,6 @@ $md2-calendar-next-icon-transform: translateX(-2px) rotate(45deg);
   th {
     text-align: center;
     font-size: $md2-calendar-weekday-table-font-size;
-    font-weight: normal;
     padding: 0 0 $md2-calendar-padding 0;
-  }
-}
-
-.md2-calendar-footer {
-  text-align: right;
-}
-
-.md2-calendar-ok-button,
-.md2-calendar-cancel-button {
-  display: inline-block;
-  min-width: 64px;
-  margin: 4px 8px 8px 0;
-  padding: 0 12px;
-  font-size: 14px;
-  color: $primary;
-  line-height: 36px;
-  text-align: center;
-  text-transform: uppercase;
-  outline: 0;
-  border: 0;
-  border-radius: 2px;
-  background: transparent;
-  cursor: pointer;
-  box-sizing: border-box;
-  transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1);
-
-  &:hover {
-    background: darken(white, 8);
   }
 }

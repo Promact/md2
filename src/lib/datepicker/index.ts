@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { OverlayModule, PortalModule } from '../core';
+import { StyleModule, OverlayModule, PortalModule, A11yModule } from '../core';
 import { Md2Datepicker } from './datepicker';
 import { Md2Datepicker2, Md2DatepickerContent } from './datepicker2';
 import { Md2DatepickerInput } from './datepicker-input';
@@ -13,7 +13,6 @@ import { Md2Clock } from './clock';
 import { Md2DatepickerIntl } from './datepicker-intl';
 import { DateUtil } from './date-util';
 import { DateLocale } from './date-locale';
-import { StyleModule } from '../core/style/index';
 
 
 export * from './datepicker';
@@ -32,6 +31,7 @@ export * from './date-locale';
     OverlayModule,
     PortalModule,
     StyleModule,
+    A11yModule,
   ],
   exports: [
     Md2Datepicker,

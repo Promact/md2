@@ -1,4 +1,4 @@
-import {DateAdapter} from './date-adapter';
+import { DateAdapter } from './date-adapter';
 
 
 // TODO(mmalerba): Remove when we no longer support safari 9.
@@ -49,13 +49,25 @@ export class NativeDateAdapter extends DateAdapter<Date> {
     return date.getDate();
   }
 
+  getHours(date: Date): number {
+    return date.getHours();
+  }
+
+  getMinutes(date: Date): number {
+    return date.getMinutes();
+  }
+
+  getSeconds(date: Date): number {
+    return date.getSeconds();
+  }
+
   getDayOfWeek(date: Date): number {
     return date.getDay();
   }
 
   getMonthNames(style: 'long' | 'short' | 'narrow'): string[] {
     if (SUPPORTS_INTL_API) {
-      let dtf = new Intl.DateTimeFormat(this.locale, {month: style});
+      let dtf = new Intl.DateTimeFormat(this.locale, { month: style });
       return range(12, i => this._stripDirectionalityCharacters(dtf.format(new Date(2017, i, 1))));
     }
     return DEFAULT_MONTH_NAMES[style];
@@ -63,25 +75,25 @@ export class NativeDateAdapter extends DateAdapter<Date> {
 
   getDateNames(): string[] {
     if (SUPPORTS_INTL_API) {
-      let dtf = new Intl.DateTimeFormat(this.locale, {day: 'numeric'});
+      let dtf = new Intl.DateTimeFormat(this.locale, { day: 'numeric' });
       return range(31, i => this._stripDirectionalityCharacters(
-          dtf.format(new Date(2017, 0, i + 1))));
+        dtf.format(new Date(2017, 0, i + 1))));
     }
     return DEFAULT_DATE_NAMES;
   }
 
   getDayOfWeekNames(style: 'long' | 'short' | 'narrow'): string[] {
     if (SUPPORTS_INTL_API) {
-      let dtf = new Intl.DateTimeFormat(this.locale, {weekday: style});
+      let dtf = new Intl.DateTimeFormat(this.locale, { weekday: style });
       return range(7, i => this._stripDirectionalityCharacters(
-          dtf.format(new Date(2017, 0, i + 1))));
+        dtf.format(new Date(2017, 0, i + 1))));
     }
     return DEFAULT_DAY_OF_WEEK_NAMES[style];
   }
 
   getYearName(date: Date): string {
     if (SUPPORTS_INTL_API) {
-      let dtf = new Intl.DateTimeFormat(this.locale, {year: 'numeric'});
+      let dtf = new Intl.DateTimeFormat(this.locale, { year: 'numeric' });
       return this._stripDirectionalityCharacters(dtf.format(date));
     }
     return String(this.getYear(date));
@@ -94,21 +106,21 @@ export class NativeDateAdapter extends DateAdapter<Date> {
 
   getNumDaysInMonth(date: Date): number {
     return this.getDate(this._createDateWithOverflow(
-        this.getYear(date), this.getMonth(date) + 1, 0));
+      this.getYear(date), this.getMonth(date) + 1, 0, 0, 0, 0));
   }
 
   clone(date: Date): Date {
-    return this.createDate(this.getYear(date), this.getMonth(date), this.getDate(date));
+    return this.createDate(this.getYear(date), this.getMonth(date), this.getDate(date), this.getHours(date), this.getMinutes(date), this.getSeconds(date));
   }
 
-  createDate(year: number, month: number, date: number): Date {
+  createDate(year: number, month: number, date: number, hours: number, minutes: number, seconds: number): Date {
     // Check for invalid month and date (except upper bound on date which we have to check after
     // creating the Date).
     if (month < 0 || month > 11 || date < 1) {
       return null;
     }
 
-    let result = this._createDateWithOverflow(year, month, date);
+    let result = this._createDateWithOverflow(year, month, date, hours, minutes, seconds);
 
     // Check that the date wasn't above the upper bound for the month, causing the month to
     // overflow.
@@ -144,14 +156,14 @@ export class NativeDateAdapter extends DateAdapter<Date> {
 
   addCalendarMonths(date: Date, months: number): Date {
     let newDate = this._createDateWithOverflow(
-        this.getYear(date), this.getMonth(date) + months, this.getDate(date));
+      this.getYear(date), this.getMonth(date) + months, this.getDate(date), this.getHours(date), this.getMinutes(date), this.getSeconds(date));
 
     // It's possible to wind up in the wrong month if the original month has more days than the new
     // month. In this case we want to go to the last day of the desired month.
     // Note: the additional + 12 % 12 ensures we end up with a positive number, since JS % doesn't
     // guarantee this.
     if (this.getMonth(newDate) != ((this.getMonth(date) + months) % 12 + 12) % 12) {
-      newDate = this._createDateWithOverflow(this.getYear(newDate), this.getMonth(newDate), 0);
+      newDate = this._createDateWithOverflow(this.getYear(newDate), this.getMonth(newDate), 0, this.getHours(newDate), this.getMinutes(newDate), this.getSeconds(newDate));
     }
 
     return newDate;
@@ -159,7 +171,17 @@ export class NativeDateAdapter extends DateAdapter<Date> {
 
   addCalendarDays(date: Date, days: number): Date {
     return this._createDateWithOverflow(
-        this.getYear(date), this.getMonth(date), this.getDate(date) + days);
+      this.getYear(date), this.getMonth(date), this.getDate(date) + days, this.getHours(date), this.getMinutes(date), this.getSeconds(date));
+  }
+
+  addCalendarHours(date: Date, hours: number): Date {
+    return this._createDateWithOverflow(
+      this.getYear(date), this.getMonth(date), this.getDate(date), this.getHours(date) + hours, this.getMinutes(date), this.getSeconds(date));
+  }
+
+  addCalendarMinutes(date: Date, minutes: number): Date {
+    return this._createDateWithOverflow(
+      this.getYear(date), this.getMonth(date), this.getDate(date), this.getHours(date), this.getMinutes(date) + minutes, this.getSeconds(date));
   }
 
   getISODateString(date: Date): string {
@@ -171,8 +193,8 @@ export class NativeDateAdapter extends DateAdapter<Date> {
   }
 
   /** Creates a date but allows the month and date to overflow. */
-  private _createDateWithOverflow(year: number, month: number, date: number) {
-    let result = new Date(year, month, date);
+  private _createDateWithOverflow(year: number, month: number, date: number, hours: number, minutes: number, seconds: number) {
+    let result = new Date(year, month, date, hours, minutes, seconds);
 
     // We need to correct for the fact that JS native Date treats years in range [0, 99] as
     // abbreviations for 19xx.

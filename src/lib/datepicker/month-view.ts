@@ -9,9 +9,9 @@ import {
   Output,
   ViewEncapsulation
 } from '@angular/core';
-import {Md2CalendarCell} from './calendar-body';
-import {DateAdapter} from '../core/datetime/index';
-import {MD_DATE_FORMATS, MdDateFormats} from '../core/datetime/date-formats';
+import { Md2CalendarCell } from './calendar-body';
+import { DateAdapter } from '../core/datetime/index';
+import { MD_DATE_FORMATS, MdDateFormats } from '../core/datetime/date-formats';
 
 
 const DAYS_PER_WEEK = 7;
@@ -74,10 +74,10 @@ export class Md2MonthView<D> implements AfterContentInit {
   _todayDate: number;
 
   /** The names of the weekdays. */
-  _weekdays: {long: string, narrow: string}[];
+  _weekdays: { long: string, narrow: string }[];
 
-  constructor(@Optional() public _dateAdapter: DateAdapter<D>,
-              @Optional() @Inject(MD_DATE_FORMATS) private _dateFormats: MdDateFormats) {
+  constructor( @Optional() public _dateAdapter: DateAdapter<D>,
+    @Optional() @Inject(MD_DATE_FORMATS) private _dateFormats: MdDateFormats) {
     if (!this._dateAdapter) {
       throw Error('DateAdapter');
     }
@@ -91,7 +91,7 @@ export class Md2MonthView<D> implements AfterContentInit {
 
     // Rotate the labels for days of the week based on the configured first day of the week.
     let weekdays = longWeekdays.map((long, i) => {
-      return {long, narrow: narrowWeekdays[i]};
+      return { long, narrow: narrowWeekdays[i] };
     });
     this._weekdays = weekdays.slice(firstDayOfWeek).concat(weekdays.slice(0, firstDayOfWeek));
 
@@ -108,8 +108,10 @@ export class Md2MonthView<D> implements AfterContentInit {
       return;
     }
     this.selectedChange.emit(this._dateAdapter.createDate(
-        this._dateAdapter.getYear(this.activeDate), this._dateAdapter.getMonth(this.activeDate),
-        date));
+      this._dateAdapter.getYear(this.activeDate), this._dateAdapter.getMonth(this.activeDate),
+      date, this._dateAdapter.getHours(this.activeDate),
+      this._dateAdapter.getMinutes(this.activeDate),
+      this._dateAdapter.getSeconds(this.activeDate)));
   }
 
   /** Initializes this month view. */
@@ -118,10 +120,13 @@ export class Md2MonthView<D> implements AfterContentInit {
     this._todayDate = this._getDateInCurrentMonth(this._dateAdapter.today());
 
     let firstOfMonth = this._dateAdapter.createDate(this._dateAdapter.getYear(this.activeDate),
-        this._dateAdapter.getMonth(this.activeDate), 1);
+      this._dateAdapter.getMonth(this.activeDate), 1,
+      this._dateAdapter.getHours(this.activeDate),
+      this._dateAdapter.getMinutes(this.activeDate),
+      this._dateAdapter.getSeconds(this.activeDate));
     this._firstWeekOffset =
-        (DAYS_PER_WEEK + this._dateAdapter.getDayOfWeek(firstOfMonth) -
-         this._dateAdapter.getFirstDayOfWeek()) % DAYS_PER_WEEK;
+      (DAYS_PER_WEEK + this._dateAdapter.getDayOfWeek(firstOfMonth) -
+        this._dateAdapter.getFirstDayOfWeek()) % DAYS_PER_WEEK;
 
     this._createWeekCells();
   }
@@ -131,19 +136,22 @@ export class Md2MonthView<D> implements AfterContentInit {
     let daysInMonth = this._dateAdapter.getNumDaysInMonth(this.activeDate);
     let dateNames = this._dateAdapter.getDateNames();
     this._weeks = [[]];
-    for (let i = 0, cell = this._firstWeekOffset; i < daysInMonth; i++, cell++) {
+    for (let i = 0, cell = this._firstWeekOffset; i < daysInMonth; i++ , cell++) {
       if (cell == DAYS_PER_WEEK) {
         this._weeks.push([]);
         cell = 0;
       }
       let date = this._dateAdapter.createDate(
-          this._dateAdapter.getYear(this.activeDate),
-          this._dateAdapter.getMonth(this.activeDate), i + 1);
+        this._dateAdapter.getYear(this.activeDate),
+        this._dateAdapter.getMonth(this.activeDate), i + 1,
+        this._dateAdapter.getHours(this.activeDate),
+        this._dateAdapter.getMinutes(this.activeDate),
+        this._dateAdapter.getSeconds(this.activeDate));
       let enabled = !this.dateFilter ||
-          this.dateFilter(date);
+        this.dateFilter(date);
       let ariaLabel = this._dateAdapter.format(date, this._dateFormats.display.dateA11yLabel);
       this._weeks[this._weeks.length - 1]
-          .push(new Md2CalendarCell(i + 1, dateNames[i], ariaLabel, enabled));
+        .push(new Md2CalendarCell(i + 1, dateNames[i], ariaLabel, enabled));
     }
   }
 
@@ -153,12 +161,12 @@ export class Md2MonthView<D> implements AfterContentInit {
    */
   private _getDateInCurrentMonth(date: D): number {
     return this._hasSameMonthAndYear(date, this.activeDate) ?
-        this._dateAdapter.getDate(date) : null;
+      this._dateAdapter.getDate(date) : null;
   }
 
   /** Checks whether the 2 dates are non-null and fall within the same month of the same year. */
   private _hasSameMonthAndYear(d1: D, d2: D): boolean {
     return !!(d1 && d2 && this._dateAdapter.getMonth(d1) == this._dateAdapter.getMonth(d2) &&
-              this._dateAdapter.getYear(d1) == this._dateAdapter.getYear(d2));
+      this._dateAdapter.getYear(d1) == this._dateAdapter.getYear(d2));
   }
 }

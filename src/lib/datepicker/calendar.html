@@ -1,13 +1,24 @@
 <div class="md2-calendar-header">
   <div class="md2-calendar-header-year"
-       [class.active]="false">{{ _yearText }}</div>
-  <div class="md2-calendar-header-date"
-       [class.active]="true">
-    {{ _dateText }}
+       [class.active]="_currentView == 'year'"
+       (click)="_yearClicked()">{{ _yearText }}</div>
+  <div class="md2-calendar-header-date-time">
+    <span class="md2-calendar-header-date"
+          [class.active]="_currentView == 'month'"
+          (click)="_dateClicked()">{{ _dateText }}</span>
+    <span class="md2-calendar-header-time"
+          [class.active]="_currentView == 'clock'">
+      <span class="md2-calendar-header-hours"
+            [class.active]="_clockView == 'hour'"
+            (click)="_hoursClicked()">{{ _hoursPeriodText }}</span>:
+      <span class="md2-calendar-header-minutes"
+            [class.active]="_clockView == 'minute'"
+            (click)="_minutesClicked()">{{ _minutesPeriodText }}</span>
+    </span>
   </div>
 </div>
 <div class="md2-calendar-content" (keydown)="_handleCalendarBodyKeydown($event)"
-     [ngSwitch]="_currentView" cdkMonitorSubtreeFocus>
+     [ngSwitch]="_currentView" cdkMonitorSubtreeFocus tabindex="0">
   <div class="md2-month-content" *ngSwitchCase="'month'">
     <div class="md2-calendar-controls">
       <button type="button" class="md2-calendar-previous-button"
@@ -17,10 +28,9 @@
           <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
         </svg>
       </button>
-      <button type="button" class="md2-calendar-period-button"
-              (click)="_currentPeriodClicked()" [attr.aria-label]="_periodButtonLabel">
-        {{_periodButtonText}}
-      </button>
+      <div class="md2-calendar-period-button">
+        <strong>{{_periodButtonText}}</strong>
+      </div>
       <button type="button" class="md2-calendar-next-button"
               [disabled]="!_nextEnabled()" (click)="_nextClicked()"
               [attr.aria-label]="_nextButtonLabel">
@@ -53,14 +63,4 @@
              [max]="max"
              (activeDateChange)="_onActiveDateChange($event)"
              (selectedChange)="_onTimeChange($event)"></md2-clock>-->
-</div>
-<div class="md2-calendar-footer">
-  <button type="button" class="md2-calendar-cancel-button"
-          [attr.aria-label]="_cancelButtonLabel">
-    {{ _cancelButtonLabel }}
-  </button>
-  <button type="button" class="md2-calendar-ok-button"
-          [attr.aria-label]="_okButtonLabel" (click)="_okButtonClicked()">
-    {{ _okButtonLabel }}
-  </button>
 </div>

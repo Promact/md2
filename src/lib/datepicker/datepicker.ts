@@ -235,7 +235,11 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
 
   get activeDate(): Date { return this._activeDate; }
   set activeDate(value: Date) {
+    let oldDate = this._activeDate;
     this._activeDate = this._util.clampDate(value, this.min, this.max);
+    if (!this._util.isSameMonthAndYear(oldDate, this._activeDate)) {
+      this.generateCalendar();
+    }
   }
   private _activeDate: Date;
 
@@ -463,92 +467,12 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
         case TAB:
         case ESCAPE: this._onBlur(); this.close(); break;
       }
-      let date = this.activeDate;
       if (this._isYearsVisible) {
-        switch (event.keyCode) {
-          case ENTER: this._onClickOk(); break;
-
-          case DOWN_ARROW:
-            if (this.activeDate.getFullYear() < (this.today.getFullYear() + 100)) {
-              this.activeDate = this._util.incrementYears(date, 1);
-              this._scrollToSelectedYear();
-            }
-            break;
-          case UP_ARROW:
-            if (this.activeDate.getFullYear() > 1900) {
-              this.activeDate = this._util.incrementYears(date, -1);
-              this._scrollToSelectedYear();
-            }
-            break;
-        }
-
+        this._handleKeydownInYearView(event);
       } else if (this._isCalendarVisible) {
-        switch (event.keyCode) {
-          case ENTER: this._dateSelected(this.activeDate); break;
-
-          case RIGHT_ARROW:
-            this.activeDate = this._util.incrementDays(date, 1);
-            break;
-          case LEFT_ARROW:
-            this.activeDate = this._util.incrementDays(date, -1);
-            break;
-
-          case PAGE_DOWN:
-            if (event.shiftKey) {
-              this.activeDate = this._util.incrementYears(date, 1);
-            } else {
-              this.activeDate = this._util.incrementMonths(date, 1);
-            }
-            break;
-          case PAGE_UP:
-            if (event.shiftKey) {
-              this.activeDate = this._util.incrementYears(date, -1);
-            } else {
-              this.activeDate = this._util.incrementMonths(date, -1);
-            }
-            break;
-
-          case DOWN_ARROW:
-            this.activeDate = this._util.incrementDays(date, 7);
-            break;
-          case UP_ARROW:
-            this.activeDate = this._util.incrementDays(date, -7);
-            break;
-
-          case HOME:
-            this.activeDate = this._util.getFirstDateOfMonth(date);
-            break;
-          case END:
-            this.activeDate = this._util.getLastDateOfMonth(date);
-            break;
-        }
-        if (!this._util.isSameMonthAndYear(date, this.activeDate)) {
-          this.generateCalendar();
-        }
-      } else if (this._clockView === 'hour') {
-        switch (event.keyCode) {
-          case ENTER: this._hourSelected(this.activeDate.getHours()); break;
-
-          case UP_ARROW:
-            this.activeDate = this._util.incrementHours(date, 1);
-            break;
-          case DOWN_ARROW:
-            this.activeDate = this._util.incrementHours(date, -1);
-            break;
-        }
+        this._handleKeydownInMonthView(event);
       } else {
-        switch (event.keyCode) {
-          case ENTER:
-            this._minuteSelected(this.activeDate.getMinutes());
-            break;
-
-          case UP_ARROW:
-            this.activeDate = this._util.incrementMinutes(date, 1);
-            break;
-          case DOWN_ARROW:
-            this.activeDate = this._util.incrementMinutes(date, -1);
-            break;
-        }
+        this._handleKeydownInClockView(event);
       }
     } else {
       switch (event.keyCode) {
@@ -559,6 +483,95 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
           break;
       }
     }
+  }
+
+  _handleKeydownInYearView(event: KeyboardEvent): void {
+    switch (event.keyCode) {
+      case UP_ARROW:
+        if (this.activeDate.getFullYear() > 1900) {
+          this.activeDate = this._util.incrementYears(this.activeDate, -1);
+          this._scrollToSelectedYear();
+        }
+        this._activeDate = this._dateAdapter.addCalendarDays(this._activeDate, -7);
+        break;
+      case DOWN_ARROW:
+        if (this.activeDate.getFullYear() < (this.today.getFullYear() + 100)) {
+          this.activeDate = this._util.incrementYears(this.activeDate, 1);
+          this._scrollToSelectedYear();
+        }
+        break;
+      case ENTER:
+        this._okClicked();
+        return;
+      default:
+        return;
+    }
+    event.preventDefault();
+  }
+
+  _handleKeydownInMonthView(event: KeyboardEvent): void {
+    switch (event.keyCode) {
+      case LEFT_ARROW:
+        this.activeDate = this._util.incrementDays(this.activeDate, -1);
+        break;
+      case RIGHT_ARROW:
+        this.activeDate = this._util.incrementDays(this.activeDate, 1);
+        break;
+      case UP_ARROW:
+        this.activeDate = this._util.incrementDays(this.activeDate, -7);
+        break;
+      case DOWN_ARROW:
+        this.activeDate = this._util.incrementDays(this.activeDate, 7);
+        break;
+      case PAGE_DOWN:
+        if (event.shiftKey) {
+          this.activeDate = this._util.incrementYears(this.activeDate, 1);
+        } else {
+          this.activeDate = this._util.incrementMonths(this.activeDate, 1);
+        }
+        break;
+      case PAGE_UP:
+        if (event.shiftKey) {
+          this.activeDate = this._util.incrementYears(this.activeDate, -1);
+        } else {
+          this.activeDate = this._util.incrementMonths(this.activeDate, -1);
+        }
+        break;
+      case HOME:
+        this.activeDate = this._util.getFirstDateOfMonth(this.activeDate);
+        break;
+      case END:
+        this.activeDate = this._util.getLastDateOfMonth(this.activeDate);
+        break;
+      case ENTER:
+        this._dateSelected(this.activeDate);
+        return;
+      default:
+        return;
+    }
+    event.preventDefault();
+  }
+
+  _handleKeydownInClockView(event: KeyboardEvent): void {
+    switch (event.keyCode) {
+      case UP_ARROW:
+        this.activeDate = this._clockView === 'hour' ? this._util.incrementHours(this.activeDate, 1) :
+          this._util.incrementMinutes(this.activeDate, 1);
+        break;
+      case DOWN_ARROW:
+        this.activeDate = this._clockView === 'hour' ? this._util.incrementHours(this.activeDate, -1) :
+          this._util.incrementMinutes(this.activeDate, -1);
+        break;
+      case ENTER:
+        if (this._clockView === 'hour') {
+          this._hourSelected(this.activeDate.getHours());
+        } else { this._minuteSelected(this.activeDate.getMinutes()); }
+        return;
+      default:
+        return;
+    }
+
+    event.preventDefault();
   }
 
   _onBlur() {
@@ -607,7 +620,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   /**
    * Display Years
    */
-  _showYear() {
+  _yearClicked() {
     this._isYearsVisible = true;
     this._isCalendarVisible = true;
     this._scrollToSelectedYear();
@@ -634,7 +647,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
    * select year
    * @param year
    */
-  _setYear(year: number) {
+  _yearSelected(year: number) {
     this.activeDate = new Date(year, this.activeDate.getMonth(), this.activeDate.getDate(),
       this.activeDate.getHours(), this.activeDate.getMinutes());
     this.generateCalendar();
@@ -644,7 +657,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   /**
    * Display Calendar
    */
-  _showCalendar() {
+  _dateClicked() {
     this._isYearsVisible = false;
     this._isCalendarVisible = true;
   }
@@ -652,7 +665,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   /**
    * Toggle Hour visiblity
    */
-  _toggleHours(value: ClockView) {
+  _timeClicked(value: ClockView) {
     this._isYearsVisible = false;
     this._isCalendarVisible = false;
     this._clockView = value;
@@ -661,7 +674,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   /**
    * Ok Button Event
    */
-  _onClickOk() {
+  _okClicked() {
     if (this._isYearsVisible) {
       this.generateCalendar();
       this._isYearsVisible = false;
@@ -732,7 +745,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
    * Check is Before month enabled or not
    * @return boolean
    */
-  _isBeforeMonth() {
+  _previousEnabled() {
     return !this.min ? true :
       this.min && this._util.getMonthDistance(this.activeDate, this.min) < 0;
   }
@@ -741,7 +754,7 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
    * Check is After month enabled or not
    * @return boolean
    */
-  _isAfterMonth() {
+  _nextEnabled() {
     return !this._max ? true :
       this._max && this._util.getMonthDistance(this.activeDate, this._max) > 0;
   }

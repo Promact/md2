@@ -1,8 +1,9 @@
 @import '../core/style/elevation';
 
 $md2-datepicker-calendar-padding: 8px;
-$md2-datepicker-non-touch-calendar-cell-size: 40px;
-$md2-datepicker-non-touch-calendar-width: $md2-datepicker-non-touch-calendar-cell-size * 7 + $md2-datepicker-calendar-padding * 2;
+$md2-datepicker-calendar-cell-size: 40px;
+$md2-datepicker-calendar-width: $md2-datepicker-calendar-cell-size * 7 + $md2-datepicker-calendar-padding * 2;
+$md2-datepicker-calendar-height: 405px;
 
 .md2-datepicker-content {
   @include mat-elevation(8);
@@ -12,7 +13,8 @@ $md2-datepicker-non-touch-calendar-width: $md2-datepicker-non-touch-calendar-cel
 }
 
 .md2-calendar {
-  width: $md2-datepicker-non-touch-calendar-width;
+  width: $md2-datepicker-calendar-width;
+  height: $md2-datepicker-calendar-height;
 }
 
 .md2-datepicker-content-touch {

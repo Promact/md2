@@ -88,7 +88,10 @@ export class Md2YearView<D> implements AfterContentInit {
   _monthSelected(month: number) {
     this.selectedChange.emit(this._dateAdapter.createDate(
       this._dateAdapter.getYear(this.activeDate), month,
-      this._dateAdapter.getDate(this.activeDate)));
+      this._dateAdapter.getDate(this.activeDate),
+      this._dateAdapter.getHours(this.activeDate),
+      this._dateAdapter.getMinutes(this.activeDate),
+      this._dateAdapter.getSeconds(this.activeDate)));
   }
 
   /** Initializes this month view. */
@@ -115,7 +118,10 @@ export class Md2YearView<D> implements AfterContentInit {
   /** Creates an MdCalendarCell for the given month. */
   private _createCellForMonth(month: number, monthName: string) {
     let ariaLabel = this._dateAdapter.format(
-      this._dateAdapter.createDate(this._dateAdapter.getYear(this.activeDate), month, 1),
+      this._dateAdapter.createDate(this._dateAdapter.getYear(this.activeDate), month, 1,
+        this._dateAdapter.getHours(this.activeDate),
+        this._dateAdapter.getMinutes(this.activeDate),
+        this._dateAdapter.getSeconds(this.activeDate)),
       this._dateFormats.display.monthYearA11yLabel);
     return new Md2CalendarCell(
       month, monthName.toLocaleUpperCase(), ariaLabel, this._isMonthEnabled(month));
@@ -128,7 +134,10 @@ export class Md2YearView<D> implements AfterContentInit {
     }
 
     let firstOfMonth = this._dateAdapter.createDate(
-      this._dateAdapter.getYear(this.activeDate), month, 1);
+      this._dateAdapter.getYear(this.activeDate), month, 1,
+      this._dateAdapter.getHours(this.activeDate),
+      this._dateAdapter.getMinutes(this.activeDate),
+      this._dateAdapter.getSeconds(this.activeDate));
 
     // If any date in the month is enabled count the month as enabled.
     for (let date = firstOfMonth; this._dateAdapter.getMonth(date) == month;

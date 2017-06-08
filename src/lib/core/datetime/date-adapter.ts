@@ -24,6 +24,12 @@ export abstract class DateAdapter<D> {
    */
   abstract getDate(date: D): number;
 
+  abstract getHours(date: D): number;
+
+  abstract getMinutes(date: D): number;
+
+  abstract getSeconds(date: D): number;
+
   /**
    * Gets the day of the week component of the given date.
    * @param date The date to extract the day of the week from.
@@ -86,7 +92,7 @@ export abstract class DateAdapter<D> {
    * @param date The date of month of the date. Must be an integer 1 - length of the given month.
    * @returns The new date, or null if invalid.
    */
-  abstract createDate(year: number, month: number, date: number): D;
+  abstract createDate(year: number, month: number, date: number, hours: number, minutes: number, seconds: number): D;
 
   /**
    * Gets today's date.
@@ -140,6 +146,10 @@ export abstract class DateAdapter<D> {
    */
   abstract addCalendarDays(date: D, days: number): D;
 
+  abstract addCalendarHours(date: D, days: number): D;
+
+  abstract addCalendarMinutes(date: D, days: number): D;
+
   /**
    * Gets the RFC 3339 compatible date string (https://tools.ietf.org/html/rfc3339)  for the given
    * date.
@@ -165,8 +175,8 @@ export abstract class DateAdapter<D> {
    */
   compareDate(first: D, second: D): number {
     return this.getYear(first) - this.getYear(second) ||
-        this.getMonth(first) - this.getMonth(second) ||
-        this.getDate(first) - this.getDate(second);
+      this.getMonth(first) - this.getMonth(second) ||
+      this.getDate(first) - this.getDate(second);
   }
 
   /**

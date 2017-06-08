@@ -63,6 +63,8 @@ export class Md2Calendar<D> implements AfterContentInit {
   /** The maximum selectable date. */
   @Input() maxDate: D;
 
+  @Input() timeInterval: number = 1;
+
   /** A function used to filter which dates are selectable. */
   @Input() dateFilter: (date: D) => boolean;
 
@@ -174,6 +176,10 @@ export class Md2Calendar<D> implements AfterContentInit {
         this.selectedChange.emit(date);
       }
     }
+  }
+
+  _onActiveDateChange(date: D) {
+    this._activeDate = date;
   }
 
   _yearClicked(): void {

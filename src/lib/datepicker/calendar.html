@@ -53,12 +53,11 @@
   </md2-year-view>
   <md2-clock *ngSwitchDefault
              [startView]="_clockView"
+             [interval]="timeInterval"
              [selected]="_activeDate"
+             (activeDateChange)="_onActiveDateChange($event)"
              (selectedChange)="_timeSelected($event)"></md2-clock>
   <!--<md2-clock *ngSwitchDefault
-             [startView]="_clockView"
-             [interval]="timeInterval"
-             [selected]="activeDate"
              [min]="min"
              [max]="max"
              (activeDateChange)="_onActiveDateChange($event)"

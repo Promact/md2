@@ -11,14 +11,16 @@
                       [(ngModel)]="minDate"
                       [mode]="mode"
                       [touchUi]="touch"
-                      [format]="dateFormat"></md2-datepicker>
+                      [format]="dateFormat"
+                      #minDateControl="ngModel"></md2-datepicker>
       <md2-datepicker name="maxdate"
                       placeholder="Maximum Date"
                       [(ngModel)]="maxDate"
                       [min]="minDate"
                       [mode]="mode"
                       [touchUi]="touch"
-                      [format]="dateFormat"></md2-datepicker>
+                      [format]="dateFormat"
+                      #maxDateControl="ngModel"></md2-datepicker>
       <br />
       <md2-datepicker name="birthdate"
                       placeholder="Select Date"
@@ -70,17 +72,32 @@
           <input class="md2-input" name="formatInput" [(ngModel)]="dateFormat" placeholder="Date Format">
         </div>
         <div class="inline-control">
-          <label><input type="checkbox" name="ui" [(ngModel)]="touch">Use touch UI</label><br />
-          <label><input type="checkbox" name="filter" [(ngModel)]="filterOdd">Filter odd months and dates</label>
+          <label class="checkbox">
+            <input type="checkbox" name="required" [(ngModel)]="isRequired">
+            <span class="checkbox-handle"></span>Required
+          </label>
+          <label class="checkbox">
+            <input type="checkbox" name="disabled" [(ngModel)]="isDisabled">
+            <span class="checkbox-handle"></span>Disabled
+          </label>
+          <label class="checkbox">
+            <input type="checkbox" name="disabled" [(ngModel)]="isOpenOnFocus">
+            <span class="checkbox-handle"></span>Open on focus
+          </label>
+          <label class="checkbox">
+            <input type="checkbox" name="ui" [(ngModel)]="touch">
+            <span class="checkbox-handle"></span>Use touch UI
+          </label>
+          <label class="checkbox">
+            <input type="checkbox" name="filter" [(ngModel)]="filterOdd">
+            <span class="checkbox-handle"></span>Filter odd months and dates
+          </label>
         </div>
       </div>
       <div>
         <button type="button" button="primary" (click)="setDate()">SET VALUE</button>
-        <button type="button" button="primary" (click)="isRequired=!isRequired">TOGGLE REQUIRED</button>
-        <button type="button" button="primary" (click)="isDisabled=!isDisabled">TOGGLE DISABLED</button>
-        <button type="button" button="primary" (click)="isOpenOnFocus=!isOpenOnFocus">TOGGLE OPEN ON FOCUS</button>
         <button type="button" button="primary" (click)="openDatepicker()">OPEN DATEPICKER</button>
-        <button type="button" button="primary" (click)="dateControl.reset()">RESET</button>
+        <button type="button" button="primary" (click)="minDateControl.reset();maxDateControl.reset();dateControl.reset()">RESET</button>
       </div>
     </form>
   </div>

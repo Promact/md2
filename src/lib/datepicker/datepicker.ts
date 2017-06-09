@@ -613,7 +613,6 @@ export class Md2Datepicker<D> implements OnDestroy, ControlValueAccessor {
       )
       .withFallbackPosition(
       { originX: 'end', originY: 'top' },
-      { overlayX: 'end', overlayY: 'bottom' }
-      );
+      { overlayX: 'end', overlayY: 'bottom' });
   }
 }

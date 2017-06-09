@@ -146,7 +146,11 @@ export class Md2Calendar<D> implements AfterContentInit {
   ngAfterContentInit() {
     this._activeDate = this.startAt || this._dateAdapter.today();
     this._elementRef.nativeElement.focus();
-    this._currentView = this.startView || 'month';
+    if (this.type === 'time') {
+      this._currentView = 'clock';
+    } else {
+      this._currentView = this.startView || 'month';
+    }
   }
 
   /** Handles date selection in the month view. */

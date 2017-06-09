@@ -12,18 +12,17 @@ Datepicker allow the user to select date and time.
 | `min` | `date` | The min date of Datepicker. |
 | `max` | `date` | The max date of Datepicker. |
 | `placeholder` | `string` | Datepicker placeholder label |
-| `okLabel` | `string` | Datepicker Ok label |
-| `cancelLabel` | `string` | Datepicker Cancel label |
 | `format` | `string` | The date format of datepicker |
 | `tabindex` | `number` | The tabIndex of the datepicker. |
 | `timeInterval` | `number` | Select minutes in specific time interval, default is 1. |
 | `openOnFocus` | `boolean` | Opend Calendar Whether or not the datepicker is openOnFocus. |
 | `isOpen` | `boolean` | Opend Calendar Whether or not the datepicker is isOpen. |
-| `enableDates` | `Array<Date>` | Enable dates. |
-| `disableDates` | `Array<Date>` | Disable Dates. |
-| `disableWeekDays` | `Array<number>` | Disable Week Days. |
+| `dateFilter` | `(Date|null) => boolean` | Filter Dates for enabled with return boolean. |
 | `mode` | `'auto'` &#124; `'portrait'` &#124; `'landscape'` | Mode of the Datepicker, default auto. |
-| `container` | `'inline'` &#124; `'dialog'` | Container of the Datepicker, default inline. |
+| `touchUi` | `boolean` | Whether the calendar UI is in touch mode. In touch mode the calendar opens in a dialog rather than a popup and elements have more padding to allow for bigger touch targets. |
+| `startAt` | `Date` | The date to open the calendar to initially. |
+| `startView` | `'clock'` &#124; `'month'` &#124; `'year'` | The view that the calendar should start in. Default 'month' |
+
 
 ### Events
 

@@ -8,43 +8,7 @@
     <form class="content">
       <label><input type="checkbox" name="ui" [(ngModel)]="touch">Use touch UI</label>
       <label><input type="checkbox" name="filter" [(ngModel)]="filterOdd">Filter odd months and dates</label>
-      <label><input type="checkbox" name="start" [(ngModel)]="yearView">Start in year view</label>
-      <!--<div>
-        <input name="mini" [md2Datepicker]="minDatePicker" [(ngModel)]="minDate" placeholder="Min date">
-        <button type="button" [md2DatepickerToggle]="minDatePicker"></button>
-      </div>-->
-      <!--<md2-datepicker2 [touchUi]="touch"></md2-datepicker2>-->
-      <!--<div>
-        <input name="dt" #resultPickerModel="ngModel"
-               [md2Datepicker]="resultPicker"
-               [(ngModel)]="date"
-               [min]="minDate"
-               [max]="maxDate"
-               [md2DatepickerFilter]="filterOdd ? dateFilter : null"
-               placeholder="Pick a date">
-        <div *ngIf="resultPickerModel.hasError('md2DatepickerMin')">Too early!</div>
-        <div *ngIf="resultPickerModel.hasError('md2DatepickerMax')">Too late!</div>
-        <div *ngIf="resultPickerModel.hasError('md2DatepickerFilter')">Date unavailable!</div>
-      </div>
-      <md2-datepicker2 #resultPicker
-                       [touchUi]="touch"
-                       [startAt]="startAt"
-                       [startView]="yearView ? 'year' : 'month'">
-      </md2-datepicker2>
-      <input name="dt1" [md2Datepicker]="resultPicker2"
-             [(ngModel)]="date"
-             [min]="minDate"
-             [max]="maxDate"
-             [md2DatepickerFilter]="filterOdd ? dateFilter : null"
-             placeholder="Pick a date">
-      <button type="button" [md2DatepickerToggle]="resultPicker2"></button>
-      <md2-datepicker2 #resultPicker2
-                       [touchUi]="touch"
-                       [startAt]="startAt"
-                       [startView]="yearView ? 'year' : 'month'">
-      </md2-datepicker2>-->
       <br />
-      <hr />
       <md2-datepicker2 name="mindate"
                        placeholder="Minimum Date"
                        [(ngModel)]="minDate"
@@ -65,12 +29,14 @@
                        [required]="isRequired"
                        [disabled]="isDisabled"
                        [openOnFocus]="isOpenOnFocus"
+                       [dateFilter]="filterOdd ? dateFilter : null"
                        [isOpen]="isOpen"
                        [type]="type"
                        [min]="minDate"
                        [max]="maxDate"
                        [mode]="mode"
                        [touchUi]="touch"
+                       [startView]="startView"
                        [format]="dateFormat"
                        #dateControl="ngModel"></md2-datepicker2>
       <span *ngIf="dateControl.hasError('md2DatepickerMin')">Too early!</span>
@@ -92,8 +58,8 @@
           </md2-select>
         </div>
         <div class="inline-control">
-          <md2-select name="container" [(ngModel)]="container" placeholder="Picker Container">
-            <md2-option *ngFor="let c of containers" [value]="c.value">{{ c.text }}</md2-option>
+          <md2-select name="startView" [(ngModel)]="startView" placeholder="Picker Start View">
+            <md2-option *ngFor="let s of startViews" [value]="s.value">{{ s.text }}</md2-option>
           </md2-select>
         </div>
         <div class="inline-control">

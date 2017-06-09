@@ -6,42 +6,41 @@
       <h3 class="title">Basic Date Picker</h3>
     </div>
     <form class="content">
-      <label><input type="checkbox" name="ui" [(ngModel)]="touch">Use touch UI</label>
-      <label><input type="checkbox" name="filter" [(ngModel)]="filterOdd">Filter odd months and dates</label>
-      <br />
       <md2-datepicker name="mindate"
-                       placeholder="Minimum Date"
-                       [(ngModel)]="minDate"
-                       [mode]="mode"
-                       [touchUi]="touch"
-                       [format]="dateFormat"></md2-datepicker>
+                      placeholder="Minimum Date"
+                      [(ngModel)]="minDate"
+                      [mode]="mode"
+                      [touchUi]="touch"
+                      [format]="dateFormat"></md2-datepicker>
       <md2-datepicker name="maxdate"
-                       placeholder="Maximum Date"
-                       [(ngModel)]="maxDate"
-                       [min]="minDate"
-                       [mode]="mode"
-                       [touchUi]="touch"
-                       [format]="dateFormat"></md2-datepicker>
+                      placeholder="Maximum Date"
+                      [(ngModel)]="maxDate"
+                      [min]="minDate"
+                      [mode]="mode"
+                      [touchUi]="touch"
+                      [format]="dateFormat"></md2-datepicker>
       <br />
       <md2-datepicker name="birthdate"
-                       placeholder="Select Date"
-                       [(ngModel)]="date"
-                       [required]="isRequired"
-                       [disabled]="isDisabled"
-                       [openOnFocus]="isOpenOnFocus"
-                       [dateFilter]="filterOdd ? dateFilter : null"
-                       [isOpen]="isOpen"
-                       [type]="type"
-                       [min]="minDate"
-                       [max]="maxDate"
-                       [mode]="mode"
-                       [touchUi]="touch"
-                       [startView]="startView"
-                       [format]="dateFormat"
-                       #dateControl="ngModel"></md2-datepicker>
-      <span *ngIf="dateControl.hasError('md2DatepickerMin')">Too early!</span>
-      <span *ngIf="dateControl.hasError('md2DatepickerMax')">Too late!</span>
-      <span *ngIf="dateControl.hasError('md2DatepickerFilter')">Date unavailable!</span>
+                      placeholder="Select Date"
+                      [(ngModel)]="date"
+                      [required]="isRequired"
+                      [disabled]="isDisabled"
+                      [openOnFocus]="isOpenOnFocus"
+                      [dateFilter]="filterOdd ? dateFilter : null"
+                      [isOpen]="isOpen"
+                      [type]="type"
+                      [min]="minDate"
+                      [max]="maxDate"
+                      [mode]="mode"
+                      [touchUi]="touch"
+                      [startView]="startView"
+                      [format]="dateFormat"
+                      #dateControl="ngModel"></md2-datepicker>
+      <br />
+      <span class="error-helper" *ngIf="dateControl.touched && dateControl.errors?.required">Date is Required!</span>
+      <span class="error-helper" *ngIf="dateControl.hasError('md2DatepickerMin')">Too early!</span>
+      <span class="error-helper" *ngIf="dateControl.hasError('md2DatepickerMax')">Too late!</span>
+      <span class="error-helper" *ngIf="dateControl.hasError('md2DatepickerFilter')">Date unavailable!</span>
       <p> Value: {{ date }} </p>
       <p> Touched: {{ dateControl.touched }} </p>
       <p> Dirty: {{ dateControl.dirty }} </p>
@@ -69,6 +68,10 @@
         </div>
         <div class="inline-control">
           <input class="md2-input" name="formatInput" [(ngModel)]="dateFormat" placeholder="Date Format">
+        </div>
+        <div class="inline-control">
+          <label><input type="checkbox" name="ui" [(ngModel)]="touch">Use touch UI</label><br />
+          <label><input type="checkbox" name="filter" [(ngModel)]="filterOdd">Filter odd months and dates</label>
         </div>
       </div>
       <div>

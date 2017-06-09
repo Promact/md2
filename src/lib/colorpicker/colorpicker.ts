@@ -37,7 +37,8 @@ import {
 import { Subscription } from 'rxjs/Subscription';
 import { ColorUtil } from './color-util';
 import { coerceBooleanProperty } from '../core/coercion/boolean-property';
-import { Container } from '../datepicker/datepicker';
+
+export type Container = 'inline' | 'dialog';
 
 let nextId = 0;
 

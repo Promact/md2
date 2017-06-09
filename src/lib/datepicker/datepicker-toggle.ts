@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, Input, ViewEncapsulation} from '@angular/core';
-import {Md2Datepicker2} from './datepicker2';
+import {Md2Datepicker} from './datepicker';
 import {Md2DatepickerIntl} from './datepicker-intl';
 
 
@@ -19,7 +19,7 @@ import {Md2DatepickerIntl} from './datepicker-intl';
 })
 export class Md2DatepickerToggle<D> {
   /** Datepicker instance that the button will toggle. */
-  @Input('md2DatepickerToggle') datepicker: Md2Datepicker2<D>;
+  @Input('md2DatepickerToggle') datepicker: Md2Datepicker<D>;
 
   constructor(public _intl: Md2DatepickerIntl) {}
 

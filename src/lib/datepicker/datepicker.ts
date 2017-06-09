@@ -1,69 +1,98 @@
 import {
-  AfterContentInit,
+  ChangeDetectionStrategy,
   Component,
+  ComponentRef,
   ElementRef,
-  HostListener,
+  EventEmitter,
   Input,
   OnDestroy,
-  Output,
   Optional,
-  EventEmitter,
-  Self,
-  TemplateRef,
+  Output,
   ViewChild,
   ViewContainerRef,
+  ViewEncapsulation,
+  NgZone,
+  Self,
 } from '@angular/core';
 import {
-  AbstractControl,
   ControlValueAccessor,
   NgControl,
-  NG_VALIDATORS,
-  NG_VALUE_ACCESSOR,
-  ValidationErrors,
-  Validator,
-  ValidatorFn,
-  Validators
 } from '@angular/forms';
-import { DateAdapter } from '../core/datetime/index';
-import { DateLocale } from './date-locale';
-import { DateUtil } from './date-util';
 import {
   coerceBooleanProperty,
-  ENTER,
-  TAB,
-  ESCAPE,
-  HOME,
-  END,
-  PAGE_UP,
-  PAGE_DOWN,
-  LEFT_ARROW,
-  RIGHT_ARROW,
-  UP_ARROW,
-  DOWN_ARROW,
-  Overlay,
-  OverlayState,
-  OverlayRef,
-  PositionStrategy,
-  RepositionScrollStrategy,
-  ScrollDispatcher,
-  TemplatePortal,
-  HorizontalConnectionPos,
-  VerticalConnectionPos,
+  Overlay
 } from '../core';
-import { fadeInContent, slideCalendar } from './datepicker-animations';
+import { OverlayRef } from '../core/overlay/overlay-ref';
+import { ComponentPortal } from '../core/portal/portal';
+import { OverlayState } from '../core/overlay/overlay-state';
+import { Dir } from '../core/rtl/dir';
+import { PositionStrategy } from '../core/overlay/position/position-strategy';
+import { RepositionScrollStrategy, ScrollDispatcher } from '../core/overlay/index';
 import { Subscription } from 'rxjs/Subscription';
-
-import { ClockView } from './clock';
+import { DateAdapter } from '../core/datetime/index';
+import { ESCAPE } from '../core/keyboard/keycodes';
+import { Md2Calendar } from './calendar';
+import { DateUtil } from './date-util';
+import 'rxjs/add/operator/first';
 
 /** Change event object emitted by Md2Select. */
-export class Md2DateChange {
-  constructor(public source: Md2Datepicker, public value: Date) { }
+export class Md2DateChange2 {
+  constructor(public source: Md2Datepicker<Date>, public value: Date) { }
 }
 
-export type Type = 'date' | 'time' | 'datetime';
-export type Mode = 'auto' | 'portrait' | 'landscape';
-export type Container = 'inline' | 'dialog';
+/** Used to generate a unique ID for each datepicker instance. */
+let datepickerUid = 0;
 
+
+/**
+ * Component used as the content for the datepicker dialog and popup. We use this instead of using
+ * Md2Calendar directly as the content so we can control the initial focus. This also gives us a
+ * place to put additional features of the popup that are not part of the calendar itself in the
+ * future. (e.g. confirmation buttons).
+ * @docs-private
+ */
+@Component({
+  moduleId: module.id,
+  selector: 'md2-datepicker-content',
+  templateUrl: 'datepicker-content.html',
+  styleUrls: ['datepicker-content.css'],
+  host: {
+    'class': 'md2-datepicker-content',
+    '[class.md2-datepicker-content-touch]': 'datepicker.touchUi',
+    '(keydown)': '_handleKeydown($event)',
+  },
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class Md2DatepickerContent<D> {
+  datepicker: Md2Datepicker<D>;
+
+  @ViewChild(Md2Calendar) _calendar: Md2Calendar<D>;
+
+  /**
+   * Handles keydown event on datepicker content.
+   * @param event The event.
+   */
+  _handleKeydown(event: KeyboardEvent): void {
+    switch (event.keyCode) {
+      case ESCAPE:
+        this.datepicker.close();
+        break;
+      default:
+        /* Return so that we don't preventDefault on keys that are not explicitly handled. */
+        return;
+    }
+
+    event.preventDefault();
+  }
+}
+
+
+/* TODO(mmalerba): We use a component instead of a directive here so the user can use implicit
+ * template reference variables (e.g. #d vs #d="md2Datepicker"). We can change this to a directive if
+ * angular adds support for `exportAs: '$implicit'` on directives.
+ * Component responsible for managing the datepicker popup/dialog.
+ */
 @Component({
   moduleId: module.id,
   selector: 'md2-datepicker',
@@ -72,128 +101,45 @@ export type Container = 'inline' | 'dialog';
   host: {
     'role': 'datepicker',
     '[class.md2-datepicker-disabled]': 'disabled',
-    '[class.md2-datepicker-opened]': 'panelOpen',
+    '[class.md2-datepicker-opened]': 'opened',
     '[attr.aria-label]': 'placeholder',
     '[attr.aria-required]': 'required.toString()',
     '[attr.aria-disabled]': 'disabled.toString()',
     '[attr.aria-invalid]': '_control?.invalid || "false"',
-    '(window:resize)': '_handleWindowResize($event)'
   },
-  animations: [
-    fadeInContent,
-    slideCalendar
-  ],
+  encapsulation: ViewEncapsulation.None,
 })
-export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueAccessor,
-  Validator {
-
-  private _portal: TemplatePortal;
-  private _overlayRef: OverlayRef;
-  private _backdropSubscription: Subscription;
-
-  private _value: Date = null;
-
-  private _panelOpen = false;
-
-  private _openOnFocus: boolean = false;
-  private _type: Type = 'date';
-  private _mode: Mode = 'auto';
-  private _container: Container = 'inline';
-  private _format: string;
-  private _required: boolean = false;
-  private _disabled: boolean = false;
-
-  private today: Date = new Date();
-
-  _years: Array<number> = [];
-  _dates: Array<Object> = [];
-
-  _isYearsVisible: boolean;
-  _isCalendarVisible: boolean;
-  _clockView: ClockView = 'hour';
-  _calendarState: string;
-
-  _weekDays: Array<any>;
-
-  _prevMonth: number = 1;
-  _currMonth: number = 2;
-  _nextMonth: number = 3;
-
-  _transformOrigin: string = 'top';
-  _panelDoneAnimating: boolean = false;
-
-  _inputFocused: boolean = false;
+export class Md2Datepicker<D> implements OnDestroy, ControlValueAccessor {
 
   _onChange = (value: any) => { };
   _onTouched = () => { };
-  private _validatorOnChange = () => { };
 
-  @ViewChild('portal') _templatePortal: TemplateRef<any>;
-  @ViewChild('input') _input: ElementRef;
+  _inputFocused: boolean = false;
 
-  /** Event emitted when the select has been opened. */
-  @Output() onOpen: EventEmitter<void> = new EventEmitter<void>();
-
-  /** Event emitted when the select has been closed. */
-  @Output() onClose: EventEmitter<void> = new EventEmitter<void>();
-
-  /** Event emitted when the selected date has been changed by the user. */
-  @Output() change: EventEmitter<Md2DateChange> = new EventEmitter<Md2DateChange>();
-
+  /** The date to open the calendar to initially. */
+  @Input() startAt: D;
 
   /** The view that the calendar should start in. */
-  @Input() startView: 'month' | 'year' = 'month';
+  @Input() startView: 'clock' | 'month' | 'year' = 'month';
 
-  /** A function used to filter which dates are selectable. */
-  @Input() dateFilter: (date: Date) => boolean;
-
-  /** Date filter for the month and year views. */
-  _dateFilterForViews = (date: Date) => {
-    return !!date &&
-      (!this.dateFilter || this.dateFilter(date)) &&
-      (!this.min || this._dateAdapter.compareDate(date, this.min) >= 0) &&
-      (!this.max || this._dateAdapter.compareDate(date, this.max) <= 0);
-  }
-
-  constructor(private _element: ElementRef, private _overlay: Overlay,
-    @Optional() public _dateAdapter: DateAdapter<Date>,
-    private _viewContainerRef: ViewContainerRef, private _locale: DateLocale,
-    private _scrollDispatcher: ScrollDispatcher,
-    private _util: DateUtil, @Self() @Optional() public _control: NgControl) {
-    if (this._control) {
-      this._control.valueAccessor = this;
-    }
-
-    this._weekDays = this._locale.getDays();
-
-    this.getYears();
-  }
-
-  ngAfterContentInit() {
-    this.activeDate = this._activeDate || this._util.today();
-  }
-
-  ngOnDestroy() { this.destroyPanel(); }
-
-  registerOnValidatorChange(fn: () => void): void {
-    this._validatorOnChange = fn;
-  }
-
-  @Input() placeholder: string;
-  @Input() okLabel: string = 'Ok';
-  @Input() cancelLabel: string = 'Cancel';
+  /**
+   * Whether the calendar UI is in touch mode. In touch mode the calendar opens in a dialog rather
+   * than a popup and elements have more padding to allow for bigger touch targets.
+   */
+  @Input() touchUi = false;
   @Input() tabindex: number = 0;
-  @Input() enableDates: Array<Date> = [];
-  @Input() disableDates: Array<Date> = [];
-  @Input() disableWeekDays: Array<number> = [];
+  @Input() mode: 'auto' | 'portrait' | 'landscape' = 'auto';
+  @Input() placeholder: string;
   @Input() timeInterval: number = 1;
+
 
   @Input()
   get type() { return this._type; }
-  set type(value: Type) {
+  set type(value: 'date' | 'time' | 'datetime') {
     this._type = value || 'date';
-    this._input.nativeElement.value = this._formatDate(this._value);
+    this._inputValue = this._formatDate(this._value);
   }
+  private _type: 'date' | 'time' | 'datetime' = 'date';
 
   @Input()
   get format() {
@@ -204,670 +150,126 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
   set format(value: string) {
     if (this._format !== value) {
       this._format = value;
-      this._input.nativeElement.value = this._formatDate(this._value);
+      this._inputValue = this._formatDate(this._value);
     }
   }
+  private _format: string;
 
+  /** The minimum valid date. */
   @Input()
-  get mode() { return this._mode; }
-  set mode(value: Mode) {
-    this._mode = value || 'auto';
+  get min(): D { return this._minDate; }
+  set min(value: D) {
+    this._minDate = value;
   }
+  _minDate: D;
 
+  /** The maximum valid date. */
   @Input()
-  get container() { return this._container; }
-  set container(value: Container) {
-    if (this._container !== value) {
-      this._container = value || 'inline';
-      this.destroyPanel();
-    }
+  get max(): D { return this._maxDate; }
+  set max(value: D) {
+    this._maxDate = value;
   }
+  _maxDate: D;
 
-  @Input()
-  get value() { return this._value; }
-  set value(value: Date) {
-    this._value = this.coerceDateProperty(value);
-    if (this._value) { this.activeDate = this._value; }
-    setTimeout(() => {
-      this._input.nativeElement.value = this._formatDate(this._value);
-    });
+  @Input() set dateFilter(filter: (date: D | null) => boolean) {
+    this._dateFilter = filter;
   }
-
-  get activeDate(): Date { return this._activeDate; }
-  set activeDate(value: Date) {
-    let oldDate = this._activeDate;
-    this._activeDate = this._util.clampDate(value, this.min, this.max);
-    if (!this._util.isSameMonthAndYear(oldDate, this._activeDate)) {
-      this.generateCalendar();
-    }
-  }
-  private _activeDate: Date;
-
-  get minutes(): string {
-    return ('0' + this._activeDate.getMinutes()).slice(-2);
-  }
-  get hours(): string {
-    if (!this.is12HourClock()) {
-      return ('0' + this._activeDate.getHours()).slice(-2);
-    } else {
-      return ('0' + this._getHours12(this._activeDate)).slice(-2);
-    }
-  }
-
-  /**
-   * Return the am/pm part of the hour description
-   * @param upperCase  boolean if true return AM/PM, default false
-   * @return string the am/pm part of the hour description
-   */
-  private _ampm(upperCase: boolean = false): string {
-    if (this.is12HourClock()) {
-      if (upperCase) {
-        return (this._activeDate.getHours() < 12) ? 'AM' : 'PM';
-      } else {
-        return (this._activeDate.getHours() < 12) ? 'am' : 'pm';
-      }
-    } else {
-      return '';
-    }
-  }
-
-  @Input() selected: Date;
+  _dateFilter: (date: D | null) => boolean;
 
   @Input()
   get required(): boolean { return this._required; }
   set required(value) { this._required = coerceBooleanProperty(value); }
+  private _required: boolean = false;
 
   @Input()
   get disabled(): boolean { return this._disabled; }
   set disabled(value) { this._disabled = coerceBooleanProperty(value); }
+  private _disabled: boolean = false;
 
-  /** The minimum selectable date. */
   @Input()
-  get min(): Date { return this._min; }
-  set min(date: Date) {
-    this._min = this._util.parse(date);
-    this.getYears();
-    this._validatorOnChange();
+  get value() { return this._value; }
+  set value(value: D) {
+    this._value = this.coerceDateProperty(value);
+    this._selected = this._value;
+    this.startAt = this._value;
+    setTimeout(() => {
+      this._inputValue = this._formatDate(this._value);
+    });
   }
-  private _min: Date;
-
-  /** The maximum selectable date. */
-  @Input()
-  get max(): Date { return this._max; }
-  set max(date: Date) {
-    this._max = this._util.parse(date);
-    this.getYears();
-    this._validatorOnChange();
-  }
-  private _max: Date;
+  private _value: D;
+  private _inputValue: string = '';
 
   @Input()
   get openOnFocus(): boolean { return this._openOnFocus; }
   set openOnFocus(value: boolean) { this._openOnFocus = coerceBooleanProperty(value); }
+  private _openOnFocus: boolean;
 
   @Input()
   set isOpen(value: boolean) {
-    if (value && !this.panelOpen) {
-      this.open();
+    if (value && !this.opened) { this.open(); }
+  }
+
+  /** Event emitted when the select has been opened. */
+  @Output() onOpen: EventEmitter<void> = new EventEmitter<void>();
+
+  /** Event emitted when the select has been closed. */
+  @Output() onClose: EventEmitter<void> = new EventEmitter<void>();
+
+  /** Event emitted when the selected date has been changed by the user. */
+  @Output() change: EventEmitter<D> = new EventEmitter<D>();
+
+  /** Emits new selected date when selected date changes. */
+  @Output() selectedChanged = new EventEmitter<D>();
+
+  /** Whether the calendar is open. */
+  opened = false;
+
+  /** The id for the datepicker calendar. */
+  id = `md2-datepicker-${datepickerUid++}`;
+
+  /** The currently selected date. */
+  _selected: D = null;
+
+  /** A reference to the overlay when the calendar is opened as a popup. */
+  private _popupRef: OverlayRef;
+
+  /** A reference to the overlay when the calendar is opened as a dialog. */
+  private _dialogRef: OverlayRef;
+
+  /** A portal containing the calendar for this datepicker. */
+  private _calendarPortal: ComponentPortal<Md2DatepickerContent<D>>;
+
+  private _inputSubscription: Subscription;
+
+  constructor(private _element: ElementRef,
+    private _overlay: Overlay,
+    private _ngZone: NgZone,
+    private _viewContainerRef: ViewContainerRef,
+    private _scrollDispatcher: ScrollDispatcher,
+    private _util: DateUtil,
+    @Optional() private _dateAdapter: DateAdapter<D>,
+    @Optional() private _dir: Dir,
+    @Self() @Optional() public _control: NgControl) {
+    if (!this._dateAdapter) {
+      throw Error('DateAdapter');
     }
-  }
-
-  get panelOpen(): boolean {
-    return this._panelOpen;
-  }
-
-  get getDateLabel(): string {
-    return this._locale.getDateLabel(this.activeDate);
-  }
-
-  get getMonthLabel(): string {
-    return this._locale.getMonthLabel(this.activeDate.getMonth(), this.activeDate.getFullYear());
-  }
-
-  /** The form control validator for the min date. */
-  private _minValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
-    return (!this.min || !control.value ||
-      this._util.compareDate(this.min, control.value) < 0) ?
-      null : { 'mdDatepickerMin': { 'min': this.min, 'actual': control.value } };
-  }
-
-  /** The form control validator for the max date. */
-  private _maxValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
-    return (!this.max || !control.value ||
-      this._util.compareDate(this.max, control.value) > 0) ?
-      null : { 'mdDatepickerMax': { 'max': this.max, 'actual': control.value } };
-  }
-
-  _dateFilter: (date: Date | null) => boolean;
-
-  /** The form control validator for the date filter. */
-  private _filterValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
-    return !this._util || !control.value || this._dateFilter(control.value) ?
-      null : { 'mdDatepickerFilter': true };
-  }
-
-  private _validator: ValidatorFn =
-  Validators.compose([this._minValidator, this._maxValidator, this._filterValidator]);
-
-  toggle(): void {
-    this.panelOpen ? this.close() : this.open();
-  }
-
-  /** Opens the overlay panel. */
-  open(): void {
-    if (this.disabled) { return; }
-    this._isCalendarVisible = this.type !== 'time' ? true : false;
-    this._createOverlay();
-
-    if (!this._portal) {
-      this._portal = new TemplatePortal(this._templatePortal, this._viewContainerRef);
+    if (this._control) {
+      this._control.valueAccessor = this;
     }
 
-    this._overlayRef.attach(this._portal);
-    this._subscribeToBackdrop();
-    this._panelOpen = true;
-    this.selected = this.value || new Date(1, 0, 1);
-    this.activeDate = this.value || this.today;
-    this.generateCalendar();
   }
 
-  /** Closes the overlay panel and focuses the host element. */
-  close(): void {
-    setTimeout(() => {
-      this._panelOpen = false;
-      if (this._openOnFocus) {
-        this._openOnFocus = false;
-        setTimeout(() => { this._openOnFocus = true; }, 100);
-      }
-      if (this._overlayRef) {
-        this._overlayRef.detach();
-        this._backdropSubscription.unsubscribe();
-      }
-      this._focusHost();
-
-      this._isYearsVisible = false;
-      this._isCalendarVisible = this.type !== 'time' ? true : false;
-      this._clockView = 'hour';
-    }, 10);
-  }
-
-  /** Removes the panel from the DOM. */
-  destroyPanel(): void {
-    if (this._overlayRef) {
-      this._overlayRef.dispose();
-      this._overlayRef = null;
-
-      this._cleanUpSubscriptions();
-    }
-  }
-
-  _onPanelDone(): void {
-    if (this.panelOpen) {
-      this._focusPanel();
-      this.onOpen.emit();
-    } else {
-      this.onClose.emit();
-    }
-  }
-
-  _onFadeInDone(): void {
-    this._panelDoneAnimating = this.panelOpen;
-  }
-
-  _handleWindowResize(event: Event) {
-    if (this.container === 'inline') {
-      this.close();
-    }
-  }
-
-  private _focusPanel(): void {
-    let el: any = document.querySelectorAll('.md2-datepicker-panel')[0];
-    el.focus();
-  }
-
-  private _focusHost(): void {
-    this._element.nativeElement.querySelectorAll('input')[0].focus();
-  }
-
-  private coerceDateProperty(value: any): Date {
-    let v: Date = null;
-    if (this._util.isValidDate(value)) {
-      v = value;
-    } else {
-      if (value && this.type === 'time') {
-        let t = value + '';
-        v = new Date();
-        v.setHours(parseInt(t.substring(0, 2)));
-        v.setMinutes(parseInt(t.substring(3, 5)));
-      } else {
-        let timestamp = Date.parse(value);
-        v = isNaN(timestamp) ? null : new Date(timestamp);
-      }
-    }
-    return v;
-  }
-
-  @HostListener('click', ['$event'])
-  _handleClick(event: MouseEvent) {
-    if (this.disabled) {
-      event.stopPropagation();
-      event.preventDefault();
-      return;
-    }
-  }
-
-  _handleKeydown(event: KeyboardEvent) {
-    if (this.disabled) { return; }
-
-    if (this.panelOpen) {
-      event.preventDefault();
-      event.stopPropagation();
-
-      switch (event.keyCode) {
-        case TAB:
-        case ESCAPE: this._onBlur(); this.close(); break;
-      }
-      if (this._isYearsVisible) {
-        this._handleKeydownInYearView(event);
-      } else if (this._isCalendarVisible) {
-        this._handleKeydownInMonthView(event);
-      } else {
-        this._handleKeydownInClockView(event);
-      }
-    } else {
-      switch (event.keyCode) {
-        case ENTER:
-          event.preventDefault();
-          event.stopPropagation();
-          this.open();
-          break;
-      }
-    }
-  }
-
-  _handleKeydownInYearView(event: KeyboardEvent): void {
-    switch (event.keyCode) {
-      case UP_ARROW:
-        if (this.activeDate.getFullYear() > 1900) {
-          this.activeDate = this._util.incrementYears(this.activeDate, -1);
-          this._scrollToSelectedYear();
-        }
-        this._activeDate = this._dateAdapter.addCalendarDays(this._activeDate, -7);
-        break;
-      case DOWN_ARROW:
-        if (this.activeDate.getFullYear() < (this.today.getFullYear() + 100)) {
-          this.activeDate = this._util.incrementYears(this.activeDate, 1);
-          this._scrollToSelectedYear();
-        }
-        break;
-      case ENTER:
-        this._okClicked();
-        return;
-      default:
-        return;
-    }
-    event.preventDefault();
-  }
-
-  _handleKeydownInMonthView(event: KeyboardEvent): void {
-    switch (event.keyCode) {
-      case LEFT_ARROW:
-        this.activeDate = this._util.incrementDays(this.activeDate, -1);
-        break;
-      case RIGHT_ARROW:
-        this.activeDate = this._util.incrementDays(this.activeDate, 1);
-        break;
-      case UP_ARROW:
-        this.activeDate = this._util.incrementDays(this.activeDate, -7);
-        break;
-      case DOWN_ARROW:
-        this.activeDate = this._util.incrementDays(this.activeDate, 7);
-        break;
-      case PAGE_DOWN:
-        if (event.shiftKey) {
-          this.activeDate = this._util.incrementYears(this.activeDate, 1);
-        } else {
-          this.activeDate = this._util.incrementMonths(this.activeDate, 1);
-        }
-        break;
-      case PAGE_UP:
-        if (event.shiftKey) {
-          this.activeDate = this._util.incrementYears(this.activeDate, -1);
-        } else {
-          this.activeDate = this._util.incrementMonths(this.activeDate, -1);
-        }
-        break;
-      case HOME:
-        this.activeDate = this._util.getFirstDateOfMonth(this.activeDate);
-        break;
-      case END:
-        this.activeDate = this._util.getLastDateOfMonth(this.activeDate);
-        break;
-      case ENTER:
-        this._dateSelected(this.activeDate);
-        return;
-      default:
-        return;
-    }
-    event.preventDefault();
-  }
-
-  _handleKeydownInClockView(event: KeyboardEvent): void {
-    switch (event.keyCode) {
-      case UP_ARROW:
-        this.activeDate = this._clockView === 'hour' ? this._util.incrementHours(this.activeDate, 1) :
-          this._util.incrementMinutes(this.activeDate, 1);
-        break;
-      case DOWN_ARROW:
-        this.activeDate = this._clockView === 'hour' ? this._util.incrementHours(this.activeDate, -1) :
-          this._util.incrementMinutes(this.activeDate, -1);
-        break;
-      case ENTER:
-        if (this._clockView === 'hour') {
-          this._hourSelected(this.activeDate.getHours());
-        } else { this._minuteSelected(this.activeDate.getMinutes()); }
-        return;
-      default:
-        return;
-    }
-
-    event.preventDefault();
-  }
-
-  _onBlur() {
-    if (!this.panelOpen) {
-      this._onTouched();
-    }
-  }
-
-  _handleFocus(event: Event) {
-    this._inputFocused = true;
-    if (!this.panelOpen && this.openOnFocus) {
-      this.open();
-    }
-  }
-
-  _handleBlur(event: Event) {
-    this._inputFocused = false;
-    if (!this.panelOpen) {
-      this._onTouched();
-    }
-    let el: any = event.target;
-    let date: Date = this._util.parseDate(el.value, this.format);
-    if (!date) {
-      date = this._util.parse(el.value, this.format);
-    }
-    if (this._util.isValidDate(date)) {
-      let d: Date = new Date(this.value);
-      if (this.type !== 'time') {
-        d.setFullYear(date.getFullYear(), date.getMonth(), date.getDate());
-      }
-      if (this.type !== 'date') {
-        d.setHours(date.getHours(), date.getMinutes());
-      }
-      if (!this._util.isSameMinute(this.value, d)) {
-        this.value = d;
-        this._emitChangeEvent();
-      }
-    } else {
-      if (this.value) {
-        this.value = null;
-        this._emitChangeEvent();
-      }
-    }
-  }
-
-  /**
-   * Display Years
-   */
-  _yearClicked() {
-    this._isYearsVisible = true;
-    this._isCalendarVisible = true;
-    this._scrollToSelectedYear();
-  }
-
-  private getYears() {
-    let startYear = this.min ? this.min.getFullYear() : 1900,
-      endYear = this._max ? this._max.getFullYear() : this.today.getFullYear() + 100;
-    this._years = [];
-    for (let i = startYear; i <= endYear; i++) {
-      this._years.push(i);
-    }
-  }
-
-  private _scrollToSelectedYear() {
-    setTimeout(() => {
-      let yearContainer: any = document.querySelector('.md2-calendar-years'),
-        selectedYear: any = document.querySelector('.md2-calendar-year.selected');
-      yearContainer.scrollTop = (selectedYear.offsetTop + 20) - yearContainer.clientHeight / 2;
-    }, 0);
-  }
-
-  /**
-   * select year
-   * @param year
-   */
-  _yearSelected(year: number) {
-    this.activeDate = new Date(year, this.activeDate.getMonth(), this.activeDate.getDate(),
-      this.activeDate.getHours(), this.activeDate.getMinutes());
-    this.generateCalendar();
-    this._isYearsVisible = false;
-  }
-
-  /**
-   * Display Calendar
-   */
-  _dateClicked() {
-    this._isYearsVisible = false;
-    this._isCalendarVisible = true;
-  }
-
-  /**
-   * Toggle Hour visiblity
-   */
-  _timeClicked(value: ClockView) {
-    this._isYearsVisible = false;
-    this._isCalendarVisible = false;
-    this._clockView = value;
-  }
-
-  /**
-   * Ok Button Event
-   */
-  _okClicked() {
-    if (this._isYearsVisible) {
-      this.generateCalendar();
-      this._isYearsVisible = false;
-      this._isCalendarVisible = true;
-    } else if (this._isCalendarVisible) {
-      this._dateSelected(this.activeDate);
-    } else if (this._clockView === 'hour') {
-      this._clockView = 'minute';
-    } else {
-      this.value = this.activeDate;
-      this._emitChangeEvent();
-      this._onBlur();
-      this.close();
-    }
-  }
-
-  /**
-   * Date Selection Event
-   * @param event Event Object
-   * @param date Date Object
-   */
-  _onClickDate(event: Event, date: any) {
-    event.preventDefault();
-    event.stopPropagation();
-    if (date.disabled) { return; }
-    if (date.calMonth === this._prevMonth) {
-      this._updateMonth(-1);
-    } else if (date.calMonth === this._currMonth) {
-      this._dateSelected(date.date);
-    } else if (date.calMonth === this._nextMonth) {
-      this._updateMonth(1);
-    }
-  }
-
-  /**
-   * date selected
-   * @param date Date Object
-   */
-  _dateSelected(date: Date): void {
-    if (this.type === 'date') {
-      this.value = date;
-      this._emitChangeEvent();
-      this._onBlur();
-      this.close();
-    } else {
-      this.selected = date;
-      this.activeDate = date;
-      this._isCalendarVisible = false;
-      this._clockView = 'hour';
-    }
-  }
-
-  /**
-   * Update Month
-   * @param noOfMonths increment number of months
-   */
-  _updateMonth(noOfMonths: number) {
-    this.activeDate = this._util.incrementMonths(this.activeDate, noOfMonths);
-    this.generateCalendar();
-    if (noOfMonths > 0) {
-      this.calendarState('right');
-    } else {
-      this.calendarState('left');
-    }
-  }
-
-  /**
-   * Check is Before month enabled or not
-   * @return boolean
-   */
-  _previousEnabled() {
-    return !this.min ? true :
-      this.min && this._util.getMonthDistance(this.activeDate, this.min) < 0;
-  }
-
-  /**
-   * Check is After month enabled or not
-   * @return boolean
-   */
-  _nextEnabled() {
-    return !this._max ? true :
-      this._max && this._util.getMonthDistance(this.activeDate, this._max) > 0;
-  }
-
-  _onActiveDateChange(date: Date) {
-    this.activeDate = date;
-  }
-
-  _onDateChange(date: Date) {
-    this.value = date;
-    if (this._isYearsVisible) {
-      this._isYearsVisible = false;
-    } else {
-      this._dateSelected(date);
-    }
-  }
-
-  _onTimeChange(event: Date) {
-    this.value = event;
-    if (this._clockView === 'hour') {
-      this._clockView = 'minute';
-    } else {
-      this._emitChangeEvent();
-      this._clockView = 'hour';
-      this._onBlur();
-      this.close();
-    }
-  }
-
-  /**
-   * Check the date is enabled or not
-   * @param date Date Object
-   * @return boolean
-   */
-  private _isDisabledDate(date: Date): boolean {
-    for (let d of this.enableDates) {
-      if (this._util.isSameDay(date, d)) { return false; }
-    }
-    for (let d of this.disableDates) {
-      if (this._util.isSameDay(date, d)) { return true; }
-    }
-    for (let d of this.disableWeekDays) {
-      if (date.getDay() === d) { return true; }
-    }
-    return !this._util.isDateWithinRange(date, this.min, this._max);
-  }
-
-  /**
-   * Generate Month Calendar
-   */
-  private generateCalendar(): void {
-    this._dates.length = 0;
-    let year = this.activeDate.getFullYear();
-    let month = this.activeDate.getMonth();
-    let firstDayOfMonth = this._util.getFirstDateOfMonth(this.activeDate);
-    let calMonth = this._prevMonth;
-    let date = this._util.getFirstDateOfWeek(firstDayOfMonth, this._locale.firstDayOfWeek);
-    do {
-      let week: Array<any> = [];
-      for (let i = 0; i < 7; i++) {
-        if (date.getDate() === 1) {
-          if (calMonth === this._prevMonth) {
-            calMonth = this._currMonth;
-          } else {
-            calMonth = this._nextMonth;
-          }
-        }
-        week.push({
-          date: date,
-          index: date.getDate(),
-          calMonth: calMonth,
-          today: this._util.isSameDay(this.today, date),
-          disabled: this._isDisabledDate(date)
-        });
-        date = new Date(date.getTime());
-        date.setDate(date.getDate() + 1);
-      }
-      this._dates.push(week);
-    } while ((date.getMonth() <= month) && (date.getFullYear() === year));
-  }
-
-  /**
-   * Set hours
-   * @param hour number of hours
-   */
-  _hourSelected(hour: number) {
-    this._clockView = 'minute';
-    this.activeDate = new Date(this.activeDate.getFullYear(), this.activeDate.getMonth(),
-      this.activeDate.getDate(), hour, this.activeDate.getMinutes());
-  }
-
-  /**
-   * Set minutes
-   * @param minute number of minutes
-   */
-  _minuteSelected(minute: number) {
-    this.activeDate = new Date(this.activeDate.getFullYear(), this.activeDate.getMonth(),
-      this.activeDate.getDate(), this.activeDate.getHours(), minute);
-    this.selected = this.activeDate;
-    this.value = this.activeDate;
-    this._emitChangeEvent();
-    this._onBlur();
+  ngOnDestroy() {
     this.close();
-  }
-
-  /** Emits an event when the user selects a date. */
-  _emitChangeEvent(): void {
-    this._onChange(this.value);
-    this.change.emit(new Md2DateChange(this, this.value));
-  }
-
-  validate(c: AbstractControl): ValidationErrors | null {
-    return this._validator ? this._validator(c) : null;
+    if (this._popupRef) {
+      this._popupRef.dispose();
+    }
+    if (this._dialogRef) {
+      this._dialogRef.dispose();
+    }
+    if (this._inputSubscription) {
+      this._inputSubscription.unsubscribe();
+    }
   }
 
   writeValue(value: any): void {
@@ -882,23 +284,71 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
     this.disabled = isDisabled;
   }
 
-  /**
-   * Get an hour of the date in the 12-hour format
-   * @param date Date Object
-   * @return hour of the date in the 12-hour format
-   */
-  private _getHours12(date: Date): number {
-    let hrs = date.getHours();
-    if (hrs == 0) {
-      hrs = 12;
-    } else if (hrs > 12) {
-      hrs -= 12;
+  _handleFocus(event: Event) {
+    this._inputFocused = true;
+    if (!this.opened && this.openOnFocus) {
+      this.open();
     }
-    return hrs;
   }
 
-  public is12HourClock(): boolean {
-    return /[aA]/.test(this.format);
+  _handleBlur(event: Event) {
+    this._inputFocused = false;
+    if (!this.opened) {
+      this._onTouched();
+    }
+    let el: any = event.target;
+    let date: Date = this._util.parseDate(el.value, this.format);
+    if (!date) {
+      date = this._util.parse(el.value, this.format);
+    }
+    if (date != null && date.getTime && !isNaN(date.getTime())) {
+
+      let d: Date = new Date(this.value + '');
+      if (this.type !== 'time') {
+        d.setFullYear(date.getFullYear(), date.getMonth(), date.getDate());
+      }
+      if (this.type !== 'date') {
+        d.setHours(date.getHours(), date.getMinutes());
+      }
+      if (!this._util.isSameMinute(new Date(this.value + ''), d)) {
+        this.value = this._dateAdapter.createDate(d.getFullYear(),
+          d.getMonth(),
+          d.getDate(),
+          d.getHours(),
+          d.getMinutes(),
+          d.getSeconds());
+        this._emitChangeEvent();
+      }
+    } else {
+      if (this.value) {
+        this.value = null;
+        this._emitChangeEvent();
+      }
+    }
+  }
+
+  private coerceDateProperty(value: any): D {
+    let v: Date = null;
+    if (value != null && value.getTime && !isNaN(value.getTime())) {
+      v = value;
+    } else {
+      if (value && this.type === 'time') {
+        let t = value + '';
+        v = new Date();
+        v.setHours(parseInt(t.substring(0, 2)));
+        v.setMinutes(parseInt(t.substring(3, 5)));
+      } else {
+        let timestamp = Date.parse(value);
+        v = isNaN(timestamp) ? null : new Date(timestamp);
+      }
+    }
+    let d: D = v ? this._dateAdapter.createDate(v.getFullYear(),
+      v.getMonth(),
+      v.getDate(),
+      v.getHours(),
+      v.getMinutes(),
+      v.getSeconds()) : null;
+    return d;
   }
 
   /**
@@ -906,131 +356,212 @@ export class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueA
    * @param date Date Object
    * @return string with formatted date
    */
-  private _formatDate(date: Date): string {
+  private _formatDate(date: D): string {
     if (!this.format || !date) { return ''; }
 
     let format = this.format;
 
-    // Years
+    /* Years */
     if (format.indexOf('yy') > -1) {
-      format = format.replace('yy', ('00' + date.getFullYear()).slice(-2));
+      format = format.replace('yy', ('00' + this._dateAdapter.getYear(date)).slice(-2));
     } else if (format.indexOf('y') > -1) {
-      format = format.replace('y', '' + date.getFullYear());
+      format = format.replace('y', '' + this._dateAdapter.getYear(date));
     }
 
-    // Days
+    /* Days */
     if (format.indexOf('dd') > -1) {
-      format = format.replace('dd', ('0' + date.getDate()).slice(-2));
+      format = format.replace('dd', ('0' + this._dateAdapter.getDate(date)).slice(-2));
     } else if (format.indexOf('d') > -1) {
-      format = format.replace('d', '' + date.getDate());
+      format = format.replace('d', '' + this._dateAdapter.getDate(date));
     }
 
-    // Hours
+    /* Hours */
     if (/[aA]/.test(format)) {
-      // 12-hour
+      /* 12-hour */
       if (format.indexOf('HH') > -1) {
-        format = format.replace('HH', ('0' + this._getHours12(date)).slice(-2));
+        format = format.replace('HH',
+          ('0' + this._getHours12(this._dateAdapter.getHours(date))).slice(-2));
       } else if (format.indexOf('H') > -1) {
-        format = format.replace('H', '' + this._getHours12(date));
+        format = format.replace('H',
+          '' + this._getHours12(this._dateAdapter.getHours(date)));
       }
-      format = format.replace('A', ((date.getHours() < 12) ? 'AM' : 'PM'))
-        .replace('a', ((date.getHours() < 12) ? 'am' : 'pm'));
+      format = format.replace('A', ((this._dateAdapter.getHours(date) < 12) ? 'AM' : 'PM'))
+        .replace('a', ((this._dateAdapter.getHours(date) < 12) ? 'am' : 'pm'));
     } else {
-      // 24-hour
+      /* 24-hour */
       if (format.indexOf('HH') > -1) {
-        format = format.replace('HH', ('0' + date.getHours()).slice(-2));
+        format = format.replace('HH', ('0' + this._dateAdapter.getHours(date)).slice(-2));
       } else if (format.indexOf('H') > -1) {
-        format = format.replace('H', '' + date.getHours());
+        format = format.replace('H', '' + this._dateAdapter.getHours(date));
       }
     }
 
-    // Minutes
+    /* Minutes */
     if (format.indexOf('mm') > -1) {
-      format = format.replace('mm', ('0' + date.getMinutes()).slice(-2));
+      format = format.replace('mm', ('0' + this._dateAdapter.getMinutes(date)).slice(-2));
     } else if (format.indexOf('m') > -1) {
-      format = format.replace('m', '' + date.getMinutes());
+      format = format.replace('m', '' + this._dateAdapter.getMinutes(date));
     }
 
-    // Seconds
+    /* Seconds */
     if (format.indexOf('ss') > -1) {
-      format = format.replace('ss', ('0' + date.getSeconds()).slice(-2));
+      format = format.replace('ss', ('0' + this._dateAdapter.getSeconds(date)).slice(-2));
     } else if (format.indexOf('s') > -1) {
-      format = format.replace('s', '' + date.getSeconds());
+      format = format.replace('s', '' + this._dateAdapter.getSeconds(date));
     }
 
-    // Months
+    /* Months */
     if (format.indexOf('MMMM') > -1) {
-      format = format.replace('MMMM', this._locale.months[date.getMonth()].full);
+      format = format.replace('MMMM', this._dateAdapter.getMonthNames('long')[this._dateAdapter.getMonth(date)]);
     } else if (format.indexOf('MMM') > -1) {
-      format = format.replace('MMM', this._locale.months[date.getMonth()].short);
+      format = format.replace('MMM', this._dateAdapter.getMonthNames('short')[this._dateAdapter.getMonth(date)]);
     } else if (format.indexOf('MM') > -1) {
-      format = format.replace('MM', ('0' + (date.getMonth() + 1)).slice(-2));
+      format = format.replace('MM', ('0' + (this._dateAdapter.getMonth(date) + 1)).slice(-2));
     } else if (format.indexOf('M') > -1) {
-      format = format.replace('M', '' + (date.getMonth() + 1));
+      format = format.replace('M', '' + (this._dateAdapter.getMonth(date) + 1));
     }
 
     return format;
   }
 
-  private _subscribeToBackdrop(): void {
-    this._backdropSubscription = this._overlayRef.backdropClick().subscribe(() => {
-      this.close();
-    });
+  /**
+   * Get an hour of the date in the 12-hour format
+   * @param date Date Object
+   * @return hour of the date in the 12-hour format
+   */
+  private _getHours12(hours: number): number {
+    if (hours == 0) {
+      hours = 12;
+    } else if (hours > 12) {
+      hours -= 12;
+    }
+    return hours;
   }
 
-  /**
-   *  This method creates the overlay from the provided panel's template and saves its
-   *  OverlayRef so that it can be attached to the DOM when open is called.
-   */
-  private _createOverlay(): void {
-    if (!this._overlayRef) {
-      let config = new OverlayState();
-      if (this.container === 'inline') {
-        config.positionStrategy = this._createPickerPositionStrategy();
-        config.hasBackdrop = true;
-        config.backdropClass = 'cdk-overlay-transparent-backdrop';
-        config.scrollStrategy = new RepositionScrollStrategy(this._scrollDispatcher);
-      } else {
-        config.positionStrategy = this._overlay.position()
-          .global()
-          .centerHorizontally()
-          .centerVertically();
-        config.hasBackdrop = true;
-      }
-      this._overlayRef = this._overlay.create(config);
+  /** Selects the given date and closes the currently open popup or dialog. */
+  _selectAndClose(date: D): void {
+    let oldValue = this._selected;
+    this.value = date;
+    if (!this._dateAdapter.sameDate(oldValue, this._selected)) {
+      this._emitChangeEvent();
     }
+    this.close();
+  }
+
+  /** Emits an event when the user selects a date. */
+  _emitChangeEvent(): void {
+    this._onChange(this.value);
+    this.change.emit(this.value);
+  }
+
+  /** Open the calendar. */
+  open(): void {
+    if (this.opened) { return; }
+
+    if (!this._calendarPortal) {
+      this._calendarPortal = new ComponentPortal(Md2DatepickerContent, this._viewContainerRef);
+    }
+
+    this.touchUi ? this._openAsDialog() : this._openAsPopup();
+    this.opened = true;
+  }
+
+  /** Close the calendar. */
+  close(): void {
+    if (!this.opened) {
+      return;
+    }
+    if (this._popupRef && this._popupRef.hasAttached()) {
+      this._popupRef.detach();
+    }
+    if (this._dialogRef && this._dialogRef.hasAttached()) {
+      this._dialogRef.detach();
+    }
+    if (this._calendarPortal && this._calendarPortal.isAttached) {
+      this._calendarPortal.detach();
+    }
+    this.opened = false;
+  }
+
+  /** Open the calendar as a dialog. */
+  private _openAsDialog(): void {
+    if (!this._dialogRef) {
+      this._createDialog();
+    }
+
+    if (!this._dialogRef.hasAttached()) {
+      let componentRef: ComponentRef<Md2DatepickerContent<D>> =
+        this._dialogRef.attach(this._calendarPortal);
+      componentRef.instance.datepicker = this;
+    }
+
+    this._dialogRef.backdropClick().first().subscribe(() => this.close());
+  }
+
+  /** Open the calendar as a popup. */
+  private _openAsPopup(): void {
+    if (!this._popupRef) {
+      this._createPopup();
+    }
+
+    if (!this._popupRef.hasAttached()) {
+      let componentRef: ComponentRef<Md2DatepickerContent<D>> =
+        this._popupRef.attach(this._calendarPortal);
+      componentRef.instance.datepicker = this;
+
+      /* Update the position once the calendar has rendered. */
+      this._ngZone.onStable.first().subscribe(() => this._popupRef.updatePosition());
+    }
+
+    this._popupRef.backdropClick().first().subscribe(() => this.close());
+  }
+
+  /** Create the dialog. */
+  private _createDialog(): void {
+    const overlayState = new OverlayState();
+    overlayState.positionStrategy = this._overlay.position().global()
+      .centerHorizontally()
+      .centerVertically();
+    overlayState.hasBackdrop = true;
+    overlayState.backdropClass = 'cdk-overlay-dark-backdrop';
+    overlayState.direction = this._dir ? this._dir.value : 'ltr';
+    this._dialogRef = this._overlay.create(overlayState);
+  }
+
+  /** Create the popup. */
+  private _createPopup(): void {
+    const overlayState = new OverlayState();
+    overlayState.positionStrategy = this._createPopupPositionStrategy();
+    overlayState.hasBackdrop = true;
+    if (this.touchUi) {
+      overlayState.backdropClass = 'cdk-overlay-dark-backdrop';
+    } else {
+      overlayState.backdropClass = 'cdk-overlay-transparent-backdrop';
+    }
+    overlayState.direction = this._dir ? this._dir.value : 'ltr';
+    overlayState.scrollStrategy = new RepositionScrollStrategy(this._scrollDispatcher);
+
+    this._popupRef = this._overlay.create(overlayState);
   }
 
   /** Create the popup PositionStrategy. */
-  private _createPickerPositionStrategy(): PositionStrategy {
+  private _createPopupPositionStrategy(): PositionStrategy {
     return this._overlay.position()
       .connectedTo(this._element,
-      { originX: 'start', originY: 'top' },
+      { originX: 'start', originY: 'bottom' },
       { overlayX: 'start', overlayY: 'top' }
       )
       .withFallbackPosition(
-      { originX: 'end', originY: 'top' },
-      { overlayX: 'end', overlayY: 'top' }
-      )
-      .withFallbackPosition(
-      { originX: 'start', originY: 'bottom' },
+      { originX: 'start', originY: 'top' },
       { overlayX: 'start', overlayY: 'bottom' }
       )
       .withFallbackPosition(
       { originX: 'end', originY: 'bottom' },
+      { overlayX: 'end', overlayY: 'top' }
+      )
+      .withFallbackPosition(
+      { originX: 'end', originY: 'top' },
       { overlayX: 'end', overlayY: 'bottom' }
       );
   }
-
-  private _cleanUpSubscriptions(): void {
-    if (this._backdropSubscription) {
-      this._backdropSubscription.unsubscribe();
-    }
-  }
-
-  private calendarState(direction: string): void {
-    this._calendarState = direction;
-    setTimeout(() => this._calendarState = '', 180);
-  }
-
 }

@@ -11,14 +11,14 @@ $md2-calendar-prev-next-icon-margin: 15.5px;
 $md2-calendar-prev-icon-transform: translateX(2px) rotate(-45deg);
 $md2-calendar-next-icon-transform: translateX(-2px) rotate(45deg);
 
-.md2-datepicker-content {
-  background-color: white;
-}
-
 .md2-calendar {
   @include user-select(none);
   display: block;
   outline: none;
+
+  &[mode='landscape'] {
+    display: flex;
+  }
 }
 
 .md2-calendar-header {
@@ -26,6 +26,12 @@ $md2-calendar-next-icon-transform: translateX(-2px) rotate(45deg);
   font-size: 14px;
   background-color: $primary;
   color: white;
+  box-sizing: border-box;
+
+  [mode='landscape'] & {
+    width: 150px;
+    min-width: 150px;
+  }
 }
 
 .md2-calendar-header-year,
@@ -38,6 +44,11 @@ $md2-calendar-next-icon-transform: translateX(-2px) rotate(45deg);
 .md2-calendar-header-date-time {
   font-size: 30px;
   line-height: 34px;
+
+  [mode='landscape'] & {
+    white-space: normal;
+    word-wrap: break-word;
+  }
 }
 
 .md2-calendar-header-year,
@@ -62,11 +73,22 @@ $md2-calendar-next-icon-transform: translateX(-2px) rotate(45deg);
       opacity: 1;
     }
   }
+
+  [mode='landscape'] & {
+    display: block;
+    padding-left: 0;
+  }
 }
 
 .md2-calendar-content {
+  width: 100%;
   padding: 0 $md2-calendar-padding $md2-calendar-padding $md2-calendar-padding;
   outline: none;
+  box-sizing: border-box;
+
+  [mode='landscape'] & {
+    padding-top: $md2-calendar-padding;
+  }
 }
 
 .md2-calendar-controls {
@@ -80,7 +102,6 @@ $md2-calendar-next-icon-transform: translateX(-2px) rotate(45deg);
   padding: 12px;
   outline: none;
   border: 0;
-  cursor: pointer;
   background: transparent;
   box-sizing: border-box;
 }
@@ -121,5 +142,30 @@ $md2-calendar-next-icon-transform: translateX(-2px) rotate(45deg);
     text-align: center;
     font-size: $md2-calendar-weekday-table-font-size;
     padding: 0 0 $md2-calendar-padding 0;
+  }
+}
+
+@media (min-width: 480px) {
+  .md2-calendar[mode='auto'] {
+    display: flex;
+
+    .md2-calendar-header {
+      width: 150px;
+      min-width: 150px;
+    }
+
+    .md2-calendar-header-date-time {
+      white-space: normal;
+      word-wrap: break-word;
+    }
+
+    .md2-calendar-header-time {
+      display: block;
+      padding-left: 0;
+    }
+
+    .md2-calendar-content {
+      padding-top: $md2-calendar-padding;
+    }
   }
 }

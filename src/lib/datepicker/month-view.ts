@@ -104,9 +104,6 @@ export class Md2MonthView<D> implements AfterContentInit {
 
   /** Handles when a new date is selected. */
   _dateSelected(date: number) {
-    if (this._selectedDate == date) {
-      return;
-    }
     this.selectedChange.emit(this._dateAdapter.createDate(
       this._dateAdapter.getYear(this.activeDate), this._dateAdapter.getMonth(this.activeDate),
       date, this._dateAdapter.getHours(this.activeDate),

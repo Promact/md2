@@ -1,8 +1,8 @@
 import {
-  AfterContentInit,
   ChangeDetectionStrategy,
   Component,
   ComponentRef,
+  ElementRef,
   EventEmitter,
   Input,
   OnDestroy,
@@ -12,21 +12,32 @@ import {
   ViewContainerRef,
   ViewEncapsulation,
   NgZone,
+  Self,
 } from '@angular/core';
-import { Overlay } from '../core/overlay/overlay';
+import {
+  ControlValueAccessor,
+  NgControl,
+} from '@angular/forms';
+import {
+  coerceBooleanProperty,
+  Overlay
+} from '../core';
 import { OverlayRef } from '../core/overlay/overlay-ref';
 import { ComponentPortal } from '../core/portal/portal';
 import { OverlayState } from '../core/overlay/overlay-state';
 import { Dir } from '../core/rtl/dir';
 import { PositionStrategy } from '../core/overlay/position/position-strategy';
 import { RepositionScrollStrategy, ScrollDispatcher } from '../core/overlay/index';
-import { Md2DatepickerInput } from './datepicker-input';
 import { Subscription } from 'rxjs/Subscription';
 import { DateAdapter } from '../core/datetime/index';
 import { ESCAPE } from '../core/keyboard/keycodes';
 import { Md2Calendar } from './calendar';
 import 'rxjs/add/operator/first';
 
+/** Change event object emitted by Md2Select. */
+export class Md2DateChange2 {
+  constructor(public source: Md2Datepicker2<Date>, public value: Date) { }
+}
 
 /** Used to generate a unique ID for each datepicker instance. */
 let datepickerUid = 0;
@@ -52,14 +63,10 @@ let datepickerUid = 0;
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Md2DatepickerContent<D> implements AfterContentInit {
+export class Md2DatepickerContent<D> {
   datepicker: Md2Datepicker2<D>;
 
   @ViewChild(Md2Calendar) _calendar: Md2Calendar<D>;
-
-  ngAfterContentInit() {
-    this._calendar._focusActiveCell();
-  }
 
   /**
    * Handles keydown event on datepicker content.
@@ -87,18 +94,27 @@ export class Md2DatepickerContent<D> implements AfterContentInit {
 @Component({
   moduleId: module.id,
   selector: 'md2-datepicker2',
-  template: '<ng-content></ng-content>',
+  templateUrl: 'datepicker2.html',
+  styleUrls: ['datepicker.css'],
+  host: {
+    'role': 'datepicker',
+    '[class.md2-datepicker-disabled]': 'disabled',
+    '[class.md2-datepicker-opened]': 'opened',
+    '[attr.aria-label]': 'placeholder',
+    '[attr.aria-required]': 'required.toString()',
+    '[attr.aria-disabled]': 'disabled.toString()',
+    '[attr.aria-invalid]': '_control?.invalid || "false"',
+  },
 })
-export class Md2Datepicker2<D> implements OnDestroy {
+export class Md2Datepicker2<D> implements OnDestroy, ControlValueAccessor {
+
+  _onChange = (value: any) => { };
+  _onTouched = () => { };
+
+  _inputFocused: boolean = false;
+
   /** The date to open the calendar to initially. */
-  @Input()
-  get startAt(): D {
-    // If an explicit startAt is set we start there, otherwise we start at whatever the currently
-    // selected value is.
-    return this._startAt || (this._datepickerInput ? this._datepickerInput.value : null);
-  }
-  set startAt(date: D) { this._startAt = date; }
-  private _startAt: D;
+  @Input() startAt: D;
 
   /** The view that the calendar should start in. */
   @Input() startView: 'month' | 'year' = 'month';
@@ -108,6 +124,95 @@ export class Md2Datepicker2<D> implements OnDestroy {
    * than a popup and elements have more padding to allow for bigger touch targets.
    */
   @Input() touchUi = false;
+  @Input() tabindex: number = 0;
+  @Input() mode: 'auto' | 'portrait' | 'landscape' = 'auto';
+  @Input() placeholder: string;
+  @Input() timeInterval: number = 1;
+
+
+  @Input()
+  get type() { return this._type; }
+  set type(value: 'date' | 'time' | 'datetime') {
+    this._type = value || 'date';
+    this._inputValue = this._formatDate(this._value);
+  }
+  private _type: 'date' | 'time' | 'datetime' = 'date';
+
+  @Input()
+  get format() {
+    return this._format || (this.type === 'date' ?
+      'dd/MM/y' : this.type === 'time' ? 'HH:mm' : this.type === 'datetime' ?
+        'dd/MM/y HH:mm' : 'dd/MM/y');
+  }
+  set format(value: string) {
+    if (this._format !== value) {
+      this._format = value;
+      this._inputValue = this._formatDate(this._value);
+    }
+  }
+  private _format: string;
+
+  /** The minimum valid date. */
+  @Input()
+  get min(): D { return this._minDate; }
+  set min(value: D) {
+    this._minDate = value;
+  }
+  _minDate: D;
+
+  /** The maximum valid date. */
+  @Input()
+  get max(): D { return this._maxDate; }
+  set max(value: D) {
+    this._maxDate = value;
+  }
+  _maxDate: D;
+
+  @Input() set filter(filter: (date: D | null) => boolean) {
+    this._dateFilter = filter;
+  }
+  _dateFilter: (date: D | null) => boolean;
+
+  @Input()
+  get required(): boolean { return this._required; }
+  set required(value) { this._required = coerceBooleanProperty(value); }
+  private _required: boolean = false;
+
+  @Input()
+  get disabled(): boolean { return this._disabled; }
+  set disabled(value) { this._disabled = coerceBooleanProperty(value); }
+  private _disabled: boolean = false;
+
+  @Input()
+  get value() { return this._value; }
+  set value(value: D) {
+    this._value = this.coerceDateProperty(value);
+    this.startAt = this._value;
+    setTimeout(() => {
+      this._inputValue = this._formatDate(this._value);
+    });
+  }
+  private _value: D;
+  private _inputValue: string = '';
+
+  @Input()
+  get openOnFocus(): boolean { return this._openOnFocus; }
+  set openOnFocus(value: boolean) { this._openOnFocus = coerceBooleanProperty(value); }
+  private _openOnFocus: boolean;
+
+  @Input()
+  set isOpen(value: boolean) {
+    if (value && !this.opened) { this.open(); }
+  }
+
+  /** Event emitted when the select has been opened. */
+  @Output() onOpen: EventEmitter<void> = new EventEmitter<void>();
+
+  /** Event emitted when the select has been closed. */
+  @Output() onClose: EventEmitter<void> = new EventEmitter<void>();
+
+  /** Event emitted when the selected date has been changed by the user. */
+  @Output() change: EventEmitter<D> = new EventEmitter<D>();
 
   /** Emits new selected date when selected date changes. */
   @Output() selectedChanged = new EventEmitter<D>();
@@ -121,20 +226,6 @@ export class Md2Datepicker2<D> implements OnDestroy {
   /** The currently selected date. */
   _selected: D = null;
 
-  /** The minimum selectable date. */
-  get _minDate(): D {
-    return this._datepickerInput && this._datepickerInput.min;
-  }
-
-  /** The maximum selectable date. */
-  get _maxDate(): D {
-    return this._datepickerInput && this._datepickerInput.max;
-  }
-
-  get _dateFilter(): (date: D | null) => boolean {
-    return this._datepickerInput && this._datepickerInput._dateFilter;
-  }
-
   /** A reference to the overlay when the calendar is opened as a popup. */
   private _popupRef: OverlayRef;
 
@@ -144,19 +235,21 @@ export class Md2Datepicker2<D> implements OnDestroy {
   /** A portal containing the calendar for this datepicker. */
   private _calendarPortal: ComponentPortal<Md2DatepickerContent<D>>;
 
-  /** The input element this datepicker is associated with. */
-  private _datepickerInput: Md2DatepickerInput<D>;
-
   private _inputSubscription: Subscription;
 
-  constructor(private _overlay: Overlay,
+  constructor(private _element: ElementRef,
+    private _overlay: Overlay,
     private _ngZone: NgZone,
     private _viewContainerRef: ViewContainerRef,
     private _scrollDispatcher: ScrollDispatcher,
     @Optional() private _dateAdapter: DateAdapter<D>,
-    @Optional() private _dir: Dir) {
+    @Optional() private _dir: Dir,
+    @Self() @Optional() public _control: NgControl) {
     if (!this._dateAdapter) {
       throw Error('DateAdapter');
+    }
+    if (this._control) {
+      this._control.valueAccessor = this;
     }
 
   }
@@ -174,37 +267,164 @@ export class Md2Datepicker2<D> implements OnDestroy {
     }
   }
 
+  writeValue(value: any): void {
+    this.value = value;
+  }
+
+  registerOnChange(fn: (value: any) => void): void { this._onChange = fn; }
+
+  registerOnTouched(fn: () => {}): void { this._onTouched = fn; }
+
+  setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
+  }
+
+  _handleFocus(event: Event) {
+    this._inputFocused = true;
+    if (!this.opened && this.openOnFocus) {
+      this.open();
+    }
+  }
+
+  _handleBlur(event: Event) {
+    this._inputFocused = false;
+    if (!this.opened) {
+      this._onTouched();
+    }
+    let el: any = event.target;
+    //let date: Date = this._util.parseDate(el.value, this.format);
+    //if (!date) {
+    //  date = this._util.parse(el.value, this.format);
+    //}
+    //if (date != null && date.getTime && !isNaN(date.getTime())) {
+    //  let d: Date = new Date(this.value);
+    //  if (this.type !== 'time') {
+    //    d.setFullYear(date.getFullYear(), date.getMonth(), date.getDate());
+    //  }
+    //  if (this.type !== 'date') {
+    //    d.setHours(date.getHours(), date.getMinutes());
+    //  }
+    //  if (!this._util.isSameMinute(this.value, d)) {
+    //    this.value = d;
+    //    this._emitChangeEvent();
+    //  }
+    //} else {
+    //  if (this.value) {
+    //    this.value = null;
+    //    this._emitChangeEvent();
+    //  }
+    //}
+  }
+
+  private coerceDateProperty(value: any): D {
+    let v: D = null;
+    if (value != null && value.getTime && !isNaN(value.getTime())) {
+      v = value;
+    } else {
+      //if (value && this.type === 'time') {
+      //  let t = value + '';
+      //  v = this._dateAdapter.createDate(); new Date();
+      //  v.setHours(parseInt(t.substring(0, 2)));
+      //  v.setMinutes(parseInt(t.substring(3, 5)));
+      //} else {
+      //  let timestamp = Date.parse(value);
+      //  v = isNaN(timestamp) ? null : new Date(timestamp);
+      //}
+    }
+    return v;
+  }
+
+  /**
+   * format date
+   * @param date Date Object
+   * @return string with formatted date
+   */
+  private _formatDate(date: D): string {
+    if (!this.format || !date) { return ''; }
+
+    let format = this.format;
+
+    // Years
+    if (format.indexOf('yy') > -1) {
+      format = format.replace('yy', ('00' + this._dateAdapter.getYear(date)).slice(-2));
+    } else if (format.indexOf('y') > -1) {
+      format = format.replace('y', '' + this._dateAdapter.getYear(date));
+    }
+
+    // Days
+    if (format.indexOf('dd') > -1) {
+      format = format.replace('dd', ('0' + this._dateAdapter.getDate(date)).slice(-2));
+    } else if (format.indexOf('d') > -1) {
+      format = format.replace('d', '' + this._dateAdapter.getDate(date));
+    }
+
+    // Hours
+    //if (/[aA]/.test(format)) {
+    //  // 12-hour
+    //  if (format.indexOf('HH') > -1) {
+    //    format = format.replace('HH', ('0' + this._getHours12(date)).slice(-2));
+    //  } else if (format.indexOf('H') > -1) {
+    //    format = format.replace('H', '' + this._getHours12(date));
+    //  }
+    //  format = format.replace('A', ((this._dateAdapter.getHours(date) < 12) ? 'AM' : 'PM'))
+    //    .replace('a', ((this._dateAdapter.getHours(date) < 12) ? 'am' : 'pm'));
+    //} else {
+    // 24-hour
+    if (format.indexOf('HH') > -1) {
+      format = format.replace('HH', ('0' + this._dateAdapter.getHours(date)).slice(-2));
+    } else if (format.indexOf('H') > -1) {
+      format = format.replace('H', '' + this._dateAdapter.getHours(date));
+    }
+    //}
+
+    // Minutes
+    if (format.indexOf('mm') > -1) {
+      format = format.replace('mm', ('0' + this._dateAdapter.getMinutes(date)).slice(-2));
+    } else if (format.indexOf('m') > -1) {
+      format = format.replace('m', '' + this._dateAdapter.getMinutes(date));
+    }
+
+    // Seconds
+    if (format.indexOf('ss') > -1) {
+      format = format.replace('ss', ('0' + this._dateAdapter.getSeconds(date)).slice(-2));
+    } else if (format.indexOf('s') > -1) {
+      format = format.replace('s', '' + this._dateAdapter.getSeconds(date));
+    }
+
+    // Months
+    if (format.indexOf('MMMM') > -1) {
+      format = format.replace('MMMM', this._dateAdapter.getMonthNames('long')[this._dateAdapter.getMonth(date)]);
+    } else if (format.indexOf('MMM') > -1) {
+      format = format.replace('MMM', this._dateAdapter.getMonthNames('short')[this._dateAdapter.getMonth(date)]);
+    } else if (format.indexOf('MM') > -1) {
+      format = format.replace('MM', ('0' + (this._dateAdapter.getMonth(date) + 1)).slice(-2));
+    } else if (format.indexOf('M') > -1) {
+      format = format.replace('M', '' + (this._dateAdapter.getMonth(date) + 1));
+    }
+
+    return format;
+  }
+
   /** Selects the given date and closes the currently open popup or dialog. */
   _selectAndClose(date: D): void {
     let oldValue = this._selected;
     this._selected = date;
     if (!this._dateAdapter.sameDate(oldValue, this._selected)) {
-      this.selectedChanged.emit(date);
+      this.value = date;
+      this._emitChangeEvent();
     }
     this.close();
   }
 
-  /**
-   * Register an input with this datepicker.
-   * @param input The datepicker input to register with this datepicker.
-   */
-  _registerInput(input: Md2DatepickerInput<D>): void {
-    if (this._datepickerInput) {
-      throw new Error('An Md2Datepicker can only be associated with a single input.');
-    }
-    this._datepickerInput = input;
-    this._inputSubscription =
-      this._datepickerInput._valueChange.subscribe((value: D) => this._selected = value);
+  /** Emits an event when the user selects a date. */
+  _emitChangeEvent(): void {
+    this._onChange(this.value);
+    this.change.emit(this.value);
   }
 
   /** Open the calendar. */
   open(): void {
-    if (this.opened) {
-      return;
-    }
-    if (!this._datepickerInput) {
-      throw new Error('Attempted to open an Md2Datepicker with no associated input.');
-    }
+    if (this.opened) { return; }
 
     if (!this._calendarPortal) {
       this._calendarPortal = new ComponentPortal(Md2DatepickerContent, this._viewContainerRef);
@@ -295,7 +515,7 @@ export class Md2Datepicker2<D> implements OnDestroy {
   /** Create the popup PositionStrategy. */
   private _createPopupPositionStrategy(): PositionStrategy {
     return this._overlay.position()
-      .connectedTo(this._datepickerInput.getPopupConnectionElementRef(),
+      .connectedTo(this._element,
       { originX: 'start', originY: 'bottom' },
       { overlayX: 'start', overlayY: 'top' }
       )

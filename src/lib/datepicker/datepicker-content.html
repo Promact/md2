@@ -1,7 +1,10 @@
 <md2-calendar cdkTrapFocus
               [id]="datepicker.id"
+              [attr.mode]="datepicker.mode"
               [startAt]="datepicker.startAt"
               [startView]="datepicker.startView"
+              [type]="datepicker.type"
+              [timeInterval]="datepicker.timeInterval"
               [minDate]="datepicker._minDate"
               [maxDate]="datepicker._maxDate"
               [dateFilter]="datepicker._dateFilter"

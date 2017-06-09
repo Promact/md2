@@ -10,6 +10,10 @@ import { Component } from '@angular/core';
       margin-right: 16px;
       padding: 16px 0;
     }
+  `,
+  `.error-helper {
+      color: #dd2c00;
+    }
   `]
 })
 export class DatepickerDemo {

@@ -9,6 +9,7 @@ import { Component } from '@angular/core';
       width: 150px;
       margin-right: 16px;
       padding: 16px 0;
+      vertical-align: top;
     }
   `,
   `.error-helper {

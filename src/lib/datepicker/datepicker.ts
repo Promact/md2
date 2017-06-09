@@ -4,6 +4,7 @@ import {
   ComponentRef,
   ElementRef,
   EventEmitter,
+  forwardRef,
   Input,
   OnDestroy,
   Optional,
@@ -15,8 +16,14 @@ import {
   Self,
 } from '@angular/core';
 import {
+  AbstractControl,
   ControlValueAccessor,
-  NgControl,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  ValidationErrors,
+  Validator,
+  ValidatorFn,
+  Validators,
 } from '@angular/forms';
 import {
   coerceBooleanProperty,
@@ -88,6 +95,18 @@ export class Md2DatepickerContent<D> {
 }
 
 
+export const MD2_DATEPICKER_VALUE_ACCESSOR: any = {
+  provide: NG_VALUE_ACCESSOR,
+  useExisting: forwardRef(() => Md2Datepicker),
+  multi: true
+};
+
+export const MD2_DATEPICKER_VALIDATORS: any = {
+  provide: NG_VALIDATORS,
+  useExisting: forwardRef(() => Md2Datepicker),
+  multi: true
+};
+
 /* TODO(mmalerba): We use a component instead of a directive here so the user can use implicit
  * template reference variables (e.g. #d vs #d="md2Datepicker"). We can change this to a directive if
  * angular adds support for `exportAs: '$implicit'` on directives.
@@ -98,6 +117,7 @@ export class Md2DatepickerContent<D> {
   selector: 'md2-datepicker',
   templateUrl: 'datepicker.html',
   styleUrls: ['datepicker.css'],
+  providers: [MD2_DATEPICKER_VALUE_ACCESSOR, MD2_DATEPICKER_VALIDATORS],
   host: {
     'role': 'datepicker',
     '[class.md2-datepicker-disabled]': 'disabled',
@@ -105,7 +125,6 @@ export class Md2DatepickerContent<D> {
     '[attr.aria-label]': 'placeholder',
     '[attr.aria-required]': 'required.toString()',
     '[attr.aria-disabled]': 'disabled.toString()',
-    '[attr.aria-invalid]': '_control?.invalid || "false"',
   },
   encapsulation: ViewEncapsulation.None,
 })
@@ -113,6 +132,7 @@ export class Md2Datepicker<D> implements OnDestroy, ControlValueAccessor {
 
   _onChange = (value: any) => { };
   _onTouched = () => { };
+  _validatorOnChange = () => { };
 
   _inputFocused: boolean = false;
 
@@ -160,6 +180,7 @@ export class Md2Datepicker<D> implements OnDestroy, ControlValueAccessor {
   get min(): D { return this._minDate; }
   set min(value: D) {
     this._minDate = value;
+    this._validatorOnChange();
   }
   _minDate: D;
 
@@ -168,11 +189,13 @@ export class Md2Datepicker<D> implements OnDestroy, ControlValueAccessor {
   get max(): D { return this._maxDate; }
   set max(value: D) {
     this._maxDate = value;
+    this._validatorOnChange();
   }
   _maxDate: D;
 
   @Input() set dateFilter(filter: (date: D | null) => boolean) {
     this._dateFilter = filter;
+    this._validatorOnChange();
   }
   _dateFilter: (date: D | null) => boolean;
 
@@ -241,6 +264,30 @@ export class Md2Datepicker<D> implements OnDestroy, ControlValueAccessor {
 
   private _inputSubscription: Subscription;
 
+  /** The form control validator for the min date. */
+  private _minValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+    return (!this.min || !control.value ||
+      this._dateAdapter.compareDate(this.min, control.value) <= 0) ?
+      null : { 'md2DatepickerMin': { 'min': this.min, 'actual': control.value } };
+  }
+
+  /** The form control validator for the max date. */
+  private _maxValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+    return (!this.max || !control.value ||
+      this._dateAdapter.compareDate(this.max, control.value) >= 0) ?
+      null : { 'md2DatepickerMax': { 'max': this.max, 'actual': control.value } };
+  }
+
+  /** The form control validator for the date filter. */
+  private _filterValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+    return !this._dateFilter || !control.value || this._dateFilter(control.value) ?
+      null : { 'md2DatepickerFilter': true };
+  }
+
+  /** The combined form control validator for this input. */
+  private _validator: ValidatorFn =
+  Validators.compose([this._minValidator, this._maxValidator, this._filterValidator]);
+
   constructor(private _element: ElementRef,
     private _overlay: Overlay,
     private _ngZone: NgZone,
@@ -248,15 +295,10 @@ export class Md2Datepicker<D> implements OnDestroy, ControlValueAccessor {
     private _scrollDispatcher: ScrollDispatcher,
     private _util: DateUtil,
     @Optional() private _dateAdapter: DateAdapter<D>,
-    @Optional() private _dir: Dir,
-    @Self() @Optional() public _control: NgControl) {
+    @Optional() private _dir: Dir) {
     if (!this._dateAdapter) {
       throw Error('DateAdapter');
     }
-    if (this._control) {
-      this._control.valueAccessor = this;
-    }
-
   }
 
   ngOnDestroy() {
@@ -270,6 +312,14 @@ export class Md2Datepicker<D> implements OnDestroy, ControlValueAccessor {
     if (this._inputSubscription) {
       this._inputSubscription.unsubscribe();
     }
+  }
+
+  registerOnValidatorChange(fn: () => void): void {
+    this._validatorOnChange = fn;
+  }
+
+  validate(c: AbstractControl): ValidationErrors | null {
+    return this._validator ? this._validator(c) : null;
   }
 
   writeValue(value: any): void {
@@ -464,6 +514,7 @@ export class Md2Datepicker<D> implements OnDestroy, ControlValueAccessor {
 
     this.touchUi ? this._openAsDialog() : this._openAsPopup();
     this.opened = true;
+    this.onOpen.emit();
   }
 
   /** Close the calendar. */
@@ -481,6 +532,7 @@ export class Md2Datepicker<D> implements OnDestroy, ControlValueAccessor {
       this._calendarPortal.detach();
     }
     this.opened = false;
+    this.onClose.emit();
   }
 
   /** Open the calendar as a dialog. */

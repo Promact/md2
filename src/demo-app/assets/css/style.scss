@@ -128,6 +128,39 @@ hr {
   text-align: center;
 }
 
+label.checkbox {
+  display: block;
+  margin-top: 4px;
+  user-select: none;
+  white-space: nowrap;
+  font-size: 16px;
+  cursor: pointer;
+
+  .checkbox-handle {
+    position: relative;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-right: 10px;
+    vertical-align: text-top;
+    border: 2px solid rgba(black, 0.7);
+    border-radius: 2px;
+    box-sizing: border-box;
+    transition: 240ms;
+  }
+
+  input[type=checkbox] {
+    display: none;
+
+    &:checked + .checkbox-handle {
+      transform: rotate(-45deg);
+      height: 8px;
+      border-width: 0 0 2px 2px;
+      border-color: #2196F3;
+    }
+  }
+}
+
 // Layout
 html, body {
   position: relative;

@@ -2,19 +2,34 @@
 
 $md2-datepicker-calendar-padding: 8px;
 $md2-datepicker-calendar-cell-size: 40px;
-$md2-datepicker-calendar-width: $md2-datepicker-calendar-cell-size * 7 + $md2-datepicker-calendar-padding * 2;
-$md2-datepicker-calendar-height: 405px;
+$md2-datepicker-calendar-portrait-width: $md2-datepicker-calendar-cell-size * 7 + $md2-datepicker-calendar-padding * 2;
+$md2-datepicker-calendar-landscape-width: 446px;
+$md2-datepicker-calendar-portrait-height: 405px;
+$md2-datepicker-calendar-landscape-height: 328px;
 
 .md2-datepicker-content {
   @include mat-elevation(8);
   display: block;
+  background-color: white;
   border-radius: 2px;
   overflow: hidden;
 }
 
 .md2-calendar {
-  width: $md2-datepicker-calendar-width;
-  height: $md2-datepicker-calendar-height;
+  width: $md2-datepicker-calendar-portrait-width;
+  height: $md2-datepicker-calendar-portrait-height;
+
+  &[mode='landscape'] {
+    width: $md2-datepicker-calendar-landscape-width;
+    height: $md2-datepicker-calendar-landscape-height;
+  }
+}
+
+@media (min-width: 480px) {
+  .md2-calendar[mode='auto'] {
+    width: $md2-datepicker-calendar-landscape-width;
+    height: $md2-datepicker-calendar-landscape-height;
+  }
 }
 
 .md2-datepicker-content-touch {

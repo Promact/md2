@@ -9,21 +9,21 @@
       <label><input type="checkbox" name="ui" [(ngModel)]="touch">Use touch UI</label>
       <label><input type="checkbox" name="filter" [(ngModel)]="filterOdd">Filter odd months and dates</label>
       <br />
-      <md2-datepicker2 name="mindate"
+      <md2-datepicker name="mindate"
                        placeholder="Minimum Date"
                        [(ngModel)]="minDate"
                        [mode]="mode"
                        [touchUi]="touch"
-                       [format]="dateFormat"></md2-datepicker2>
-      <md2-datepicker2 name="maxdate"
+                       [format]="dateFormat"></md2-datepicker>
+      <md2-datepicker name="maxdate"
                        placeholder="Maximum Date"
                        [(ngModel)]="maxDate"
                        [min]="minDate"
                        [mode]="mode"
                        [touchUi]="touch"
-                       [format]="dateFormat"></md2-datepicker2>
+                       [format]="dateFormat"></md2-datepicker>
       <br />
-      <md2-datepicker2 name="birthdate"
+      <md2-datepicker name="birthdate"
                        placeholder="Select Date"
                        [(ngModel)]="date"
                        [required]="isRequired"
@@ -38,7 +38,7 @@
                        [touchUi]="touch"
                        [startView]="startView"
                        [format]="dateFormat"
-                       #dateControl="ngModel"></md2-datepicker2>
+                       #dateControl="ngModel"></md2-datepicker>
       <span *ngIf="dateControl.hasError('md2DatepickerMin')">Too early!</span>
       <span *ngIf="dateControl.hasError('md2DatepickerMax')">Too late!</span>
       <span *ngIf="dateControl.hasError('md2DatepickerFilter')">Date unavailable!</span>
@@ -68,7 +68,7 @@
           </md2-select>
         </div>
         <div class="inline-control">
-          <input class="md2-input" name="formatInput" [(ngModel)]="dateFormat" placeholder="date format">
+          <input class="md2-input" name="formatInput" [(ngModel)]="dateFormat" placeholder="Date Format">
         </div>
       </div>
       <div>

@@ -245,7 +245,6 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
       this.addNewChip(this.inputValue);
     }
     this._onTouched();
-    this.addNewChip(this.inputValue);
   }
 
   inputFocus(event: Event): void {

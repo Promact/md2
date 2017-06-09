@@ -64,7 +64,7 @@ $md2-datepicker-selected-today-box-shadow-width: 1px;
 }
 
 :not(.md2-calendar-body-disabled):hover,
-.cdk-keyboard-focused .md2-calendar-body-active {
+.md2-calendar:focus .md2-calendar-body-active {
   & > .md2-calendar-body-cell-content:not(.md2-calendar-body-selected) {
     background-color: rgba(black, 0.12);
   }

@@ -63,7 +63,7 @@ export class Md2DatepickerInput<D> implements AfterContentInit, ControlValueAcce
   set md2Datepicker(value: Md2Datepicker2<D>) {
     if (value) {
       this._datepicker = value;
-      this._datepicker._registerInput(this);
+      //this._datepicker._registerInput(this);
     }
   }
   _datepicker: Md2Datepicker2<D>;

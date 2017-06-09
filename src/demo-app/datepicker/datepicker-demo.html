@@ -9,24 +9,12 @@
       <label><input type="checkbox" name="ui" [(ngModel)]="touch">Use touch UI</label>
       <label><input type="checkbox" name="filter" [(ngModel)]="filterOdd">Filter odd months and dates</label>
       <label><input type="checkbox" name="start" [(ngModel)]="yearView">Start in year view</label>
-      <div>
+      <!--<div>
         <input name="mini" [md2Datepicker]="minDatePicker" [(ngModel)]="minDate" placeholder="Min date">
         <button type="button" [md2DatepickerToggle]="minDatePicker"></button>
-      </div>
-      <md2-datepicker2 #minDatePicker [touchUi]="touch"></md2-datepicker2>
-      <div>
-        <input name="maxi" [md2Datepicker]="maxDatePicker" [(ngModel)]="maxDate" placeholder="Max date">
-        <button type="button" [md2DatepickerToggle]="maxDatePicker"></button>
-      </div>
-      <md2-datepicker2 #maxDatePicker [touchUi]="touch"></md2-datepicker2>
-      <br />
-      <div>
-        <input name="starti" [md2Datepicker]="startAtPicker" [(ngModel)]="startAt" placeholder="Start at date">
-        <button type="button" [md2DatepickerToggle]="startAtPicker"></button>
-      </div>
-      <md2-datepicker2 #startAtPicker [touchUi]="touch"></md2-datepicker2>
-      <button type="button" [md2DatepickerToggle]="resultPicker"></button>
-      <div>
+      </div>-->
+      <!--<md2-datepicker2 [touchUi]="touch"></md2-datepicker2>-->
+      <!--<div>
         <input name="dt" #resultPickerModel="ngModel"
                [md2Datepicker]="resultPicker"
                [(ngModel)]="date"
@@ -54,37 +42,37 @@
                        [touchUi]="touch"
                        [startAt]="startAt"
                        [startView]="yearView ? 'year' : 'month'">
-      </md2-datepicker2>
+      </md2-datepicker2>-->
       <br />
       <hr />
-      <md2-datepicker name="mindate"
-                      placeholder="Minimum Date"
-                      [(ngModel)]="minDate"
-                      [mode]="mode"
-                      [container]="container"
-                      [format]="dateFormat"></md2-datepicker>
-      <md2-datepicker name="maxdate"
-                      placeholder="Maximum Date"
-                      [(ngModel)]="maxDate"
-                      [min]="minDate"
-                      [mode]="mode"
-                      [container]="container"
-                      [format]="dateFormat"></md2-datepicker>
+      <md2-datepicker2 name="mindate"
+                       placeholder="Minimum Date"
+                       [(ngModel)]="minDate"
+                       [mode]="mode"
+                       [touchUi]="touch"
+                       [format]="dateFormat"></md2-datepicker2>
+      <md2-datepicker2 name="maxdate"
+                       placeholder="Maximum Date"
+                       [(ngModel)]="maxDate"
+                       [min]="minDate"
+                       [mode]="mode"
+                       [touchUi]="touch"
+                       [format]="dateFormat"></md2-datepicker2>
       <br />
-      <md2-datepicker name="birthdate"
-                      placeholder="Select Date"
-                      [(ngModel)]="date"
-                      [required]="isRequired"
-                      [disabled]="isDisabled"
-                      [openOnFocus]="isOpenOnFocus"
-                      [isOpen]="isOpen"
-                      [type]="type"
-                      [min]="minDate"
-                      [max]="maxDate"
-                      [mode]="mode"
-                      [container]="container"
-                      [format]="dateFormat"
-                      #dateControl="ngModel"></md2-datepicker>
+      <md2-datepicker2 name="birthdate"
+                       placeholder="Select Date"
+                       [(ngModel)]="date"
+                       [required]="isRequired"
+                       [disabled]="isDisabled"
+                       [openOnFocus]="isOpenOnFocus"
+                       [isOpen]="isOpen"
+                       [type]="type"
+                       [min]="minDate"
+                       [max]="maxDate"
+                       [mode]="mode"
+                       [touchUi]="touch"
+                       [format]="dateFormat"
+                       #dateControl="ngModel"></md2-datepicker2>
       <span *ngIf="dateControl.hasError('md2DatepickerMin')">Too early!</span>
       <span *ngIf="dateControl.hasError('md2DatepickerMax')">Too late!</span>
       <span *ngIf="dateControl.hasError('md2DatepickerFilter')">Date unavailable!</span>

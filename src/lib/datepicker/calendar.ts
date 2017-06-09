@@ -40,13 +40,15 @@ import { MATERIAL_COMPATIBILITY_MODE } from '../core';
   styleUrls: ['calendar.css'],
   host: {
     '[class.md2-calendar]': 'true',
+    'tabindex': '0',
+    '(keydown)': '_handleCalendarBodyKeydown($event)',
   },
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Md2Calendar<D> implements AfterContentInit {
 
-  @Input() type: 'date' | 'time' | 'datetime' = 'datetime';
+  @Input() type: 'date' | 'time' | 'datetime' = 'date';
 
   /** A date representing the period (month or year) to start the calendar in. */
   @Input() startAt: D;
@@ -143,7 +145,7 @@ export class Md2Calendar<D> implements AfterContentInit {
 
   ngAfterContentInit() {
     this._activeDate = this.startAt || this._dateAdapter.today();
-    this._focusActiveCell();
+    this._elementRef.nativeElement.focus();
     this._currentView = this.startView || 'month';
   }
 
@@ -235,16 +237,6 @@ export class Md2Calendar<D> implements AfterContentInit {
     }
   }
 
-  /** Focuses the active cell after the microtask queue is empty. */
-  _focusActiveCell() {
-    this._ngZone.runOutsideAngular(() => this._ngZone.onStable.first().subscribe(() => {
-      let activeEl = this._elementRef.nativeElement.querySelector('.md2-calendar-body-active');
-      if (activeEl) {
-        activeEl.focus();
-      }
-    }));
-  }
-
   /** Whether the two dates represent the same view in the current view mode (month or year). */
   private _isSameView(date1: D, date2: D): boolean {
     return this._currentView === 'month' ?
@@ -299,7 +291,6 @@ export class Md2Calendar<D> implements AfterContentInit {
         return;
     }
 
-    this._focusActiveCell();
     // Prevent unexpected default actions such as form submission.
     event.preventDefault();
   }
@@ -343,7 +334,6 @@ export class Md2Calendar<D> implements AfterContentInit {
         return;
     }
 
-    this._focusActiveCell();
     // Prevent unexpected default actions such as form submission.
     event.preventDefault();
   }
@@ -367,7 +357,6 @@ export class Md2Calendar<D> implements AfterContentInit {
         return;
     }
 
-    this._focusActiveCell();
     // Prevent unexpected default actions such as form submission.
     event.preventDefault();
   }

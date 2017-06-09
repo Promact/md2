@@ -1,12 +1,15 @@
 <div class="md2-calendar-header">
-  <div class="md2-calendar-header-year"
+  <div *ngIf="type!=='time'"
+       class="md2-calendar-header-year"
        [class.active]="_currentView == 'year'"
        (click)="_yearClicked()">{{ _yearText }}</div>
   <div class="md2-calendar-header-date-time">
-    <span class="md2-calendar-header-date"
+    <span *ngIf="type!=='time'"
+          class="md2-calendar-header-date"
           [class.active]="_currentView == 'month'"
           (click)="_dateClicked()">{{ _dateText }}</span>
-    <span class="md2-calendar-header-time"
+    <span *ngIf="type!=='date'"
+          class="md2-calendar-header-time"
           [class.active]="_currentView == 'clock'">
       <span class="md2-calendar-header-hours"
             [class.active]="_clockView == 'hour'"
@@ -17,27 +20,26 @@
     </span>
   </div>
 </div>
-<div class="md2-calendar-content" (keydown)="_handleCalendarBodyKeydown($event)"
-     [ngSwitch]="_currentView" cdkMonitorSubtreeFocus tabindex="0">
+<div class="md2-calendar-content" [ngSwitch]="_currentView">
   <div class="md2-month-content" *ngSwitchCase="'month'">
     <div class="md2-calendar-controls">
-      <button type="button" class="md2-calendar-previous-button"
-              [disabled]="!_previousEnabled()" (click)="_previousClicked()"
-              [attr.aria-label]="_prevButtonLabel">
+      <div class="md2-calendar-previous-button"
+           [class.disabled]="!_previousEnabled()" (click)="_previousClicked()"
+           [attr.aria-label]="_prevButtonLabel">
         <svg width="24" height="24" viewBox="0 0 24 24">
           <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
         </svg>
-      </button>
+      </div>
       <div class="md2-calendar-period-button">
         <strong>{{_periodButtonText}}</strong>
       </div>
-      <button type="button" class="md2-calendar-next-button"
-              [disabled]="!_nextEnabled()" (click)="_nextClicked()"
-              [attr.aria-label]="_nextButtonLabel">
+      <div class="md2-calendar-next-button"
+           [class.disabled]="!_nextEnabled()" (click)="_nextClicked()"
+           [attr.aria-label]="_nextButtonLabel">
         <svg width="24" height="24" viewBox="0 0 24 24">
           <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path>
         </svg>
-      </button>
+      </div>
     </div>
     <md2-month-view [activeDate]="_activeDate"
                     [selected]="selected"
@@ -54,12 +56,9 @@
   <md2-clock *ngSwitchDefault
              [startView]="_clockView"
              [interval]="timeInterval"
+             [min]="minDate"
+             [max]="maxDate"
              [selected]="_activeDate"
              (activeDateChange)="_onActiveDateChange($event)"
              (selectedChange)="_timeSelected($event)"></md2-clock>
-  <!--<md2-clock *ngSwitchDefault
-             [min]="min"
-             [max]="max"
-             (activeDateChange)="_onActiveDateChange($event)"
-             (selectedChange)="_onTimeChange($event)"></md2-clock>-->
 </div>

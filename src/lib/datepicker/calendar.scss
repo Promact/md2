@@ -1,3 +1,5 @@
+@import '../core/style/vendor-prefixes';
+
 $primary: #106cc8 !default;
 $md2-calendar-padding: 8px !default;
 $md2-calendar-weekday-table-font-size: 11px !default;
@@ -14,7 +16,9 @@ $md2-calendar-next-icon-transform: translateX(-2px) rotate(45deg);
 }
 
 .md2-calendar {
+  @include user-select(none);
   display: block;
+  outline: none;
 }
 
 .md2-calendar-header {
@@ -93,7 +97,7 @@ $md2-calendar-next-icon-transform: translateX(-2px) rotate(45deg);
   background: transparent;
   box-sizing: border-box;
 
-  &[disabled] {
+  &.disabled {
     color: rgba(black, 0.38);
     pointer-events: none;
   }

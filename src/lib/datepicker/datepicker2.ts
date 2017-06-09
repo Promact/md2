@@ -32,6 +32,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { DateAdapter } from '../core/datetime/index';
 import { ESCAPE } from '../core/keyboard/keycodes';
 import { Md2Calendar } from './calendar';
+import { DateUtil } from './date-util';
 import 'rxjs/add/operator/first';
 
 /** Change event object emitted by Md2Select. */
@@ -78,7 +79,7 @@ export class Md2DatepickerContent<D> {
         this.datepicker.close();
         break;
       default:
-        // Return so that we don't preventDefault on keys that are not explicitly handled.
+        /* Return so that we don't preventDefault on keys that are not explicitly handled. */
         return;
     }
 
@@ -87,10 +88,11 @@ export class Md2DatepickerContent<D> {
 }
 
 
-// TODO(mmalerba): We use a component instead of a directive here so the user can use implicit
-// template reference variables (e.g. #d vs #d="md2Datepicker"). We can change this to a directive if
-// angular adds support for `exportAs: '$implicit'` on directives.
-/** Component responsible for managing the datepicker popup/dialog. */
+/* TODO(mmalerba): We use a component instead of a directive here so the user can use implicit
+ * template reference variables (e.g. #d vs #d="md2Datepicker"). We can change this to a directive if
+ * angular adds support for `exportAs: '$implicit'` on directives.
+ * Component responsible for managing the datepicker popup/dialog.
+ */
 @Component({
   moduleId: module.id,
   selector: 'md2-datepicker2',
@@ -117,7 +119,7 @@ export class Md2Datepicker2<D> implements OnDestroy, ControlValueAccessor {
   @Input() startAt: D;
 
   /** The view that the calendar should start in. */
-  @Input() startView: 'month' | 'year' = 'month';
+  @Input() startView: 'clock' | 'month' | 'year' = 'month';
 
   /**
    * Whether the calendar UI is in touch mode. In touch mode the calendar opens in a dialog rather
@@ -168,7 +170,7 @@ export class Md2Datepicker2<D> implements OnDestroy, ControlValueAccessor {
   }
   _maxDate: D;
 
-  @Input() set filter(filter: (date: D | null) => boolean) {
+  @Input() set dateFilter(filter: (date: D | null) => boolean) {
     this._dateFilter = filter;
   }
   _dateFilter: (date: D | null) => boolean;
@@ -187,6 +189,7 @@ export class Md2Datepicker2<D> implements OnDestroy, ControlValueAccessor {
   get value() { return this._value; }
   set value(value: D) {
     this._value = this.coerceDateProperty(value);
+    this._selected = this._value;
     this.startAt = this._value;
     setTimeout(() => {
       this._inputValue = this._formatDate(this._value);
@@ -242,6 +245,7 @@ export class Md2Datepicker2<D> implements OnDestroy, ControlValueAccessor {
     private _ngZone: NgZone,
     private _viewContainerRef: ViewContainerRef,
     private _scrollDispatcher: ScrollDispatcher,
+    private _util: DateUtil,
     @Optional() private _dateAdapter: DateAdapter<D>,
     @Optional() private _dir: Dir,
     @Self() @Optional() public _control: NgControl) {
@@ -292,46 +296,58 @@ export class Md2Datepicker2<D> implements OnDestroy, ControlValueAccessor {
       this._onTouched();
     }
     let el: any = event.target;
-    //let date: Date = this._util.parseDate(el.value, this.format);
-    //if (!date) {
-    //  date = this._util.parse(el.value, this.format);
-    //}
-    //if (date != null && date.getTime && !isNaN(date.getTime())) {
-    //  let d: Date = new Date(this.value);
-    //  if (this.type !== 'time') {
-    //    d.setFullYear(date.getFullYear(), date.getMonth(), date.getDate());
-    //  }
-    //  if (this.type !== 'date') {
-    //    d.setHours(date.getHours(), date.getMinutes());
-    //  }
-    //  if (!this._util.isSameMinute(this.value, d)) {
-    //    this.value = d;
-    //    this._emitChangeEvent();
-    //  }
-    //} else {
-    //  if (this.value) {
-    //    this.value = null;
-    //    this._emitChangeEvent();
-    //  }
-    //}
+    let date: Date = this._util.parseDate(el.value, this.format);
+    if (!date) {
+      date = this._util.parse(el.value, this.format);
+    }
+    if (date != null && date.getTime && !isNaN(date.getTime())) {
+
+      let d: Date = new Date(this.value + '');
+      if (this.type !== 'time') {
+        d.setFullYear(date.getFullYear(), date.getMonth(), date.getDate());
+      }
+      if (this.type !== 'date') {
+        d.setHours(date.getHours(), date.getMinutes());
+      }
+      if (!this._util.isSameMinute(new Date(this.value + ''), d)) {
+        this.value = this._dateAdapter.createDate(d.getFullYear(),
+          d.getMonth(),
+          d.getDate(),
+          d.getHours(),
+          d.getMinutes(),
+          d.getSeconds());
+        this._emitChangeEvent();
+      }
+    } else {
+      if (this.value) {
+        this.value = null;
+        this._emitChangeEvent();
+      }
+    }
   }
 
   private coerceDateProperty(value: any): D {
-    let v: D = null;
+    let v: Date = null;
     if (value != null && value.getTime && !isNaN(value.getTime())) {
       v = value;
     } else {
-      //if (value && this.type === 'time') {
-      //  let t = value + '';
-      //  v = this._dateAdapter.createDate(); new Date();
-      //  v.setHours(parseInt(t.substring(0, 2)));
-      //  v.setMinutes(parseInt(t.substring(3, 5)));
-      //} else {
-      //  let timestamp = Date.parse(value);
-      //  v = isNaN(timestamp) ? null : new Date(timestamp);
-      //}
+      if (value && this.type === 'time') {
+        let t = value + '';
+        v = new Date();
+        v.setHours(parseInt(t.substring(0, 2)));
+        v.setMinutes(parseInt(t.substring(3, 5)));
+      } else {
+        let timestamp = Date.parse(value);
+        v = isNaN(timestamp) ? null : new Date(timestamp);
+      }
     }
-    return v;
+    let d: D = v ? this._dateAdapter.createDate(v.getFullYear(),
+      v.getMonth(),
+      v.getDate(),
+      v.getHours(),
+      v.getMinutes(),
+      v.getSeconds()) : null;
+    return d;
   }
 
   /**
@@ -344,54 +360,56 @@ export class Md2Datepicker2<D> implements OnDestroy, ControlValueAccessor {
 
     let format = this.format;
 
-    // Years
+    /* Years */
     if (format.indexOf('yy') > -1) {
       format = format.replace('yy', ('00' + this._dateAdapter.getYear(date)).slice(-2));
     } else if (format.indexOf('y') > -1) {
       format = format.replace('y', '' + this._dateAdapter.getYear(date));
     }
 
-    // Days
+    /* Days */
     if (format.indexOf('dd') > -1) {
       format = format.replace('dd', ('0' + this._dateAdapter.getDate(date)).slice(-2));
     } else if (format.indexOf('d') > -1) {
       format = format.replace('d', '' + this._dateAdapter.getDate(date));
     }
 
-    // Hours
-    //if (/[aA]/.test(format)) {
-    //  // 12-hour
-    //  if (format.indexOf('HH') > -1) {
-    //    format = format.replace('HH', ('0' + this._getHours12(date)).slice(-2));
-    //  } else if (format.indexOf('H') > -1) {
-    //    format = format.replace('H', '' + this._getHours12(date));
-    //  }
-    //  format = format.replace('A', ((this._dateAdapter.getHours(date) < 12) ? 'AM' : 'PM'))
-    //    .replace('a', ((this._dateAdapter.getHours(date) < 12) ? 'am' : 'pm'));
-    //} else {
-    // 24-hour
-    if (format.indexOf('HH') > -1) {
-      format = format.replace('HH', ('0' + this._dateAdapter.getHours(date)).slice(-2));
-    } else if (format.indexOf('H') > -1) {
-      format = format.replace('H', '' + this._dateAdapter.getHours(date));
+    /* Hours */
+    if (/[aA]/.test(format)) {
+      /* 12-hour */
+      if (format.indexOf('HH') > -1) {
+        format = format.replace('HH',
+          ('0' + this._getHours12(this._dateAdapter.getHours(date))).slice(-2));
+      } else if (format.indexOf('H') > -1) {
+        format = format.replace('H',
+          '' + this._getHours12(this._dateAdapter.getHours(date)));
+      }
+      format = format.replace('A', ((this._dateAdapter.getHours(date) < 12) ? 'AM' : 'PM'))
+        .replace('a', ((this._dateAdapter.getHours(date) < 12) ? 'am' : 'pm'));
+    } else {
+      /* 24-hour */
+      if (format.indexOf('HH') > -1) {
+        format = format.replace('HH', ('0' + this._dateAdapter.getHours(date)).slice(-2));
+      } else if (format.indexOf('H') > -1) {
+        format = format.replace('H', '' + this._dateAdapter.getHours(date));
+      }
     }
-    //}
 
-    // Minutes
+    /* Minutes */
     if (format.indexOf('mm') > -1) {
       format = format.replace('mm', ('0' + this._dateAdapter.getMinutes(date)).slice(-2));
     } else if (format.indexOf('m') > -1) {
       format = format.replace('m', '' + this._dateAdapter.getMinutes(date));
     }
 
-    // Seconds
+    /* Seconds */
     if (format.indexOf('ss') > -1) {
       format = format.replace('ss', ('0' + this._dateAdapter.getSeconds(date)).slice(-2));
     } else if (format.indexOf('s') > -1) {
       format = format.replace('s', '' + this._dateAdapter.getSeconds(date));
     }
 
-    // Months
+    /* Months */
     if (format.indexOf('MMMM') > -1) {
       format = format.replace('MMMM', this._dateAdapter.getMonthNames('long')[this._dateAdapter.getMonth(date)]);
     } else if (format.indexOf('MMM') > -1) {
@@ -405,12 +423,25 @@ export class Md2Datepicker2<D> implements OnDestroy, ControlValueAccessor {
     return format;
   }
 
+  /**
+   * Get an hour of the date in the 12-hour format
+   * @param date Date Object
+   * @return hour of the date in the 12-hour format
+   */
+  private _getHours12(hours: number): number {
+    if (hours == 0) {
+      hours = 12;
+    } else if (hours > 12) {
+      hours -= 12;
+    }
+    return hours;
+  }
+
   /** Selects the given date and closes the currently open popup or dialog. */
   _selectAndClose(date: D): void {
     let oldValue = this._selected;
-    this._selected = date;
+    this.value = date;
     if (!this._dateAdapter.sameDate(oldValue, this._selected)) {
-      this.value = date;
       this._emitChangeEvent();
     }
     this.close();
@@ -477,7 +508,7 @@ export class Md2Datepicker2<D> implements OnDestroy, ControlValueAccessor {
         this._popupRef.attach(this._calendarPortal);
       componentRef.instance.datepicker = this;
 
-      // Update the position once the calendar has rendered.
+      /* Update the position once the calendar has rendered. */
       this._ngZone.onStable.first().subscribe(() => this._popupRef.updatePosition());
     }
 

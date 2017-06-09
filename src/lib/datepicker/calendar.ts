@@ -172,9 +172,9 @@ export class Md2Calendar<D> implements AfterContentInit {
       this._activeDate = date;
       this._clockView = 'minute';
     } else {
-      this._clockView = 'hour';
-      this._currentView = 'month';
-      if (!this._dateAdapter.sameDate(date, this.selected)) {
+      if (!this._dateAdapter.sameDateAndTime(date, this.selected)) {
+        this._clockView = 'hour';
+        this._currentView = 'month';
         this.selectedChange.emit(date);
       }
     }

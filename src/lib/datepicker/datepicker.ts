@@ -39,12 +39,13 @@ import { Subscription } from 'rxjs/Subscription';
 import { DateAdapter } from '../core/datetime/index';
 import { ESCAPE } from '../core/keyboard/keycodes';
 import { Md2Calendar } from './calendar';
+import { DateLocale } from './date-locale';
 import { DateUtil } from './date-util';
 import 'rxjs/add/operator/first';
 
 /** Change event object emitted by Md2Select. */
-export class Md2DateChange2 {
-  constructor(public source: Md2Datepicker<Date>, public value: Date) { }
+export class Md2DateChange {
+  constructor(public source: Md2Datepicker, public value: Date) { }
 }
 
 /** Used to generate a unique ID for each datepicker instance. */
@@ -71,10 +72,10 @@ let datepickerUid = 0;
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Md2DatepickerContent<D> {
-  datepicker: Md2Datepicker<D>;
+export class Md2DatepickerContent {
+  datepicker: Md2Datepicker;
 
-  @ViewChild(Md2Calendar) _calendar: Md2Calendar<D>;
+  @ViewChild(Md2Calendar) _calendar: Md2Calendar;
 
   /**
    * Handles keydown event on datepicker content.
@@ -128,7 +129,7 @@ export const MD2_DATEPICKER_VALIDATORS: any = {
   },
   encapsulation: ViewEncapsulation.None,
 })
-export class Md2Datepicker<D> implements OnDestroy, ControlValueAccessor {
+export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
 
   _onChange = (value: any) => { };
   _onTouched = () => { };
@@ -137,7 +138,7 @@ export class Md2Datepicker<D> implements OnDestroy, ControlValueAccessor {
   _inputFocused: boolean = false;
 
   /** The date to open the calendar to initially. */
-  @Input() startAt: D;
+  @Input() startAt: Date;
 
   /** The view that the calendar should start in. */
   @Input() startView: 'clock' | 'month' | 'year' = 'month';
@@ -177,27 +178,27 @@ export class Md2Datepicker<D> implements OnDestroy, ControlValueAccessor {
 
   /** The minimum valid date. */
   @Input()
-  get min(): D { return this._minDate; }
-  set min(value: D) {
+  get min(): Date { return this._minDate; }
+  set min(value: Date) {
     this._minDate = value;
     this._validatorOnChange();
   }
-  _minDate: D;
+  _minDate: Date;
 
   /** The maximum valid date. */
   @Input()
-  get max(): D { return this._maxDate; }
-  set max(value: D) {
+  get max(): Date { return this._maxDate; }
+  set max(value: Date) {
     this._maxDate = value;
     this._validatorOnChange();
   }
-  _maxDate: D;
+  _maxDate: Date;
 
-  @Input() set dateFilter(filter: (date: D | null) => boolean) {
+  @Input() set dateFilter(filter: (date: Date | null) => boolean) {
     this._dateFilter = filter;
     this._validatorOnChange();
   }
-  _dateFilter: (date: D | null) => boolean;
+  _dateFilter: (date: Date | null) => boolean;
 
   @Input()
   get required(): boolean { return this._required; }
@@ -211,7 +212,7 @@ export class Md2Datepicker<D> implements OnDestroy, ControlValueAccessor {
 
   @Input()
   get value() { return this._value; }
-  set value(value: D) {
+  set value(value: Date) {
     this._value = this.coerceDateProperty(value);
     this._selected = this._value;
     this.startAt = this._value;
@@ -219,7 +220,7 @@ export class Md2Datepicker<D> implements OnDestroy, ControlValueAccessor {
       this._inputValue = this._formatDate(this._value);
     });
   }
-  private _value: D;
+  private _value: Date;
   private _inputValue: string = '';
 
   @Input()
@@ -239,10 +240,10 @@ export class Md2Datepicker<D> implements OnDestroy, ControlValueAccessor {
   @Output() onClose: EventEmitter<void> = new EventEmitter<void>();
 
   /** Event emitted when the selected date has been changed by the user. */
-  @Output() change: EventEmitter<D> = new EventEmitter<D>();
+  @Output() change: EventEmitter<Md2DateChange> = new EventEmitter<Md2DateChange>();
 
   /** Emits new selected date when selected date changes. */
-  @Output() selectedChanged = new EventEmitter<D>();
+  @Output() selectedChanged = new EventEmitter<Date>();
 
   /** Whether the calendar is open. */
   opened = false;
@@ -251,7 +252,7 @@ export class Md2Datepicker<D> implements OnDestroy, ControlValueAccessor {
   id = `md2-datepicker-${datepickerUid++}`;
 
   /** The currently selected date. */
-  _selected: D = null;
+  _selected: Date = null;
 
   /** A reference to the overlay when the calendar is opened as a popup. */
   private _popupRef: OverlayRef;
@@ -260,21 +261,21 @@ export class Md2Datepicker<D> implements OnDestroy, ControlValueAccessor {
   private _dialogRef: OverlayRef;
 
   /** A portal containing the calendar for this datepicker. */
-  private _calendarPortal: ComponentPortal<Md2DatepickerContent<D>>;
+  private _calendarPortal: ComponentPortal<Md2DatepickerContent>;
 
   private _inputSubscription: Subscription;
 
   /** The form control validator for the min date. */
   private _minValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
     return (!this.min || !control.value ||
-      this._dateAdapter.compareDate(this.min, control.value) <= 0) ?
+      this._util.compareDate(this.min, control.value) <= 0) ?
       null : { 'md2DatepickerMin': { 'min': this.min, 'actual': control.value } };
   }
 
   /** The form control validator for the max date. */
   private _maxValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
     return (!this.max || !control.value ||
-      this._dateAdapter.compareDate(this.max, control.value) >= 0) ?
+      this._util.compareDate(this.max, control.value) >= 0) ?
       null : { 'md2DatepickerMax': { 'max': this.max, 'actual': control.value } };
   }
 
@@ -293,12 +294,8 @@ export class Md2Datepicker<D> implements OnDestroy, ControlValueAccessor {
     private _ngZone: NgZone,
     private _viewContainerRef: ViewContainerRef,
     private _scrollDispatcher: ScrollDispatcher,
-    private _util: DateUtil,
-    @Optional() private _dateAdapter: DateAdapter<D>,
+    private _locale: DateLocale, private _util: DateUtil,
     @Optional() private _dir: Dir) {
-    if (!this._dateAdapter) {
-      throw Error('DateAdapter');
-    }
   }
 
   ngOnDestroy() {
@@ -353,15 +350,15 @@ export class Md2Datepicker<D> implements OnDestroy, ControlValueAccessor {
     }
     if (date != null && date.getTime && !isNaN(date.getTime())) {
 
-      let d: Date = new Date(this.value + '');
+      let d: Date = new Date(this.value);
       if (this.type !== 'time') {
         d.setFullYear(date.getFullYear(), date.getMonth(), date.getDate());
       }
       if (this.type !== 'date') {
         d.setHours(date.getHours(), date.getMinutes());
       }
-      if (!this._util.isSameMinute(new Date(this.value + ''), d)) {
-        this.value = this._dateAdapter.createDate(d.getFullYear(),
+      if (!this._util.isSameMinute(this.value, d)) {
+        this.value = this._util.createDate(d.getFullYear(),
           d.getMonth(),
           d.getDate(),
           d.getHours(),
@@ -377,7 +374,7 @@ export class Md2Datepicker<D> implements OnDestroy, ControlValueAccessor {
     }
   }
 
-  private coerceDateProperty(value: any): D {
+  private coerceDateProperty(value: any): Date {
     let v: Date = null;
     if (value != null && value.getTime && !isNaN(value.getTime())) {
       v = value;
@@ -392,7 +389,7 @@ export class Md2Datepicker<D> implements OnDestroy, ControlValueAccessor {
         v = isNaN(timestamp) ? null : new Date(timestamp);
       }
     }
-    let d: D = v ? this._dateAdapter.createDate(v.getFullYear(),
+    let d: Date = v ? this._util.createDate(v.getFullYear(),
       v.getMonth(),
       v.getDate(),
       v.getHours(),
@@ -406,23 +403,23 @@ export class Md2Datepicker<D> implements OnDestroy, ControlValueAccessor {
    * @param date Date Object
    * @return string with formatted date
    */
-  private _formatDate(date: D): string {
+  private _formatDate(date: Date): string {
     if (!this.format || !date) { return ''; }
 
     let format = this.format;
 
     /* Years */
     if (format.indexOf('yy') > -1) {
-      format = format.replace('yy', ('00' + this._dateAdapter.getYear(date)).slice(-2));
+      format = format.replace('yy', ('00' + this._util.getYear(date)).slice(-2));
     } else if (format.indexOf('y') > -1) {
-      format = format.replace('y', '' + this._dateAdapter.getYear(date));
+      format = format.replace('y', '' + this._util.getYear(date));
     }
 
     /* Days */
     if (format.indexOf('dd') > -1) {
-      format = format.replace('dd', ('0' + this._dateAdapter.getDate(date)).slice(-2));
+      format = format.replace('dd', ('0' + this._util.getDate(date)).slice(-2));
     } else if (format.indexOf('d') > -1) {
-      format = format.replace('d', '' + this._dateAdapter.getDate(date));
+      format = format.replace('d', '' + this._util.getDate(date));
     }
 
     /* Hours */
@@ -430,45 +427,45 @@ export class Md2Datepicker<D> implements OnDestroy, ControlValueAccessor {
       /* 12-hour */
       if (format.indexOf('HH') > -1) {
         format = format.replace('HH',
-          ('0' + this._getHours12(this._dateAdapter.getHours(date))).slice(-2));
+          ('0' + this._getHours12(this._util.getHours(date))).slice(-2));
       } else if (format.indexOf('H') > -1) {
         format = format.replace('H',
-          '' + this._getHours12(this._dateAdapter.getHours(date)));
+          '' + this._getHours12(this._util.getHours(date)));
       }
-      format = format.replace('A', ((this._dateAdapter.getHours(date) < 12) ? 'AM' : 'PM'))
-        .replace('a', ((this._dateAdapter.getHours(date) < 12) ? 'am' : 'pm'));
+      format = format.replace('A', ((this._util.getHours(date) < 12) ? 'AM' : 'PM'))
+        .replace('a', ((this._util.getHours(date) < 12) ? 'am' : 'pm'));
     } else {
       /* 24-hour */
       if (format.indexOf('HH') > -1) {
-        format = format.replace('HH', ('0' + this._dateAdapter.getHours(date)).slice(-2));
+        format = format.replace('HH', ('0' + this._util.getHours(date)).slice(-2));
       } else if (format.indexOf('H') > -1) {
-        format = format.replace('H', '' + this._dateAdapter.getHours(date));
+        format = format.replace('H', '' + this._util.getHours(date));
       }
     }
 
     /* Minutes */
     if (format.indexOf('mm') > -1) {
-      format = format.replace('mm', ('0' + this._dateAdapter.getMinutes(date)).slice(-2));
+      format = format.replace('mm', ('0' + this._util.getMinutes(date)).slice(-2));
     } else if (format.indexOf('m') > -1) {
-      format = format.replace('m', '' + this._dateAdapter.getMinutes(date));
+      format = format.replace('m', '' + this._util.getMinutes(date));
     }
 
     /* Seconds */
     if (format.indexOf('ss') > -1) {
-      format = format.replace('ss', ('0' + this._dateAdapter.getSeconds(date)).slice(-2));
+      format = format.replace('ss', ('0' + this._util.getSeconds(date)).slice(-2));
     } else if (format.indexOf('s') > -1) {
-      format = format.replace('s', '' + this._dateAdapter.getSeconds(date));
+      format = format.replace('s', '' + this._util.getSeconds(date));
     }
 
     /* Months */
     if (format.indexOf('MMMM') > -1) {
-      format = format.replace('MMMM', this._dateAdapter.getMonthNames('long')[this._dateAdapter.getMonth(date)]);
+      format = format.replace('MMMM', this._locale.getMonthNames('long')[this._util.getMonth(date)]);
     } else if (format.indexOf('MMM') > -1) {
-      format = format.replace('MMM', this._dateAdapter.getMonthNames('short')[this._dateAdapter.getMonth(date)]);
+      format = format.replace('MMM', this._locale.getMonthNames('short')[this._util.getMonth(date)]);
     } else if (format.indexOf('MM') > -1) {
-      format = format.replace('MM', ('0' + (this._dateAdapter.getMonth(date) + 1)).slice(-2));
+      format = format.replace('MM', ('0' + (this._util.getMonth(date) + 1)).slice(-2));
     } else if (format.indexOf('M') > -1) {
-      format = format.replace('M', '' + (this._dateAdapter.getMonth(date) + 1));
+      format = format.replace('M', '' + (this._util.getMonth(date) + 1));
     }
 
     return format;
@@ -489,10 +486,10 @@ export class Md2Datepicker<D> implements OnDestroy, ControlValueAccessor {
   }
 
   /** Selects the given date and closes the currently open popup or dialog. */
-  _selectAndClose(date: D): void {
+  _selectAndClose(date: Date): void {
     let oldValue = this._selected;
     this.value = date;
-    if (!this._dateAdapter.sameDate(oldValue, this._selected)) {
+    if (!this._util.sameDateAndTime(oldValue, this._selected)) {
       this._emitChangeEvent();
     }
     this.close();
@@ -501,7 +498,7 @@ export class Md2Datepicker<D> implements OnDestroy, ControlValueAccessor {
   /** Emits an event when the user selects a date. */
   _emitChangeEvent(): void {
     this._onChange(this.value);
-    this.change.emit(this.value);
+    this.change.emit(new Md2DateChange(this, this.value));
   }
 
   /** Open the calendar. */
@@ -542,7 +539,7 @@ export class Md2Datepicker<D> implements OnDestroy, ControlValueAccessor {
     }
 
     if (!this._dialogRef.hasAttached()) {
-      let componentRef: ComponentRef<Md2DatepickerContent<D>> =
+      let componentRef: ComponentRef<Md2DatepickerContent> =
         this._dialogRef.attach(this._calendarPortal);
       componentRef.instance.datepicker = this;
     }
@@ -557,7 +554,7 @@ export class Md2Datepicker<D> implements OnDestroy, ControlValueAccessor {
     }
 
     if (!this._popupRef.hasAttached()) {
-      let componentRef: ComponentRef<Md2DatepickerContent<D>> =
+      let componentRef: ComponentRef<Md2DatepickerContent> =
         this._popupRef.attach(this._calendarPortal);
       componentRef.instance.datepicker = this;
 

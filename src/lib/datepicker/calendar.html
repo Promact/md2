@@ -2,21 +2,20 @@
   <div *ngIf="type!=='time'"
        class="md2-calendar-header-year"
        [class.active]="_currentView == 'year'"
-       (click)="_yearClicked()">{{ _yearText }}</div>
+       (click)="_yearClicked()">{{ _yearLabel }}</div>
   <div class="md2-calendar-header-date-time">
     <span *ngIf="type!=='time'"
           class="md2-calendar-header-date"
           [class.active]="_currentView == 'month'"
-          (click)="_dateClicked()">{{ _dateText }}</span>
+          (click)="_dateClicked()">{{ _dateLabel }}</span>
     <span *ngIf="type!=='date'"
           class="md2-calendar-header-time"
           [class.active]="_currentView == 'clock'">
       <span class="md2-calendar-header-hours"
             [class.active]="_clockView == 'hour'"
-            (click)="_hoursClicked()">{{ _hoursPeriodText }}</span>:
-      <span class="md2-calendar-header-minutes"
-            [class.active]="_clockView == 'minute'"
-            (click)="_minutesClicked()">{{ _minutesPeriodText }}</span>
+            (click)="_hoursClicked()">{{ _hoursLabel }}</span>:<span class="md2-calendar-header-minutes"
+                                                                     [class.active]="_clockView == 'minute'"
+                                                                     (click)="_minutesClicked()">{{ _minutesLabel }}</span>
     </span>
   </div>
 </div>
@@ -25,17 +24,17 @@
     <div class="md2-calendar-controls">
       <div class="md2-calendar-previous-button"
            [class.disabled]="!_previousEnabled()" (click)="_previousClicked()"
-           [attr.aria-label]="_prevButtonLabel">
+           aria-label="Previous month">
         <svg width="24" height="24" viewBox="0 0 24 24">
           <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
         </svg>
       </div>
       <div class="md2-calendar-period-button">
-        <strong>{{_periodButtonText}}</strong>
+        <strong>{{ _monthLabel }}</strong>
       </div>
       <div class="md2-calendar-next-button"
            [class.disabled]="!_nextEnabled()" (click)="_nextClicked()"
-           [attr.aria-label]="_nextButtonLabel">
+           aria-label="Next month">
         <svg width="24" height="24" viewBox="0 0 24 24">
           <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path>
         </svg>

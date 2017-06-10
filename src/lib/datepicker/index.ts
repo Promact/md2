@@ -9,9 +9,8 @@ import { Md2MonthView } from './month-view';
 import { Md2YearView } from './year-view';
 import { Md2CalendarBody } from './calendar-body';
 import { Md2Clock } from './clock';
-import { Md2DatepickerIntl } from './datepicker-intl';
-import { DateUtil } from './date-util';
 import { DateLocale } from './date-locale';
+import { DateUtil } from './date-util';
 
 
 export * from './datepicker';
@@ -38,6 +37,10 @@ export * from './date-locale';
     Md2DatepickerToggle,
     Md2Calendar,
     Md2CalendarBody,
+    Md2Calendar,
+    Md2MonthView,
+    Md2YearView,
+    Md2CalendarBody,
     Md2Clock,
   ],
   declarations: [
@@ -51,7 +54,7 @@ export * from './date-locale';
     Md2CalendarBody,
     Md2Clock,
   ],
-  providers: [Md2DatepickerIntl, DateLocale, DateUtil],
+  providers: [DateLocale, DateUtil],
   entryComponents: [
     Md2Datepicker,
     Md2DatepickerContent

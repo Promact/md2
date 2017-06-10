@@ -60,13 +60,13 @@ export class Md2DatepickerInput<D> implements AfterContentInit, ControlValueAcce
     Validator {
   /** The datepicker that this input is associated with. */
   @Input()
-  set md2Datepicker(value: Md2Datepicker<D>) {
+  set md2Datepicker(value: Md2Datepicker) {
     if (value) {
       this._datepicker = value;
       //this._datepicker._registerInput(this);
     }
   }
-  _datepicker: Md2Datepicker<D>;
+  _datepicker: Md2Datepicker;
 
   @Input() set md2DatepickerFilter(filter: (date: D | null) => boolean) {
     this._dateFilter = filter;

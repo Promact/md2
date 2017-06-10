@@ -99,8 +99,8 @@ export class Md2Clock implements AfterContentInit {
   _selectedMinute: number;
 
   get _hand(): any {
-    this._selectedHour = this._util.getHour(this.activeDate);
-    this._selectedMinute = this._util.getMinute(this.activeDate);
+    this._selectedHour = this._util.getHours(this.activeDate);
+    this._selectedMinute = this._util.getMinutes(this.activeDate);
     let deg = 0;
     let radius = CLOCK_OUTER_RADIUS;
     if (this._hourView) {
@@ -123,8 +123,8 @@ export class Md2Clock implements AfterContentInit {
   private mouseMoveListener: any;
   private mouseUpListener: any;
 
-  constructor(private _element: ElementRef, private _locale: DateLocale,
-    private _util: DateUtil) {
+  constructor(private _element: ElementRef,
+    private _locale: DateLocale, private _util: DateUtil) {
     this.mouseMoveListener = (event: any) => { this._handleMousemove(event); };
     this.mouseUpListener = (event: any) => { this._handleMouseup(event); };
   }
@@ -161,32 +161,35 @@ export class Md2Clock implements AfterContentInit {
     this._hours.length = 0;
     this._minutes.length = 0;
 
+    let hourNames = this._locale.getHourNames();
+    let minuteNames = this._locale.getMinuteNames();
+
     if (this.twelvehour) {
-      for (let i = 1; i < 13; i++) {
+      for (let i = 1; i < (hourNames.length / 2) + 1; i++) {
         let radian = i / 6 * Math.PI;
         let radius = CLOCK_OUTER_RADIUS;
         let date = new Date(this.activeDate.getTime());
         date.setHours(i + 1, 0, 0, 0);
-        let enabled = this._util.isDateWithinRange1(date, this.min, this.max);
+        let enabled = this._util.isFullDateWithinRange(date, this.min, this.max);
         this._hours.push({
           value: i,
-          displayValue: i === 0 ? '00' : i,
+          displayValue: i === 0 ? '00' : hourNames[i],
           enabled: enabled,
           top: CLOCK_RADIUS - Math.cos(radian) * radius - CLOCK_TICK_RADIUS,
           left: CLOCK_RADIUS + Math.sin(radian) * radius - CLOCK_TICK_RADIUS,
         });
       }
     } else {
-      for (let i = 0; i < 24; i++) {
+      for (let i = 0; i < hourNames.length; i++) {
         let radian = i / 6 * Math.PI;
         let outer = i > 0 && i < 13,
           radius = outer ? CLOCK_OUTER_RADIUS : CLOCK_INNER_RADIUS;
         let date = new Date(this.activeDate.getTime());
         date.setHours(i + 1, 0, 0, 0);
-        let enabled = this._util.isDateWithinRange1(date, this.min, this.max);
+        let enabled = this._util.isFullDateWithinRange(date, this.min, this.max);
         this._hours.push({
           value: i,
-          displayValue: i === 0 ? '00' : i,
+          displayValue: i === 0 ? '00' : hourNames[i],
           enabled: enabled,
           top: CLOCK_RADIUS - Math.cos(radian) * radius - CLOCK_TICK_RADIUS,
           left: CLOCK_RADIUS + Math.sin(radian) * radius - CLOCK_TICK_RADIUS,
@@ -195,14 +198,14 @@ export class Md2Clock implements AfterContentInit {
       }
     }
 
-    for (let i = 0; i < 60; i += 5) {
+    for (let i = 0; i < minuteNames.length; i += 5) {
       let radian = i / 30 * Math.PI;
       let date = new Date(this.activeDate.getTime());
       date.setMinutes(i, 0, 0);
-      let enabled = this._util.isDateWithinRange1(date, this.min, this.max);
+      let enabled = this._util.isFullDateWithinRange(date, this.min, this.max);
       this._minutes.push({
         value: i,
-        displayValue: i === 0 ? '00' : i,
+        displayValue: i === 0 ? '00' : minuteNames[i],
         enabled: enabled,
         top: CLOCK_RADIUS - Math.cos(radian) * CLOCK_OUTER_RADIUS - CLOCK_TICK_RADIUS,
         left: CLOCK_RADIUS + Math.sin(radian) * CLOCK_OUTER_RADIUS - CLOCK_TICK_RADIUS,

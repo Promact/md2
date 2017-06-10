@@ -7,7 +7,7 @@
          [rows]="_weeks"
          [todayValue]="_todayDate"
          [selectedValue]="_selectedDate"
-         [activeCell]="_dateAdapter.getDate(activeDate) - 1"
+         [activeCell]="_util.getDate(activeDate) - 1"
          (selectedValueChange)="_dateSelected($event)">
   </tbody>
 </table>

@@ -21,7 +21,6 @@ export class DatepickerDemo {
   isRequired = false;
   isDisabled = false;
   isOpenOnFocus = false;
-  isOpen = false;
   today: Date = new Date();
 
   private _type: string = 'date';
@@ -96,13 +95,6 @@ export class DatepickerDemo {
     'time': this.dateFormatsTime,
     'month': this.dateFormatsMonth
   };
-
-  openDatepicker() {
-    this.isOpen = true;
-    setTimeout(() => {
-      this.isOpen = false;
-    }, 1000);
-  }
 
   setDate() {
     this.date = new Date(this.today);

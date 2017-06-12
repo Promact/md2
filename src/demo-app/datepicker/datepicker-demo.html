@@ -37,6 +37,7 @@
                       [touchUi]="touch"
                       [startView]="startView"
                       [format]="dateFormat"
+                      #datePicker
                       #dateControl="ngModel"></md2-datepicker>
       <br />
       <span class="error-helper" *ngIf="dateControl.touched && dateControl.errors?.required">Date is Required!</span>
@@ -96,7 +97,7 @@
       </div>
       <div>
         <button type="button" button="primary" (click)="setDate()">SET VALUE</button>
-        <button type="button" button="primary" (click)="openDatepicker()">OPEN DATEPICKER</button>
+        <button type="button" button="primary" [md2DatepickerToggle]="datePicker">OPEN DATEPICKER</button>
         <button type="button" button="primary" (click)="minDateControl.reset();maxDateControl.reset();dateControl.reset()">RESET</button>
       </div>
     </form>

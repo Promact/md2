@@ -2,12 +2,13 @@
   <thead class="md2-calendar-table-header">
     <tr><th *ngFor="let day of _weekdays" [attr.aria-label]="day.long">{{day.narrow}}</th></tr>
   </thead>
-  <tbody md2-calendar-body
+  <tbody [@slideCalendar]="_calendarState"
+         (@slideCalendar.done)="_calendarStateDone()"
+         md2-calendar-body
          role="grid"
          [rows]="_weeks"
          [todayValue]="_todayDate"
          [selectedValue]="_selectedDate"
          [activeCell]="_util.getDate(activeDate) - 1"
-         (selectedValueChange)="_dateSelected($event)">
-  </tbody>
+         (selectedValueChange)="_dateSelected($event)"></tbody>
 </table>

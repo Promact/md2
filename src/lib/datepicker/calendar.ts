@@ -24,6 +24,7 @@ import {
 } from '../core/keyboard/keycodes';
 import { DateLocale } from './date-locale';
 import { DateUtil } from './date-util';
+import { slideCalendar } from './datepicker-animations';
 import { MD_DATE_FORMATS, MdDateFormats } from '../core/datetime/date-formats';
 import { MATERIAL_COMPATIBILITY_MODE } from '../core';
 
@@ -42,6 +43,7 @@ import { MATERIAL_COMPATIBILITY_MODE } from '../core';
     'tabindex': '0',
     '(keydown)': '_handleCalendarBodyKeydown($event)',
   },
+  animations: [slideCalendar],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -86,7 +88,16 @@ export class Md2Calendar implements AfterContentInit {
    */
   get _activeDate(): Date { return this._clampedActiveDate; }
   set _activeDate(value: Date) {
+    let oldActiveDate = this._clampedActiveDate;
     this._clampedActiveDate = this._util.clampDate(value, this.minDate, this.maxDate);
+    if (oldActiveDate && this._clampedActiveDate &&
+      !this._util.isSameMonthAndYear(oldActiveDate, this._clampedActiveDate)) {
+      if (this._util.isInNextMonth(oldActiveDate, this._clampedActiveDate)) {
+        this.calendarState('right');
+      } else {
+        this.calendarState('left');
+      }
+    }
   }
   private _clampedActiveDate: Date;
 
@@ -115,7 +126,7 @@ export class Md2Calendar implements AfterContentInit {
     return ('0' + this._locale.getMinutesLabel(this._activeDate)).slice(-2);
   }
 
-
+  _calendarState: string;
 
   constructor(private _elementRef: ElementRef, private _ngZone: NgZone,
     private _locale: DateLocale, private _util: DateUtil,
@@ -370,4 +381,13 @@ export class Md2Calendar implements AfterContentInit {
       (this._util.getMonth(date) >= 7 ? 5 : 12);
     return this._util.addCalendarMonths(date, increment);
   }
+
+  private calendarState(direction: string): void {
+    this._calendarState = direction;
+  }
+
+  _calendarStateDone() {
+    this._calendarState = ''
+  }
+
 }

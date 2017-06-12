@@ -37,32 +37,35 @@ function range<T>(length: number, valueFunction: (index: number) => T): T[] {
   return Array.apply(null, Array(length)).map((v: undefined, i: number) => valueFunction(i));
 }
 
+export interface Months {
+  long: Array<string>;
+  short: Array<string>;
+  narrow: Array<string>;
+};
+
+export interface DaysOfWeek {
+  long: Array<string>;
+  short: Array<string>;
+  narrow: Array<string>;
+};
+
 @Injectable()
 export class DateLocale {
 
   locale: any;
-  months: any;
-  days: any;
-  dates: any;
+  months: Months;
+  daysOfWeek: DaysOfWeek;
+  dates: string[];
+  hours: string[];
+  minutes: string[];
   firstDayOfWeek: number = 0;
-
-  formatDate = '';
-  parseDate = '';
-  isDateComplete = '';
-  monthHeaderFormatter = '';
-  monthFormatter = '';
-  weekNumberFormatter = '';
-  longDateFormatter = '';
-  msgCalendar = '';
-  msgOpenCalendar = '';
-  firstRenderableDate = '';
-  lastRenderableDate = '';
 
   getDayOfWeek(date: Date): number {
     return date.getDay();
   }
 
   getMonthNames(style: 'long' | 'short' | 'narrow'): string[] {
+    if (this.months) { return this.months[style]; }
     if (SUPPORTS_INTL_API) {
       let dtf = new Intl.DateTimeFormat(this.locale, { month: style });
       return range(12, i => this._stripDirectionalityCharacters(dtf.format(new Date(2017, i, 1))));
@@ -71,6 +74,7 @@ export class DateLocale {
   }
 
   getDateNames(): string[] {
+    if (this.dates) { return this.dates; }
     if (SUPPORTS_INTL_API) {
       let dtf = new Intl.DateTimeFormat(this.locale, { day: 'numeric' });
       return range(31, i => this._stripDirectionalityCharacters(
@@ -80,6 +84,7 @@ export class DateLocale {
   }
 
   getHourNames(): string[] {
+    if (this.hours) { return this.hours; }
     if (SUPPORTS_INTL_API) {
       let dtf = new Intl.DateTimeFormat(this.locale, { hour: 'numeric' });
       return range(24, i => this._stripDirectionalityCharacters(
@@ -89,6 +94,7 @@ export class DateLocale {
   }
 
   getMinuteNames(): string[] {
+    if (this.minutes) { return this.minutes; }
     if (SUPPORTS_INTL_API) {
       let dtf = new Intl.DateTimeFormat(this.locale, { minute: 'numeric' });
       return range(60, i => this._stripDirectionalityCharacters(
@@ -98,6 +104,7 @@ export class DateLocale {
   }
 
   getDayOfWeekNames(style: 'long' | 'short' | 'narrow'): string[] {
+    if (this.daysOfWeek) { return this.daysOfWeek[style]; }
     if (SUPPORTS_INTL_API) {
       let dtf = new Intl.DateTimeFormat(this.locale, { weekday: style });
       return range(7, i => this._stripDirectionalityCharacters(
@@ -129,7 +136,7 @@ export class DateLocale {
 
   getDateLabel(d: Date): string {
     let day: string = this.getDayOfWeekNames('short')[d.getDay()];
-    let date: string = this.getDateNames()[d.getDate()];
+    let date: string = this.getDateNames()[d.getDate() - 1];
     let month: string = this.getMonthNames('short')[d.getMonth()];
     return `${day}, ${month} ${date}`;
   }

@@ -152,15 +152,15 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
 
   @Input()
   get type() { return this._type; }
-  set type(value: 'date' | 'time' | 'datetime') {
+  set type(value: 'date' | 'time' | 'month' | 'datetime') {
     this._type = value || 'date';
     this._inputValue = this._formatDate(this._value);
   }
-  private _type: 'date' | 'time' | 'datetime' = 'date';
+  private _type: 'date' | 'time' | 'month' | 'datetime' = 'date';
 
   @Input()
   get format() {
-    return this._format || (this.type === 'date' ?
+    return this._format || (this.type === 'month' ? 'MMMM y' : this.type === 'date' ?
       'dd/MM/y' : this.type === 'time' ? 'HH:mm' : this.type === 'datetime' ?
         'dd/MM/y HH:mm' : 'dd/MM/y');
   }

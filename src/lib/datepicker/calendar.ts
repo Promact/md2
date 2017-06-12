@@ -48,7 +48,7 @@ import { MATERIAL_COMPATIBILITY_MODE } from '../core';
 })
 export class Md2Calendar implements AfterContentInit {
 
-  @Input() type: 'date' | 'time' | 'datetime' = 'date';
+  @Input() type: 'date' | 'time' | 'month' | 'datetime' = 'date';
 
   /** A date representing the period (month or year) to start the calendar in. */
   @Input() startAt: Date;
@@ -134,7 +134,9 @@ export class Md2Calendar implements AfterContentInit {
   ngAfterContentInit() {
     this._activeDate = this.startAt || this._util.today();
     this._elementRef.nativeElement.focus();
-    if (this.type === 'time') {
+    if (this.type === 'month') {
+      this._currentView = 'year';
+    } else if (this.type === 'time') {
       this._currentView = 'clock';
     } else {
       this._currentView = this.startView || 'month';
@@ -155,8 +157,15 @@ export class Md2Calendar implements AfterContentInit {
 
   /** Handles month selection in the year view. */
   _monthSelected(month: Date): void {
-    this._activeDate = month;
-    this._currentView = 'month';
+    if (this.type == 'month') {
+      if (!this._util.isSameMonthAndYear(month, this.selected)) {
+        this.selectedChange.emit(this._util.getFirstDateOfMonth(month));
+      }
+    } else {
+      this._activeDate = month;
+      this._currentView = 'month';
+      this._clockView = 'hour';
+    }
   }
 
   _timeSelected(date: Date): void {
@@ -165,8 +174,6 @@ export class Md2Calendar implements AfterContentInit {
       this._clockView = 'minute';
     } else {
       if (!this._util.sameDateAndTime(date, this.selected)) {
-        this._clockView = 'hour';
-        this._currentView = 'month';
         this.selectedChange.emit(date);
       }
     }

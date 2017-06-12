@@ -20,7 +20,7 @@
   </div>
 </div>
 <div class="md2-calendar-content" [ngSwitch]="_currentView">
-  <div class="md2-month-content" *ngSwitchCase="'month'">
+  <div class="md2-month-content" *ngIf="_currentView === 'month' || _currentView === 'year'">
     <div class="md2-calendar-controls">
       <div class="md2-calendar-previous-button"
            [class.disabled]="!_previousEnabled()" (click)="_previousClicked()"
@@ -30,7 +30,7 @@
         </svg>
       </div>
       <div class="md2-calendar-period-button" [@slideCalendar]="_calendarState" (@slideCalendar.done)="_calendarStateDone()">
-        <strong>{{ _monthLabel }}</strong>
+        <strong>{{ _monthYearLabel }}</strong>
       </div>
       <div class="md2-calendar-next-button"
            [class.disabled]="!_nextEnabled()" (click)="_nextClicked()"
@@ -40,12 +40,13 @@
         </svg>
       </div>
     </div>
-    <md2-month-view [activeDate]="_activeDate"
-                    [selected]="selected"
-                    [dateFilter]="_dateFilterForViews"
-                    (selectedChange)="_dateSelected($event)">
-    </md2-month-view>
   </div>
+  <md2-month-view *ngSwitchCase="'month'"
+                  [activeDate]="_activeDate"
+                  [selected]="selected"
+                  [dateFilter]="_dateFilterForViews"
+                  (selectedChange)="_dateSelected($event)">
+  </md2-month-view>
   <md2-year-view *ngSwitchCase="'year'"
                  [activeDate]="_activeDate"
                  [selected]="selected"

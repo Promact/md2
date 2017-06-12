@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-const SUPPORTS_INTL_API = false;//typeof Intl != 'undefined';
+const SUPPORTS_INTL_API = false;// typeof Intl != 'undefined';
 
 
 /** The default month names to use if Intl API is not available. */

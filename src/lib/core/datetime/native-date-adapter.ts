@@ -110,10 +110,12 @@ export class NativeDateAdapter extends DateAdapter<Date> {
   }
 
   clone(date: Date): Date {
-    return this.createDate(this.getYear(date), this.getMonth(date), this.getDate(date), this.getHours(date), this.getMinutes(date), this.getSeconds(date));
+    return this.createDate(this.getYear(date), this.getMonth(date), this.getDate(date),
+      this.getHours(date), this.getMinutes(date), this.getSeconds(date));
   }
 
-  createDate(year: number, month: number, date: number, hours: number, minutes: number, seconds: number): Date {
+  createDate(year: number, month: number, date: number,
+    hours: number, minutes: number, seconds: number): Date {
     // Check for invalid month and date (except upper bound on date which we have to check after
     // creating the Date).
     if (month < 0 || month > 11 || date < 1) {
@@ -156,14 +158,16 @@ export class NativeDateAdapter extends DateAdapter<Date> {
 
   addCalendarMonths(date: Date, months: number): Date {
     let newDate = this._createDateWithOverflow(
-      this.getYear(date), this.getMonth(date) + months, this.getDate(date), this.getHours(date), this.getMinutes(date), this.getSeconds(date));
+      this.getYear(date), this.getMonth(date) + months, this.getDate(date),
+      this.getHours(date), this.getMinutes(date), this.getSeconds(date));
 
     // It's possible to wind up in the wrong month if the original month has more days than the new
     // month. In this case we want to go to the last day of the desired month.
     // Note: the additional + 12 % 12 ensures we end up with a positive number, since JS % doesn't
     // guarantee this.
     if (this.getMonth(newDate) != ((this.getMonth(date) + months) % 12 + 12) % 12) {
-      newDate = this._createDateWithOverflow(this.getYear(newDate), this.getMonth(newDate), 0, this.getHours(newDate), this.getMinutes(newDate), this.getSeconds(newDate));
+      newDate = this._createDateWithOverflow(this.getYear(newDate), this.getMonth(newDate), 0,
+        this.getHours(newDate), this.getMinutes(newDate), this.getSeconds(newDate));
     }
 
     return newDate;
@@ -171,17 +175,20 @@ export class NativeDateAdapter extends DateAdapter<Date> {
 
   addCalendarDays(date: Date, days: number): Date {
     return this._createDateWithOverflow(
-      this.getYear(date), this.getMonth(date), this.getDate(date) + days, this.getHours(date), this.getMinutes(date), this.getSeconds(date));
+      this.getYear(date), this.getMonth(date), this.getDate(date) + days,
+      this.getHours(date), this.getMinutes(date), this.getSeconds(date));
   }
 
   addCalendarHours(date: Date, hours: number): Date {
     return this._createDateWithOverflow(
-      this.getYear(date), this.getMonth(date), this.getDate(date), this.getHours(date) + hours, this.getMinutes(date), this.getSeconds(date));
+      this.getYear(date), this.getMonth(date), this.getDate(date),
+      this.getHours(date) + hours, this.getMinutes(date), this.getSeconds(date));
   }
 
   addCalendarMinutes(date: Date, minutes: number): Date {
     return this._createDateWithOverflow(
-      this.getYear(date), this.getMonth(date), this.getDate(date), this.getHours(date), this.getMinutes(date) + minutes, this.getSeconds(date));
+      this.getYear(date), this.getMonth(date), this.getDate(date),
+      this.getHours(date), this.getMinutes(date) + minutes, this.getSeconds(date));
   }
 
   getISODateString(date: Date): string {
@@ -193,7 +200,8 @@ export class NativeDateAdapter extends DateAdapter<Date> {
   }
 
   /** Creates a date but allows the month and date to overflow. */
-  private _createDateWithOverflow(year: number, month: number, date: number, hours: number, minutes: number, seconds: number) {
+  private _createDateWithOverflow(year: number, month: number, date: number,
+    hours: number, minutes: number, seconds: number) {
     let result = new Date(year, month, date, hours, minutes, seconds);
 
     // We need to correct for the fact that JS native Date treats years in range [0, 99] as

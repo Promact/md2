@@ -108,11 +108,7 @@ export const MD2_DATEPICKER_VALIDATORS: any = {
   multi: true
 };
 
-/* TODO(mmalerba): We use a component instead of a directive here so the user can use implicit
- * template reference variables (e.g. #d vs #d="md2Datepicker"). We can change this to a directive if
- * angular adds support for `exportAs: '$implicit'` on directives.
- * Component responsible for managing the datepicker popup/dialog.
- */
+/* Component responsible for managing the datepicker popup/dialog. */
 @Component({
   moduleId: module.id,
   selector: 'md2-datepicker',
@@ -459,9 +455,11 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
 
     /* Months */
     if (format.indexOf('MMMM') > -1) {
-      format = format.replace('MMMM', this._locale.getMonthNames('long')[this._util.getMonth(date)]);
+      format = format.replace('MMMM',
+        this._locale.getMonthNames('long')[this._util.getMonth(date)]);
     } else if (format.indexOf('MMM') > -1) {
-      format = format.replace('MMM', this._locale.getMonthNames('short')[this._util.getMonth(date)]);
+      format = format.replace('MMM',
+        this._locale.getMonthNames('short')[this._util.getMonth(date)]);
     } else if (format.indexOf('MM') > -1) {
       format = format.replace('MM', ('0' + (this._util.getMonth(date) + 1)).slice(-2));
     } else if (format.indexOf('M') > -1) {

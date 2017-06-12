@@ -92,7 +92,8 @@ export abstract class DateAdapter<D> {
    * @param date The date of month of the date. Must be an integer 1 - length of the given month.
    * @returns The new date, or null if invalid.
    */
-  abstract createDate(year: number, month: number, date: number, hours: number, minutes: number, seconds: number): D;
+  abstract createDate(year: number, month: number, date: number,
+    hours: number, minutes: number, seconds: number): D;
 
   /**
    * Gets today's date.

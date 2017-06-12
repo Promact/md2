@@ -13,6 +13,7 @@ import { DateLocale } from './date-locale';
 import { DateUtil } from './date-util';
 import { Md2CalendarCell } from './calendar-body';
 import { MD_DATE_FORMATS, MdDateFormats } from '../core/datetime/date-formats';
+import { slideCalendar } from './datepicker-animations';
 
 
 const DAYS_PER_WEEK = 7;
@@ -26,6 +27,7 @@ const DAYS_PER_WEEK = 7;
   moduleId: module.id,
   selector: 'md2-month-view',
   templateUrl: 'month-view.html',
+  animations: [slideCalendar],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -38,8 +40,14 @@ export class Md2MonthView implements AfterContentInit {
   set activeDate(value: Date) {
     let oldActiveDate = this._activeDate;
     this._activeDate = value || this._util.today();
-    if (!this._util.isSameMonthAndYear(oldActiveDate, this._activeDate)) {
+    if (oldActiveDate && this._activeDate &&
+      !this._util.isSameMonthAndYear(oldActiveDate, this._activeDate)) {
       this._init();
+      if (this._util.isInNextMonth(oldActiveDate, this._activeDate)) {
+        this.calendarState('right');
+      } else {
+        this.calendarState('left');
+      }
     }
   }
   private _activeDate: Date;
@@ -76,6 +84,8 @@ export class Md2MonthView implements AfterContentInit {
 
   /** The names of the weekdays. */
   _weekdays: { long: string, narrow: string }[];
+
+  _calendarState: string;
 
   constructor(private _locale: DateLocale, private _util: DateUtil,
     @Optional() @Inject(MD_DATE_FORMATS) private _dateFormats: MdDateFormats) {
@@ -157,6 +167,14 @@ export class Md2MonthView implements AfterContentInit {
   private _getDateInCurrentMonth(date: Date): number {
     return this._util.isSameMonthAndYear(date, this.activeDate) ?
       this._util.getDate(date) : null;
+  }
+
+  private calendarState(direction: string): void {
+    this._calendarState = direction;
+  }
+
+  _calendarStateDone() {
+    this._calendarState = ''
   }
 
 }

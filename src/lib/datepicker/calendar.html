@@ -29,7 +29,7 @@
           <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
         </svg>
       </div>
-      <div class="md2-calendar-period-button">
+      <div class="md2-calendar-period-button" [@slideCalendar]="_calendarState" (@slideCalendar.done)="_calendarStateDone()">
         <strong>{{ _monthLabel }}</strong>
       </div>
       <div class="md2-calendar-next-button"

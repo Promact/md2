@@ -174,7 +174,7 @@ export class Md2MonthView implements AfterContentInit {
   }
 
   _calendarStateDone() {
-    this._calendarState = ''
+    this._calendarState = '';
   }
 
 }

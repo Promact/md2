@@ -25,7 +25,6 @@ import {
 import { DateLocale } from './date-locale';
 import { DateUtil } from './date-util';
 import { slideCalendar } from './datepicker-animations';
-import { MD_DATE_FORMATS, MdDateFormats } from '../core/datetime/date-formats';
 import { MATERIAL_COMPATIBILITY_MODE } from '../core';
 
 
@@ -129,11 +128,7 @@ export class Md2Calendar implements AfterContentInit {
   _calendarState: string;
 
   constructor(private _elementRef: ElementRef, private _ngZone: NgZone,
-    private _locale: DateLocale, private _util: DateUtil,
-    @Optional() @Inject(MD_DATE_FORMATS) private _dateFormats: MdDateFormats) {
-    if (!this._dateFormats) {
-      throw Error('MD_DATE_FORMATS');
-    }
+    private _locale: DateLocale, private _util: DateUtil) {
   }
 
   ngAfterContentInit() {
@@ -339,11 +334,13 @@ export class Md2Calendar implements AfterContentInit {
   private _handleCalendarBodyKeydownInClockView(event: KeyboardEvent): void {
     switch (event.keyCode) {
       case UP_ARROW:
-        this._activeDate = this._clockView == 'hour' ? this._util.addCalendarHours(this._activeDate, 1) :
+        this._activeDate = this._clockView == 'hour' ?
+          this._util.addCalendarHours(this._activeDate, 1) :
           this._util.addCalendarMinutes(this._activeDate, 1);
         break;
       case DOWN_ARROW:
-        this._activeDate = this._clockView == 'hour' ? this._util.addCalendarHours(this._activeDate, -1) :
+        this._activeDate = this._clockView == 'hour' ?
+          this._util.addCalendarHours(this._activeDate, -1) :
           this._util.addCalendarMinutes(this._activeDate, -1);
         break;
       case ENTER:
@@ -387,7 +384,7 @@ export class Md2Calendar implements AfterContentInit {
   }
 
   _calendarStateDone() {
-    this._calendarState = ''
+    this._calendarState = '';
   }
 
 }

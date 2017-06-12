@@ -315,7 +315,7 @@ export class DateUtil {
    * @returns {Date}
    */
   getFirstDateOfMonth(date: Date) {
-    return new Date(date.getFullYear(), date.getMonth(), 1, date.getHours(), date.getMinutes());
+    return new Date(date.getFullYear(), date.getMonth(), 1);
   }
 
   /**

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+﻿import { Component } from '@angular/core';
 
 @Component({
   selector: 'datepicker-demo',
@@ -12,7 +12,7 @@ import { Component } from '@angular/core';
       vertical-align: top;
     }
   `,
-  `.error-helper {
+    `.error-helper {
       color: #dd2c00;
     }
   `]
@@ -36,6 +36,7 @@ export class DatepickerDemo {
   types: Array<any> = [
     { text: 'Date', value: 'date' },
     { text: 'Time', value: 'time' },
+    { text: 'Month', value: 'month' },
     { text: 'Date Time', value: 'datetime' }];
 
   mode: string = 'auto';
@@ -80,11 +81,20 @@ export class DatepickerDemo {
     { name: 'France:', value: 'HH:mm' },
     { name: 'ISO 8601', value: 'HH:mm' }
   ];
+  dateFormatsMonth: Array<any> = [
+    { name: 'US:', value: 'M/y' },
+    { name: 'England:', value: 'MM/y' },
+    { name: 'Poland:', value: 'MM.y' },
+    { name: 'Germany:', value: 'M.y' },
+    { name: 'France:', value: 'MM/y' },
+    { name: 'ISO 8601', value: 'y-MM' }
+  ];
   dateFormats: { [index: string]: Array<any>; } =
   {
     'datetime': this.dateFormatsDateTime,
     'date': this.dateFormatsDate,
-    'time': this.dateFormatsTime
+    'time': this.dateFormatsTime,
+    'month': this.dateFormatsMonth
   };
 
   openDatepicker() {

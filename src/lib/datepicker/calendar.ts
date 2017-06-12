@@ -89,7 +89,7 @@ export class Md2Calendar implements AfterContentInit {
   set _activeDate(value: Date) {
     let oldActiveDate = this._clampedActiveDate;
     this._clampedActiveDate = this._util.clampDate(value, this.minDate, this.maxDate);
-    if (oldActiveDate && this._clampedActiveDate &&
+    if (oldActiveDate && this._clampedActiveDate && this._currentView === 'month' &&
       !this._util.isSameMonthAndYear(oldActiveDate, this._clampedActiveDate)) {
       if (this._util.isInNextMonth(oldActiveDate, this._clampedActiveDate)) {
         this.calendarState('right');
@@ -109,8 +109,9 @@ export class Md2Calendar implements AfterContentInit {
     return this._locale.getYearName(this._activeDate);
   }
 
-  get _monthLabel(): string {
-    return this._locale.getMonthLabel(this._activeDate);
+  get _monthYearLabel(): string {
+    return this._currentView === 'month' ? this._locale.getMonthLabel(this._activeDate) :
+      this._locale.getYearName(this._activeDate);
   }
 
   get _dateLabel(): string {
@@ -201,12 +202,16 @@ export class Md2Calendar implements AfterContentInit {
 
   /** Handles user clicks on the previous button. */
   _previousClicked(): void {
-    this._activeDate = this._util.addCalendarMonths(this._activeDate, -1);
+    this._activeDate = this._currentView === 'month' ?
+      this._util.addCalendarMonths(this._activeDate, -1) :
+      this._util.addCalendarYears(this._activeDate, -1);
   }
 
   /** Handles user clicks on the next button. */
   _nextClicked(): void {
-    this._activeDate = this._util.addCalendarMonths(this._activeDate, 1);
+    this._activeDate = this._currentView === 'month' ?
+      this._util.addCalendarMonths(this._activeDate, 1) :
+      this._util.addCalendarYears(this._activeDate, 1);
   }
 
   /** Whether the previous period button is enabled. */

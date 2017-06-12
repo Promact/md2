@@ -13,6 +13,7 @@ import { DateLocale } from './date-locale';
 import { DateUtil } from './date-util';
 import { Md2CalendarCell } from './calendar-body';
 import { MD_DATE_FORMATS, MdDateFormats } from '../core/datetime/date-formats';
+import { slideCalendar } from './datepicker-animations';
 
 
 /**
@@ -23,6 +24,7 @@ import { MD_DATE_FORMATS, MdDateFormats } from '../core/datetime/date-formats';
   moduleId: module.id,
   selector: 'md2-year-view',
   templateUrl: 'year-view.html',
+  animations: [slideCalendar],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -33,8 +35,14 @@ export class Md2YearView implements AfterContentInit {
   set activeDate(value: Date) {
     let oldActiveDate = this._activeDate;
     this._activeDate = value || this._util.today();
-    if (!this._util.isSameYear(oldActiveDate, this._activeDate)) {
+    if (oldActiveDate && this._activeDate &&
+      !this._util.isSameYear(oldActiveDate, this._activeDate)) {
       this._init();
+      // if (oldActiveDate < this._activeDate) {
+      //  this.calendarState('right');
+      // } else {
+      //  this.calendarState('left');
+      // }
     }
   }
   private _activeDate: Date;
@@ -68,6 +76,8 @@ export class Md2YearView implements AfterContentInit {
    * Null if the selected Date is in a different year.
    */
   _selectedMonth: number;
+
+  _calendarState: string;
 
   constructor(private _locale: DateLocale, private _util: DateUtil,
     @Optional() @Inject(MD_DATE_FORMATS) private _dateFormats: MdDateFormats) {
@@ -147,4 +157,13 @@ export class Md2YearView implements AfterContentInit {
 
     return false;
   }
+
+  private calendarState(direction: string): void {
+    this._calendarState = direction;
+  }
+
+  _calendarStateDone() {
+    this._calendarState = '';
+  }
+
 }

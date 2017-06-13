@@ -14,7 +14,6 @@
                  [isRemovable]="isRemovable"
                  [disabled]="isDisabled"
                  [isAutoComplete]="false"
-                 (change)="handleChange($event)"
                  #chipsInputControl="ngModel">
         <div class="md2-template" [hidden]="true">
           <em>(data)</em>
@@ -46,7 +45,10 @@
                  [disabled]="isDisabled"
                  [isAutoComplete]="true"
                  [autocompleteDataList]="_items"
-                 (change)="handleChange($event)" item-text="name" item-value="value" autocomplete-item-text="text" autocomplete-item-value="id"
+                 item-text="name"
+                 item-value="value"
+                 autocomplete-item-text="text"
+                 autocomplete-item-value="id"
                  #chipsControl="ngModel">
       </md2-chips>
 

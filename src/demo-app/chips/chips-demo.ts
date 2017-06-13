@@ -19,8 +19,4 @@ export class ChipsDemo {
     { text: 'Mumbaia', id: '2' },
     { text: 'Goaa', id: '4' }
   ];
-  private _validPattern = /^[0-9]*$/;
-  handleChange(value: any) {
-    console.log('Changed data: ', value);
-  }
 }

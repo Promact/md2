@@ -1,3 +1,9 @@
+<a name="0.0.24"></a>
+## [0.0.24](https://github.com/Promact/md2/compare/0.0.22...v0.0.24) (2017-06-13)
+
+### Bug Fixes
+* fixed datepicker minor issues
+
 <a name="0.0.23"></a>
 ## [0.0.23](https://github.com/Promact/md2/compare/0.0.22...v0.0.23) (2017-06-13)
 

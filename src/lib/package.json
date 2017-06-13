@@ -1,6 +1,6 @@
 {
   "name": "md2",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "description": "Angular2 based Material Design components, directives and services are Accordion, Autocomplete, Chips(Tags), Collapse, Colorpicker, Data Table, Datepicker, Dialog(Modal), Menu, Multiselect, Select, Tabs, Tags(Chips), Toast and Tooltip.",
   "main": "./md2.umd.js",
   "module": "./index.js",

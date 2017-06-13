@@ -1,3 +1,23 @@
+<a name="0.0.23"></a>
+## [0.0.23](https://github.com/Promact/md2/compare/0.0.22...v0.0.23) (2017-06-13)
+
+### Breaking Changes
+
+* refactored datepicker component with its few properties [API Docs](https://github.com/Promact/md2/blob/master/src/lib/datepicker/README.md).
+
+
+### Bug Fixes
+
+* fix(datepicker) invalid time after selecting it #227
+* #233 Chips component always send changes event
+
+
+### Features
+
+* feat(datepicker) implementation for month picker support #168
+
+
+
 <a name="0.0.22"></a>
 ## [0.0.22](https://github.com/Promact/md2/compare/0.0.21...v0.0.22) (2017-06-07)
 

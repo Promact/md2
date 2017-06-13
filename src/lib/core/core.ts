@@ -98,10 +98,17 @@ export {coerceNumberProperty} from './coercion/number-property';
 export {CompatibilityModule, NoConflictStyleCompatibilityMode} from './compatibility/compatibility';
 
 // Common material module
-export {MdCommonModule} from './common-behaviors/common-module';
+export {MdCommonModule, MATERIAL_SANITY_CHECKS} from './common-behaviors/common-module';
 
 // Datetime
 export * from './datetime/index';
+
+// Placeholder
+export {
+  FloatPlaceholderType,
+  PlaceholderOptions,
+  MD_PLACEHOLDER_GLOBAL_OPTIONS
+} from './placeholder/placeholder-options';
 
 @NgModule({
   imports: [

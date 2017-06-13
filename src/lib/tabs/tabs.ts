@@ -75,7 +75,7 @@ export class Md2TabLabel {
   styleUrls: ['tabs.css'],
   host: {
     '[class]': 'class',
-    '(window:resize)': 'onWindowResize($event)'
+    '(window:resize)': 'onWindowResize()'
   },
   encapsulation: ViewEncapsulation.None
 })
@@ -240,7 +240,7 @@ export class Md2Tabs implements AfterContentInit {
    * On Window Resize
    * @param event
    */
-  onWindowResize(event: Event) {
+  onWindowResize() {
     this._offsetLeft = this.fixOffset(this._offsetLeft);
     this.updatePagination();
   }

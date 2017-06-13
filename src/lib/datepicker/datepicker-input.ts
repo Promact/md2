@@ -113,7 +113,7 @@ export class Md2DatepickerInput<D> implements AfterContentInit, ControlValueAcce
 
   _onTouched = () => { };
 
-  private _cvaOnChange = (value: any) => { };
+  private _cvaOnChange: (value: any) => void = () => { };
 
   private _validatorOnChange = () => { };
 

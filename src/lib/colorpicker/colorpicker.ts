@@ -27,8 +27,6 @@ import {
   OverlayState,
   OverlayRef,
   PositionStrategy,
-  RepositionScrollStrategy,
-  ScrollDispatcher,
   TemplatePortal,
   PortalModule,
   HorizontalConnectionPos,
@@ -231,7 +229,7 @@ export class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
   _isDark: boolean;
   isInputValidColor: boolean = false;
 
-  _onChange = (value: any) => { };
+  _onChange: (value: any) => void = () => { };
   _onTouched = () => { };
 
   @Input()
@@ -303,7 +301,6 @@ export class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
 
   constructor(private _element: ElementRef, private _overlay: Overlay,
     private _viewContainerRef: ViewContainerRef, private _renderer: Renderer,
-    private _scrollDispatcher: ScrollDispatcher,
     private _util: ColorUtil, @Self() @Optional() public _control: NgControl) {
     this._created = false;
     if (this._control) {
@@ -387,14 +384,6 @@ export class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
 
       this._cleanUpSubscriptions();
     }
-  }
-
-  _handleKeydown(event: KeyboardEvent) {
-    if (this.disabled) { return; }
-  }
-
-  _onFocus() {
-
   }
 
   _onBlur() {
@@ -563,7 +552,7 @@ export class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
     return false;
   }
 
-  checkInputVal(event: Event): void {
+  checkInputVal(): void {
     this.hsva = this._util.stringToHsva(this.color + '');
     this.isInputFocus = false;
     if (this.hsva) {
@@ -614,7 +603,7 @@ export class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
         config.positionStrategy = this._createPickerPositionStrategy();
         config.hasBackdrop = true;
         config.backdropClass = 'cdk-overlay-transparent-backdrop';
-        config.scrollStrategy = new RepositionScrollStrategy(this._scrollDispatcher);
+        config.scrollStrategy = this._overlay.scrollStrategies.reposition();
       } else {
         config.positionStrategy = this._overlay.position()
           .global()

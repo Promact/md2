@@ -126,7 +126,7 @@ export class Md2Clock implements AfterContentInit {
   constructor(private _element: ElementRef,
     private _locale: DateLocale, private _util: DateUtil) {
     this.mouseMoveListener = (event: any) => { this._handleMousemove(event); };
-    this.mouseUpListener = (event: any) => { this._handleMouseup(event); };
+    this.mouseUpListener = () => { this._handleMouseup(); };
   }
 
   ngAfterContentInit() {
@@ -148,7 +148,7 @@ export class Md2Clock implements AfterContentInit {
     this.setTime(event);
   }
 
-  _handleMouseup(event: any) {
+  _handleMouseup() {
     document.removeEventListener('mousemove', this.mouseMoveListener);
     document.removeEventListener('touchmove', this.mouseMoveListener);
     document.removeEventListener('mouseup', this.mouseUpListener);

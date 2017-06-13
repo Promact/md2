@@ -83,7 +83,7 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
   private _disabled: boolean = false;
   private _isInitialized: boolean = false;
 
-  _onChange = (value: any) => { };
+  _onChange: (value: any) => void = () => { };
   _onTouched = () => { };
 
   private _items: Array<any> = [];

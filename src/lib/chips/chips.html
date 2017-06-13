@@ -8,7 +8,7 @@
   </span>
   <ng-content select=".md2-template"></ng-content>
   <form #chipInputForm="ngForm" class="chip-input-form">
-    <input *ngIf="!isAutoComplete" class="chip-input" [disabled]="disabled" [type]="type" [(ngModel)]="inputValue" name="chipInput" [placeholder]="placeholder" (paste)="inputPaste($event)" (keydown)="inputChanged($event)" (blur)="inputBlurred($event)" (focus)="inputFocus()" />
+    <input *ngIf="!isAutoComplete" class="chip-input" [disabled]="disabled" [type]="type" [(ngModel)]="inputValue" name="chipInput" [placeholder]="placeholder" (paste)="inputPaste($event)" (keydown)="inputChanged($event)" (blur)="inputBlurred()" (focus)="inputFocus()" />
     <div *ngIf="isAutoComplete">
       <md2-autocomplete [items]="autocompleteDataList"
                         [item-text]="autocompleteItemText"

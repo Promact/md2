@@ -24,8 +24,8 @@
            autocomplete="off"
            [value]="_inputValue"
            (change)="$event.stopPropagation()"
-           (click)="_handleFocus($event)"
-           (focus)="_handleFocus($event)"
+           (click)="_handleFocus()"
+           (focus)="_handleFocus()"
            (blur)="_handleBlur($event)" />
     <span class="md2-datepicker-arrow" (click)="open()"></span>
   </div>

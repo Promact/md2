@@ -167,7 +167,7 @@ export class DateUtil {
     return new Date();
   }
 
-  parse(value: any, format?: Object): Date | null {
+  parse(value: any): Date | null {
     let timestamp = typeof value == 'number' ? value : Date.parse(value);
     return isNaN(timestamp) ? null : new Date(timestamp);
   }

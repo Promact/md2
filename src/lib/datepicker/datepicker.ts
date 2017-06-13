@@ -34,7 +34,6 @@ import { ComponentPortal } from '../core/portal/portal';
 import { OverlayState } from '../core/overlay/overlay-state';
 import { Dir } from '../core/rtl/dir';
 import { PositionStrategy } from '../core/overlay/position/position-strategy';
-import { RepositionScrollStrategy, ScrollDispatcher } from '../core/overlay/index';
 import { Subscription } from 'rxjs/Subscription';
 import { DateAdapter } from '../core/datetime/index';
 import { ESCAPE } from '../core/keyboard/keycodes';
@@ -127,7 +126,7 @@ export const MD2_DATEPICKER_VALIDATORS: any = {
 })
 export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
 
-  _onChange = (value: any) => { };
+  _onChange: (value: any) => void = () => { };
   _onTouched = () => { };
   _validatorOnChange = () => { };
 
@@ -217,7 +216,8 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     });
   }
   private _value: Date;
-  private _inputValue: string = '';
+
+  _inputValue: string = '';
 
   @Input()
   get openOnFocus(): boolean { return this._openOnFocus; }
@@ -289,7 +289,6 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     private _overlay: Overlay,
     private _ngZone: NgZone,
     private _viewContainerRef: ViewContainerRef,
-    private _scrollDispatcher: ScrollDispatcher,
     private _locale: DateLocale, private _util: DateUtil,
     @Optional() private _dir: Dir) {
   }
@@ -327,7 +326,7 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     this.disabled = isDisabled;
   }
 
-  _handleFocus(event: Event) {
+  _handleFocus() {
     this._inputFocused = true;
     if (!this.opened && this.openOnFocus) {
       this.open();
@@ -342,7 +341,7 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     let el: any = event.target;
     let date: Date = this._util.parseDate(el.value, this.format);
     if (!date) {
-      date = this._util.parse(el.value, this.format);
+      date = this._util.parse(el.value);
     }
     if (date != null && date.getTime && !isNaN(date.getTime())) {
 
@@ -586,7 +585,7 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
       overlayState.backdropClass = 'cdk-overlay-transparent-backdrop';
     }
     overlayState.direction = this._dir ? this._dir.value : 'ltr';
-    overlayState.scrollStrategy = new RepositionScrollStrategy(this._scrollDispatcher);
+    overlayState.scrollStrategy = this._overlay.scrollStrategies.reposition();
 
     this._popupRef = this._overlay.create(overlayState);
   }

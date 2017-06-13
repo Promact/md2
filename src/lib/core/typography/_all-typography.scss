@@ -1,0 +1,9 @@
+@import './typography';
+@import '../option/option-theme';
+
+
+// Includes all of the typographic styles.
+@mixin angular-material-typography($config: mat-typography-config()) {
+  @include mat-base-typography($config);
+  @include mat-option-typography($config);
+}

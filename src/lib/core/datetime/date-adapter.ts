@@ -24,12 +24,6 @@ export abstract class DateAdapter<D> {
    */
   abstract getDate(date: D): number;
 
-  abstract getHours(date: D): number;
-
-  abstract getMinutes(date: D): number;
-
-  abstract getSeconds(date: D): number;
-
   /**
    * Gets the day of the week component of the given date.
    * @param date The date to extract the day of the week from.
@@ -92,8 +86,7 @@ export abstract class DateAdapter<D> {
    * @param date The date of month of the date. Must be an integer 1 - length of the given month.
    * @returns The new date, or null if invalid.
    */
-  abstract createDate(year: number, month: number, date: number,
-    hours: number, minutes: number, seconds: number): D;
+  abstract createDate(year: number, month: number, date: number): D;
 
   /**
    * Gets today's date.
@@ -147,10 +140,6 @@ export abstract class DateAdapter<D> {
    */
   abstract addCalendarDays(date: D, days: number): D;
 
-  abstract addCalendarHours(date: D, days: number): D;
-
-  abstract addCalendarMinutes(date: D, days: number): D;
-
   /**
    * Gets the RFC 3339 compatible date string (https://tools.ietf.org/html/rfc3339)  for the given
    * date.
@@ -176,24 +165,8 @@ export abstract class DateAdapter<D> {
    */
   compareDate(first: D, second: D): number {
     return this.getYear(first) - this.getYear(second) ||
-      this.getMonth(first) - this.getMonth(second) ||
-      this.getDate(first) - this.getDate(second);
-  }
-
-  /**
-   * Compares two dates.
-   * @param first The first date to compare.
-   * @param second The second date to compare.
-   * @returns 0 if the dates are equal, a number less than 0 if the first date is earlier,
-   *     a number greater than 0 if the first date is later.
-   */
-  compareDateAndTime(first: D, second: D): number {
-    return this.getYear(first) - this.getYear(second) ||
-      this.getMonth(first) - this.getMonth(second) ||
-      this.getDate(first) - this.getDate(second) ||
-      this.getHours(first) - this.getDate(second) ||
-      this.getMinutes(first) - this.getDate(second) ||
-      this.getSeconds(first) - this.getDate(second);
+        this.getMonth(first) - this.getMonth(second) ||
+        this.getDate(first) - this.getDate(second);
   }
 
   /**
@@ -205,17 +178,6 @@ export abstract class DateAdapter<D> {
    */
   sameDate(first: D | null, second: D | null): boolean {
     return first && second ? !this.compareDate(first, second) : first == second;
-  }
-
-  /**
-   * Checks if two dates are equal.
-   * @param first The first date to check.
-   * @param second The second date to check.
-   * @returns {boolean} Whether the two dates are equal.
-   *     Null dates are considered equal to other null dates.
-   */
-  sameDateAndTime(first: D | null, second: D | null): boolean {
-    return first && second ? !this.compareDateAndTime(first, second) : first == second;
   }
 
   /**

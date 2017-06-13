@@ -6,7 +6,7 @@
       <h3 class="title">Basic Tabs</h3>
     </div>
     <div class="content">
-      <md2-tabs class="test" selectedIndex="3" (change)="handleChange($event)">
+      <md2-tabs class="test" selectedIndex="3">
         <md2-tab class="test" label="Static title">Static content</md2-tab>
         <md2-tab *ngFor="let tab of tabs"
                  [label]="tab.title"

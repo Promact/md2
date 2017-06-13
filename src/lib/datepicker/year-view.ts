@@ -79,7 +79,7 @@ export class Md2YearView implements AfterContentInit {
 
   _calendarState: string;
 
-  constructor(private _locale: DateLocale, private _util: DateUtil,
+  constructor(private _locale: DateLocale, public _util: DateUtil,
     @Optional() @Inject(MD_DATE_FORMATS) private _dateFormats: MdDateFormats) {
     if (!this._dateFormats) {
       throw Error('MD_DATE_FORMATS');

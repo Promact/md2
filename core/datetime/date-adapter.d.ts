@@ -20,6 +20,9 @@ export declare abstract class DateAdapter<D> {
      * @returns The month component (1-indexed, 1 = first of month).
      */
     abstract getDate(date: D): number;
+    abstract getHours(date: D): number;
+    abstract getMinutes(date: D): number;
+    abstract getSeconds(date: D): number;
     /**
      * Gets the day of the week component of the given date.
      * @param date The date to extract the day of the week from.
@@ -74,7 +77,7 @@ export declare abstract class DateAdapter<D> {
      * @param date The date of month of the date. Must be an integer 1 - length of the given month.
      * @returns The new date, or null if invalid.
      */
-    abstract createDate(year: number, month: number, date: number): D;
+    abstract createDate(year: number, month: number, date: number, hours: number, minutes: number, seconds: number): D;
     /**
      * Gets today's date.
      * @returns Today's date.
@@ -121,6 +124,8 @@ export declare abstract class DateAdapter<D> {
      * @returns A new date equal to the given one with the specified number of days added.
      */
     abstract addCalendarDays(date: D, days: number): D;
+    abstract addCalendarHours(date: D, days: number): D;
+    abstract addCalendarMinutes(date: D, days: number): D;
     /**
      * Gets the RFC 3339 compatible date string (https://tools.ietf.org/html/rfc3339)  for the given
      * date.
@@ -142,6 +147,14 @@ export declare abstract class DateAdapter<D> {
      */
     compareDate(first: D, second: D): number;
     /**
+     * Compares two dates.
+     * @param first The first date to compare.
+     * @param second The second date to compare.
+     * @returns 0 if the dates are equal, a number less than 0 if the first date is earlier,
+     *     a number greater than 0 if the first date is later.
+     */
+    compareDateAndTime(first: D, second: D): number;
+    /**
      * Checks if two dates are equal.
      * @param first The first date to check.
      * @param second The second date to check.
@@ -149,6 +162,14 @@ export declare abstract class DateAdapter<D> {
      *     Null dates are considered equal to other null dates.
      */
     sameDate(first: D | null, second: D | null): boolean;
+    /**
+     * Checks if two dates are equal.
+     * @param first The first date to check.
+     * @param second The second date to check.
+     * @returns {boolean} Whether the two dates are equal.
+     *     Null dates are considered equal to other null dates.
+     */
+    sameDateAndTime(first: D | null, second: D | null): boolean;
     /**
      * Clamp the given date between min and max dates.
      * @param date The date to clamp.

@@ -1,238 +1,152 @@
-import { AfterContentInit, ElementRef, OnDestroy, EventEmitter, TemplateRef, ViewContainerRef } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, NgControl, ValidationErrors, Validator } from '@angular/forms';
-import { DateAdapter } from '../core/datetime/index';
+import { ElementRef, EventEmitter, OnDestroy, ViewContainerRef, NgZone } from '@angular/core';
+import { AbstractControl, ControlValueAccessor, ValidationErrors } from '@angular/forms';
+import { Overlay } from '../core';
+import { Dir } from '../core/rtl/dir';
+import { ScrollDispatcher } from '../core/overlay/index';
+import { Md2Calendar } from './calendar';
 import { DateLocale } from './date-locale';
 import { DateUtil } from './date-util';
-import { Overlay, ScrollDispatcher } from '../core';
-import { ClockView } from './clock';
+import 'rxjs/add/operator/first';
 /** Change event object emitted by Md2Select. */
 export declare class Md2DateChange {
     source: Md2Datepicker;
     value: Date;
     constructor(source: Md2Datepicker, value: Date);
 }
-export declare type Type = 'date' | 'time' | 'datetime';
-export declare type Mode = 'auto' | 'portrait' | 'landscape';
-export declare type Container = 'inline' | 'dialog';
-export declare class Md2Datepicker implements AfterContentInit, OnDestroy, ControlValueAccessor, Validator {
+/**
+ * Component used as the content for the datepicker dialog and popup. We use this instead of using
+ * Md2Calendar directly as the content so we can control the initial focus. This also gives us a
+ * place to put additional features of the popup that are not part of the calendar itself in the
+ * future. (e.g. confirmation buttons).
+ * @docs-private
+ */
+export declare class Md2DatepickerContent {
+    datepicker: Md2Datepicker;
+    _calendar: Md2Calendar;
+    /**
+     * Handles keydown event on datepicker content.
+     * @param event The event.
+     */
+    _handleKeydown(event: KeyboardEvent): void;
+}
+export declare const MD2_DATEPICKER_VALUE_ACCESSOR: any;
+export declare const MD2_DATEPICKER_VALIDATORS: any;
+export declare class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     private _element;
     private _overlay;
-    _dateAdapter: DateAdapter<Date>;
+    private _ngZone;
     private _viewContainerRef;
-    private _locale;
     private _scrollDispatcher;
+    private _locale;
     private _util;
-    _control: NgControl;
-    private _portal;
-    private _overlayRef;
-    private _backdropSubscription;
-    private _value;
-    private _panelOpen;
-    private _openOnFocus;
-    private _type;
-    private _mode;
-    private _container;
-    private _format;
-    private _required;
-    private _disabled;
-    private today;
-    _years: Array<number>;
-    _dates: Array<Object>;
-    _isYearsVisible: boolean;
-    _isCalendarVisible: boolean;
-    _clockView: ClockView;
-    _calendarState: string;
-    _weekDays: Array<any>;
-    _prevMonth: number;
-    _currMonth: number;
-    _nextMonth: number;
-    _transformOrigin: string;
-    _panelDoneAnimating: boolean;
-    _inputFocused: boolean;
+    private _dir;
     _onChange: (value: any) => void;
     _onTouched: () => void;
-    private _validatorOnChange;
-    _templatePortal: TemplateRef<any>;
-    _input: ElementRef;
+    _validatorOnChange: () => void;
+    _inputFocused: boolean;
+    /** The date to open the calendar to initially. */
+    startAt: Date;
+    /** The view that the calendar should start in. */
+    startView: 'clock' | 'month' | 'year';
+    /**
+     * Whether the calendar UI is in touch mode. In touch mode the calendar opens in a dialog rather
+     * than a popup and elements have more padding to allow for bigger touch targets.
+     */
+    touchUi: boolean;
+    tabindex: number;
+    mode: 'auto' | 'portrait' | 'landscape';
+    placeholder: string;
+    timeInterval: number;
+    type: 'date' | 'time' | 'month' | 'datetime';
+    private _type;
+    format: string;
+    private _format;
+    /** The minimum valid date. */
+    min: Date;
+    _minDate: Date;
+    /** The maximum valid date. */
+    max: Date;
+    _maxDate: Date;
+    dateFilter: (date: Date | null) => boolean;
+    _dateFilter: (date: Date | null) => boolean;
+    required: boolean;
+    private _required;
+    disabled: boolean;
+    private _disabled;
+    value: Date;
+    private _value;
+    private _inputValue;
+    openOnFocus: boolean;
+    private _openOnFocus;
+    isOpen: boolean;
     /** Event emitted when the select has been opened. */
     onOpen: EventEmitter<void>;
     /** Event emitted when the select has been closed. */
     onClose: EventEmitter<void>;
     /** Event emitted when the selected date has been changed by the user. */
     change: EventEmitter<Md2DateChange>;
-    /** The view that the calendar should start in. */
-    startView: 'month' | 'year';
-    /** A function used to filter which dates are selectable. */
-    dateFilter: (date: Date) => boolean;
-    /** Date filter for the month and year views. */
-    _dateFilterForViews: (date: Date) => boolean;
-    constructor(_element: ElementRef, _overlay: Overlay, _dateAdapter: DateAdapter<Date>, _viewContainerRef: ViewContainerRef, _locale: DateLocale, _scrollDispatcher: ScrollDispatcher, _util: DateUtil, _control: NgControl);
-    ngAfterContentInit(): void;
-    ngOnDestroy(): void;
-    registerOnValidatorChange(fn: () => void): void;
-    placeholder: string;
-    okLabel: string;
-    cancelLabel: string;
-    tabindex: number;
-    enableDates: Array<Date>;
-    disableDates: Array<Date>;
-    disableWeekDays: Array<number>;
-    timeInterval: number;
-    type: Type;
-    format: string;
-    mode: Mode;
-    container: Container;
-    value: Date;
-    activeDate: Date;
-    private _activeDate;
-    readonly minutes: string;
-    readonly hours: string;
-    /**
-     * Return the am/pm part of the hour description
-     * @param upperCase  boolean if true return AM/PM, default false
-     * @return string the am/pm part of the hour description
-     */
-    private _ampm(upperCase?);
-    selected: Date;
-    required: boolean;
-    disabled: boolean;
-    /** The minimum selectable date. */
-    min: Date;
-    private _min;
-    /** The maximum selectable date. */
-    max: Date;
-    private _max;
-    openOnFocus: boolean;
-    isOpen: boolean;
-    readonly panelOpen: boolean;
-    readonly getDateLabel: string;
-    readonly getMonthLabel: string;
+    /** Emits new selected date when selected date changes. */
+    selectedChanged: EventEmitter<Date>;
+    /** Whether the calendar is open. */
+    opened: boolean;
+    /** The id for the datepicker calendar. */
+    id: string;
+    /** The currently selected date. */
+    _selected: Date;
+    /** A reference to the overlay when the calendar is opened as a popup. */
+    private _popupRef;
+    /** A reference to the overlay when the calendar is opened as a dialog. */
+    private _dialogRef;
+    /** A portal containing the calendar for this datepicker. */
+    private _calendarPortal;
+    private _inputSubscription;
     /** The form control validator for the min date. */
     private _minValidator;
     /** The form control validator for the max date. */
     private _maxValidator;
-    _dateFilter: (date: Date | null) => boolean;
     /** The form control validator for the date filter. */
     private _filterValidator;
+    /** The combined form control validator for this input. */
     private _validator;
-    toggle(): void;
-    /** Opens the overlay panel. */
-    open(): void;
-    /** Closes the overlay panel and focuses the host element. */
-    close(): void;
-    /** Removes the panel from the DOM. */
-    destroyPanel(): void;
-    _onPanelDone(): void;
-    _onFadeInDone(): void;
-    _handleWindowResize(event: Event): void;
-    private _focusPanel();
-    private _focusHost();
-    private coerceDateProperty(value);
-    _handleClick(event: MouseEvent): void;
-    _handleKeydown(event: KeyboardEvent): void;
-    _onBlur(): void;
-    _handleFocus(event: Event): void;
-    _handleBlur(event: Event): void;
-    /**
-     * Display Years
-     */
-    _showYear(): void;
-    private getYears();
-    private _scrollToSelectedYear();
-    /**
-     * select year
-     * @param year
-     */
-    _setYear(year: number): void;
-    /**
-     * Display Calendar
-     */
-    _showCalendar(): void;
-    /**
-     * Toggle Hour visiblity
-     */
-    _toggleHours(value: ClockView): void;
-    /**
-     * Ok Button Event
-     */
-    _onClickOk(): void;
-    /**
-     * Date Selection Event
-     * @param event Event Object
-     * @param date Date Object
-     */
-    _onClickDate(event: Event, date: any): void;
-    /**
-     * date selected
-     * @param date Date Object
-     */
-    _dateSelected(date: Date): void;
-    /**
-     * Update Month
-     * @param noOfMonths increment number of months
-     */
-    _updateMonth(noOfMonths: number): void;
-    /**
-     * Check is Before month enabled or not
-     * @return boolean
-     */
-    _isBeforeMonth(): boolean;
-    /**
-     * Check is After month enabled or not
-     * @return boolean
-     */
-    _isAfterMonth(): boolean;
-    _onActiveDateChange(date: Date): void;
-    _onDateChange(date: Date): void;
-    _onTimeChange(event: Date): void;
-    /**
-     * Check the date is enabled or not
-     * @param date Date Object
-     * @return boolean
-     */
-    private _isDisabledDate(date);
-    /**
-     * Generate Month Calendar
-     */
-    private generateCalendar();
-    /**
-     * Set hours
-     * @param hour number of hours
-     */
-    _hourSelected(hour: number): void;
-    /**
-     * Set minutes
-     * @param minute number of minutes
-     */
-    _minuteSelected(minute: number): void;
-    /** Emits an event when the user selects a date. */
-    _emitChangeEvent(): void;
+    constructor(_element: ElementRef, _overlay: Overlay, _ngZone: NgZone, _viewContainerRef: ViewContainerRef, _scrollDispatcher: ScrollDispatcher, _locale: DateLocale, _util: DateUtil, _dir: Dir);
+    ngOnDestroy(): void;
+    registerOnValidatorChange(fn: () => void): void;
     validate(c: AbstractControl): ValidationErrors | null;
     writeValue(value: any): void;
     registerOnChange(fn: (value: any) => void): void;
     registerOnTouched(fn: () => {}): void;
     setDisabledState(isDisabled: boolean): void;
-    /**
-     * Get an hour of the date in the 12-hour format
-     * @param date Date Object
-     * @return hour of the date in the 12-hour format
-     */
-    private _getHours12(date);
-    is12HourClock(): boolean;
+    _handleFocus(event: Event): void;
+    _handleBlur(event: Event): void;
+    private coerceDateProperty(value);
     /**
      * format date
      * @param date Date Object
      * @return string with formatted date
      */
     private _formatDate(date);
-    private _subscribeToBackdrop();
     /**
-     *  This method creates the overlay from the provided panel's template and saves its
-     *  OverlayRef so that it can be attached to the DOM when open is called.
+     * Get an hour of the date in the 12-hour format
+     * @param date Date Object
+     * @return hour of the date in the 12-hour format
      */
-    private _createOverlay();
+    private _getHours12(hours);
+    /** Selects the given date and closes the currently open popup or dialog. */
+    _selectAndClose(date: Date): void;
+    /** Emits an event when the user selects a date. */
+    _emitChangeEvent(): void;
+    /** Open the calendar. */
+    open(): void;
+    /** Close the calendar. */
+    close(): void;
+    /** Open the calendar as a dialog. */
+    private _openAsDialog();
+    /** Open the calendar as a popup. */
+    private _openAsPopup();
+    /** Create the dialog. */
+    private _createDialog();
+    /** Create the popup. */
+    private _createPopup();
     /** Create the popup PositionStrategy. */
-    private _createPickerPositionStrategy();
-    private _cleanUpSubscriptions();
-    private calendarState(direction);
+    private _createPopupPositionStrategy();
 }

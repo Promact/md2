@@ -1,0 +1,85 @@
+@import '../core/style/elevation';
+
+$md2-datepicker-calendar-padding: 8px;
+$md2-datepicker-calendar-cell-size: 40px;
+$md2-datepicker-calendar-portrait-width: $md2-datepicker-calendar-cell-size * 7 + $md2-datepicker-calendar-padding * 2;
+$md2-datepicker-calendar-landscape-width: 446px;
+$md2-datepicker-calendar-portrait-height: 405px;
+$md2-datepicker-calendar-landscape-height: 328px;
+
+.md2-datepicker-content {
+  @include mat-elevation(8);
+  display: block;
+  background-color: white;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.md2-calendar {
+  width: $md2-datepicker-calendar-portrait-width;
+  height: $md2-datepicker-calendar-portrait-height;
+
+  &[mode='landscape'] {
+    width: $md2-datepicker-calendar-landscape-width;
+    height: $md2-datepicker-calendar-landscape-height;
+  }
+}
+
+@media (min-width: 480px) {
+  .md2-calendar[mode='auto'] {
+    width: $md2-datepicker-calendar-landscape-width;
+    height: $md2-datepicker-calendar-landscape-height;
+  }
+}
+
+.md2-datepicker-content-touch {
+  @include mat-elevation(0);
+  display: block;
+  box-shadow: 0 11px 15px -7px rgba(black, 0.2), 0 24px 38px 3px rgba(black, 0.14), 0 9px 46px 8px rgba(black, 0.12);
+}
+
+.cdk-overlay-container, .cdk-global-overlay-wrapper {
+  pointer-events: none;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.cdk-overlay-container {
+  position: fixed;
+  z-index: 1000;
+}
+
+.cdk-global-overlay-wrapper {
+  display: flex;
+  position: absolute;
+  z-index: 1000;
+}
+
+.cdk-overlay-pane {
+  position: absolute;
+  pointer-events: auto;
+  box-sizing: border-box;
+  z-index: 1000;
+}
+
+.cdk-overlay-backdrop {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  pointer-events: auto;
+  transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1);
+  opacity: 0;
+}
+
+.cdk-overlay-backdrop.cdk-overlay-backdrop-showing {
+  opacity: 0.48;
+}
+
+.cdk-overlay-dark-backdrop {
+  background: rgba(black, 0.6);
+}

@@ -1,38 +1,40 @@
-/** Date locale info. TODO(mmalerba): Integrate with i18n solution once we know what we're doing. */
+export interface Months {
+    long: Array<string>;
+    short: Array<string>;
+    narrow: Array<string>;
+}
+export interface DaysOfWeek {
+    long: Array<string>;
+    short: Array<string>;
+    narrow: Array<string>;
+}
 export declare class DateLocale {
-    formatDate: (date: Date) => string;
-    parseDate(value: any): Date;
-    dates: any[];
-    private _createDatesArray(format);
-    getCalendarMonthHeaderLabel: (date: Date) => string;
-    getCalendarYearHeaderLabel: (date: Date) => string;
-    private _createFormatFunction(options);
+    locale: any;
+    months: Months;
+    daysOfWeek: DaysOfWeek;
+    dates: string[];
+    hours: string[];
+    minutes: string[];
     firstDayOfWeek: number;
-    fullMonths: string[];
-    shortMonths: string[];
-    narrowMonths: string[];
-    months: {
-        full: string;
-        short: string;
-        xshort: string;
-    }[];
-    fullDays: string[];
-    shortDays: string[];
-    narrowDays: string[];
-    days: {
-        full: string;
-        short: string;
-        xshort: string;
-    }[];
-    getDays(): {
-        full: string;
-        short: string;
-        xshort: string;
-    }[];
-    getDayLabel(d: number): string;
+    getDayOfWeek(date: Date): number;
+    getMonthNames(style: 'long' | 'short' | 'narrow'): string[];
+    getDateNames(): string[];
+    getHourNames(): string[];
+    getMinuteNames(): string[];
+    getDayOfWeekNames(style: 'long' | 'short' | 'narrow'): string[];
+    getYearName(date: Date): string;
+    getFirstDayOfWeek(): number;
+    format(date: Date, displayFormat: Object): string;
     getDateLabel(d: Date): string;
-    getMonthLabel(m: number, y: number): string;
-    getYearLabel(y: number): string;
-    private _createMonthsArray(format);
-    private _createDaysArray(format);
+    getHoursLabel(d: Date): string;
+    getMinutesLabel(d: Date): string;
+    getMonthLabel(d: Date): string;
+    /**
+     * Strip out unicode LTR and RTL characters. Edge and IE insert these into formatted dates while
+     * other browsers do not. We remove them to make output consistent and because they interfere with
+     * date parsing.
+     * @param s The string to strip direction characters from.
+     * @returns The stripped string.
+     */
+    private _stripDirectionalityCharacters(s);
 }

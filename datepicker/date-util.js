@@ -6,8 +6,8 @@ var DateUtil = (function () {
             'y': 0,
             'Y': [0, -2000],
             'M': [1, 1],
-            'n': [1, this._locale.shortMonths],
-            'N': [1, this._locale.fullMonths],
+            'n': [1, this._locale.getMonthNames('short')],
+            'N': [1, this._locale.getMonthNames('long')],
             'd': 2,
             'm': 4,
             'H': 3,
@@ -20,9 +20,6 @@ var DateUtil = (function () {
             'A': [3, ['AM', 'PM']]
         };
     }
-    DateUtil.prototype.today = function () {
-        return new Date();
-    };
     DateUtil.prototype.replace = function (s, regexp, sub) {
         return (s != null ? '' + s : '').replace(regexp, sub != null ? sub : '');
     };
@@ -158,14 +155,12 @@ var DateUtil = (function () {
         var d = new Date(ctorArgs[0], ctorArgs[1], ctorArgs[2], ctorArgs[3], ctorArgs[4], ctorArgs[5], ctorArgs[6]);
         return d;
     };
+    DateUtil.prototype.today = function () {
+        return new Date();
+    };
     DateUtil.prototype.parse = function (value, format) {
         var timestamp = typeof value == 'number' ? value : Date.parse(value);
         return isNaN(timestamp) ? null : new Date(timestamp);
-    };
-    DateUtil.prototype.compareDate = function (first, second) {
-        return this.getYear(first) - this.getYear(second) ||
-            this.getMonth(first) - this.getMonth(second) ||
-            this.getDate(first) - this.getDate(second);
     };
     DateUtil.prototype.getYear = function (date) {
         return date.getFullYear();
@@ -176,11 +171,87 @@ var DateUtil = (function () {
     DateUtil.prototype.getDate = function (date) {
         return date.getDate();
     };
-    DateUtil.prototype.getHour = function (date) {
+    DateUtil.prototype.getHours = function (date) {
         return date.getHours();
     };
-    DateUtil.prototype.getMinute = function (date) {
+    DateUtil.prototype.getMinutes = function (date) {
         return date.getMinutes();
+    };
+    DateUtil.prototype.getSeconds = function (date) {
+        return date.getSeconds();
+    };
+    DateUtil.prototype.createDate = function (year, month, date, hours, minutes, seconds) {
+        // Check for invalid month and date (except upper bound on date which we have to check after
+        // creating the Date).
+        if (month < 0 || month > 11 || date < 1) {
+            return null;
+        }
+        var result = this._createDateWithOverflow(year, month, date, hours, minutes, seconds);
+        // Check that the date wasn't above the upper bound for the month, causing the month to
+        // overflow.
+        if (result.getMonth() != month) {
+            return null;
+        }
+        return result;
+    };
+    DateUtil.prototype.clone = function (date) {
+        return this.createDate(this.getYear(date), this.getMonth(date), this.getDate(date), this.getHours(date), this.getMinutes(date), this.getSeconds(date));
+    };
+    DateUtil.prototype.getNumDaysInMonth = function (date) {
+        return this.getDate(this._createDateWithOverflow(this.getYear(date), this.getMonth(date) + 1, 0, 0, 0, 0));
+    };
+    DateUtil.prototype.addCalendarYears = function (date, years) {
+        return this.addCalendarMonths(date, years * 12);
+    };
+    DateUtil.prototype.addCalendarMonths = function (date, months) {
+        var newDate = this._createDateWithOverflow(this.getYear(date), this.getMonth(date) + months, this.getDate(date), this.getHours(date), this.getMinutes(date), this.getSeconds(date));
+        // It's possible to wind up in the wrong month if the original month has more days than the new
+        // month. In this case we want to go to the last day of the desired month.
+        // Note: the additional + 12 % 12 ensures we end up with a positive number, since JS % doesn't
+        // guarantee this.
+        if (this.getMonth(newDate) != ((this.getMonth(date) + months) % 12 + 12) % 12) {
+            newDate = this._createDateWithOverflow(this.getYear(newDate), this.getMonth(newDate), 0, this.getHours(newDate), this.getMinutes(newDate), this.getSeconds(newDate));
+        }
+        return newDate;
+    };
+    DateUtil.prototype.addCalendarDays = function (date, days) {
+        return this._createDateWithOverflow(this.getYear(date), this.getMonth(date), this.getDate(date) + days, this.getHours(date), this.getMinutes(date), this.getSeconds(date));
+    };
+    DateUtil.prototype.addCalendarHours = function (date, hours) {
+        return this._createDateWithOverflow(this.getYear(date), this.getMonth(date), this.getDate(date), this.getHours(date) + hours, this.getMinutes(date), this.getSeconds(date));
+    };
+    DateUtil.prototype.addCalendarMinutes = function (date, minutes) {
+        return this._createDateWithOverflow(this.getYear(date), this.getMonth(date), this.getDate(date), this.getHours(date), this.getMinutes(date) + minutes, this.getSeconds(date));
+    };
+    DateUtil.prototype.getISODateString = function (date) {
+        return [
+            date.getUTCFullYear(),
+            this._2digit(date.getUTCMonth() + 1),
+            this._2digit(date.getUTCDate())
+        ].join('-');
+    };
+    /** Creates a date but allows the month and date to overflow. */
+    DateUtil.prototype._createDateWithOverflow = function (year, month, date, hours, minutes, seconds) {
+        var result = new Date(year, month, date, hours, minutes, seconds);
+        // We need to correct for the fact that JS native Date treats years in range [0, 99] as
+        // abbreviations for 19xx.
+        if (year >= 0 && year < 100) {
+            result.setFullYear(this.getYear(result) - 1900);
+        }
+        return result;
+    };
+    /**
+     * Pads a number to make it two digits.
+     * @param n The number to pad.
+     * @returns The padded number.
+     */
+    DateUtil.prototype._2digit = function (n) {
+        return ('00' + n).slice(-2);
+    };
+    DateUtil.prototype.compareDate = function (first, second) {
+        return this.getYear(first) - this.getYear(second) ||
+            this.getMonth(first) - this.getMonth(second) ||
+            this.getDate(first) - this.getDate(second);
     };
     /**
      * Gets the first day of the month for the given date's month.
@@ -197,7 +268,7 @@ var DateUtil = (function () {
      * @returns {Date}
      */
     DateUtil.prototype.getFirstDateOfMonth = function (date) {
-        return new Date(date.getFullYear(), date.getMonth(), 1, date.getHours(), date.getMinutes());
+        return new Date(date.getFullYear(), date.getMonth(), 1);
     };
     /**
      * Gets the number of days in the month for the given date's month.
@@ -222,6 +293,15 @@ var DateUtil = (function () {
      */
     DateUtil.prototype.getDateInPreviousMonth = function (date) {
         return new Date(date.getFullYear(), date.getMonth() - 1, 1, date.getHours(), date.getMinutes());
+    };
+    /**
+     * Gets whether two dates have the same year.
+     * @param {Date} d1
+     * @param {Date} d2
+     * @returns {boolean}
+     */
+    DateUtil.prototype.isSameYear = function (d1, d2) {
+        return d1 && d2 && d1.getFullYear() === d2.getFullYear();
     };
     /**
      * Gets whether two dates have the same month and year.
@@ -425,7 +505,7 @@ var DateUtil = (function () {
      * @param {Date} minDate
      * @param {Date} maxDate
      */
-    DateUtil.prototype.isDateWithinRange1 = function (date, minDate, maxDate) {
+    DateUtil.prototype.isFullDateWithinRange = function (date, minDate, maxDate) {
         minDate = this.isValidDate(minDate) ? minDate : null;
         maxDate = this.isValidDate(maxDate) ? maxDate : null;
         return (!minDate || minDate <= date) &&
@@ -492,6 +572,41 @@ var DateUtil = (function () {
         var year = date.getFullYear();
         return (!minDate || minDate.getFullYear() < year || minDate.getMonth() <= month) &&
             (!maxDate || maxDate.getFullYear() > year || maxDate.getMonth() >= month);
+    };
+    /**
+     * Compares two dates.
+     * @param first The first date to compare.
+     * @param second The second date to compare.
+     * @returns 0 if the dates are equal, a number less than 0 if the first date is earlier,
+     *     a number greater than 0 if the first date is later.
+     */
+    DateUtil.prototype.compareDateAndTime = function (first, second) {
+        return this.getYear(first) - this.getYear(second) ||
+            this.getMonth(first) - this.getMonth(second) ||
+            this.getDate(first) - this.getDate(second) ||
+            this.getHours(first) - this.getDate(second) ||
+            this.getMinutes(first) - this.getDate(second) ||
+            this.getSeconds(first) - this.getDate(second);
+    };
+    /**
+     * Checks if two dates are equal.
+     * @param first The first date to check.
+     * @param second The second date to check.
+     * @returns {boolean} Whether the two dates are equal.
+     *     Null dates are considered equal to other null dates.
+     */
+    DateUtil.prototype.sameDate = function (first, second) {
+        return first && second ? !this.compareDate(first, second) : first == second;
+    };
+    /**
+     * Checks if two dates are equal.
+     * @param first The first date to check.
+     * @param second The second date to check.
+     * @returns {boolean} Whether the two dates are equal.
+     *     Null dates are considered equal to other null dates.
+     */
+    DateUtil.prototype.sameDateAndTime = function (first, second) {
+        return first && second ? !this.compareDateAndTime(first, second) : first == second;
     };
     return DateUtil;
 }());

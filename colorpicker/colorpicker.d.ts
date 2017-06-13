@@ -2,7 +2,7 @@ import { EventEmitter, ElementRef, OnDestroy, Renderer, TemplateRef, ViewContain
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { Overlay, ScrollDispatcher } from '../core';
 import { ColorUtil } from './color-util';
-import { Container } from '../datepicker/datepicker';
+export declare type Container = 'inline' | 'dialog';
 export declare class TextDirective {
     newValue: EventEmitter<any>;
     text: any;

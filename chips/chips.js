@@ -206,7 +206,6 @@ var Md2Chips = (function () {
             this.addNewChip(this.inputValue);
         }
         this._onTouched();
-        this.addNewChip(this.inputValue);
     };
     Md2Chips.prototype.inputFocus = function (event) {
         if (this.disabled) {

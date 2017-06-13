@@ -90,8 +90,8 @@ var Md2Clock = (function () {
     });
     Object.defineProperty(Md2Clock.prototype, "_hand", {
         get: function () {
-            this._selectedHour = this._util.getHour(this.activeDate);
-            this._selectedMinute = this._util.getMinute(this.activeDate);
+            this._selectedHour = this._util.getHours(this.activeDate);
+            this._selectedMinute = this._util.getMinutes(this.activeDate);
             var deg = 0;
             var radius = CLOCK_OUTER_RADIUS;
             if (this._hourView) {
@@ -118,14 +118,6 @@ var Md2Clock = (function () {
         this.activeDate = this._activeDate || this._util.today();
         this._init();
     };
-    /** Handles hour selection in the clock view. */
-    Md2Clock.prototype._hourSelected = function () {
-        this._hourView = false;
-    };
-    /** Handles minute selection in the clock view. */
-    Md2Clock.prototype._minuteSelected = function () {
-        this._hourView = true;
-    };
     /** Handles mousedown events on the clock body. */
     Md2Clock.prototype._handleMousedown = function (event) {
         this.setTime(event);
@@ -144,27 +136,23 @@ var Md2Clock = (function () {
         document.removeEventListener('mouseup', this.mouseUpListener);
         document.removeEventListener('touchend', this.mouseUpListener);
         this.selectedChange.emit(this.activeDate);
-        if (this._hourView) {
-            this._hourSelected();
-        }
-        else {
-            this._minuteSelected();
-        }
     };
     /** Initializes this clock view. */
     Md2Clock.prototype._init = function () {
         this._hours.length = 0;
         this._minutes.length = 0;
+        var hourNames = this._locale.getHourNames();
+        var minuteNames = this._locale.getMinuteNames();
         if (this.twelvehour) {
-            for (var i = 1; i < 13; i++) {
+            for (var i = 1; i < (hourNames.length / 2) + 1; i++) {
                 var radian = i / 6 * Math.PI;
                 var radius = CLOCK_OUTER_RADIUS;
                 var date = new Date(this.activeDate.getTime());
                 date.setHours(i + 1, 0, 0, 0);
-                var enabled = this._util.isDateWithinRange1(date, this.min, this.max);
+                var enabled = this._util.isFullDateWithinRange(date, this.min, this.max);
                 this._hours.push({
                     value: i,
-                    displayValue: i === 0 ? '00' : i,
+                    displayValue: i === 0 ? '00' : hourNames[i],
                     enabled: enabled,
                     top: CLOCK_RADIUS - Math.cos(radian) * radius - CLOCK_TICK_RADIUS,
                     left: CLOCK_RADIUS + Math.sin(radian) * radius - CLOCK_TICK_RADIUS,
@@ -172,15 +160,15 @@ var Md2Clock = (function () {
             }
         }
         else {
-            for (var i = 0; i < 24; i++) {
+            for (var i = 0; i < hourNames.length; i++) {
                 var radian = i / 6 * Math.PI;
                 var outer = i > 0 && i < 13, radius = outer ? CLOCK_OUTER_RADIUS : CLOCK_INNER_RADIUS;
                 var date = new Date(this.activeDate.getTime());
                 date.setHours(i + 1, 0, 0, 0);
-                var enabled = this._util.isDateWithinRange1(date, this.min, this.max);
+                var enabled = this._util.isFullDateWithinRange(date, this.min, this.max);
                 this._hours.push({
                     value: i,
-                    displayValue: i === 0 ? '00' : i,
+                    displayValue: i === 0 ? '00' : hourNames[i],
                     enabled: enabled,
                     top: CLOCK_RADIUS - Math.cos(radian) * radius - CLOCK_TICK_RADIUS,
                     left: CLOCK_RADIUS + Math.sin(radian) * radius - CLOCK_TICK_RADIUS,
@@ -188,14 +176,14 @@ var Md2Clock = (function () {
                 });
             }
         }
-        for (var i = 0; i < 60; i += 5) {
+        for (var i = 0; i < minuteNames.length; i += 5) {
             var radian = i / 30 * Math.PI;
             var date = new Date(this.activeDate.getTime());
             date.setMinutes(i, 0, 0);
-            var enabled = this._util.isDateWithinRange1(date, this.min, this.max);
+            var enabled = this._util.isFullDateWithinRange(date, this.min, this.max);
             this._minutes.push({
                 value: i,
-                displayValue: i === 0 ? '00' : i,
+                displayValue: i === 0 ? '00' : minuteNames[i],
                 enabled: enabled,
                 top: CLOCK_RADIUS - Math.cos(radian) * CLOCK_OUTER_RADIUS - CLOCK_TICK_RADIUS,
                 left: CLOCK_RADIUS + Math.sin(radian) * CLOCK_OUTER_RADIUS - CLOCK_TICK_RADIUS,
@@ -307,8 +295,8 @@ Md2Clock = __decorate([
             '(mousedown)': '_handleMousedown($event)',
         },
     }),
-    __metadata("design:paramtypes", [ElementRef, DateLocale,
-        DateUtil])
+    __metadata("design:paramtypes", [ElementRef,
+        DateLocale, DateUtil])
 ], Md2Clock);
 export { Md2Clock };
 //# sourceMappingURL=clock.js.map

@@ -1,6 +1,5 @@
 import { DateLocale } from './date-locale';
 export declare class DateUtil {
-    today(): Date;
     _locale: DateLocale;
     parseDateMap: any;
     replace(s: string, regexp: any, sub?: string): string;
@@ -16,13 +15,32 @@ export declare class DateUtil {
     getFindIndex(list: any, index: any, defaultIndex: any): any;
     find(list: any, findFunc: any, startIndex?: any, endIndex?: any): any;
     parseDate(date: string, fmt: string): Date;
+    today(): Date;
     parse(value: any, format?: Object): Date | null;
-    compareDate(first: Date, second: Date): number;
     getYear(date: Date): number;
     getMonth(date: Date): number;
     getDate(date: Date): number;
-    getHour(date: Date): number;
-    getMinute(date: Date): number;
+    getHours(date: Date): number;
+    getMinutes(date: Date): number;
+    getSeconds(date: Date): number;
+    createDate(year: number, month: number, date: number, hours: number, minutes: number, seconds: number): Date;
+    clone(date: Date): Date;
+    getNumDaysInMonth(date: Date): number;
+    addCalendarYears(date: Date, years: number): Date;
+    addCalendarMonths(date: Date, months: number): Date;
+    addCalendarDays(date: Date, days: number): Date;
+    addCalendarHours(date: Date, hours: number): Date;
+    addCalendarMinutes(date: Date, minutes: number): Date;
+    getISODateString(date: Date): string;
+    /** Creates a date but allows the month and date to overflow. */
+    private _createDateWithOverflow(year, month, date, hours, minutes, seconds);
+    /**
+     * Pads a number to make it two digits.
+     * @param n The number to pad.
+     * @returns The padded number.
+     */
+    private _2digit(n);
+    compareDate(first: Date, second: Date): number;
     /**
      * Gets the first day of the month for the given date's month.
      * @param {Date} date
@@ -53,6 +71,13 @@ export declare class DateUtil {
      * @returns {Date}
      */
     getDateInPreviousMonth(date: Date): Date;
+    /**
+     * Gets whether two dates have the same year.
+     * @param {Date} d1
+     * @param {Date} d2
+     * @returns {boolean}
+     */
+    isSameYear(d1: Date, d2: Date): boolean;
     /**
      * Gets whether two dates have the same month and year.
      * @param {Date} d1
@@ -190,7 +215,7 @@ export declare class DateUtil {
      * @param {Date} minDate
      * @param {Date} maxDate
      */
-    isDateWithinRange1(date: Date, minDate: Date, maxDate: Date): boolean;
+    isFullDateWithinRange(date: Date, minDate: Date, maxDate: Date): boolean;
     /**
      * Gets a new date incremented by the given number of years. Number of years can be negative.
      * See `incrementMonths` for notes on overflow for specific dates.
@@ -231,4 +256,28 @@ export declare class DateUtil {
      * @param {Date} maxDate
      */
     isMonthWithinRange(date: Date, minDate: Date, maxDate: Date): boolean;
+    /**
+     * Compares two dates.
+     * @param first The first date to compare.
+     * @param second The second date to compare.
+     * @returns 0 if the dates are equal, a number less than 0 if the first date is earlier,
+     *     a number greater than 0 if the first date is later.
+     */
+    compareDateAndTime(first: Date, second: Date): number;
+    /**
+     * Checks if two dates are equal.
+     * @param first The first date to check.
+     * @param second The second date to check.
+     * @returns {boolean} Whether the two dates are equal.
+     *     Null dates are considered equal to other null dates.
+     */
+    sameDate(first: Date | null, second: Date | null): boolean;
+    /**
+     * Checks if two dates are equal.
+     * @param first The first date to check.
+     * @param second The second date to check.
+     * @returns {boolean} Whether the two dates are equal.
+     *     Null dates are considered equal to other null dates.
+     */
+    sameDateAndTime(first: Date | null, second: Date | null): boolean;
 }

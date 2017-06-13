@@ -49,10 +49,6 @@ export declare class Md2Clock implements AfterContentInit {
     private mouseUpListener;
     constructor(_element: ElementRef, _locale: DateLocale, _util: DateUtil);
     ngAfterContentInit(): void;
-    /** Handles hour selection in the clock view. */
-    _hourSelected(): void;
-    /** Handles minute selection in the clock view. */
-    _minuteSelected(): void;
     /** Handles mousedown events on the clock body. */
     _handleMousedown(event: any): void;
     _handleMousemove(event: any): void;

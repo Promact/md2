@@ -66,8 +66,8 @@ export declare class Md2Chips implements ControlValueAccessor, AfterContentInit 
      */
     inputChanged(event: KeyboardEvent): void;
     _handleFocus(): void;
-    inputBlurred(event: Event): void;
-    inputFocus(event: Event): void;
+    inputBlurred(): void;
+    inputFocus(): void;
     inputPaste(event: any): void;
     leftArrowKeyEvents(): void;
     rightArrowKeyEvents(): void;

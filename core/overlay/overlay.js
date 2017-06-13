@@ -14,6 +14,7 @@ import { OverlayRef } from './overlay-ref';
 import { OverlayPositionBuilder } from './position/overlay-position-builder';
 import { VIEWPORT_RULER_PROVIDER } from './position/viewport-ruler';
 import { OverlayContainer, OVERLAY_CONTAINER_PROVIDER } from './overlay-container';
+import { ScrollStrategyOptions } from './scroll/index';
 /** Next overlay unique ID. */
 var nextUniqueId = 0;
 /** The default state for newly created overlays. */
@@ -27,7 +28,8 @@ var defaultState = new OverlayState();
  * An overlay *is* a PortalHost, so any kind of Portal can be loaded into one.
  */
 var Overlay = (function () {
-    function Overlay(_overlayContainer, _componentFactoryResolver, _positionBuilder, _appRef, _injector, _ngZone) {
+    function Overlay(scrollStrategies, _overlayContainer, _componentFactoryResolver, _positionBuilder, _appRef, _injector, _ngZone) {
+        this.scrollStrategies = scrollStrategies;
         this._overlayContainer = _overlayContainer;
         this._componentFactoryResolver = _componentFactoryResolver;
         this._positionBuilder = _positionBuilder;
@@ -76,13 +78,16 @@ var Overlay = (function () {
      * @param state
      */
     Overlay.prototype._createOverlayRef = function (pane, state) {
-        return new OverlayRef(this._createPortalHost(pane), pane, state, this._ngZone);
+        var scrollStrategy = state.scrollStrategy || this.scrollStrategies.noop();
+        var portalHost = this._createPortalHost(pane);
+        return new OverlayRef(portalHost, pane, state, scrollStrategy, this._ngZone);
     };
     return Overlay;
 }());
 Overlay = __decorate([
     Injectable(),
-    __metadata("design:paramtypes", [OverlayContainer,
+    __metadata("design:paramtypes", [ScrollStrategyOptions,
+        OverlayContainer,
         ComponentFactoryResolver,
         OverlayPositionBuilder,
         ApplicationRef,

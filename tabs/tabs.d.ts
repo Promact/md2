@@ -74,7 +74,7 @@ export declare class Md2Tabs implements AfterContentInit {
      * On Window Resize
      * @param event
      */
-    onWindowResize(event: Event): void;
+    onWindowResize(): void;
     /**
      * Can page Back
      */

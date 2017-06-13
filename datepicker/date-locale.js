@@ -29,7 +29,11 @@ var DEFAULT_DAY_OF_WEEK_NAMES = {
 };
 /** Creates an array and fills it with values. */
 function range(length, valueFunction) {
-    return Array.apply(null, Array(length)).map(function (v, i) { return valueFunction(i); });
+    var valuesArray = Array(length);
+    for (var i = 0; i < length; i++) {
+        valuesArray[i] = valueFunction(i);
+    }
+    return valuesArray;
 }
 ;
 ;

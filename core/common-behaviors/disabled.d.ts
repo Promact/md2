@@ -1,5 +1,4 @@
-/** @docs-private */
-export declare type Constructor<T> = new (...args: any[]) => T;
+import { Constructor } from './constructor';
 /** @docs-private */
 export interface CanDisable {
     disabled: boolean;

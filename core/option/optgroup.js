@@ -28,7 +28,7 @@ var MdOptgroupBase = (function () {
 export { MdOptgroupBase };
 export var _MdOptgroupMixinBase = mixinDisabled(MdOptgroupBase);
 // Counter for unique group ids.
-var nextId = 0;
+var _uniqueOptgroupIdCounter = 0;
 /**
  * Component that is used to group instances of `md-option`.
  */
@@ -37,7 +37,7 @@ var MdOptgroup = (function (_super) {
     function MdOptgroup() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         /** Unique id for the underlying label. */
-        _this._labelId = "mat-optgroup-label-" + nextId++;
+        _this._labelId = "mat-optgroup-label-" + _uniqueOptgroupIdCounter++;
         return _this;
     }
     return MdOptgroup;

@@ -52,6 +52,10 @@ var InteractivityChecker = (function () {
      * @returns Whether the element is tabbable.
      */
     InteractivityChecker.prototype.isTabbable = function (element) {
+        // Nothing is tabbable on the the server 😎
+        if (!this._platform.isBrowser) {
+            return false;
+        }
         var frameElement = getWindow(element).frameElement;
         if (frameElement) {
             var frameType = frameElement && frameElement.nodeName.toLowerCase();

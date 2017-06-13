@@ -18,7 +18,7 @@ var MdMutationObserverFactory = (function () {
     function MdMutationObserverFactory() {
     }
     MdMutationObserverFactory.prototype.create = function (callback) {
-        return new MutationObserver(callback);
+        return typeof MutationObserver === 'undefined' ? null : new MutationObserver(callback);
     };
     return MdMutationObserverFactory;
 }());
@@ -52,11 +52,13 @@ var ObserveContent = (function () {
         this._observer = this._mutationObserverFactory.create(function (mutations) {
             _this._debouncer.next(mutations);
         });
-        this._observer.observe(this._elementRef.nativeElement, {
-            characterData: true,
-            childList: true,
-            subtree: true
-        });
+        if (this._observer) {
+            this._observer.observe(this._elementRef.nativeElement, {
+                characterData: true,
+                childList: true,
+                subtree: true
+            });
+        }
     };
     ObserveContent.prototype.ngOnDestroy = function () {
         if (this._observer) {

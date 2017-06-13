@@ -96,7 +96,7 @@ var ScrollDispatcher = (function () {
     ScrollDispatcher.prototype.getScrollContainers = function (elementRef) {
         var _this = this;
         var scrollingContainers = [];
-        this.scrollableReferences.forEach(function (subscription, scrollable) {
+        this.scrollableReferences.forEach(function (_subscription, scrollable) {
             if (_this.scrollableContainsElement(scrollable, elementRef)) {
                 scrollingContainers.push(scrollable);
             }

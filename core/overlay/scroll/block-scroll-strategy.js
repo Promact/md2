@@ -4,7 +4,7 @@
 var BlockScrollStrategy = (function () {
     function BlockScrollStrategy(_viewportRuler) {
         this._viewportRuler = _viewportRuler;
-        this._previousHTMLStyles = { top: null, left: null };
+        this._previousHTMLStyles = { top: '', left: '' };
         this._isEnabled = false;
     }
     BlockScrollStrategy.prototype.attach = function () { };

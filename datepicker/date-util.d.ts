@@ -16,7 +16,7 @@ export declare class DateUtil {
     find(list: any, findFunc: any, startIndex?: any, endIndex?: any): any;
     parseDate(date: string, fmt: string): Date;
     today(): Date;
-    parse(value: any, format?: Object): Date | null;
+    parse(value: any): Date | null;
     getYear(date: Date): number;
     getMonth(date: Date): number;
     getDate(date: Date): number;

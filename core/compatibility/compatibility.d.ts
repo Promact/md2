@@ -1,7 +1,5 @@
 import { ElementRef, InjectionToken } from '@angular/core';
 export declare const MATERIAL_COMPATIBILITY_MODE: InjectionToken<boolean>;
-/** Injection token that configures whether the Material sanity checks are enabled. */
-export declare const MATERIAL_SANITY_CHECKS: InjectionToken<boolean>;
 /**
  * Returns an exception to be thrown if the consumer has used
  * an invalid Material prefix on a component.
@@ -26,12 +24,6 @@ export declare class MdPrefixRejector {
  * there are any uses of the `mat-` prefix.
  */
 export declare class CompatibilityModule {
-    private _document;
-    /** Whether we've done the global sanity checks (e.g. a theme is loaded, there is a doctype). */
-    private _hasDoneGlobalChecks;
-    constructor(_document: any, _sanityChecksEnabled: boolean);
-    private _checkDoctype();
-    private _checkTheme();
 }
 /**
  * Module that enforces "no-conflict" compatibility mode settings. When this module is loaded,

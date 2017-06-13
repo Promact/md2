@@ -9,7 +9,7 @@ import { MdDateFormats } from '../core/datetime/date-formats';
  */
 export declare class Md2YearView implements AfterContentInit {
     private _locale;
-    private _util;
+    _util: DateUtil;
     private _dateFormats;
     /** The date to display in this year view (everything other than the year is ignored). */
     activeDate: Date;

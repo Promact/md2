@@ -1,8 +1,7 @@
 import { ElementRef, EventEmitter, OnDestroy, ViewContainerRef, NgZone } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, ValidationErrors } from '@angular/forms';
-import { Overlay } from '../core';
+import { Overlay } from '../core/overlay/overlay';
 import { Dir } from '../core/rtl/dir';
-import { ScrollDispatcher } from '../core/overlay/index';
 import { Md2Calendar } from './calendar';
 import { DateLocale } from './date-locale';
 import { DateUtil } from './date-util';
@@ -36,7 +35,6 @@ export declare class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     private _overlay;
     private _ngZone;
     private _viewContainerRef;
-    private _scrollDispatcher;
     private _locale;
     private _util;
     private _dir;
@@ -75,7 +73,7 @@ export declare class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     private _disabled;
     value: Date;
     private _value;
-    private _inputValue;
+    _inputValue: string;
     openOnFocus: boolean;
     private _openOnFocus;
     isOpen: boolean;
@@ -108,7 +106,7 @@ export declare class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     private _filterValidator;
     /** The combined form control validator for this input. */
     private _validator;
-    constructor(_element: ElementRef, _overlay: Overlay, _ngZone: NgZone, _viewContainerRef: ViewContainerRef, _scrollDispatcher: ScrollDispatcher, _locale: DateLocale, _util: DateUtil, _dir: Dir);
+    constructor(_element: ElementRef, _overlay: Overlay, _ngZone: NgZone, _viewContainerRef: ViewContainerRef, _locale: DateLocale, _util: DateUtil, _dir: Dir);
     ngOnDestroy(): void;
     registerOnValidatorChange(fn: () => void): void;
     validate(c: AbstractControl): ValidationErrors | null;
@@ -116,7 +114,7 @@ export declare class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     registerOnChange(fn: (value: any) => void): void;
     registerOnTouched(fn: () => {}): void;
     setDisabledState(isDisabled: boolean): void;
-    _handleFocus(event: Event): void;
+    _handleFocus(): void;
     _handleBlur(event: Event): void;
     private coerceDateProperty(value);
     /**

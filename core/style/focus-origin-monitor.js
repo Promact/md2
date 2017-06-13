@@ -87,10 +87,9 @@ var FocusOriginMonitor = (function () {
     /**
      * Focuses the element via the specified focus origin.
      * @param element The element to focus.
-     * @param renderer The renderer to use to invoke the focus method on the element.
      * @param origin The focus origin.
      */
-    FocusOriginMonitor.prototype.focusVia = function (element, renderer, origin) {
+    FocusOriginMonitor.prototype.focusVia = function (element, origin) {
         this._setOriginForCurrentEventQueue(origin);
         element.focus();
     };

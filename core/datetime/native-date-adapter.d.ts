@@ -4,9 +4,6 @@ export declare class NativeDateAdapter extends DateAdapter<Date> {
     getYear(date: Date): number;
     getMonth(date: Date): number;
     getDate(date: Date): number;
-    getHours(date: Date): number;
-    getMinutes(date: Date): number;
-    getSeconds(date: Date): number;
     getDayOfWeek(date: Date): number;
     getMonthNames(style: 'long' | 'short' | 'narrow'): string[];
     getDateNames(): string[];
@@ -15,18 +12,16 @@ export declare class NativeDateAdapter extends DateAdapter<Date> {
     getFirstDayOfWeek(): number;
     getNumDaysInMonth(date: Date): number;
     clone(date: Date): Date;
-    createDate(year: number, month: number, date: number, hours: number, minutes: number, seconds: number): Date;
+    createDate(year: number, month: number, date: number): Date;
     today(): Date;
-    parse(value: any, parseFormat: Object): Date | null;
+    parse(value: any): Date | null;
     format(date: Date, displayFormat: Object): string;
     addCalendarYears(date: Date, years: number): Date;
     addCalendarMonths(date: Date, months: number): Date;
     addCalendarDays(date: Date, days: number): Date;
-    addCalendarHours(date: Date, hours: number): Date;
-    addCalendarMinutes(date: Date, minutes: number): Date;
     getISODateString(date: Date): string;
     /** Creates a date but allows the month and date to overflow. */
-    private _createDateWithOverflow(year, month, date, hours, minutes, seconds);
+    private _createDateWithOverflow(year, month, date);
     /**
      * Pads a number to make it two digits.
      * @param n The number to pad.

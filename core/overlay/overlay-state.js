@@ -1,12 +1,11 @@
-import { NoopScrollStrategy } from './scroll/noop-scroll-strategy';
 /**
  * OverlayState is a bag of values for either the initial configuration or current state of an
  * overlay.
  */
 var OverlayState = (function () {
     function OverlayState() {
-        /** Strategy to be used when handling scroll events while the overlay is open. */
-        this.scrollStrategy = new NoopScrollStrategy();
+        /** Custom class to add to the overlay pane. */
+        this.panelClass = '';
         /** Whether the overlay has a backdrop. */
         this.hasBackdrop = false;
         /** Custom class to add to the backdrop */

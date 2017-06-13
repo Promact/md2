@@ -158,7 +158,7 @@ var DateUtil = (function () {
     DateUtil.prototype.today = function () {
         return new Date();
     };
-    DateUtil.prototype.parse = function (value, format) {
+    DateUtil.prototype.parse = function (value) {
         var timestamp = typeof value == 'number' ? value : Date.parse(value);
         return isNaN(timestamp) ? null : new Date(timestamp);
     };

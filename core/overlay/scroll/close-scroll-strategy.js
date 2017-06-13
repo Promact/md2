@@ -1,3 +1,4 @@
+import { getMdScrollStrategyAlreadyAttachedError } from './scroll-strategy';
 /**
  * Strategy that will close the overlay as soon as the user starts scrolling.
  */
@@ -7,6 +8,9 @@ var CloseScrollStrategy = (function () {
         this._scrollSubscription = null;
     }
     CloseScrollStrategy.prototype.attach = function (overlayRef) {
+        if (this._overlayRef) {
+            throw getMdScrollStrategyAlreadyAttachedError();
+        }
         this._overlayRef = overlayRef;
     };
     CloseScrollStrategy.prototype.enable = function () {

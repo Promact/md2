@@ -12,11 +12,11 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, forwardRef, Input, Optional, Output, ViewChild, ViewContainerRef, ViewEncapsulation, NgZone, } from '@angular/core';
 import { NG_VALIDATORS, NG_VALUE_ACCESSOR, Validators, } from '@angular/forms';
-import { coerceBooleanProperty, Overlay } from '../core';
+import { coerceBooleanProperty } from '../core';
+import { Overlay } from '../core/overlay/overlay';
 import { ComponentPortal } from '../core/portal/portal';
 import { OverlayState } from '../core/overlay/overlay-state';
 import { Dir } from '../core/rtl/dir';
-import { RepositionScrollStrategy, ScrollDispatcher } from '../core/overlay/index';
 import { ESCAPE } from '../core/keyboard/keycodes';
 import { Md2Calendar } from './calendar';
 import { DateLocale } from './date-locale';
@@ -70,7 +70,7 @@ Md2DatepickerContent = __decorate([
         styles: [".md2-datepicker-content{box-shadow:0 5px 5px -3px rgba(0,0,0,.2),0 8px 10px 1px rgba(0,0,0,.14),0 3px 14px 2px rgba(0,0,0,.12);display:block;background-color:#fff;border-radius:2px;overflow:hidden}.md2-calendar{width:296px;height:405px}.md2-calendar[mode=landscape]{width:446px;height:328px}@media (min-width:480px){.md2-calendar[mode=auto]{width:446px;height:328px}}.md2-datepicker-content-touch{box-shadow:0 0 0 0 rgba(0,0,0,.2),0 0 0 0 rgba(0,0,0,.14),0 0 0 0 rgba(0,0,0,.12);display:block;box-shadow:0 11px 15px -7px rgba(0,0,0,.2),0 24px 38px 3px rgba(0,0,0,.14),0 9px 46px 8px rgba(0,0,0,.12)}.cdk-global-overlay-wrapper,.cdk-overlay-container{pointer-events:none;top:0;left:0;height:100%;width:100%}.cdk-overlay-container{position:fixed;z-index:1000}.cdk-global-overlay-wrapper{display:flex;position:absolute;z-index:1000}.cdk-overlay-pane{position:absolute;pointer-events:auto;box-sizing:border-box;z-index:1000}.cdk-overlay-backdrop{position:absolute;top:0;bottom:0;left:0;right:0;z-index:1000;pointer-events:auto;transition:opacity .4s cubic-bezier(.25,.8,.25,1);opacity:0}.cdk-overlay-backdrop.cdk-overlay-backdrop-showing{opacity:.48}.cdk-overlay-dark-backdrop{background:rgba(0,0,0,.6)} /*# sourceMappingURL=datepicker-content.css.map */ "],
         host: {
             'class': 'md2-datepicker-content',
-            '[class.md2-datepicker-content-touch]': 'datepicker.touchUi',
+            '[class.md2-datepicker-content-touch]': 'datepicker?.touchUi',
             '(keydown)': '_handleKeydown($event)',
         },
         encapsulation: ViewEncapsulation.None,
@@ -90,17 +90,16 @@ export var MD2_DATEPICKER_VALIDATORS = {
 };
 /* Component responsible for managing the datepicker popup/dialog. */
 var Md2Datepicker = (function () {
-    function Md2Datepicker(_element, _overlay, _ngZone, _viewContainerRef, _scrollDispatcher, _locale, _util, _dir) {
+    function Md2Datepicker(_element, _overlay, _ngZone, _viewContainerRef, _locale, _util, _dir) {
         var _this = this;
         this._element = _element;
         this._overlay = _overlay;
         this._ngZone = _ngZone;
         this._viewContainerRef = _viewContainerRef;
-        this._scrollDispatcher = _scrollDispatcher;
         this._locale = _locale;
         this._util = _util;
         this._dir = _dir;
-        this._onChange = function (value) { };
+        this._onChange = function () { };
         this._onTouched = function () { };
         this._validatorOnChange = function () { };
         this._inputFocused = false;
@@ -271,7 +270,7 @@ var Md2Datepicker = (function () {
     Md2Datepicker.prototype.setDisabledState = function (isDisabled) {
         this.disabled = isDisabled;
     };
-    Md2Datepicker.prototype._handleFocus = function (event) {
+    Md2Datepicker.prototype._handleFocus = function () {
         this._inputFocused = true;
         if (!this.opened && this.openOnFocus) {
             this.open();
@@ -285,7 +284,7 @@ var Md2Datepicker = (function () {
         var el = event.target;
         var date = this._util.parseDate(el.value, this.format);
         if (!date) {
-            date = this._util.parse(el.value, this.format);
+            date = this._util.parse(el.value);
         }
         if (date != null && date.getTime && !isNaN(date.getTime())) {
             var d = new Date(this.value);
@@ -468,7 +467,7 @@ var Md2Datepicker = (function () {
             var componentRef = this._dialogRef.attach(this._calendarPortal);
             componentRef.instance.datepicker = this;
         }
-        this._dialogRef.backdropClick().first().subscribe(function () { return _this.close(); });
+        this._dialogRef.backdropClick().subscribe(function () { return _this.close(); });
     };
     /** Open the calendar as a popup. */
     Md2Datepicker.prototype._openAsPopup = function () {
@@ -482,7 +481,7 @@ var Md2Datepicker = (function () {
             /* Update the position once the calendar has rendered. */
             this._ngZone.onStable.first().subscribe(function () { return _this._popupRef.updatePosition(); });
         }
-        this._popupRef.backdropClick().first().subscribe(function () { return _this.close(); });
+        this._popupRef.backdropClick().subscribe(function () { return _this.close(); });
     };
     /** Create the dialog. */
     Md2Datepicker.prototype._createDialog = function () {
@@ -500,14 +499,9 @@ var Md2Datepicker = (function () {
         var overlayState = new OverlayState();
         overlayState.positionStrategy = this._createPopupPositionStrategy();
         overlayState.hasBackdrop = true;
-        if (this.touchUi) {
-            overlayState.backdropClass = 'cdk-overlay-dark-backdrop';
-        }
-        else {
-            overlayState.backdropClass = 'cdk-overlay-transparent-backdrop';
-        }
+        overlayState.backdropClass = 'cdk-overlay-transparent-backdrop';
         overlayState.direction = this._dir ? this._dir.value : 'ltr';
-        overlayState.scrollStrategy = new RepositionScrollStrategy(this._scrollDispatcher);
+        overlayState.scrollStrategy = this._overlay.scrollStrategies.reposition();
         this._popupRef = this._overlay.create(overlayState);
     };
     /** Create the popup PositionStrategy. */
@@ -616,7 +610,7 @@ __decorate([
 ], Md2Datepicker.prototype, "selectedChanged", void 0);
 Md2Datepicker = __decorate([
     Component({selector: 'md2-datepicker',
-        template: "<div class=\"md2-datepicker-trigger\"><button type=\"button\" class=\"md2-datepicker-button\" tabindex=\"-1\" (click)=\"open()\" [ngSwitch]=\"type\"><svg *ngSwitchCase=\"'time'\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z\"></path></svg> <svg *ngSwitchCase=\"'datetime'\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M15,13H16.5V15.82L18.94,17.23L18.19,18.53L15,16.69V13M19,8H5V19H9.67C9.24,18.09 9,17.07 9,16A7,7 0 0,1 16,9C17.07,9 18.09,9.24 19,9.67V8M5,21C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H6V1H8V3H16V1H18V3H19A2,2 0 0,1 21,5V11.1C22.24,12.36 23,14.09 23,16A7,7 0 0,1 16,23C14.09,23 12.36,22.24 11.1,21H5M16,11.15A4.85,4.85 0 0,0 11.15,16C11.15,18.68 13.32,20.85 16,20.85A4.85,4.85 0 0,0 20.85,16C20.85,13.32 18.68,11.15 16,11.15Z\"></path></svg> <svg *ngSwitchDefault width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z\"></path></svg></button><div class=\"md2-datepicker-input\" [class.md2-datepicker-input-focused]=\"_inputFocused\"><span class=\"md2-datepicker-placeholder\" [class.md2-floating-placeholder]=\"value || _inputFocused\">{{ placeholder }}</span> <input #input type=\"text\" class=\"md2-datepicker-value\" [tabindex]=\"tabindex\" [disabled]=\"disabled\" autocomplete=\"off\" [value]=\"_inputValue\" (change)=\"$event.stopPropagation()\" (click)=\"_handleFocus($event)\" (focus)=\"_handleFocus($event)\" (blur)=\"_handleBlur($event)\"> <span class=\"md2-datepicker-arrow\" (click)=\"open()\"></span></div></div>",
+        template: "<div class=\"md2-datepicker-trigger\"><button type=\"button\" class=\"md2-datepicker-button\" tabindex=\"-1\" (click)=\"open()\" [ngSwitch]=\"type\"><svg *ngSwitchCase=\"'time'\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z\"></path></svg> <svg *ngSwitchCase=\"'datetime'\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M15,13H16.5V15.82L18.94,17.23L18.19,18.53L15,16.69V13M19,8H5V19H9.67C9.24,18.09 9,17.07 9,16A7,7 0 0,1 16,9C17.07,9 18.09,9.24 19,9.67V8M5,21C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H6V1H8V3H16V1H18V3H19A2,2 0 0,1 21,5V11.1C22.24,12.36 23,14.09 23,16A7,7 0 0,1 16,23C14.09,23 12.36,22.24 11.1,21H5M16,11.15A4.85,4.85 0 0,0 11.15,16C11.15,18.68 13.32,20.85 16,20.85A4.85,4.85 0 0,0 20.85,16C20.85,13.32 18.68,11.15 16,11.15Z\"></path></svg> <svg *ngSwitchDefault width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z\"></path></svg></button><div class=\"md2-datepicker-input\" [class.md2-datepicker-input-focused]=\"_inputFocused\"><span class=\"md2-datepicker-placeholder\" [class.md2-floating-placeholder]=\"value || _inputFocused\">{{ placeholder }}</span> <input #input type=\"text\" class=\"md2-datepicker-value\" [tabindex]=\"tabindex\" [disabled]=\"disabled\" autocomplete=\"off\" [value]=\"_inputValue\" (change)=\"$event.stopPropagation()\" (click)=\"_handleFocus()\" (focus)=\"_handleFocus()\" (blur)=\"_handleBlur($event)\"> <span class=\"md2-datepicker-arrow\" (click)=\"open()\"></span></div></div>",
         styles: ["md2-datepicker{position:relative;display:inline-block;min-width:175px;outline:0;backface-visibility:hidden}md2-datepicker.md2-datepicker-disabled{pointer-events:none;cursor:default}.md2-datepicker-trigger{display:block;padding:18px 0 4px 46px;white-space:nowrap}.md2-datepicker-button{position:absolute;top:13px;left:0;display:inline-block;height:40px;width:40px;padding:8px;line-height:24px;color:rgba(0,0,0,.54);fill:currentColor;border:0;border-radius:50%;outline:0;user-select:none;cursor:pointer;box-sizing:border-box;background:0 0;vertical-align:middle;align-items:center;text-align:center}.md2-datepicker-button:focus{background-color:rgba(158,158,158,.2)}.md2-datepicker-disabled .md2-datepicker-button{color:rgba(0,0,0,.38)}.md2-datepicker-input{color:rgba(0,0,0,.38);border-bottom:1px solid rgba(0,0,0,.12);display:flex;justify-content:space-between;align-items:center;height:30px;min-width:168px;line-height:22px;position:relative;padding-right:20px;box-sizing:border-box}[aria-disabled=true] .md2-datepicker-input{background-image:linear-gradient(to right,rgba(0,0,0,.26) 0,rgba(0,0,0,.26) 33%,transparent 0);background-size:4px 1px;background-repeat:repeat-x;border-color:transparent;background-position:0 bottom;cursor:default;user-select:none}.md2-datepicker-input.md2-datepicker-input-focused{color:#106cc8;border-color:#106cc8}md2-datepicker.ng-invalid.ng-touched:not(.md2-datepicker-disabled) .md2-datepicker-input{color:#f44336;border-color:#f44336}.md2-datepicker-placeholder{position:absolute;right:18px;bottom:100%;left:0;padding:0 2px;transform:translate3d(0,26px,0) scale(1);transform-origin:left top;white-space:nowrap;overflow-x:hidden;text-overflow:ellipsis;transition:all 150ms cubic-bezier(.25,.8,.25,1)}.md2-datepicker-placeholder.md2-floating-placeholder{left:-2px;text-align:left;transform:translate3d(0,6px,0) scale(.75)}[dir=rtl] .md2-datepicker-placeholder{right:0;left:18px;transform-origin:right top}[dir=rtl] .md2-datepicker-placeholder.md2-floating-placeholder{right:-2px;text-align:right}[aria-required=true] .md2-datepicker-placeholder::after{content:'*'}.md2-datepicker-value{position:relative;width:100%;white-space:nowrap;overflow-x:hidden;text-overflow:ellipsis;color:rgba(0,0,0,.87);border:0;outline:0;background:0 0}.md2-datepicker-disabled .md2-datepicker-value{color:rgba(0,0,0,.38)}[dir=rtl] .md2-datepicker-value{left:auto;right:0}.md2-datepicker-arrow{position:absolute;right:0;width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid;margin:0 4px;color:rgba(0,0,0,.38)}.md2-datepicker-input-focused .md2-datepicker-arrow{color:#106cc8}md2-datepicker.ng-invalid.ng-touched:not(.md2-datepicker-disabled) .md2-datepicker-arrow{color:#f44336}.md2-calendar-years{position:absolute;top:10px;right:100%;bottom:10px;display:block;width:100%;line-height:40px;background:#fff;overflow-x:hidden;overflow-y:auto;transition:.3s}.md2-calendar-years.active{right:0}.md2-calendar-years .md2-calendar-years-content{display:flex;flex-direction:column;justify-content:center;min-height:100%}.md2-calendar-year{position:relative;display:block;margin:0 auto;padding:0;font-size:17px;font-weight:400;text-align:center;cursor:pointer}.md2-calendar-year.selected{color:#106cc8;font-size:26px;font-weight:500}.md2-datepicker-actions{text-align:right}.md2-datepicker-actions .md2-button{display:inline-block;min-width:64px;margin:4px 8px 8px 0;padding:0 12px;font-size:14px;color:#106cc8;line-height:36px;text-align:center;text-transform:uppercase;border-radius:2px;cursor:pointer;box-sizing:border-box;transition:all 450ms cubic-bezier(.23,1,.32,1)}.md2-datepicker-actions .md2-button:hover{background:#ebebeb} /*# sourceMappingURL=datepicker.css.map */ "],
         providers: [MD2_DATEPICKER_VALUE_ACCESSOR, MD2_DATEPICKER_VALIDATORS],
         host: {
@@ -629,13 +623,13 @@ Md2Datepicker = __decorate([
         },
         encapsulation: ViewEncapsulation.None,
     }),
-    __param(7, Optional()),
+    __param(6, Optional()),
     __metadata("design:paramtypes", [ElementRef,
         Overlay,
         NgZone,
         ViewContainerRef,
-        ScrollDispatcher,
-        DateLocale, DateUtil,
+        DateLocale,
+        DateUtil,
         Dir])
 ], Md2Datepicker);
 export { Md2Datepicker };

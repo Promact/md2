@@ -3,6 +3,7 @@ import { OverlayState } from './overlay-state';
 import { OverlayRef } from './overlay-ref';
 import { OverlayPositionBuilder } from './position/overlay-position-builder';
 import { OverlayContainer } from './overlay-container';
+import { ScrollStrategyOptions } from './scroll/index';
 /**
  * Service to create Overlays. Overlays are dynamically added pieces of floating UI, meant to be
  * used as a low-level building building block for other components. Dialogs, tooltips, menus,
@@ -12,13 +13,14 @@ import { OverlayContainer } from './overlay-container';
  * An overlay *is* a PortalHost, so any kind of Portal can be loaded into one.
  */
 export declare class Overlay {
+    scrollStrategies: ScrollStrategyOptions;
     private _overlayContainer;
     private _componentFactoryResolver;
     private _positionBuilder;
     private _appRef;
     private _injector;
     private _ngZone;
-    constructor(_overlayContainer: OverlayContainer, _componentFactoryResolver: ComponentFactoryResolver, _positionBuilder: OverlayPositionBuilder, _appRef: ApplicationRef, _injector: Injector, _ngZone: NgZone);
+    constructor(scrollStrategies: ScrollStrategyOptions, _overlayContainer: OverlayContainer, _componentFactoryResolver: ComponentFactoryResolver, _positionBuilder: OverlayPositionBuilder, _appRef: ApplicationRef, _injector: Injector, _ngZone: NgZone);
     /**
      * Creates an overlay.
      * @param state State to apply to the overlay.

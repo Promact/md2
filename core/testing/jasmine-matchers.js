@@ -4,14 +4,15 @@
 /**
  * Collection of useful custom jasmine matchers for tests.
  */ export var customMatchers = {
-    toBeRole: function (util, customEqualityTesters) {
+    toBeRole: function () {
         return {
             compare: function (element, expectedRole) {
                 var result = { pass: false };
-                result.pass = element.getAttribute('role') === expectedRole;
+                var actualRole = element.getAttribute('role');
+                result.pass = actualRole === expectedRole;
                 result.message = "Expected role for " + element.tagName + " to be " + expectedRole;
                 if (!result.pass) {
-                    result.message += " but was " + expectedRole;
+                    result.message += " but was " + actualRole;
                 }
                 return result;
             }

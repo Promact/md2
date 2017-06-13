@@ -99,7 +99,7 @@ var Md2Select = (function () {
         /** The animation state of the placeholder. */
         this._placeholderState = '';
         /** View -> model callback called when value changes */
-        this._onChange = function (value) { };
+        this._onChange = function () { };
         /** View -> model callback called when select has been touched */
         this._onTouched = function () { };
         /** The IDs of child options to be passed to the aria-owns attribute. */

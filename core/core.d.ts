@@ -26,7 +26,8 @@ export * from './selection/index';
 export { coerceBooleanProperty } from './coercion/boolean-property';
 export { coerceNumberProperty } from './coercion/number-property';
 export { CompatibilityModule, NoConflictStyleCompatibilityMode } from './compatibility/compatibility';
-export { MdCommonModule } from './common-behaviors/common-module';
+export { MdCommonModule, MATERIAL_SANITY_CHECKS } from './common-behaviors/common-module';
 export * from './datetime/index';
+export { FloatPlaceholderType, PlaceholderOptions, MD_PLACEHOLDER_GLOBAL_OPTIONS } from './placeholder/placeholder-options';
 export declare class MdCoreModule {
 }

@@ -52,7 +52,7 @@ export declare class Md2Clock implements AfterContentInit {
     /** Handles mousedown events on the clock body. */
     _handleMousedown(event: any): void;
     _handleMousemove(event: any): void;
-    _handleMouseup(event: any): void;
+    _handleMouseup(): void;
     /** Initializes this clock view. */
     private _init();
     /**

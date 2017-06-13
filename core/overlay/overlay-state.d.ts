@@ -10,6 +10,8 @@ export declare class OverlayState {
     positionStrategy: PositionStrategy;
     /** Strategy to be used when handling scroll events while the overlay is open. */
     scrollStrategy: ScrollStrategy;
+    /** Custom class to add to the overlay pane. */
+    panelClass: string;
     /** Whether the overlay has a backdrop. */
     hasBackdrop: boolean;
     /** Custom class to add to the backdrop */

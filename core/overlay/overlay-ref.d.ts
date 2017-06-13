@@ -1,6 +1,7 @@
 import { NgZone } from '@angular/core';
 import { PortalHost, Portal } from '../portal/portal';
 import { OverlayState } from './overlay-state';
+import { ScrollStrategy } from './scroll/scroll-strategy';
 import { Observable } from 'rxjs/Observable';
 /**
  * Reference to an overlay that has been created with the Overlay service.
@@ -10,12 +11,13 @@ export declare class OverlayRef implements PortalHost {
     private _portalHost;
     private _pane;
     private _state;
+    private _scrollStrategy;
     private _ngZone;
     private _backdropElement;
     private _backdropClick;
     private _attachments;
     private _detachments;
-    constructor(_portalHost: PortalHost, _pane: HTMLElement, _state: OverlayState, _ngZone: NgZone);
+    constructor(_portalHost: PortalHost, _pane: HTMLElement, _state: OverlayState, _scrollStrategy: ScrollStrategy, _ngZone: NgZone);
     /** The overlay's HTML element */
     readonly overlayElement: HTMLElement;
     /**

@@ -9,7 +9,7 @@ import { MdDateFormats } from '../core/datetime/date-formats';
  */
 export declare class Md2MonthView implements AfterContentInit {
     private _locale;
-    private _util;
+    _util: DateUtil;
     private _dateFormats;
     /**
      * The date to display in this month view (everything other than the month and year is ignored).

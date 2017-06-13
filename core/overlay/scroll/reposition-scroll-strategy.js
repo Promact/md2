@@ -1,20 +1,24 @@
+import { getMdScrollStrategyAlreadyAttachedError } from './scroll-strategy';
 /**
  * Strategy that will update the element position as the user is scrolling.
  */
 var RepositionScrollStrategy = (function () {
-    function RepositionScrollStrategy(_scrollDispatcher, _scrollThrottle) {
-        if (_scrollThrottle === void 0) { _scrollThrottle = 0; }
+    function RepositionScrollStrategy(_scrollDispatcher, _config) {
         this._scrollDispatcher = _scrollDispatcher;
-        this._scrollThrottle = _scrollThrottle;
+        this._config = _config;
         this._scrollSubscription = null;
     }
     RepositionScrollStrategy.prototype.attach = function (overlayRef) {
+        if (this._overlayRef) {
+            throw getMdScrollStrategyAlreadyAttachedError();
+        }
         this._overlayRef = overlayRef;
     };
     RepositionScrollStrategy.prototype.enable = function () {
         var _this = this;
         if (!this._scrollSubscription) {
-            this._scrollSubscription = this._scrollDispatcher.scrolled(this._scrollThrottle, function () {
+            var throttle = this._config ? this._config.scrollThrottle : 0;
+            this._scrollSubscription = this._scrollDispatcher.scrolled(throttle, function () {
                 _this._overlayRef.updatePosition();
             });
         }

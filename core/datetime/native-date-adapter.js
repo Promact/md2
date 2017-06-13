@@ -31,7 +31,11 @@ var DEFAULT_DAY_OF_WEEK_NAMES = {
 };
 /** Creates an array and fills it with values. */
 function range(length, valueFunction) {
-    return Array.apply(null, Array(length)).map(function (v, i) { return valueFunction(i); });
+    var valuesArray = Array(length);
+    for (var i = 0; i < length; i++) {
+        valuesArray[i] = valueFunction(i);
+    }
+    return valuesArray;
 }
 /** Adapts the native JS Date for use with cdk-based components that work with dates. */
 var NativeDateAdapter = (function (_super) {
@@ -47,15 +51,6 @@ var NativeDateAdapter = (function (_super) {
     };
     NativeDateAdapter.prototype.getDate = function (date) {
         return date.getDate();
-    };
-    NativeDateAdapter.prototype.getHours = function (date) {
-        return date.getHours();
-    };
-    NativeDateAdapter.prototype.getMinutes = function (date) {
-        return date.getMinutes();
-    };
-    NativeDateAdapter.prototype.getSeconds = function (date) {
-        return date.getSeconds();
     };
     NativeDateAdapter.prototype.getDayOfWeek = function (date) {
         return date.getDay();
@@ -96,18 +91,18 @@ var NativeDateAdapter = (function (_super) {
         return 0;
     };
     NativeDateAdapter.prototype.getNumDaysInMonth = function (date) {
-        return this.getDate(this._createDateWithOverflow(this.getYear(date), this.getMonth(date) + 1, 0, 0, 0, 0));
+        return this.getDate(this._createDateWithOverflow(this.getYear(date), this.getMonth(date) + 1, 0));
     };
     NativeDateAdapter.prototype.clone = function (date) {
-        return this.createDate(this.getYear(date), this.getMonth(date), this.getDate(date), this.getHours(date), this.getMinutes(date), this.getSeconds(date));
+        return this.createDate(this.getYear(date), this.getMonth(date), this.getDate(date));
     };
-    NativeDateAdapter.prototype.createDate = function (year, month, date, hours, minutes, seconds) {
+    NativeDateAdapter.prototype.createDate = function (year, month, date) {
         // Check for invalid month and date (except upper bound on date which we have to check after
         // creating the Date).
         if (month < 0 || month > 11 || date < 1) {
             return null;
         }
-        var result = this._createDateWithOverflow(year, month, date, hours, minutes, seconds);
+        var result = this._createDateWithOverflow(year, month, date);
         // Check that the date wasn't above the upper bound for the month, causing the month to
         // overflow.
         if (result.getMonth() != month) {
@@ -118,7 +113,7 @@ var NativeDateAdapter = (function (_super) {
     NativeDateAdapter.prototype.today = function () {
         return new Date();
     };
-    NativeDateAdapter.prototype.parse = function (value, parseFormat) {
+    NativeDateAdapter.prototype.parse = function (value) {
         // We have no way using the native JS Date to set the parse format or locale, so we ignore these
         // parameters.
         var timestamp = typeof value == 'number' ? value : Date.parse(value);
@@ -135,24 +130,18 @@ var NativeDateAdapter = (function (_super) {
         return this.addCalendarMonths(date, years * 12);
     };
     NativeDateAdapter.prototype.addCalendarMonths = function (date, months) {
-        var newDate = this._createDateWithOverflow(this.getYear(date), this.getMonth(date) + months, this.getDate(date), this.getHours(date), this.getMinutes(date), this.getSeconds(date));
+        var newDate = this._createDateWithOverflow(this.getYear(date), this.getMonth(date) + months, this.getDate(date));
         // It's possible to wind up in the wrong month if the original month has more days than the new
         // month. In this case we want to go to the last day of the desired month.
         // Note: the additional + 12 % 12 ensures we end up with a positive number, since JS % doesn't
         // guarantee this.
         if (this.getMonth(newDate) != ((this.getMonth(date) + months) % 12 + 12) % 12) {
-            newDate = this._createDateWithOverflow(this.getYear(newDate), this.getMonth(newDate), 0, this.getHours(newDate), this.getMinutes(newDate), this.getSeconds(newDate));
+            newDate = this._createDateWithOverflow(this.getYear(newDate), this.getMonth(newDate), 0);
         }
         return newDate;
     };
     NativeDateAdapter.prototype.addCalendarDays = function (date, days) {
-        return this._createDateWithOverflow(this.getYear(date), this.getMonth(date), this.getDate(date) + days, this.getHours(date), this.getMinutes(date), this.getSeconds(date));
-    };
-    NativeDateAdapter.prototype.addCalendarHours = function (date, hours) {
-        return this._createDateWithOverflow(this.getYear(date), this.getMonth(date), this.getDate(date), this.getHours(date) + hours, this.getMinutes(date), this.getSeconds(date));
-    };
-    NativeDateAdapter.prototype.addCalendarMinutes = function (date, minutes) {
-        return this._createDateWithOverflow(this.getYear(date), this.getMonth(date), this.getDate(date), this.getHours(date), this.getMinutes(date) + minutes, this.getSeconds(date));
+        return this._createDateWithOverflow(this.getYear(date), this.getMonth(date), this.getDate(date) + days);
     };
     NativeDateAdapter.prototype.getISODateString = function (date) {
         return [
@@ -162,8 +151,8 @@ var NativeDateAdapter = (function (_super) {
         ].join('-');
     };
     /** Creates a date but allows the month and date to overflow. */
-    NativeDateAdapter.prototype._createDateWithOverflow = function (year, month, date, hours, minutes, seconds) {
-        var result = new Date(year, month, date, hours, minutes, seconds);
+    NativeDateAdapter.prototype._createDateWithOverflow = function (year, month, date) {
+        var result = new Date(year, month, date);
         // We need to correct for the fact that JS native Date treats years in range [0, 99] as
         // abbreviations for 19xx.
         if (year >= 0 && year < 100) {

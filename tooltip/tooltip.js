@@ -12,7 +12,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 import { Component, Directive, Input, ElementRef, ViewContainerRef, NgZone, Optional, Renderer2, ChangeDetectorRef, } from '@angular/core';
 import { style, trigger, state, transition, animate, } from '@angular/animations';
-import { Overlay, OverlayState, ComponentPortal, RepositionScrollStrategy, } from '../core';
+import { Overlay, OverlayState, ComponentPortal, } from '../core';
 import { Subject } from 'rxjs/Subject';
 import { Dir } from '../core/rtl/dir';
 import { Platform } from '../core/platform/index';
@@ -166,8 +166,9 @@ var Md2Tooltip = (function () {
         var config = new OverlayState();
         config.direction = this._dir ? this._dir.value : 'ltr';
         config.positionStrategy = strategy;
-        config.scrollStrategy =
-            new RepositionScrollStrategy(this._scrollDispatcher, SCROLL_THROTTLE_MS);
+        config.scrollStrategy = this._overlay.scrollStrategies.reposition({
+            scrollThrottle: SCROLL_THROTTLE_MS
+        });
         this._overlayRef = this._overlay.create(config);
     };
     /** Disposes the current tooltip and the overlay it is attached to */
@@ -410,6 +411,7 @@ Md2TooltipComponent = __decorate([
             ])
         ],
         host: {
+            '[style.zoom]': '_visibility === "visible" ? 1 : null',
             '(body:click)': 'this._handleBodyInteraction()'
         }
     }),

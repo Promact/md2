@@ -1,5 +1,12 @@
 import { ElementRef, Renderer2 } from '@angular/core';
+import { CanColor } from '../../common-behaviors/color';
 export declare type MdPseudoCheckboxState = 'unchecked' | 'checked' | 'indeterminate';
+export declare class MdPseudoCheckboxBase {
+    _renderer: Renderer2;
+    _elementRef: ElementRef;
+    constructor(_renderer: Renderer2, _elementRef: ElementRef);
+}
+export declare const _MdPseudoCheckboxBase: (new (...args: any[]) => CanColor) & typeof MdPseudoCheckboxBase;
 /**
  * Component that shows a simplified checkbox without including any kind of "real" checkbox.
  * Meant to be used when the checkbox is purely decorative and a large number of them will be
@@ -11,15 +18,10 @@ export declare type MdPseudoCheckboxState = 'unchecked' | 'checked' | 'indetermi
  * more complex components that appropriately handle selected / checked state.
  * @docs-private
  */
-export declare class MdPseudoCheckbox {
-    private _elementRef;
-    private _renderer;
+export declare class MdPseudoCheckbox extends _MdPseudoCheckboxBase implements CanColor {
     /** Display state of the checkbox. */
     state: MdPseudoCheckboxState;
     /** Whether the checkbox is disabled. */
     disabled: boolean;
-    /** Color of the checkbox. */
-    color: string;
-    private _color;
-    constructor(_elementRef: ElementRef, _renderer: Renderer2);
+    constructor(elementRef: ElementRef, renderer: Renderer2);
 }

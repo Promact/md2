@@ -9,6 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 import { Directive, ElementRef, Input, NgZone, Injectable, } from '@angular/core';
 import { InteractivityChecker } from './interactivity-checker';
+import { Platform } from '../platform/platform';
 import { coerceBooleanProperty } from '../coercion/boolean-property';
 import 'rxjs/add/operator/first';
 /**
@@ -20,9 +21,10 @@ import 'rxjs/add/operator/first';
  * This will be replaced with a more intelligent solution before the library is considered stable.
  */
 var FocusTrap = (function () {
-    function FocusTrap(_element, _checker, _ngZone, deferAnchors) {
+    function FocusTrap(_element, _platform, _checker, _ngZone, deferAnchors) {
         if (deferAnchors === void 0) { deferAnchors = false; }
         this._element = _element;
+        this._platform = _platform;
         this._checker = _checker;
         this._ngZone = _ngZone;
         this._enabled = true;
@@ -58,6 +60,10 @@ var FocusTrap = (function () {
      */
     FocusTrap.prototype.attachAnchors = function () {
         var _this = this;
+        // If we're not on the browser, there can be no focus to trap.
+        if (!this._platform.isBrowser) {
+            return;
+        }
         if (!this._startAnchor) {
             this._startAnchor = this._createAnchor();
         }
@@ -71,25 +77,29 @@ var FocusTrap = (function () {
             _this._element.parentNode.insertBefore(_this._endAnchor, _this._element.nextSibling);
         });
     };
+    /**
+     * Waits for the zone to stabilize, then either focuses the first element that the
+     * user specified, or the first tabbable element..
+     */
     FocusTrap.prototype.focusInitialElementWhenReady = function () {
         var _this = this;
-        this._ngZone.onMicrotaskEmpty.first().subscribe(function () { return _this.focusInitialElement(); });
+        this._executeOnStable(function () { return _this.focusInitialElement(); });
     };
     /**
-     * Waits for microtask queue to empty, then focuses
+     * Waits for the zone to stabilize, then focuses
      * the first tabbable element within the focus trap region.
      */
     FocusTrap.prototype.focusFirstTabbableElementWhenReady = function () {
         var _this = this;
-        this._ngZone.onMicrotaskEmpty.first().subscribe(function () { return _this.focusFirstTabbableElement(); });
+        this._executeOnStable(function () { return _this.focusFirstTabbableElement(); });
     };
     /**
-     * Waits for microtask queue to empty, then focuses
+     * Waits for the zone to stabilize, then focuses
      * the last tabbable element within the focus trap region.
      */
     FocusTrap.prototype.focusLastTabbableElementWhenReady = function () {
         var _this = this;
-        this._ngZone.onMicrotaskEmpty.first().subscribe(function () { return _this.focusLastTabbableElement(); });
+        this._executeOnStable(function () { return _this.focusLastTabbableElement(); });
     };
     /**
      * Get the specified boundary element of the trapped region.
@@ -97,13 +107,15 @@ var FocusTrap = (function () {
      * @returns The boundary element.
      */
     FocusTrap.prototype._getRegionBoundary = function (bound) {
-        var markers = Array.prototype.slice.call(this._element.querySelectorAll("[cdk-focus-region-" + bound + "]")).concat(Array.prototype.slice.call(this._element.querySelectorAll("[cdk-focus-" + bound + "]")));
-        markers.forEach(function (el) {
-            if (el.hasAttribute("cdk-focus-" + bound)) {
+        // Contains the deprecated version of selector, for temporary backwards comparability.
+        var markers = this._element.querySelectorAll("[cdk-focus-region-" + bound + "], " +
+            ("[cdk-focus-" + bound + "]"));
+        for (var i = 0; i < markers.length; i++) {
+            if (markers[i].hasAttribute("cdk-focus-" + bound)) {
                 console.warn("Found use of deprecated attribute 'cdk-focus-" + bound + "'," +
-                    (" use 'cdk-focus-region-" + bound + "' instead."), el);
+                    (" use 'cdk-focus-region-" + bound + "' instead."), markers[i]);
             }
-        });
+        }
         if (bound == 'start') {
             return markers.length ? markers[0] : this._getFirstTabbableElement(this._element);
         }
@@ -177,24 +189,36 @@ var FocusTrap = (function () {
         anchor.classList.add('cdk-focus-trap-anchor');
         return anchor;
     };
+    /** Executes a function when the zone is stable. */
+    FocusTrap.prototype._executeOnStable = function (fn) {
+        if (this._ngZone.isStable) {
+            fn();
+        }
+        else {
+            this._ngZone.onStable.first().subscribe(fn);
+        }
+    };
     return FocusTrap;
 }());
 export { FocusTrap };
 /** Factory that allows easy instantiation of focus traps. */
 var FocusTrapFactory = (function () {
-    function FocusTrapFactory(_checker, _ngZone) {
+    function FocusTrapFactory(_checker, _platform, _ngZone) {
         this._checker = _checker;
+        this._platform = _platform;
         this._ngZone = _ngZone;
     }
     FocusTrapFactory.prototype.create = function (element, deferAnchors) {
         if (deferAnchors === void 0) { deferAnchors = false; }
-        return new FocusTrap(element, this._checker, this._ngZone, deferAnchors);
+        return new FocusTrap(element, this._platform, this._checker, this._ngZone, deferAnchors);
     };
     return FocusTrapFactory;
 }());
 FocusTrapFactory = __decorate([
     Injectable(),
-    __metadata("design:paramtypes", [InteractivityChecker, NgZone])
+    __metadata("design:paramtypes", [InteractivityChecker,
+        Platform,
+        NgZone])
 ], FocusTrapFactory);
 export { FocusTrapFactory };
 /**

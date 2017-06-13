@@ -4,4 +4,4 @@
  * @param value Value to be set on the input.
  * @param element Element onto which to set the value.
  */
-export declare function typeInElement(value: string, element: HTMLInputElement, autoFocus?: boolean): void;
+export declare function typeInElement(value: string, element: HTMLInputElement): void;

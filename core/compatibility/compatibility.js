@@ -10,11 +10,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { NgModule, Directive, Inject, Optional, isDevMode, ElementRef, InjectionToken, } from '@angular/core';
-import { DOCUMENT } from '@angular/platform-browser';
+import { NgModule, Directive, Inject, Optional, ElementRef, InjectionToken } from '@angular/core';
 export var MATERIAL_COMPATIBILITY_MODE = new InjectionToken('md-compatibility-mode');
-/** Injection token that configures whether the Material sanity checks are enabled. */
-export var MATERIAL_SANITY_CHECKS = new InjectionToken('md-sanity-checks');
 /**
  * Returns an exception to be thrown if the consumer has used
  * an invalid Material prefix on a component.
@@ -64,49 +61,15 @@ export { MdPrefixRejector };
  * there are any uses of the `mat-` prefix.
  */
 var CompatibilityModule = (function () {
-    function CompatibilityModule(_document, _sanityChecksEnabled) {
-        this._document = _document;
-        /** Whether we've done the global sanity checks (e.g. a theme is loaded, there is a doctype). */
-        this._hasDoneGlobalChecks = false;
-        if (_sanityChecksEnabled && !this._hasDoneGlobalChecks && _document && isDevMode()) {
-            // Delay running the check to allow more time for the user's styles to load.
-            this._checkDoctype();
-            this._checkTheme();
-            this._hasDoneGlobalChecks = true;
-        }
+    function CompatibilityModule() {
     }
-    CompatibilityModule.prototype._checkDoctype = function () {
-        if (!this._document.doctype) {
-            console.warn('Current document does not have a doctype. This may cause ' +
-                'some Angular Material components not to behave as expected.');
-        }
-    };
-    CompatibilityModule.prototype._checkTheme = function () {
-        if (typeof getComputedStyle === 'function') {
-            var testElement = this._document.createElement('div');
-            testElement.classList.add('mat-theme-loaded-marker');
-            this._document.body.appendChild(testElement);
-            if (getComputedStyle(testElement).display !== 'none') {
-                console.warn('Could not find Angular Material core theme. Most Material ' +
-                    'components may not work as expected. For more info refer ' +
-                    'to the theming guide: https://material.angular.io/guide/theming');
-            }
-            this._document.body.removeChild(testElement);
-        }
-    };
     return CompatibilityModule;
 }());
 CompatibilityModule = __decorate([
     NgModule({
         declarations: [MatPrefixRejector, MdPrefixRejector],
         exports: [MatPrefixRejector, MdPrefixRejector],
-        providers: [{
-                provide: MATERIAL_SANITY_CHECKS, useValue: true,
-            }],
-    }),
-    __param(0, Optional()), __param(0, Inject(DOCUMENT)),
-    __param(1, Optional()), __param(1, Inject(MATERIAL_SANITY_CHECKS)),
-    __metadata("design:paramtypes", [Object, Boolean])
+    })
 ], CompatibilityModule);
 export { CompatibilityModule };
 /**

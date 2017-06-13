@@ -1,5 +1,6 @@
 import { ElementRef, NgZone, OnDestroy, AfterContentInit } from '@angular/core';
 import { InteractivityChecker } from './interactivity-checker';
+import { Platform } from '../platform/platform';
 import 'rxjs/add/operator/first';
 /**
  * Class that allows for trapping focus within a DOM element.
@@ -11,6 +12,7 @@ import 'rxjs/add/operator/first';
  */
 export declare class FocusTrap {
     private _element;
+    private _platform;
     private _checker;
     private _ngZone;
     private _startAnchor;
@@ -18,7 +20,7 @@ export declare class FocusTrap {
     /** Whether the focus trap is active. */
     enabled: boolean;
     private _enabled;
-    constructor(_element: HTMLElement, _checker: InteractivityChecker, _ngZone: NgZone, deferAnchors?: boolean);
+    constructor(_element: HTMLElement, _platform: Platform, _checker: InteractivityChecker, _ngZone: NgZone, deferAnchors?: boolean);
     /** Destroys the focus trap by cleaning up the anchors. */
     destroy(): void;
     /**
@@ -26,14 +28,18 @@ export declare class FocusTrap {
      * in the constructor, but can be deferred for cases like directives with `*ngIf`.
      */
     attachAnchors(): void;
+    /**
+     * Waits for the zone to stabilize, then either focuses the first element that the
+     * user specified, or the first tabbable element..
+     */
     focusInitialElementWhenReady(): void;
     /**
-     * Waits for microtask queue to empty, then focuses
+     * Waits for the zone to stabilize, then focuses
      * the first tabbable element within the focus trap region.
      */
     focusFirstTabbableElementWhenReady(): void;
     /**
-     * Waits for microtask queue to empty, then focuses
+     * Waits for the zone to stabilize, then focuses
      * the last tabbable element within the focus trap region.
      */
     focusLastTabbableElementWhenReady(): void;
@@ -55,12 +61,15 @@ export declare class FocusTrap {
     private _getLastTabbableElement(root);
     /** Creates an anchor element. */
     private _createAnchor();
+    /** Executes a function when the zone is stable. */
+    private _executeOnStable(fn);
 }
 /** Factory that allows easy instantiation of focus traps. */
 export declare class FocusTrapFactory {
     private _checker;
+    private _platform;
     private _ngZone;
-    constructor(_checker: InteractivityChecker, _ngZone: NgZone);
+    constructor(_checker: InteractivityChecker, _platform: Platform, _ngZone: NgZone);
     create(element: HTMLElement, deferAnchors?: boolean): FocusTrap;
 }
 /**

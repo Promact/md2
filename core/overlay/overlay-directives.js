@@ -17,10 +17,8 @@ import { OverlayState } from './overlay-state';
 import { ConnectionPositionPair } from './position/connected-position';
 import { PortalModule } from '../portal/portal-directives';
 import { Dir } from '../rtl/dir';
-import { RepositionScrollStrategy } from './scroll/reposition-scroll-strategy';
 import { coerceBooleanProperty } from '../coercion/boolean-property';
 import { ESCAPE } from '../keyboard/keycodes';
-import { ScrollDispatcher } from './scroll/scroll-dispatcher';
 import { ScrollDispatchModule } from './scroll/index';
 /** Default set of positions for the overlay. Follows the behavior of a dropdown. */
 var defaultPositionList = [
@@ -50,16 +48,15 @@ export { OverlayOrigin };
  */
 var ConnectedOverlayDirective = (function () {
     // TODO(jelbourn): inputs for size, scroll behavior, animation, etc.
-    function ConnectedOverlayDirective(_overlay, _renderer, _scrollDispatcher, templateRef, viewContainerRef, _dir) {
+    function ConnectedOverlayDirective(_overlay, _renderer, templateRef, viewContainerRef, _dir) {
         this._overlay = _overlay;
         this._renderer = _renderer;
-        this._scrollDispatcher = _scrollDispatcher;
         this._dir = _dir;
         this._hasBackdrop = false;
         this._offsetX = 0;
         this._offsetY = 0;
         /** Strategy to be used when handling scroll events while the overlay is open. */
-        this.scrollStrategy = new RepositionScrollStrategy(this._scrollDispatcher);
+        this.scrollStrategy = this._overlay.scrollStrategies.reposition();
         /** Whether the overlay is open. */
         this.open = false;
         /** Event emitted when the backdrop is clicked. */
@@ -317,10 +314,9 @@ ConnectedOverlayDirective = __decorate([
         selector: '[cdk-connected-overlay], [connected-overlay], [cdkConnectedOverlay]',
         exportAs: 'cdkConnectedOverlay'
     }),
-    __param(5, Optional()),
+    __param(4, Optional()),
     __metadata("design:paramtypes", [Overlay,
         Renderer2,
-        ScrollDispatcher,
         TemplateRef,
         ViewContainerRef,
         Dir])

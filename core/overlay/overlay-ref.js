@@ -4,16 +4,17 @@ import { Subject } from 'rxjs/Subject';
  * Used to manipulate or dispose of said overlay.
  */
 var OverlayRef = (function () {
-    function OverlayRef(_portalHost, _pane, _state, _ngZone) {
+    function OverlayRef(_portalHost, _pane, _state, _scrollStrategy, _ngZone) {
         this._portalHost = _portalHost;
         this._pane = _pane;
         this._state = _state;
+        this._scrollStrategy = _scrollStrategy;
         this._ngZone = _ngZone;
         this._backdropElement = null;
         this._backdropClick = new Subject();
         this._attachments = new Subject();
         this._detachments = new Subject();
-        this._state.scrollStrategy.attach(this);
+        _scrollStrategy.attach(this);
     }
     Object.defineProperty(OverlayRef.prototype, "overlayElement", {
         /** The overlay's HTML element */
@@ -35,13 +36,17 @@ var OverlayRef = (function () {
         this.updateSize();
         this.updateDirection();
         this.updatePosition();
-        this._attachments.next();
-        this._state.scrollStrategy.enable();
+        this._scrollStrategy.enable();
         // Enable pointer events for the overlay pane element.
         this._togglePointerEvents(true);
         if (this._state.hasBackdrop) {
             this._attachBackdrop();
         }
+        if (this._state.panelClass) {
+            this._pane.classList.add(this._state.panelClass);
+        }
+        // Only emit the `attachments` event once all other setup is done.
+        this._attachments.next();
         return attachResult;
     };
     /**
@@ -54,9 +59,11 @@ var OverlayRef = (function () {
         // This is necessary because otherwise the pane element will cover the page and disable
         // pointer events therefore. Depends on the position strategy and the applied pane boundaries.
         this._togglePointerEvents(false);
-        this._state.scrollStrategy.disable();
+        this._scrollStrategy.disable();
+        var detachmentResult = this._portalHost.detach();
+        // Only emit after everything is detached.
         this._detachments.next();
-        return this._portalHost.detach();
+        return detachmentResult;
     };
     /**
      * Cleans up the overlay from the DOM.
@@ -65,12 +72,16 @@ var OverlayRef = (function () {
         if (this._state.positionStrategy) {
             this._state.positionStrategy.dispose();
         }
+        if (this._scrollStrategy) {
+            this._scrollStrategy.disable();
+            this._scrollStrategy = null;
+        }
         this.detachBackdrop();
         this._portalHost.dispose();
-        this._state.scrollStrategy.disable();
+        this._attachments.complete();
+        this._backdropClick.complete();
         this._detachments.next();
         this._detachments.complete();
-        this._attachments.complete();
     };
     /**
      * Checks whether the overlay has been attached.

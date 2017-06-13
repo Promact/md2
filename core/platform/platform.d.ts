@@ -14,4 +14,5 @@ export declare class Platform {
     IOS: boolean;
     FIREFOX: boolean;
     ANDROID: boolean;
+    SAFARI: boolean;
 }

@@ -22,21 +22,6 @@ var DateAdapter = (function () {
             this.getDate(first) - this.getDate(second);
     };
     /**
-     * Compares two dates.
-     * @param first The first date to compare.
-     * @param second The second date to compare.
-     * @returns 0 if the dates are equal, a number less than 0 if the first date is earlier,
-     *     a number greater than 0 if the first date is later.
-     */
-    DateAdapter.prototype.compareDateAndTime = function (first, second) {
-        return this.getYear(first) - this.getYear(second) ||
-            this.getMonth(first) - this.getMonth(second) ||
-            this.getDate(first) - this.getDate(second) ||
-            this.getHours(first) - this.getDate(second) ||
-            this.getMinutes(first) - this.getDate(second) ||
-            this.getSeconds(first) - this.getDate(second);
-    };
-    /**
      * Checks if two dates are equal.
      * @param first The first date to check.
      * @param second The second date to check.
@@ -45,16 +30,6 @@ var DateAdapter = (function () {
      */
     DateAdapter.prototype.sameDate = function (first, second) {
         return first && second ? !this.compareDate(first, second) : first == second;
-    };
-    /**
-     * Checks if two dates are equal.
-     * @param first The first date to check.
-     * @param second The second date to check.
-     * @returns {boolean} Whether the two dates are equal.
-     *     Null dates are considered equal to other null dates.
-     */
-    DateAdapter.prototype.sameDateAndTime = function (first, second) {
-        return first && second ? !this.compareDateAndTime(first, second) : first == second;
     };
     /**
      * Clamp the given date between min and max dates.

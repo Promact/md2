@@ -1,6 +1,6 @@
 import { EventEmitter, ElementRef, OnDestroy, Renderer, TemplateRef, ViewContainerRef } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
-import { Overlay, ScrollDispatcher } from '../core';
+import { Overlay } from '../core';
 import { ColorUtil } from './color-util';
 export declare type Container = 'inline' | 'dialog';
 export declare class TextDirective {
@@ -62,7 +62,6 @@ export declare class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
     private _overlay;
     private _viewContainerRef;
     private _renderer;
-    private _scrollDispatcher;
     private _util;
     _control: NgControl;
     private _portal;
@@ -126,7 +125,7 @@ export declare class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
     /** Event emitted when the select has been closed. */
     onClose: EventEmitter<void>;
     _templatePortal: TemplateRef<any>;
-    constructor(_element: ElementRef, _overlay: Overlay, _viewContainerRef: ViewContainerRef, _renderer: Renderer, _scrollDispatcher: ScrollDispatcher, _util: ColorUtil, _control: NgControl);
+    constructor(_element: ElementRef, _overlay: Overlay, _viewContainerRef: ViewContainerRef, _renderer: Renderer, _util: ColorUtil, _control: NgControl);
     ngOnDestroy(): void;
     /** Whether or not the overlay panel is open. */
     readonly panelOpen: boolean;
@@ -138,8 +137,6 @@ export declare class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
     close(): void;
     /** Removes the panel from the DOM. */
     destroyPanel(): void;
-    _handleKeydown(event: KeyboardEvent): void;
-    _onFocus(): void;
     _onBlur(): void;
     /**
       * input event listner
@@ -203,7 +200,7 @@ export declare class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
     update(): void;
     clearColor(event: Event): void;
     isDescendant(parent: any, child: any): boolean;
-    checkInputVal(event: Event): void;
+    checkInputVal(): void;
     /** Emits an event when the user selects a color. */
     _emitChangeEvent(): void;
     writeValue(value: any): void;

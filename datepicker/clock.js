@@ -37,7 +37,7 @@ var Md2Clock = (function () {
         /** Whether the clock is in hour view. */
         this._hourView = true;
         this.mouseMoveListener = function (event) { _this._handleMousemove(event); };
-        this.mouseUpListener = function (event) { _this._handleMouseup(event); };
+        this.mouseUpListener = function () { _this._handleMouseup(); };
     }
     Object.defineProperty(Md2Clock.prototype, "activeDate", {
         /**
@@ -130,7 +130,7 @@ var Md2Clock = (function () {
         event.preventDefault();
         this.setTime(event);
     };
-    Md2Clock.prototype._handleMouseup = function (event) {
+    Md2Clock.prototype._handleMouseup = function () {
         document.removeEventListener('mousemove', this.mouseMoveListener);
         document.removeEventListener('touchmove', this.mouseMoveListener);
         document.removeEventListener('mouseup', this.mouseUpListener);

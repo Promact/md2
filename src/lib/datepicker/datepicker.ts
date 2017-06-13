@@ -25,10 +25,8 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import {
-  coerceBooleanProperty,
-  Overlay
-} from '../core';
+import { coerceBooleanProperty } from '../core';
+import { Overlay } from '../core/overlay/overlay';
 import { OverlayRef } from '../core/overlay/overlay-ref';
 import { ComponentPortal } from '../core/portal/portal';
 import { OverlayState } from '../core/overlay/overlay-state';
@@ -65,7 +63,7 @@ let datepickerUid = 0;
   styleUrls: ['datepicker-content.css'],
   host: {
     'class': 'md2-datepicker-content',
-    '[class.md2-datepicker-content-touch]': 'datepicker.touchUi',
+    '[class.md2-datepicker-content-touch]': 'datepicker?.touchUi',
     '(keydown)': '_handleKeydown($event)',
   },
   encapsulation: ViewEncapsulation.None,
@@ -289,7 +287,8 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     private _overlay: Overlay,
     private _ngZone: NgZone,
     private _viewContainerRef: ViewContainerRef,
-    private _locale: DateLocale, private _util: DateUtil,
+    private _locale: DateLocale,
+    private _util: DateUtil,
     @Optional() private _dir: Dir) {
   }
 
@@ -541,7 +540,7 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
       componentRef.instance.datepicker = this;
     }
 
-    this._dialogRef.backdropClick().first().subscribe(() => this.close());
+    this._dialogRef.backdropClick().subscribe(() => this.close());
   }
 
   /** Open the calendar as a popup. */
@@ -559,7 +558,7 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
       this._ngZone.onStable.first().subscribe(() => this._popupRef.updatePosition());
     }
 
-    this._popupRef.backdropClick().first().subscribe(() => this.close());
+    this._popupRef.backdropClick().subscribe(() => this.close());
   }
 
   /** Create the dialog. */
@@ -579,11 +578,7 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     const overlayState = new OverlayState();
     overlayState.positionStrategy = this._createPopupPositionStrategy();
     overlayState.hasBackdrop = true;
-    if (this.touchUi) {
-      overlayState.backdropClass = 'cdk-overlay-dark-backdrop';
-    } else {
-      overlayState.backdropClass = 'cdk-overlay-transparent-backdrop';
-    }
+    overlayState.backdropClass = 'cdk-overlay-transparent-backdrop';
     overlayState.direction = this._dir ? this._dir.value : 'ltr';
     overlayState.scrollStrategy = this._overlay.scrollStrategies.reposition();
 

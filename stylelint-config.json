@@ -4,7 +4,6 @@
     "./tools/stylelint/selector-nested-pattern-scoped/index.js"
   ],
   "rules": {
-    "md2/no-prefixes": [["last 2 versions", "not ie <= 10", "not ie_mob <= 10"]],
     "md2/selector-nested-pattern-scoped": [".*[^&]$", {
         "message": "The & operator is not allowed at the end of theme selectors.",
         "filePattern": "-theme\\.scss$"

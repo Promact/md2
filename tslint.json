@@ -3,7 +3,7 @@
     "./tools/tslint-rules/"
   ],
   "rules": {
-    "max-line-length": [true, 100],
+    "max-line-length": [true, 120],
     // Disable this flag because of SHA tslint#48b0c597f9257712c7d1f04b55ed0aa60e333f6a
     // TSLint now shows warnings if types for properties are inferred. This rule needs to be
     // disabled because all properties need to have explicit types set to work for Dgeni.
@@ -23,7 +23,7 @@
     "no-arg": true,
     "no-internal-module": true,
     "no-trailing-whitespace": true,
-    "no-bitwise": true,
+    "no-bitwise": false,
     "no-shadowed-variable": true,
     "no-unused-expression": true,
     "no-var-keyword": true,

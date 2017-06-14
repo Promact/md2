@@ -1,8 +1,17 @@
 import { Injectable } from '@angular/core';
-import { Rgba, Hsla, Hsva } from './colorpicker';
 
 export const COLOR_RGB = /(rgb)a?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*%?,\s*(\d{1,3})\s*%?(?:,\s*(\d+(?:\.\d+)?)\s*)?\)/;
 export const COLOR_HSL = /(hsl)a?\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*(?:,\s*(\d+(?:\.\d+)?)\s*)?\)/;
+
+export class Hsva {
+  constructor(public h: number, public s: number, public v: number, public a: number) { }
+}
+export class Hsla {
+  constructor(public h: number, public s: number, public l: number, public a: number) { }
+}
+export class Rgba {
+  constructor(public r: number, public g: number, public b: number, public a: number) { }
+}
 
 @Injectable()
 export class ColorUtil {

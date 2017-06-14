@@ -17,7 +17,6 @@ import {
 } from '@angular/core';
 import {
   ControlValueAccessor,
-  FormsModule,
   NgControl
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -33,8 +32,15 @@ import {
   VerticalConnectionPos
 } from '../core';
 import { Subscription } from 'rxjs/Subscription';
-import { ColorUtil } from './color-util';
+import { ColorUtil, Rgba, Hsla, Hsva } from './color-util';
 import { coerceBooleanProperty } from '../core/coercion/boolean-property';
+
+export class SliderPosition {
+  constructor(public h: number, public s: number, public v: number, public a: number) { }
+}
+export class SliderDimension {
+  constructor(public h: number, public s: number, public v: number, public a: number) { }
+}
 
 export type Container = 'inline' | 'dialog';
 
@@ -620,20 +626,16 @@ export class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
     return this._overlay.position()
       .connectedTo(this._element,
       { originX: 'start', originY: 'top' },
-      { overlayX: 'start', overlayY: 'top' }
-      )
+      { overlayX: 'start', overlayY: 'top' })
       .withFallbackPosition(
       { originX: 'end', originY: 'top' },
-      { overlayX: 'end', overlayY: 'top' }
-      )
+      { overlayX: 'end', overlayY: 'top' })
       .withFallbackPosition(
       { originX: 'start', originY: 'bottom' },
-      { overlayX: 'start', overlayY: 'bottom' }
-      )
+      { overlayX: 'start', overlayY: 'bottom' })
       .withFallbackPosition(
       { originX: 'end', originY: 'bottom' },
-      { overlayX: 'end', overlayY: 'bottom' }
-      );
+      { overlayX: 'end', overlayY: 'bottom' });
   }
 
   private _cleanUpSubscriptions(): void {
@@ -646,31 +648,3 @@ export class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
   }
 
 }
-
-export class Hsva {
-  constructor(public h: number, public s: number, public v: number, public a: number) { }
-}
-export class Hsla {
-  constructor(public h: number, public s: number, public l: number, public a: number) { }
-}
-export class Rgba {
-  constructor(public r: number, public g: number, public b: number, public a: number) { }
-}
-export class SliderPosition {
-  constructor(public h: number, public s: number, public v: number, public a: number) { }
-}
-export class SliderDimension {
-  constructor(public h: number, public s: number, public v: number, public a: number) { }
-}
-
-export const MD2_COLORPICKER_DIRECTIVES = [
-  Md2Colorpicker, ColorpickerSliderDirective, TextDirective
-];
-
-@NgModule({
-  declarations: MD2_COLORPICKER_DIRECTIVES,
-  imports: [CommonModule, FormsModule, OverlayModule, PortalModule],
-  exports: MD2_COLORPICKER_DIRECTIVES,
-  providers: [ColorUtil]
-})
-export class Md2ColorpickerModule { }

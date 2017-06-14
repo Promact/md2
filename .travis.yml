@@ -8,6 +8,15 @@ branches:
   only:
   - master
 
+jobs:
+  include:
+    - env: "MODE=lint"
+    - env: "MODE=aot"
+    - env: "MODE=payload"
+    - stage: Deploy
+      script: ./scripts/ci/publish-artifacts.sh
+      env: "MODE=release"
+
 env:
   global:
   - LOGS_DIR=/tmp/md2-build/logs
@@ -22,7 +31,7 @@ before_script:
   - mkdir -p $LOGS_DIR
 
 script:
-  - ./scripts/deploy/deploy.sh
+  - ./scripts/ci/build-and-test.sh
 
 before_deploy:
   - gulp build:release

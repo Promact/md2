@@ -6,7 +6,7 @@ TARGET_BRANCH="gh-pages"
 COMMIT_MSG=`git log --format=%B --no-merges -n 1`
 
 # Pull requests and commits to other branches shouldn't try to deploy, just build to verify
-if [ "$TRAVIS_PULL_REQUEST" != "false" ] || [ "$TRAVIS_BRANCH" != "$SOURCE_BRANCH" ] || [[ $COMMIT_MSG != "publish-"* ]]; then
+if [ "$TRAVIS_PULL_REQUEST" != "false" ] || [ "$TRAVIS_BRANCH" != "$SOURCE_BRANCH" ]; then
   echo "Building demo-app"
   gulp build:devapp
   exit 0
@@ -23,7 +23,7 @@ rm -rf deploy/**/* || exit 0
 
 # Deploy demo.
 gulp rollup:prepare
-./node_modules/.bin/rollup -c ./dist/rollup-config.js
+npm run rollup
 gulp deploy
 
 # Configure cloned repo.

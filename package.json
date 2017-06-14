@@ -17,6 +17,7 @@
     "stylelint": "gulp lint",
     "e2e": "gulp e2e",
     "deploy": "gulp deploy",
+    "rollup": "./node_modules/.bin/rollup -c ./dist/rollup-config.js",
     "webdriver-manager": "webdriver-manager",
     "docs": "gulp docs",
     "api": "gulp api-docs"

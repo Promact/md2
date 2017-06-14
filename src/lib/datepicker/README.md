@@ -6,7 +6,7 @@ Datepicker allow the user to select date and time.
 
 | Name | Type | Description |
 | --- | --- | --- |
-| `type` | `'date' | 'time' | 'datetime'` | The type of the datepicker |
+| `type` | `'date' | 'time' | 'month' | 'datetime'` | The type of the datepicker |
 | `required` | `boolean` | Whether or not the datepicker is required |
 | `disabled` | `boolean` | Whether or not the datepicker is disabled |
 | `min` | `date` | The min date of Datepicker. |
@@ -38,6 +38,35 @@ A datepicker would have the following markup.
 <md2-datepicker [(ngModel)]="date"></md2-datepicker>
 ```
 
+## md2DatepickerToggle
+
+#### Selector: button\[md2DatepickerToggle]
+
+| Name | Description |
+| --- | --- |
+| `md2DatepickerToggle` | Datepicker instance that the button will toggle. |
+
+### Examples
+A datepicker toggle button would have the following markup.
+```html
+<md2-datepicker #birthday></md2-datepicker>
+<button [md2DatepickerToggle]="birthday"></button>
+```
+
+## Datepicker Locale Service
+This `DateLocale` service that allows the user to specify months, daysOfWeek, dates, hours, minutes and firstDayOfWeek internationalization. The `DateLocale` service itself is consumed by `Md2Datepicker` component that deal with dates.
+
+import { DateLocale } from 'md2';
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `months` | `Months = { long: Array<string>, short: Array<string>, narrow: Array<string> }` | Month Object with property long, short and narrow along with Array of month names (in order). |
+| `daysOfWeek` | `DaysOfWeek = { long: Array<string>, short: Array<string>, narrow: Array<string> }` | DaysOfWeek Object with property long, short and narrow along with Array of the days of the week (in order). |
+| `dates` | `Array<string>` | Array of dates of the month. Only necessary for locales using a numeral system other than ['1', '2', '3', ..., '31']. |
+| `hours` | `Array<string>` | Array of hours of the clock. Only necessary for locales using a numeral system other than ['0', '1', '2', ..., '23']. |
+| `minutes` | `Array<string>` | Array of minutes of the clock. Only necessary for locales using a numeral system other than ['0', '1', '2', ..., '59']. |
+| `firstDayOfWeek` | `number` | The first day of the week. Sunday = 0, Monday = 1, etc. |
+
 ### Date Format
 
 | COMPONENT | SYMBOL | NARROW | SHORT FORM | LONG FORM        | NUMERIC | 2-DIGIT |
@@ -61,6 +90,6 @@ A datepicker would have the following markup.
 - <kbd>END</kbd>: Focus last day of the month
 - <kbd>PAGE_UP</kbd>: Focus a month backward
 - <kbd>PAGE_DOWN</kbd>: Focus a month forward
-- <kbd>SHIFT + PAGE_UP</kbd>: Focus a year backward
-- <kbd>SHIFT + PAGE_DOWN</kbd>: Focus a year forward
+- <kbd>ALT + PAGE_UP</kbd>: Focus a year backward
+- <kbd>ALT + PAGE_DOWN</kbd>: Focus a year forward
 - <kbd>ENTER</kbd>: Select focused item

@@ -3,7 +3,7 @@ const path = require('path');
 const isStandardSyntaxRule = require('stylelint/lib/utils/isStandardSyntaxRule');
 const isStandardSyntaxSelector = require('stylelint/lib/utils/isStandardSyntaxSelector');
 
-const ruleName = 'material/selector-nested-pattern-scoped';
+const ruleName = 'md2/selector-nested-pattern-scoped';
 const messages = stylelint.utils.ruleMessages(ruleName, {
   expected: selector => `Expected nested selector '${selector}' to match specified pattern`,
 });

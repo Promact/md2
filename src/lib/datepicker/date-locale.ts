@@ -59,9 +59,9 @@ export class DateLocale {
   locale: any;
   months: Months;
   daysOfWeek: DaysOfWeek;
-  dates: string[];
-  hours: string[];
-  minutes: string[];
+  dates: Array<string>;
+  hours: Array<string>;
+  minutes: Array<string>;
   firstDayOfWeek: number = 0;
 
   getDayOfWeek(date: Date): number {

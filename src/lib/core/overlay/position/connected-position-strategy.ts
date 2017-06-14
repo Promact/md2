@@ -357,7 +357,7 @@ export class ConnectedPositionStrategy implements PositionStrategy {
 
     // We want to set either `top` or `bottom` based on whether the overlay wants to appear above
     // or below the origin and the direction in which the element will expand.
-    let verticalStyleProperty:any = pos.overlayY === 'bottom' ? 'bottom' : 'top';
+    let verticalStyleProperty: any = pos.overlayY === 'bottom' ? 'bottom' : 'top';
 
     // When using `bottom`, we adjust the y position such that it is the distance
     // from the bottom of the viewport rather than the top.

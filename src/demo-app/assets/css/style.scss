@@ -29,7 +29,7 @@ summary {
 }
 
 .md2-input {
-  max-width:100%;
+  max-width: 100%;
   margin: 8px 0;
   line-height: 26px;
   border: 0;
@@ -157,7 +157,7 @@ label.checkbox {
       transform: rotate(-45deg);
       height: 8px;
       border-width: 0 0 2px 2px;
-      border-color: #2196F3;
+      border-color: #2196f3;
     }
   }
 }
@@ -334,7 +334,6 @@ html, body {
       position: relative;
       float: left;
       display: none;
-      min-width: initial;
       outline: none;
       padding: 16px;
       margin: 4px 0 0 -16px;

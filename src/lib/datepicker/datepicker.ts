@@ -590,16 +590,13 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     return this._overlay.position()
       .connectedTo(this._element,
       { originX: 'start', originY: 'bottom' },
-      { overlayX: 'start', overlayY: 'top' }
-      )
+      { overlayX: 'start', overlayY: 'top' })
       .withFallbackPosition(
       { originX: 'start', originY: 'top' },
-      { overlayX: 'start', overlayY: 'bottom' }
-      )
+      { overlayX: 'start', overlayY: 'bottom' })
       .withFallbackPosition(
       { originX: 'end', originY: 'bottom' },
-      { overlayX: 'end', overlayY: 'top' }
-      )
+      { overlayX: 'end', overlayY: 'top' })
       .withFallbackPosition(
       { originX: 'end', originY: 'top' },
       { overlayX: 'end', overlayY: 'bottom' });

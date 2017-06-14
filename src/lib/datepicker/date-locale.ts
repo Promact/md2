@@ -45,13 +45,13 @@ export interface Months {
   long: Array<string>;
   short: Array<string>;
   narrow: Array<string>;
-};
+}
 
 export interface DaysOfWeek {
   long: Array<string>;
   short: Array<string>;
   narrow: Array<string>;
-};
+}
 
 @Injectable()
 export class DateLocale {

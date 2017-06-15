@@ -13,9 +13,9 @@ fi
 
 echo "Starting to publish the build artifacts and demo content..."
 # Run publishing.
-bash ./scripts/deploy/publish-build-artifacts.sh --no-build &
+bash ./scripts/deploy/publish-build-artifacts.sh
 
 # Deploy the demo.
-bash ./scripts/deploy/deploy-demo.sh &
+bash ./scripts/deploy/deploy-demo.sh
 
 wait

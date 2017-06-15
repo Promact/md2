@@ -35,8 +35,6 @@ elif is_aot; then
   $(npm bin)/gulp ci:aot
 elif is_payload; then
   $(npm bin)/gulp ci:payload
-elif is_closure_compiler; then
-  ./scripts/closure-compiler/build-devapp-bundle.sh
 fi
 
 teardown_tunnel

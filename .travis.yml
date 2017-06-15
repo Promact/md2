@@ -14,7 +14,6 @@ jobs:
     - env: "MODE=lint"
     - env: "MODE=aot"
     - env: "MODE=payload"
-    - env: "MODE=closure-compiler"
     - stage: Deploy
       script: bash ./scripts/ci/publish-artifacts.sh
       env: "MODE=release"

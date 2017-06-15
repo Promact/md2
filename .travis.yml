@@ -19,10 +19,6 @@ jobs:
       script: ./scripts/ci/publish-artifacts.sh
       env: "MODE=release"
 
-env:
-  global:
-  - LOGS_DIR=/tmp/md2-build/logs
-
 before_install:
   - npm i -g npm@^5.0.1
 

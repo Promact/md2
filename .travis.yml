@@ -1,5 +1,6 @@
 language: node_js
 sudo: false
+dist: trusty
 
 node_js:
   - '--lts'
@@ -13,6 +14,7 @@ jobs:
     - env: "MODE=lint"
     - env: "MODE=aot"
     - env: "MODE=payload"
+    - env: "MODE=closure-compiler"
     - stage: Deploy
       script: ./scripts/ci/publish-artifacts.sh
       env: "MODE=release"

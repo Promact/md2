@@ -2,17 +2,17 @@
 source ./scripts/ci/sources/tunnel.sh
 
 is_lint() {
-  [[ "$MODE" = lint ]]
+  [[ "${MODE}" = lint ]]
 }
 
 is_aot() {
-  [[ "$MODE" = aot ]]
+  [[ "${MODE}" = aot ]]
 }
 
 is_closure_compiler() {
-  [[ "$MODE" = closure-compiler ]]
+  [[ "${MODE}" = closure-compiler ]]
 }
 
 is_payload() {
-  [[ "$MODE" = payload ]]
+  [[ "${MODE}" = payload ]]
 }

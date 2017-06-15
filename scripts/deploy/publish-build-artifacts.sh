@@ -17,38 +17,38 @@ commitMessage=$(git log --oneline -n 1)
 
 repoName="md2"
 repoUrl="https://github.com/Promact/md2.git"
-repoDir="tmp/$repoName"
+repoDir="tmp/${repoName}"
 
 # Create a release of the current repository.
 $(npm bin)/gulp build:release
 
 # Prepare cloning the builds repository
-rm -rf $repoDir
-mkdir -p $repoDir
+rm -rf ${repoDir}
+mkdir -p ${repoDir}
 
 # Clone the repository
-git clone $repoUrl $repoDir --depth 1 --branch=build
+git clone ${repoUrl} ${repoDir} --depth 1 --branch=build
 
 # Copy the build files to the repository
-rm -rf $repoDir/*
-cp -r $buildDir/* $repoDir
+rm -rf ${repoDir}/*
+cp -r ${buildDir}/* ${repoDir}
 
 # Create the build commit and push the changes to the repository.
 cd ${repoDir}
 
 # Update the package.json version to include the current commit SHA.
-  sed -i "s/${buildVersion}/${buildVersion}-${commitSha}/g" package.json
+sed -i "s/${buildVersion}/${buildVersion}-${commitSha}/g" package.json
 
 # Prepare Git for pushing the artifacts to the repository.
 git config user.name "${commitAuthorName}"
-  git config user.email "${commitAuthorEmail}"
+git config user.email "${commitAuthorEmail}"
 git config credential.helper "store --file=.git/credentials"
 
 echo "https://${$GH_TOKEN}:@github.com" > .git/credentials
 
 git add -A
-git commit -m "$commitMessage"
-git tag "$buildVersion-$commitSha"
+git commit -m "${commitMessage}"
+git tag "${buildVersion}-${commitSha}"
 git push origin master --tags
 
 echo "Published artifacts for Md2 package."

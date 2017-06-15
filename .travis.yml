@@ -1,6 +1,5 @@
 language: node_js
 sudo: false
-dist: trusty
 
 node_js:
   - '--lts'
@@ -30,7 +29,7 @@ install:
   - npm install
 
 before_script:
-  - mkdir -p $LOGS_DIR
+  - mkdir -p /tmp/md2-build/logs
 
 script:
   - ./scripts/ci/build-and-test.sh

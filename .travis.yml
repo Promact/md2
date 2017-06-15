@@ -15,7 +15,7 @@ jobs:
     - env: "MODE=payload"
     - env: "MODE=closure-compiler"
     - stage: Deploy
-      script: ./scripts/ci/publish-artifacts.sh
+      script: bash ./scripts/ci/publish-artifacts.sh
       env: "MODE=release"
 
 before_install:
@@ -25,7 +25,7 @@ install:
   - npm install
 
 script:
-  - ./scripts/ci/build-and-test.sh
+  - bash ./scripts/ci/build-and-test.sh
 
 before_deploy:
   - gulp build:release

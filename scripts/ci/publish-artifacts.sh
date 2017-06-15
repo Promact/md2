@@ -12,14 +12,14 @@ if [[ "$TRAVIS_PULL_REQUEST" != "false" ]]; then
 fi
 
 echo "Starting to publish the build artifacts and docs content..."
-echo ""
 
 # Build Md2 before publishing
 $(npm bin)/gulp build:release
 
-# Run publishing of artifacts in parallel.
-# This is possible because the output has been built before.
+# Run publishing.
+./scripts/deploy/publish-build-artifacts.sh --no-build &
 
-# Deploy the dashboard functions for each push build.
+# Deploy the demo.
+./scripts/deploy/deploy-demo.sh &
 
 wait

@@ -1,14 +1,13 @@
 #!/bin/bash
 
-# Script to publish the build artifacts to a GitHub repository.
-# Builds will be automatically published once new changes are made to the repository.
+# Script to publish the demo artifacts to a GitHub repository.
 
 set -e -o pipefail
 
 # Go to the project root directory
 cd $(dirname ${0})/../..
 
-buildDir="dist/md2"
+buildDir="deploy"
 buildVersion=$(sed -nE 's/^\s*"version": "(.*?)",$/\1/p' package.json)
 commitSha=$(git rev-parse --short HEAD)
 commitAuthorName=$(git --no-pager show -s --format='%an' HEAD)
@@ -17,17 +16,19 @@ commitMessage=$(git log --oneline -n 1)
 
 repoName="md2"
 repoUrl="https://github.com/Promact/md2.git"
-repoDir="tmp/${repoName}"
+repoDir="tmp/${repoName}/${buildDir}"
 
 # Create a release of the current repository.
-$(npm bin)/gulp build:release
+$(npm bin)/gulp rollup:prepare
+$(npm bin)/rollup -c ./dist/rollup-config.js
+$(npm bin)/gulp deploy
 
 # Prepare cloning the builds repository
 rm -rf ${repoDir}
 mkdir -p ${repoDir}
 
 # Clone the repository
-git clone ${repoUrl} ${repoDir} --depth 1 --branch=build
+git clone ${repoUrl} ${repoDir} --depth 1 --branch=gh-pages
 
 # Copy the build files to the repository
 rm -rf ${repoDir}/*
@@ -48,4 +49,4 @@ git commit -m "${commitMessage}"
 git tag "${buildVersion}-${commitSha}"
 git push origin master --tags
 
-echo "Published artifacts for Md2 package."
+echo "Published demo on Md2 gh-pages."

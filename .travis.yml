@@ -1,8 +1,9 @@
 language: node_js
 sudo: false
+dist: trusty
 
 node_js:
-  - '6.11.0'
+  - '--lts'
 
 branches:
   only:
@@ -18,11 +19,18 @@ jobs:
       script: bash ./scripts/ci/publish-artifacts.sh
       env: "MODE=release"
 
+env:
+  global:
+  - LOGS_DIR=/tmp/md2-build/logs
+
 before_install:
   - npm i -g npm@^5.0.1
 
 install:
   - npm install
+
+before_script:
+  - mkdir -p $LOGS_DIR
 
 script:
   - bash ./scripts/ci/build-and-test.sh

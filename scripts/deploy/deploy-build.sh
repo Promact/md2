@@ -45,6 +45,6 @@ git config user.email "${commitAuthorEmail}"
 git add -A
 git commit -m "${commitMessage}"
 git tag "${buildVersion}-${commitSha}"
-git push origin master --tags
+git push --tags
 
 echo "Published build on Md2 build."

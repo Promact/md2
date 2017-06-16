@@ -45,6 +45,6 @@ git config user.email "${commitAuthorEmail}"
 
 git add -A
 git commit -m "${commitMessage}"
-git push origin master --tags
+git push --tags
 
 echo "Published demo on Md2 gh-pages."

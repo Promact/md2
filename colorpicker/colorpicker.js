@@ -12,9 +12,11 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 import { Component, Input, Output, EventEmitter, ElementRef, ViewEncapsulation, Directive, Optional, Renderer, Self, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { NgControl } from '@angular/forms';
-import { Overlay, OverlayState, TemplatePortal } from '../core';
-import { ColorUtil, Rgba, Hsla, Hsva } from './color-util';
 import { coerceBooleanProperty } from '../core/coercion/boolean-property';
+import { Overlay } from '../core/overlay/overlay';
+import { OverlayState } from '../core/overlay/overlay-state';
+import { TemplatePortal } from '../core';
+import { ColorUtil, Rgba, Hsla, Hsva } from './color-util';
 var SliderPosition = (function () {
     function SliderPosition(h, s, v, a) {
         this.h = h;

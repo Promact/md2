@@ -1,6 +1,6 @@
 import { EventEmitter, ElementRef, OnDestroy, Renderer, TemplateRef, ViewContainerRef } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
-import { Overlay } from '../core';
+import { Overlay } from '../core/overlay/overlay';
 import { ColorUtil, Rgba, Hsla, Hsva } from './color-util';
 export declare class SliderPosition {
     h: number;

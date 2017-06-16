@@ -5,7 +5,6 @@ import {
   EventEmitter,
   ElementRef,
   ViewEncapsulation,
-  NgModule,
   Directive,
   OnDestroy,
   Optional,
@@ -19,21 +18,14 @@ import {
   ControlValueAccessor,
   NgControl
 } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import {
-  Overlay,
-  OverlayModule,
-  OverlayState,
-  OverlayRef,
-  PositionStrategy,
-  TemplatePortal,
-  PortalModule,
-  HorizontalConnectionPos,
-  VerticalConnectionPos
-} from '../core';
+import { coerceBooleanProperty } from '../core/coercion/boolean-property';
+import { Overlay } from '../core/overlay/overlay';
+import { OverlayRef } from '../core/overlay/overlay-ref';
+import { OverlayState } from '../core/overlay/overlay-state';
+import { PositionStrategy } from '../core/overlay/position/position-strategy';
+import { TemplatePortal } from '../core';
 import { Subscription } from 'rxjs/Subscription';
 import { ColorUtil, Rgba, Hsla, Hsva } from './color-util';
-import { coerceBooleanProperty } from '../core/coercion/boolean-property';
 
 export class SliderPosition {
   constructor(public h: number, public s: number, public v: number, public a: number) { }
@@ -175,7 +167,6 @@ export class ColorpickerSliderDirective {
 export class Md2ColorChange {
   constructor(public source: Md2Colorpicker, public color: string) { }
 }
-
 
 @Component({
   moduleId: module.id,

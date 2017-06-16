@@ -11,9 +11,9 @@ if [[ "$TRAVIS_PULL_REQUEST" != "false" ]] || [[ "$TRAVIS_BRANCH" != "master" ]]
   exit 0;
 fi
 
-echo "Starting to publish the build artifacts and demo content..."
+echo "Starting to deploy the build and demo content..."
 # Run publishing.
-bash ./scripts/deploy/publish-build-artifacts.sh
+bash ./scripts/deploy/deploy-build.sh
 
 # Deploy the demo.
 bash ./scripts/deploy/deploy-demo.sh

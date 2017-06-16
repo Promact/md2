@@ -8,6 +8,8 @@ set -e -o pipefail
 # Go to the project root directory
 cd $(dirname ${0})/../..
 
+echo "Start build deploy."
+
 buildDir="dist/md2"
 buildVersion=$(sed -nE 's/^\s*"version": "(.*?)",$/\1/p' package.json)
 commitSha=$(git rev-parse --short HEAD)
@@ -15,7 +17,7 @@ commitAuthorName=$(git --no-pager show -s --format='%an' HEAD)
 commitAuthorEmail=$(git --no-pager show -s --format='%ae' HEAD)
 commitMessage=$(git log --oneline -n 1)
 
-repoName="md2"
+repoName="build"
 repoUrl="https://Promact:$GH_TOKEN@github.com/Promact/md2.git"
 repoDir="tmp/${repoName}"
 

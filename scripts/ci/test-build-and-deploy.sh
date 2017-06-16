@@ -30,4 +30,4 @@ $(npm bin)/gulp ci:aot
 echo "start payload"
 $(npm bin)/gulp ci:payload
 
-bash ./scripts/ci/publish-artifacts.sh
+bash ./scripts/ci/deploy.sh

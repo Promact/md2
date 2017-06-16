@@ -17,9 +17,9 @@ commitAuthorName=$(git --no-pager show -s --format='%an' HEAD)
 commitAuthorEmail=$(git --no-pager show -s --format='%ae' HEAD)
 commitMessage=$(git log --oneline -n 1)
 
-repoName="build"
+branchName="build"
 repoUrl="https://Promact:$GH_TOKEN@github.com/Promact/md2.git"
-repoDir="tmp/${repoName}"
+repoDir="tmp/${branchName}"
 
 # Create a release of the current repository.
 $(npm bin)/gulp build:release
@@ -29,7 +29,7 @@ rm -rf ${repoDir}
 mkdir -p ${repoDir}
 
 # Clone the repository
-git clone ${repoUrl} ${repoDir} --depth 1 --branch=build
+git clone ${repoUrl} ${repoDir} --depth 1 --branch=${branchName}
 
 # Copy the build files to the repository
 rm -rf ${repoDir}/*
@@ -45,6 +45,7 @@ git config user.email "${commitAuthorEmail}"
 git add -A
 git commit -m "${commitMessage}"
 git tag "${buildVersion}-${commitSha}"
+git push origin ${branchName}
 git push --tags
 
 echo "Published build on Md2 build."

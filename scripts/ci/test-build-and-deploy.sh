@@ -3,15 +3,11 @@
 set -e
 
 echo ""
-echo "Building sources and running tests. Running mode: ${MODE}"
+echo "Test Build and Deploy starts"
 echo ""
 
 # Go to project dir
 cd $(dirname $0)/../..
-
-# Include sources.
-source scripts/ci/sources/mode.sh
-source scripts/ci/sources/tunnel.sh
 
 # Get commit diff
 if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
@@ -26,15 +22,12 @@ if [[ ${fileDiff} =~ ^(.*\.md\s*)*$ ]] && (is_e2e || is_unit); then
   exit 0
 fi
 
-start_tunnel
-wait_for_tunnel
 
-if is_lint; then
-  $(npm bin)/gulp ci:lint
-elif is_aot; then
-  $(npm bin)/gulp ci:aot
-elif is_payload; then
-  $(npm bin)/gulp ci:payload
-fi
+echo "start lint"
+$(npm bin)/gulp ci:lint
+echo "start AOT"
+$(npm bin)/gulp ci:aot
+echo "start payload"
+$(npm bin)/gulp ci:payload
 
-teardown_tunnel
+bash ./scripts/ci/publish-artifacts.sh

@@ -85,6 +85,7 @@ $md2-calendar-next-icon-transform: translateX(-2px) rotate(45deg);
   padding: 0 $md2-calendar-padding $md2-calendar-padding $md2-calendar-padding;
   outline: none;
   box-sizing: border-box;
+  overflow: hidden;
 
   [mode='landscape'] & {
     padding-top: $md2-calendar-padding;

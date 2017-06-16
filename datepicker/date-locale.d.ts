@@ -12,9 +12,9 @@ export declare class DateLocale {
     locale: any;
     months: Months;
     daysOfWeek: DaysOfWeek;
-    dates: string[];
-    hours: string[];
-    minutes: string[];
+    dates: Array<string>;
+    hours: Array<string>;
+    minutes: Array<string>;
     firstDayOfWeek: number;
     getDayOfWeek(date: Date): number;
     getMonthNames(style: 'long' | 'short' | 'narrow'): string[];

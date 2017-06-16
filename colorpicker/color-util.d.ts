@@ -1,6 +1,26 @@
-import { Rgba, Hsla, Hsva } from './colorpicker';
 export declare const COLOR_RGB: RegExp;
 export declare const COLOR_HSL: RegExp;
+export declare class Hsva {
+    h: number;
+    s: number;
+    v: number;
+    a: number;
+    constructor(h: number, s: number, v: number, a: number);
+}
+export declare class Hsla {
+    h: number;
+    s: number;
+    l: number;
+    a: number;
+    constructor(h: number, s: number, l: number, a: number);
+}
+export declare class Rgba {
+    r: number;
+    g: number;
+    b: number;
+    a: number;
+    constructor(r: number, g: number, b: number, a: number);
+}
 export declare class ColorUtil {
     /**
   * hsla to hsva

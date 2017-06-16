@@ -10,12 +10,31 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { Component, Input, Output, EventEmitter, ElementRef, ViewEncapsulation, NgModule, Directive, Optional, Renderer, Self, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
-import { FormsModule, NgControl } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { Overlay, OverlayModule, OverlayState, TemplatePortal, PortalModule } from '../core';
-import { ColorUtil } from './color-util';
+import { Component, Input, Output, EventEmitter, ElementRef, ViewEncapsulation, Directive, Optional, Renderer, Self, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { NgControl } from '@angular/forms';
+import { Overlay, OverlayState, TemplatePortal } from '../core';
+import { ColorUtil, Rgba, Hsla, Hsva } from './color-util';
 import { coerceBooleanProperty } from '../core/coercion/boolean-property';
+var SliderPosition = (function () {
+    function SliderPosition(h, s, v, a) {
+        this.h = h;
+        this.s = s;
+        this.v = v;
+        this.a = a;
+    }
+    return SliderPosition;
+}());
+export { SliderPosition };
+var SliderDimension = (function () {
+    function SliderDimension(h, s, v, a) {
+        this.h = h;
+        this.s = s;
+        this.v = v;
+        this.a = a;
+    }
+    return SliderDimension;
+}());
+export { SliderDimension };
 var nextId = 0;
 var TextDirective = (function () {
     function TextDirective() {
@@ -660,71 +679,4 @@ Md2Colorpicker = __decorate([
         ColorUtil, NgControl])
 ], Md2Colorpicker);
 export { Md2Colorpicker };
-var Hsva = (function () {
-    function Hsva(h, s, v, a) {
-        this.h = h;
-        this.s = s;
-        this.v = v;
-        this.a = a;
-    }
-    return Hsva;
-}());
-export { Hsva };
-var Hsla = (function () {
-    function Hsla(h, s, l, a) {
-        this.h = h;
-        this.s = s;
-        this.l = l;
-        this.a = a;
-    }
-    return Hsla;
-}());
-export { Hsla };
-var Rgba = (function () {
-    function Rgba(r, g, b, a) {
-        this.r = r;
-        this.g = g;
-        this.b = b;
-        this.a = a;
-    }
-    return Rgba;
-}());
-export { Rgba };
-var SliderPosition = (function () {
-    function SliderPosition(h, s, v, a) {
-        this.h = h;
-        this.s = s;
-        this.v = v;
-        this.a = a;
-    }
-    return SliderPosition;
-}());
-export { SliderPosition };
-var SliderDimension = (function () {
-    function SliderDimension(h, s, v, a) {
-        this.h = h;
-        this.s = s;
-        this.v = v;
-        this.a = a;
-    }
-    return SliderDimension;
-}());
-export { SliderDimension };
-export var MD2_COLORPICKER_DIRECTIVES = [
-    Md2Colorpicker, ColorpickerSliderDirective, TextDirective
-];
-var Md2ColorpickerModule = (function () {
-    function Md2ColorpickerModule() {
-    }
-    return Md2ColorpickerModule;
-}());
-Md2ColorpickerModule = __decorate([
-    NgModule({
-        declarations: MD2_COLORPICKER_DIRECTIVES,
-        imports: [CommonModule, FormsModule, OverlayModule, PortalModule],
-        exports: MD2_COLORPICKER_DIRECTIVES,
-        providers: [ColorUtil]
-    })
-], Md2ColorpickerModule);
-export { Md2ColorpickerModule };
 //# sourceMappingURL=colorpicker.js.map

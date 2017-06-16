@@ -39,31 +39,31 @@ const MATERIAL_COMPATIBILITY_MODE = new InjectionToken('md-compatibility-mode');
  * @docs-private
  */
 function getMdCompatibilityInvalidPrefixError(prefix, nodeName) {
-    return new Error(`The "${prefix}-" prefix cannot be used in ng-material v1 compatibility mode. ` +
+    return Error(`The "${prefix}-" prefix cannot be used in ng-material v1 compatibility mode. ` +
         `It was used on an "${nodeName.toLowerCase()}" element.`);
 }
 /** Selector that matches all elements that may have style collisions with AngularJS Material. */
 const MAT_ELEMENTS_SELECTOR = `
   [mat-button],
-  [mat-card-subtitle],
-  [mat-card-title],
-  [mat-dialog-actions],
-  [mat-dialog-close],
-  [mat-dialog-content],
-  [mat-dialog-title],
   [mat-fab],
   [mat-icon-button],
-  [mat-menu-trigger-for],
   [mat-mini-fab],
   [mat-raised-button],
-  [mat-tab-label],
-  [mat-tab-link],
-  [mat-tab-nav-bar],
+  [matCardSubtitle],
+  [matCardTitle],
+  [matDialogActions],
+  [matDialogClose],
+  [matDialogContent],
+  [matDialogTitle],
+  [matLine],
+  [matTabLabel],
+  [matTabLink],
+  [matTabNav],
   [matTooltip],
   mat-autocomplete,
   mat-button-toggle,
-  mat-button-toggle-group,
   mat-button-toggle,
+  mat-button-toggle-group,
   mat-card,
   mat-card-actions,
   mat-card-content,
@@ -78,6 +78,7 @@ const MAT_ELEMENTS_SELECTOR = `
   mat-dialog-container,
   mat-dialog-content,
   mat-divider,
+  mat-error,
   mat-grid-list,
   mat-grid-tile,
   mat-grid-tile-footer,
@@ -101,30 +102,29 @@ const MAT_ELEMENTS_SELECTOR = `
   mat-spinner,
   mat-tab,
   mat-tab-group,
-  mat-toolbar,
-  mat-error`;
+  mat-toolbar`;
 /** Selector that matches all elements that may have style collisions with AngularJS Material. */
 const MD_ELEMENTS_SELECTOR = `
   [md-button],
-  [md-card-subtitle],
-  [md-card-title],
-  [md-dialog-actions],
-  [md-dialog-close],
-  [md-dialog-content],
-  [md-dialog-title],
   [md-fab],
   [md-icon-button],
-  [md-menu-trigger-for],
   [md-mini-fab],
   [md-raised-button],
-  [md-tab-label],
-  [md-tab-link],
-  [md-tab-nav-bar],
+  [mdCardSubtitle],
+  [mdCardTitle],
+  [mdDialogActions],
+  [mdDialogClose],
+  [mdDialogContent],
+  [mdDialogTitle],
+  [mdLine],
+  [mdTabLabel],
+  [mdTabLink],
+  [mdTabNav],
   [mdTooltip],
   md-autocomplete,
   md-button-toggle,
-  md-button-toggle-group,
   md-button-toggle,
+  md-button-toggle-group,
   md-card,
   md-card-actions,
   md-card-content,
@@ -139,6 +139,7 @@ const MD_ELEMENTS_SELECTOR = `
   md-dialog-container,
   md-dialog-content,
   md-divider,
+  md-error,
   md-grid-list,
   md-grid-tile,
   md-grid-tile-footer,
@@ -162,8 +163,7 @@ const MD_ELEMENTS_SELECTOR = `
   md-spinner,
   md-tab,
   md-tab-group,
-  md-toolbar,
-  md-error`;
+  md-toolbar`;
 /** Directive that enforces that the `mat-` prefix cannot be used. */
 let MatPrefixRejector = class MatPrefixRejector {
     constructor(isCompatibilityMode, elementRef) {
@@ -296,10 +296,8 @@ let MdLine = class MdLine {
 };
 MdLine = __decorate$1([
     Directive({
-        selector: '[md-line], [mat-line]',
-        host: {
-            '[class.mat-line]': 'true'
-        }
+        selector: '[md-line], [mat-line], [mdLine], [matLine]',
+        host: { 'class': 'mat-line' }
     })
 ], MdLine);
 /**
@@ -1465,7 +1463,7 @@ MdPseudoCheckbox = __decorate$17([
         inputs: ['color'],
         template: '',
         host: {
-            '[class.mat-pseudo-checkbox]': 'true',
+            'class': 'mat-pseudo-checkbox',
             '[class.mat-pseudo-checkbox-indeterminate]': 'state === "indeterminate"',
             '[class.mat-pseudo-checkbox-checked]': 'state === "checked"',
             '[class.mat-pseudo-checkbox-disabled]': 'disabled',
@@ -1760,28 +1758,28 @@ MdOptionModule = __decorate$6([
  * Throws an exception when attempting to attach a null portal to a host.
  * @docs-private
  */ function throwNullPortalError() {
-    throw new Error('Must provide a portal to attach');
+    throw Error('Must provide a portal to attach');
 }
 /**
  * Throws an exception when attempting to attach a portal to a host that is already attached.
  * @docs-private
  */
 function throwPortalAlreadyAttachedError() {
-    throw new Error('Host already has a portal attached');
+    throw Error('Host already has a portal attached');
 }
 /**
  * Throws an exception when attempting to attach a portal to an already-disposed host.
  * @docs-private
  */
 function throwPortalHostAlreadyDisposedError() {
-    throw new Error('This PortalHost has already been disposed');
+    throw Error('This PortalHost has already been disposed');
 }
 /**
  * Throws an exception when attempting to attach an unknown portal type.
  * @docs-private
  */
 function throwUnknownPortalTypeError() {
-    throw new Error('Attempting to attach an unknown Portal type. BasePortalHost accepts either' +
+    throw Error('Attempting to attach an unknown Portal type. BasePortalHost accepts either' +
         'a ComponentPortal or a TemplatePortal.');
 }
 /**
@@ -1789,14 +1787,14 @@ function throwUnknownPortalTypeError() {
  * @docs-private
  */
 function throwNullPortalHostError() {
-    throw new Error('Attempting to attach a portal to a null PortalHost');
+    throw Error('Attempting to attach a portal to a null PortalHost');
 }
 /**
  * Throws an exception when attempting to detach a portal that is not attached.
  * @docs-privatew
  */
 function throwNoPortalAttachedError() {
-    throw new Error('Attempting to detach a portal that is not attached to a host');
+    throw Error('Attempting to detach a portal that is not attached to a host');
 }
 //# sourceMappingURL=portal-errors.js.map
 
@@ -6071,7 +6069,7 @@ Md2CollapseModule = __decorate$44([
     })
 ], Md2CollapseModule);
 
-var __decorate$47 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$48 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -6079,6 +6077,30 @@ var __decorate$47 = (this && this.__decorate) || function (decorators, target, k
 };
 const COLOR_RGB = /(rgb)a?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*%?,\s*(\d{1,3})\s*%?(?:,\s*(\d+(?:\.\d+)?)\s*)?\)/;
 const COLOR_HSL = /(hsl)a?\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*(?:,\s*(\d+(?:\.\d+)?)\s*)?\)/;
+class Hsva {
+    constructor(h, s, v, a) {
+        this.h = h;
+        this.s = s;
+        this.v = v;
+        this.a = a;
+    }
+}
+class Hsla {
+    constructor(h, s, l, a) {
+        this.h = h;
+        this.s = s;
+        this.l = l;
+        this.a = a;
+    }
+}
+class Rgba {
+    constructor(r, g, b, a) {
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.a = a;
+    }
+}
 let ColorUtil = class ColorUtil {
     /**
   * hsla to hsva
@@ -6281,11 +6303,11 @@ let ColorUtil = class ColorUtil {
         return new Rgba(Math.round(rgba.r * 255), Math.round(rgba.g * 255), Math.round(rgba.b * 255), rgba.a);
     }
 };
-ColorUtil = __decorate$47([
+ColorUtil = __decorate$48([
     Injectable()
 ], ColorUtil);
 
-var __decorate$46 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$47 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -6297,6 +6319,22 @@ var __metadata$27 = (this && this.__metadata) || function (k, v) {
 var __param$7 = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+class SliderPosition {
+    constructor(h, s, v, a) {
+        this.h = h;
+        this.s = s;
+        this.v = v;
+        this.a = a;
+    }
+}
+class SliderDimension {
+    constructor(h, s, v, a) {
+        this.h = h;
+        this.s = s;
+        this.v = v;
+        this.a = a;
+    }
+}
 let nextId$2 = 0;
 let TextDirective = class TextDirective {
     constructor() {
@@ -6317,19 +6355,19 @@ let TextDirective = class TextDirective {
         }
     }
 };
-__decorate$46([
+__decorate$47([
     Output('newValue'),
     __metadata$27("design:type", Object)
 ], TextDirective.prototype, "newValue", void 0);
-__decorate$46([
+__decorate$47([
     Input('text'),
     __metadata$27("design:type", Object)
 ], TextDirective.prototype, "text", void 0);
-__decorate$46([
+__decorate$47([
     Input('rg'),
     __metadata$27("design:type", Number)
 ], TextDirective.prototype, "rg", void 0);
-TextDirective = __decorate$46([
+TextDirective = __decorate$47([
     Directive({
         selector: '[text]',
         host: {
@@ -6416,23 +6454,23 @@ let ColorpickerSliderDirective = class ColorpickerSliderDirective {
         return this._element.nativeElement;
     }
 };
-__decorate$46([
+__decorate$47([
     Input('colorpicker-slider'),
     __metadata$27("design:type", String)
 ], ColorpickerSliderDirective.prototype, "slider", void 0);
-__decorate$46([
+__decorate$47([
     Input('point-x'),
     __metadata$27("design:type", Number)
 ], ColorpickerSliderDirective.prototype, "pointX", void 0);
-__decorate$46([
+__decorate$47([
     Input('point-y'),
     __metadata$27("design:type", Number)
 ], ColorpickerSliderDirective.prototype, "pointY", void 0);
-__decorate$46([
+__decorate$47([
     Output('change'),
     __metadata$27("design:type", Object)
 ], ColorpickerSliderDirective.prototype, "change", void 0);
-ColorpickerSliderDirective = __decorate$46([
+ColorpickerSliderDirective = __decorate$47([
     Directive({
         selector: '[colorpicker-slider]',
         host: {
@@ -6824,64 +6862,64 @@ let Md2Colorpicker = class Md2Colorpicker {
         }
     }
 };
-__decorate$46([
+__decorate$47([
     Input(),
     __metadata$27("design:type", Object),
     __metadata$27("design:paramtypes", [String])
 ], Md2Colorpicker.prototype, "color", null);
-__decorate$46([
+__decorate$47([
     Input(),
     __metadata$27("design:type", Object),
     __metadata$27("design:paramtypes", [String])
 ], Md2Colorpicker.prototype, "placeholder", null);
-__decorate$46([
+__decorate$47([
     Input(),
     __metadata$27("design:type", Boolean),
     __metadata$27("design:paramtypes", [Object])
 ], Md2Colorpicker.prototype, "required", null);
-__decorate$46([
+__decorate$47([
     Input(),
     __metadata$27("design:type", Object),
     __metadata$27("design:paramtypes", [Object])
 ], Md2Colorpicker.prototype, "disabled", null);
-__decorate$46([
+__decorate$47([
     Input('format'),
     __metadata$27("design:type", String)
 ], Md2Colorpicker.prototype, "cFormat", void 0);
-__decorate$46([
+__decorate$47([
     Output('colorpickerChange'),
     __metadata$27("design:type", Object)
 ], Md2Colorpicker.prototype, "colorpickerChange", void 0);
-__decorate$46([
+__decorate$47([
     Output(),
     __metadata$27("design:type", EventEmitter)
 ], Md2Colorpicker.prototype, "change", void 0);
-__decorate$46([
+__decorate$47([
     Input(),
     __metadata$27("design:type", Number)
 ], Md2Colorpicker.prototype, "tabindex", void 0);
-__decorate$46([
+__decorate$47([
     Input(),
     __metadata$27("design:type", String)
 ], Md2Colorpicker.prototype, "id", void 0);
-__decorate$46([
+__decorate$47([
     Input(),
     __metadata$27("design:type", Object),
     __metadata$27("design:paramtypes", [String])
 ], Md2Colorpicker.prototype, "container", null);
-__decorate$46([
+__decorate$47([
     Output(),
     __metadata$27("design:type", EventEmitter)
 ], Md2Colorpicker.prototype, "onOpen", void 0);
-__decorate$46([
+__decorate$47([
     Output(),
     __metadata$27("design:type", EventEmitter)
 ], Md2Colorpicker.prototype, "onClose", void 0);
-__decorate$46([
+__decorate$47([
     ViewChild('portal'),
     __metadata$27("design:type", TemplateRef)
 ], Md2Colorpicker.prototype, "_templatePortal", void 0);
-Md2Colorpicker = __decorate$46([
+Md2Colorpicker = __decorate$47([
     Component({selector: 'md2-colorpicker',
         template: "<div class=\"md2-colorpicker-trigger\"><div class=\"color-picker-selector\" [class.color-error]=\"isInputValidColor && required\"><div class=\"md2-colorpicker-preview\" (click)=\"toggle()\"><div class=\"color-fill\" [style.background-color]=\"color\"></div></div><div class=\"md2-colorpicker-input\" [class.input-focused]=\"isInputFocus\"><span class=\"md2-colorpicker-placeholder\" [class.has-value]=\"color\">{{ placeholder }}</span> <input class=\"md2-colorpicker-value\" autocomplete=\"off\" value=\"color\" [tabindex]=\"tabindex\" [disabled]=\"disabled\" [(ngModel)]=\"color\" (focus)=\"isInputFocus=true\" (blur)=\"checkInputVal()\"> <span *ngIf=\"color && !required && !disabled\" class=\"color-clear\" (click)=\"clearColor($event)\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\"><path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\"/></svg></span></div></div></div><ng-template #portal><div class=\"md2-colorpicker-panel\" tabindex=\"0\" [attr.container]=\"container\"><div class=\"md2-colorpicker-content\"><div class=\"md2-colorpicker-wrapper\"><div class=\"md2-color-picker\"><div class=\"selected-color\"><div class=\"selected-color-bg\" [style.background]=\"outputColor\"><div class=\"color-input\"><div [hidden]=\"format!=2\" class=\"hsla-text\"><input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]*\" min=\"0\" max=\"360\" [rg]=\"360\" (newValue)=\"setHue($event)\" [value]=\"hslaText.h\"> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]*\" min=\"0\" max=\"100\" [rg]=\"100\" (newValue)=\"setSaturation($event)\" [value]=\"hslaText.s\"> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]*\" min=\"0\" max=\"100\" [rg]=\"100\" (newValue)=\"setLightness($event)\" [value]=\"hslaText.l\"> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]+([\.,][0-9]{1,2})?\" min=\"0\" max=\"1\" step=\"0.1\" [rg]=\"1\" (newValue)=\"setAlpha($event)\" [value]=\"hslaText.a\"></div><div [hidden]=\"format!=1\" class=\"rgba-text\"><input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]*\" min=\"0\" max=\"255\" [rg]=\"255\" (newValue)=\"setR($event)\" [value]=\"rgbaText.r\"> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]*\" min=\"0\" max=\"255\" [rg]=\"255\" (newValue)=\"setG($event)\" [value]=\"rgbaText.g\"> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]*\" min=\"0\" max=\"255\" [rg]=\"255\" (newValue)=\"setB($event)\" [value]=\"rgbaText.b\"> <input [text] type=\"number\" [style.color]=\"fontColor\" pattern=\"[0-9]+([\.,][0-9]{1,2})?\" min=\"0\" max=\"1\" step=\"0.1\" [rg]=\"1\" (newValue)=\"setAlpha($event)\" [value]=\"rgbaText.a\"></div><div [hidden]=\"format!=0\" class=\"hex-text\"><input [text] (newValue)=\"setColorFromString($event)\" [style.color]=\"fontColor\" [value]=\"hexText\"></div></div><div class=\"color-bar\" [class.dark]=\"_isDark\"><div [style.color]=\"fontColor\" class=\"clearfix\"><div class=\"type-policy\" [class.active]=\"format==0\" (click)=\"formatPolicy(0)\">HEX</div><div class=\"type-policy\" [class.active]=\"format==1\" (click)=\"formatPolicy(1)\">RGBA</div><div class=\"type-policy\" [class.active]=\"format==2\" (click)=\"formatPolicy(2)\">HSLA</div></div></div></div></div><div class=\"input-color-content\"><div [colorpicker-slider] [style.background-color]=\"_hueSliderColor\" [point-x]=\"1\" [point-y]=\"1\" (change)=\"setSaturationAndBrightness($event)\" class=\"saturation-lightness\"><div [style.left.px]=\"slider.s\" [style.top.px]=\"slider.v\" class=\"cursor\"></div></div><div [colorpicker-slider] [point-x]=\"1\" (change)=\"setHue($event)\" class=\"hue\"><div [style.left.px]=\"slider.h\" class=\"color-picker-marker\"></div></div><div [colorpicker-slider] [point-x]=\"1\" (change)=\"setAlpha($event)\" class=\"alpha\"><div class=\"alpha-main\" [ngStyle]=\"setGradient\"><div [style.left.px]=\"slider.a\" class=\"color-picker-marker\"></div></div></div></div><div class=\"md2-color-picker-actions\"><div class=\"md2-button\" (click)=\"cancelColor()\">Cancel</div><div class=\"md2-button\" (click)=\"clickOk()\">Ok</div></div></div></div></div></div></ng-template>",
         styles: [".md2-colorpicker-wrapper{border-radius:3px;background-color:#fff;z-index:10;box-shadow:0 2px 6px rgba(0,0,0,.4);overflow:hidden}.md2-colorpicker-panel{outline:0;box-shadow:0 5px 5px -3px rgba(0,0,0,.2),0 8px 10px 1px rgba(0,0,0,.14),0 3px 14px 2px rgba(0,0,0,.12)}.md2-colorpicker-panel[container=dialog]{box-shadow:0 11px 15px -7px rgba(0,0,0,.2),0 24px 38px 3px rgba(0,0,0,.14),0 9px 46px 8px rgba(0,0,0,.12)}.md2-colorpicker-disabled{pointer-events:none;cursor:default}.md2-colorpicker-disabled .color-picker-selector .md2-colorpicker-value{color:rgba(0,0,0,.38);border-color:transparent;background-image:linear-gradient(to right,rgba(0,0,0,.38) 0,rgba(0,0,0,.38) 33%,transparent 0);background-position:bottom -1px left 0;background-size:4px 1px;background-repeat:repeat-x}.md2-colorpicker-input{color:rgba(0,0,0,.38);border-bottom:1px solid rgba(0,0,0,.12);display:flex;justify-content:space-between;align-items:center;height:30px;min-width:180px;line-height:22px;position:relative;box-sizing:border-box}[aria-disabled=true] .md2-colorpicker-input{background-image:linear-gradient(to right,rgba(0,0,0,.26) 0,rgba(0,0,0,.26) 33%,transparent 0);background-size:4px 1px;background-repeat:repeat-x;border-color:transparent;background-position:0 bottom;cursor:default}md2-colorpicker:focus:not(.md2-colorpicker-disabled) .md2-colorpicker-input{color:#106cc8;border-color:#106cc8}md2-colorpicker.ng-invalid.ng-touched:not(.md2-colorpicker-disabled) .md2-colorpicker-input{color:#f44336;border-color:#f44336}.input-focused{color:#106cc8;border-color:#106cc8}.inline-control{width:150px;margin-right:16px;padding:16px 0}.md2-colorpicker-placeholder{position:absolute;right:18px;bottom:100%;left:0;padding:0 2px;transform:translate3d(0,26px,0) scale(1);transform-origin:left top;white-space:nowrap;overflow-x:hidden;text-overflow:ellipsis;transition:all 150ms cubic-bezier(.25,.8,.25,1)}[aria-required=true] .md2-colorpicker-placeholder::after{content:'*'}.md2-colorpicker-input.input-focused .md2-colorpicker-placeholder{color:#106cc8}.md2-colorpicker-input.input-focused .md2-colorpicker-placeholder,md2-colorpicker .md2-colorpicker-placeholder.has-value{transform:translate3d(0,6px,0) scale(.75)}.color-error .md2-colorpicker-input,.color-error .md2-colorpicker-placeholder{color:#f44336!important;border-color:#f44336}.color-error .color-fill{background-color:transparent!important}.color-picker-selector{display:block;padding:18px 0 4px 46px;white-space:nowrap}.color-picker-selector .md2-colorpicker-preview{position:absolute;top:19px;left:6px;content:'';width:24px;height:24px;overflow:hidden;background-color:#fff;background:linear-gradient(45deg,#ddd 25%,transparent 0,transparent 75%,#ddd 0,#ddd),linear-gradient(45deg,#ddd 25%,transparent 0,transparent 75%,#ddd 0,#ddd);background-size:8px 8px;background-position:0 0,4px 4px;border:2px solid #fafafa;display:block;fill:#5a5a5a;cursor:pointer;border-radius:50%;vertical-align:middle;box-shadow:0 1px 1px 0 rgba(0,0,0,.2),0 1px 1px 1px rgba(0,0,0,.14),0 1px 1px 1px rgba(0,0,0,.12)}.color-picker-selector .md2-colorpicker-preview .color-fill{width:100%;height:100%}.color-picker-selector .md2-colorpicker-value{font-size:15px;background:0 0;border:0;outline:0;position:relative;display:block;min-width:160px;height:30px;padding:2px 2px 1px;margin:0;line-height:26px;color:rgba(0,0,0,.87);vertical-align:middle;box-sizing:border-box}md2-colorpicker{position:relative;display:block;outline:0}.md2-color-picker{position:relative;display:block;width:266px;outline:0}.md2-color-picker *{box-sizing:border-box}.md2-color-picker .input-color-content{position:relative;padding:8px}.md2-color-picker i{cursor:default;position:relative}.md2-color-picker input{font-size:16px;height:50px;outline:0}.md2-color-picker div.cursor-sv{cursor:default;position:relative;border-radius:50%;width:15px;height:15px;border:#ddd solid 1px}.md2-color-picker div.cursor{cursor:crosshair;position:relative;border-radius:50%;width:13px;height:13px;box-shadow:0 0 2px 0 rgba(0,0,0,.5),inset 0 0 2px 0 rgba(0,0,0,.5);border:2px solid #fff}.md2-color-picker div.color-picker-marker{cursor:crosshair;position:relative;border:2px solid #fff;box-shadow:0 0 2px 0 rgba(0,0,0,.5);height:100%;width:5px;border-bottom:0;border-top:0}.md2-color-picker .saturation-lightness{width:100%;height:130px;border-radius:2px;overflow:hidden;background-image:linear-gradient(to top,#000,transparent),linear-gradient(to right,#fff,rgba(255,255,255,0))}.md2-color-picker .saturation-lightness:hover{cursor:crosshair}.md2-color-picker .hue{position:relative;width:100%;height:30px;margin:8px 0;border-radius:2px;background:linear-gradient(to right,red,#ff0,#0f0,#0ff,#00f,#f0f,red)}.md2-color-picker .alpha{position:relative;width:100%;height:30px;border-radius:2px;background:linear-gradient(45deg,#ddd 25%,transparent 0,transparent 75%,#ddd 0,#ddd),linear-gradient(45deg,#ddd 25%,transparent 0,transparent 75%,#ddd 0,#ddd);background-size:8px 8px;background-position:0 0,4px 4px}.md2-color-picker .alpha .alpha-main{position:absolute;height:100%;opacity:1;background-image:linear-gradient(to left,transparent,transparent),linear-gradient(to right,#fff,rgba(255,255,255,0));width:100%}.md2-color-picker .selected-color{position:relative;width:100%;height:75px;background-color:#fff;background:linear-gradient(45deg,#ddd 25%,transparent 0,transparent 75%,#ddd 0,#ddd),linear-gradient(45deg,#ddd 25%,transparent 0,transparent 75%,#ddd 0,#ddd);background-size:8px 8px;background-position:0 0,4px 4px}.md2-color-picker .selected-color .selected-color-bg{position:absolute;height:100%;opacity:1;width:100%}.md2-color-picker .selected-color .color-bar{position:absolute;width:100%;bottom:0}.md2-color-picker .selected-color .color-input{position:relative}.color-clear{color:rgba(0,0,0,.4);cursor:pointer}.color-clear svg{vertical-align:bottom;fill:#686868}.clearfix::after,.clearfix::before{content:' ';display:table}.clearfix::after{clear:both}.hex-text{width:100%}.hex-text input{width:100%;border:0;padding:4px;text-align:center;background:0 0}.hex-text div{text-align:center;float:left;clear:left;width:160px;margin-top:4px}.hsla-text,.rgba-text{text-align:center}.hsla-text input,.rgba-text input{width:50px;border:0;padding:4px 0;background:0 0;text-align:center}.hsla-text div,.rgba-text div{text-align:center;display:block}.hsla-text label,.rgba-text label{text-align:center;display:inline-block;font-size:15px}.md2-color-picker-actions{text-align:right}.md2-color-picker-actions .md2-button{display:inline-block;min-width:64px;margin:4px 8px 8px 0;padding:0 12px;font-size:14px;color:#106cc8;line-height:36px;text-align:center;text-transform:uppercase;border-radius:2px;cursor:pointer;box-sizing:border-box;transition:all 450ms cubic-bezier(.23,1,.32,1)}.md2-color-picker-actions .md2-button:hover{background:#ebebeb}.hsla-text div:nth-child(5),.rgba-text div:nth-child(5){clear:left}.type-policy{width:33.333333%;text-align:center;font-size:14px;display:inline-block;float:left;padding:4px 8px 3px;border-bottom:2px solid transparent;cursor:pointer;background:rgba(255,255,255,.25)}.dark .type-policy{background:rgba(0,0,0,.25)}.type-policy.active{border-color:rgba(255,255,255,.5);background:0 0}.dark .type-policy.active{border-color:rgba(0,0,0,.5)}.cdk-global-overlay-wrapper,.cdk-overlay-container{pointer-events:none;top:0;left:0;height:100%;width:100%}.cdk-overlay-container{position:fixed;z-index:1000}.cdk-global-overlay-wrapper{display:flex;position:absolute;z-index:1000}.cdk-overlay-pane{position:absolute;pointer-events:auto;box-sizing:border-box;z-index:1000}.cdk-overlay-backdrop{position:absolute;top:0;bottom:0;left:0;right:0;z-index:1000;pointer-events:auto;transition:opacity .4s cubic-bezier(.25,.8,.25,1);opacity:0}.cdk-overlay-backdrop.cdk-overlay-backdrop-showing{opacity:.48}.cdk-overlay-dark-backdrop{background:rgba(0,0,0,.6)} /*# sourceMappingURL=colorpicker.css.map */ "],
@@ -6899,63 +6937,43 @@ Md2Colorpicker = __decorate$46([
         ViewContainerRef, Renderer,
         ColorUtil, NgControl])
 ], Md2Colorpicker);
-class Hsva {
-    constructor(h, s, v, a) {
-        this.h = h;
-        this.s = s;
-        this.v = v;
-        this.a = a;
-    }
-}
-class Hsla {
-    constructor(h, s, l, a) {
-        this.h = h;
-        this.s = s;
-        this.l = l;
-        this.a = a;
-    }
-}
-class Rgba {
-    constructor(r, g, b, a) {
-        this.r = r;
-        this.g = g;
-        this.b = b;
-        this.a = a;
-    }
-}
-class SliderPosition {
-    constructor(h, s, v, a) {
-        this.h = h;
-        this.s = s;
-        this.v = v;
-        this.a = a;
-    }
-}
-class SliderDimension {
-    constructor(h, s, v, a) {
-        this.h = h;
-        this.s = s;
-        this.v = v;
-        this.a = a;
-    }
-}
-const MD2_COLORPICKER_DIRECTIVES = [
-    Md2Colorpicker, ColorpickerSliderDirective, TextDirective
-];
+
+var __decorate$46 = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 let Md2ColorpickerModule = class Md2ColorpickerModule {
 };
 Md2ColorpickerModule = __decorate$46([
     NgModule({
-        declarations: MD2_COLORPICKER_DIRECTIVES,
-        imports: [CommonModule, FormsModule, OverlayModule, PortalModule],
-        exports: MD2_COLORPICKER_DIRECTIVES,
-        providers: [ColorUtil]
+        imports: [
+            CommonModule,
+            FormsModule,
+            OverlayModule,
+            PortalModule,
+            StyleModule,
+            A11yModule,
+        ],
+        exports: [
+            Md2Colorpicker,
+            ColorpickerSliderDirective,
+            TextDirective
+        ],
+        declarations: [
+            Md2Colorpicker,
+            ColorpickerSliderDirective,
+            TextDirective
+        ],
+        providers: [ColorUtil],
+        entryComponents: [
+            Md2Colorpicker,
+        ]
     })
 ], Md2ColorpickerModule);
 
-//# sourceMappingURL=index.js.map
-
-var __decorate$52 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$53 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -6983,11 +7001,11 @@ let Md2Optgroup = class Md2Optgroup extends _Md2OptgroupMixinBase {
         this._labelId = `md2-optgroup-label-${nextId$3++}`;
     }
 };
-__decorate$52([
+__decorate$53([
     Input(),
     __metadata$31("design:type", String)
 ], Md2Optgroup.prototype, "label", void 0);
-Md2Optgroup = __decorate$52([
+Md2Optgroup = __decorate$53([
     Component({selector: 'md2-optgroup',
         template: "<label class=\"md2-optgroup-label\" [id]=\"_labelId\">{{ label }}</label><ng-content select=\"md2-option\"></ng-content>",
         styles: [".md2-optgroup-label{color:rgba(0,0,0,.54);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;line-height:48px;height:48px;padding:0 16px;text-align:left;text-decoration:none;user-select:none;cursor:default;font-weight:700;font-size:14px}.md2-optgroup-disabled .md2-optgroup-label{color:rgba(0,0,0,.38)} /*# sourceMappingURL=optgroup.css.map */ "],
@@ -7003,7 +7021,7 @@ Md2Optgroup = __decorate$52([
     })
 ], Md2Optgroup);
 
-var __decorate$51 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$52 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -7126,20 +7144,20 @@ let Md2Option = class Md2Option {
         this.onSelectionChange.emit(new Md2OptionSelectionChange(this, isUserInput));
     }
 };
-__decorate$51([
+__decorate$52([
     Input(),
     __metadata$30("design:type", Object)
 ], Md2Option.prototype, "value", void 0);
-__decorate$51([
+__decorate$52([
     Input(),
     __metadata$30("design:type", Object),
     __metadata$30("design:paramtypes", [Object])
 ], Md2Option.prototype, "disabled", null);
-__decorate$51([
+__decorate$52([
     Output(),
     __metadata$30("design:type", Object)
 ], Md2Option.prototype, "onSelectionChange", void 0);
-Md2Option = __decorate$51([
+Md2Option = __decorate$52([
     Component({selector: 'md2-option',
         host: {
             'role': 'option',
@@ -7165,7 +7183,7 @@ Md2Option = __decorate$51([
 ], Md2Option);
 let Md2OptionModule = class Md2OptionModule {
 };
-Md2OptionModule = __decorate$51([
+Md2OptionModule = __decorate$52([
     NgModule({
         imports: [CommonModule, MdSelectionModule],
         exports: [Md2Option, Md2Optgroup],
@@ -7419,7 +7437,7 @@ function getMdSelectNonArrayValueError() {
 }
 //# sourceMappingURL=select-errors.js.map
 
-var __decorate$50 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$51 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -8242,73 +8260,73 @@ let Md2Select = class Md2Select {
         return 0;
     }
 };
-__decorate$50([
+__decorate$51([
     ViewChild('trigger'),
     __metadata$29("design:type", ElementRef)
 ], Md2Select.prototype, "trigger", void 0);
-__decorate$50([
+__decorate$51([
     ViewChild(ConnectedOverlayDirective),
     __metadata$29("design:type", ConnectedOverlayDirective)
 ], Md2Select.prototype, "overlayDir", void 0);
-__decorate$50([
+__decorate$51([
     ContentChildren(Md2Option, { descendants: true }),
     __metadata$29("design:type", QueryList)
 ], Md2Select.prototype, "options", void 0);
-__decorate$50([
+__decorate$51([
     ContentChildren(Md2Optgroup),
     __metadata$29("design:type", QueryList)
 ], Md2Select.prototype, "optionGroups", void 0);
-__decorate$50([
+__decorate$51([
     Input(),
     __metadata$29("design:type", Object),
     __metadata$29("design:paramtypes", [String])
 ], Md2Select.prototype, "placeholder", null);
-__decorate$50([
+__decorate$51([
     Input(),
     __metadata$29("design:type", Object),
     __metadata$29("design:paramtypes", [Object])
 ], Md2Select.prototype, "disabled", null);
-__decorate$50([
+__decorate$51([
     Input(),
     __metadata$29("design:type", Object),
     __metadata$29("design:paramtypes", [Object])
 ], Md2Select.prototype, "required", null);
-__decorate$50([
+__decorate$51([
     Input(),
     __metadata$29("design:type", Boolean),
     __metadata$29("design:paramtypes", [Boolean])
 ], Md2Select.prototype, "multiple", null);
-__decorate$50([
+__decorate$51([
     Input(),
     __metadata$29("design:type", String),
     __metadata$29("design:paramtypes", [String])
 ], Md2Select.prototype, "floatPlaceholder", null);
-__decorate$50([
+__decorate$51([
     Input(),
     __metadata$29("design:type", Number),
     __metadata$29("design:paramtypes", [Number])
 ], Md2Select.prototype, "tabIndex", null);
-__decorate$50([
+__decorate$51([
     Input('aria-label'),
     __metadata$29("design:type", String)
 ], Md2Select.prototype, "ariaLabel", void 0);
-__decorate$50([
+__decorate$51([
     Input('aria-labelledby'),
     __metadata$29("design:type", String)
 ], Md2Select.prototype, "ariaLabelledby", void 0);
-__decorate$50([
+__decorate$51([
     Output(),
     __metadata$29("design:type", EventEmitter)
 ], Md2Select.prototype, "onOpen", void 0);
-__decorate$50([
+__decorate$51([
     Output(),
     __metadata$29("design:type", EventEmitter)
 ], Md2Select.prototype, "onClose", void 0);
-__decorate$50([
+__decorate$51([
     Output(),
     __metadata$29("design:type", EventEmitter)
 ], Md2Select.prototype, "change", void 0);
-Md2Select = __decorate$50([
+Md2Select = __decorate$51([
     Component({selector: 'md2-select',
         template: "<div class=\"md2-select-trigger\" cdk-overlay-origin (click)=\"toggle()\" #origin=\"cdkOverlayOrigin\" #trigger><span class=\"md2-select-placeholder\" [class.md2-floating-placeholder]=\"_selectionModel.hasValue()\" [@transformPlaceholder]=\"_getPlaceholderAnimationState()\" [style.opacity]=\"_getPlaceholderOpacity()\" [style.width.px]=\"_selectedValueWidth\">{{ placeholder }}</span> <span class=\"md2-select-value\" *ngIf=\"_selectionModel.hasValue()\"><span class=\"md2-select-value-text\">{{ triggerValue }}</span> </span><span class=\"md2-select-arrow\"></span> <span class=\"md2-select-underline\"></span></div><ng-template cdk-connected-overlay [origin]=\"origin\" [open]=\"panelOpen\" hasBackdrop (backdropClick)=\"close()\" backdropClass=\"cdk-overlay-transparent-backdrop\" [positions]=\"_positions\" [minWidth]=\"_triggerWidth\" [offsetY]=\"_offsetY\" (attach)=\"_onAttached()\" (detach)=\"close()\"><div class=\"md2-select-panel\" [@transformPanel]=\"'showing'\" (@transformPanel.done)=\"_onPanelDone()\" (keydown)=\"_keyManager.onKeydown($event)\" [style.transformOrigin]=\"_transformOrigin\" [class.md2-select-panel-done-animating]=\"_panelDoneAnimating\"><div class=\"md2-select-content\" [@fadeInContent]=\"'showing'\" (@fadeInContent.done)=\"_onFadeInDone()\"><ng-content select=\"md2-select-header\"></ng-content><ng-content></ng-content></div></div></ng-template>",
         styles: [".md2-select{display:inline-block;outline:0}.md2-select-trigger{color:rgba(0,0,0,.38);display:flex;align-items:center;height:30px;min-width:112px;cursor:pointer;position:relative;box-sizing:border-box;font-size:16px}[aria-disabled=true] .md2-select-trigger{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;cursor:default}.md2-select:focus:not(.md2-select-disabled) .md2-select-trigger{color:#106cc8}.md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) .md2-select-trigger{color:#f44336}.md2-select-underline{position:absolute;bottom:0;left:0;right:0;height:1px;background-color:rgba(0,0,0,.12)}[aria-disabled=true] .md2-select-underline{background-image:linear-gradient(to right,rgba(0,0,0,.26) 0,rgba(0,0,0,.26) 33%,transparent 0);background-size:4px 1px;background-repeat:repeat-x;background-color:transparent;background-position:0 bottom}.md2-select:focus:not(.md2-select-disabled) .md2-select-underline{background-color:#106cc8}.md2-select.ng-invalid.ng-touched:not(.md2-select-disabled) .md2-select-underline{background-color:#f44336}.md2-select-placeholder{position:relative;padding:0 2px;transform-origin:left top;flex-grow:1}.md2-select-placeholder.md2-floating-placeholder{top:-22px;left:-2px;text-align:left;transform:scale(.75)}[dir=rtl] .md2-select-placeholder{transform-origin:right top}[dir=rtl] .md2-select-placeholder.md2-floating-placeholder{left:2px;text-align:right}[aria-required=true] .md2-select-placeholder::after{content:'*'}.md2-select-value{position:absolute;max-width:calc(100% - 18px);flex-grow:1;top:0;left:0;bottom:0;display:flex;align-items:center;color:rgba(0,0,0,.87)}[dir=rtl] .md2-select-value{left:auto;right:0}.md2-select-disabled .md2-select-value{color:rgba(0,0,0,.38)}.md2-select-value-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:30px}.md2-select-arrow{width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid;margin:0 4px}.md2-select-panel{box-shadow:0 5px 5px -3px rgba(0,0,0,.2),0 8px 10px 1px rgba(0,0,0,.14),0 3px 14px 2px rgba(0,0,0,.12);min-width:112px;max-width:280px;overflow:auto;-webkit-overflow-scrolling:touch;padding-top:0;padding-bottom:0;max-height:256px;min-width:100%}@media screen and (-ms-high-contrast:active){.md2-select-panel{outline:solid 1px}}.md2-select-content,.md2-select-panel-done-animating{background:#fff}.cdk-global-overlay-wrapper,.cdk-overlay-container{pointer-events:none;top:0;left:0;height:100%;width:100%}.cdk-overlay-container{position:fixed;z-index:1000}.cdk-overlay-pane{position:absolute;pointer-events:auto;box-sizing:border-box;z-index:1000}.cdk-overlay-backdrop{position:absolute;top:0;bottom:0;left:0;right:0;z-index:1000;pointer-events:auto;transition:opacity .4s cubic-bezier(.25,.8,.25,1);opacity:0}.cdk-overlay-transparent-backdrop{background:0 0}.cdk-overlay-backdrop.cdk-overlay-backdrop-showing{opacity:.48} /*# sourceMappingURL=select.css.map */ "],
@@ -8345,7 +8363,7 @@ function clampValue(min, n, max) {
     return Math.min(Math.max(min, n), max);
 }
 
-var __decorate$53 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$54 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -8356,7 +8374,7 @@ var __decorate$53 = (this && this.__decorate) || function (decorators, target, k
  */
 let Md2SelectHeader = class Md2SelectHeader {
 };
-Md2SelectHeader = __decorate$53([
+Md2SelectHeader = __decorate$54([
     Directive({
         selector: 'md2-select-header',
         host: {
@@ -8365,7 +8383,7 @@ Md2SelectHeader = __decorate$53([
     })
 ], Md2SelectHeader);
 
-var __decorate$49 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$50 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -8373,7 +8391,7 @@ var __decorate$49 = (this && this.__decorate) || function (decorators, target, k
 };
 let Md2SelectModule = class Md2SelectModule {
 };
-Md2SelectModule = __decorate$49([
+Md2SelectModule = __decorate$50([
     NgModule({
         imports: [
             CommonModule,
@@ -8386,7 +8404,7 @@ Md2SelectModule = __decorate$49([
     })
 ], Md2SelectModule);
 
-var __decorate$48 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$49 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -8557,48 +8575,48 @@ let Md2DataTable = class Md2DataTable {
         return value;
     }
 };
-__decorate$48([
+__decorate$49([
     Input(),
     __metadata$28("design:type", Object),
     __metadata$28("design:paramtypes", [Array])
 ], Md2DataTable.prototype, "md2Data", null);
-__decorate$48([
+__decorate$49([
     Input(),
     __metadata$28("design:type", Object),
     __metadata$28("design:paramtypes", [Number])
 ], Md2DataTable.prototype, "activePage", null);
-__decorate$48([
+__decorate$49([
     Input(),
     __metadata$28("design:type", Object),
     __metadata$28("design:paramtypes", [Number])
 ], Md2DataTable.prototype, "rowsPerPage", null);
-__decorate$48([
+__decorate$49([
     Input(),
     __metadata$28("design:type", Object),
     __metadata$28("design:paramtypes", [Object])
 ], Md2DataTable.prototype, "sortBy", null);
-__decorate$48([
+__decorate$49([
     Input(),
     __metadata$28("design:type", Object),
     __metadata$28("design:paramtypes", [String])
 ], Md2DataTable.prototype, "sortOrder", null);
-__decorate$48([
+__decorate$49([
     Output(),
     __metadata$28("design:type", Object)
 ], Md2DataTable.prototype, "activePageChange", void 0);
-__decorate$48([
+__decorate$49([
     Output(),
     __metadata$28("design:type", Object)
 ], Md2DataTable.prototype, "rowsPerPageChange", void 0);
-__decorate$48([
+__decorate$49([
     Output(),
     __metadata$28("design:type", Object)
 ], Md2DataTable.prototype, "sortByChange", void 0);
-__decorate$48([
+__decorate$49([
     Output(),
     __metadata$28("design:type", Object)
 ], Md2DataTable.prototype, "sortOrderChange", void 0);
-Md2DataTable = __decorate$48([
+Md2DataTable = __decorate$49([
     Directive({
         selector: 'table[md2Data]',
         exportAs: 'md2DataTable'
@@ -8626,11 +8644,11 @@ let Md2DataTableSortBy = class Md2DataTableSortBy {
         }
     }
 };
-__decorate$48([
+__decorate$49([
     Input(),
     __metadata$28("design:type", String)
 ], Md2DataTableSortBy.prototype, "md2SortBy", void 0);
-Md2DataTableSortBy = __decorate$48([
+Md2DataTableSortBy = __decorate$49([
     Component({
         selector: '[md2SortBy]',
         template: "<ng-content></ng-content>&nbsp; <svg *ngIf=\"!_isDesc\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\"><path d=\"M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z\"/></svg> <svg *ngIf=\"_isDesc\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\"><path d=\"M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z\"/></svg>",
@@ -8668,15 +8686,15 @@ let Md2Pagination = class Md2Pagination {
         this.md2Table.setPage(this._activePage, parseInt(event.value));
     }
 };
-__decorate$48([
+__decorate$49([
     Input(),
     __metadata$28("design:type", Object)
 ], Md2Pagination.prototype, "rowsPerPageSet", void 0);
-__decorate$48([
+__decorate$49([
     Input(),
     __metadata$28("design:type", Md2DataTable)
 ], Md2Pagination.prototype, "md2Table", void 0);
-Md2Pagination = __decorate$48([
+Md2Pagination = __decorate$49([
     Component({
         selector: 'md2-pagination',
         template: "<ul class=\"md2-pagination\" *ngIf=\"_dataLength > _rowsPerPage\"><li [class.disabled]=\"_activePage <= 1\" (click)=\"_setPage(_activePage - 1)\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z\"/></svg></li><li *ngIf=\"_activePage > 4 && _activePage + 1 > _lastPage\" (click)=\"_setPage(_activePage - 4)\">{{_activePage-4}}</li><li *ngIf=\"_activePage > 3 && _activePage + 2 > _lastPage\" (click)=\"_setPage(_activePage - 3)\">{{_activePage-3}}</li><li *ngIf=\"_activePage > 2\" (click)=\"_setPage(_activePage - 2)\">{{_activePage-2}}</li><li *ngIf=\"_activePage > 1\" (click)=\"_setPage(_activePage - 1)\">{{_activePage-1}}</li><li class=\"active\">{{_activePage}}</li><li *ngIf=\"_activePage + 1 <= _lastPage\" (click)=\"_setPage(_activePage + 1)\">{{_activePage+1}}</li><li *ngIf=\"_activePage + 2 <= _lastPage\" (click)=\"_setPage(_activePage + 2)\">{{_activePage+2}}</li><li *ngIf=\"_activePage + 3 <= _lastPage && _activePage < 3\" (click)=\"_setPage(_activePage + 3)\">{{_activePage+3}}</li><li *ngIf=\"_activePage + 4 <= _lastPage && _activePage < 2\" (click)=\"_setPage(_activePage + 4)\">{{_activePage+4}}</li><li [class.disabled]=\"_activePage >= _lastPage\" (click)=\"_setPage(_activePage + 1)\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z\"/></svg></li></ul><div class=\"md2-rows-select\" *ngIf=\"rowsPerPageSet.length && _dataLength > 0\">Rows per page:<md2-select [(ngModel)]=\"_rowsPerPage\" (change)=\"_setRows($event)\"><md2-option *ngFor=\"let row of rowsPerPageSet\" [value]=\"row\">{{row}}</md2-option></md2-select></div>",
@@ -8694,7 +8712,7 @@ const MD2_DATA_TABLE_DIRECTIVES = [
 ];
 let Md2DataTableModule = class Md2DataTableModule {
 };
-Md2DataTableModule = __decorate$48([
+Md2DataTableModule = __decorate$49([
     NgModule({
         imports: [CommonModule, FormsModule, Md2SelectModule],
         exports: MD2_DATA_TABLE_DIRECTIVES,
@@ -8704,7 +8722,7 @@ Md2DataTableModule = __decorate$48([
 
 //# sourceMappingURL=index.js.map
 
-var __decorate$57 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$58 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -8740,8 +8758,6 @@ function range$1(length, valueFunction) {
     }
     return valuesArray;
 }
-
-
 let DateLocale = class DateLocale {
     constructor() {
         this.firstDayOfWeek = 0;
@@ -8839,7 +8855,7 @@ let DateLocale = class DateLocale {
         return s.replace(/[\u200e\u200f]/g, '');
     }
 };
-DateLocale = __decorate$57([
+DateLocale = __decorate$58([
     Injectable()
 ], DateLocale);
 
@@ -9476,7 +9492,7 @@ const slideCalendar = trigger('slideCalendar', [
     ])
 ]);
 
-var __decorate$56 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$57 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -9795,46 +9811,46 @@ let Md2Calendar = class Md2Calendar {
         this._calendarState = '';
     }
 };
-__decorate$56([
+__decorate$57([
     Input(),
     __metadata$33("design:type", String)
 ], Md2Calendar.prototype, "type", void 0);
-__decorate$56([
+__decorate$57([
     Input(),
     __metadata$33("design:type", Date)
 ], Md2Calendar.prototype, "startAt", void 0);
-__decorate$56([
+__decorate$57([
     Input(),
     __metadata$33("design:type", String)
 ], Md2Calendar.prototype, "startView", void 0);
-__decorate$56([
+__decorate$57([
     Input(),
     __metadata$33("design:type", Date)
 ], Md2Calendar.prototype, "selected", void 0);
-__decorate$56([
+__decorate$57([
     Input(),
     __metadata$33("design:type", Date)
 ], Md2Calendar.prototype, "minDate", void 0);
-__decorate$56([
+__decorate$57([
     Input(),
     __metadata$33("design:type", Date)
 ], Md2Calendar.prototype, "maxDate", void 0);
-__decorate$56([
+__decorate$57([
     Input(),
     __metadata$33("design:type", Number)
 ], Md2Calendar.prototype, "timeInterval", void 0);
-__decorate$56([
+__decorate$57([
     Input(),
     __metadata$33("design:type", Function)
 ], Md2Calendar.prototype, "dateFilter", void 0);
-__decorate$56([
+__decorate$57([
     Output(),
     __metadata$33("design:type", Object)
 ], Md2Calendar.prototype, "selectedChange", void 0);
-Md2Calendar = __decorate$56([
+Md2Calendar = __decorate$57([
     Component({selector: 'md2-calendar',
         template: "<div class=\"md2-calendar-header\"><div *ngIf=\"type!=='time'\" class=\"md2-calendar-header-year\" [class.active]=\"_currentView == 'year'\" (click)=\"_yearClicked()\">{{ _yearLabel }}</div><div class=\"md2-calendar-header-date-time\"><span *ngIf=\"type!=='time'\" class=\"md2-calendar-header-date\" [class.active]=\"_currentView == 'month'\" (click)=\"_dateClicked()\">{{ _dateLabel }}</span> <span *ngIf=\"type!=='date'\" class=\"md2-calendar-header-time\" [class.active]=\"_currentView == 'clock'\"><span class=\"md2-calendar-header-hours\" [class.active]=\"_clockView == 'hour'\" (click)=\"_hoursClicked()\">{{ _hoursLabel }}</span>:<span class=\"md2-calendar-header-minutes\" [class.active]=\"_clockView == 'minute'\" (click)=\"_minutesClicked()\">{{ _minutesLabel }}</span></span></div></div><div class=\"md2-calendar-content\" [ngSwitch]=\"_currentView\"><div class=\"md2-month-content\" *ngIf=\"_currentView === 'month' || _currentView === 'year'\"><div class=\"md2-calendar-controls\"><div class=\"md2-calendar-previous-button\" [class.disabled]=\"!_previousEnabled()\" (click)=\"_previousClicked()\" aria-label=\"Previous month\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z\"></path></svg></div><div class=\"md2-calendar-period-button\" [@slideCalendar]=\"_calendarState\" (@slideCalendar.done)=\"_calendarStateDone()\"><strong>{{ _monthYearLabel }}</strong></div><div class=\"md2-calendar-next-button\" [class.disabled]=\"!_nextEnabled()\" (click)=\"_nextClicked()\" aria-label=\"Next month\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z\"></path></svg></div></div></div><md2-month-view *ngSwitchCase=\"'month'\" [activeDate]=\"_activeDate\" [selected]=\"selected\" [dateFilter]=\"_dateFilterForViews\" (selectedChange)=\"_dateSelected($event)\"></md2-month-view><md2-year-view *ngSwitchCase=\"'year'\" [activeDate]=\"_activeDate\" [selected]=\"selected\" [dateFilter]=\"_dateFilterForViews\" (selectedChange)=\"_monthSelected($event)\"></md2-year-view><md2-clock *ngSwitchDefault [startView]=\"_clockView\" [interval]=\"timeInterval\" [min]=\"minDate\" [max]=\"maxDate\" [selected]=\"_activeDate\" (activeDateChange)=\"_onActiveDateChange($event)\" (selectedChange)=\"_timeSelected($event)\"></md2-clock></div>",
-        styles: [".md2-calendar{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;display:block;outline:0}.md2-calendar[mode=landscape]{display:flex}.md2-calendar-header{padding:16px;font-size:14px;background-color:#106cc8;color:#fff;box-sizing:border-box}[mode=landscape] .md2-calendar-header{width:150px;min-width:150px}.md2-calendar-header-date-time,.md2-calendar-header-year{width:100%;font-weight:500;white-space:nowrap}.md2-calendar-header-date-time{font-size:30px;line-height:34px}[mode=landscape] .md2-calendar-header-date-time{white-space:normal;word-wrap:break-word}.md2-calendar-header-date:not(.active),.md2-calendar-header-hours:not(.active),.md2-calendar-header-minutes:not(.active),.md2-calendar-header-year:not(.active){cursor:pointer;opacity:.6}.md2-calendar-header-time{padding-left:8px}.md2-calendar-header-time:not(.active){opacity:.6}.md2-calendar-header-time:not(.active) .md2-calendar-header-hours,.md2-calendar-header-time:not(.active) .md2-calendar-header-minutes{cursor:pointer;opacity:1}[mode=landscape] .md2-calendar-header-time{display:block;padding-left:0}.md2-calendar-content{width:100%;padding:0 8px 8px 8px;outline:0;box-sizing:border-box}[mode=landscape] .md2-calendar-content{padding-top:8px}.md2-calendar-controls{display:flex;justify-content:space-between}.md2-calendar-period-button{display:inline-block;height:48px;padding:12px;outline:0;border:0;background:0 0;box-sizing:border-box}.md2-calendar-next-button,.md2-calendar-previous-button{display:inline-block;width:48px;height:48px;padding:12px;outline:0;border:0;cursor:pointer;background:0 0;box-sizing:border-box}.md2-calendar-next-button.disabled,.md2-calendar-previous-button.disabled{color:rgba(0,0,0,.38);pointer-events:none}.md2-calendar-next-button svg,.md2-calendar-previous-button svg{fill:currentColor;vertical-align:top}.md2-calendar-table{border-spacing:0;border-collapse:collapse;width:100%}.md2-calendar-table-header{color:rgba(0,0,0,.38)}.md2-calendar-table-header th{text-align:center;font-size:11px;padding:0 0 8px 0}@media (min-width:480px){.md2-calendar[mode=auto]{display:flex}.md2-calendar[mode=auto] .md2-calendar-header{width:150px;min-width:150px}.md2-calendar[mode=auto] .md2-calendar-header-date-time{white-space:normal;word-wrap:break-word}.md2-calendar[mode=auto] .md2-calendar-header-time{display:block;padding-left:0}.md2-calendar[mode=auto] .md2-calendar-content{padding-top:8px}} /*# sourceMappingURL=calendar.css.map */ "],
+        styles: [".md2-calendar{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;display:block;outline:0}.md2-calendar[mode=landscape]{display:flex}.md2-calendar-header{padding:16px;font-size:14px;background-color:#106cc8;color:#fff;box-sizing:border-box}[mode=landscape] .md2-calendar-header{width:150px;min-width:150px}.md2-calendar-header-date-time,.md2-calendar-header-year{width:100%;font-weight:500;white-space:nowrap}.md2-calendar-header-date-time{font-size:30px;line-height:34px}[mode=landscape] .md2-calendar-header-date-time{white-space:normal;word-wrap:break-word}.md2-calendar-header-date:not(.active),.md2-calendar-header-hours:not(.active),.md2-calendar-header-minutes:not(.active),.md2-calendar-header-year:not(.active){cursor:pointer;opacity:.6}.md2-calendar-header-time{padding-left:8px}.md2-calendar-header-time:not(.active){opacity:.6}.md2-calendar-header-time:not(.active) .md2-calendar-header-hours,.md2-calendar-header-time:not(.active) .md2-calendar-header-minutes{cursor:pointer;opacity:1}[mode=landscape] .md2-calendar-header-time{display:block;padding-left:0}.md2-calendar-content{width:100%;padding:0 8px 8px 8px;outline:0;box-sizing:border-box;overflow:hidden}[mode=landscape] .md2-calendar-content{padding-top:8px}.md2-calendar-controls{display:flex;justify-content:space-between}.md2-calendar-period-button{display:inline-block;height:48px;padding:12px;outline:0;border:0;background:0 0;box-sizing:border-box}.md2-calendar-next-button,.md2-calendar-previous-button{display:inline-block;width:48px;height:48px;padding:12px;outline:0;border:0;cursor:pointer;background:0 0;box-sizing:border-box}.md2-calendar-next-button.disabled,.md2-calendar-previous-button.disabled{color:rgba(0,0,0,.38);pointer-events:none}.md2-calendar-next-button svg,.md2-calendar-previous-button svg{fill:currentColor;vertical-align:top}.md2-calendar-table{border-spacing:0;border-collapse:collapse;width:100%}.md2-calendar-table-header{color:rgba(0,0,0,.38)}.md2-calendar-table-header th{text-align:center;font-size:11px;padding:0 0 8px 0}@media (min-width:480px){.md2-calendar[mode=auto]{display:flex}.md2-calendar[mode=auto] .md2-calendar-header{width:150px;min-width:150px}.md2-calendar[mode=auto] .md2-calendar-header-date-time{white-space:normal;word-wrap:break-word}.md2-calendar[mode=auto] .md2-calendar-header-time{display:block;padding-left:0}.md2-calendar[mode=auto] .md2-calendar-content{padding-top:8px}} /*# sourceMappingURL=calendar.css.map */ "],
         host: {
             '[class.md2-calendar]': 'true',
             'tabindex': '0',
@@ -9848,7 +9864,7 @@ Md2Calendar = __decorate$56([
         DateLocale, DateUtil])
 ], Md2Calendar);
 
-var __decorate$55 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$56 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -9893,11 +9909,11 @@ let Md2DatepickerContent = class Md2DatepickerContent {
         event.preventDefault();
     }
 };
-__decorate$55([
+__decorate$56([
     ViewChild(Md2Calendar),
     __metadata$32("design:type", Md2Calendar)
 ], Md2DatepickerContent.prototype, "_calendar", void 0);
-Md2DatepickerContent = __decorate$55([
+Md2DatepickerContent = __decorate$56([
     Component({selector: 'md2-datepicker-content',
         template: "<md2-calendar cdkTrapFocus [id]=\"datepicker.id\" [attr.mode]=\"datepicker.mode\" [startAt]=\"datepicker.startAt\" [startView]=\"datepicker.startView\" [type]=\"datepicker.type\" [timeInterval]=\"datepicker.timeInterval\" [minDate]=\"datepicker._minDate\" [maxDate]=\"datepicker._maxDate\" [dateFilter]=\"datepicker._dateFilter\" [selected]=\"datepicker._selected\" (selectedChange)=\"datepicker._selectAndClose($event)\"></md2-calendar>",
         styles: [".md2-datepicker-content{box-shadow:0 5px 5px -3px rgba(0,0,0,.2),0 8px 10px 1px rgba(0,0,0,.14),0 3px 14px 2px rgba(0,0,0,.12);display:block;background-color:#fff;border-radius:2px;overflow:hidden}.md2-calendar{width:296px;height:405px}.md2-calendar[mode=landscape]{width:446px;height:328px}@media (min-width:480px){.md2-calendar[mode=auto]{width:446px;height:328px}}.md2-datepicker-content-touch{box-shadow:0 0 0 0 rgba(0,0,0,.2),0 0 0 0 rgba(0,0,0,.14),0 0 0 0 rgba(0,0,0,.12);display:block;box-shadow:0 11px 15px -7px rgba(0,0,0,.2),0 24px 38px 3px rgba(0,0,0,.14),0 9px 46px 8px rgba(0,0,0,.12)}.cdk-global-overlay-wrapper,.cdk-overlay-container{pointer-events:none;top:0;left:0;height:100%;width:100%}.cdk-overlay-container{position:fixed;z-index:1000}.cdk-global-overlay-wrapper{display:flex;position:absolute;z-index:1000}.cdk-overlay-pane{position:absolute;pointer-events:auto;box-sizing:border-box;z-index:1000}.cdk-overlay-backdrop{position:absolute;top:0;bottom:0;left:0;right:0;z-index:1000;pointer-events:auto;transition:opacity .4s cubic-bezier(.25,.8,.25,1);opacity:0}.cdk-overlay-backdrop.cdk-overlay-backdrop-showing{opacity:.48}.cdk-overlay-dark-backdrop{background:rgba(0,0,0,.6)} /*# sourceMappingURL=datepicker-content.css.map */ "],
@@ -10301,101 +10317,101 @@ let Md2Datepicker = class Md2Datepicker {
             .withFallbackPosition({ originX: 'end', originY: 'top' }, { overlayX: 'end', overlayY: 'bottom' });
     }
 };
-__decorate$55([
+__decorate$56([
     Input(),
     __metadata$32("design:type", Date)
 ], Md2Datepicker.prototype, "startAt", void 0);
-__decorate$55([
+__decorate$56([
     Input(),
     __metadata$32("design:type", String)
 ], Md2Datepicker.prototype, "startView", void 0);
-__decorate$55([
+__decorate$56([
     Input(),
     __metadata$32("design:type", Object)
 ], Md2Datepicker.prototype, "touchUi", void 0);
-__decorate$55([
+__decorate$56([
     Input(),
     __metadata$32("design:type", Number)
 ], Md2Datepicker.prototype, "tabindex", void 0);
-__decorate$55([
+__decorate$56([
     Input(),
     __metadata$32("design:type", String)
 ], Md2Datepicker.prototype, "mode", void 0);
-__decorate$55([
+__decorate$56([
     Input(),
     __metadata$32("design:type", String)
 ], Md2Datepicker.prototype, "placeholder", void 0);
-__decorate$55([
+__decorate$56([
     Input(),
     __metadata$32("design:type", Number)
 ], Md2Datepicker.prototype, "timeInterval", void 0);
-__decorate$55([
+__decorate$56([
     Input(),
     __metadata$32("design:type", Object),
     __metadata$32("design:paramtypes", [String])
 ], Md2Datepicker.prototype, "type", null);
-__decorate$55([
+__decorate$56([
     Input(),
     __metadata$32("design:type", Object),
     __metadata$32("design:paramtypes", [String])
 ], Md2Datepicker.prototype, "format", null);
-__decorate$55([
+__decorate$56([
     Input(),
     __metadata$32("design:type", Date),
     __metadata$32("design:paramtypes", [Date])
 ], Md2Datepicker.prototype, "min", null);
-__decorate$55([
+__decorate$56([
     Input(),
     __metadata$32("design:type", Date),
     __metadata$32("design:paramtypes", [Date])
 ], Md2Datepicker.prototype, "max", null);
-__decorate$55([
+__decorate$56([
     Input(),
     __metadata$32("design:type", Function),
     __metadata$32("design:paramtypes", [Function])
 ], Md2Datepicker.prototype, "dateFilter", null);
-__decorate$55([
+__decorate$56([
     Input(),
     __metadata$32("design:type", Boolean),
     __metadata$32("design:paramtypes", [Object])
 ], Md2Datepicker.prototype, "required", null);
-__decorate$55([
+__decorate$56([
     Input(),
     __metadata$32("design:type", Boolean),
     __metadata$32("design:paramtypes", [Object])
 ], Md2Datepicker.prototype, "disabled", null);
-__decorate$55([
+__decorate$56([
     Input(),
     __metadata$32("design:type", Object),
     __metadata$32("design:paramtypes", [Date])
 ], Md2Datepicker.prototype, "value", null);
-__decorate$55([
+__decorate$56([
     Input(),
     __metadata$32("design:type", Boolean),
     __metadata$32("design:paramtypes", [Boolean])
 ], Md2Datepicker.prototype, "openOnFocus", null);
-__decorate$55([
+__decorate$56([
     Input(),
     __metadata$32("design:type", Boolean),
     __metadata$32("design:paramtypes", [Boolean])
 ], Md2Datepicker.prototype, "isOpen", null);
-__decorate$55([
+__decorate$56([
     Output(),
     __metadata$32("design:type", EventEmitter)
 ], Md2Datepicker.prototype, "onOpen", void 0);
-__decorate$55([
+__decorate$56([
     Output(),
     __metadata$32("design:type", EventEmitter)
 ], Md2Datepicker.prototype, "onClose", void 0);
-__decorate$55([
+__decorate$56([
     Output(),
     __metadata$32("design:type", EventEmitter)
 ], Md2Datepicker.prototype, "change", void 0);
-__decorate$55([
+__decorate$56([
     Output(),
     __metadata$32("design:type", Object)
 ], Md2Datepicker.prototype, "selectedChanged", void 0);
-Md2Datepicker = __decorate$55([
+Md2Datepicker = __decorate$56([
     Component({selector: 'md2-datepicker',
         template: "<div class=\"md2-datepicker-trigger\"><button type=\"button\" class=\"md2-datepicker-button\" tabindex=\"-1\" (click)=\"open()\" [ngSwitch]=\"type\"><svg *ngSwitchCase=\"'time'\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z\"></path></svg> <svg *ngSwitchCase=\"'datetime'\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M15,13H16.5V15.82L18.94,17.23L18.19,18.53L15,16.69V13M19,8H5V19H9.67C9.24,18.09 9,17.07 9,16A7,7 0 0,1 16,9C17.07,9 18.09,9.24 19,9.67V8M5,21C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H6V1H8V3H16V1H18V3H19A2,2 0 0,1 21,5V11.1C22.24,12.36 23,14.09 23,16A7,7 0 0,1 16,23C14.09,23 12.36,22.24 11.1,21H5M16,11.15A4.85,4.85 0 0,0 11.15,16C11.15,18.68 13.32,20.85 16,20.85A4.85,4.85 0 0,0 20.85,16C20.85,13.32 18.68,11.15 16,11.15Z\"></path></svg> <svg *ngSwitchDefault width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z\"></path></svg></button><div class=\"md2-datepicker-input\" [class.md2-datepicker-input-focused]=\"_inputFocused\"><span class=\"md2-datepicker-placeholder\" [class.md2-floating-placeholder]=\"value || _inputFocused\">{{ placeholder }}</span> <input #input type=\"text\" class=\"md2-datepicker-value\" [tabindex]=\"tabindex\" [disabled]=\"disabled\" autocomplete=\"off\" [value]=\"_inputValue\" (change)=\"$event.stopPropagation()\" (click)=\"_handleFocus()\" (focus)=\"_handleFocus()\" (blur)=\"_handleBlur($event)\"> <span class=\"md2-datepicker-arrow\" (click)=\"open()\"></span></div></div>",
         styles: ["md2-datepicker{position:relative;display:inline-block;min-width:175px;outline:0;backface-visibility:hidden}md2-datepicker.md2-datepicker-disabled{pointer-events:none;cursor:default}.md2-datepicker-trigger{display:block;padding:18px 0 4px 46px;white-space:nowrap}.md2-datepicker-button{position:absolute;top:13px;left:0;display:inline-block;height:40px;width:40px;padding:8px;line-height:24px;color:rgba(0,0,0,.54);fill:currentColor;border:0;border-radius:50%;outline:0;user-select:none;cursor:pointer;box-sizing:border-box;background:0 0;vertical-align:middle;align-items:center;text-align:center}.md2-datepicker-button:focus{background-color:rgba(158,158,158,.2)}.md2-datepicker-disabled .md2-datepicker-button{color:rgba(0,0,0,.38)}.md2-datepicker-input{color:rgba(0,0,0,.38);border-bottom:1px solid rgba(0,0,0,.12);display:flex;justify-content:space-between;align-items:center;height:30px;min-width:168px;line-height:22px;position:relative;padding-right:20px;box-sizing:border-box}[aria-disabled=true] .md2-datepicker-input{background-image:linear-gradient(to right,rgba(0,0,0,.26) 0,rgba(0,0,0,.26) 33%,transparent 0);background-size:4px 1px;background-repeat:repeat-x;border-color:transparent;background-position:0 bottom;cursor:default;user-select:none}.md2-datepicker-input.md2-datepicker-input-focused{color:#106cc8;border-color:#106cc8}md2-datepicker.ng-invalid.ng-touched:not(.md2-datepicker-disabled) .md2-datepicker-input{color:#f44336;border-color:#f44336}.md2-datepicker-placeholder{position:absolute;right:18px;bottom:100%;left:0;padding:0 2px;transform:translate3d(0,26px,0) scale(1);transform-origin:left top;white-space:nowrap;overflow-x:hidden;text-overflow:ellipsis;transition:all 150ms cubic-bezier(.25,.8,.25,1)}.md2-datepicker-placeholder.md2-floating-placeholder{left:-2px;text-align:left;transform:translate3d(0,6px,0) scale(.75)}[dir=rtl] .md2-datepicker-placeholder{right:0;left:18px;transform-origin:right top}[dir=rtl] .md2-datepicker-placeholder.md2-floating-placeholder{right:-2px;text-align:right}[aria-required=true] .md2-datepicker-placeholder::after{content:'*'}.md2-datepicker-value{position:relative;width:100%;white-space:nowrap;overflow-x:hidden;text-overflow:ellipsis;color:rgba(0,0,0,.87);border:0;outline:0;background:0 0}.md2-datepicker-disabled .md2-datepicker-value{color:rgba(0,0,0,.38)}[dir=rtl] .md2-datepicker-value{left:auto;right:0}.md2-datepicker-arrow{position:absolute;right:0;width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid;margin:0 4px;color:rgba(0,0,0,.38)}.md2-datepicker-input-focused .md2-datepicker-arrow{color:#106cc8}md2-datepicker.ng-invalid.ng-touched:not(.md2-datepicker-disabled) .md2-datepicker-arrow{color:#f44336}.md2-calendar-years{position:absolute;top:10px;right:100%;bottom:10px;display:block;width:100%;line-height:40px;background:#fff;overflow-x:hidden;overflow-y:auto;transition:.3s}.md2-calendar-years.active{right:0}.md2-calendar-years .md2-calendar-years-content{display:flex;flex-direction:column;justify-content:center;min-height:100%}.md2-calendar-year{position:relative;display:block;margin:0 auto;padding:0;font-size:17px;font-weight:400;text-align:center;cursor:pointer}.md2-calendar-year.selected{color:#106cc8;font-size:26px;font-weight:500}.md2-datepicker-actions{text-align:right}.md2-datepicker-actions .md2-button{display:inline-block;min-width:64px;margin:4px 8px 8px 0;padding:0 12px;font-size:14px;color:#106cc8;line-height:36px;text-align:center;text-transform:uppercase;border-radius:2px;cursor:pointer;box-sizing:border-box;transition:all 450ms cubic-bezier(.23,1,.32,1)}.md2-datepicker-actions .md2-button:hover{background:#ebebeb} /*# sourceMappingURL=datepicker.css.map */ "],
@@ -10420,7 +10436,7 @@ Md2Datepicker = __decorate$55([
         Dir])
 ], Md2Datepicker);
 
-var __decorate$58 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$59 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -10437,11 +10453,11 @@ let Md2DatepickerToggle = class Md2DatepickerToggle {
         }
     }
 };
-__decorate$58([
+__decorate$59([
     Input('md2DatepickerToggle'),
     __metadata$34("design:type", Md2Datepicker)
 ], Md2DatepickerToggle.prototype, "datepicker", void 0);
-Md2DatepickerToggle = __decorate$58([
+Md2DatepickerToggle = __decorate$59([
     Component({selector: 'button[md2DatepickerToggle]',
         template: '',
         styles: [".md2-datepicker-toggle{display:inline-block;background:url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNHB4IiBoZWlnaHQ9IjI0cHgiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iY3VycmVudENvbG9yIj48cGF0aCBkPSJNMCAwaDI0djI0SDB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTE5IDNoLTFWMWgtMnYySDhWMUg2djJINWMtMS4xMSAwLTEuOTkuOS0xLjk5IDJMMyAxOWMwIDEuMS44OSAyIDIgMmgxNGMxLjEgMCAyLS45IDItMlY1YzAtMS4xLS45LTItMi0yem0wIDE2SDVWOGgxNHYxMXpNNyAxMGg1djVIN3oiLz48L3N2Zz4=) no-repeat;background-size:contain;height:24px;width:24px;border:none;outline:0;vertical-align:middle}.md2-datepicker-toggle:not([disabled]){cursor:pointer} /*# sourceMappingURL=datepicker-toggle.css.map */ "],
@@ -10456,7 +10472,7 @@ Md2DatepickerToggle = __decorate$58([
     })
 ], Md2DatepickerToggle);
 
-var __decorate$60 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$61 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -10516,43 +10532,43 @@ let Md2CalendarBody = class Md2CalendarBody {
         return cellNumber == this.activeCell;
     }
 };
-__decorate$60([
+__decorate$61([
     Input(),
     __metadata$36("design:type", String)
 ], Md2CalendarBody.prototype, "label", void 0);
-__decorate$60([
+__decorate$61([
     Input(),
     __metadata$36("design:type", Array)
 ], Md2CalendarBody.prototype, "rows", void 0);
-__decorate$60([
+__decorate$61([
     Input(),
     __metadata$36("design:type", Number)
 ], Md2CalendarBody.prototype, "todayValue", void 0);
-__decorate$60([
+__decorate$61([
     Input(),
     __metadata$36("design:type", Number)
 ], Md2CalendarBody.prototype, "selectedValue", void 0);
-__decorate$60([
+__decorate$61([
     Input(),
     __metadata$36("design:type", Number)
 ], Md2CalendarBody.prototype, "labelMinRequiredCells", void 0);
-__decorate$60([
+__decorate$61([
     Input(),
     __metadata$36("design:type", Object)
 ], Md2CalendarBody.prototype, "numCols", void 0);
-__decorate$60([
+__decorate$61([
     Input(),
     __metadata$36("design:type", Object)
 ], Md2CalendarBody.prototype, "allowDisabledSelection", void 0);
-__decorate$60([
+__decorate$61([
     Input(),
     __metadata$36("design:type", Object)
 ], Md2CalendarBody.prototype, "activeCell", void 0);
-__decorate$60([
+__decorate$61([
     Output(),
     __metadata$36("design:type", Object)
 ], Md2CalendarBody.prototype, "selectedValueChange", void 0);
-Md2CalendarBody = __decorate$60([
+Md2CalendarBody = __decorate$61([
     Component({selector: '[md2-calendar-body]',
         template: "<tr *ngIf=\"_firstRowOffset < labelMinRequiredCells\" aria-hidden=\"true\"><td class=\"md2-calendar-body-label\" [attr.colspan]=\"numCols\">{{label}}</td></tr><tr *ngFor=\"let row of rows; let rowIndex = index\" role=\"row\"><td *ngIf=\"rowIndex === 0 && _firstRowOffset\" aria-hidden=\"true\" class=\"md2-calendar-body-label\" [attr.colspan]=\"_firstRowOffset\">{{_firstRowOffset >= labelMinRequiredCells ? label : ''}}</td><td *ngFor=\"let item of row; let colIndex = index\" role=\"gridcell\" class=\"md2-calendar-body-cell\" [class.md2-calendar-body-disabled]=\"!item.enabled\" [class.md2-calendar-body-active]=\"_isActiveCell(rowIndex, colIndex)\" [attr.aria-label]=\"item.ariaLabel\" [attr.aria-disabled]=\"!item.enabled || null\" (click)=\"_cellClicked(item)\"><div class=\"md2-calendar-body-cell-content\" [class.md2-calendar-body-selected]=\"selectedValue === item.value\" [class.md2-calendar-body-today]=\"todayValue === item.value\">{{item.displayValue}}</div></td></tr>",
         styles: [".md2-calendar-body{font-size:13px;min-width:224px}.md2-calendar-body-label{padding:7.14286% 0 7.14286% 7.14286%;height:0;line-height:0;color:rgba(0,0,0,.54);transform:translateX(-6px);text-align:left}.md2-calendar-body-cell{position:relative;width:14.28571%;height:0;line-height:0;padding:7.14286% 0;text-align:center;outline:0;cursor:pointer}.md2-calendar-body-disabled{cursor:default}.md2-calendar-body-cell-content{position:absolute;top:5%;left:5%;display:flex;align-items:center;justify-content:center;box-sizing:border-box;width:90%;height:90%;color:rgba(0,0,0,.87);border-width:1px;border-style:solid;border-color:transparent;border-radius:50%}.md2-calendar-body-disabled>.md2-calendar-body-cell-content:not(.md2-calendar-body-selected){color:rgba(0,0,0,.38)}.md2-calendar:focus .md2-calendar-body-active>.md2-calendar-body-cell-content:not(.md2-calendar-body-selected),:not(.md2-calendar-body-disabled):hover>.md2-calendar-body-cell-content:not(.md2-calendar-body-selected){background-color:rgba(0,0,0,.12)}.md2-calendar-body-selected{background-color:#106cc8;color:#fff}.md2-calendar-body-disabled>.md2-calendar-body-selected{background-color:rgba(16,108,200,.4)}.md2-calendar-body-today:not(.md2-calendar-body-selected){border-color:#106cc8}.md2-calendar-body-today.md2-calendar-body-selected{box-shadow:inset 0 0 0 1px md2-color(#106cc8,default-contrast)}.md2-calendar-body-disabled>.md2-calendar-body-today:not(.md2-calendar-body-selected){border-color:rgba(0,0,0,.18)}[dir=rtl] .md2-calendar-body-label{padding:0 7.14286% 0 0;transform:translateX(6px);text-align:right} /*# sourceMappingURL=calendar-body.css.map */ "],
@@ -10564,7 +10580,7 @@ Md2CalendarBody = __decorate$60([
     })
 ], Md2CalendarBody);
 
-var __decorate$59 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$60 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -10675,25 +10691,25 @@ let Md2MonthView = class Md2MonthView {
         this._calendarState = '';
     }
 };
-__decorate$59([
+__decorate$60([
     Input(),
     __metadata$35("design:type", Date),
     __metadata$35("design:paramtypes", [Date])
 ], Md2MonthView.prototype, "activeDate", null);
-__decorate$59([
+__decorate$60([
     Input(),
     __metadata$35("design:type", Date),
     __metadata$35("design:paramtypes", [Date])
 ], Md2MonthView.prototype, "selected", null);
-__decorate$59([
+__decorate$60([
     Input(),
     __metadata$35("design:type", Function)
 ], Md2MonthView.prototype, "dateFilter", void 0);
-__decorate$59([
+__decorate$60([
     Output(),
     __metadata$35("design:type", Object)
 ], Md2MonthView.prototype, "selectedChange", void 0);
-Md2MonthView = __decorate$59([
+Md2MonthView = __decorate$60([
     Component({selector: 'md2-month-view',
         template: "<table class=\"md2-calendar-table\"><thead class=\"md2-calendar-table-header\"><tr><th *ngFor=\"let day of _weekdays\" [attr.aria-label]=\"day.long\">{{day.narrow}}</th></tr></thead><tbody [@slideCalendar]=\"_calendarState\" (@slideCalendar.done)=\"_calendarStateDone()\" md2-calendar-body role=\"grid\" [rows]=\"_weeks\" [todayValue]=\"_todayDate\" [selectedValue]=\"_selectedDate\" [activeCell]=\"_util.getDate(activeDate) - 1\" (selectedValueChange)=\"_dateSelected($event)\"></tbody></table>",
         animations: [slideCalendar],
@@ -10704,7 +10720,7 @@ Md2MonthView = __decorate$59([
     __metadata$35("design:paramtypes", [DateLocale, DateUtil, Object])
 ], Md2MonthView);
 
-var __decorate$61 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$62 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -10803,25 +10819,25 @@ let Md2YearView = class Md2YearView {
         this._calendarState = '';
     }
 };
-__decorate$61([
+__decorate$62([
     Input(),
     __metadata$37("design:type", Date),
     __metadata$37("design:paramtypes", [Date])
 ], Md2YearView.prototype, "activeDate", null);
-__decorate$61([
+__decorate$62([
     Input(),
     __metadata$37("design:type", Date),
     __metadata$37("design:paramtypes", [Date])
 ], Md2YearView.prototype, "selected", null);
-__decorate$61([
+__decorate$62([
     Input(),
     __metadata$37("design:type", Function)
 ], Md2YearView.prototype, "dateFilter", void 0);
-__decorate$61([
+__decorate$62([
     Output(),
     __metadata$37("design:type", Object)
 ], Md2YearView.prototype, "selectedChange", void 0);
-Md2YearView = __decorate$61([
+Md2YearView = __decorate$62([
     Component({selector: 'md2-year-view',
         template: "<table class=\"md2-calendar-table\"><thead class=\"md2-calendar-table-header\"></thead><tbody [@slideCalendar]=\"_calendarState\" (@slideCalendar.done)=\"_calendarStateDone()\" md2-calendar-body role=\"grid\" allowDisabledSelection=\"true\" [label]=\"_yearLabel\" [rows]=\"_months\" [todayValue]=\"_todayMonth\" [selectedValue]=\"_selectedMonth\" [labelMinRequiredCells]=\"2\" [activeCell]=\"_util.getMonth(activeDate)\" (selectedValueChange)=\"_monthSelected($event)\"></tbody></table>",
         animations: [slideCalendar],
@@ -10832,7 +10848,7 @@ Md2YearView = __decorate$61([
     __metadata$37("design:paramtypes", [DateLocale, DateUtil, Object])
 ], Md2YearView);
 
-var __decorate$62 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$63 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -11044,52 +11060,52 @@ let Md2Clock = class Md2Clock {
         this.activeDateChange.emit(this.activeDate);
     }
 };
-__decorate$62([
+__decorate$63([
     Input(),
     __metadata$38("design:type", Date),
     __metadata$38("design:paramtypes", [Date])
 ], Md2Clock.prototype, "activeDate", null);
-__decorate$62([
+__decorate$63([
     Input(),
     __metadata$38("design:type", Date),
     __metadata$38("design:paramtypes", [Date])
 ], Md2Clock.prototype, "selected", null);
-__decorate$62([
+__decorate$63([
     Input(),
     __metadata$38("design:type", Date),
     __metadata$38("design:paramtypes", [Date])
 ], Md2Clock.prototype, "min", null);
-__decorate$62([
+__decorate$63([
     Input(),
     __metadata$38("design:type", Date),
     __metadata$38("design:paramtypes", [Date])
 ], Md2Clock.prototype, "max", null);
-__decorate$62([
+__decorate$63([
     Input(),
     __metadata$38("design:type", String),
     __metadata$38("design:paramtypes", [String])
 ], Md2Clock.prototype, "startView", null);
-__decorate$62([
+__decorate$63([
     Input(),
     __metadata$38("design:type", Function)
 ], Md2Clock.prototype, "dateFilter", void 0);
-__decorate$62([
+__decorate$63([
     Input(),
     __metadata$38("design:type", Number)
 ], Md2Clock.prototype, "interval", void 0);
-__decorate$62([
+__decorate$63([
     Input(),
     __metadata$38("design:type", Boolean)
 ], Md2Clock.prototype, "twelvehour", void 0);
-__decorate$62([
+__decorate$63([
     Output(),
     __metadata$38("design:type", Object)
 ], Md2Clock.prototype, "selectedChange", void 0);
-__decorate$62([
+__decorate$63([
     Output(),
     __metadata$38("design:type", Object)
 ], Md2Clock.prototype, "activeDateChange", void 0);
-Md2Clock = __decorate$62([
+Md2Clock = __decorate$63([
     Component({selector: 'md2-clock',
         template: "<div class=\"md2-clock\"><div class=\"md2-clock-center\"></div><div class=\"md2-clock-hand\" [ngStyle]=\"_hand\"></div><div class=\"md2-clock-hours\" [class.active]=\"_hourView\"><div *ngFor=\"let item of _hours\" class=\"md2-clock-cell\" [class.md2-clock-cell-selected]=\"_selectedHour == item.value\" [class.md2-clock-cell-disabled]=\"!item.enabled\" [style.top]=\"item.top+'%'\" [style.left]=\"item.left+'%'\" [style.fontSize]=\"item.fontSize\">{{ item.displayValue }}</div></div><div class=\"md2-clock-minutes\" [class.active]=\"!_hourView\"><div *ngFor=\"let item of _minutes\" class=\"md2-clock-cell\" [class.md2-clock-cell-selected]=\"_selectedMinute == item.value\" [class.md2-clock-cell-disabled]=\"!item.enabled\" [style.top]=\"item.top+'%'\" [style.left]=\"item.left+'%'\">{{ item.displayValue }}</div></div></div>",
         styles: [":host{position:relative;display:block;min-width:224px;margin:8px;font-size:14px;box-sizing:border-box;user-select:none}.md2-clock{position:relative;width:100%;height:0;padding-top:100%;background-color:#e0e0e0;border-radius:50%}.md2-clock-center{position:absolute;top:50%;left:50%;width:2%;height:2%;margin:-1%;border-radius:50%;background-color:#106cc8}.md2-clock-hand{position:absolute;top:0;right:0;bottom:0;left:0;width:1px;margin:0 auto;background-color:#106cc8;transform-origin:bottom}.md2-clock-hand::before{content:'';position:absolute;top:-4px;left:-4px;width:8px;height:8px;border-radius:50%;background-color:#106cc8}.md2-clock-hours,.md2-clock-minutes{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;visibility:hidden;transition:350ms;transform:scale(1.2)}.md2-clock-hours.active,.md2-clock-minutes.active{opacity:1;visibility:visible;transform:scale(1)}.md2-clock-minutes{transform:scale(.8)}.md2-clock-cell{position:absolute;display:flex;width:14.1666%;height:14.1666%;color:rgba(0,0,0,.87);justify-content:center;box-sizing:border-box;border-radius:50%;align-items:center;cursor:pointer}.md2-clock-cell:not(.md2-clock-cell-selected):not(.md2-clock-cell-disabled):hover{background-color:rgba(0,0,0,.1)}.md2-clock-cell.md2-clock-cell-disabled{color:rgba(0,0,0,.38);pointer-events:none}.md2-clock-cell.md2-clock-cell-selected{color:#fff;background-color:#1279e0} /*# sourceMappingURL=clock.css.map */ "],
@@ -11102,7 +11118,7 @@ Md2Clock = __decorate$62([
         DateLocale, DateUtil])
 ], Md2Clock);
 
-var __decorate$54 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$55 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -11110,7 +11126,7 @@ var __decorate$54 = (this && this.__decorate) || function (decorators, target, k
 };
 let Md2DatepickerModule = class Md2DatepickerModule {
 };
-Md2DatepickerModule = __decorate$54([
+Md2DatepickerModule = __decorate$55([
     NgModule({
         imports: [
             CommonModule,
@@ -11178,7 +11194,7 @@ Md2DatepickerModule = __decorate$54([
     return dest;
 }
 
-var __decorate$64 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$65 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -11201,7 +11217,7 @@ let Md2DialogPortal = class Md2DialogPortal extends TemplatePortalDirective {
         super(templateRef, viewContainerRef);
     }
 };
-Md2DialogPortal = __decorate$64([
+Md2DialogPortal = __decorate$65([
     Directive({ selector: '[md2DialogPortal]' }),
     __metadata$39("design:paramtypes", [TemplateRef, ViewContainerRef])
 ], Md2DialogPortal);
@@ -11210,7 +11226,7 @@ Md2DialogPortal = __decorate$64([
  */
 let Md2DialogTitle = class Md2DialogTitle {
 };
-Md2DialogTitle = __decorate$64([
+Md2DialogTitle = __decorate$65([
     Directive({ selector: 'md2-dialog-title' })
 ], Md2DialogTitle);
 /**
@@ -11218,7 +11234,7 @@ Md2DialogTitle = __decorate$64([
  */
 let Md2DialogContent = class Md2DialogContent {
 };
-Md2DialogContent = __decorate$64([
+Md2DialogContent = __decorate$65([
     Directive({ selector: 'md2-dialog-content' })
 ], Md2DialogContent);
 /**
@@ -11227,7 +11243,7 @@ Md2DialogContent = __decorate$64([
  */
 let Md2DialogActions = class Md2DialogActions {
 };
-Md2DialogActions = __decorate$64([
+Md2DialogActions = __decorate$65([
     Directive({ selector: 'md2-dialog-footer, md2-dialog-actions' })
 ], Md2DialogActions);
 let Md2Dialog = class Md2Dialog {
@@ -11329,26 +11345,26 @@ let Md2Dialog = class Md2Dialog {
         }
     }
 };
-__decorate$64([
+__decorate$65([
     Output(),
     __metadata$39("design:type", EventEmitter)
 ], Md2Dialog.prototype, "onOpen", void 0);
-__decorate$64([
+__decorate$65([
     Output(),
     __metadata$39("design:type", EventEmitter)
 ], Md2Dialog.prototype, "onClose", void 0);
-__decorate$64([
+__decorate$65([
     ViewChild(Md2DialogPortal),
     __metadata$39("design:type", Md2DialogPortal)
 ], Md2Dialog.prototype, "_portal", void 0);
-__decorate$64([
+__decorate$65([
     Input('title'),
     __metadata$39("design:type", String)
 ], Md2Dialog.prototype, "dialogTitle", void 0);
-Md2Dialog = __decorate$64([
+Md2Dialog = __decorate$65([
     Component({selector: 'md2-dialog',
         template: "<ng-template md2DialogPortal><div class=\"md2-dialog-panel\" [attr.role]=\"dialogConfig?.role\"><div class=\"md2-dialog-content\"><div class=\"md2-dialog-header\"><button *ngIf=\"!config.disableClose\" type=\"button\" class=\"close\" aria-label=\"Close\" (click)=\"close()\">&times;</button><h2 *ngIf=\"dialogTitle\" class=\"md2-dialog-title\" id=\"myDialogLabel\" [innerHtml]=\"dialogTitle\"></h2><ng-content select=\"md2-dialog-title\"></ng-content></div><div class=\"md2-dialog-body\"><ng-content select=\"md2-dialog-content\"></ng-content><ng-content></ng-content></div><ng-content select=\"md2-dialog-footer\"></ng-content><ng-content select=\"md2-dialog-actions\"></ng-content></div></div></ng-template>",
-        styles: [".md2-dialog-panel{position:relative;max-width:90vw;width:600px;border-radius:3px;background-color:#fff;overflow:hidden;box-shadow:0 11px 15px -7px rgba(0,0,0,.2),0 24px 38px 3px rgba(0,0,0,.14),0 9px 46px 8px rgba(0,0,0,.12)}.md2-dialog-header{background:#2196f3;color:#fff;font-size:25px;line-height:1.1;font-weight:500;padding:0 48px 0 16px;border-bottom:1px solid #e5e5e5;word-wrap:break-word}.md2-dialog-header .close{position:absolute;top:21px;right:16px;display:inline-block;width:18px;height:18px;overflow:hidden;-webkit-appearance:none;padding:0;cursor:pointer;background:0 0;border:0;outline:0;opacity:.8;font-size:0;z-index:1;min-width:initial;box-shadow:none;margin:0}.md2-dialog-header .close::after,.md2-dialog-header .close::before{content:'';position:absolute;top:50%;left:0;width:100%;height:2px;margin-top:-1px;background:#ccc;border-radius:2px}.md2-dialog-header .close::before{transform:rotate(45deg)}.md2-dialog-header .close::after{transform:rotate(-45deg)}.md2-dialog-header .close:hover{opacity:1}.md2-dialog-header .md2-dialog-title,.md2-dialog-header md2-dialog-title{display:block;margin:0;padding:16px 0;font-size:25px;font-weight:500}.md2-dialog-header dialog-header{line-height:33px}.md2-dialog-body{position:relative;max-height:65vh;padding:16px;overflow-y:auto}.md2-dialog-footer,md2-dialog-footer{display:block;padding:16px;text-align:right;border-top:1px solid rgba(0,0,0,.12)}.cdk-global-overlay-wrapper,.cdk-overlay-container{pointer-events:none;top:0;left:0;height:100%;width:100%}.cdk-overlay-container{position:fixed;z-index:1000}.cdk-global-overlay-wrapper{display:flex;position:absolute;z-index:1000}.cdk-overlay-pane{position:absolute;pointer-events:auto;box-sizing:border-box;z-index:1000}.cdk-overlay-backdrop{position:absolute;top:0;bottom:0;left:0;right:0;z-index:1000;pointer-events:auto;transition:opacity .4s cubic-bezier(.25,.8,.25,1);opacity:0}.cdk-overlay-backdrop.cdk-overlay-backdrop-showing{opacity:.48}.cdk-overlay-dark-backdrop{background:rgba(0,0,0,.6)} /*# sourceMappingURL=dialog.css.map */ "],
+        styles: [".md2-dialog-panel{position:relative;max-width:90vw;width:600px;border-radius:3px;background-color:#fff;overflow:hidden;box-shadow:0 11px 15px -7px rgba(0,0,0,.2),0 24px 38px 3px rgba(0,0,0,.14),0 9px 46px 8px rgba(0,0,0,.12)}.md2-dialog-header{background:#2196f3;color:#fff;font-size:25px;line-height:1.1;font-weight:500;padding:0 48px 0 16px;border-bottom:1px solid #e5e5e5;word-wrap:break-word}.md2-dialog-header .close{position:absolute;top:21px;right:16px;display:inline-block;width:18px;height:18px;overflow:hidden;-webkit-appearance:none;padding:0;cursor:pointer;background:0 0;border:0;outline:0;opacity:.8;font-size:0;z-index:1;box-shadow:none;margin:0}.md2-dialog-header .close::after,.md2-dialog-header .close::before{content:'';position:absolute;top:50%;left:0;width:100%;height:2px;margin-top:-1px;background:#ccc;border-radius:2px}.md2-dialog-header .close::before{transform:rotate(45deg)}.md2-dialog-header .close::after{transform:rotate(-45deg)}.md2-dialog-header .close:hover{opacity:1}.md2-dialog-header .md2-dialog-title,.md2-dialog-header md2-dialog-title{display:block;margin:0;padding:16px 0;font-size:25px;font-weight:500}.md2-dialog-header dialog-header{line-height:33px}.md2-dialog-body{position:relative;max-height:65vh;padding:16px;overflow-y:auto}.md2-dialog-footer,md2-dialog-footer{display:block;padding:16px;text-align:right;border-top:1px solid rgba(0,0,0,.12)}.cdk-global-overlay-wrapper,.cdk-overlay-container{pointer-events:none;top:0;left:0;height:100%;width:100%}.cdk-overlay-container{position:fixed;z-index:1000}.cdk-global-overlay-wrapper{display:flex;position:absolute;z-index:1000}.cdk-overlay-pane{position:absolute;pointer-events:auto;box-sizing:border-box;z-index:1000}.cdk-overlay-backdrop{position:absolute;top:0;bottom:0;left:0;right:0;z-index:1000;pointer-events:auto;transition:opacity .4s cubic-bezier(.25,.8,.25,1);opacity:0}.cdk-overlay-backdrop.cdk-overlay-backdrop-showing{opacity:.48}.cdk-overlay-dark-backdrop{background:rgba(0,0,0,.6)} /*# sourceMappingURL=dialog.css.map */ "],
         host: {
             'tabindex': '0',
             '[attr.role]': 'config?.role',
@@ -11379,7 +11395,7 @@ function _applyConfigDefaults(dialogConfig) {
     return extendObject(new Md2DialogConfig(), dialogConfig);
 }
 
-var __decorate$63 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$64 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -11387,7 +11403,7 @@ var __decorate$63 = (this && this.__decorate) || function (decorators, target, k
 };
 let Md2DialogModule = class Md2DialogModule {
 };
-Md2DialogModule = __decorate$63([
+Md2DialogModule = __decorate$64([
     NgModule({
         imports: [CommonModule, OverlayModule, MdCommonModule, PlatformModule],
         exports: [
@@ -11408,7 +11424,7 @@ Md2DialogModule = __decorate$63([
     })
 ], Md2DialogModule);
 
-var __decorate$66 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$67 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -11416,7 +11432,7 @@ var __decorate$66 = (this && this.__decorate) || function (decorators, target, k
 };
 let Md2MenuContent = class Md2MenuContent {
 };
-Md2MenuContent = __decorate$66([
+Md2MenuContent = __decorate$67([
     Component({selector: '[md2-menu-content]',
         host: { 'role': 'menu' },
         template: '<ng-content></ng-content>',
@@ -11425,7 +11441,7 @@ Md2MenuContent = __decorate$66([
     })
 ], Md2MenuContent);
 
-var __decorate$67 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$68 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -11433,7 +11449,7 @@ var __decorate$67 = (this && this.__decorate) || function (decorators, target, k
 };
 let Md2MenuItem = class Md2MenuItem {
 };
-Md2MenuItem = __decorate$67([
+Md2MenuItem = __decorate$68([
     Component({selector: '[md2-menu-item]',
         host: {
             'role': 'menuitem'
@@ -11442,7 +11458,7 @@ Md2MenuItem = __decorate$67([
     })
 ], Md2MenuItem);
 
-var __decorate$68 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$69 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -11543,7 +11559,7 @@ let Md2MenuTrigger = class Md2MenuTrigger {
         }
     }
 };
-Md2MenuTrigger = __decorate$68([
+Md2MenuTrigger = __decorate$69([
     Directive({
         selector: '[md2-menu-trigger]',
         host: {
@@ -11555,7 +11571,7 @@ Md2MenuTrigger = __decorate$68([
     __metadata$40("design:paramtypes", [ElementRef, Renderer])
 ], Md2MenuTrigger);
 
-var __decorate$65 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$66 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -11563,7 +11579,7 @@ var __decorate$65 = (this && this.__decorate) || function (decorators, target, k
 };
 let Md2Menu = class Md2Menu {
 };
-Md2Menu = __decorate$65([
+Md2Menu = __decorate$66([
     Component({selector: '[md2-menu]',
         template: '<ng-content></ng-content>',
         styles: ["[md2-menu]{position:relative;display:inline-block}[md2-menu-content]{position:absolute;top:0;left:0;display:inline-block;background:#fff;list-style:none;min-width:112px;max-width:280px;max-height:calc(100vh + 48px);padding:8px 0;margin:0;z-index:1001;border-radius:2px;transform:scale(0);transform-origin:left top;transition:all .2s linear;box-shadow:0 2px 6px 1px rgba(0,0,0,.34)}[md2-menu-item] [md2-menu-content]{left:100%;margin:-8px 0}[md2-menu-content][x-position=before]{right:0;left:auto;transform-origin:right top}[md2-menu-item] [md2-menu-content][x-position=before]{right:100%}[md2-menu-content][y-position=above]{top:auto;bottom:0;transform-origin:left bottom}[md2-menu-content][y-position=above][x-position=before]{transform-origin:right bottom}.open>[md2-menu-content]{transform:scale(1)}[md2-menu-item]{position:relative;width:100%;cursor:pointer;user-select:none;outline:0;border:none;white-space:nowrap;text-overflow:ellipsis;display:flex;flex-direction:row;align-items:center;height:36px;padding:0 16px;font-size:16px;text-align:start;text-decoration:none;background:0 0;color:rgba(0,0,0,.87);box-sizing:border-box}[md2-menu-item][disabled]{color:rgba(0,0,0,.38)}[md2-menu-item].open,[md2-menu-item]:focus:not([disabled]),[md2-menu-item]:hover:not([disabled]){background:rgba(0,0,0,.04);text-decoration:none}[md2-menu-item]>[md2-menu-trigger]{display:block;height:36px;width:calc(100% + 32px);margin:0 -16px;padding:0 16px;font:inherit;color:inherit;text-align:left;background:0 0;outline:0;border:0;cursor:pointer;box-shadow:none}.md-overlay-container{position:fixed;pointer-events:none;top:0;left:0;height:100%;width:100%;z-index:1000}.md-overlay-pane{position:absolute;pointer-events:auto;box-sizing:border-box;z-index:1000}.md-overlay-backdrop{position:absolute;top:0;bottom:0;left:0;right:0;z-index:1;pointer-events:auto;transition:opacity .4s cubic-bezier(.25,.8,.25,1);opacity:0}.md-overlay-transparent-backdrop{background:0 0}.md-overlay-backdrop.md-overlay-backdrop-showing{opacity:.48} /*# sourceMappingURL=menu.css.map */ "],
@@ -11572,7 +11588,7 @@ Md2Menu = __decorate$65([
 ], Md2Menu);
 let Md2MenuModule = class Md2MenuModule {
 };
-Md2MenuModule = __decorate$65([
+Md2MenuModule = __decorate$66([
     NgModule({
         imports: [CommonModule],
         exports: [Md2Menu, Md2MenuContent, Md2MenuItem, Md2MenuTrigger],
@@ -11582,7 +11598,7 @@ Md2MenuModule = __decorate$65([
 
 //# sourceMappingURL=index.js.map
 
-var __decorate$69 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$70 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -11610,34 +11626,34 @@ let Md2Transclude = class Md2Transclude {
         }
     }
 };
-__decorate$69([
+__decorate$70([
     Input(),
     __metadata$41("design:type", Object),
     __metadata$41("design:paramtypes", [TemplateRef])
 ], Md2Transclude.prototype, "md2Transclude", null);
-Md2Transclude = __decorate$69([
+Md2Transclude = __decorate$70([
     Directive({ selector: '[md2Transclude]' }),
     __metadata$41("design:paramtypes", [ViewContainerRef])
 ], Md2Transclude);
 let Md2Tab = class Md2Tab {
 };
-__decorate$69([
+__decorate$70([
     Input(),
     __metadata$41("design:type", String)
 ], Md2Tab.prototype, "label", void 0);
-__decorate$69([
+__decorate$70([
     Input(),
     __metadata$41("design:type", Boolean)
 ], Md2Tab.prototype, "active", void 0);
-__decorate$69([
+__decorate$70([
     Input(),
     __metadata$41("design:type", Boolean)
 ], Md2Tab.prototype, "disabled", void 0);
-__decorate$69([
+__decorate$70([
     Input(),
     __metadata$41("design:type", String)
 ], Md2Tab.prototype, "class", void 0);
-Md2Tab = __decorate$69([
+Md2Tab = __decorate$70([
     Component({selector: 'md2-tab',
         template: `<ng-content></ng-content>`,
         host: {
@@ -11652,7 +11668,7 @@ let Md2TabLabel = class Md2TabLabel {
         tab.labelRef = templateRef;
     }
 };
-Md2TabLabel = __decorate$69([
+Md2TabLabel = __decorate$70([
     Directive({ selector: '[md2-tab-label]' }),
     __metadata$41("design:paramtypes", [TemplateRef, Md2Tab])
 ], Md2TabLabel);
@@ -11876,28 +11892,28 @@ let Md2Tabs = class Md2Tabs {
         return value;
     }
 };
-__decorate$69([
+__decorate$70([
     ContentChildren(Md2Tab),
     __metadata$41("design:type", QueryList)
 ], Md2Tabs.prototype, "tabs", void 0);
-__decorate$69([
+__decorate$70([
     Input(),
     __metadata$41("design:type", String)
 ], Md2Tabs.prototype, "class", void 0);
-__decorate$69([
+__decorate$70([
     Input(),
     __metadata$41("design:type", Object),
     __metadata$41("design:paramtypes", [Object])
 ], Md2Tabs.prototype, "selectedIndex", null);
-__decorate$69([
+__decorate$70([
     Output(),
     __metadata$41("design:type", EventEmitter)
 ], Md2Tabs.prototype, "change", void 0);
-__decorate$69([
+__decorate$70([
     Output(),
     __metadata$41("design:type", EventEmitter)
 ], Md2Tabs.prototype, "selectedIndexChange", void 0);
-Md2Tabs = __decorate$69([
+Md2Tabs = __decorate$70([
     Component({selector: 'md2-tabs',
         template: "<div class=\"md2-tabs-header-wrapper\"><div role=\"button\" class=\"md2-prev-button\" [class.disabled]=\"!canPageBack()\" *ngIf=\"_shouldPaginate\" (click)=\"previousPage()\"><em class=\"prev-icon\">Prev</em></div><div role=\"button\" class=\"md2-next-button\" [class.disabled]=\"!canPageForward()\" *ngIf=\"_shouldPaginate\" (click)=\"nextPage()\"><em class=\"next-icon\">Next</em></div><div class=\"md2-tabs-canvas\" [class.md2-paginated]=\"_shouldPaginate\" role=\"tablist\" tabindex=\"0\" (keydown.arrowRight)=\"focusNextTab()\" (keydown.arrowLeft)=\"focusPreviousTab()\" (keydown.enter)=\"selectedIndex = focusIndex\" (mousewheel)=\"scroll($event)\"><div class=\"md2-tabs-header\" [style.marginLeft.px]=\"-_offsetLeft\"><div class=\"md2-tab-label\" role=\"tab\" *ngFor=\"let tab of tabs; let i = index\" [class.focus]=\"focusIndex === i\" [class.active]=\"selectedIndex === i\" [class.disabled]=\"tab.disabled\" (click)=\"focusIndex = selectedIndex = i\"><span [md2Transclude]=\"tab.labelRef\">{{tab.label}}</span></div><div class=\"md2-tab-ink-bar\" [style.left]=\"_inkBarLeft\" [style.width]=\"_inkBarWidth\"></div></div></div></div><div class=\"md2-tabs-body-wrapper\"><ng-content></ng-content></div>",
         styles: ["md2-tabs{position:relative;overflow:hidden;display:block;margin:0;border:1px solid #e1e1e1;border-radius:2px}.md2-tabs-header-wrapper{position:relative;display:block;height:48px;background:#fff;border-width:0 0 1px;border-style:solid;border-color:rgba(0,0,0,.12);margin:0;padding:0;list-style:none;user-select:none}.md2-tabs-header-wrapper::after{content:'';display:table;clear:both}.md2-next-button,.md2-prev-button{position:absolute;top:0;height:100%;width:32px;padding:8px 0;z-index:2;cursor:pointer}.md2-next-button.disabled,.md2-prev-button.disabled{opacity:.25;cursor:default}.md2-prev-button{left:0}.md2-next-button{right:0}.md2-next-button .next-icon,.md2-prev-button .prev-icon{display:block;width:12px;height:12px;font-size:0;border-width:0 0 2px 2px;border-style:solid;border-color:#757575;border-radius:1px;transform:rotate(45deg);margin:10px}.md2-next-button .next-icon{border-width:2px 2px 0 0}.md2-tabs-canvas{position:relative;height:100%;overflow:hidden;display:block;outline:0}.md2-tabs-canvas.md2-paginated{margin:0 32px}.md2-tabs-header{position:relative;display:inline-block;height:100%;white-space:nowrap;transition:.5s cubic-bezier(.35,0,.25,1)}.md2-tab-label{position:relative;height:100%;color:rgba(0,0,0,.54);font-size:14px;text-align:center;line-height:24px;padding:12px 24px;transition:background-color 350ms cubic-bezier(.35,0,.25,1);cursor:pointer;white-space:nowrap;text-transform:uppercase;display:inline-block;font-weight:500;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box;overflow:hidden;-ms-text-overflow:ellipsis;-o-text-overflow:ellipsis;text-overflow:ellipsis}.md2-tab-label.active{color:#106cc8}.md2-tabs-canvas:focus .md2-tab-label.focus{background:rgba(0,0,0,.05)}.md2-tab-label.disabled{color:rgba(0,0,0,.26);pointer-events:none;user-select:none;-webkit-user-drag:none;opacity:.5;cursor:default}.md2-tab-ink-bar{position:absolute;bottom:0;height:2px;background:#ff5252;transition:250ms cubic-bezier(.35,0,.25,1)}.md2-tabs-body-wrapper{position:relative;min-height:0;display:block;clear:both}md2-tab{padding:16px;display:none;position:relative}md2-tab.active{display:block;position:relative} /*# sourceMappingURL=tabs.css.map */ "],
@@ -11912,7 +11928,7 @@ Md2Tabs = __decorate$69([
 const MD2_TABS_DIRECTIVES = [Md2TabLabel, Md2Tabs, Md2Tab];
 let Md2TabsModule = class Md2TabsModule {
 };
-Md2TabsModule = __decorate$69([
+Md2TabsModule = __decorate$70([
     NgModule({
         imports: [CommonModule],
         exports: MD2_TABS_DIRECTIVES,
@@ -11922,7 +11938,7 @@ Md2TabsModule = __decorate$69([
 
 //# sourceMappingURL=index.js.map
 
-var __decorate$71 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$72 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -12306,58 +12322,58 @@ let Md2Tags = class Md2Tags {
         this.disabled = isDisabled;
     }
 };
-__decorate$71([
+__decorate$72([
     Output(),
     __metadata$42("design:type", EventEmitter)
 ], Md2Tags.prototype, "change", void 0);
-__decorate$71([
+__decorate$72([
     Input(),
     __metadata$42("design:type", String)
 ], Md2Tags.prototype, "id", void 0);
-__decorate$71([
+__decorate$72([
     Input(),
     __metadata$42("design:type", Number)
 ], Md2Tags.prototype, "tabindex", void 0);
-__decorate$71([
+__decorate$72([
     Input(),
     __metadata$42("design:type", String)
 ], Md2Tags.prototype, "placeholder", void 0);
-__decorate$71([
+__decorate$72([
     Input('md2-tag-text'),
     __metadata$42("design:type", String)
 ], Md2Tags.prototype, "textKey", void 0);
-__decorate$71([
+__decorate$72([
     Input('md2-tag-value'),
     __metadata$42("design:type", String)
 ], Md2Tags.prototype, "valueKey", void 0);
-__decorate$71([
+__decorate$72([
     Input(),
     __metadata$42("design:type", Boolean),
     __metadata$42("design:paramtypes", [Object])
 ], Md2Tags.prototype, "disabled", null);
-__decorate$71([
+__decorate$72([
     Input('md2-tags'),
     __metadata$42("design:type", Array),
     __metadata$42("design:paramtypes", [Array])
 ], Md2Tags.prototype, "tags", null);
-__decorate$71([
+__decorate$72([
     Input(),
     __metadata$42("design:type", Object),
     __metadata$42("design:paramtypes", [Object])
 ], Md2Tags.prototype, "value", null);
-__decorate$71([
+__decorate$72([
     HostListener('keydown', ['$event']),
     __metadata$42("design:type", Function),
     __metadata$42("design:paramtypes", [KeyboardEvent]),
     __metadata$42("design:returntype", void 0)
 ], Md2Tags.prototype, "_handleKeydown", null);
-__decorate$71([
+__decorate$72([
     HostListener('focus'),
     __metadata$42("design:type", Function),
     __metadata$42("design:paramtypes", []),
     __metadata$42("design:returntype", void 0)
 ], Md2Tags.prototype, "_handleFocus", null);
-Md2Tags = __decorate$71([
+Md2Tags = __decorate$72([
     Component({selector: 'md2-tags',
         template: "<div class=\"md2-tags-container\"><span *ngFor=\"let t of _items; let i = index;\" class=\"md2-tag\" [class.active]=\"_selectedTag === i\" (click)=\"_selectTag(i)\"><span class=\"md2-tag-text\">{{t.text}}</span> <svg (click)=\"_removeTagAndFocusInput(i)\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\"/></svg></span><div class=\"md2-tag-add\"><input [(ngModel)]=\"_inputValue\" type=\"text\" tabs=\"false\" autocomplete=\"off\" tabindex=\"-1\" [disabled]=\"disabled\" class=\"md2-tags-input\" [placeholder]=\"placeholder\" (focus)=\"_onInputFocus()\" (blur)=\"_onInputBlur()\" (keydown)=\"_handleInputKeydown($event)\" (change)=\"$event.stopPropagation()\"><ul *ngIf=\"isMenuVisible\" class=\"md2-tags-menu\" (mouseenter)=\"_listEnter()\" (mouseleave)=\"_listLeave()\"><li class=\"md2-tag-option\" *ngFor=\"let l of _list; let i = index;\" [class.focused]=\"_focusedTag === i\" (click)=\"_addTag($event, i)\"><span class=\"md2-tag-option-text\" [innerHtml]=\"l.text | highlight:_inputValue\"></span></li></ul></div></div>",
         styles: [":host{outline:0;user-select:none;backface-visibility:hidden}.md2-tags-container{position:relative;display:block;max-width:100%;padding:2px 2px 4px;border-bottom:1px solid rgba(0,0,0,.12);box-sizing:content-box;min-width:64px;min-height:26px;cursor:text}.md2-tags-container::after,.md2-tags-container::before{display:table;content:' '}.md2-tags-container::after{clear:both}.focus .md2-tags-container{padding-bottom:3px;border-bottom:2px solid #106cc8}.md2-tags-disabled .md2-tags-container{color:rgba(0,0,0,.38);cursor:default}.md2-tags-disabled.focus .md2-tags-container{padding-bottom:4px;border-bottom:1px solid rgba(0,0,0,.38)}.md2-tag{position:relative;cursor:default;border-radius:16px;display:block;height:32px;line-height:32px;margin:4px 4px 0 0;padding:0 26px 0 12px;float:left;box-sizing:border-box;max-width:100%;background:#e0e0e0;color:#424242;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.md2-tag.active{background:#106cc8;color:rgba(255,255,255,.87)}.md2-tag.active svg{color:rgba(255,255,255,.87)}.md2-tag svg{position:absolute;top:4px;right:2px;cursor:pointer;display:inline-block;overflow:hidden;fill:currentColor;color:rgba(0,0,0,.54)}.md2-tag-add{position:relative;display:inline-block;margin-left:4px}input{border:0;outline:0;margin-top:6px;height:30px;line-height:30px;padding:0;color:rgba(0,0,0,.87);background:0 0}.md2-tags-placeholder{color:rgba(0,0,0,.38)}.md2-tags-menu{position:absolute;left:0;top:100%;display:block;z-index:10;flex-direction:column;width:100%;margin:6px 0 0;padding:8px 0;box-shadow:0 1px 3px 0 rgba(0,0,0,.2),0 1px 1px 0 rgba(0,0,0,.14),0 2px 1px -1px rgba(0,0,0,.12);max-height:256px;min-height:48px;overflow-y:auto;transform:scale(1);background:#fff;backface-visibility:hidden}.md2-tags-menu .md2-tag-option{cursor:pointer;position:relative;display:block;color:#212121;align-items:center;width:auto;transition:background 150ms linear;padding:12px 16px;line-height:24px;box-sizing:border-box;word-wrap:break-word}.md2-tags-menu .md2-tag-option.focused,.md2-tags-menu .md2-tag-option:hover{background:#eee}.md2-tags-menu .md2-tag-option .md2-tag-option-text{width:auto;font-size:16px}.highlight{color:#757575} /*# sourceMappingURL=tags.css.map */ "],
@@ -12376,7 +12392,7 @@ Md2Tags = __decorate$71([
     __metadata$42("design:paramtypes", [ElementRef])
 ], Md2Tags);
 
-var __decorate$70 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$71 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -12384,7 +12400,7 @@ var __decorate$70 = (this && this.__decorate) || function (decorators, target, k
 };
 let Md2TagsModule = class Md2TagsModule {
 };
-Md2TagsModule = __decorate$70([
+Md2TagsModule = __decorate$71([
     NgModule({
         imports: [CommonModule, FormsModule, Md2AutocompleteModule],
         exports: [Md2Tags],
@@ -12392,7 +12408,7 @@ Md2TagsModule = __decorate$70([
     })
 ], Md2TagsModule);
 
-var __decorate$72 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$73 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -12503,7 +12519,7 @@ let Md2Toast = class Md2Toast {
         }
     }
 };
-Md2Toast = __decorate$72([
+Md2Toast = __decorate$73([
     Injectable(),
     __metadata$43("design:paramtypes", [Overlay, Md2ToastConfig])
 ], Md2Toast);
@@ -12556,7 +12572,7 @@ let Md2ToastComponent = class Md2ToastComponent {
      */
     hasToast() { return this.toasts.length > 0; }
 };
-Md2ToastComponent = __decorate$72([
+Md2ToastComponent = __decorate$73([
     Component({
         selector: 'md2-toast',
         template: "<div *ngFor=\"let toast of toasts\" class=\"md2-toast\" [class.in]=\"toast.isVisible\" (click)=\"removeToast(toast.id)\">{{ toast.message }}</div>",
@@ -12567,7 +12583,7 @@ Md2ToastComponent = __decorate$72([
 const MD2_TOAST_DIRECTIVES = [Md2ToastComponent];
 let Md2ToastModule = class Md2ToastModule {
 };
-Md2ToastModule = __decorate$72([
+Md2ToastModule = __decorate$73([
     NgModule({
         imports: [CommonModule],
         exports: MD2_TOAST_DIRECTIVES,
@@ -12579,7 +12595,7 @@ Md2ToastModule = __decorate$72([
 
 //# sourceMappingURL=index.js.map
 
-var __decorate$74 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$75 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -12784,30 +12800,30 @@ let Md2Tooltip = class Md2Tooltip {
         });
     }
 };
-__decorate$74([
+__decorate$75([
     Input('tooltip-position'),
     __metadata$44("design:type", String),
     __metadata$44("design:paramtypes", [String])
 ], Md2Tooltip.prototype, "position", null);
-__decorate$74([
+__decorate$75([
     Input('tooltipDisabled'),
     __metadata$44("design:type", Boolean),
     __metadata$44("design:paramtypes", [Object])
 ], Md2Tooltip.prototype, "disabled", null);
-__decorate$74([
+__decorate$75([
     Input('tooltip-delay'),
     __metadata$44("design:type", Object)
 ], Md2Tooltip.prototype, "showDelay", void 0);
-__decorate$74([
+__decorate$75([
     Input('tooltip-hide-delay'),
     __metadata$44("design:type", Object)
 ], Md2Tooltip.prototype, "hideDelay", void 0);
-__decorate$74([
+__decorate$75([
     Input('tooltip'),
     __metadata$44("design:type", Object),
     __metadata$44("design:paramtypes", [String])
 ], Md2Tooltip.prototype, "message", null);
-Md2Tooltip = __decorate$74([
+Md2Tooltip = __decorate$75([
     Directive({
         selector: '[tooltip]',
         host: {
@@ -12945,7 +12961,7 @@ let Md2TooltipComponent = class Md2TooltipComponent {
         this._changeDetectorRef.markForCheck();
     }
 };
-Md2TooltipComponent = __decorate$74([
+Md2TooltipComponent = __decorate$75([
     Component({selector: 'md2-tooltip',
         template: "<div class=\"md2-tooltip\" [style.transform-origin]=\"_transformOrigin\" [@state]=\"_visibility\" (@state.done)=\"_afterVisibilityAnimation($event)\" [innerHTML]=\"message\"></div>",
         styles: [":host{pointer-events:none}.md2-tooltip{color:#fff;padding:6px 8px;border-radius:2px;font-size:10px;margin:14px;max-width:250px;background:rgba(97,97,97,.9);word-wrap:break-word}.cdk-global-overlay-wrapper,.cdk-overlay-container{pointer-events:none;top:0;left:0;height:100%;width:100%}.cdk-overlay-container{position:fixed;z-index:1000}.cdk-global-overlay-wrapper{display:flex;position:absolute;z-index:1000}.cdk-overlay-pane{position:absolute;pointer-events:auto;box-sizing:border-box;z-index:1000} /*# sourceMappingURL=tooltip.css.map */ "],
@@ -12968,7 +12984,7 @@ Md2TooltipComponent = __decorate$74([
     __metadata$44("design:paramtypes", [Dir, ChangeDetectorRef])
 ], Md2TooltipComponent);
 
-var __decorate$73 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$74 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -12976,7 +12992,7 @@ var __decorate$73 = (this && this.__decorate) || function (decorators, target, k
 };
 let Md2TooltipModule = class Md2TooltipModule {
 };
-Md2TooltipModule = __decorate$73([
+Md2TooltipModule = __decorate$74([
     NgModule({
         imports: [OverlayModule, MdCommonModule, PlatformModule],
         exports: [Md2Tooltip, Md2TooltipComponent, MdCommonModule],
@@ -13027,4 +13043,4 @@ Md2Module = __decorate$36([
 
 //# sourceMappingURL=index.js.map
 
-export { MdCoreModule, Dir, RtlModule, ObserveContentModule, ObserveContent, Portal, BasePortalHost, ComponentPortal, TemplatePortal, PortalHostDirective, TemplatePortalDirective, PortalModule, DomPortalHost, GestureConfig, LiveAnnouncer, LIVE_ANNOUNCER_ELEMENT_TOKEN, LIVE_ANNOUNCER_PROVIDER, InteractivityChecker, isFakeMousedownFromScreenReader, A11yModule, UniqueSelectionDispatcher, UNIQUE_SELECTION_DISPATCHER_PROVIDER, MdLineModule, MdLine, MdLineSetter, coerceBooleanProperty, coerceNumberProperty, CompatibilityModule, NoConflictStyleCompatibilityMode, MdCommonModule, MATERIAL_SANITY_CHECKS, MD_PLACEHOLDER_GLOBAL_OPTIONS, MdOptionModule, MdOptionSelectionChange, MdOption, MdOptgroupBase, _MdOptgroupMixinBase, MdOptgroup, PlatformModule, Platform, getSupportedInputTypes, Overlay, OVERLAY_PROVIDERS, OverlayContainer, FullscreenOverlayContainer, OverlayRef, OverlayState, ConnectedOverlayDirective, OverlayOrigin, OverlayModule, ViewportRuler, GlobalPositionStrategy, ConnectedPositionStrategy, ConnectionPositionPair, ScrollableViewProperties, ConnectedOverlayPositionChange, ScrollDispatchModule, Scrollable, ScrollDispatcher, ScrollStrategyOptions, RepositionScrollStrategy, CloseScrollStrategy, NoopScrollStrategy, BlockScrollStrategy, MdRippleModule, MdRipple, MD_RIPPLE_GLOBAL_OPTIONS, RippleRef, RippleState, RIPPLE_FADE_IN_DURATION, RIPPLE_FADE_OUT_DURATION, SelectionModel, SelectionChange, FocusTrap, FocusTrapFactory, FocusTrapDeprecatedDirective, FocusTrapDirective, StyleModule, TOUCH_BUFFER_MS, FocusOriginMonitor, CdkMonitorFocus, FOCUS_ORIGIN_MONITOR_PROVIDER_FACTORY, FOCUS_ORIGIN_MONITOR_PROVIDER, applyCssTransform, UP_ARROW, DOWN_ARROW, RIGHT_ARROW, LEFT_ARROW, PAGE_UP, PAGE_DOWN, HOME, END, ENTER, SPACE, TAB, ESCAPE, BACKSPACE, DELETE, COMMA, MATERIAL_COMPATIBILITY_MODE, getMdCompatibilityInvalidPrefixError, MAT_ELEMENTS_SELECTOR, MD_ELEMENTS_SELECTOR, MatPrefixRejector, MdPrefixRejector, AnimationCurves, AnimationDurations, MdSelectionModule, MdPseudoCheckboxBase, _MdPseudoCheckboxBase, MdPseudoCheckbox, NativeDateModule, MdNativeDateModule, DateAdapter, MD_DATE_FORMATS, NativeDateAdapter, MD_NATIVE_DATE_FORMATS, Md2Module, Md2AccordionModule, Md2Accordion, Md2AccordionHeader, Md2AccordionTab, Md2AutocompleteModule, Item, MD2_AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR, Md2AutocompleteChange, Md2Autocomplete, HighlightPipe, Chip, MD2_CHIPS_CONTROL_VALUE_ACCESSOR, Md2ChipsChange, Md2Chips, MD2_CHIPS_DIRECTIVES, Md2ChipsModule, Md2CollapseModule, Md2Collapse, TextDirective, ColorpickerSliderDirective, Md2ColorChange, Md2Colorpicker, Hsva, Hsla, Rgba, SliderPosition, SliderDimension, MD2_COLORPICKER_DIRECTIVES, Md2ColorpickerModule, Md2PaginationChange, Md2DataTable, Md2DataTableSortBy, Md2Pagination, MD2_DATA_TABLE_DIRECTIVES, Md2DataTableModule, Md2DatepickerModule, Md2DateChange, Md2DatepickerContent, MD2_DATEPICKER_VALUE_ACCESSOR, MD2_DATEPICKER_VALIDATORS, Md2Datepicker, Md2MonthView, Md2YearView, Md2CalendarCell, Md2CalendarBody, CLOCK_RADIUS, CLOCK_INNER_RADIUS, CLOCK_OUTER_RADIUS, CLOCK_TICK_RADIUS, Md2Clock, DateLocale, DateUtil, Md2DialogModule, Md2DialogConfig, Md2DialogPortal, Md2DialogTitle, Md2DialogContent, Md2DialogActions, Md2Dialog, Md2Menu, Md2MenuModule, Md2MenuContent, Md2MenuItem, Md2MenuTrigger, Md2SelectModule, fadeInContent, transformPanel, transformPlaceholder, SELECT_ITEM_HEIGHT, SELECT_PANEL_MAX_HEIGHT, SELECT_MAX_OPTIONS_DISPLAYED, SELECT_TRIGGER_HEIGHT, SELECT_ITEM_HEIGHT_ADJUSTMENT, SELECT_PANEL_PADDING_X, SELECT_PANEL_INDENT_PADDING_X, SELECT_MULTIPLE_PANEL_PADDING_X, SELECT_PANEL_PADDING_Y, SELECT_PANEL_VIEWPORT_PADDING, Md2SelectChange, Md2Select, Md2SelectHeader, Md2OptionSelectionChange, Md2Option, Md2OptionModule, Md2OptgroupBase, _Md2OptgroupMixinBase, Md2Optgroup, Md2TabChange, Md2Transclude, Md2Tab, Md2TabLabel, Md2Tabs, MD2_TABS_DIRECTIVES, Md2TabsModule, Md2TagsModule, Tag, MD2_TAGS_CONTROL_VALUE_ACCESSOR, Md2Tags, Toast, Md2ToastConfig, Md2Toast, Md2ToastComponent, MD2_TOAST_DIRECTIVES, Md2ToastModule, Md2TooltipModule, TOUCHEND_HIDE_DELAY, SCROLL_THROTTLE_MS, throwMd2TooltipInvalidPositionError, Md2Tooltip, Md2TooltipComponent };
+export { MdCoreModule, Dir, RtlModule, ObserveContentModule, ObserveContent, Portal, BasePortalHost, ComponentPortal, TemplatePortal, PortalHostDirective, TemplatePortalDirective, PortalModule, DomPortalHost, GestureConfig, LiveAnnouncer, LIVE_ANNOUNCER_ELEMENT_TOKEN, LIVE_ANNOUNCER_PROVIDER, InteractivityChecker, isFakeMousedownFromScreenReader, A11yModule, UniqueSelectionDispatcher, UNIQUE_SELECTION_DISPATCHER_PROVIDER, MdLineModule, MdLine, MdLineSetter, coerceBooleanProperty, coerceNumberProperty, CompatibilityModule, NoConflictStyleCompatibilityMode, MdCommonModule, MATERIAL_SANITY_CHECKS, MD_PLACEHOLDER_GLOBAL_OPTIONS, MdOptionModule, MdOptionSelectionChange, MdOption, MdOptgroupBase, _MdOptgroupMixinBase, MdOptgroup, PlatformModule, Platform, getSupportedInputTypes, Overlay, OVERLAY_PROVIDERS, OverlayContainer, FullscreenOverlayContainer, OverlayRef, OverlayState, ConnectedOverlayDirective, OverlayOrigin, OverlayModule, ViewportRuler, GlobalPositionStrategy, ConnectedPositionStrategy, ConnectionPositionPair, ScrollableViewProperties, ConnectedOverlayPositionChange, ScrollDispatchModule, Scrollable, ScrollDispatcher, ScrollStrategyOptions, RepositionScrollStrategy, CloseScrollStrategy, NoopScrollStrategy, BlockScrollStrategy, MdRippleModule, MdRipple, MD_RIPPLE_GLOBAL_OPTIONS, RippleRef, RippleState, RIPPLE_FADE_IN_DURATION, RIPPLE_FADE_OUT_DURATION, SelectionModel, SelectionChange, FocusTrap, FocusTrapFactory, FocusTrapDeprecatedDirective, FocusTrapDirective, StyleModule, TOUCH_BUFFER_MS, FocusOriginMonitor, CdkMonitorFocus, FOCUS_ORIGIN_MONITOR_PROVIDER_FACTORY, FOCUS_ORIGIN_MONITOR_PROVIDER, applyCssTransform, UP_ARROW, DOWN_ARROW, RIGHT_ARROW, LEFT_ARROW, PAGE_UP, PAGE_DOWN, HOME, END, ENTER, SPACE, TAB, ESCAPE, BACKSPACE, DELETE, COMMA, MATERIAL_COMPATIBILITY_MODE, getMdCompatibilityInvalidPrefixError, MAT_ELEMENTS_SELECTOR, MD_ELEMENTS_SELECTOR, MatPrefixRejector, MdPrefixRejector, AnimationCurves, AnimationDurations, MdSelectionModule, MdPseudoCheckboxBase, _MdPseudoCheckboxBase, MdPseudoCheckbox, NativeDateModule, MdNativeDateModule, DateAdapter, MD_DATE_FORMATS, NativeDateAdapter, MD_NATIVE_DATE_FORMATS, Md2Module, Md2AccordionModule, Md2Accordion, Md2AccordionHeader, Md2AccordionTab, Md2AutocompleteModule, Item, MD2_AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR, Md2AutocompleteChange, Md2Autocomplete, HighlightPipe, Chip, MD2_CHIPS_CONTROL_VALUE_ACCESSOR, Md2ChipsChange, Md2Chips, MD2_CHIPS_DIRECTIVES, Md2ChipsModule, Md2CollapseModule, Md2Collapse, Md2ColorpickerModule, SliderPosition, SliderDimension, TextDirective, ColorpickerSliderDirective, Md2ColorChange, Md2Colorpicker, COLOR_RGB, COLOR_HSL, Hsva, Hsla, Rgba, ColorUtil, Md2PaginationChange, Md2DataTable, Md2DataTableSortBy, Md2Pagination, MD2_DATA_TABLE_DIRECTIVES, Md2DataTableModule, Md2DatepickerModule, Md2DateChange, Md2DatepickerContent, MD2_DATEPICKER_VALUE_ACCESSOR, MD2_DATEPICKER_VALIDATORS, Md2Datepicker, Md2MonthView, Md2YearView, Md2CalendarCell, Md2CalendarBody, CLOCK_RADIUS, CLOCK_INNER_RADIUS, CLOCK_OUTER_RADIUS, CLOCK_TICK_RADIUS, Md2Clock, DateLocale, DateUtil, Md2DialogModule, Md2DialogConfig, Md2DialogPortal, Md2DialogTitle, Md2DialogContent, Md2DialogActions, Md2Dialog, Md2Menu, Md2MenuModule, Md2MenuContent, Md2MenuItem, Md2MenuTrigger, Md2SelectModule, fadeInContent, transformPanel, transformPlaceholder, SELECT_ITEM_HEIGHT, SELECT_PANEL_MAX_HEIGHT, SELECT_MAX_OPTIONS_DISPLAYED, SELECT_TRIGGER_HEIGHT, SELECT_ITEM_HEIGHT_ADJUSTMENT, SELECT_PANEL_PADDING_X, SELECT_PANEL_INDENT_PADDING_X, SELECT_MULTIPLE_PANEL_PADDING_X, SELECT_PANEL_PADDING_Y, SELECT_PANEL_VIEWPORT_PADDING, Md2SelectChange, Md2Select, Md2SelectHeader, Md2OptionSelectionChange, Md2Option, Md2OptionModule, Md2OptgroupBase, _Md2OptgroupMixinBase, Md2Optgroup, Md2TabChange, Md2Transclude, Md2Tab, Md2TabLabel, Md2Tabs, MD2_TABS_DIRECTIVES, Md2TabsModule, Md2TagsModule, Tag, MD2_TAGS_CONTROL_VALUE_ACCESSOR, Md2Tags, Toast, Md2ToastConfig, Md2Toast, Md2ToastComponent, MD2_TOAST_DIRECTIVES, Md2ToastModule, Md2TooltipModule, TOUCHEND_HIDE_DELAY, SCROLL_THROTTLE_MS, throwMd2TooltipInvalidPositionError, Md2Tooltip, Md2TooltipComponent };

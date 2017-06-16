@@ -35,8 +35,6 @@ function range(length, valueFunction) {
     }
     return valuesArray;
 }
-;
-;
 var DateLocale = (function () {
     function DateLocale() {
         this.firstDayOfWeek = 0;

@@ -1,7 +1,21 @@
 import { EventEmitter, ElementRef, OnDestroy, Renderer, TemplateRef, ViewContainerRef } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { Overlay } from '../core';
-import { ColorUtil } from './color-util';
+import { ColorUtil, Rgba, Hsla, Hsva } from './color-util';
+export declare class SliderPosition {
+    h: number;
+    s: number;
+    v: number;
+    a: number;
+    constructor(h: number, s: number, v: number, a: number);
+}
+export declare class SliderDimension {
+    h: number;
+    s: number;
+    v: number;
+    a: number;
+    constructor(h: number, s: number, v: number, a: number);
+}
 export declare type Container = 'inline' | 'dialog';
 export declare class TextDirective {
     newValue: EventEmitter<any>;
@@ -216,42 +230,4 @@ export declare class Md2Colorpicker implements OnDestroy, ControlValueAccessor {
     /** Create the popup PositionStrategy. */
     private _createPickerPositionStrategy();
     private _cleanUpSubscriptions();
-}
-export declare class Hsva {
-    h: number;
-    s: number;
-    v: number;
-    a: number;
-    constructor(h: number, s: number, v: number, a: number);
-}
-export declare class Hsla {
-    h: number;
-    s: number;
-    l: number;
-    a: number;
-    constructor(h: number, s: number, l: number, a: number);
-}
-export declare class Rgba {
-    r: number;
-    g: number;
-    b: number;
-    a: number;
-    constructor(r: number, g: number, b: number, a: number);
-}
-export declare class SliderPosition {
-    h: number;
-    s: number;
-    v: number;
-    a: number;
-    constructor(h: number, s: number, v: number, a: number);
-}
-export declare class SliderDimension {
-    h: number;
-    s: number;
-    v: number;
-    a: number;
-    constructor(h: number, s: number, v: number, a: number);
-}
-export declare const MD2_COLORPICKER_DIRECTIVES: (typeof TextDirective | typeof ColorpickerSliderDirective | typeof Md2Colorpicker)[];
-export declare class Md2ColorpickerModule {
 }

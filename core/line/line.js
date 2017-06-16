@@ -18,10 +18,8 @@ var MdLine = (function () {
 }());
 MdLine = __decorate([
     Directive({
-        selector: '[md-line], [mat-line]',
-        host: {
-            '[class.mat-line]': 'true'
-        }
+        selector: '[md-line], [mat-line], [mdLine], [matLine]',
+        host: { 'class': 'mat-line' }
     })
 ], MdLine);
 export { MdLine };

@@ -98,7 +98,6 @@ export class DateLocale {
   }
 
   getMinuteNames(): string[] {
-    console.log(0);
     if (this.minutes) { return this.minutes; }
     if (SUPPORTS_INTL_API) {
       let dtf = new Intl.DateTimeFormat(this.locale, { minute: 'numeric' });

@@ -92,17 +92,18 @@ export class DateLocale {
     if (SUPPORTS_INTL_API) {
       let dtf = new Intl.DateTimeFormat(this.locale, { hour: 'numeric' });
       return range(24, i => this._stripDirectionalityCharacters(
-        dtf.format(new Date(2017, 0, 0, i + 1))));
+        dtf.format(new Date(2017, 0, 0, i))));
     }
     return DEFAULT_HOUR_NAMES;
   }
 
   getMinuteNames(): string[] {
+    console.log(0);
     if (this.minutes) { return this.minutes; }
     if (SUPPORTS_INTL_API) {
       let dtf = new Intl.DateTimeFormat(this.locale, { minute: 'numeric' });
       return range(60, i => this._stripDirectionalityCharacters(
-        dtf.format(new Date(2017, 0, 0, 0, i + 1))));
+        dtf.format(new Date(2017, 0, 0, 0, i))));
     }
     return DEFAULT_MINUTE_NAMES;
   }

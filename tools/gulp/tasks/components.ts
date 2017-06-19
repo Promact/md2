@@ -101,18 +101,28 @@ task(':watch:components', () => {
 });
 
 const ROLLUP_GLOBALS = {
+  // Import tslib rather than having TypeScript output its helpers multiple times.
+  // See https://github.com/Microsoft/tslib
+  'tslib': 'tslib',
+
   // Angular dependencies
+  '@angular/animations': 'ng.animations',
   '@angular/core': 'ng.core',
   '@angular/common': 'ng.common',
   '@angular/forms': 'ng.forms',
   '@angular/http': 'ng.http',
-  '@angular/animations': 'ng.animations',
-  '@angular/animations/browser': 'ng.animations.browser',
   '@angular/platform-browser': 'ng.platformBrowser',
-  '@angular/platform-browser/animations': 'ng.platformBrowser.animations',
   '@angular/platform-browser-dynamic': 'ng.platformBrowserDynamic',
+  '@angular/platform-browser/animations': 'ng.platformBrowser.animations',
+
+  // Local Angular packages inside of Material.
+  'md2': 'ng.md2',
 
   // Rxjs dependencies
+  'rxjs/BehaviorSubject': 'Rx',
+  'rxjs/Observable': 'Rx',
+  'rxjs/Subject': 'Rx',
+  'rxjs/Subscription': 'Rx',
   'rxjs/add/observable/combineLatest': 'Rx.Observable',
   'rxjs/add/observable/forkJoin': 'Rx.Observable',
   'rxjs/add/observable/fromEvent': 'Rx.Observable',
@@ -131,11 +141,8 @@ const ROLLUP_GLOBALS = {
   'rxjs/add/operator/share': 'Rx.Observable.prototype',
   'rxjs/add/operator/startWith': 'Rx.Observable.prototype',
   'rxjs/add/operator/switchMap': 'Rx.Observable.prototype',
+  'rxjs/add/operator/takeUntil': 'Rx.Observable.prototype',
   'rxjs/add/operator/toPromise': 'Rx.Observable.prototype',
-  'rxjs/BehaviorSubject': 'Rx',
-  'rxjs/Observable': 'Rx',
-  'rxjs/Subject': 'Rx',
-  'rxjs/Subscription': 'Rx',
 };
 
 /** Creates a rollup bundles of the Material components.*/

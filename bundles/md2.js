@@ -8791,7 +8791,7 @@ let DateLocale = class DateLocale {
         }
         if (SUPPORTS_INTL_API$1) {
             let dtf = new Intl.DateTimeFormat(this.locale, { hour: 'numeric' });
-            return range$1(24, i => this._stripDirectionalityCharacters(dtf.format(new Date(2017, 0, 0, i + 1))));
+            return range$1(24, i => this._stripDirectionalityCharacters(dtf.format(new Date(2017, 0, 0, i))));
         }
         return DEFAULT_HOUR_NAMES;
     }
@@ -8801,7 +8801,7 @@ let DateLocale = class DateLocale {
         }
         if (SUPPORTS_INTL_API$1) {
             let dtf = new Intl.DateTimeFormat(this.locale, { minute: 'numeric' });
-            return range$1(60, i => this._stripDirectionalityCharacters(dtf.format(new Date(2017, 0, 0, 0, i + 1))));
+            return range$1(60, i => this._stripDirectionalityCharacters(dtf.format(new Date(2017, 0, 0, 0, i))));
         }
         return DEFAULT_MINUTE_NAMES;
     }

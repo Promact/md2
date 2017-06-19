@@ -9387,7 +9387,7 @@ exports.DateLocale = (function () {
         }
         if (SUPPORTS_INTL_API$1) {
             var dtf_3 = new Intl.DateTimeFormat(this.locale, { hour: 'numeric' });
-            return range$1(24, function (i) { return _this._stripDirectionalityCharacters(dtf_3.format(new Date(2017, 0, 0, i + 1))); });
+            return range$1(24, function (i) { return _this._stripDirectionalityCharacters(dtf_3.format(new Date(2017, 0, 0, i))); });
         }
         return DEFAULT_HOUR_NAMES;
     };
@@ -9398,7 +9398,7 @@ exports.DateLocale = (function () {
         }
         if (SUPPORTS_INTL_API$1) {
             var dtf_4 = new Intl.DateTimeFormat(this.locale, { minute: 'numeric' });
-            return range$1(60, function (i) { return _this._stripDirectionalityCharacters(dtf_4.format(new Date(2017, 0, 0, 0, i + 1))); });
+            return range$1(60, function (i) { return _this._stripDirectionalityCharacters(dtf_4.format(new Date(2017, 0, 0, 0, i))); });
         }
         return DEFAULT_MINUTE_NAMES;
     };

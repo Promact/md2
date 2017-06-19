@@ -71,7 +71,7 @@ var DateLocale = (function () {
         }
         if (SUPPORTS_INTL_API) {
             var dtf_3 = new Intl.DateTimeFormat(this.locale, { hour: 'numeric' });
-            return range(24, function (i) { return _this._stripDirectionalityCharacters(dtf_3.format(new Date(2017, 0, 0, i + 1))); });
+            return range(24, function (i) { return _this._stripDirectionalityCharacters(dtf_3.format(new Date(2017, 0, 0, i))); });
         }
         return DEFAULT_HOUR_NAMES;
     };
@@ -82,7 +82,7 @@ var DateLocale = (function () {
         }
         if (SUPPORTS_INTL_API) {
             var dtf_4 = new Intl.DateTimeFormat(this.locale, { minute: 'numeric' });
-            return range(60, function (i) { return _this._stripDirectionalityCharacters(dtf_4.format(new Date(2017, 0, 0, 0, i + 1))); });
+            return range(60, function (i) { return _this._stripDirectionalityCharacters(dtf_4.format(new Date(2017, 0, 0, 0, i))); });
         }
         return DEFAULT_MINUTE_NAMES;
     };

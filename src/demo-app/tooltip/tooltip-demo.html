@@ -27,20 +27,24 @@
       </p>
       <p>
         <strong>Tooltip Position</strong><br />
-        <label>
-          <input type="radio" name="position" value="below" [(ngModel)]="position" /> Below
+        <label class="radio">
+          <input type="radio" name="position" value="below" [(ngModel)]="position">
+          <span class="radio-handle"></span>Below
         </label>
         <br />
-        <label>
-          <input type="radio" name="position" value="above" [(ngModel)]="position" /> Above
+        <label class="radio">
+          <input type="radio" name="position" value="above" [(ngModel)]="position">
+          <span class="radio-handle"></span>Above
         </label>
         <br />
-        <label>
-          <input type="radio" name="position" value="before" [(ngModel)]="position" /> Before
+        <label class="radio">
+          <input type="radio" name="position" value="before" [(ngModel)]="position">
+          <span class="radio-handle"></span>Before
         </label>
         <br />
-        <label>
-          <input type="radio" name="position" value="after" [(ngModel)]="position" /> After
+        <label class="radio">
+          <input type="radio" name="position" value="after" [(ngModel)]="position">
+          <span class="radio-handle"></span>After
         </label>
       </p>
     </div>

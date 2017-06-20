@@ -6,7 +6,7 @@ Datepicker allow the user to select date and time.
 
 | Name | Type | Description |
 | --- | --- | --- |
-| `type` | `'date' | 'time' | 'month' | 'datetime'` | The type of the datepicker |
+| `type` | `'date'` &#124; `'time'` &#124; `'month'` &#124; `'datetime'` | The type of the datepicker |
 | `required` | `boolean` | Whether or not the datepicker is required |
 | `disabled` | `boolean` | Whether or not the datepicker is disabled |
 | `min` | `date` | The min date of Datepicker. |

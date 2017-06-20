@@ -9,6 +9,7 @@ import {
   OnDestroy,
   Renderer2,
   ChangeDetectorRef,
+  ViewEncapsulation,
 } from '@angular/core';
 import {
   style,
@@ -304,7 +305,8 @@ export type TooltipVisibility = 'initial' | 'visible' | 'hidden';
   host: {
     '[style.zoom]': '_visibility === "visible" ? 1 : null',
     '(body:click)': 'this._handleBodyInteraction()'
-  }
+  },
+  encapsulation: ViewEncapsulation.None
 })
 export class Md2TooltipComponent {
   /** Message to display in the tooltip */

@@ -5,7 +5,7 @@ $md2-tooltip-margin: 14px;
 $md2-tooltip-horizontal-padding: 8px;
 $md2-tooltip-vertical-padding: ($md2-tooltip-target-height - $md2-tooltip-font-size) / 2;
 
-:host {
+md2-tooltip {
   pointer-events: none;
 }
 

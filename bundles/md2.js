@@ -6966,10 +6966,7 @@ Md2ColorpickerModule = __decorate$46([
             ColorpickerSliderDirective,
             TextDirective
         ],
-        providers: [ColorUtil],
-        entryComponents: [
-            Md2Colorpicker,
-        ]
+        providers: [ColorUtil]
     })
 ], Md2ColorpickerModule);
 
@@ -11137,7 +11134,6 @@ Md2DatepickerModule = __decorate$55([
         ],
         exports: [
             Md2Datepicker,
-            Md2DatepickerContent,
             Md2DatepickerToggle,
             Md2Calendar,
             Md2CalendarBody,
@@ -11159,7 +11155,6 @@ Md2DatepickerModule = __decorate$55([
         ],
         providers: [DateLocale, DateUtil],
         entryComponents: [
-            Md2Datepicker,
             Md2DatepickerContent
         ]
     })
@@ -11419,8 +11414,7 @@ Md2DialogModule = __decorate$64([
             Md2DialogContent,
             Md2DialogActions,
             Md2DialogPortal
-        ],
-        entryComponents: [Md2Dialog],
+        ]
     })
 ], Md2DialogModule);
 
@@ -12408,7 +12402,7 @@ Md2TagsModule = __decorate$71([
     })
 ], Md2TagsModule);
 
-var __decorate$73 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$74 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -12519,7 +12513,7 @@ let Md2Toast = class Md2Toast {
         }
     }
 };
-Md2Toast = __decorate$73([
+Md2Toast = __decorate$74([
     Injectable(),
     __metadata$43("design:paramtypes", [Overlay, Md2ToastConfig])
 ], Md2Toast);
@@ -12572,30 +12566,39 @@ let Md2ToastComponent = class Md2ToastComponent {
      */
     hasToast() { return this.toasts.length > 0; }
 };
-Md2ToastComponent = __decorate$73([
+Md2ToastComponent = __decorate$74([
     Component({
         selector: 'md2-toast',
-        template: "<div *ngFor=\"let toast of toasts\" class=\"md2-toast\" [class.in]=\"toast.isVisible\" (click)=\"removeToast(toast.id)\">{{ toast.message }}</div>",
+        template: "<div *ngFor=\"let toast of toasts\" class=\"md2-toast\" [class.in]=\"toast.isVisible\" (click)=\"removeToast(toast.id)\" [innerHTML]=\"toast.message\"></div>",
         styles: ["md2-toast{display:block;box-sizing:border-box;cursor:default;overflow:hidden;min-width:304px;max-width:100%;padding:8px;user-select:none}.md2-toast{position:relative;padding:14px 24px;margin-bottom:5px;display:block;margin-top:-53px;opacity:0;background-color:#323232;color:#fafafa;box-shadow:0 2px 5px 0 rgba(0,0,0,.26);border-radius:2px;font-size:14px;overflow:hidden;word-wrap:break-word;transition:all 250ms linear}.md2-toast.in{margin-top:0;opacity:1}.cdk-visually-hidden{border:0;clip:rect(0 0 0 0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;text-transform:none;width:1px}.cdk-global-overlay-wrapper,.cdk-overlay-container{pointer-events:none;top:0;left:0;height:100%;width:100%}.cdk-overlay-container{position:fixed;z-index:1000}.cdk-global-overlay-wrapper{display:flex;position:absolute;z-index:1000}.cdk-overlay-pane{position:absolute;pointer-events:auto;box-sizing:border-box;z-index:1000} /*# sourceMappingURL=toast.css.map */ "],
         encapsulation: ViewEncapsulation.None,
     })
 ], Md2ToastComponent);
-const MD2_TOAST_DIRECTIVES = [Md2ToastComponent];
+
+var __decorate$73 = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 let Md2ToastModule = class Md2ToastModule {
 };
 Md2ToastModule = __decorate$73([
     NgModule({
-        imports: [CommonModule],
-        exports: MD2_TOAST_DIRECTIVES,
-        declarations: MD2_TOAST_DIRECTIVES,
-        entryComponents: MD2_TOAST_DIRECTIVES,
-        providers: [Md2Toast, Md2ToastConfig, OVERLAY_PROVIDERS]
+        imports: [
+            CommonModule,
+            OverlayModule,
+            MdCommonModule,
+            PlatformModule
+        ],
+        exports: [Md2ToastComponent, MdCommonModule],
+        declarations: [Md2ToastComponent],
+        entryComponents: [Md2ToastComponent],
+        providers: [Md2Toast, Md2ToastConfig],
     })
 ], Md2ToastModule);
 
-//# sourceMappingURL=index.js.map
-
-var __decorate$75 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$76 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -12800,30 +12803,30 @@ let Md2Tooltip = class Md2Tooltip {
         });
     }
 };
-__decorate$75([
+__decorate$76([
     Input('tooltip-position'),
     __metadata$44("design:type", String),
     __metadata$44("design:paramtypes", [String])
 ], Md2Tooltip.prototype, "position", null);
-__decorate$75([
+__decorate$76([
     Input('tooltipDisabled'),
     __metadata$44("design:type", Boolean),
     __metadata$44("design:paramtypes", [Object])
 ], Md2Tooltip.prototype, "disabled", null);
-__decorate$75([
+__decorate$76([
     Input('tooltip-delay'),
     __metadata$44("design:type", Object)
 ], Md2Tooltip.prototype, "showDelay", void 0);
-__decorate$75([
+__decorate$76([
     Input('tooltip-hide-delay'),
     __metadata$44("design:type", Object)
 ], Md2Tooltip.prototype, "hideDelay", void 0);
-__decorate$75([
+__decorate$76([
     Input('tooltip'),
     __metadata$44("design:type", Object),
     __metadata$44("design:paramtypes", [String])
 ], Md2Tooltip.prototype, "message", null);
-Md2Tooltip = __decorate$75([
+Md2Tooltip = __decorate$76([
     Directive({
         selector: '[tooltip]',
         host: {
@@ -12961,10 +12964,10 @@ let Md2TooltipComponent = class Md2TooltipComponent {
         this._changeDetectorRef.markForCheck();
     }
 };
-Md2TooltipComponent = __decorate$75([
+Md2TooltipComponent = __decorate$76([
     Component({selector: 'md2-tooltip',
         template: "<div class=\"md2-tooltip\" [style.transform-origin]=\"_transformOrigin\" [@state]=\"_visibility\" (@state.done)=\"_afterVisibilityAnimation($event)\" [innerHTML]=\"message\"></div>",
-        styles: [":host{pointer-events:none}.md2-tooltip{color:#fff;padding:6px 8px;border-radius:2px;font-size:10px;margin:14px;max-width:250px;background:rgba(97,97,97,.9);word-wrap:break-word}.cdk-global-overlay-wrapper,.cdk-overlay-container{pointer-events:none;top:0;left:0;height:100%;width:100%}.cdk-overlay-container{position:fixed;z-index:1000}.cdk-global-overlay-wrapper{display:flex;position:absolute;z-index:1000}.cdk-overlay-pane{position:absolute;pointer-events:auto;box-sizing:border-box;z-index:1000} /*# sourceMappingURL=tooltip.css.map */ "],
+        styles: ["md2-tooltip{pointer-events:none}.md2-tooltip{color:#fff;padding:6px 8px;border-radius:2px;font-size:10px;margin:14px;max-width:250px;background:rgba(97,97,97,.9);word-wrap:break-word}.cdk-global-overlay-wrapper,.cdk-overlay-container{pointer-events:none;top:0;left:0;height:100%;width:100%}.cdk-overlay-container{position:fixed;z-index:1000}.cdk-global-overlay-wrapper{display:flex;position:absolute;z-index:1000}.cdk-overlay-pane{position:absolute;pointer-events:auto;box-sizing:border-box;z-index:1000} /*# sourceMappingURL=tooltip.css.map */ "],
         animations: [
             trigger('state', [
                 state('void', style({ transform: 'scale(0)' })),
@@ -12978,13 +12981,14 @@ Md2TooltipComponent = __decorate$75([
         host: {
             '[style.zoom]': '_visibility === "visible" ? 1 : null',
             '(body:click)': 'this._handleBodyInteraction()'
-        }
+        },
+        encapsulation: ViewEncapsulation.None
     }),
     __param$15(0, Optional()),
     __metadata$44("design:paramtypes", [Dir, ChangeDetectorRef])
 ], Md2TooltipComponent);
 
-var __decorate$74 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$75 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -12992,7 +12996,7 @@ var __decorate$74 = (this && this.__decorate) || function (decorators, target, k
 };
 let Md2TooltipModule = class Md2TooltipModule {
 };
-Md2TooltipModule = __decorate$74([
+Md2TooltipModule = __decorate$75([
     NgModule({
         imports: [OverlayModule, MdCommonModule, PlatformModule],
         exports: [Md2Tooltip, Md2TooltipComponent, MdCommonModule],
@@ -13043,4 +13047,4 @@ Md2Module = __decorate$36([
 
 //# sourceMappingURL=index.js.map
 
-export { MdCoreModule, Dir, RtlModule, ObserveContentModule, ObserveContent, Portal, BasePortalHost, ComponentPortal, TemplatePortal, PortalHostDirective, TemplatePortalDirective, PortalModule, DomPortalHost, GestureConfig, LiveAnnouncer, LIVE_ANNOUNCER_ELEMENT_TOKEN, LIVE_ANNOUNCER_PROVIDER, InteractivityChecker, isFakeMousedownFromScreenReader, A11yModule, UniqueSelectionDispatcher, UNIQUE_SELECTION_DISPATCHER_PROVIDER, MdLineModule, MdLine, MdLineSetter, coerceBooleanProperty, coerceNumberProperty, CompatibilityModule, NoConflictStyleCompatibilityMode, MdCommonModule, MATERIAL_SANITY_CHECKS, MD_PLACEHOLDER_GLOBAL_OPTIONS, MdOptionModule, MdOptionSelectionChange, MdOption, MdOptgroupBase, _MdOptgroupMixinBase, MdOptgroup, PlatformModule, Platform, getSupportedInputTypes, Overlay, OVERLAY_PROVIDERS, OverlayContainer, FullscreenOverlayContainer, OverlayRef, OverlayState, ConnectedOverlayDirective, OverlayOrigin, OverlayModule, ViewportRuler, GlobalPositionStrategy, ConnectedPositionStrategy, ConnectionPositionPair, ScrollableViewProperties, ConnectedOverlayPositionChange, ScrollDispatchModule, Scrollable, ScrollDispatcher, ScrollStrategyOptions, RepositionScrollStrategy, CloseScrollStrategy, NoopScrollStrategy, BlockScrollStrategy, MdRippleModule, MdRipple, MD_RIPPLE_GLOBAL_OPTIONS, RippleRef, RippleState, RIPPLE_FADE_IN_DURATION, RIPPLE_FADE_OUT_DURATION, SelectionModel, SelectionChange, FocusTrap, FocusTrapFactory, FocusTrapDeprecatedDirective, FocusTrapDirective, StyleModule, TOUCH_BUFFER_MS, FocusOriginMonitor, CdkMonitorFocus, FOCUS_ORIGIN_MONITOR_PROVIDER_FACTORY, FOCUS_ORIGIN_MONITOR_PROVIDER, applyCssTransform, UP_ARROW, DOWN_ARROW, RIGHT_ARROW, LEFT_ARROW, PAGE_UP, PAGE_DOWN, HOME, END, ENTER, SPACE, TAB, ESCAPE, BACKSPACE, DELETE, COMMA, MATERIAL_COMPATIBILITY_MODE, getMdCompatibilityInvalidPrefixError, MAT_ELEMENTS_SELECTOR, MD_ELEMENTS_SELECTOR, MatPrefixRejector, MdPrefixRejector, AnimationCurves, AnimationDurations, MdSelectionModule, MdPseudoCheckboxBase, _MdPseudoCheckboxBase, MdPseudoCheckbox, NativeDateModule, MdNativeDateModule, DateAdapter, MD_DATE_FORMATS, NativeDateAdapter, MD_NATIVE_DATE_FORMATS, Md2Module, Md2AccordionModule, Md2Accordion, Md2AccordionHeader, Md2AccordionTab, Md2AutocompleteModule, Item, MD2_AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR, Md2AutocompleteChange, Md2Autocomplete, HighlightPipe, Chip, MD2_CHIPS_CONTROL_VALUE_ACCESSOR, Md2ChipsChange, Md2Chips, MD2_CHIPS_DIRECTIVES, Md2ChipsModule, Md2CollapseModule, Md2Collapse, Md2ColorpickerModule, SliderPosition, SliderDimension, TextDirective, ColorpickerSliderDirective, Md2ColorChange, Md2Colorpicker, COLOR_RGB, COLOR_HSL, Hsva, Hsla, Rgba, ColorUtil, Md2PaginationChange, Md2DataTable, Md2DataTableSortBy, Md2Pagination, MD2_DATA_TABLE_DIRECTIVES, Md2DataTableModule, Md2DatepickerModule, Md2DateChange, Md2DatepickerContent, MD2_DATEPICKER_VALUE_ACCESSOR, MD2_DATEPICKER_VALIDATORS, Md2Datepicker, Md2MonthView, Md2YearView, Md2CalendarCell, Md2CalendarBody, CLOCK_RADIUS, CLOCK_INNER_RADIUS, CLOCK_OUTER_RADIUS, CLOCK_TICK_RADIUS, Md2Clock, DateLocale, DateUtil, Md2DialogModule, Md2DialogConfig, Md2DialogPortal, Md2DialogTitle, Md2DialogContent, Md2DialogActions, Md2Dialog, Md2Menu, Md2MenuModule, Md2MenuContent, Md2MenuItem, Md2MenuTrigger, Md2SelectModule, fadeInContent, transformPanel, transformPlaceholder, SELECT_ITEM_HEIGHT, SELECT_PANEL_MAX_HEIGHT, SELECT_MAX_OPTIONS_DISPLAYED, SELECT_TRIGGER_HEIGHT, SELECT_ITEM_HEIGHT_ADJUSTMENT, SELECT_PANEL_PADDING_X, SELECT_PANEL_INDENT_PADDING_X, SELECT_MULTIPLE_PANEL_PADDING_X, SELECT_PANEL_PADDING_Y, SELECT_PANEL_VIEWPORT_PADDING, Md2SelectChange, Md2Select, Md2SelectHeader, Md2OptionSelectionChange, Md2Option, Md2OptionModule, Md2OptgroupBase, _Md2OptgroupMixinBase, Md2Optgroup, Md2TabChange, Md2Transclude, Md2Tab, Md2TabLabel, Md2Tabs, MD2_TABS_DIRECTIVES, Md2TabsModule, Md2TagsModule, Tag, MD2_TAGS_CONTROL_VALUE_ACCESSOR, Md2Tags, Toast, Md2ToastConfig, Md2Toast, Md2ToastComponent, MD2_TOAST_DIRECTIVES, Md2ToastModule, Md2TooltipModule, TOUCHEND_HIDE_DELAY, SCROLL_THROTTLE_MS, throwMd2TooltipInvalidPositionError, Md2Tooltip, Md2TooltipComponent };
+export { MdCoreModule, Dir, RtlModule, ObserveContentModule, ObserveContent, Portal, BasePortalHost, ComponentPortal, TemplatePortal, PortalHostDirective, TemplatePortalDirective, PortalModule, DomPortalHost, GestureConfig, LiveAnnouncer, LIVE_ANNOUNCER_ELEMENT_TOKEN, LIVE_ANNOUNCER_PROVIDER, InteractivityChecker, isFakeMousedownFromScreenReader, A11yModule, UniqueSelectionDispatcher, UNIQUE_SELECTION_DISPATCHER_PROVIDER, MdLineModule, MdLine, MdLineSetter, coerceBooleanProperty, coerceNumberProperty, CompatibilityModule, NoConflictStyleCompatibilityMode, MdCommonModule, MATERIAL_SANITY_CHECKS, MD_PLACEHOLDER_GLOBAL_OPTIONS, MdOptionModule, MdOptionSelectionChange, MdOption, MdOptgroupBase, _MdOptgroupMixinBase, MdOptgroup, PlatformModule, Platform, getSupportedInputTypes, Overlay, OVERLAY_PROVIDERS, OverlayContainer, FullscreenOverlayContainer, OverlayRef, OverlayState, ConnectedOverlayDirective, OverlayOrigin, OverlayModule, ViewportRuler, GlobalPositionStrategy, ConnectedPositionStrategy, ConnectionPositionPair, ScrollableViewProperties, ConnectedOverlayPositionChange, ScrollDispatchModule, Scrollable, ScrollDispatcher, ScrollStrategyOptions, RepositionScrollStrategy, CloseScrollStrategy, NoopScrollStrategy, BlockScrollStrategy, MdRippleModule, MdRipple, MD_RIPPLE_GLOBAL_OPTIONS, RippleRef, RippleState, RIPPLE_FADE_IN_DURATION, RIPPLE_FADE_OUT_DURATION, SelectionModel, SelectionChange, FocusTrap, FocusTrapFactory, FocusTrapDeprecatedDirective, FocusTrapDirective, StyleModule, TOUCH_BUFFER_MS, FocusOriginMonitor, CdkMonitorFocus, FOCUS_ORIGIN_MONITOR_PROVIDER_FACTORY, FOCUS_ORIGIN_MONITOR_PROVIDER, applyCssTransform, UP_ARROW, DOWN_ARROW, RIGHT_ARROW, LEFT_ARROW, PAGE_UP, PAGE_DOWN, HOME, END, ENTER, SPACE, TAB, ESCAPE, BACKSPACE, DELETE, COMMA, MATERIAL_COMPATIBILITY_MODE, getMdCompatibilityInvalidPrefixError, MAT_ELEMENTS_SELECTOR, MD_ELEMENTS_SELECTOR, MatPrefixRejector, MdPrefixRejector, AnimationCurves, AnimationDurations, MdSelectionModule, MdPseudoCheckboxBase, _MdPseudoCheckboxBase, MdPseudoCheckbox, NativeDateModule, MdNativeDateModule, DateAdapter, MD_DATE_FORMATS, NativeDateAdapter, MD_NATIVE_DATE_FORMATS, Md2Module, Md2AccordionModule, Md2Accordion, Md2AccordionHeader, Md2AccordionTab, Md2AutocompleteModule, Item, MD2_AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR, Md2AutocompleteChange, Md2Autocomplete, HighlightPipe, Chip, MD2_CHIPS_CONTROL_VALUE_ACCESSOR, Md2ChipsChange, Md2Chips, MD2_CHIPS_DIRECTIVES, Md2ChipsModule, Md2CollapseModule, Md2Collapse, Md2ColorpickerModule, SliderPosition, SliderDimension, TextDirective, ColorpickerSliderDirective, Md2ColorChange, Md2Colorpicker, COLOR_RGB, COLOR_HSL, Hsva, Hsla, Rgba, ColorUtil, Md2PaginationChange, Md2DataTable, Md2DataTableSortBy, Md2Pagination, MD2_DATA_TABLE_DIRECTIVES, Md2DataTableModule, Md2DatepickerModule, Md2DateChange, Md2DatepickerContent, MD2_DATEPICKER_VALUE_ACCESSOR, MD2_DATEPICKER_VALIDATORS, Md2Datepicker, Md2MonthView, Md2YearView, Md2CalendarCell, Md2CalendarBody, CLOCK_RADIUS, CLOCK_INNER_RADIUS, CLOCK_OUTER_RADIUS, CLOCK_TICK_RADIUS, Md2Clock, DateLocale, DateUtil, Md2DialogModule, Md2DialogConfig, Md2DialogPortal, Md2DialogTitle, Md2DialogContent, Md2DialogActions, Md2Dialog, Md2Menu, Md2MenuModule, Md2MenuContent, Md2MenuItem, Md2MenuTrigger, Md2SelectModule, fadeInContent, transformPanel, transformPlaceholder, SELECT_ITEM_HEIGHT, SELECT_PANEL_MAX_HEIGHT, SELECT_MAX_OPTIONS_DISPLAYED, SELECT_TRIGGER_HEIGHT, SELECT_ITEM_HEIGHT_ADJUSTMENT, SELECT_PANEL_PADDING_X, SELECT_PANEL_INDENT_PADDING_X, SELECT_MULTIPLE_PANEL_PADDING_X, SELECT_PANEL_PADDING_Y, SELECT_PANEL_VIEWPORT_PADDING, Md2SelectChange, Md2Select, Md2SelectHeader, Md2OptionSelectionChange, Md2Option, Md2OptionModule, Md2OptgroupBase, _Md2OptgroupMixinBase, Md2Optgroup, Md2TabChange, Md2Transclude, Md2Tab, Md2TabLabel, Md2Tabs, MD2_TABS_DIRECTIVES, Md2TabsModule, Md2TagsModule, Tag, MD2_TAGS_CONTROL_VALUE_ACCESSOR, Md2Tags, Md2ToastModule, Toast, Md2ToastConfig, Md2Toast, Md2ToastComponent, Md2TooltipModule, TOUCHEND_HIDE_DELAY, SCROLL_THROTTLE_MS, throwMd2TooltipInvalidPositionError, Md2Tooltip, Md2TooltipComponent };

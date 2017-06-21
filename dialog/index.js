@@ -30,8 +30,7 @@ Md2DialogModule = __decorate([
             Md2DialogContent,
             Md2DialogActions,
             Md2DialogPortal
-        ],
-        entryComponents: [Md2Dialog],
+        ]
     })
 ], Md2DialogModule);
 export { Md2DialogModule };

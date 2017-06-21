@@ -39,7 +39,6 @@ Md2DatepickerModule = __decorate([
         ],
         exports: [
             Md2Datepicker,
-            Md2DatepickerContent,
             Md2DatepickerToggle,
             Md2Calendar,
             Md2CalendarBody,
@@ -61,7 +60,6 @@ Md2DatepickerModule = __decorate([
         ],
         providers: [DateLocale, DateUtil],
         entryComponents: [
-            Md2Datepicker,
             Md2DatepickerContent
         ]
     })

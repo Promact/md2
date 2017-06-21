@@ -7396,10 +7396,7 @@ exports.Md2ColorpickerModule = __decorate$46([
             exports.ColorpickerSliderDirective,
             exports.TextDirective
         ],
-        providers: [exports.ColorUtil],
-        entryComponents: [
-            exports.Md2Colorpicker,
-        ]
+        providers: [exports.ColorUtil]
     })
 ], exports.Md2ColorpickerModule);
 
@@ -11872,7 +11869,6 @@ exports.Md2DatepickerModule = __decorate$55([
         ],
         exports: [
             exports.Md2Datepicker,
-            exports.Md2DatepickerContent,
             Md2DatepickerToggle,
             Md2Calendar,
             exports.Md2CalendarBody,
@@ -11894,7 +11890,6 @@ exports.Md2DatepickerModule = __decorate$55([
         ],
         providers: [exports.DateLocale, DateUtil],
         entryComponents: [
-            exports.Md2Datepicker,
             exports.Md2DatepickerContent
         ]
     })
@@ -12192,8 +12187,7 @@ exports.Md2DialogModule = __decorate$64([
             exports.Md2DialogContent,
             exports.Md2DialogActions,
             exports.Md2DialogPortal
-        ],
-        entryComponents: [exports.Md2Dialog],
+        ]
     })
 ], exports.Md2DialogModule);
 
@@ -13258,7 +13252,7 @@ exports.Md2TagsModule = __decorate$71([
     })
 ], exports.Md2TagsModule);
 
-var __decorate$73 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$74 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -13375,7 +13369,7 @@ exports.Md2Toast = (function () {
     };
     return Md2Toast;
 }());
-exports.Md2Toast = __decorate$73([
+exports.Md2Toast = __decorate$74([
     _angular_core.Injectable(),
     __metadata$43("design:paramtypes", [exports.Overlay, Md2ToastConfig])
 ], exports.Md2Toast);
@@ -13432,15 +13426,21 @@ exports.Md2ToastComponent = (function () {
     Md2ToastComponent.prototype.hasToast = function () { return this.toasts.length > 0; };
     return Md2ToastComponent;
 }());
-exports.Md2ToastComponent = __decorate$73([
+exports.Md2ToastComponent = __decorate$74([
     _angular_core.Component({
         selector: 'md2-toast',
-        template: "<div *ngFor=\"let toast of toasts\" class=\"md2-toast\" [class.in]=\"toast.isVisible\" (click)=\"removeToast(toast.id)\">{{ toast.message }}</div>",
+        template: "<div *ngFor=\"let toast of toasts\" class=\"md2-toast\" [class.in]=\"toast.isVisible\" (click)=\"removeToast(toast.id)\" [innerHTML]=\"toast.message\"></div>",
         styles: ["md2-toast{display:block;box-sizing:border-box;cursor:default;overflow:hidden;min-width:304px;max-width:100%;padding:8px;user-select:none}.md2-toast{position:relative;padding:14px 24px;margin-bottom:5px;display:block;margin-top:-53px;opacity:0;background-color:#323232;color:#fafafa;box-shadow:0 2px 5px 0 rgba(0,0,0,.26);border-radius:2px;font-size:14px;overflow:hidden;word-wrap:break-word;transition:all 250ms linear}.md2-toast.in{margin-top:0;opacity:1}.cdk-visually-hidden{border:0;clip:rect(0 0 0 0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;text-transform:none;width:1px}.cdk-global-overlay-wrapper,.cdk-overlay-container{pointer-events:none;top:0;left:0;height:100%;width:100%}.cdk-overlay-container{position:fixed;z-index:1000}.cdk-global-overlay-wrapper{display:flex;position:absolute;z-index:1000}.cdk-overlay-pane{position:absolute;pointer-events:auto;box-sizing:border-box;z-index:1000} /*# sourceMappingURL=toast.css.map */ "],
         encapsulation: _angular_core.ViewEncapsulation.None,
     })
 ], exports.Md2ToastComponent);
-var MD2_TOAST_DIRECTIVES = [exports.Md2ToastComponent];
+
+var __decorate$73 = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 exports.Md2ToastModule = (function () {
     function Md2ToastModule() {
     }
@@ -13448,17 +13448,20 @@ exports.Md2ToastModule = (function () {
 }());
 exports.Md2ToastModule = __decorate$73([
     _angular_core.NgModule({
-        imports: [_angular_common.CommonModule],
-        exports: MD2_TOAST_DIRECTIVES,
-        declarations: MD2_TOAST_DIRECTIVES,
-        entryComponents: MD2_TOAST_DIRECTIVES,
-        providers: [exports.Md2Toast, Md2ToastConfig, OVERLAY_PROVIDERS]
+        imports: [
+            _angular_common.CommonModule,
+            exports.OverlayModule,
+            exports.MdCommonModule,
+            exports.PlatformModule
+        ],
+        exports: [exports.Md2ToastComponent, exports.MdCommonModule],
+        declarations: [exports.Md2ToastComponent],
+        entryComponents: [exports.Md2ToastComponent],
+        providers: [exports.Md2Toast, Md2ToastConfig],
     })
 ], exports.Md2ToastModule);
 
-//# sourceMappingURL=index.js.map
-
-var __decorate$75 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$76 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -13682,30 +13685,30 @@ exports.Md2Tooltip = (function () {
     };
     return Md2Tooltip;
 }());
-__decorate$75([
+__decorate$76([
     _angular_core.Input('tooltip-position'),
     __metadata$44("design:type", String),
     __metadata$44("design:paramtypes", [String])
 ], exports.Md2Tooltip.prototype, "position", null);
-__decorate$75([
+__decorate$76([
     _angular_core.Input('tooltipDisabled'),
     __metadata$44("design:type", Boolean),
     __metadata$44("design:paramtypes", [Object])
 ], exports.Md2Tooltip.prototype, "disabled", null);
-__decorate$75([
+__decorate$76([
     _angular_core.Input('tooltip-delay'),
     __metadata$44("design:type", Object)
 ], exports.Md2Tooltip.prototype, "showDelay", void 0);
-__decorate$75([
+__decorate$76([
     _angular_core.Input('tooltip-hide-delay'),
     __metadata$44("design:type", Object)
 ], exports.Md2Tooltip.prototype, "hideDelay", void 0);
-__decorate$75([
+__decorate$76([
     _angular_core.Input('tooltip'),
     __metadata$44("design:type", Object),
     __metadata$44("design:paramtypes", [String])
 ], exports.Md2Tooltip.prototype, "message", null);
-exports.Md2Tooltip = __decorate$75([
+exports.Md2Tooltip = __decorate$76([
     _angular_core.Directive({
         selector: '[tooltip]',
         host: {
@@ -13846,10 +13849,10 @@ exports.Md2TooltipComponent = (function () {
     };
     return Md2TooltipComponent;
 }());
-exports.Md2TooltipComponent = __decorate$75([
+exports.Md2TooltipComponent = __decorate$76([
     _angular_core.Component({selector: 'md2-tooltip',
         template: "<div class=\"md2-tooltip\" [style.transform-origin]=\"_transformOrigin\" [@state]=\"_visibility\" (@state.done)=\"_afterVisibilityAnimation($event)\" [innerHTML]=\"message\"></div>",
-        styles: [":host{pointer-events:none}.md2-tooltip{color:#fff;padding:6px 8px;border-radius:2px;font-size:10px;margin:14px;max-width:250px;background:rgba(97,97,97,.9);word-wrap:break-word}.cdk-global-overlay-wrapper,.cdk-overlay-container{pointer-events:none;top:0;left:0;height:100%;width:100%}.cdk-overlay-container{position:fixed;z-index:1000}.cdk-global-overlay-wrapper{display:flex;position:absolute;z-index:1000}.cdk-overlay-pane{position:absolute;pointer-events:auto;box-sizing:border-box;z-index:1000} /*# sourceMappingURL=tooltip.css.map */ "],
+        styles: ["md2-tooltip{pointer-events:none}.md2-tooltip{color:#fff;padding:6px 8px;border-radius:2px;font-size:10px;margin:14px;max-width:250px;background:rgba(97,97,97,.9);word-wrap:break-word}.cdk-global-overlay-wrapper,.cdk-overlay-container{pointer-events:none;top:0;left:0;height:100%;width:100%}.cdk-overlay-container{position:fixed;z-index:1000}.cdk-global-overlay-wrapper{display:flex;position:absolute;z-index:1000}.cdk-overlay-pane{position:absolute;pointer-events:auto;box-sizing:border-box;z-index:1000} /*# sourceMappingURL=tooltip.css.map */ "],
         animations: [
             _angular_animations.trigger('state', [
                 _angular_animations.state('void', _angular_animations.style({ transform: 'scale(0)' })),
@@ -13863,13 +13866,14 @@ exports.Md2TooltipComponent = __decorate$75([
         host: {
             '[style.zoom]': '_visibility === "visible" ? 1 : null',
             '(body:click)': 'this._handleBodyInteraction()'
-        }
+        },
+        encapsulation: _angular_core.ViewEncapsulation.None
     }),
     __param$15(0, _angular_core.Optional()),
     __metadata$44("design:paramtypes", [exports.Dir, _angular_core.ChangeDetectorRef])
 ], exports.Md2TooltipComponent);
 
-var __decorate$74 = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate$75 = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -13880,7 +13884,7 @@ exports.Md2TooltipModule = (function () {
     }
     return Md2TooltipModule;
 }());
-exports.Md2TooltipModule = __decorate$74([
+exports.Md2TooltipModule = __decorate$75([
     _angular_core.NgModule({
         imports: [exports.OverlayModule, exports.MdCommonModule, exports.PlatformModule],
         exports: [exports.Md2Tooltip, exports.Md2TooltipComponent, exports.MdCommonModule],
@@ -14051,7 +14055,6 @@ exports.Tag = Tag;
 exports.MD2_TAGS_CONTROL_VALUE_ACCESSOR = MD2_TAGS_CONTROL_VALUE_ACCESSOR;
 exports.Toast = Toast;
 exports.Md2ToastConfig = Md2ToastConfig;
-exports.MD2_TOAST_DIRECTIVES = MD2_TOAST_DIRECTIVES;
 exports.TOUCHEND_HIDE_DELAY = TOUCHEND_HIDE_DELAY;
 exports.SCROLL_THROTTLE_MS = SCROLL_THROTTLE_MS;
 exports.throwMd2TooltipInvalidPositionError = throwMd2TooltipInvalidPositionError;

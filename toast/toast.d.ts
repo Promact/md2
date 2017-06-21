@@ -69,6 +69,3 @@ export declare class Md2ToastComponent {
      */
     hasToast(): boolean;
 }
-export declare const MD2_TOAST_DIRECTIVES: any[];
-export declare class Md2ToastModule {
-}

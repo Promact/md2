@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { Component, Directive, Input, ElementRef, ViewContainerRef, NgZone, Optional, Renderer2, ChangeDetectorRef, } from '@angular/core';
+import { Component, Directive, Input, ElementRef, ViewContainerRef, NgZone, Optional, Renderer2, ChangeDetectorRef, ViewEncapsulation, } from '@angular/core';
 import { style, trigger, state, transition, animate, } from '@angular/animations';
 import { Overlay, OverlayState, ComponentPortal, } from '../core';
 import { Subject } from 'rxjs/Subject';
@@ -399,7 +399,7 @@ var Md2TooltipComponent = (function () {
 Md2TooltipComponent = __decorate([
     Component({selector: 'md2-tooltip',
         template: "<div class=\"md2-tooltip\" [style.transform-origin]=\"_transformOrigin\" [@state]=\"_visibility\" (@state.done)=\"_afterVisibilityAnimation($event)\" [innerHTML]=\"message\"></div>",
-        styles: [":host{pointer-events:none}.md2-tooltip{color:#fff;padding:6px 8px;border-radius:2px;font-size:10px;margin:14px;max-width:250px;background:rgba(97,97,97,.9);word-wrap:break-word}.cdk-global-overlay-wrapper,.cdk-overlay-container{pointer-events:none;top:0;left:0;height:100%;width:100%}.cdk-overlay-container{position:fixed;z-index:1000}.cdk-global-overlay-wrapper{display:flex;position:absolute;z-index:1000}.cdk-overlay-pane{position:absolute;pointer-events:auto;box-sizing:border-box;z-index:1000} /*# sourceMappingURL=tooltip.css.map */ "],
+        styles: ["md2-tooltip{pointer-events:none}.md2-tooltip{color:#fff;padding:6px 8px;border-radius:2px;font-size:10px;margin:14px;max-width:250px;background:rgba(97,97,97,.9);word-wrap:break-word}.cdk-global-overlay-wrapper,.cdk-overlay-container{pointer-events:none;top:0;left:0;height:100%;width:100%}.cdk-overlay-container{position:fixed;z-index:1000}.cdk-global-overlay-wrapper{display:flex;position:absolute;z-index:1000}.cdk-overlay-pane{position:absolute;pointer-events:auto;box-sizing:border-box;z-index:1000} /*# sourceMappingURL=tooltip.css.map */ "],
         animations: [
             trigger('state', [
                 state('void', style({ transform: 'scale(0)' })),
@@ -413,7 +413,8 @@ Md2TooltipComponent = __decorate([
         host: {
             '[style.zoom]': '_visibility === "visible" ? 1 : null',
             '(body:click)': 'this._handleBodyInteraction()'
-        }
+        },
+        encapsulation: ViewEncapsulation.None
     }),
     __param(0, Optional()),
     __metadata("design:paramtypes", [Dir, ChangeDetectorRef])

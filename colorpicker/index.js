@@ -37,10 +37,7 @@ Md2ColorpickerModule = __decorate([
             ColorpickerSliderDirective,
             TextDirective
         ],
-        providers: [ColorUtil],
-        entryComponents: [
-            Md2Colorpicker,
-        ]
+        providers: [ColorUtil]
     })
 ], Md2ColorpickerModule);
 export { Md2ColorpickerModule };

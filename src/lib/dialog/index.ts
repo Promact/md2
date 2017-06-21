@@ -26,8 +26,7 @@ import {
     Md2DialogContent,
     Md2DialogActions,
     Md2DialogPortal
-  ],
-  entryComponents: [Md2Dialog],
+  ]
 })
 export class Md2DialogModule { }
 

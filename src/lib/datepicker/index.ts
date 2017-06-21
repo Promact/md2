@@ -31,7 +31,6 @@ export * from './date-util';
   ],
   exports: [
     Md2Datepicker,
-    Md2DatepickerContent,
     Md2DatepickerToggle,
     Md2Calendar,
     Md2CalendarBody,
@@ -53,7 +52,6 @@ export * from './date-util';
   ],
   providers: [DateLocale, DateUtil],
   entryComponents: [
-    Md2Datepicker,
     Md2DatepickerContent
   ]
 })

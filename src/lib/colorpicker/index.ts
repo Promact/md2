@@ -29,9 +29,6 @@ export * from './color-util';
     ColorpickerSliderDirective,
     TextDirective
   ],
-  providers: [ColorUtil],
-  entryComponents: [
-    Md2Colorpicker,
-  ]
+  providers: [ColorUtil]
 })
 export class Md2ColorpickerModule { }

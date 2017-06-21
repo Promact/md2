@@ -3,7 +3,6 @@
     "declaration": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "noUnusedParameters": true,
     "lib": ["es6", "es2015", "dom"],
     "module": "commonjs",
     "moduleResolution": "node",
@@ -13,17 +12,24 @@
     "sourceMap": true,
     "target": "es5",
     "stripInternal": false,
-    "baseUrl": ".",
+    "baseUrl": "",
     "typeRoots": [
       "../../node_modules/@types/!(node)"
     ],
     "paths": {
-      "md2": [ "../../dist/md2/index" ]
+      "md2": [
+        "../../dist/md2"
+      ]
     }
   },
   "files": [
     "./demo-app-module.ts",
     "./system-config.ts",
     "./main.ts"
-  ]
+  ],
+  "angularCompilerOptions": {
+    "genDir": "../../dist",
+    "skipTemplateCodegen": true,
+    "debug": true
+  }
 }

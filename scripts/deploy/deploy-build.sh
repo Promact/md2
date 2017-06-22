@@ -44,7 +44,7 @@ git config user.email "${commitAuthorEmail}"
 
 git add -A
 git commit -m "${commitMessage}"
-git tag "${buildVersion}-${commitSha}"
+git tag "${buildVersion}"
 git push origin ${branchName}
 git push --tags
 

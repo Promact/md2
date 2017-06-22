@@ -10,9 +10,16 @@
   <form #chipInputForm="ngForm" class="chip-input-form">
     <input *ngIf="!isAutoComplete" class="chip-input" [disabled]="disabled" [type]="type" [(ngModel)]="inputValue" name="chipInput" [placeholder]="placeholder" (paste)="inputPaste($event)" (keydown)="inputChanged($event)" (blur)="inputBlurred()" (focus)="inputFocus()" />
     <div *ngIf="isAutoComplete">
-      <md2-autocomplete [items]="autocompleteDataList"
+      <md2-autocomplete name="autocomplete"
+                        [placeholder]="placeholder"
+                        [disabled]="disabled"
+                        [(ngModel)]="item"
+                        [items]="autocompleteDataList"
                         [item-text]="autocompleteItemText"
-                        [(ngModel)]="item" name="autocomplete" [disabled]="disabled" (textChange)="valueupdate($event)" (change)="changeAutocomplete($event)" [placeholder]="placeholder" (keydown)="inputChanged($event)" (click)="getFocusAutocomplete()">
+                        (textChange)="valueupdate($event)"
+                        (change)="changeAutocomplete($event)"
+                        (keydown)="inputChanged($event)"
+                        (click)="getFocusAutocomplete()">
       </md2-autocomplete>
     </div>
   </form>

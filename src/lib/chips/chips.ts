@@ -310,7 +310,7 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
       if (this.maxChips && this.maxChips < this.chipItemList.length - 1) {
         return;
       } else {
-        this.chipItemList.push(new Chip(chips, this.textKey, this.valueKey));
+        this.chipItemList.push(new Chip(chips, this.autocompleteItemText, this.autocompleteItemValue));
         this.item = null;
       }
     }
@@ -357,7 +357,16 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
    */
   private updateValue() {
     this._value = new Array<any>();
-    this._value = this.chipItemList.map((chip: any) => chip.value);
+    this._value = this.chipItemList.map((chip: any) => {
+      if (this.valueKey) {
+        let c: any = {};
+        c[this.textKey] = chip.text;
+        c[this.valueKey] = chip.value;
+        return c;
+      } else {
+        return chip.value;
+      }
+    });
     this._emitChangeEvent();
   }
 

@@ -1,7 +1,17 @@
+<a name="0.0.25"></a>
+## [0.0.25](https://github.com/Promact/md2/compare/0.0.24...0.0.25) (2017-06-22)
+
+### Bug Fixes
+
+* fix(chips) autocomplete-item-value binding issue #240
+* #242 Runtime Error: MD_DATE_FORMATS (Datepicker)
+
+
 <a name="0.0.24"></a>
 ## [0.0.24](https://github.com/Promact/md2/compare/0.0.22...v0.0.24) (2017-06-13)
 
 ### Bug Fixes
+
 * fixed datepicker minor issues
 
 <a name="0.0.23"></a>

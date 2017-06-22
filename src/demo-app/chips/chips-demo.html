@@ -7,9 +7,11 @@
     </div>
     <form class="content">
       <md2-chips name="item"
-                 [(ngModel)]="_item"
                  type="text"
                  placeholder="Add"
+                 item-text="name"
+                 item-value="value"
+                 [(ngModel)]="_item"
                  [maxChips]="8"
                  [isRemovable]="isRemovable"
                  [disabled]="isDisabled"
@@ -20,12 +22,9 @@
         </div>
       </md2-chips>
 
-      <p> Value: {{_item|json  }} </p>
       <p> Touched: {{ chipsInputControl.touched }} </p>
       <p> Dirty: {{ chipsInputControl.dirty }} </p>
       <p> Status: {{ chipsInputControl.control?.status }} </p>
-
-
       <button type="button" button="primary" (click)="isDisabled=!isDisabled">TOGGLE DISABLED</button>
       <button type="button" button="primary" (click)="isRemovable=!isRemovable">TOGGLE REMOVABLE</button>
       <button type="button" button="primary" (click)="chipsInputControl.reset()">RESET</button>
@@ -37,9 +36,9 @@
     </div>
     <form class="content">
       <md2-chips name="item"
-                 [(ngModel)]="_itemsData"
                  type="text"
                  placeholder="Add"
+                 [(ngModel)]="_itemsData"
                  [maxChips]="8"
                  [isRemovable]="isRemovable"
                  [disabled]="isDisabled"
@@ -52,17 +51,13 @@
                  #chipsControl="ngModel">
       </md2-chips>
 
-      <p> Value: {{_itemsData|json  }} </p>
       <p> Touched: {{ chipsControl.touched }} </p>
       <p> Dirty: {{ chipsControl.dirty }} </p>
       <p> Status: {{ chipsControl.control?.status }} </p>
-
 
       <button type="button" button="primary" (click)="isDisabled=!isDisabled">TOGGLE DISABLED</button>
       <button type="button" button="primary" (click)="isRemovable=!isRemovable">TOGGLE REMOVABLE</button>
       <button type="button" button="primary" (click)="chipsControl.reset()">RESET</button>
     </form>
-
   </div>
-
 </div>

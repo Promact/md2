@@ -71,6 +71,11 @@ md2-accordion-tab {
 
 .md2-accordion-tab-body {
   position: relative;
+  overflow: hidden;
+
+  md2-accordion-tab.md2-accordion-tab-active & {
+    overflow: visible;
+  }
 }
 
 .md2-accordion-tab-content {

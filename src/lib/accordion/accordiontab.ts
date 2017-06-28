@@ -35,16 +35,16 @@ export class Md2AccordionHeader { }
   styleUrls: ['accordion.css'],
   animations: [
     trigger('slide', [
-      state('up', style({ height: 0, overflow: 'hidden' })),
-      state('down', style({ height: '*', overflow: 'visible' })),
+      state('up', style({ height: 0 })),
+      state('down', style({ height: '*' })),
       transition('down => up', [
-        style({ height: '*', overflow: 'visible' }),
-        animate(300, style({ height: 0, overflow: 'hidden' }))
+        style({ height: '*' }),
+        animate(300, style({ height: 0 }))
       ]),
       transition('up => down', [
-        style({ height: 0, overflow: 'hidden' }),
+        style({ height: 0 }),
         animate(300, style({
-          height: '*', overflow: 'visible'
+          height: '*'
         }))
       ])
     ])

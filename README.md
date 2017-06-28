@@ -36,7 +36,7 @@ import { Md2Module }  from 'md2';
 @NgModule({
   imports: [
     ...,
-    Md2Module.forRoot(),
+    Md2Module,
   ],
   ...
 })

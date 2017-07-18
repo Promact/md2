@@ -255,10 +255,8 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
   inputPaste(event: any): void {
     let clipboardData = event.clipboardData ||
       (event.originalEvent && event.originalEvent.clipboardData);
-    let pastedString = clipboardData.getData('text/plain');
-    let chips = this.addRegExpString(pastedString);
-    let chipsToAdd = chips.filter((chip) => this._isValid(chip));
-    this.addNewChip(chipsToAdd);
+    let pastedString = clipboardData.getData('text/plain').trim();
+    this.addNewChip(pastedString);
     setTimeout(() => this._resetInput());
   }
 
@@ -282,12 +280,7 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
       }
     }
   }
-
-  private addRegExpString(chipInputString: string): string[] {
-    chipInputString = chipInputString.trim();
-    let chips = chipInputString.split(this.splitRegExp);
-    return chips.filter((chip) => !!chip);
-  }
+  
 
   private _isValid(chipString: any): boolean {
     let typeString = typeof chipString;

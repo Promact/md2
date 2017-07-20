@@ -54,6 +54,7 @@ export class DatepickerDemo {
   minDate: Date;
   maxDate: Date;
   startAt: Date;
+  customID: string = "datepicker-id";
 
   dateFormat: string = null;
   dateFormatsDateTime: Array<any> = [

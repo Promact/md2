@@ -284,11 +284,14 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
 
   private _isValid(chipString: any): boolean {
     let typeString = typeof chipString;
+    let isExist: any;
     if (typeString === 'string') {
       chipString = chipString.trim();
+      isExist = this.chipItemList.filter((chip) => chip.text === chipString);
     }
-    let isExist: any;
-    isExist = this.chipItemList.filter((chip) => chip.text === chipString);
+    else {
+      isExist = this.chipItemList.filter((chip) => chip.text === chipString.text);
+    }    
     if (this.chipItemList.indexOf(chipString) === -1 && (isExist.length ? false : true)) {
       return this.allowedPattern.test(chipString);
     }

@@ -145,7 +145,7 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
   @Input() mode: 'auto' | 'portrait' | 'landscape' = 'auto';
   @Input() placeholder: string;
   @Input() timeInterval: number = 1;
-
+  @Input() id: string;
 
   @Input()
   get type() { return this._type; }
@@ -242,9 +242,6 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
   /** Whether the calendar is open. */
   opened = false;
 
-  /** The id for the datepicker calendar. */
-  id = `md2-datepicker-${datepickerUid++}`;
-
   /** The currently selected date. */
   _selected: Date = null;
 
@@ -290,6 +287,7 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     private _locale: DateLocale,
     private _util: DateUtil,
     @Optional() private _dir: Dir) {
+    this.id = (this.id) ? this.id : `md2-datepicker-${datepickerUid++}`;
   }
 
   ngOnDestroy() {

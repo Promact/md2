@@ -36,7 +36,8 @@
                       [touchUi]="touch"
                       [startView]="startView"
                       [format]="dateFormat"
-                      #dateControl="ngModel"></md2-datepicker>
+                      #dateControl="ngModel" 
+                      [id]="customID"></md2-datepicker>
       <br />
       <span class="error-helper" *ngIf="dateControl.touched && dateControl.errors?.required">Date is Required!</span>
       <span class="error-helper" *ngIf="dateControl.hasError('md2DatepickerMin')">Too early!</span>

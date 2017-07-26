@@ -280,7 +280,6 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
       }
     }
   }
-  
 
   private _isValid(chipString: any): boolean {
     let typeString = typeof chipString;
@@ -288,10 +287,9 @@ export class Md2Chips implements ControlValueAccessor, AfterContentInit {
     if (typeString === 'string') {
       chipString = chipString.trim();
       isExist = this.chipItemList.filter((chip) => chip.text === chipString);
-    }
-    else {
+    } else {
       isExist = this.chipItemList.filter((chip) => chip.text === chipString.text);
-    }    
+    }
     if (this.chipItemList.indexOf(chipString) === -1 && (isExist.length ? false : true)) {
       return this.allowedPattern.test(chipString);
     }

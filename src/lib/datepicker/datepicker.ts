@@ -287,9 +287,8 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     private _locale: DateLocale,
     private _util: DateUtil,
     @Optional() private _dir: Dir) {
-    /** The id for the datepicker calendar. */
-    this.id = (this.id) ? this.id : `md2-datepicker-${datepickerUid++}`;    
-  }  
+    this.id = (this.id) ? this.id : `md2-datepicker-${datepickerUid++}`;
+  }
 
   ngOnDestroy() {
     this.close();

@@ -1,3 +1,11 @@
+<a name="0.0.26"></a>
+### Bug Fixes
+
+* Solved #254 Custom Id for md2-datepicker
+* fix(chips) Chips  pasting issue #220
+* solved duplicate values in chips using in autocomplete
+
+
 <a name="0.0.25"></a>
 ## [0.0.25](https://github.com/Promact/md2/compare/0.0.24...0.0.25) (2017-06-22)
 

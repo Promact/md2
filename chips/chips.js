@@ -217,10 +217,8 @@ var Md2Chips = (function () {
         var _this = this;
         var clipboardData = event.clipboardData ||
             (event.originalEvent && event.originalEvent.clipboardData);
-        var pastedString = clipboardData.getData('text/plain');
-        var chips = this.addRegExpString(pastedString);
-        var chipsToAdd = chips.filter(function (chip) { return _this._isValid(chip); });
-        this.addNewChip(chipsToAdd);
+        var pastedString = clipboardData.getData('text/plain').trim();
+        this.addNewChip(pastedString);
         setTimeout(function () { return _this._resetInput(); });
     };
     Md2Chips.prototype.leftArrowKeyEvents = function () {
@@ -245,18 +243,16 @@ var Md2Chips = (function () {
             }
         }
     };
-    Md2Chips.prototype.addRegExpString = function (chipInputString) {
-        chipInputString = chipInputString.trim();
-        var chips = chipInputString.split(this.splitRegExp);
-        return chips.filter(function (chip) { return !!chip; });
-    };
     Md2Chips.prototype._isValid = function (chipString) {
         var typeString = typeof chipString;
+        var isExist;
         if (typeString === 'string') {
             chipString = chipString.trim();
+            isExist = this.chipItemList.filter(function (chip) { return chip.text === chipString; });
         }
-        var isExist;
-        isExist = this.chipItemList.filter(function (chip) { return chip.text === chipString; });
+        else {
+            isExist = this.chipItemList.filter(function (chip) { return chip.text === chipString.text; });
+        }
         if (this.chipItemList.indexOf(chipString) === -1 && (isExist.length ? false : true)) {
             return this.allowedPattern.test(chipString);
         }

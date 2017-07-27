@@ -127,8 +127,6 @@ var Md2Datepicker = (function () {
         this.selectedChanged = new EventEmitter();
         /** Whether the calendar is open. */
         this.opened = false;
-        /** The id for the datepicker calendar. */
-        this.id = "md2-datepicker-" + datepickerUid++;
         /** The currently selected date. */
         this._selected = null;
         /** The form control validator for the min date. */
@@ -150,6 +148,7 @@ var Md2Datepicker = (function () {
         };
         /** The combined form control validator for this input. */
         this._validator = Validators.compose([this._minValidator, this._maxValidator, this._filterValidator]);
+        this.id = (this.id) ? this.id : "md2-datepicker-" + datepickerUid++;
     }
     Object.defineProperty(Md2Datepicker.prototype, "type", {
         get: function () { return this._type; },
@@ -542,6 +541,10 @@ __decorate([
     Input(),
     __metadata("design:type", Number)
 ], Md2Datepicker.prototype, "timeInterval", void 0);
+__decorate([
+    Input(),
+    __metadata("design:type", String)
+], Md2Datepicker.prototype, "id", void 0);
 __decorate([
     Input(),
     __metadata("design:type", Object),

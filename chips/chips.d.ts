@@ -71,7 +71,6 @@ export declare class Md2Chips implements ControlValueAccessor, AfterContentInit 
     inputPaste(event: any): void;
     leftArrowKeyEvents(): void;
     rightArrowKeyEvents(): void;
-    private addRegExpString(chipInputString);
     private _isValid(chipString);
     /**
     * add new chip

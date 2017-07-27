@@ -5,7 +5,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import { Injectable } from '@angular/core';
-var SUPPORTS_INTL_API = typeof Intl != 'undefined';
+var SUPPORTS_INTL_API = false; // typeof Intl != 'undefined';
 /** The default month names to use if Intl API is not available. */
 var DEFAULT_MONTH_NAMES = {
     'long': [

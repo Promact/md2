@@ -1,5 +1,5 @@
 /**
-  * @license Md2 v0.0.25
+  * @license Md2 v0.0.26
   * Copyright (c) 2017 Promact, Inc. http://code.promactinfo.com/md2/
   * License: MIT
   */
@@ -5224,7 +5224,7 @@ __decorate$38([
 exports.Md2Accordion = __decorate$38([
     _angular_core.Component({selector: 'md2-accordion',
         template: "<ng-content></ng-content>",
-        styles: ["md2-accordion{display:block}md2-accordion-tab{position:relative;display:block;outline:0;box-sizing:border-box}md2-accordion-tab[hidden]{display:none}.md2-accordion-header{position:relative;display:block;padding-right:30px;font-weight:500;line-height:40px;text-align:left;color:rgba(0,0,0,.87);cursor:pointer;white-space:nowrap;border-bottom:1px solid rgba(0,0,0,.12);border-radius:0;box-sizing:border-box;user-select:none}md2-accordion-tab.md2-accordion-tab-active>.md2-accordion-header{border-color:#106cc8;box-shadow:0 1px 0 #106cc8}md2-accordion-tab.md2-accordion-tab-disabled>.md2-accordion-header{pointer-events:none;color:rgba(0,0,0,.26);background-image:linear-gradient(to right,rgba(0,0,0,.26) 0,rgba(0,0,0,.26) 33%,transparent 0);background-size:4px 1px;background-repeat:repeat-x;background-position:0 bottom;border-color:transparent;box-shadow:none;cursor:default}.md2-accordion-header-icon{position:absolute;top:12px;right:8px;width:8px;height:8px;overflow:hidden;display:inline-block;border-width:0 2px 2px 0;border-style:solid;border-color:currentColor;opacity:.64;transform:rotate(45deg);transition:.3s ease-in-out}md2-accordion-tab.md2-accordion-tab-active>.md2-accordion-header>.md2-accordion-header-icon{transform:rotate(225deg);top:16px}.md2-accordion-tab-body{position:relative;overflow:hidden}.md2-accordion-tab-content{position:relative;padding:20px 0;border-bottom:1px solid rgba(0,0,0,.12)} /*# sourceMappingURL=accordion.css.map */ "],
+        styles: ["md2-accordion{display:block}md2-accordion-tab{position:relative;display:block;outline:0;box-sizing:border-box}md2-accordion-tab[hidden]{display:none}.md2-accordion-header{position:relative;display:block;padding-right:30px;font-weight:500;line-height:40px;text-align:left;color:rgba(0,0,0,.87);cursor:pointer;white-space:nowrap;border-bottom:1px solid rgba(0,0,0,.12);border-radius:0;box-sizing:border-box;user-select:none}md2-accordion-tab.md2-accordion-tab-active>.md2-accordion-header{border-color:#106cc8;box-shadow:0 1px 0 #106cc8}md2-accordion-tab.md2-accordion-tab-disabled>.md2-accordion-header{pointer-events:none;color:rgba(0,0,0,.26);background-image:linear-gradient(to right,rgba(0,0,0,.26) 0,rgba(0,0,0,.26) 33%,transparent 0);background-size:4px 1px;background-repeat:repeat-x;background-position:0 bottom;border-color:transparent;box-shadow:none;cursor:default}.md2-accordion-header-icon{position:absolute;top:12px;right:8px;width:8px;height:8px;overflow:hidden;display:inline-block;border-width:0 2px 2px 0;border-style:solid;border-color:currentColor;opacity:.64;transform:rotate(45deg);transition:.3s ease-in-out}md2-accordion-tab.md2-accordion-tab-active>.md2-accordion-header>.md2-accordion-header-icon{transform:rotate(225deg);top:16px}.md2-accordion-tab-body{position:relative;overflow:hidden}md2-accordion-tab.md2-accordion-tab-active .md2-accordion-tab-body{overflow:visible}.md2-accordion-tab-content{position:relative;padding:20px 0;border-bottom:1px solid rgba(0,0,0,.12)} /*# sourceMappingURL=accordion.css.map */ "],
         encapsulation: _angular_core.ViewEncapsulation.None,
         exportAs: 'md2Accordion'
     })
@@ -5342,16 +5342,14 @@ __decorate$39([
 exports.Md2AccordionTab = __decorate$39([
     _angular_core.Component({selector: 'md2-accordion-tab',
         template: "\n    <div class=\"md2-accordion-header\" (click)=\"_handleClick($event)\">\n      <span>{{header}}</span>\n      <ng-content select=\"md2-accordion-header\"></ng-content>\n      <span class=\"md2-accordion-header-icon\"></span>\n    </div>\n    <div class=\"md2-accordion-tab-body\" [@slide]=\"slide\">\n      <div class=\"md2-accordion-tab-content\">\n        <ng-content></ng-content>\n      </div>\n    </div>\n  ",
-        styles: ["md2-accordion{display:block}md2-accordion-tab{position:relative;display:block;outline:0;box-sizing:border-box}md2-accordion-tab[hidden]{display:none}.md2-accordion-header{position:relative;display:block;padding-right:30px;font-weight:500;line-height:40px;text-align:left;color:rgba(0,0,0,.87);cursor:pointer;white-space:nowrap;border-bottom:1px solid rgba(0,0,0,.12);border-radius:0;box-sizing:border-box;user-select:none}md2-accordion-tab.md2-accordion-tab-active>.md2-accordion-header{border-color:#106cc8;box-shadow:0 1px 0 #106cc8}md2-accordion-tab.md2-accordion-tab-disabled>.md2-accordion-header{pointer-events:none;color:rgba(0,0,0,.26);background-image:linear-gradient(to right,rgba(0,0,0,.26) 0,rgba(0,0,0,.26) 33%,transparent 0);background-size:4px 1px;background-repeat:repeat-x;background-position:0 bottom;border-color:transparent;box-shadow:none;cursor:default}.md2-accordion-header-icon{position:absolute;top:12px;right:8px;width:8px;height:8px;overflow:hidden;display:inline-block;border-width:0 2px 2px 0;border-style:solid;border-color:currentColor;opacity:.64;transform:rotate(45deg);transition:.3s ease-in-out}md2-accordion-tab.md2-accordion-tab-active>.md2-accordion-header>.md2-accordion-header-icon{transform:rotate(225deg);top:16px}.md2-accordion-tab-body{position:relative;overflow:hidden}.md2-accordion-tab-content{position:relative;padding:20px 0;border-bottom:1px solid rgba(0,0,0,.12)} /*# sourceMappingURL=accordion.css.map */ "],
+        styles: ["md2-accordion{display:block}md2-accordion-tab{position:relative;display:block;outline:0;box-sizing:border-box}md2-accordion-tab[hidden]{display:none}.md2-accordion-header{position:relative;display:block;padding-right:30px;font-weight:500;line-height:40px;text-align:left;color:rgba(0,0,0,.87);cursor:pointer;white-space:nowrap;border-bottom:1px solid rgba(0,0,0,.12);border-radius:0;box-sizing:border-box;user-select:none}md2-accordion-tab.md2-accordion-tab-active>.md2-accordion-header{border-color:#106cc8;box-shadow:0 1px 0 #106cc8}md2-accordion-tab.md2-accordion-tab-disabled>.md2-accordion-header{pointer-events:none;color:rgba(0,0,0,.26);background-image:linear-gradient(to right,rgba(0,0,0,.26) 0,rgba(0,0,0,.26) 33%,transparent 0);background-size:4px 1px;background-repeat:repeat-x;background-position:0 bottom;border-color:transparent;box-shadow:none;cursor:default}.md2-accordion-header-icon{position:absolute;top:12px;right:8px;width:8px;height:8px;overflow:hidden;display:inline-block;border-width:0 2px 2px 0;border-style:solid;border-color:currentColor;opacity:.64;transform:rotate(45deg);transition:.3s ease-in-out}md2-accordion-tab.md2-accordion-tab-active>.md2-accordion-header>.md2-accordion-header-icon{transform:rotate(225deg);top:16px}.md2-accordion-tab-body{position:relative;overflow:hidden}md2-accordion-tab.md2-accordion-tab-active .md2-accordion-tab-body{overflow:visible}.md2-accordion-tab-content{position:relative;padding:20px 0;border-bottom:1px solid rgba(0,0,0,.12)} /*# sourceMappingURL=accordion.css.map */ "],
         animations: [
             _angular_animations.trigger('slide', [
                 _angular_animations.state('up', _angular_animations.style({ height: 0 })),
                 _angular_animations.state('down', _angular_animations.style({ height: '*' })),
                 _angular_animations.transition('down => up', [
                     _angular_animations.style({ height: '*' }),
-                    _angular_animations.animate(300, _angular_animations.style({
-                        height: 0
-                    }))
+                    _angular_animations.animate(300, _angular_animations.style({ height: 0 }))
                 ]),
                 _angular_animations.transition('up => down', [
                     _angular_animations.style({ height: 0 }),
@@ -6078,10 +6076,8 @@ exports.Md2Chips = (function () {
         var _this = this;
         var clipboardData = event.clipboardData ||
             (event.originalEvent && event.originalEvent.clipboardData);
-        var pastedString = clipboardData.getData('text/plain');
-        var chips = this.addRegExpString(pastedString);
-        var chipsToAdd = chips.filter(function (chip) { return _this._isValid(chip); });
-        this.addNewChip(chipsToAdd);
+        var pastedString = clipboardData.getData('text/plain').trim();
+        this.addNewChip(pastedString);
         setTimeout(function () { return _this._resetInput(); });
     };
     Md2Chips.prototype.leftArrowKeyEvents = function () {
@@ -6106,18 +6102,16 @@ exports.Md2Chips = (function () {
             }
         }
     };
-    Md2Chips.prototype.addRegExpString = function (chipInputString) {
-        chipInputString = chipInputString.trim();
-        var chips = chipInputString.split(this.splitRegExp);
-        return chips.filter(function (chip) { return !!chip; });
-    };
     Md2Chips.prototype._isValid = function (chipString) {
         var typeString = typeof chipString;
+        var isExist;
         if (typeString === 'string') {
             chipString = chipString.trim();
+            isExist = this.chipItemList.filter(function (chip) { return chip.text === chipString; });
         }
-        var isExist;
-        isExist = this.chipItemList.filter(function (chip) { return chip.text === chipString; });
+        else {
+            isExist = this.chipItemList.filter(function (chip) { return chip.text === chipString.text; });
+        }
         if (this.chipItemList.indexOf(chipString) === -1 && (isExist.length ? false : true)) {
             return this.allowedPattern.test(chipString);
         }
@@ -9329,7 +9323,7 @@ var __decorate$58 = (this && this.__decorate) || function (decorators, target, k
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var SUPPORTS_INTL_API$1 = typeof Intl != 'undefined';
+var SUPPORTS_INTL_API$1 = false; // typeof Intl != 'undefined';
 /** The default month names to use if Intl API is not available. */
 var DEFAULT_MONTH_NAMES$1 = {
     'long': [
@@ -10620,8 +10614,6 @@ exports.Md2Datepicker = (function () {
         this.selectedChanged = new _angular_core.EventEmitter();
         /** Whether the calendar is open. */
         this.opened = false;
-        /** The id for the datepicker calendar. */
-        this.id = "md2-datepicker-" + datepickerUid++;
         /** The currently selected date. */
         this._selected = null;
         /** The form control validator for the min date. */
@@ -10643,6 +10635,7 @@ exports.Md2Datepicker = (function () {
         };
         /** The combined form control validator for this input. */
         this._validator = _angular_forms.Validators.compose([this._minValidator, this._maxValidator, this._filterValidator]);
+        this.id = (this.id) ? this.id : "md2-datepicker-" + datepickerUid++;
     }
     Object.defineProperty(Md2Datepicker.prototype, "type", {
         get: function () { return this._type; },
@@ -11035,6 +11028,10 @@ __decorate$56([
     _angular_core.Input(),
     __metadata$32("design:type", Number)
 ], exports.Md2Datepicker.prototype, "timeInterval", void 0);
+__decorate$56([
+    _angular_core.Input(),
+    __metadata$32("design:type", String)
+], exports.Md2Datepicker.prototype, "id", void 0);
 __decorate$56([
     _angular_core.Input(),
     __metadata$32("design:type", Object),

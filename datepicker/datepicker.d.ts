@@ -55,6 +55,7 @@ export declare class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     mode: 'auto' | 'portrait' | 'landscape';
     placeholder: string;
     timeInterval: number;
+    id: string;
     type: 'date' | 'time' | 'month' | 'datetime';
     private _type;
     format: string;
@@ -87,8 +88,6 @@ export declare class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     selectedChanged: EventEmitter<Date>;
     /** Whether the calendar is open. */
     opened: boolean;
-    /** The id for the datepicker calendar. */
-    id: string;
     /** The currently selected date. */
     _selected: Date;
     /** A reference to the overlay when the calendar is opened as a popup. */

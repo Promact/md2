@@ -1,5 +1,5 @@
 /**
-  * @license Md2 v0.0.25
+  * @license Md2 v0.0.26
   * Copyright (c) 2017 Promact, Inc. http://code.promactinfo.com/md2/
   * License: MIT
   */
@@ -4921,7 +4921,7 @@ __decorate$38([
 Md2Accordion = __decorate$38([
     Component({selector: 'md2-accordion',
         template: `<ng-content></ng-content>`,
-        styles: ["md2-accordion{display:block}md2-accordion-tab{position:relative;display:block;outline:0;box-sizing:border-box}md2-accordion-tab[hidden]{display:none}.md2-accordion-header{position:relative;display:block;padding-right:30px;font-weight:500;line-height:40px;text-align:left;color:rgba(0,0,0,.87);cursor:pointer;white-space:nowrap;border-bottom:1px solid rgba(0,0,0,.12);border-radius:0;box-sizing:border-box;user-select:none}md2-accordion-tab.md2-accordion-tab-active>.md2-accordion-header{border-color:#106cc8;box-shadow:0 1px 0 #106cc8}md2-accordion-tab.md2-accordion-tab-disabled>.md2-accordion-header{pointer-events:none;color:rgba(0,0,0,.26);background-image:linear-gradient(to right,rgba(0,0,0,.26) 0,rgba(0,0,0,.26) 33%,transparent 0);background-size:4px 1px;background-repeat:repeat-x;background-position:0 bottom;border-color:transparent;box-shadow:none;cursor:default}.md2-accordion-header-icon{position:absolute;top:12px;right:8px;width:8px;height:8px;overflow:hidden;display:inline-block;border-width:0 2px 2px 0;border-style:solid;border-color:currentColor;opacity:.64;transform:rotate(45deg);transition:.3s ease-in-out}md2-accordion-tab.md2-accordion-tab-active>.md2-accordion-header>.md2-accordion-header-icon{transform:rotate(225deg);top:16px}.md2-accordion-tab-body{position:relative;overflow:hidden}.md2-accordion-tab-content{position:relative;padding:20px 0;border-bottom:1px solid rgba(0,0,0,.12)} /*# sourceMappingURL=accordion.css.map */ "],
+        styles: ["md2-accordion{display:block}md2-accordion-tab{position:relative;display:block;outline:0;box-sizing:border-box}md2-accordion-tab[hidden]{display:none}.md2-accordion-header{position:relative;display:block;padding-right:30px;font-weight:500;line-height:40px;text-align:left;color:rgba(0,0,0,.87);cursor:pointer;white-space:nowrap;border-bottom:1px solid rgba(0,0,0,.12);border-radius:0;box-sizing:border-box;user-select:none}md2-accordion-tab.md2-accordion-tab-active>.md2-accordion-header{border-color:#106cc8;box-shadow:0 1px 0 #106cc8}md2-accordion-tab.md2-accordion-tab-disabled>.md2-accordion-header{pointer-events:none;color:rgba(0,0,0,.26);background-image:linear-gradient(to right,rgba(0,0,0,.26) 0,rgba(0,0,0,.26) 33%,transparent 0);background-size:4px 1px;background-repeat:repeat-x;background-position:0 bottom;border-color:transparent;box-shadow:none;cursor:default}.md2-accordion-header-icon{position:absolute;top:12px;right:8px;width:8px;height:8px;overflow:hidden;display:inline-block;border-width:0 2px 2px 0;border-style:solid;border-color:currentColor;opacity:.64;transform:rotate(45deg);transition:.3s ease-in-out}md2-accordion-tab.md2-accordion-tab-active>.md2-accordion-header>.md2-accordion-header-icon{transform:rotate(225deg);top:16px}.md2-accordion-tab-body{position:relative;overflow:hidden}md2-accordion-tab.md2-accordion-tab-active .md2-accordion-tab-body{overflow:visible}.md2-accordion-tab-content{position:relative;padding:20px 0;border-bottom:1px solid rgba(0,0,0,.12)} /*# sourceMappingURL=accordion.css.map */ "],
         encapsulation: ViewEncapsulation.None,
         exportAs: 'md2Accordion'
     })
@@ -5034,16 +5034,14 @@ Md2AccordionTab = __decorate$39([
       </div>
     </div>
   `,
-        styles: ["md2-accordion{display:block}md2-accordion-tab{position:relative;display:block;outline:0;box-sizing:border-box}md2-accordion-tab[hidden]{display:none}.md2-accordion-header{position:relative;display:block;padding-right:30px;font-weight:500;line-height:40px;text-align:left;color:rgba(0,0,0,.87);cursor:pointer;white-space:nowrap;border-bottom:1px solid rgba(0,0,0,.12);border-radius:0;box-sizing:border-box;user-select:none}md2-accordion-tab.md2-accordion-tab-active>.md2-accordion-header{border-color:#106cc8;box-shadow:0 1px 0 #106cc8}md2-accordion-tab.md2-accordion-tab-disabled>.md2-accordion-header{pointer-events:none;color:rgba(0,0,0,.26);background-image:linear-gradient(to right,rgba(0,0,0,.26) 0,rgba(0,0,0,.26) 33%,transparent 0);background-size:4px 1px;background-repeat:repeat-x;background-position:0 bottom;border-color:transparent;box-shadow:none;cursor:default}.md2-accordion-header-icon{position:absolute;top:12px;right:8px;width:8px;height:8px;overflow:hidden;display:inline-block;border-width:0 2px 2px 0;border-style:solid;border-color:currentColor;opacity:.64;transform:rotate(45deg);transition:.3s ease-in-out}md2-accordion-tab.md2-accordion-tab-active>.md2-accordion-header>.md2-accordion-header-icon{transform:rotate(225deg);top:16px}.md2-accordion-tab-body{position:relative;overflow:hidden}.md2-accordion-tab-content{position:relative;padding:20px 0;border-bottom:1px solid rgba(0,0,0,.12)} /*# sourceMappingURL=accordion.css.map */ "],
+        styles: ["md2-accordion{display:block}md2-accordion-tab{position:relative;display:block;outline:0;box-sizing:border-box}md2-accordion-tab[hidden]{display:none}.md2-accordion-header{position:relative;display:block;padding-right:30px;font-weight:500;line-height:40px;text-align:left;color:rgba(0,0,0,.87);cursor:pointer;white-space:nowrap;border-bottom:1px solid rgba(0,0,0,.12);border-radius:0;box-sizing:border-box;user-select:none}md2-accordion-tab.md2-accordion-tab-active>.md2-accordion-header{border-color:#106cc8;box-shadow:0 1px 0 #106cc8}md2-accordion-tab.md2-accordion-tab-disabled>.md2-accordion-header{pointer-events:none;color:rgba(0,0,0,.26);background-image:linear-gradient(to right,rgba(0,0,0,.26) 0,rgba(0,0,0,.26) 33%,transparent 0);background-size:4px 1px;background-repeat:repeat-x;background-position:0 bottom;border-color:transparent;box-shadow:none;cursor:default}.md2-accordion-header-icon{position:absolute;top:12px;right:8px;width:8px;height:8px;overflow:hidden;display:inline-block;border-width:0 2px 2px 0;border-style:solid;border-color:currentColor;opacity:.64;transform:rotate(45deg);transition:.3s ease-in-out}md2-accordion-tab.md2-accordion-tab-active>.md2-accordion-header>.md2-accordion-header-icon{transform:rotate(225deg);top:16px}.md2-accordion-tab-body{position:relative;overflow:hidden}md2-accordion-tab.md2-accordion-tab-active .md2-accordion-tab-body{overflow:visible}.md2-accordion-tab-content{position:relative;padding:20px 0;border-bottom:1px solid rgba(0,0,0,.12)} /*# sourceMappingURL=accordion.css.map */ "],
         animations: [
             trigger('slide', [
                 state('up', style({ height: 0 })),
                 state('down', style({ height: '*' })),
                 transition('down => up', [
                     style({ height: '*' }),
-                    animate(300, style({
-                        height: 0
-                    }))
+                    animate(300, style({ height: 0 }))
                 ]),
                 transition('up => down', [
                     style({ height: 0 }),
@@ -5711,10 +5709,8 @@ let Md2Chips = class Md2Chips {
     inputPaste(event) {
         let clipboardData = event.clipboardData ||
             (event.originalEvent && event.originalEvent.clipboardData);
-        let pastedString = clipboardData.getData('text/plain');
-        let chips = this.addRegExpString(pastedString);
-        let chipsToAdd = chips.filter((chip) => this._isValid(chip));
-        this.addNewChip(chipsToAdd);
+        let pastedString = clipboardData.getData('text/plain').trim();
+        this.addNewChip(pastedString);
         setTimeout(() => this._resetInput());
     }
     leftArrowKeyEvents() {
@@ -5739,18 +5735,16 @@ let Md2Chips = class Md2Chips {
             }
         }
     }
-    addRegExpString(chipInputString) {
-        chipInputString = chipInputString.trim();
-        let chips = chipInputString.split(this.splitRegExp);
-        return chips.filter((chip) => !!chip);
-    }
     _isValid(chipString) {
         let typeString = typeof chipString;
+        let isExist;
         if (typeString === 'string') {
             chipString = chipString.trim();
+            isExist = this.chipItemList.filter((chip) => chip.text === chipString);
         }
-        let isExist;
-        isExist = this.chipItemList.filter((chip) => chip.text === chipString);
+        else {
+            isExist = this.chipItemList.filter((chip) => chip.text === chipString.text);
+        }
         if (this.chipItemList.indexOf(chipString) === -1 && (isExist.length ? false : true)) {
             return this.allowedPattern.test(chipString);
         }
@@ -8735,7 +8729,7 @@ var __decorate$58 = (this && this.__decorate) || function (decorators, target, k
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-const SUPPORTS_INTL_API$1 = typeof Intl != 'undefined';
+const SUPPORTS_INTL_API$1 = false; // typeof Intl != 'undefined';
 /** The default month names to use if Intl API is not available. */
 const DEFAULT_MONTH_NAMES$1 = {
     'long': [
@@ -9981,8 +9975,6 @@ let Md2Datepicker = class Md2Datepicker {
         this.selectedChanged = new EventEmitter();
         /** Whether the calendar is open. */
         this.opened = false;
-        /** The id for the datepicker calendar. */
-        this.id = `md2-datepicker-${datepickerUid++}`;
         /** The currently selected date. */
         this._selected = null;
         /** The form control validator for the min date. */
@@ -10004,6 +9996,7 @@ let Md2Datepicker = class Md2Datepicker {
         };
         /** The combined form control validator for this input. */
         this._validator = Validators.compose([this._minValidator, this._maxValidator, this._filterValidator]);
+        this.id = (this.id) ? this.id : `md2-datepicker-${datepickerUid++}`;
     }
     get type() { return this._type; }
     set type(value) {
@@ -10352,6 +10345,10 @@ __decorate$56([
     Input(),
     __metadata$32("design:type", Number)
 ], Md2Datepicker.prototype, "timeInterval", void 0);
+__decorate$56([
+    Input(),
+    __metadata$32("design:type", String)
+], Md2Datepicker.prototype, "id", void 0);
 __decorate$56([
     Input(),
     __metadata$32("design:type", Object),

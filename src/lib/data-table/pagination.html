@@ -36,7 +36,7 @@
   </li>
 </ul>
 <div class="md2-rows-select" *ngIf="rowsPerPageSet.length && _dataLength > 0">
-  Rows per page:
+  <label>{{paginationLabel}}</label>
   <md2-select [(ngModel)]="_rowsPerPage" (change)="_setRows($event)">
     <md2-option *ngFor="let row of rowsPerPageSet" [value]="row">{{row}}</md2-option>
   </md2-select>

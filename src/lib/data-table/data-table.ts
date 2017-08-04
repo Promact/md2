@@ -273,6 +273,7 @@ export class Md2Pagination {
 
   @Input() rowsPerPageSet: any = [];
   @Input() md2Table: Md2DataTable;
+  @Input() paginationLabel: string = 'Rows per page:';
 
   _rowsPerPage: number;
   _dataLength: number = 0;

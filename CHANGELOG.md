@@ -3,6 +3,17 @@
 
 * Solved #272 [Question] Md2Autocomplete and textChange emit old value
 * Solved #269 Disabled dates on Datepicker (Month mode) can still be selected 
+* Solved tslint issues
+
+### Features
+* Solved #268 DataTable: pagination label could be an attribute
+
+
+<a name="0.0.27"></a>
+### Bug Fixes
+
+* Solved #272 [Question] Md2Autocomplete and textChange emit old value
+* Solved #269 Disabled dates on Datepicker (Month mode) can still be selected 
 
 ### Features
 * Solved #268 DataTable: pagination label could be an attribute

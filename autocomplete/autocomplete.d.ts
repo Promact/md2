@@ -58,6 +58,7 @@ export declare class Md2Autocomplete implements AfterContentInit, ControlValueAc
      * input event listner
      * @param event
      */
+    _handleKeyup(event: KeyboardEvent): void;
     _handleKeydown(event: KeyboardEvent): void;
     /**
      * select option

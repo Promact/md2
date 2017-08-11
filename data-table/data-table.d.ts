@@ -61,6 +61,7 @@ export declare class Md2Pagination {
     private _activePage;
     rowsPerPageSet: any;
     md2Table: Md2DataTable;
+    paginationLabel: string;
     _rowsPerPage: number;
     _dataLength: number;
     _lastPage: number;

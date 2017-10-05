@@ -1,3 +1,7 @@
+<a name="0.0.29"></a>
+### Bug Fixes
+* Solved #275 Select component doesnt accept 0 and false values(ngModel) in md2-option
+
 <a name="0.0.27"></a>
 ### Bug Fixes
 

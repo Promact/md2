@@ -322,7 +322,7 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
       this._list = [];
     } else {
       this._list = this._items.map((i: any) => new Item(i, this.textKey,
-        this.valueKey)).filter(i => new RegExp(this._inputValue, 'ig').test(i.text));
+        this.valueKey)).filter(i => new RegExp(this._inputValue.trim(), 'ig').test(i.text));
       if (this._list.length && this._list[0].text !== this._inputValue) {
         this.selectedItem = null;
       }

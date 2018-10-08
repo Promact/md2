@@ -363,6 +363,7 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
         this.value = null;
         this._emitChangeEvent();
       }
+      el.value = null;
     }
   }
 

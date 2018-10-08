@@ -17,7 +17,7 @@ Datepicker allow the user to select date and time.
 | `timeInterval` | `number` | Select minutes in specific time interval, default is 1. |
 | `openOnFocus` | `boolean` | Opend Calendar Whether or not the datepicker is openOnFocus. |
 | `isOpen` | `boolean` | Opend Calendar Whether or not the datepicker is isOpen. |
-| `dateFilter` | `(Date|null) => boolean` | Filter Dates for enabled with return boolean. |
+| `dateFilter` | `(Date`&#124;`null) => boolean` | Filter Dates for enabled with return boolean. |
 | `mode` | `'auto'` &#124; `'portrait'` &#124; `'landscape'` | Mode of the Datepicker, default auto. |
 | `touchUi` | `boolean` | Whether the calendar UI is in touch mode. In touch mode the calendar opens in a dialog rather than a popup and elements have more padding to allow for bigger touch targets. |
 | `startAt` | `Date` | The date to open the calendar to initially. |

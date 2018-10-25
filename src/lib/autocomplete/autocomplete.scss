@@ -87,6 +87,7 @@ md2-autocomplete.md2-autocomplete-disabled .md2-autocomplete-input {
 
   [aria-required=true] &::after {
     content: '*';
+    color: #FD0F0F;
   }
 }
 

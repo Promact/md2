@@ -195,6 +195,9 @@ export class Md2Autocomplete implements AfterContentInit, ControlValueAccessor {
    * @param event
    */
   _handleKeyup(event: KeyboardEvent) {
+    if (this._inputValue === '' || this._inputValue === null) {
+      this._onClear()
+    }
     this.textChange.emit(this._inputValue);
   }
 

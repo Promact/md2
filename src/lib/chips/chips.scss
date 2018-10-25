@@ -13,6 +13,7 @@ md2-chips {
     min-height: 50px;
     box-sizing: border-box;
     clear: both;
+    position:relative;
   }
 
   .md2-chips-container::after {
@@ -23,6 +24,7 @@ md2-chips {
 
   &.chip-input-focus .md2-chips-container {
     box-shadow: 0 2px #0d8bff;
+    .md2-chip-placeholder{color:#0d8bff;}
   }
 
   .md2-chip-disabled {
@@ -130,6 +132,27 @@ md2-chips {
   color: #fd0f0f;
 }
 
+.md2-chip-placeholder{
+  position: absolute;
+  display:none;
+  max-width: 100%;
+  padding-left: 3px;
+  padding-right: 0;
+  color: rgba(0,0,0,.38);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 1; 
+
+     &.md2-floating-placeholder {
+        top: -10px;
+        left: -2px;
+        text-align: left;
+        transform: scale(0.80);  
+        display:block;
+    }
+}
 .md2-chips-container {
   .chip-input-form .md2-autocomplete-wrap {
     border-bottom: 0;

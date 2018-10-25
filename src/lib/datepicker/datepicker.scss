@@ -127,6 +127,7 @@ md2-datepicker {
 
   [aria-required=true] &::after {
     content: '*';
+    color: #FD0F0F;
   }
 }
 

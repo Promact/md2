@@ -77,7 +77,7 @@ $md2-select-trigger-font-size: 16px !default;
     top: -22px;
     left: -2px;
     text-align: left;
-    transform: scale(0.75);         
+    transform: scale(0.75);
   }
  
   [dir='rtl'] & {
@@ -91,7 +91,8 @@ $md2-select-trigger-font-size: 16px !default;
 
   [aria-required=true] &::after {
     content: '*';
-    color: #FD0F0F;
+    color: #fd0f0f;
+
   }  
 }
 

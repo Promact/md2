@@ -132,13 +132,13 @@ md2-chips {
   color: #fd0f0f;
 }
 
-.md2-chip-placeholder{
+.md2-chip-placeholder {
   position: absolute;
   display:none;
   max-width: 100%;
   padding-left: 3px;
   padding-right: 0;
-  color: rgba(0,0,0,.38);
+  color: rgba(0, 0, 0, 0.38);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

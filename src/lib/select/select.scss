@@ -92,8 +92,7 @@ $md2-select-trigger-font-size: 16px !default;
   [aria-required=true] &::after {
     content: '*';
     color: #fd0f0f;
-
-  }  
+  }
 }
 
 .md2-select-value {

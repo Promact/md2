@@ -143,13 +143,13 @@ md2-chips {
   text-overflow: ellipsis;
   white-space: nowrap;
   pointer-events: none;
-  z-index: 1; 
+  z-index: 1;
 
      &.md2-floating-placeholder {
         top: -10px;
         left: -2px;
         text-align: left;
-        transform: scale(0.80);  
+        transform: scale(0.8);
         display:block;
     }
 }

@@ -91,6 +91,7 @@ $warn: #f44336 !default;
 
   [aria-required=true] &::after {
     content: '*';
+    color: #fd0f0f;
   }
 }
 

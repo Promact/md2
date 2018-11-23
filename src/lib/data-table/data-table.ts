@@ -279,6 +279,16 @@ export class Md2Pagination {
   _dataLength: number = 0;
   _lastPage: number;
 
+  getPageDataRangeLabel = (rowsPerPage: number, activePage: number, dataLength: number) => {
+      if (dataLength == 0 || rowsPerPage == 0) { return `0 of ${dataLength}`; }
+      dataLength = Math.max(dataLength, 0);
+    const startIndex = activePage * rowsPerPage;
+      const endIndex = startIndex < dataLength ?
+          Math.min(startIndex + rowsPerPage, dataLength) :
+        startIndex + rowsPerPage;
+
+      return `${startIndex + 1} - ${endIndex} of ${dataLength}`;
+  }
   constructor( @Optional() private _dataTable: Md2DataTable) { }
 
   ngDoCheck() {

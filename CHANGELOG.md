@@ -1,3 +1,7 @@
+<a name="0.0.30"></a>
+### Bug Fixes
+* solved some issues of chips,colorpicker and datepicker
+
 <a name="0.0.29"></a>
 ### Bug Fixes
 * Solved #275 Select component doesnt accept 0 and false values(ngModel) in md2-option

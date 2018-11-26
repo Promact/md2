@@ -1,3 +1,8 @@
+<a name="0.0.31"></a>
+## [0.0.31](https://github.com/Promact/md2/compare/0.0.30...0.0.31) (2018-11-26)
+
+
+
 <a name="0.0.30"></a>
 ### Bug Fixes
 * solved some issues of chips,colorpicker,autocomplete and datepicker

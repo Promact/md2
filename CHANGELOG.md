@@ -1,6 +1,6 @@
 <a name="0.0.30"></a>
 ### Bug Fixes
-* solved some issues of chips,colorpicker and datepicker
+* solved some issues of chips,colorpicker,autocomplete and datepicker
 
 <a name="0.0.29"></a>
 ### Bug Fixes

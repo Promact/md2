@@ -75,10 +75,10 @@ export class Md2DialogActions { }
   },
   animations: [
     trigger('state', [
-      state('void', style({ transform: 'scale(0.3)' })),
-      state('initial', style({ transform: 'scale(0.3)' })),
+      state('void', style({ transform: 'scale(1)' })),
+      state('initial', style({ transform: 'scale(1)' })),
       state('visible', style({ transform: 'scale(1)' })),
-      state('hidden', style({ transform: 'scale(0.3)' })),
+      state('hidden', style({ transform: 'scale(1)' })),
       transition('* => visible', animate('150ms cubic-bezier(0.0, 0.0, 0.2, 1)')),
       transition('* => hidden', animate('150ms cubic-bezier(0.4, 0.0, 1, 1)')),
     ])

@@ -1,4 +1,4 @@
-<a name="0.0.31"></a>
+<a name="0.0.32"></a>
 ### solve bug of onClose event in dialog component
 
 <a name="0.0.30"></a>

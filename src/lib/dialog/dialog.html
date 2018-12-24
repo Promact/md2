@@ -1,6 +1,5 @@
 <ng-template md2DialogPortal>
   <div class="md2-dialog-panel" [attr.role]="dialogConfig?.role" [@state]="_visibility" (@state.done)="_onPanelDone()">
-    <!--[@state]="_visibility" (@state.done)="_onPanelDone()"-->
     <div class="md2-dialog-content">
       <div class="md2-dialog-header">
         <button *ngIf="!config.disableClose" type="button" class="close" aria-label="Close" (click)="close()">&times;</button>

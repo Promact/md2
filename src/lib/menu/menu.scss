@@ -111,14 +111,14 @@ $md2-menu-vertical-padding: 8px !default;
   left: 0;
   height: 100%;
   width: 100%;
-  z-index: 1000;
+  z-index: 999;
 }
 
 .md-overlay-pane {
   position: absolute;
   pointer-events: auto;
   box-sizing: border-box;
-  z-index: 1000;
+  z-index: 999;
 }
 
 .md-overlay-backdrop {

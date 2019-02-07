@@ -53,18 +53,18 @@ md2-toast {
 
 .cdk-overlay-container {
   position: fixed;
-  z-index: 1000;
+  z-index: 999;
 }
 
 .cdk-global-overlay-wrapper {
   display: flex;
   position: absolute;
-  z-index: 1000;
+  z-index: 999;
 }
 
 .cdk-overlay-pane {
   position: absolute;
   pointer-events: auto;
   box-sizing: border-box;
-  z-index: 1000;
+  z-index: 999;
 }

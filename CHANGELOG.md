@@ -1,6 +1,7 @@
 <a name="0.0.33"></a>
 [0.0.33]
-### Angular Version update and solved z-index issues
+### Version update
+* Angular version update and solved z-index issue
 
 <a name="0.0.32"></a>
 ### solve bug of onClose event in dialog component

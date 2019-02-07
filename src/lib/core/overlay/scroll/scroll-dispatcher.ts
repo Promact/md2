@@ -1,10 +1,10 @@
 import {ElementRef, Injectable, NgZone, Optional, SkipSelf} from '@angular/core';
+import {fromEvent} from 'rxjs/observable/fromEvent';
 import {Platform} from '../../platform/index';
 import {Scrollable} from './scrollable';
 import {Subject} from 'rxjs/Subject';
 import {Observable} from 'rxjs/Observable';
 import {Subscription} from 'rxjs/Subscription';
-import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/auditTime';
 
@@ -79,8 +79,8 @@ export class ScrollDispatcher {
     if (!this._globalSubscription) {
       this._globalSubscription = this._ngZone.runOutsideAngular(() => {
         return Observable.merge(
-          Observable.fromEvent(window.document, 'scroll'),
-          Observable.fromEvent(window, 'resize')
+          fromEvent(window.document, 'scroll'),
+          fromEvent(window, 'resize')
         ).subscribe(() => this._notify());
       });
     }

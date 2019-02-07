@@ -49,7 +49,7 @@ export class FocusOriginMonitor {
   private _lastTouchTarget: EventTarget;
 
   /** The timeout id of the touch timeout, used to cancel timeout later. */
-  private _touchTimeout: number;
+  private _touchTimeout: any; // see https://stackoverflow.com/questions/45802988/typescript-use-correct-version-of-settimeout-node-vs-window#45804859
 
   /** Weak map of elements being monitored to their info. */
   private _elementInfo = new WeakMap<Element, MonitoredElementInfo>();

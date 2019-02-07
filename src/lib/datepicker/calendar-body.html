@@ -11,6 +11,13 @@
   <!--
     We mark this cell as aria-hidden so it doesn't get read out as one of the days in the week.
   -->
+  <th *ngIf="displayWeek"
+      scope="row"
+      class="md2-calendar-table-header"
+      aria-hidden="true">
+    {{row[0].header}}
+  </th>
+
   <td *ngIf="rowIndex === 0 && _firstRowOffset"
       aria-hidden="true"
       class="md2-calendar-body-label"

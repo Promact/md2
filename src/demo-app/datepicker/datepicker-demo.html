@@ -12,6 +12,7 @@
                       [mode]="mode"
                       [touchUi]="touch"
                       [format]="dateFormat"
+                      [displayWeek]="displayWeek"
                       #minDateControl="ngModel"></md2-datepicker>
       <md2-datepicker name="maxdate"
                       placeholder="Maximum Date"
@@ -20,6 +21,7 @@
                       [mode]="mode"
                       [touchUi]="touch"
                       [format]="dateFormat"
+                      [displayWeek]="displayWeek"
                       #maxDateControl="ngModel"></md2-datepicker>
       <br />
       <md2-datepicker name="birthdate"
@@ -36,7 +38,8 @@
                       [touchUi]="touch"
                       [startView]="startView"
                       [format]="dateFormat"
-                      #dateControl="ngModel" 
+                      #dateControl="ngModel"
+                      [displayWeek]="displayWeek"
                       [id]="customID"></md2-datepicker>
       <br />
       <span class="error-helper" *ngIf="dateControl.touched && dateControl.errors?.required">Date is Required!</span>
@@ -91,6 +94,10 @@
           <label class="checkbox">
             <input type="checkbox" name="filter" [(ngModel)]="filterOdd">
             <span class="checkbox-handle"></span>Filter odd months and dates
+          </label>
+          <label class="checkbox">
+            <input type="checkbox" name="filter" [(ngModel)]="displayWeek">
+            <span class="checkbox-handle"></span>Display ISO Week-numbers
           </label>
         </div>
       </div>

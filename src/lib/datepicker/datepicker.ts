@@ -141,6 +141,8 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
    * than a popup and elements have more padding to allow for bigger touch targets.
    */
   @Input() touchUi = false;
+  /** Whether the Week-number should be displayed */
+  @Input() displayWeek: boolean;
   @Input() tabindex: number = 0;
   @Input() mode: 'auto' | 'portrait' | 'landscape' = 'auto';
   @Input() placeholder: string;

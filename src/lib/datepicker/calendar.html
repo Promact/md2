@@ -44,6 +44,7 @@
   <md2-month-view *ngSwitchCase="'month'"
                   [activeDate]="_activeDate"
                   [selected]="selected"
+                  [displayWeek]="displayWeek"
                   [dateFilter]="_dateFilterForViews"
                   (selectedChange)="_dateSelected($event)">
   </md2-month-view>

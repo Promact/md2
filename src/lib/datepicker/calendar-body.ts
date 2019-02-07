@@ -16,7 +16,8 @@ export class Md2CalendarCell {
   constructor(public value: number,
               public displayValue: string,
               public ariaLabel: string,
-              public enabled: boolean) {}
+              public enabled: boolean,
+              public header?: string) {}
 }
 
 
@@ -59,6 +60,9 @@ export class Md2CalendarBody {
 
   /** The cell number of the active cell in the table. */
   @Input() activeCell = 0;
+
+  /** Whether the Week-number should be displayed */
+  @Input() displayWeek: boolean;
 
   /** Emits when a new value is selected. */
   @Output() selectedValueChange = new EventEmitter<number>();

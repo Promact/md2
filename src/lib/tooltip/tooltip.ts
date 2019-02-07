@@ -313,10 +313,10 @@ export class Md2TooltipComponent {
   message: string;
 
   /** The timeout ID of any current timer set to show the tooltip */
-  _showTimeoutId: number;
+  _showTimeoutId: any; // see https://stackoverflow.com/questions/45802988/typescript-use-correct-version-of-settimeout-node-vs-window#45804859
 
   /** The timeout ID of any current timer set to hide the tooltip */
-  _hideTimeoutId: number;
+  _hideTimeoutId: any; // see https://stackoverflow.com/questions/45802988/typescript-use-correct-version-of-settimeout-node-vs-window#45804859
 
   /** Property watched by the animation framework to show or hide the tooltip */
   _visibility: TooltipVisibility = 'initial';

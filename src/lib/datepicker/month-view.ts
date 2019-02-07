@@ -32,6 +32,9 @@ const DAYS_PER_WEEK = 7;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Md2MonthView implements AfterContentInit {
+  /** Whether the Week-number should be displayed */
+  @Input() displayWeek: boolean;
+
   /**
    * The date to display in this month view (everything other than the month and year is ignored).
    */
@@ -140,23 +143,29 @@ export class Md2MonthView implements AfterContentInit {
   private _createWeekCells() {
     let daysInMonth = this._util.getNumDaysInMonth(this.activeDate);
     let dateNames = this._locale.getDateNames();
-    this._weeks = [[]];
+    let oldWeek;
+    this._weeks = [];
+
     for (let i = 0, cell = this._firstWeekOffset; i < daysInMonth; i++ , cell++) {
-      if (cell == DAYS_PER_WEEK) {
-        this._weeks.push([]);
-        cell = 0;
-      }
       let date = this._util.createDate(
         this._util.getYear(this.activeDate),
-        this._util.getMonth(this.activeDate), i + 1,
+        this._util.getMonth(this.activeDate),
+        i + 1,
         this._util.getHours(this.activeDate),
         this._util.getMinutes(this.activeDate),
         this._util.getSeconds(this.activeDate));
       let enabled = !this.dateFilter ||
         this.dateFilter(date);
       let ariaLabel = this._locale.format(date, this._dateFormats.display.dateA11yLabel);
+      let newWeek = this._util.getWeekOfYear(date);
+
+      if (oldWeek !== newWeek) {
+          this._weeks.push([]);
+          oldWeek = newWeek;
+          cell = 0;
+      }
       this._weeks[this._weeks.length - 1]
-        .push(new Md2CalendarCell(i + 1, dateNames[i], ariaLabel, enabled));
+        .push(new Md2CalendarCell(i + 1, dateNames[i], ariaLabel, enabled, newWeek.toString()));
     }
   }
 

@@ -1,4 +1,5 @@
-﻿import { Component } from '@angular/core';
+import { Component } from '@angular/core';
+import {DateLocale} from 'md2';
 
 @Component({
   selector: 'datepicker-demo',
@@ -21,6 +22,7 @@ export class DatepickerDemo {
   isRequired = false;
   isDisabled = false;
   isOpenOnFocus = false;
+  displayWeek = false;
   today: Date = new Date();
 
   private _type: string = 'date';

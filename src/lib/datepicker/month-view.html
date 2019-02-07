@@ -1,6 +1,9 @@
 <table class="md2-calendar-table">
   <thead class="md2-calendar-table-header">
-    <tr><th *ngFor="let day of _weekdays" [attr.aria-label]="day.long">{{day.narrow}}</th></tr>
+    <tr>
+      <th *ngIf="displayWeek">#</th>
+      <th *ngFor="let day of _weekdays" [attr.aria-label]="day.long">{{day.narrow}}</th>
+    </tr>
   </thead>
   <tbody [@slideCalendar]="_calendarState"
          (@slideCalendar.done)="_calendarStateDone()"
@@ -9,6 +12,7 @@
          [rows]="_weeks"
          [todayValue]="_todayDate"
          [selectedValue]="_selectedDate"
+         [displayWeek]="displayWeek"
          [activeCell]="_util.getDate(activeDate) - 1"
          (selectedValueChange)="_dateSelected($event)"></tbody>
 </table>

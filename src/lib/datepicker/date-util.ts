@@ -440,6 +440,23 @@ export class DateUtil {
   }
 
   /**
+   * Gets the week of the year that a given date occurs in.
+   * @param {Date} date
+   * @returns {number} Index of the week according to ISO-8601.
+   */
+  getWeekOfYear(date: Date) {
+      // Copy date so don't modify original
+      let d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+      // Set to nearest Thursday: current date + 4 - current day number
+      // Make Sunday's day number 7
+      d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+      // Get first day of year
+      const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+      // Calculate full weeks to nearest Thursday and return weekNo
+      return Math.ceil(( ( (+d - +yearStart) / 86400000) + 1) / 7);
+  }
+
+  /**
    * Gets a new date incremented by the given number of minutes. Number of minutes can be negative.
    * @param {Date} date
    * @param {number} numberOfMinutes

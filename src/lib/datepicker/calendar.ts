@@ -47,6 +47,8 @@ import { MATERIAL_COMPATIBILITY_MODE } from '../core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Md2Calendar implements AfterContentInit {
+  /** Whether the Week-number should be displayed */
+  @Input() displayWeek: boolean;
 
   @Input() type: 'date' | 'time' | 'month' | 'datetime' = 'date';
 
